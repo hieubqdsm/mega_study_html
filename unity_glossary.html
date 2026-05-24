@@ -1,0 +1,3673 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity RPG Glossary</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0f13;
+  --surface: #16181f;
+  --surface2: #1e2029;
+  --border: #2a2d3a;
+  --border2: #353848;
+  --text: #e8eaf0;
+  --muted: #8890a8;
+  --hint: #555c74;
+
+  --purple: #7c6ef5;
+  --purple-bg: #1e1a3a;
+  --purple-text: #b8b0ff;
+
+  --teal: #2ec9a0;
+  --teal-bg: #0d2620;
+  --teal-text: #7ee8cb;
+
+  --amber: #f0a040;
+  --amber-bg: #271a08;
+  --amber-text: #fac77a;
+
+  --coral: #e8624a;
+  --coral-bg: #2a1008;
+  --coral-text: #f5a08a;
+
+  --blue: #4a9ef0;
+  --blue-bg: #0c1e35;
+  --blue-text: #8ec8f8;
+
+  --green: #5cc45a;
+  --green-bg: #0f2010;
+  --green-text: #9ee09d;
+
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+/* Header */
+.header {
+  margin-bottom: 40px;
+}
+.header-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--purple);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+.header p {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Search */
+.search-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+.search-wrap input {
+  width: 100%;
+  background: var(--surface);
+  border: 0.5px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 14px 10px 38px;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color .15s;
+}
+.search-wrap input::placeholder { color: var(--hint); }
+.search-wrap input:focus { border-color: var(--purple); }
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--hint);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* Filter pills */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+.f-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 0.5px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+  letter-spacing: .03em;
+}
+.f-btn:hover { border-color: var(--text); color: var(--text); }
+.f-btn.active-editor  { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple); }
+.f-btn.active-scene   { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal); }
+.f-btn.active-go      { background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber); }
+.f-btn.active-code    { background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral); }
+.f-btn.active-asset   { background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue); }
+.f-btn.active-cam     { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple); }
+.f-btn.active-tile    { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal); }
+.f-btn.active-sort    { background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral); }
+.f-btn.active-path    { background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber); }
+.f-btn.active-coord   { background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue); }
+
+/* Section separator */
+.section-sep {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 36px 0 16px;
+}
+.section-sep .label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.section-sep .line {
+  flex: 1;
+  height: 0.5px;
+  background: var(--border);
+}
+
+/* Card */
+.card {
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.card:hover { border-color: var(--border2); }
+.card.open { border-color: var(--border2); }
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.pill-editor { background: var(--purple-bg); color: var(--purple-text); }
+.pill-scene  { background: var(--teal-bg);   color: var(--teal-text); }
+.pill-go     { background: var(--amber-bg);  color: var(--amber-text); }
+.pill-code   { background: var(--coral-bg);  color: var(--coral-text); }
+.pill-asset  { background: var(--blue-bg);   color: var(--blue-text); }
+.pill-cam    { background: var(--purple-bg); color: var(--purple-text); }
+.pill-tile   { background: var(--teal-bg);   color: var(--teal-text); }
+.pill-sort   { background: var(--coral-bg);  color: var(--coral-text); }
+.pill-path   { background: var(--amber-bg);  color: var(--amber-text); }
+.pill-coord  { background: var(--blue-bg);   color: var(--blue-text); }
+.pill-dnd    { background: var(--purple-bg); color: var(--purple-text); }
+.pill-so     { background: var(--teal-bg);   color: var(--teal-text); }
+.pill-arch   { background: var(--amber-bg);  color: var(--amber-text); }
+.pill-calc   { background: var(--coral-bg);  color: var(--coral-text); }
+.pill-pat    { background: var(--blue-bg);   color: var(--blue-text); }
+
+.f-btn.active-dnd  { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple); }
+.f-btn.active-so   { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal); }
+.f-btn.active-arch { background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber); }
+.f-btn.active-calc { background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral); }
+.f-btn.active-pat  { background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue); }
+.pill-turn  { background: var(--purple-bg); color: var(--purple-text); }
+.pill-action{ background: var(--amber-bg);  color: var(--amber-text); }
+.pill-spell { background: var(--teal-bg);   color: var(--teal-text); }
+.pill-cstate{ background: var(--coral-bg);  color: var(--coral-text); }
+.pill-carch { background: var(--blue-bg);   color: var(--blue-text); }
+.f-btn.active-turn  { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple); }
+.f-btn.active-action{ background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber); }
+.f-btn.active-spell { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal); }
+.f-btn.active-cstate{ background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral); }
+.f-btn.active-carch { background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue); }
+.pill-dlg  { background: var(--purple-bg); color: var(--purple-text); }
+.pill-node { background: var(--teal-bg);   color: var(--teal-text); }
+.pill-quest{ background: var(--amber-bg);  color: var(--amber-text); }
+.pill-npc  { background: var(--coral-bg);  color: var(--coral-text); }
+.pill-darch{ background: var(--blue-bg);   color: var(--blue-text); }
+.f-btn.active-dlg  { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple); }
+.f-btn.active-node { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal); }
+.f-btn.active-quest{ background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber); }
+.f-btn.active-npc  { background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral); }
+.f-btn.active-darch{ background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue); }
+.pill-canvas { background: var(--purple-bg); color: var(--purple-text); }
+.pill-hud    { background: var(--teal-bg);   color: var(--teal-text); }
+.pill-inv    { background: var(--amber-bg);  color: var(--amber-text); }
+.pill-tooltip{ background: var(--coral-bg);  color: var(--coral-text); }
+.pill-uiarch { background: var(--blue-bg);   color: var(--blue-text); }
+.f-btn.active-canvas { background: var(--purple-bg); color: var(--purple-text); border-color: var(--purple); }
+.f-btn.active-hud    { background: var(--teal-bg);   color: var(--teal-text);   border-color: var(--teal); }
+.f-btn.active-inv    { background: var(--amber-bg);  color: var(--amber-text);  border-color: var(--amber); }
+.f-btn.active-tooltip{ background: var(--coral-bg);  color: var(--coral-text);  border-color: var(--coral); }
+.f-btn.active-uiarch { background: var(--blue-bg);   color: var(--blue-text);   border-color: var(--blue); }
+.pill-sdata{background:var(--purple-bg);color:var(--purple-text)}
+.pill-sser {background:var(--teal-bg);  color:var(--teal-text)}
+.pill-sflow{background:var(--amber-bg); color:var(--amber-text)}
+.pill-audio{background:var(--purple-bg);color:var(--purple-text)}
+.pill-vfx  {background:var(--teal-bg);  color:var(--teal-text)}
+.pill-feel {background:var(--amber-bg); color:var(--amber-text)}
+.pill-mmap {background:var(--purple-bg);color:var(--purple-text)}
+.pill-mcon {background:var(--teal-bg);  color:var(--teal-text)}
+.pill-mbal {background:var(--amber-bg); color:var(--amber-text)}
+.pill-bopt {background:var(--purple-bg);color:var(--purple-text)}
+.pill-bprf {background:var(--teal-bg);  color:var(--teal-text)}
+.pill-bship{background:var(--amber-bg); color:var(--amber-text)}
+.f-btn.active-sdata{background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple)}
+.f-btn.active-sser {background:var(--teal-bg);  color:var(--teal-text);  border-color:var(--teal)}
+.f-btn.active-sflow{background:var(--amber-bg); color:var(--amber-text); border-color:var(--amber)}
+.f-btn.active-audio{background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple)}
+.f-btn.active-vfx  {background:var(--teal-bg);  color:var(--teal-text);  border-color:var(--teal)}
+.f-btn.active-feel {background:var(--amber-bg); color:var(--amber-text); border-color:var(--amber)}
+.f-btn.active-mmap {background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple)}
+.f-btn.active-mcon {background:var(--teal-bg);  color:var(--teal-text);  border-color:var(--teal)}
+.f-btn.active-mbal {background:var(--amber-bg); color:var(--amber-text); border-color:var(--amber)}
+.f-btn.active-bopt {background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple)}
+.f-btn.active-bprf {background:var(--teal-bg);  color:var(--teal-text);  border-color:var(--teal)}
+.f-btn.active-bship{background:var(--amber-bg); color:var(--amber-text); border-color:var(--amber)}
+.pill-vgit {background:var(--purple-bg);color:var(--purple-text)}
+.pill-vart {background:var(--teal-bg);  color:var(--teal-text)}
+.pill-vcode{background:var(--amber-bg); color:var(--amber-text)}
+.pill-vflow{background:var(--coral-bg); color:var(--coral-text)}
+.pill-vci  {background:var(--blue-bg);  color:var(--blue-text)}
+.f-btn.active-vgit {background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple)}
+.f-btn.active-vart {background:var(--teal-bg);  color:var(--teal-text);  border-color:var(--teal)}
+.f-btn.active-vcode{background:var(--amber-bg); color:var(--amber-text); border-color:var(--amber)}
+.f-btn.active-vflow{background:var(--coral-bg); color:var(--coral-text); border-color:var(--coral)}
+.f-btn.active-vci  {background:var(--blue-bg);  color:var(--blue-text);  border-color:var(--blue)}
+.pill-3dcore{background:var(--purple-bg);color:var(--purple-text)}
+.pill-3dren {background:var(--teal-bg);  color:var(--teal-text)}
+.pill-3dphys{background:var(--amber-bg); color:var(--amber-text)}
+.pill-3danim{background:var(--coral-bg); color:var(--coral-text)}
+.pill-3ddiff{background:var(--blue-bg);  color:var(--blue-text)}
+.f-btn.active-3dcore{background:var(--purple-bg);color:var(--purple-text);border-color:var(--purple)}
+.f-btn.active-3dren {background:var(--teal-bg);  color:var(--teal-text);  border-color:var(--teal)}
+.f-btn.active-3dphys{background:var(--amber-bg); color:var(--amber-text); border-color:var(--amber)}
+.f-btn.active-3danim{background:var(--coral-bg); color:var(--coral-text); border-color:var(--coral)}
+.f-btn.active-3ddiff{background:var(--blue-bg);  color:var(--blue-text);  border-color:var(--blue)}
+
+.card-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.step-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--hint);
+  white-space: nowrap;
+}
+.chevron {
+  font-size: 10px;
+  color: var(--hint);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.card.open .chevron { transform: rotate(180deg); }
+
+.card-body {
+  display: none;
+  padding: 0 16px 16px;
+  border-top: 0.5px solid var(--border);
+}
+.card.open .card-body { display: block; }
+
+.def {
+  font-size: 13.5px;
+  color: #adb5cc;
+  line-height: 1.65;
+  margin: 12px 0 10px;
+}
+
+.code-block {
+  font-family: var(--mono);
+  font-size: 12px;
+  background: var(--bg);
+  border: 0.5px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: #c8d0e8;
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.tip-box {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.55;
+  border-left: 2px solid var(--purple);
+  padding-left: 10px;
+  border-radius: 0;
+}
+
+/* Count */
+.count-line {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--hint);
+  margin-bottom: 14px;
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 48px 0;
+  color: var(--hint);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="header-eyebrow">Unity RPG Isometric · DnD</div>
+    <h1>Từ điển thuật ngữ Unity</h1>
+    <p>Tổng hợp 238 thuật ngữ — Unity cơ bản · Isometric · DnD Stat · Combat · Dialogue · UI · Save/Load · Audio/VFX · Map · Build & Ship · Version Control · 3D</p>
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Tìm thuật ngữ..." oninput="render()">
+  </div>
+
+  <div class="filters" id="filters"></div>
+  <p class="count-line" id="countLine"></p>
+  <div id="list"></div>
+
+</div>
+
+<script>
+var CAT_META = {
+  editor: { label: 'Editor & Hub',   pill: 'pill-editor', color: '#7c6ef5' },
+  scene:  { label: 'Scene & View',   pill: 'pill-scene',  color: '#2ec9a0' },
+  go:     { label: 'GameObject',     pill: 'pill-go',     color: '#f0a040' },
+  code:   { label: 'C# & Script',    pill: 'pill-code',   color: '#e8624a' },
+  asset:  { label: 'Asset & Project',pill: 'pill-asset',  color: '#4a9ef0' },
+  cam:    { label: 'Camera',         pill: 'pill-cam',    color: '#7c6ef5' },
+  tile:   { label: 'Tilemap',        pill: 'pill-tile',   color: '#2ec9a0' },
+  sort:   { label: 'Sorting',        pill: 'pill-sort',   color: '#e8624a' },
+  path:   { label: 'Pathfinding',    pill: 'pill-path',   color: '#f0a040' },
+  coord:  { label: 'Toạ độ',         pill: 'pill-coord',  color: '#4a9ef0' },
+  dnd:    { label: 'DnD rules',      pill: 'pill-dnd',    color: '#7c6ef5' },
+  so:     { label: 'ScriptableObject', pill: 'pill-so',   color: '#2ec9a0' },
+  arch:   { label: 'Architecture',   pill: 'pill-arch',   color: '#f0a040' },
+  calc:   { label: 'Tính toán',      pill: 'pill-calc',   color: '#e8624a' },
+  pat:    { label: 'Pattern',        pill: 'pill-pat',    color: '#4a9ef0' },
+  turn:   { label: 'Turn Manager',   pill: 'pill-turn',   color: '#7c6ef5' },
+  action: { label: 'Action system',  pill: 'pill-action', color: '#f0a040' },
+  spell:  { label: 'Spell framework',pill: 'pill-spell',  color: '#2ec9a0' },
+  cstate: { label: 'Condition & Effect', pill: 'pill-cstate', color: '#e8624a' },
+  carch:  { label: 'Architecture',   pill: 'pill-carch',  color: '#4a9ef0' },
+  dlg:    { label: 'Dialogue',       pill: 'pill-dlg',    color: '#7c6ef5' },
+  node:   { label: 'Node graph',     pill: 'pill-node',   color: '#2ec9a0' },
+  quest:  { label: 'Quest system',   pill: 'pill-quest',  color: '#f0a040' },
+  npc:    { label: 'NPC & World',    pill: 'pill-npc',    color: '#e8624a' },
+  darch:  { label: 'Architecture',   pill: 'pill-darch',  color: '#4a9ef0' },
+  canvas: { label: 'Canvas & Layout',pill: 'pill-canvas', color: '#7c6ef5' },
+  hud:    { label: 'HUD & Combat UI',pill: 'pill-hud',    color: '#2ec9a0' },
+  inv:    { label: 'Inventory UI',   pill: 'pill-inv',    color: '#f0a040' },
+  tooltip:{ label: 'Tooltip & Panel',pill: 'pill-tooltip',color: '#e8624a' },
+  uiarch: { label: 'UI Architecture',pill: 'pill-uiarch', color: '#4a9ef0' },
+  sdata:  { label: 'Save data',      pill: 'pill-sdata',  color: '#7c6ef5' },
+  sser:   { label: 'Serialization',  pill: 'pill-sser',   color: '#2ec9a0' },
+  sflow:  { label: 'Save flow',      pill: 'pill-sflow',  color: '#f0a040' },
+  audio:  { label: 'Audio',          pill: 'pill-audio',  color: '#7c6ef5' },
+  vfx:    { label: 'VFX & Shader',   pill: 'pill-vfx',    color: '#2ec9a0' },
+  feel:   { label: 'Game feel',      pill: 'pill-feel',   color: '#f0a040' },
+  mmap:   { label: 'Map design',     pill: 'pill-mmap',   color: '#7c6ef5' },
+  mcon:   { label: 'Content',        pill: 'pill-mcon',   color: '#2ec9a0' },
+  mbal:   { label: 'Balancing',      pill: 'pill-mbal',   color: '#f0a040' },
+  bopt:   { label: 'Optimization',   pill: 'pill-bopt',   color: '#7c6ef5' },
+  bprf:   { label: 'Profiling',      pill: 'pill-bprf',   color: '#2ec9a0' },
+  bship:  { label: 'Build & Ship',   pill: 'pill-bship',  color: '#f0a040' },
+  vgit:   { label: 'Git cơ bản',     pill: 'pill-vgit',   color: '#7c6ef5' },
+  vart:   { label: 'Asset & binary', pill: 'pill-vart',   color: '#2ec9a0' },
+  vcode:  { label: 'Code & scene',   pill: 'pill-vcode',  color: '#f0a040' },
+  vflow:  { label: 'Workflow',       pill: 'pill-vflow',  color: '#e8624a' },
+  vci:    { label: 'CI/CD & backup', pill: 'pill-vci',    color: '#4a9ef0' },
+  '3dcore':{ label: '3D Core',       pill: 'pill-3dcore', color: '#7c6ef5' },
+  '3dren': { label: '3D Rendering',  pill: 'pill-3dren',  color: '#2ec9a0' },
+  '3dphys':{ label: '3D Physics',    pill: 'pill-3dphys', color: '#f0a040' },
+  '3danim':{ label: '3D Animation',  pill: 'pill-3danim', color: '#e8624a' },
+  '3ddiff':{ label: 'Khác 2D',       pill: 'pill-3ddiff', color: '#4a9ef0' },
+};
+
+var SECTIONS = [
+  { id: 'basics', label: 'Phần 1 · Unity cơ bản — từ zero đến project đầu tiên', cats: ['editor','scene','go','code','asset'] },
+  { id: 'iso',    label: 'Phần 2 · Isometric — Camera, Map, Pathfinding',        cats: ['cam','tile','sort','path','coord'] },
+  { id: 'stat',   label: 'Phần 3 · DnD Stat System — từ data design đến implementation', cats: ['dnd','so','arch','calc','pat'] },
+  { id: 'combat', label: 'Phần 4 · Turn-based Combat — Turn Manager · Action · Spell · Condition', cats: ['turn','action','spell','cstate','carch'] },
+  { id: 'dlgquest', label: 'Phần 5 · Dialogue & Quest — Node graph · Quest system · NPC', cats: ['dlg','node','quest','npc','darch'] },
+  { id: 'ui',      label: 'Phần 6 · UI/UX in-game — Canvas · HUD · Inventory · Tooltip · Architecture',       cats: ['canvas','hud','inv','tooltip','uiarch'] },
+  { id: 'save',    label: 'Phần 7 · Save/Load System — Save data · Serialization · Save flow',               cats: ['sdata','sser','sflow'] },
+  { id: 'avfx',    label: 'Phần 8 · Audio, VFX & Polish — Audio · VFX & Shader · Game feel',                cats: ['audio','vfx','feel'] },
+  { id: 'mapcon',  label: 'Phần 9 · Map Design & Content — Map design · Content pipeline · Balancing',       cats: ['mmap','mcon','mbal'] },
+  { id: 'build',   label: 'Phần 10 · Build, Optimize & Ship — Optimization · Profiling · Build & Ship',      cats: ['bopt','bprf','bship'] },
+  { id: 'vcs',     label: 'Phần 11 · Version Control — Git · Asset & Binary · Code & Scene · Workflow · CI/CD', cats: ['vgit','vart','vcode','vflow','vci'] },
+  { id: 'td',      label: 'Phần 12 · Xử lý 3D — Core · Rendering · Physics · Animation · Khác biệt so với 2D', cats: ['3dcore','3dren','3dphys','3danim','3ddiff'] },
+];
+
+var DATA = [
+  // ── PHẦN 1 ──────────────────────────────────────────────────────
+  {sec:'basics', cat:'editor', step:'Bước 0', name:'Unity Hub',
+   def:'Ứng dụng quản lý tất cả phiên bản Unity và project trên máy. Luôn mở project từ đây, không bao giờ double-click file .unity trực tiếp. Cũng là nơi cài thêm module (Android Build, WebGL…).',
+   code:`// Tải tại: unity.com/download
+// Cài Unity 6 LTS (ký hiệu: 6000.x.xxf1)
+// Không cài Unity 2022 hay 2021 — tutorial cũ dùng đó`,
+   tip:'Luôn dùng LTS (Long Term Support) — ổn định hơn Tech Stream rất nhiều.'},
+
+  {sec:'basics', cat:'editor', step:'Bước 0', name:'Unity Editor layout',
+   def:'Giao diện chính gồm 5 vùng mặc định: Scene View (canvas làm việc), Game View (preview camera), Hierarchy (cây object), Project (files), Inspector (thuộc tính). Có thể kéo thả, dock tuỳ ý.',
+   code:`// Reset về layout mặc định:
+//   Window > Layouts > Default
+// Layout gợi ý cho RPG dev:
+//   Hierarchy trái | Scene giữa lớn | Inspector phải
+//   Project + Console ở dưới`,
+   tip:'Ctrl+Shift+F (frame selected) và F (focus object) là 2 phím tắt tiết kiệm thời gian nhất.'},
+
+  {sec:'basics', cat:'editor', step:'Bước 0', name:'Project template',
+   def:"Khi tạo project mới, Unity hỏi chọn template. Với isometric 2D RPG: chọn '2D (URP)' — đã cài sẵn Universal Render Pipeline, hỗ trợ lighting và shader tốt hơn Built-in.",
+   code:`// Tạo project mới trong Unity Hub:
+// Template: 2D (URP)
+// KHÔNG chọn: 3D, HDRP, hay plain 2D
+// URP = Universal Render Pipeline
+//   → hỗ trợ 2D lighting, normal map, shader graph`,
+   tip:"Built-in render pipeline (default cũ) sẽ bị deprecated. Bắt đầu bằng URP ngay từ đầu."},
+
+  {sec:'basics', cat:'editor', step:'Bước 1', name:'Console window',
+   def:'Nơi hiển thị Debug.Log(), warning (vàng) và error (đỏ). Error màu đỏ sẽ ngừng Play nếu bật Error Pause. Double-click lên dòng lỗi sẽ nhảy thẳng đến dòng code gây lỗi.',
+   code:`Debug.Log("Giá trị x = " + x);        // Trắng
+Debug.LogWarning("Cảnh báo!");         // Vàng
+Debug.LogError("Lỗi nghiêm trọng!");   // Đỏ
+
+// Xoá console: Ctrl+Shift+C hoặc bấm Clear`,
+   tip:"Bật 'Collapse' trong Console để gộp log lặp lại — không bị ngập khi Update() log liên tục."},
+
+  {sec:'basics', cat:'scene', step:'Bước 1', name:'Scene',
+   def:"Một 'màn chơi' hoặc 'phòng' trong game — có thể là Main Menu, Dungeon Floor 1, World Map... Mỗi Scene là một file .unity. Game chạy bằng cách load Scene, switch giữa các Scene.",
+   code:`using UnityEngine.SceneManagement;
+SceneManager.LoadScene("DungeonFloor1");
+
+// Load additive (giữ scene hiện tại):
+SceneManager.LoadScene("UI", LoadSceneMode.Additive);`,
+   tip:"Tạo Scene 'Bootstrap' riêng để khởi tạo GameManager, AudioManager — không bao giờ bị unload."},
+
+  {sec:'basics', cat:'scene', step:'Bước 1', name:'Scene View vs Game View',
+   def:'Scene View: nơi bạn chỉnh sửa object, di chuyển, đặt tile — camera của developer. Game View: preview đúng như người chơi thấy qua Main Camera. Hai view hoàn toàn độc lập.',
+   code:`// Tắt/bật Gizmos trong Scene View (icon trên toolbar)
+// Bấm Play để switch sang Game View preview
+// Alt+Click Scene View = xoay góc nhìn
+// Scroll = zoom | Middle Click = pan`,
+   tip:"Nhấn Shift+F10 để maximize Game View toàn màn hình khi playtest."},
+
+  {sec:'basics', cat:'scene', step:'Bước 1', name:'Gizmo',
+   def:'Hình vẽ debug hiển thị trong Scene View — collider (viền xanh), camera frustum, light range, path... Không xuất hiện trong Game View. Cực kỳ hữu ích để debug vị trí và vùng ảnh hưởng.',
+   code:`void OnDrawGizmos() {
+    Gizmos.color = Color.red;
+    Gizmos.DrawWireSphere(transform.position, attackRange);
+}
+// OnDrawGizmosSelected: chỉ vẽ khi object được chọn`,
+   tip:"Luôn dùng OnDrawGizmos để visualize collider, detection range khi debug."},
+
+  {sec:'basics', cat:'scene', step:'Bước 1', name:'Play Mode',
+   def:'Khi bấm nút Play, Unity vào trạng thái Play Mode — game chạy thực sự. Mọi thay đổi trong Inspector lúc này là TẠM THỜI, sẽ mất khi Stop. Đây là bẫy phổ biến nhất của người mới.',
+   code:`// CẢNH BÁO: thay đổi trong Play Mode sẽ bị mất!
+// Tô màu editor khi Play để nhắc nhở:
+// Edit > Preferences > Colors > Playmode tint
+// Đặt màu đỏ nhạt hoặc vàng để dễ nhận ra`,
+   tip:"Cài ngay Playmode tint màu đỏ — tiết kiệm cho bạn rất nhiều lần làm lại từ đầu."},
+
+  {sec:'basics', cat:'go', step:'Bước 2', name:'GameObject',
+   def:'Mọi thứ trong Scene đều là GameObject — nhân vật, tile, camera, ánh sáng, âm thanh vô hình. GameObject tự nó rỗng; chức năng đến từ các Component gắn vào nó.',
+   code:`GameObject obj = new GameObject("MyObject");
+
+// Tạo từ code với component:
+GameObject enemy = new GameObject("Enemy");
+enemy.AddComponent<EnemyController>();
+enemy.AddComponent<SpriteRenderer>();`,
+   tip:"Nếu cần một 'manager' không có hình dạng (GameManager, AudioManager), tạo Empty GameObject."},
+
+  {sec:'basics', cat:'go', step:'Bước 2', name:'Component',
+   def:'Khối chức năng gắn vào GameObject. Mọi hành vi đều là Component: SpriteRenderer (vẽ sprite), Rigidbody2D (vật lý), AudioSource (phát âm thanh), script C# của bạn cũng là Component.',
+   code:`SpriteRenderer sr = GetComponent<SpriteRenderer>();
+Rigidbody2D rb = GetComponent<Rigidbody2D>();
+
+// Lấy component của object khác:
+Enemy e = otherObj.GetComponent<Enemy>();
+
+// Lấy component con:
+Health h = GetComponentInChildren<Health>();`,
+   tip:"GetComponent() chạy chậm — luôn cache trong Awake(), không gọi trong Update()."},
+
+  {sec:'basics', cat:'go', step:'Bước 2', name:'Transform',
+   def:'Component duy nhất mà MỌI GameObject đều có — không thể xoá. Lưu position, rotation, scale. Cũng quản lý quan hệ parent–child giữa các object.',
+   code:`transform.position = new Vector3(1f, 2f, 0f);
+transform.Translate(Vector3.right * speed * Time.deltaTime);
+
+// Parent-child:
+childObj.transform.SetParent(parentObj.transform);
+
+// Local vs World:
+transform.localPosition  // tương đối với parent
+transform.position       // trong world space`,
+   tip:"Isometric RPG: luôn dùng transform.position.y để tính sorting order."},
+
+  {sec:'basics', cat:'go', step:'Bước 2', name:'Prefab',
+   def:'Template của một GameObject — tạo một lần, dùng lại nhiều lần. Kéo GameObject từ Hierarchy vào Project để tạo Prefab (file .prefab). Thay đổi Prefab gốc sẽ cập nhật tất cả instance.',
+   code:`[SerializeField] GameObject enemyPrefab;
+
+void SpawnEnemy(Vector3 pos) {
+    GameObject e = Instantiate(enemyPrefab, pos, Quaternion.identity);
+}
+
+Destroy(e, 2f); // xoá sau 2 giây`,
+   tip:"Mọi enemy, item, projectile đều nên là Prefab — không bao giờ drag trực tiếp vào Scene."},
+
+  {sec:'basics', cat:'go', step:'Bước 2', name:'Tag & Layer',
+   def:"Tag: nhãn string gắn vào GameObject để tìm kiếm ('Player', 'Enemy', 'Item'). Layer: nhóm số nguyên dùng cho Physics (ai va chạm với ai) và Camera Culling (camera render layer nào).",
+   code:`if (other.CompareTag("Enemy")) { TakeDamage(); }
+// KHÔNG dùng: other.tag == "Enemy" (chậm hơn)
+
+int mask = LayerMask.GetMask("Ground", "Wall");
+RaycastHit2D hit = Physics2D.Raycast(pos, dir, dist, mask);`,
+   tip:"Tạo Layer ngay từ đầu: Default, Ground, Wall, Character, Projectile, Trigger, UI."},
+
+  {sec:'basics', cat:'go', step:'Bước 2', name:'Hierarchy',
+   def:'Cửa sổ hiển thị cây tất cả GameObject trong Scene hiện tại. Quan hệ parent–child thể hiện qua indent. Object con kế thừa transform của cha — di chuyển cha sẽ kéo con theo.',
+   code:`// Cấu trúc Hierarchy gợi ý cho RPG:
+// --- Managers (empty, DontDestroyOnLoad)
+//     GameManager | AudioManager
+// --- World
+//     Grid (Tilemap) | Props
+// --- Characters
+//     Player | Enemies
+// --- UI (Canvas)`,
+   tip:"Giữ Hierarchy gọn ngay từ đầu — sau 3 tháng không làm sẽ không hiểu scene của chính mình."},
+
+  {sec:'basics', cat:'code', step:'Bước 3', name:'MonoBehaviour',
+   def:'Class C# cơ sở để viết script gắn vào GameObject. Khi tạo script mới trong Unity, nó tự kế thừa MonoBehaviour. Cung cấp các magic method như Start(), Update(), OnCollisionEnter2D()...',
+   code:`using UnityEngine;
+
+public class PlayerController : MonoBehaviour {
+    // Chạy 1 lần khi object khởi tạo (trước Start):
+    void Awake() { }
+
+    // Chạy 1 lần sau Awake, khi object được enable:
+    void Start() { }
+
+    // Chạy mỗi frame:
+    void Update() { }
+}`,
+   tip:"Awake() để khởi tạo nội bộ (GetComponent). Start() để kết nối với object khác."},
+
+  {sec:'basics', cat:'code', step:'Bước 3', name:'Lifecycle (thứ tự thực thi)',
+   def:'Unity gọi các method theo thứ tự cố định mỗi frame. Biết thứ tự này giúp tránh bug object chưa sẵn sàng khi được gọi. Quan trọng nhất: Awake → Start → Update → LateUpdate.',
+   code:`// THỨ TỰ TRONG MỘT FRAME:
+// 1. Awake()       — khởi tạo, luôn chạy dù disabled
+// 2. OnEnable()    — khi object được bật
+// 3. Start()       — frame đầu tiên, sau tất cả Awake
+// 4. FixedUpdate() — vật lý, cố định 50 lần/giây
+// 5. Update()      — logic, mỗi frame
+// 6. LateUpdate()  — sau Update (camera follow ở đây!)
+// 7. OnDisable()   — khi object bị tắt
+// 8. OnDestroy()   — khi object bị xoá`,
+   tip:"Camera follow LUÔN đặt trong LateUpdate() — tránh jitter khi nhân vật di chuyển trong Update()."},
+
+  {sec:'basics', cat:'code', step:'Bước 3', name:'SerializeField & Inspector',
+   def:'[SerializeField] cho phép hiển thị biến private trong Inspector để chỉnh mà không cần public. Là cách chính để config giá trị (speed, damage, prefab reference) mà không hard-code.',
+   code:`public class Enemy : MonoBehaviour {
+    [SerializeField] float moveSpeed = 3f;
+    [SerializeField] int maxHealth = 100;
+    [SerializeField] GameObject lootPrefab;
+
+    [Header("Combat")]
+    [SerializeField] float attackRange = 1.5f;
+    [SerializeField] int damage = 10;
+}`,
+   tip:"Không bao giờ dùng public chỉ để thấy trong Inspector — luôn dùng [SerializeField] private."},
+
+  {sec:'basics', cat:'code', step:'Bước 3', name:'Time.deltaTime',
+   def:'Thời gian (giây) của frame vừa rồi — khoảng 0.016s ở 60fps. Nhân vào mọi giá trị liên quan đến thời gian trong Update() để movement/animation đồng đều bất kể FPS.',
+   code:`// SAI — nhanh chậm tuỳ FPS máy:
+transform.position += Vector3.right * speed;
+
+// ĐÚNG — đồng đều mọi máy:
+transform.position += Vector3.right * speed * Time.deltaTime;
+
+// Đếm thời gian:
+timer += Time.deltaTime;
+if (timer >= cooldown) { Attack(); timer = 0f; }`,
+   tip:"Mọi giá trị trong Update() liên quan đến di chuyển đều phải nhân Time.deltaTime."},
+
+  {sec:'basics', cat:'code', step:'Bước 3', name:'Coroutine',
+   def:"Hàm có thể 'tạm dừng' giữa chừng và tiếp tục sau — dùng để làm delay, animation sequence, load async mà không block main thread. Dùng yield return để chờ.",
+   code:`IEnumerator FlashRed() {
+    sr.color = Color.red;
+    yield return new WaitForSeconds(0.1f);
+    sr.color = Color.white;
+    yield return new WaitForSeconds(0.1f);
+    sr.color = Color.red;
+}
+
+// Gọi:
+StartCoroutine(FlashRed());`,
+   tip:"Coroutine lý tưởng cho: hit flash, spawn delay, cutscene sequence, loading screen."},
+
+  {sec:'basics', cat:'code', step:'Bước 3', name:'ScriptableObject',
+   def:'Class lưu data thuần tuý, không gắn vào GameObject — lưu thành file .asset trong Project. Lý tưởng để lưu Item, Spell, CharacterClass, EnemyStats. Thay đổi không mất khi Play Mode.',
+   code:`[CreateAssetMenu(menuName = "RPG/Item")]
+public class ItemData : ScriptableObject {
+    public string itemName;
+    public Sprite icon;
+    public int damage;
+    public ItemType type;
+}
+
+// Tạo: chuột phải Project > Create > RPG > Item
+// Dùng: [SerializeField] ItemData swordData;`,
+   tip:"Toàn bộ data DnD (spell, class, race, monster) → ScriptableObject. Không hard-code."},
+
+  {sec:'basics', cat:'asset', step:'Bước 1', name:'Project window & folder structure',
+   def:'Cửa sổ hiển thị tất cả file trong project. Unity quan tâm đến một số folder đặc biệt như Resources/, Editor/, Plugins/. Tổ chức folder ngay từ đầu là bắt buộc.',
+   code:`Assets/
+  _Game/           // underscore = lên đầu danh sách
+    Art/
+      Sprites/ | Tilesets/
+    Audio/
+    Prefabs/
+    ScriptableObjects/
+    Scenes/
+    Scripts/
+      Characters/ | Combat/ | UI/
+    Settings/`,
+   tip:"Đặt underscore (_Game) để folder quan trọng luôn ở đầu danh sách, không lẫn với package."},
+
+  {sec:'basics', cat:'asset', step:'Bước 1', name:'Asset import settings',
+   def:'Khi kéo file vào Project, Unity import và tạo metadata (.meta). Với sprite: cần set Sprite Mode, Pixels Per Unit, Filter Mode. Sai import settings = sprite bị mờ hoặc sai kích thước.',
+   code:`// Sprite settings quan trọng cho pixel art:
+// Filter Mode: Point (no filter) — KHÔNG dùng Bilinear
+// Compression: None hoặc Lossless
+// Pixels Per Unit: 32 hoặc 64 (tuỳ tile size)
+// Sprite Mode: Single / Multiple (spritesheet)
+// Generate Mip Maps: TẮT cho 2D`,
+   tip:"Bật 'Point' filter cho pixel art — Bilinear làm mờ pixel, mất đi phong cách retro."},
+
+  {sec:'basics', cat:'asset', step:'Bước 1', name:'Package Manager',
+   def:'Cửa sổ cài/gỡ Unity package chính thức. Đây là nơi thêm Cinemachine, Input System, Tilemap, 2D Animation, TextMeshPro... Mở bằng Window > Package Manager.',
+   code:`// Các package cần cài ngay cho isometric RPG:
+// - Cinemachine          (camera follow)
+// - Input System         (New Input System)
+// - 2D Tilemap Editor    (built-in, bật lên)
+// - 2D Animation         (skeleton animation)
+// - TextMeshPro          (UI text chất lượng cao)
+// - Unity.Addressables   (quản lý asset)`,
+   tip:"Cài TextMeshPro ngay — Text cũ (UI.Text) đã deprecated, không dùng nữa."},
+
+  {sec:'basics', cat:'asset', step:'Bước 2', name:'Meta file',
+   def:'Mỗi file trong Project đều có file .meta đi kèm — lưu GUID và import settings. Khi dùng Git, PHẢI commit cả .meta. Mất .meta = Unity mất reference đến asset.',
+   code:`// .gitignore cho Unity project:
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+// File .meta của Assets/ PHẢI được commit!
+// Mất .meta = broken reference trong Prefab/Scene`,
+   tip:"Đây là lý do phổ biến nhất khiến project bị lỗi sau khi clone từ Git."},
+
+  {sec:'basics', cat:'asset', step:'Bước 3', name:'Build Settings & Platform',
+   def:'Window > Build Settings — nơi chọn platform target (PC, Android, iOS, WebGL) và cấu hình build. Phải Switch Platform trước khi build cho platform mới — quá trình này reimport asset, mất vài phút.',
+   code:`// Mở Build Settings: Ctrl+Shift+B
+// Kéo scene file vào danh sách để thêm
+// Scene index 0 = scene đầu tiên load
+
+// Development Build: bật khi debug
+//   → hiện FPS counter, profiler connection`,
+   tip:"Thêm tất cả scene vào Build Settings ngay từ đầu — quên thêm scene là bug khó debug nhất."},
+
+  // ── PHẦN 2 ──────────────────────────────────────────────────────
+  {sec:'iso', cat:'cam', step:'Camera', name:'Isometric projection',
+   def:'Kỹ thuật render 3D lên màn hình 2D bằng cách nghiêng camera ở góc cố định — thường 45° ngang và 30° dọc (hoặc 26.57° cho pixel-perfect). Không có perspective distortion: vật xa không nhỏ hơn vật gần.',
+   code:`Camera.main.transform.rotation =
+    Quaternion.Euler(30f, 45f, 0f);
+Camera.main.orthographic = true; // BẮT BUỘC`,
+   tip:"Mọi game isometric kinh điển (Baldur's Gate, Diablo) đều dùng orthographic projection."},
+
+  {sec:'iso', cat:'cam', step:'Camera', name:'Orthographic camera',
+   def:'Camera không có perspective — vật ở xa và vật ở gần có cùng kích thước trên màn hình. Bắt buộc dùng cho isometric 2D để giữ tile thẳng hàng đúng.',
+   code:`// Trong Inspector: Camera > Projection = Orthographic
+// Orthographic Size = bán kính dọc của viewport
+cam.orthographicSize = 5f;`,
+   tip:"Nếu dùng Perspective camera, tiles sẽ bị vênh và không khớp nhau."},
+
+  {sec:'iso', cat:'cam', step:'Camera', name:'Camera follow (Cinemachine)',
+   def:'Cinemachine là package Unity cho phép camera tự động theo dõi target với damping, dead zone, confiner. Dùng Virtual Camera thay vì code camera tay.',
+   code:`// Package: com.unity.cinemachine
+// Add CinemachineVirtualCamera lên scene
+// Target: gán Transform của nhân vật
+// Body: Framing Transposer
+// Lens Ortho Size: điều chỉnh zoom`,
+   tip:"Tuyệt đối không tự viết camera follow — Cinemachine xử lý smooth, shake, confiner sẵn."},
+
+  {sec:'iso', cat:'cam', step:'Camera', name:'Orthographic size',
+   def:'Nửa chiều cao của viewport tính bằng Unity world units. Ví dụ: ortho size = 5 nghĩa là camera thấy 10 units dọc. Đây là cách zoom trong isometric.',
+   code:`float zoomSpeed = 2f;
+cam.orthographicSize -= Input.mouseScrollDelta.y * zoomSpeed;
+cam.orthographicSize = Mathf.Clamp(cam.orthographicSize, 3f, 10f);`,
+   tip:"Với isometric RPG, ortho size khoảng 4–7 thường là sweet spot cho góc nhìn chiến thuật."},
+
+  {sec:'iso', cat:'tile', step:'Tilemap', name:'Tilemap (Isometric)',
+   def:"Component Unity cho phép đặt tile lên lưới. Có 2 loại isometric: Isometric (không stagger) và Isometric Z as Y (tile chồng lên nhau theo chiều Z — dùng cái này cho RPG có độ cao).",
+   code:`// Grid component: Cell Layout = Isometric Z As Y
+// Cell Size: thường (1, 0.5, 1) cho pixel art 64x32
+// Thêm nhiều Tilemap layer:
+//   Ground, Wall, Object, Overlay`,
+   tip:"'Isometric Z as Y' là chế độ đúng cho game RPG có building và object có chiều cao."},
+
+  {sec:'iso', cat:'tile', step:'Tilemap', name:'Tile Palette',
+   def:'Cửa sổ editor của Unity để vẽ tile lên Tilemap. Giống Photoshop nhưng cho bản đồ game — chọn brush, pick tile, paint trực tiếp lên Scene view.',
+   code:`// Window > 2D > Tile Palette
+// Kéo sprite vào Palette để tạo Tile asset
+// Dùng Shift+click để paint rectangle
+// Alt+click để pick tile đang có trên map`,
+   tip:"Hầu hết thời gian làm map bạn sẽ ở đây — làm quen sớm."},
+
+  {sec:'iso', cat:'tile', step:'Tilemap', name:'Rule Tile',
+   def:'Loại tile đặc biệt tự chọn sprite dựa trên các tile xung quanh. Tường tự biết vẽ góc, cạnh, hay đoạn thẳng mà không cần paint tay từng tile.',
+   code:`// Create > 2D > Tiles > Rule Tile
+// Định nghĩa rules:
+//   neighbor = This Tile → sprite A
+//   neighbor = Not This Tile → sprite B
+// Rất mạnh cho terrain tự động (cỏ, nước, tường)`,
+   tip:"Rule Tile cắt giảm 80% công việc paint map lặp đi lặp lại."},
+
+  {sec:'iso', cat:'tile', step:'Tilemap', name:'Composite Collider 2D',
+   def:'Merge tất cả collider của các tile trong Tilemap thành một collider lớn duy nhất. Tăng performance đáng kể — thay vì 1000 box collider riêng lẻ, chỉ còn 1 composite.',
+   code:`// Thêm TilemapCollider2D lên Tilemap
+// Thêm CompositeCollider2D lên cùng object
+// TilemapCollider2D > Used By Composite = true
+// Rigidbody2D > Body Type = Static`,
+   tip:"Bắt buộc cho Wall/Ground tilemap — không dùng composite thì game lag nặng."},
+
+  {sec:'iso', cat:'sort', step:'Sorting', name:'Sorting layer',
+   def:'Nhóm render thứ tự lớn — quyết định cái gì vẽ trên cái gì ở mức cao nhất. Sorting layer khác nhau không bao giờ bị đè bởi Order in Layer.',
+   code:`// Edit > Project Settings > Tags and Layers
+// Tạo: Background, Ground, Object, Character, UI, Overlay
+SpriteRenderer.sortingLayerName = "Character";`,
+   tip:"Thiết lập sorting layers ngay khi bắt đầu project — thay đổi sau rất đau."},
+
+  {sec:'iso', cat:'sort', step:'Sorting', name:'Order in Layer',
+   def:'Thứ tự render trong cùng một Sorting Layer. Số lớn hơn = vẽ sau = ở trên. Đây là nơi xảy ra vấn đề Z-fighting trong isometric.',
+   code:`// Trick isometric: gán dynamic dựa vào Y position
+void Update() {
+    sr.sortingOrder = Mathf.RoundToInt(-transform.position.y * 100);
+}`,
+   tip:"Đây là giải pháp kinh điển để object ở phía trước che object ở phía sau trong isometric."},
+
+  {sec:'iso', cat:'sort', step:'Sorting', name:'Z-fighting / Sorting artifacts',
+   def:'Hiện tượng hai sprite cùng sorting order bị nhấp nháy vì Unity không biết cái nào vẽ trước. Bug phổ biến nhất trong isometric — cần giải quyết sớm.',
+   code:`// Nguyên nhân: 2 sprite có sortingOrder bằng nhau
+// Fix 1: Dùng Y-position-based sorting (xem trên)
+// Fix 2: TilemapRenderer > Mode = Individual
+// Fix 3: Sprite Atlas để giảm draw call đồng thời`,
+   tip:"Trong isometric, mọi object có chiều cao đều cần Y-sorting. Không có cách tránh."},
+
+  {sec:'iso', cat:'sort', step:'Sorting', name:'Sprite Atlas',
+   def:'Gộp nhiều sprite nhỏ thành một texture lớn. Giảm draw calls và fix sorting artifacts vì các sprite cùng atlas luôn render trong một batch.',
+   code:`// Create > 2D > Sprite Atlas
+// Kéo folder sprite vào Objects for Packing
+// Enable: Include in Build
+// Runtime: SpriteAtlas.GetSprite("spriteName")`,
+   tip:"Với RPG có nhiều character/item sprite, Atlas giúp tăng FPS rõ rệt trên mobile."},
+
+  {sec:'iso', cat:'coord', step:'Toạ độ', name:'World space vs Cell space',
+   def:'World space là toạ độ Unity thực (Vector3 float). Cell space là toạ độ ô trên lưới Tilemap (Vector3Int). Hai hệ này khác nhau và cần convert qua lại liên tục.',
+   code:`Grid grid = GetComponent<Grid>();
+
+// World → Cell
+Vector3Int cell = grid.WorldToCell(worldPos);
+
+// Cell → World (tâm của ô)
+Vector3 world = grid.GetCellCenterWorld(cell);`,
+   tip:"Mọi logic game (click để move, đặt object, kiểm tra tile) đều cần convert này."},
+
+  {sec:'iso', cat:'coord', step:'Toạ độ', name:'Isometric coordinates',
+   def:'Trong Unity isometric tilemap, trục X và Y của cell KHÔNG phải là trục màn hình. Trục X đi theo hướng đông-bắc, trục Y đi theo hướng tây-bắc trên màn hình.',
+   code:`// Tile tại cell (1,0,0) nằm bên PHẢI dưới
+// Tile tại cell (0,1,0) nằm bên TRÁI dưới
+// Tile tại cell (1,1,0) nằm TRỰC TIẾP phía dưới
+// Vẽ sơ đồ ra giấy trước khi code pathfinding!`,
+   tip:"Đây là nguồn gốc của 90% bug logic trong isometric game mới làm."},
+
+  {sec:'iso', cat:'coord', step:'Toạ độ', name:'Z as Y (elevation)',
+   def:'Trong Isometric Z as Y mode, trục Z của cell tương ứng với độ cao — tile ở Z=1 cao hơn Z=0. Unity dùng Y position thực tế để sort, nên elevation tự động ảnh hưởng sorting.',
+   code:`// Tile ở tầng trệt: z = 0
+// Tile ở tầng 1 (platform): z = 1
+// Tile ở tầng 2: z = 2
+// Grid.cellSize.z điều chỉnh offset giữa các tầng`,
+   tip:"Hiểu Z as Y là chìa khoá làm map có nhiều tầng (dungeon, castle) đúng cách."},
+
+  {sec:'iso', cat:'path', step:'Pathfinding', name:'NavMesh (2D alternative)',
+   def:'NavMesh là hệ thống pathfinding 3D built-in của Unity — không phù hợp cho isometric 2D grid-based. Với RPG isometric dùng lưới ô, cần dùng A* Pathfinding Project hoặc tự implement.',
+   code:`// KHÔNG dùng NavMesh cho isometric 2D grid
+// Dùng: A* Pathfinding Project (free version đủ dùng)
+// Hoặc: EasyAStarPathfinding trên Asset Store
+// Hoặc: Tự implement A* trên grid nếu muốn học sâu`,
+   tip:"NavMesh sẽ gây ra vô số vấn đề với isometric tilemap — đừng thử."},
+
+  {sec:'iso', cat:'path', step:'Pathfinding', name:'A* algorithm (trên grid)',
+   def:'Thuật toán tìm đường ngắn nhất trên lưới ô. Với isometric, mỗi cell là một node. A* dùng heuristic (thường là Manhattan distance) để ưu tiên hướng đến đích.',
+   code:`// f(n) = g(n) + h(n)
+// g(n): chi phí thực từ start đến node n
+// h(n): ước tính heuristic từ n đến goal
+// Manhattan distance:
+// h = Mathf.Abs(dx) + Mathf.Abs(dy)`,
+   tip:"Hiểu công thức này giúp bạn debug path sai và tune cho phép movement chéo."},
+
+  {sec:'iso', cat:'path', step:'Pathfinding', name:'Walkable / Unwalkable tiles',
+   def:'Mỗi tile trong A* grid có thuộc tính walkable (có thể đi qua) hay không. Wall, water, door đóng = unwalkable. Character = unwalkable tạm thời (dynamic obstacle).',
+   code:`// A* Pathfinding Project: GraphUpdateScene
+// Khi tile thay đổi (cửa mở):
+AstarPath.active.UpdateGraphs(bounds);
+
+// Dynamic obstacle: AIPath component
+//   tự block tile mà nó đứng`,
+   tip:"Thiết kế walkable data ngay từ đầu — liên quan trực tiếp đến Tilemap layer setup."},
+
+  // ── PHẦN 3 ──────────────────────────────────────────────────────
+  {sec:'stat', cat:'dnd', step:'Nền tảng', name:'Ability Score (6 chỉ số cơ bản)',
+   def:'STR, DEX, CON, INT, WIS, CHA — 6 chỉ số gốc của mọi character trong DnD 5e. Giá trị từ 1–30, trung bình là 10–11. Tất cả các stat khác đều DERIVED (tính ra) từ 6 số này. Đây là data layer thấp nhất cần lưu.',
+   code:`public int strength     = 10;
+public int dexterity    = 10;
+public int constitution = 10;
+public int intelligence = 10;
+public int wisdom       = 10;
+public int charisma     = 10;`,
+   tip:'Chỉ lưu 6 số gốc này — mọi thứ còn lại đều tính ra từ đây, không lưu trùng.'},
+
+  {sec:'stat', cat:'dnd', step:'Nền tảng', name:'Ability Modifier',
+   def:'Số cộng/trừ tính từ Ability Score. Công thức: floor((score - 10) / 2). Score 10 → modifier 0. Score 16 → modifier +3. Score 8 → modifier -1. Đây là con số thực sự dùng khi roll dice.',
+   code:`public static int GetModifier(int score) {
+    return Mathf.FloorToInt((score - 10) / 2f);
+}
+// STR 16 → modifier = +3
+// DEX  8 → modifier = -1
+// CON 14 → modifier = +2`,
+   tip:'Nhớ dùng FloorToInt, không phải RoundToInt — score 9 cho modifier -1, không phải 0.'},
+
+  {sec:'stat', cat:'dnd', step:'Nền tảng', name:'Proficiency Bonus (PB)',
+   def:'Bonus cộng thêm khi character thành thạo (proficient) một kỹ năng, vũ khí, saving throw. Tính theo level: level 1–4 = +2, level 5–8 = +3, level 9–12 = +4... Tăng theo tier, không theo từng level.',
+   code:`public static int GetProficiencyBonus(int level) {
+    return 2 + Mathf.FloorToInt((level - 1) / 4f);
+}
+// Level 1  → PB = +2
+// Level 5  → PB = +3
+// Level 9  → PB = +4
+// Level 17 → PB = +6`,
+   tip:'PB áp dụng cho: attack roll với vũ khí thành thạo, skill check thành thạo, saving throw thành thạo.'},
+
+  {sec:'stat', cat:'dnd', step:'Derived stats', name:'Armor Class (AC)',
+   def:'Ngưỡng phòng thủ — attacker phải roll d20 + attack bonus >= AC thì mới trúng. Công thức cơ bản: 10 + DEX modifier. Mặc giáp thay đổi công thức. Shield cộng +2.',
+   code:`public int GetAC() {
+    return 10 + GetModifier(dexterity);
+}
+// Leather armor: 11 + DEX mod
+// Chain mail:    16 (không cộng DEX)
+// Plate:         18 (không cộng DEX)
+// + Shield:      +2 vào bất kỳ loại nào`,
+   tip:'AC là stat được query nhiều nhất trong combat — nên cache lại, không tính mỗi lần bị đánh.'},
+
+  {sec:'stat', cat:'dnd', step:'Derived stats', name:'Hit Points (HP) & Hit Dice',
+   def:'HP tối đa = Hit Die của class + CON modifier, cộng thêm mỗi level. Fighter dùng d10, Wizard dùng d6. Level 1 HP = max die value + CON mod. Level 2+ HP = roll die (hoặc average) + CON mod.',
+   code:`int conMod = GetModifier(constitution);
+int maxHP  = hitDieMax + conMod
+           + (level - 1) * (hitDieAverage + conMod);
+// Fighter level 3, CON 14 (mod +2):
+// maxHP = 10 + 2 + 2*(6+2) = 28`,
+   tip:'Dùng average HP khi level lên cho game cân bằng hơn — random thường tạo character quá mạnh/yếu.'},
+
+  {sec:'stat', cat:'dnd', step:'Derived stats', name:'Saving Throw',
+   def:'Roll khi bị ép chịu hiệu ứng (độc, phép thuật, sợ hãi). Roll d20 + ability modifier, nếu proficient thì + PB. Mỗi class có 2 saving throw thành thạo: Fighter (STR + CON), Wizard (INT + WIS)...',
+   code:`public int GetSavingThrow(AbilityType ability, bool proficient) {
+    int mod = GetModifier(GetScore(ability));
+    int pb  = proficient ? GetProficiencyBonus(level) : 0;
+    return mod + pb;
+}
+int roll = Random.Range(1, 21);
+bool success = (roll + savingThrow) >= difficultyClass;`,
+   tip:'Lưu proficiency dưới dạng bool[] hoặc HashSet<AbilityType> trong CharacterClass SO.'},
+
+  {sec:'stat', cat:'dnd', step:'Derived stats', name:'Skill Check & DC',
+   def:'Roll d20 + ability modifier + PB (nếu proficient) vs Difficulty Class (DC). Perception dùng WIS, Athletics dùng STR, Stealth dùng DEX. DC chuẩn: Easy=10, Medium=15, Hard=20, Very Hard=25.',
+   code:`var skillAbility = new Dictionary<Skill, AbilityType> {
+    { Skill.Athletics,  AbilityType.STR },
+    { Skill.Stealth,    AbilityType.DEX },
+    { Skill.Perception, AbilityType.WIS },
+    { Skill.Arcana,     AbilityType.INT },
+};
+// Spell Save DC = 8 + PB + spellcasting modifier`,
+   tip:'Lưu skillProficiencies và skillExpertise dưới dạng HashSet<Skill> trong class/background SO.'},
+
+  {sec:'stat', cat:'dnd', step:'Derived stats', name:'Initiative',
+   def:'Thứ tự hành động trong combat. Mỗi combatant roll d20 + DEX modifier khi combat bắt đầu. Số cao hành động trước. Roll 1 lần khi encounter bắt đầu, giữ nguyên suốt trận.',
+   code:`public int RollInitiative() {
+    int roll   = Random.Range(1, 21);
+    int dexMod = GetModifier(baseStats.dexterity);
+    return initiative = roll + dexMod;
+}
+combatants.Sort((a, b) => b.initiative - a.initiative);`,
+   tip:'Không re-roll initiative mỗi round — roll 1 lần khi combat bắt đầu, giữ nguyên.'},
+
+  {sec:'stat', cat:'so', step:'Data layer', name:'CharacterStatsSO',
+   def:'ScriptableObject lưu toàn bộ base stats của một character (hoặc monster). Là template dữ liệu bất biến — không phải instance trong scene. Mỗi Fighter, Goblin, Dragon có 1 file .asset riêng.',
+   code:`[CreateAssetMenu(menuName = "RPG/Character Stats")]
+public class CharacterStatsSO : ScriptableObject {
+    [Header("Identity")]
+    public string characterName;
+    public int    level = 1;
+
+    [Header("Ability Scores")]
+    public int strength = 10, dexterity = 10;
+    public int constitution = 10, intelligence = 10;
+    public int wisdom = 10, charisma = 10;
+}`,
+   tip:'Dùng OnValidate() để tự tính derived stats ngay trong Editor mỗi khi bạn thay đổi số.'},
+
+  {sec:'stat', cat:'so', step:'Data layer', name:'ClassDataSO',
+   def:'ScriptableObject lưu đặc điểm của một Class — Hit Die, saving throw proficiencies, skill proficiency slots, class features theo level. Tách riêng khỏi CharacterStats để reuse và dễ balance.',
+   code:`[CreateAssetMenu(menuName = "RPG/Class Data")]
+public class ClassDataSO : ScriptableObject {
+    public string      className;
+    public int         hitDie = 10;
+    public AbilityType[] savingThrowProficiencies;
+    public int         skillChoices = 2;
+    public Skill[]     availableSkills;
+    public ClassFeature[] features;
+}`,
+   tip:'Sau này bạn có thể tạo Paladin bằng cách combine ClassDataSO Fighter + Cleric — rất linh hoạt.'},
+
+  {sec:'stat', cat:'so', step:'Data layer', name:'RaceDataSO',
+   def:'ScriptableObject lưu racial traits — ability score bonuses, speed, darkvision, racial features. Ví dụ: Half-Orc +2 STR +1 CON, Human +1 tất cả. Áp dụng lên base stats khi tính derived stats.',
+   code:`[CreateAssetMenu(menuName = "RPG/Race Data")]
+public class RaceDataSO : ScriptableObject {
+    public string raceName;
+    public int    baseSpeed = 30;
+    public bool   hasDarkvision;
+    public AbilityScoreIncrease[] bonuses;
+}
+[System.Serializable]
+public struct AbilityScoreIncrease {
+    public AbilityType ability;
+    public int         bonus;
+}`,
+   tip:'Race và Class là 2 SO riêng — không merge vào CharacterStats. Dễ thêm Subrace sau này.'},
+
+  {sec:'stat', cat:'so', step:'Data layer', name:'OnValidate()',
+   def:'Method đặc biệt của Unity — tự động gọi trong Editor mỗi khi bạn thay đổi giá trị trong Inspector. Dùng để tính derived stats (HP, AC, PB) ngay lập tức mà không cần chạy game.',
+   code:`private void OnValidate() {
+    int conMod = Mathf.FloorToInt((constitution - 10) / 2f);
+    int pb     = 2 + Mathf.FloorToInt((level - 1) / 4f);
+
+    maxHP = hitDie + conMod
+          + (level - 1) * (hitDieAverage + conMod);
+    armorClass       = 10 + Mathf.FloorToInt((dexterity - 10) / 2f);
+    proficiencyBonus = pb;
+}`,
+   tip:'OnValidate() chỉ chạy trong Editor — không dùng để tính runtime. Dùng riêng hàm tính stat.'},
+
+  {sec:'stat', cat:'arch', step:'Runtime', name:'CharacterSheet (runtime component)',
+   def:'MonoBehaviour gắn vào GameObject trong Scene — giữ trạng thái HIỆN TẠI (HP còn lại, buff/debuff đang active, equipment đang mặc). Khác với CharacterStatsSO là template bất biến.',
+   code:`public class CharacterSheet : MonoBehaviour {
+    [SerializeField] CharacterStatsSO baseStats;
+    [SerializeField] ClassDataSO      classData;
+    [SerializeField] RaceDataSO       raceData;
+
+    public int currentHP;
+    public List<StatModifier> activeModifiers = new();
+
+    void Awake() { currentHP = GetMaxHP(); }
+
+    public int GetMaxHP() { /* tính từ SO */ }
+    public int GetAC()    { /* base + modifiers */ }
+}`,
+   tip:'CharacterSheet là "brain" runtime. SO là "blueprint". Tách 2 thứ này rõ ràng — không trộn lẫn.'},
+
+  {sec:'stat', cat:'arch', step:'Runtime', name:'Stat layer separation',
+   def:'Kiến trúc 3 tầng: (1) Base stats từ SO — không đổi. (2) Modifier layer — buff/debuff/equipment cộng thêm. (3) Final value — kết quả cuối tính realtime. Không bao giờ ghi thẳng vào base stats.',
+   code:`// Tầng 1 — Base (SO, bất biến):
+int baseSTR = baseStats.strength; // 16
+
+// Tầng 3 — Final (tính khi cần):
+public int GetFinalSTR() {
+    int total = baseStats.strength;
+    foreach (var mod in activeModifiers)
+        if (mod.stat == StatType.STR)
+            total += mod.value;
+    return Mathf.Clamp(total, 1, 30);
+}`,
+   tip:'Không bao giờ ghi baseStats.strength += 2. Luôn thêm Modifier vào list, tính final khi query.'},
+
+  {sec:'stat', cat:'calc', step:'Tính toán', name:'Attack Roll',
+   def:'Cơ chế đánh cơ bản: roll d20 + ability modifier + PB (nếu proficient với vũ khí). So với AC của target. Roll >= AC = trúng. Roll 20 tự nhiên = Critical Hit. Roll 1 tự nhiên = auto miss.',
+   code:`public AttackResult RollAttack(CharacterSheet target) {
+    int d20     = Random.Range(1, 21);
+    bool crit   = (d20 == 20);
+    bool fumble = (d20 == 1);
+    int strMod  = GetModifier(baseStats.strength);
+    int pb      = IsProficientWith(weapon) ? proficiencyBonus : 0;
+    int total   = d20 + strMod + pb;
+    bool hit    = !fumble && (crit || total >= target.GetAC());
+    return new AttackResult { hit=hit, critical=crit };
+}`,
+   tip:'Natural 1 = auto miss, Natural 20 = auto hit + crit — bất kể modifier. Đây là rule cứng.'},
+
+  {sec:'stat', cat:'calc', step:'Tính toán', name:'Damage Roll',
+   def:'Sau khi attack hit: roll damage dice + ability modifier. Ví dụ: Short Sword = 1d6 + STR mod. Critical Hit = roll gấp đôi số dice (2d6 + STR mod), KHÔNG nhân đôi modifier. Resistance = chia 2.',
+   code:`public int RollDamage(bool isCritical) {
+    int diceCount = isCritical ? weapon.diceCount * 2
+                               : weapon.diceCount;
+    int damage = 0;
+    for (int i = 0; i < diceCount; i++)
+        damage += Random.Range(1, weapon.diceSides + 1);
+    damage += GetModifier(baseStats.strength);
+    return Mathf.Max(1, damage); // minimum 1
+}`,
+   tip:'Critical = nhân đôi số dice TRƯỚC khi roll, không nhân đôi tổng — sự khác biệt quan trọng.'},
+
+  {sec:'stat', cat:'pat', step:'Pattern', name:'Modifier Pattern (IStatModifier)',
+   def:'Interface cho mọi thứ có thể thay đổi stat — equipment, buff, debuff, spell, condition. Dùng List<IStatModifier> trong CharacterSheet. Thêm/xoá modifier mà không đụng vào base stats.',
+   code:`public interface IStatModifier {
+    StatType  TargetStat   { get; }
+    ModType   ModifierType { get; } // Flat, Percent, Override
+    int       Value        { get; }
+    float     Duration     { get; } // -1 = permanent
+}
+// Bless spell (+1d4):
+public class BlessModifier : IStatModifier {
+    public StatType  TargetStat   => StatType.AttackRoll;
+    public ModType   ModifierType => ModType.Flat;
+    public int       Value        => Random.Range(1, 5);
+    public float     Duration     => 60f;
+}`,
+   tip:'Modifier Pattern là lý do bạn không nên hard-code stat. Sau này thêm Curse, Rage, Haste mà không refactor.'},
+
+  {sec:'stat', cat:'pat', step:'Pattern', name:'Observer / C# Event cho stat',
+   def:'Khi stat thay đổi (HP giảm, buff hết hạn), dùng C# event để notify UI và các system khác tự cập nhật. Không polling mỗi frame. Không kết nối cứng CharacterSheet với HealthBar.',
+   code:`public class CharacterSheet : MonoBehaviour {
+    public event Action<int, int> OnHPChanged; // (current, max)
+    public event Action<int>      OnLevelUp;
+    public event Action           OnDeath;
+
+    public void TakeDamage(int amount) {
+        currentHP = Mathf.Max(0, currentHP - amount);
+        OnHPChanged?.Invoke(currentHP, GetMaxHP());
+        if (currentHP == 0) OnDeath?.Invoke();
+    }
+}`,
+   tip:'Dùng ?. (null-conditional) khi invoke event — tránh NullReferenceException nếu không ai subscribe.'},
+
+  {sec:'stat', cat:'pat', step:'Pattern', name:'Enum AbilityType & StatType',
+   def:'Dùng enum thay vì string để đại diện cho loại stat. Tránh typo, IDE tự gợi ý, compiler bắt lỗi. Định nghĩa trước khi viết bất kỳ stat code nào — dùng xuyên suốt toàn bộ hệ thống.',
+   code:`public enum AbilityType { STR, DEX, CON, INT, WIS, CHA }
+
+public enum StatType {
+    STR, DEX, CON, INT, WIS, CHA,
+    MaxHP, CurrentHP, AC,
+    AttackRoll, DamageRoll,
+    SpellSaveDC, Initiative, Speed
+}
+
+public enum ModType { Flat, Percent, Override }`,
+   tip:'Định nghĩa enum này trước khi viết bất kỳ stat code nào — dùng xuyên suốt toàn bộ hệ thống.'},
+
+  {sec:'stat', cat:'pat', step:'Pattern', name:'DontDestroyOnLoad cho party data',
+   def:'Party của player (4 character + inventory + gold + quest state) cần tồn tại khi chuyển Scene. DontDestroyOnLoad giữ GameObject sống qua Scene transition mà không bị xoá.',
+   code:`public class PartyManager : MonoBehaviour {
+    public static PartyManager Instance { get; private set; }
+
+    void Awake() {
+        if (Instance != null) { Destroy(gameObject); return; }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    public List<CharacterSheet> partyMembers = new();
+    public int gold = 0;
+}`,
+   tip:'Singleton + DontDestroyOnLoad là pattern chuẩn cho GameManager, AudioManager, PartyManager.'},
+
+  // ── PHẦN 4 ──────────────────────────────────────────────────────
+  {sec:'combat', cat:'turn', step:'Core', name:'Encounter & Combat loop',
+   def:'Toàn bộ một trận đánh được gọi là Encounter. Gồm 3 giai đoạn lặp: (1) Initiative Phase — roll và sắp xếp thứ tự. (2) Round — mỗi combatant đi 1 lần theo thứ tự. (3) Round kết thúc khi tất cả đã đi, lặp lại đến khi có bên thua.',
+   code:`public enum CombatPhase {
+    OutOfCombat,
+    InitiativePhase,   // roll + sort
+    PlayerTurn,
+    EnemyTurn,
+    RoundEnd,
+    CombatEnd
+}
+// StartEncounter() → RollAllInitiative()
+//   → loop: NextTurn() → ResolveTurn()
+//   → CheckEndCondition() → NextTurn()...`,
+   tip:'Tách rõ 3 giai đoạn ngay từ đầu — nhiều bug combat xuất phát từ việc nhập nhèm initiative và turn.'},
+
+  {sec:'combat', cat:'turn', step:'Core', name:'Initiative order & Queue',
+   def:'Sau khi roll initiative, sắp xếp tất cả combatant vào một danh sách thứ tự. Dùng List với index để duyệt vòng lặp. Hết list = hết 1 round, bắt đầu lại từ đầu.',
+   code:`combatants.Sort((a, b) => {
+    int diff = b.initiative - a.initiative;
+    if (diff != 0) return diff;
+    return b.GetDEXMod() - a.GetDEXMod(); // tie-break
+});
+int currentIndex = 0;
+public Combatant GetCurrentTurn() => combatants[currentIndex];
+public void AdvanceTurn() {
+    currentIndex = (currentIndex + 1) % combatants.Count;
+    if (currentIndex == 0) OnRoundEnd?.Invoke(roundNumber++);
+}`,
+   tip:'Dùng List + index thay vì Queue — dễ hiển thị turn order UI và insert combatant mới (summon) vào giữa.'},
+
+  {sec:'combat', cat:'turn', step:'Core', name:'Round vs Turn phân biệt',
+   def:'Round: 1 vòng đầy đủ trong đó mọi combatant đều hành động 1 lần — tương đương 6 giây trong lore. Turn: lượt của 1 combatant cụ thể trong 1 round. Một số effect tính theo round, một số tính theo turn.',
+   code:`// Duration của effect:
+// "1 round"  = hết hiệu lực ở đầu turn TỚI của caster
+// "1 minute" = 10 rounds
+// "Concentration" = caster maintain mỗi turn
+public class CombatTimer {
+    public int roundNumber = 1;  // tăng sau mỗi round
+    public int turnCount   = 0;  // tăng sau mỗi turn
+}`,
+   tip:'"Lasts until the start of your next turn" khác "lasts 1 round" — phân biệt rõ để tính duration đúng.'},
+
+  {sec:'combat', cat:'turn', step:'Core', name:'Combatant wrapper (runtime)',
+   def:'Class bọc quanh CharacterSheet cho mục đích combat — lưu trạng thái trong trận (has acted, has used bonus action, reaction available). Tách riêng khỏi CharacterSheet để không làm bẩn data gốc.',
+   code:`public class Combatant {
+    public CharacterSheet sheet;
+    public int  initiative;
+    public bool isPlayer;
+    // Reset mỗi đầu turn:
+    public bool hasAction      = true;
+    public bool hasBonusAction = true;
+    public bool hasReaction    = true;
+    public int  movementLeft;
+    public void ResetTurn() {
+        hasAction = hasBonusAction = hasReaction = true;
+        movementLeft = sheet.GetSpeed();
+    }
+}`,
+   tip:'Reset tất cả action resource ở đầu mỗi turn — đừng để logic reset nằm rải rác khắp nơi.'},
+
+  {sec:'combat', cat:'action', step:'Core', name:'Action / Bonus Action / Reaction',
+   def:'Mỗi turn có đúng: 1 Action (đánh, cast spell, Dash, Disengage...), 1 Bonus Action (nếu có ability dùng BA), 1 Reaction (dùng ngoài turn — opportunity attack, Shield spell, Counterspell). Dùng xong là mất đến turn sau.',
+   code:`public enum ActionType {
+    Action, BonusAction, Reaction, FreeAction,
+    LegendaryAction // boss — dùng sau turn người khác
+}
+public bool CanUse(ActionType type) => type switch {
+    ActionType.Action      => hasAction,
+    ActionType.BonusAction => hasBonusAction,
+    ActionType.Reaction    => hasReaction,
+    _ => true
+};`,
+   tip:'Reaction là cái khó nhất — trigger ngoài turn, cần event system riêng. Implement Reaction sau cùng.'},
+
+  {sec:'combat', cat:'action', step:'Core', name:'Movement & Speed',
+   def:'Mỗi turn, character có Speed feet để di chuyển (thường 30ft). Có thể chia nhỏ: đi 15ft, đánh, đi thêm 15ft. Dash Action nhân đôi movement. Difficult terrain tiêu thụ 2ft per 1ft di chuyển.',
+   code:`public void TryMove(Vector3Int targetCell) {
+    float dist = GetIsometricDistance(currentCell, targetCell);
+    float cost = IsDifficultTerrain(targetCell) ? dist*2 : dist;
+    if (cost > movementLeft) { ShowError("Không đủ movement"); return; }
+    movementLeft -= cost;
+    MoveTo(targetCell);
+}
+// 1 tile Unity = 5 feet DnD
+// Speed 30ft = 6 ô trên grid`,
+   tip:'Map 1 tile = 5 feet từ đầu. Mọi spell range, movement, AoE đều tính theo đơn vị này.'},
+
+  {sec:'combat', cat:'action', step:'Core', name:'Opportunity Attack',
+   def:'Reaction đặc biệt: khi enemy rời khỏi melee range (5ft) mà không dùng Disengage, bạn được đánh 1 đòn miễn phí. Trigger khi enemy kết thúc movement ra ngoài reach.',
+   code:`void OnCombatantMoved(Combatant mover, Vector3Int from, Vector3Int to) {
+    foreach (var c in GetAdjacentCombatants(from)) {
+        if (c.isEnemy(mover) && !c.IsInRange(to, 5f)
+            && c.hasReaction && !mover.usedDisengage) {
+            c.TriggerOpportunityAttack(mover);
+            c.hasReaction = false;
+        }
+    }
+}`,
+   tip:'Opportunity Attack là lý do Disengage Action tồn tại — implement cả 2 cùng lúc.'},
+
+  {sec:'combat', cat:'action', step:'Core', name:'Help / Disengage / Dodge / Dash',
+   def:'4 Action cơ bản không phải đánh: Dash (nhân đôi movement), Disengage (tránh OA khi rút), Dodge (attacker có disadvantage), Help (cho ally advantage trên attack/skill).',
+   code:`public void UseAction(StandardAction action) {
+    switch (action) {
+        case StandardAction.Dash:
+            movementLeft += sheet.GetSpeed(); break;
+        case StandardAction.Disengage:
+            usedDisengage = true; break;
+        case StandardAction.Dodge:
+            isDodging = true; break;
+        case StandardAction.Help:
+            helpTarget.grantedAdvantage = true; break;
+    }
+    hasAction = false;
+}`,
+   tip:'Implement 4 action này trước khi làm spell — chúng test hầu hết logic combat cơ bản.'},
+
+  {sec:'combat', cat:'action', step:'Advanced', name:'Advantage & Disadvantage',
+   def:'Advantage: roll 2d20, lấy cao hơn. Disadvantage: roll 2d20, lấy thấp hơn. Advantage và Disadvantage luôn triệt tiêu nhau — dù có 3 nguồn advantage và 1 nguồn disadvantage, kết quả vẫn là straight roll.',
+   code:`public int RollD20WithAdvantage(AdvantageState state) {
+    int r1 = Random.Range(1, 21);
+    int r2 = Random.Range(1, 21);
+    return state switch {
+        AdvantageState.Advantage    => Mathf.Max(r1, r2),
+        AdvantageState.Disadvantage => Mathf.Min(r1, r2),
+        _                           => r1
+    };
+}
+public enum AdvantageState { Normal, Advantage, Disadvantage }`,
+   tip:'Advantage/Disadvantage luôn triệt tiêu — không stack. Lưu 2 counter rồi so sánh để quyết định.'},
+
+  {sec:'combat', cat:'spell', step:'Framework', name:'SpellSO (base class)',
+   def:'ScriptableObject base cho mọi spell. Lưu metadata (tên, level, school, range, casting time, duration) và abstract method Execute(). Mỗi spell cụ thể override Execute() với logic riêng — đây là cơ chế "brew" spell.',
+   code:`public abstract class SpellSO : ScriptableObject {
+    public string      spellName;
+    public int         spellLevel;    // 0 = cantrip
+    public MagicSchool school;
+    public CastingTime castingTime;   // Action, BonusAction, Reaction
+    public int         range;         // feet; 0=Self, -1=Touch
+    public bool        requiresConcentration;
+    public DurationType durationType;
+    public float        durationValue;
+    // Override trong mỗi spell:
+    public abstract void Execute(Combatant caster,
+                                 SpellTarget target, int slotLevel);
+}`,
+   tip:'Abstract Execute() là chìa khoá brew spell — tạo FireballSO, HealSO chỉ cần override 1 method.'},
+
+  {sec:'combat', cat:'spell', step:'Framework', name:'Spell Slot system',
+   def:'Wizard/Cleric có spell slots cấp 1–9. Upcasting: dùng slot cấp cao hơn để tăng hiệu quả (Fireball slot cấp 4 = thêm 1d6 damage). Short Rest restore Warlock slots. Long Rest restore tất cả.',
+   code:`public class SpellSlotTracker {
+    private int[] slots = new int[9]; // index 0 = level 1
+    public bool TryCastSpell(SpellSO spell, int slotLevel) {
+        if (slotLevel < spell.spellLevel) return false;
+        if (slots[slotLevel - 1] <= 0)   return false;
+        slots[slotLevel - 1]--;
+        spell.Execute(caster, target, slotLevel);
+        return true;
+    }
+    public void LongRest(ClassDataSO cd) {
+        slots = cd.GetSlotsByLevel(level);
+    }
+}`,
+   tip:'Build Short Rest và Long Rest riêng biệt ngay từ đầu — chúng restore resource khác nhau tùy class.'},
+
+  {sec:'combat', cat:'spell', step:'Framework', name:'SpellTarget (targeting)',
+   def:'Mỗi spell cần biết mục tiêu: Single target, Self, AoE (Sphere/Cone/Line/Cube), hoặc Touch. SpellTarget là struct truyền vào Execute() để spell biết tác động lên ai.',
+   code:`public enum TargetType { Self, Single, Touch,
+    AreaSphere, AreaCone, AreaLine, AreaCube }
+
+public struct SpellTarget {
+    public Combatant       singleTarget;
+    public Vector3         areaOrigin;
+    public float           areaRadius;
+    public List<Combatant> resolvedTargets;
+}
+// Resolve target TRƯỚC Execute:
+SpellTarget t = TargetResolver.Resolve(spell, clickedCell);
+spell.Execute(caster, t, slotLevel);`,
+   tip:'Resolve target trước Execute — tách "ai bị ảnh hưởng" ra khỏi "hiệu ứng gì xảy ra".'},
+
+  {sec:'combat', cat:'spell', step:'Framework', name:'Concentration',
+   def:'Một số spell yêu cầu Concentration để duy trì (Hold Person, Bless, Fly...). Caster chỉ concentrate 1 spell tại 1 thời điểm. Khi bị damage phải pass CON saving throw (DC = max(10, damage/2)) hoặc mất concentration.',
+   code:`public class ConcentrationTracker {
+    public SpellSO activeSpell { get; private set; }
+    public void StartConcentration(SpellSO spell) {
+        EndConcentration(); // hủy spell cũ trước
+        activeSpell = spell;
+    }
+    public void OnTakeDamage(int damage) {
+        int dc   = Mathf.Max(10, damage / 2);
+        int roll = Random.Range(1,21) + caster.GetCONSave();
+        if (roll < dc) EndConcentration();
+    }
+    public void EndConcentration() {
+        activeSpell?.OnConcentrationEnd(caster);
+        activeSpell = null;
+    }
+}`,
+   tip:'Concentration buộc player phải chọn lựa chiến lược — đừng bỏ qua, nó tạo ra quyết định chiến thuật hay.'},
+
+  {sec:'combat', cat:'cstate', step:'Condition', name:'Condition (trạng thái đặc biệt)',
+   def:'Các trạng thái ảnh hưởng đặc biệt: Blinded, Charmed, Frightened, Grappled, Incapacitated, Paralyzed, Poisoned, Prone, Restrained, Stunned, Unconscious. Mỗi condition có rule riêng về movement, attack, saving throw.',
+   code:`[Flags] public enum Condition {
+    None          = 0,
+    Blinded       = 1 << 0,  // attacks have disadvantage
+    Charmed       = 1 << 1,  // can\'t attack charmer
+    Frightened    = 1 << 2,  // disadvantage if source visible
+    Grappled      = 1 << 3,  // speed = 0
+    Incapacitated = 1 << 4,  // no Action/Reaction
+    Paralyzed     = 1 << 5,  // incap + auto-crit in melee
+    Poisoned      = 1 << 6,  // disadvantage attack/ability
+    Prone         = 1 << 7,  // melee adv, ranged disadv
+    Stunned       = 1 << 8,  // incap + auto-crit in melee
+}`,
+   tip:'Dùng [Flags] enum để stack condition — 1 combatant có thể bị Blinded AND Poisoned cùng lúc.'},
+
+  {sec:'combat', cat:'cstate', step:'Condition', name:'ActiveEffect (runtime)',
+   def:'Khi spell hoặc ability áp condition lên target, tạo ActiveEffect gắn vào Combatant — lưu loại effect, source, duration còn lại. Mỗi đầu turn tick duration xuống, hết duration thì tự xoá.',
+   code:`public class ActiveEffect {
+    public string      effectName;
+    public Condition   appliedCondition;
+    public StatModifier statModifier;
+    public int         durationRounds; // -1 = permanent
+    public Combatant   source;
+    public bool Tick() { // gọi đầu mỗi turn của target
+        if (durationRounds < 0) return false;
+        durationRounds--;
+        return durationRounds <= 0; // true = xoá đi
+    }
+}`,
+   tip:'Tick effect ở đầu turn của TARGET (không phải caster) — đây là rule RAW của DnD 5e.'},
+
+  {sec:'combat', cat:'cstate', step:'Condition', name:'Saving Throw để kháng effect',
+   def:'Nhiều condition cho phép target roll saving throw để kháng hoặc kết thúc sớm. Ví dụ: Paralyzed (CON save cuối turn để thoát), Frightened (WIS save), Charmed (WIS save khi bị charmer tấn công).',
+   code:`void TryEndConditionOnTurn(Combatant target, ActiveEffect fx) {
+    if (fx.saveToEnd == null) return;
+    int roll = Random.Range(1, 21)
+             + target.sheet.GetSavingThrow(fx.saveAbility);
+    if (roll >= fx.saveDC) {
+        target.activeEffects.Remove(fx);
+        target.conditions &= ~fx.appliedCondition;
+        OnConditionRemoved?.Invoke(target, fx);
+    }
+}`,
+   tip:'Một số condition tự kết thúc theo thời gian, một số cần save throw — lưu cả 2 cơ chế trong ActiveEffect.'},
+
+  {sec:'combat', cat:'carch', step:'Pattern', name:'State Machine cho CombatManager',
+   def:'Turn-based combat có nhiều trạng thái rõ ràng và transition cụ thể — State Machine là pattern hoàn hảo. Mỗi state (InitiativePhase, PlayerTurn, EnemyTurn...) là 1 class với Enter/Execute/Exit.',
+   code:`public abstract class CombatState {
+    protected CombatManager cm;
+    public virtual void Enter()  { }
+    public virtual void Execute(){ }
+    public virtual void Exit()   { }
+}
+public class PlayerTurnState : CombatState {
+    public override void Enter() {
+        cm.CurrentCombatant.ResetTurn();
+        UI.ShowActionPanel();
+    }
+    public override void Exit() {
+        UI.HideActionPanel();
+        cm.AdvanceTurn();
+    }
+}`,
+   tip:'State Machine tránh "if combat phase == X then..." rải rác khắp code. Mỗi state tự biết việc của mình.'},
+
+  {sec:'combat', cat:'carch', step:'Pattern', name:'Command Pattern cho action',
+   def:'Mỗi action (Attack, CastSpell, Move, UseItem) đóng gói thành 1 ICommand với Execute() và Undo(). Dễ log, replay, và undo — quan trọng cho combat log UI và debug.',
+   code:`public interface ICombatCommand {
+    void Execute();
+    void Undo();
+    string GetDescription();
+}
+public class AttackCommand : ICombatCommand {
+    Combatant attacker, target;
+    AttackResult result;
+    public void Execute() {
+        result = attacker.RollAttack(target);
+        if (result.hit) target.TakeDamage(result.damage);
+    }
+    public void Undo() {
+        if (result.hit) target.RestoreHP(result.damage);
+    }
+    public string GetDescription()
+        => $"{attacker.Name} tấn công {target.Name}: {result}";
+}`,
+   tip:'Command Pattern + List<ICombatCommand> = combat log miễn phí. Rất hữu ích để debug và làm replay.'},
+
+  {sec:'combat', cat:'carch', step:'Pattern', name:'Combat Event Bus',
+   def:'Thay vì các system gọi nhau trực tiếp, dùng Event Bus để broadcast event combat. CombatManager không cần biết UI, VFX, Audio tồn tại — chúng tự subscribe và xử lý khi nhận event.',
+   code:`public static class CombatEventBus {
+    public static event Action<Combatant>          OnTurnStart;
+    public static event Action<Combatant>          OnTurnEnd;
+    public static event Action<AttackResult>       OnAttackResolved;
+    public static event Action<Combatant, int>     OnDamageTaken;
+    public static event Action<Combatant>          OnCombatantDied;
+    public static event Action<SpellSO, Combatant> OnSpellCast;
+    public static event Action<int>                OnRoundEnd;
+}
+// CombatManager chỉ raise:
+CombatEventBus.OnDamageTaken?.Invoke(target, damage);`,
+   tip:'Event Bus tách hoàn toàn CombatManager khỏi UI/VFX/Audio. Thêm sound effect mà không sửa 1 dòng combat code.'},
+
+  {sec:'combat', cat:'carch', step:'Pattern', name:'Enemy AI (Basic State Machine)',
+   def:'AI enemy trong turn-based không cần phức tạp — chỉ cần quyết định tốt. Pattern cơ bản: nếu có target trong range thì đánh, nếu không thì di chuyển lại gần. Dùng Coroutine để tạo delay tự nhiên.',
+   code:`public IEnumerator TakeTurn(Combatant enemy) {
+    var target = FindBestTarget(enemy);
+    if (IsInAttackRange(enemy, target)) {
+        yield return ExecuteAttack(enemy, target);
+    } else {
+        var cell = GetCellToward(enemy, target);
+        yield return ExecuteMove(enemy, cell);
+        if (IsInAttackRange(enemy, target))
+            yield return ExecuteAttack(enemy, target);
+    }
+    enemy.EndTurn();
+}`,
+   tip:'Coroutine cho AI turn tạo visual delay tự nhiên — player thấy enemy "suy nghĩ" thay vì action tức thì.'},
+
+  // ── PHẦN 5 ──────────────────────────────────────────────────────
+  {sec:'dlgquest', cat:'dlg', step:'Core', name:'Dialogue System — tổng quan',
+   def:'Hệ thống cho NPC nói chuyện với player. Gồm 3 thành phần: (1) DialogueSO — data của cuộc hội thoại. (2) DialogueRunner — chạy và điều phối flow. (3) DialogueUI — hiển thị text và lựa chọn. Ba thứ tách biệt hoàn toàn.',
+   code:`// 3 layer tách biệt:
+// Data:    DialogueSO (ScriptableObject, các node)
+// Logic:   DialogueRunner (MonoBehaviour, điều hướng node)
+// Display: DialogueUI (MonoBehaviour, render text/choice)
+
+// DialogueRunner không biết UI tồn tại.
+// DialogueUI không biết logic node.
+// Giao tiếp qua C# events.`,
+   tip:'Tách Data/Logic/Display ngay từ đầu — nếu trộn lẫn sẽ không thể thay skin UI mà không rewrite logic.'},
+
+  {sec:'dlgquest', cat:'dlg', step:'Core', name:'DialogueNodeSO',
+   def:'ScriptableObject đại diện cho một "bong bóng thoại" — lưu speaker, text, list lựa chọn tiếp theo, và conditions (nếu có). Các node kết nối với nhau tạo thành đồ thị hội thoại.',
+   code:`[CreateAssetMenu(menuName = "RPG/Dialogue/Node")]
+public class DialogueNodeSO : ScriptableObject {
+    public string         speakerID;   // "Player", "Innkeeper"
+    [TextArea(3, 8)]
+    public string         text;
+    public DialogueChoice[] choices;   // nếu rỗng = auto-advance
+    public DialogueNodeSO   nextNode;  // nếu không có choice
+    public DialogueCondition[] conditions; // hiện node này khi nào
+}
+[System.Serializable]
+public class DialogueChoice {
+    public string         choiceText;
+    public DialogueNodeSO nextNode;
+    public DialogueCondition[] conditions;
+    public DialogueEffect[]    effects;   // trigger khi chọn
+}`,
+   tip:'Dùng [TextArea] trong Inspector để gõ dialogue thoải mái. Không hard-code string trong code.'},
+
+  {sec:'dlgquest', cat:'dlg', step:'Core', name:'DialogueRunner',
+   def:'MonoBehaviour điều phối flow hội thoại — nhận DialogueSO, duyệt qua các node theo lựa chọn của player, evaluate condition, trigger effect. Raise event để UI cập nhật.',
+   code:`public class DialogueRunner : MonoBehaviour {
+    public static DialogueRunner Instance { get; private set; }
+    public event Action<DialogueNodeSO>    OnNodeEnter;
+    public event Action<DialogueChoice[]>  OnChoicesPresented;
+    public event Action                    OnDialogueEnd;
+
+    private DialogueNodeSO current;
+
+    public void StartDialogue(DialogueNodeSO startNode) {
+        current = startNode;
+        ProcessNode(current);
+    }
+    public void SelectChoice(int index) {
+        var choice = current.choices[index];
+        TriggerEffects(choice.effects);
+        ProcessNode(choice.nextNode);
+    }
+    void ProcessNode(DialogueNodeSO node) {
+        if (node == null) { OnDialogueEnd?.Invoke(); return; }
+        current = node;
+        OnNodeEnter?.Invoke(node);
+        if (node.choices.Length == 0)
+            OnChoicesPresented?.Invoke(null); // auto-advance
+        else
+            OnChoicesPresented?.Invoke(node.choices);
+    }
+}`,
+   tip:'DialogueRunner là Singleton — chỉ có 1 cuộc hội thoại chạy tại một thời điểm trong game.'},
+
+  {sec:'dlgquest', cat:'node', step:'Node graph', name:'Node graph editor',
+   def:'Công cụ visual để thiết kế dialogue dạng đồ thị — kéo thả node, vẽ kết nối. Không thể thiếu khi dialogue phức tạp. Có thể dùng tool sẵn (Yarn Spinner, Dialogue System) hoặc tự làm bằng Unity GraphView API.',
+   code:`// Lựa chọn tool:
+// 1. Yarn Spinner (free, mã nguồn mở)
+//    → dùng file .yarn (ngôn ngữ riêng giống Ink)
+//    → có node graph editor trong Unity
+// 2. Dialogue System for Unity (~$65 Asset Store)
+//    → đầy đủ tính năng nhất, có localization
+// 3. Tự làm bằng Unity GraphView API
+//    → học nhiều nhưng hoàn toàn tuỳ chỉnh
+
+// Với indie RPG DnD: Yarn Spinner là lựa chọn tốt nhất`,
+   tip:'Yarn Spinner được dùng trong Disco Elysium-style games. Miễn phí và document rất tốt.'},
+
+  {sec:'dlgquest', cat:'node', step:'Node graph', name:'Dialogue condition',
+   def:'Điều kiện để một node hoặc một choice hiển thị — kiểm tra quest state, item trong inventory, flag đã xảy ra chưa, hoặc stat của player. Evaluate trước khi hiển thị choice.',
+   code:`public abstract class DialogueCondition : ScriptableObject {
+    public abstract bool Evaluate(DialogueContext ctx);
+}
+
+// Ví dụ: HasItemCondition
+[CreateAssetMenu(menuName = "RPG/Dialogue/Condition/HasItem")]
+public class HasItemCondition : DialogueCondition {
+    public ItemData requiredItem;
+    public int      quantity = 1;
+    public override bool Evaluate(DialogueContext ctx) {
+        return ctx.inventory.Has(requiredItem, quantity);
+    }
+}
+// Dùng: "Chỉ hiện choice [Mua kiếm] nếu có >= 50 gold"`,
+   tip:'Condition SO tách hoàn toàn logic điều kiện khỏi data node — có thể reuse condition giữa các dialogue.'},
+
+  {sec:'dlgquest', cat:'node', step:'Node graph', name:'Dialogue effect',
+   def:'Hành động xảy ra khi player chọn một lựa chọn — trao quest, thêm/bớt item, set flag, thay đổi relationship, trigger event. Effect SO cho phép brew hiệu ứng mới mà không sửa DialogueRunner.',
+   code:`public abstract class DialogueEffect : ScriptableObject {
+    public abstract void Execute(DialogueContext ctx);
+}
+
+[CreateAssetMenu(menuName = "RPG/Dialogue/Effect/GiveQuest")]
+public class GiveQuestEffect : DialogueEffect {
+    public QuestSO quest;
+    public override void Execute(DialogueContext ctx) {
+        ctx.questLog.Accept(quest);
+    }
+}
+
+[CreateAssetMenu(menuName = "RPG/Dialogue/Effect/GiveItem")]
+public class GiveItemEffect : DialogueEffect {
+    public ItemData item;
+    public int quantity = 1;
+    public override void Execute(DialogueContext ctx) {
+        ctx.inventory.Add(item, quantity);
+    }
+}`,
+   tip:'Abstract Effect SO là cách "brew" dialogue outcome — tạo AdjustRelationship, UnlockDoor... mà không động vào DialogueRunner.'},
+
+  {sec:'dlgquest', cat:'node', step:'Node graph', name:'Localization & string table',
+   def:'Thay vì hard-code text trong SO, dùng string key trỏ đến bảng dịch (string table). Unity Localization package quản lý nhiều ngôn ngữ. Quan trọng nếu game có kế hoạch release đa ngôn ngữ.',
+   code:`// Unity Localization package:
+// Window > Asset Management > Localization Tables
+
+// Trong DialogueNodeSO:
+// KHÔNG: public string text = "Chào adventurer!";
+// ĐÚNG:  public LocalizedString text;
+//         key: "dialogue_innkeeper_greeting"
+
+// Runtime:
+string localizedText = node.text.GetLocalizedString();
+
+// Hỗ trợ: tiếng Việt, Anh, Nhật, v.v.
+// Arguments: "Xin chào, {0}!" → điền tên player tự động`,
+   tip:'Cài Localization ngay từ đầu dễ hơn retrofit sau — đổi tất cả string lúc game đã có 500 dòng thoại là cơn ác mộng.'},
+
+  {sec:'dlgquest', cat:'quest', step:'Quest system', name:'QuestSO',
+   def:'ScriptableObject định nghĩa một quest — tên, mô tả, list objectives, rewards, prerequisite conditions. Template bất biến. Không lưu trạng thái hoàn thành — đó là việc của QuestLog.',
+   code:`[CreateAssetMenu(menuName = "RPG/Quest")]
+public class QuestSO : ScriptableObject {
+    public string         questName;
+    [TextArea] public string description;
+    public QuestObjective[] objectives;
+    public QuestReward[]    rewards;
+    public QuestSO[]        prerequisites; // quest phải xong trước
+    public bool             isMainQuest;
+}
+[System.Serializable]
+public class QuestObjective {
+    public string objectiveText;
+    public ObjectiveType type;    // Kill, Collect, Reach, Talk
+    public string targetID;       // "GoblinChief", "IronOre"
+    public int    requiredCount;
+}`,
+   tip:'QuestSO chỉ là blueprint — không lưu "đã giết được 2/5 goblin". Trạng thái đó ở QuestInstance.'},
+
+  {sec:'dlgquest', cat:'quest', step:'Quest system', name:'QuestInstance & QuestLog',
+   def:'QuestInstance là runtime state của 1 quest đang active — lưu progress từng objective, trạng thái (Active/Completed/Failed). QuestLog là danh sách tất cả QuestInstance của player, persist qua save/load.',
+   code:`public class QuestInstance {
+    public QuestSO   questData;
+    public QuestState state = QuestState.Active;
+    public int[]     objectiveProgress; // [0] = 2/5 goblins killed
+
+    public bool IsCompleted() {
+        for (int i = 0; i < questData.objectives.Length; i++)
+            if (objectiveProgress[i] < questData.objectives[i].requiredCount)
+                return false;
+        return true;
+    }
+}
+public enum QuestState { Active, Completed, Failed, Turned_In }`,
+   tip:'Tách QuestSO (data) và QuestInstance (state) — giống pattern CharacterStatsSO vs CharacterSheet.'},
+
+  {sec:'dlgquest', cat:'quest', step:'Quest system', name:'Objective tracking',
+   def:'Cơ chế tự động cập nhật progress khi player thực hiện hành động liên quan. Dùng event bus — khi enemy chết, item được nhặt, location được reach thì broadcast event, QuestLog tự cập nhật objective.',
+   code:`// QuestEventBus:
+public static event Action<string, int> OnObjectiveProgress;
+// (targetID, amount)
+
+// Khi enemy chết:
+OnObjectiveProgress?.Invoke("GoblinChief", 1);
+
+// QuestLog tự lắng nghe:
+void Start() {
+    QuestEventBus.OnObjectiveProgress += TrackProgress;
+}
+void TrackProgress(string targetID, int amount) {
+    foreach (var quest in activeQuests)
+        quest.UpdateObjective(targetID, amount);
+}`,
+   tip:'Event-driven tracking tách hoàn toàn QuestLog khỏi combat/inventory/world — không coupling nào.'},
+
+  {sec:'dlgquest', cat:'quest', step:'Quest system', name:'Quest reward & turn-in',
+   def:'Khi tất cả objectives hoàn thành, player quay về NPC để turn in quest — nhận XP, gold, item, unlock nội dung mới. Turn-in trigger QuestEffect và có thể mở quest tiếp theo trong chuỗi.',
+   code:`public void TurnInQuest(QuestInstance instance) {
+    if (!instance.IsCompleted()) return;
+
+    instance.state = QuestState.Turned_In;
+
+    // Trao reward:
+    foreach (var reward in instance.questData.rewards) {
+        reward.Grant(player);  // XP, gold, item, unlock
+    }
+
+    // Unlock quest tiếp theo:
+    foreach (var next in instance.questData.unlocksQuests)
+        if (ArePrerequisitesMet(next))
+            OfferQuest(next);
+
+    OnQuestCompleted?.Invoke(instance);
+}`,
+   tip:'Kiểm tra prerequisites trước khi offer quest mới — tránh player nhận quest sai thứ tự trong quest chain.'},
+
+  {sec:'dlgquest', cat:'npc', step:'NPC', name:'NPC Interactable',
+   def:'Component gắn vào NPC GameObject — xử lý khi player click/approach. Lưu reference đến DialogueSO hiện tại (có thể thay đổi theo quest state). Kiểm tra điều kiện trước khi bắt đầu dialogue.',
+   code:`public class NPCInteractable : MonoBehaviour {
+    [SerializeField] DialogueNodeSO defaultDialogue;
+    [SerializeField] NPCDialogueEntry[] conditionalDialogues;
+
+    public void Interact(PlayerController player) {
+        var dialogue = GetCurrentDialogue();
+        DialogueRunner.Instance.StartDialogue(dialogue);
+    }
+    DialogueNodeSO GetCurrentDialogue() {
+        foreach (var entry in conditionalDialogues)
+            if (entry.condition.Evaluate(GameContext.Current))
+                return entry.dialogue;
+        return defaultDialogue;
+    }
+}
+[System.Serializable]
+public struct NPCDialogueEntry {
+    public DialogueCondition condition;
+    public DialogueNodeSO    dialogue;
+}`,
+   tip:'NPC có nhiều dialogue theo quest state — pattern này cho phép cùng 1 NPC nói khác nhau ở mỗi giai đoạn game.'},
+
+  {sec:'dlgquest', cat:'npc', step:'NPC', name:'Relationship & Reputation',
+   def:'Hệ thống theo dõi quan hệ giữa player và faction/NPC — từ Hostile đến Friendly. Ảnh hưởng dialogue options có sẵn, giá mua bán, khả năng nhận quest. Lưu dưới dạng Dictionary<string, int>.',
+   code:`public class ReputationSystem {
+    // factionID → điểm (-100 đến 100)
+    private Dictionary<string, int> scores = new();
+
+    public void Adjust(string factionID, int delta) {
+        scores.TryGetValue(factionID, out int cur);
+        scores[factionID] = Mathf.Clamp(cur + delta, -100, 100);
+        OnReputationChanged?.Invoke(factionID, scores[factionID]);
+    }
+    public ReputationTier GetTier(string factionID) {
+        int score = scores.GetValueOrDefault(factionID, 0);
+        return score switch {
+            >= 75  => ReputationTier.Exalted,
+            >= 25  => ReputationTier.Friendly,
+            >= -24 => ReputationTier.Neutral,
+            >= -74 => ReputationTier.Hostile,
+            _      => ReputationTier.Hated
+        };
+    }
+}`,
+   tip:'Dùng factionID string thay vì enum — dễ thêm faction mới mà không sửa code (chỉ thêm data).'},
+
+  {sec:'dlgquest', cat:'darch', step:'Architecture', name:'GameFlag system',
+   def:'Hệ thống lưu các sự kiện đã xảy ra trong game dưới dạng bool flag — "talked_to_innkeeper", "saved_village", "killed_bandit_lord". Dùng để điều kiện hoá dialogue, quest, và world state.',
+   code:`public class GameFlagSystem {
+    private HashSet<string> flags = new();
+
+    public void Set(string flag)          => flags.Add(flag);
+    public void Clear(string flag)        => flags.Remove(flag);
+    public bool IsSet(string flag)        => flags.Contains(flag);
+
+    // Dùng trong DialogueCondition:
+    // new FlagCondition("rescued_prisoners")
+    // Dùng trong DialogueEffect:
+    // new SetFlagEffect("talked_to_oracle")
+}
+
+// Convention đặt tên flag:
+// verb_object: "killed_goblin_king", "found_ancient_sword"
+// state_noun:  "village_burned", "gate_unlocked"`,
+   tip:'Đặt convention tên flag nhất quán ngay từ đầu — 200 flag không có quy tắc là địa ngục khi debug.'},
+
+  {sec:'dlgquest', cat:'darch', step:'Architecture', name:'DialogueContext',
+   def:'Object tổng hợp truyền vào Condition và Effect khi evaluate — chứa reference đến inventory, quest log, reputation system, flag system, player stats. Tránh dùng Singleton trực tiếp trong mỗi condition.',
+   code:`public class DialogueContext {
+    public PlayerInventory  inventory;
+    public QuestLog         questLog;
+    public ReputationSystem reputation;
+    public GameFlagSystem   flags;
+    public CharacterSheet   playerSheet;
+
+    // Tạo 1 lần khi bắt đầu dialogue:
+    public static DialogueContext Create() => new() {
+        inventory  = PlayerManager.Instance.inventory,
+        questLog   = PlayerManager.Instance.questLog,
+        reputation = GameManager.Instance.reputation,
+        flags      = GameManager.Instance.flags,
+        playerSheet= PlayerManager.Instance.sheet,
+    };
+}`,
+   tip:'DialogueContext là "bag of dependencies" — Condition và Effect nhận 1 object này thay vì gọi 5 Singleton riêng lẻ.'},
+
+  {sec:'dlgquest', cat:'darch', step:'Architecture', name:'Save/Load dialogue & quest state',
+   def:'Dialogue và quest state cần được lưu vào save file — flags đã set, quest instances đang active, objectives progress, reputation scores. Dùng JSON serialization với các DTO (Data Transfer Object) riêng biệt.',
+   code:`[System.Serializable]
+public class DialogueSaveData {
+    public List<string>        setFlags       = new();
+    public List<QuestSaveEntry> activeQuests  = new();
+    public Dictionary<string,int> reputations = new();
+}
+[System.Serializable]
+public class QuestSaveEntry {
+    public string   questID;      // SO name để lookup
+    public string   state;        // Enum.ToString()
+    public int[]    progress;
+}
+
+// Save:
+var data = new DialogueSaveData();
+data.setFlags = flagSystem.GetAllFlags().ToList();
+string json = JsonUtility.ToJson(data);
+File.WriteAllText(savePath, json);`,
+   tip:'Lưu questID theo SO name (asset name) thay vì index — index thay đổi khi thêm quest mới, name thì không.'},
+
+  // ── PHẦN 6 ──────────────────────────────────────────────────────
+  {sec:'ui', cat:'canvas', step:'Nền tảng', name:'Canvas & Render Mode',
+   def:'Canvas là container gốc của mọi UI element trong Unity. Có 3 Render Mode: Screen Space Overlay (UI luôn trên cùng, không bị che), Screen Space Camera (UI render qua camera, hỗ trợ depth), World Space (UI nằm trong 3D world — dùng cho nametag, healthbar trên đầu NPC).',
+   code:`// Screen Space Overlay: HUD, Menu, Dialogue UI
+// → Canvas > Render Mode = Screen Space - Overlay
+
+// Screen Space Camera: UI cần depth/sort với 3D
+// → Assign UI Camera riêng, Plane Distance = 1
+
+// World Space: floating healthbar, nametag
+// → Canvas > Render Mode = World Space
+// → Scale rất nhỏ: (0.01, 0.01, 0.01)
+// → Billboard: luôn xoay về phía Main Camera`,
+   tip:'Dùng ít nhất 2 Canvas riêng: 1 Screen Space Overlay cho HUD/Menu, 1 World Space cho in-world UI như healthbar.'},
+
+  {sec:'ui', cat:'canvas', step:'Nền tảng', name:'RectTransform',
+   def:'Thay thế Transform cho UI element — lưu anchors, pivot, size delta thay vì position/scale thông thường. Anchor quyết định UI bám vào góc nào của parent khi màn hình resize.',
+   code:`// Anchor presets quan trọng:
+// Top-Left:   anchor (0,1) — cố định góc trên trái
+// Center:     anchor (0.5,0.5) — giữa màn hình
+// Stretch:    anchor (0,0)→(1,1) — full parent size
+
+// Code set anchor:
+RectTransform rt = GetComponent<RectTransform>();
+rt.anchorMin = new Vector2(0, 0);
+rt.anchorMax = new Vector2(1, 1); // stretch full
+rt.offsetMin = new Vector2(10, 10); // padding
+rt.offsetMax = new Vector2(-10, -10);`,
+   tip:'Luôn dùng Anchor Presets (Alt+Click trong Inspector) thay vì gõ số tay — nhanh hơn và ít lỗi hơn.'},
+
+  {sec:'ui', cat:'canvas', step:'Nền tảng', name:'TextMeshPro (TMP)',
+   def:'Thư viện text nâng cao — hỗ trợ rich text, font atlas, outline, glow, shadow với chất lượng cao ở mọi kích thước. Bắt buộc thay thế UI.Text cũ. Dùng TextMeshProUGUI cho UI Canvas, TextMeshPro cho World Space.',
+   code:`// Import: Window > TextMeshPro > Import TMP Essential Resources
+
+// Rich text tags trong string:
+// <b>Bold</b>   <i>Italic</i>
+// <color=#FF4444>Đỏ</color>
+// <size=24>To hơn</size>
+// <sprite index=0> — icon từ sprite atlas
+
+// Damage number màu đỏ:
+damageText.text = $"<color=#FF4444>-{damage}</color>";
+// Critical hit màu vàng + to hơn:
+damageText.text = $"<color=#FFD700><size=32>CRIT -{damage}!</size></color>";`,
+   tip:'Cài TMP Essential Resources ngay lúc tạo project — nếu cài sau sẽ mất nhiều reference trong prefab.'},
+
+  {sec:'ui', cat:'canvas', step:'Nền tảng', name:'Layout Group',
+   def:'Component tự động sắp xếp children — HorizontalLayoutGroup (hàng ngang), VerticalLayoutGroup (cột dọc), GridLayoutGroup (lưới). Dùng cho inventory grid, action bar, party portrait bar.',
+   code:`// VerticalLayoutGroup cho quest list, skill list:
+// Child Alignment: Upper Left
+// Control Child Size: Width = true
+// Child Force Expand: Height = false
+// Spacing: 8
+
+// GridLayoutGroup cho inventory (5x4 slots):
+// Cell Size: (64, 64)
+// Spacing: (4, 4)
+// Constraint: Fixed Column Count = 5
+
+// ContentSizeFitter đi kèm để auto-resize parent:
+// Vertical Fit = Preferred Size`,
+   tip:'ContentSizeFitter + VerticalLayoutGroup = scroll list tự co giãn theo số item. Không cần set size tay.'},
+
+  {sec:'ui', cat:'hud', step:'HUD', name:'Health & Mana bar',
+   def:'Thanh HP/Mana hiển thị trạng thái real-time. Dùng Image component với Image Type = Filled và Fill Method = Horizontal. Subscribe vào OnHPChanged event từ CharacterSheet — không polling trong Update().',
+   code:`public class HealthBar : MonoBehaviour {
+    [SerializeField] Image fillImage;
+    [SerializeField] CharacterSheet target;
+
+    void Start() {
+        target.OnHPChanged += UpdateBar;
+        UpdateBar(target.currentHP, target.GetMaxHP());
+    }
+    void UpdateBar(int current, int max) {
+        float pct = (float)current / max;
+        fillImage.fillAmount = pct;
+        // Đổi màu theo %: xanh → vàng → đỏ
+        fillImage.color = Color.Lerp(Color.red, Color.green, pct);
+    }
+    void OnDestroy() => target.OnHPChanged -= UpdateBar;
+}`,
+   tip:'Luôn unsubscribe event trong OnDestroy() — memory leak phổ biến nhất trong Unity UI.'},
+
+  {sec:'ui', cat:'hud', step:'HUD', name:'Floating damage number',
+   def:'Text nổi lên và fade out mỗi khi nhân vật nhận damage hoặc heal. Spawn từ Object Pool, animate bằng Coroutine hoặc DOTween, rồi trả về pool. Vị trí spawn ở trên đầu nhân vật trong World Space.',
+   code:`public IEnumerator SpawnDamageNumber(int amount, Vector3 worldPos, bool isCrit) {
+    var go  = damagePool.Get();
+    var tmp = go.GetComponent<TextMeshPro>();
+
+    tmp.text = isCrit
+        ? $"<color=#FFD700><b>CRIT {amount}!</b></color>"
+        : $"<color=#FF6666>{amount}</color>";
+
+    go.transform.position = worldPos + Vector3.up * 1.5f;
+
+    float t = 0f;
+    Vector3 start = go.transform.position;
+    while (t < 1f) {
+        t += Time.deltaTime / 0.8f;
+        go.transform.position = start + Vector3.up * t * 0.8f;
+        tmp.alpha = 1f - t;
+        yield return null;
+    }
+    damagePool.Release(go);
+}`,
+   tip:'Dùng Object Pool cho floating numbers — combat có thể spawn 20+ số/giây, tạo GameObject mới mỗi lần sẽ lag.'},
+
+  {sec:'ui', cat:'hud', step:'HUD', name:'Turn order UI (Initiative tracker)',
+   def:'Panel hiển thị thứ tự lượt của tất cả combatant — portrait, tên, HP bar nhỏ. Highlight combatant đang hành động. Subscribe OnTurnStart/OnTurnEnd từ CombatEventBus để tự cập nhật.',
+   code:`public class InitiativeTrackerUI : MonoBehaviour {
+    [SerializeField] Transform container;
+    [SerializeField] GameObject portraitPrefab;
+
+    void Start() {
+        CombatEventBus.OnCombatStart   += BuildTracker;
+        CombatEventBus.OnTurnStart     += HighlightCurrent;
+        CombatEventBus.OnCombatantDied += RemovePortrait;
+    }
+    void BuildTracker(List<Combatant> order) {
+        foreach (Transform c in container) Destroy(c.gameObject);
+        foreach (var combatant in order) {
+            var go = Instantiate(portraitPrefab, container);
+            go.GetComponent<PortraitUI>().Setup(combatant);
+        }
+    }
+    void HighlightCurrent(Combatant c) { /* set border highlight */ }
+}`,
+   tip:'Initiative tracker là UI quan trọng nhất trong turn-based RPG — player cần đọc thứ tự để lên kế hoạch.'},
+
+  {sec:'ui', cat:'hud', step:'HUD', name:'Action bar & cooldown',
+   def:'Thanh chứa các action/spell có thể dùng trong combat — hiển thị icon, key binding, trạng thái available/used/cooldown. Highlight action đang được chọn. Grey out action không thể dùng.',
+   code:`public class ActionBarSlot : MonoBehaviour {
+    [SerializeField] Image  iconImage;
+    [SerializeField] Image  cooldownOverlay; // màu tối phủ lên
+    [SerializeField] TextMeshProUGUI keyLabel;
+
+    public void SetState(ActionSlotState state) {
+        switch (state) {
+            case ActionSlotState.Available:
+                iconImage.color      = Color.white;
+                cooldownOverlay.gameObject.SetActive(false); break;
+            case ActionSlotState.Used:
+                iconImage.color      = new Color(0.4f,0.4f,0.4f);
+                cooldownOverlay.gameObject.SetActive(true);
+                cooldownOverlay.fillAmount = 1f; break;
+            case ActionSlotState.NotEnoughResource:
+                iconImage.color      = new Color(0.6f,0.3f,0.3f); break;
+        }
+    }
+}`,
+   tip:'Grey out action không dùng được — player không nên click rồi nhận error. Feedback visual trước, error message sau.'},
+
+  {sec:'ui', cat:'inv', step:'Inventory', name:'Inventory grid UI',
+   def:'Lưới ô chứa item — mỗi ô là một InventorySlotUI. Dùng GridLayoutGroup để tự sắp xếp. Slot có thể trống (empty) hoặc chứa item (hiện icon + stack count). Hỗ trợ click, right-click, drag-drop.',
+   code:`public class InventorySlotUI : MonoBehaviour, IPointerClickHandler,
+                                       IBeginDragHandler, IDropHandler {
+    [SerializeField] Image          iconImage;
+    [SerializeField] TextMeshProUGUI stackText;
+    private ItemStack currentStack;
+
+    public void Setup(ItemStack stack) {
+        currentStack = stack;
+        iconImage.sprite  = stack?.item.icon;
+        iconImage.enabled = stack != null;
+        stackText.text    = stack?.count > 1 ? stack.count.ToString() : "";
+    }
+    public void OnPointerClick(PointerEventData e) {
+        if (e.button == PointerEventData.InputButton.Right)
+            ContextMenu.Show(currentStack, transform.position);
+    }
+}`,
+   tip:'Implement IPointerClickHandler thay vì OnMouseDown — hoạt động đúng với EventSystem và hỗ trợ touch.'},
+
+  {sec:'ui', cat:'inv', step:'Inventory', name:'Drag & Drop item',
+   def:'Kéo item từ slot này sang slot khác. Unity hỗ trợ qua IBeginDragHandler, IDragHandler, IEndDragHandler interfaces. Tạo ghost image theo cursor khi drag, swap hoặc merge item khi drop.',
+   code:`public class InventorySlotUI : MonoBehaviour,
+    IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler {
+
+    static InventorySlotUI dragSource;
+    static GameObject      ghostImage;
+
+    public void OnBeginDrag(PointerEventData e) {
+        dragSource = this;
+        ghostImage = CreateGhost(currentStack.item.icon);
+    }
+    public void OnDrag(PointerEventData e) {
+        ghostImage.transform.position = e.position;
+    }
+    public void OnEndDrag(PointerEventData e) {
+        Destroy(ghostImage);
+        dragSource = null;
+    }
+    public void OnDrop(PointerEventData e) {
+        if (dragSource != null && dragSource != this)
+            InventoryManager.SwapSlots(dragSource.slotIndex, slotIndex);
+    }
+}`,
+   tip:'Đặt ghost image trong một Canvas riêng ở layer cao nhất — tránh bị clip bởi các panel khác khi drag.'},
+
+  {sec:'ui', cat:'inv', step:'Inventory', name:'Equipment slot UI',
+   def:'Panel hiển thị các slot trang bị trên nhân vật (Head, Chest, Legs, Weapon, Shield, Ring x2, Amulet...). Mỗi slot accept chỉ đúng loại item. Khi equip/unequip, trigger stat recalculation.',
+   code:`public class EquipmentSlotUI : MonoBehaviour, IDropHandler {
+    public EquipmentSlotType slotType;  // Head, Chest, Weapon...
+
+    public void OnDrop(PointerEventData e) {
+        var dragged = InventorySlotUI.dragSource;
+        if (dragged?.currentStack?.item is EquippableItem eq
+            && eq.slotType == slotType) {
+            EquipmentManager.Equip(eq, slotType);
+            UpdateDisplay(eq);
+        }
+    }
+    void UpdateDisplay(EquippableItem item) {
+        icon.sprite   = item?.icon;
+        icon.enabled  = item != null;
+    }
+}`,
+   tip:'Validate loại item trước khi accept drop — player không nên drag mũ vào slot giày được.'},
+
+  {sec:'ui', cat:'tooltip', step:'Tooltip', name:'Item tooltip',
+   def:'Popup hiển thị thông tin chi tiết khi hover/click vào item — tên, type, stats, description, compare với item đang equip. Theo dõi chuột và tự điều chỉnh vị trí để không ra ngoài màn hình.',
+   code:`public class TooltipUI : MonoBehaviour {
+    public static TooltipUI Instance { get; private set; }
+    [SerializeField] TextMeshProUGUI titleText, bodyText;
+    [SerializeField] RectTransform   panel;
+
+    public void Show(ItemData item, Vector2 screenPos) {
+        titleText.text = $"<b>{item.itemName}</b>";
+        bodyText.text  = item.GetTooltipText();
+        gameObject.SetActive(true);
+        PositionNearCursor(screenPos);
+    }
+    void PositionNearCursor(Vector2 pos) {
+        // Clamp để không bị ra ngoài màn hình:
+        float x = Mathf.Clamp(pos.x + 12, 0, Screen.width  - panel.rect.width);
+        float y = Mathf.Clamp(pos.y - 12, panel.rect.height, Screen.height);
+        panel.position = new Vector2(x, y);
+    }
+    public void Hide() => gameObject.SetActive(false);
+}`,
+   tip:'Tooltip Singleton đơn giản hơn nhiều so với mỗi item tự tạo tooltip riêng — chỉ cần 1 panel, hiện/ẩn khi cần.'},
+
+  {sec:'ui', cat:'tooltip', step:'Tooltip', name:'Character sheet panel',
+   def:'Panel hiển thị toàn bộ stats của nhân vật — 6 ability scores, derived stats, saving throws, skills, equipment summary. Update realtime khi stat thay đổi. Subscribe OnStatChanged event.',
+   code:`public class CharacterSheetUI : MonoBehaviour {
+    [SerializeField] TextMeshProUGUI[] abilityScoreTexts; // 6 texts
+    [SerializeField] TextMeshProUGUI   hpText, acText, pbText;
+
+    void Start() => sheet.OnAnyStatChanged += Refresh;
+
+    void Refresh() {
+        // Ability scores + modifiers:
+        var abilities = new[]{sheet.STR,sheet.DEX,sheet.CON,
+                               sheet.INT,sheet.WIS,sheet.CHA};
+        for (int i = 0; i < 6; i++) {
+            int mod = CharacterSheet.GetModifier(abilities[i]);
+            string sign = mod >= 0 ? "+" : "";
+            abilityScoreTexts[i].text =
+                $"{abilities[i]}\n<size=11>{sign}{mod}</size>";
+        }
+        hpText.text = $"{sheet.currentHP} / {sheet.GetMaxHP()}";
+        acText.text = sheet.GetAC().ToString();
+        pbText.text = $"+{sheet.proficiencyBonus}";
+    }
+}`,
+   tip:'Hiển thị cả ability score (16) lẫn modifier (+3) trong cùng 1 text — player DnD đọc cả 2.'},
+
+  {sec:'ui', cat:'tooltip', step:'Tooltip', name:'Context menu (right-click)',
+   def:'Menu nhỏ xuất hiện khi right-click vào item — Use, Equip, Drop, Examine, Split Stack. Spawn tại vị trí click, đóng khi click ra ngoài. Các option hiển thị tuỳ theo loại item và context.',
+   code:`public class ContextMenuUI : MonoBehaviour {
+    public static ContextMenuUI Instance { get; private set; }
+    [SerializeField] Transform      buttonContainer;
+    [SerializeField] GameObject     buttonPrefab;
+
+    public void Show(ItemStack stack, Vector2 pos) {
+        ClearButtons();
+        transform.position = pos;
+        gameObject.SetActive(true);
+
+        if (stack.item is ConsumableItem)
+            AddButton("Sử dụng", () => UseItem(stack));
+        if (stack.item is EquippableItem)
+            AddButton("Trang bị", () => EquipItem(stack));
+        AddButton("Bỏ xuống", () => DropItem(stack));
+        AddButton("Xem thông tin", () => ExamineItem(stack));
+    }
+    // Đóng khi click bên ngoài:
+    void Update() {
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverMenu())
+            gameObject.SetActive(false);
+    }
+}`,
+   tip:'Context menu đơn giản hơn nhiều lựa chọn inline — tránh UI lごちゃごちゃ, player chỉ thấy option khi cần.'},
+
+  {sec:'ui', cat:'uiarch', step:'Architecture', name:'UI Manager & Screen Stack',
+   def:'UIManager quản lý tất cả các panel — mở, đóng, push/pop theo stack. Khi mở Inventory thì pause game và block input combat. Khi nhấn Escape thì đóng panel trên cùng của stack.',
+   code:`public class UIManager : MonoBehaviour {
+    public static UIManager Instance { get; private set; }
+    private Stack<UIPanel> panelStack = new();
+
+    public void Push(UIPanel panel) {
+        if (panelStack.Count > 0) panelStack.Peek().OnCovered();
+        panelStack.Push(panel);
+        panel.Open();
+        Time.timeScale = panel.pausesGame ? 0f : 1f;
+    }
+    public void Pop() {
+        if (panelStack.Count == 0) return;
+        panelStack.Pop().Close();
+        if (panelStack.Count > 0) panelStack.Peek().OnRevealed();
+        else Time.timeScale = 1f;
+    }
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape) && panelStack.Count > 0)
+            Pop();
+    }
+}`,
+   tip:'Screen Stack tự xử lý Escape key — không cần mỗi panel tự lắng nghe Escape riêng lẻ.'},
+
+  {sec:'ui', cat:'uiarch', step:'Architecture', name:'MVP pattern cho UI',
+   def:'Model-View-Presenter tách biệt data (Model), hiển thị (View), và logic kết nối (Presenter). View chỉ biết cách render. Presenter biết cả Model lẫn View. Thay skin UI mà không đụng logic game.',
+   code:`// Model: CharacterSheet (data thuần)
+// View: CharacterSheetUI (chỉ hiển thị)
+// Presenter: CharacterSheetPresenter (kết nối 2 bên)
+
+public class CharacterSheetPresenter : MonoBehaviour {
+    [SerializeField] CharacterSheet    model;
+    [SerializeField] CharacterSheetUI  view;
+
+    void Start() {
+        model.OnAnyStatChanged += () => view.Refresh(model);
+        view.OnCloseClicked    += () => UIManager.Instance.Pop();
+        view.Refresh(model); // initial render
+    }
+}
+// View không import CharacterSheet namespace
+// Model không biết UI tồn tại
+// Presenter là cầu nối duy nhất`,
+   tip:'MVP rất hữu ích khi làm co-op sau này — cùng Presenter nhưng swap View khác nhau cho local vs remote player.'},
+
+  {sec:'ui', cat:'uiarch', step:'Architecture', name:'Object Pool cho UI',
+   def:'Tái sử dụng UI element thay vì Instantiate/Destroy liên tục — quan trọng cho damage number, loot popup, quest notification. Unity có UnityEngine.Pool.ObjectPool<T> built-in từ Unity 2021+.',
+   code:`public class DamageNumberPool : MonoBehaviour {
+    ObjectPool<TextMeshPro> pool;
+
+    void Awake() {
+        pool = new ObjectPool<TextMeshPro>(
+            createFunc:    () => Instantiate(prefab),
+            actionOnGet:   t  => t.gameObject.SetActive(true),
+            actionOnRelease:t => t.gameObject.SetActive(false),
+            actionOnDestroy:t => Destroy(t.gameObject),
+            maxSize: 30
+        );
+    }
+    public TextMeshPro Get()            => pool.Get();
+    public void Release(TextMeshPro t)  => pool.Release(t);
+}`,
+   tip:'Dùng ObjectPool<T> built-in của Unity thay vì tự viết — tránh bug subtle trong pool tự làm.'},
+
+  {sec:'ui', cat:'uiarch', step:'Architecture', name:'Responsive UI & Safe Area',
+   def:'UI phải hoạt động đúng trên nhiều độ phân giải (1080p, 4K, ultrawide) và trên mobile có notch. Dùng Canvas Scaler với Scale With Screen Size. Dùng Safe Area để UI không bị che bởi notch iPhone/Android.',
+   code:`// Canvas Scaler settings:
+// UI Scale Mode: Scale With Screen Size
+// Reference Resolution: 1920 x 1080
+// Screen Match Mode: Match Width Or Height
+// Match: 0.5 (cân bằng width và height)
+
+// Safe Area cho mobile (iOS/Android):
+public class SafeAreaPanel : MonoBehaviour {
+    void Start() {
+        var rt     = GetComponent<RectTransform>();
+        var area   = Screen.safeArea;
+        var canvas = GetComponentInParent<Canvas>();
+        var size   = canvas.pixelRect.size;
+        rt.anchorMin = area.position / size;
+        rt.anchorMax = (area.position + area.size) / size;
+    }
+}`,
+   tip:'Test UI ở 3 tỷ lệ: 16:9 (1080p), 16:10 (tablet), 19.5:9 (phone notch) — phần lớn bug layout lộ ra ở đây.'},
+
+  // ── PHẦN 7: SAVE/LOAD ───────────────────────────────────────────
+  {sec:'save',cat:'sdata',step:'Data design',name:'SaveData — cấu trúc tổng thể',
+   def:'SaveData là class chứa toàn bộ trạng thái cần persist — party, world state, flags, quests, settings. Dùng [Serializable] để Unity/JSON có thể serialize. Tách thành nhiều sub-object theo domain để dễ quản lý.',
+   code:`[System.Serializable]
+public class SaveData {
+    public string         saveVersion = "1.0";
+    public string         timestamp;
+    public float          playtime;
+    public PartySaveData  party;
+    public WorldSaveData  world;
+    public QuestSaveData  quests;
+    public SettingsSave   settings;
+}
+[System.Serializable]
+public class PartySaveData {
+    public List<CharacterSaveEntry> members = new();
+    public int    gold;
+    public string currentSceneID;
+    public Vector3 playerPosition;
+}`,
+   tip:'Lưu saveVersion trong mỗi file — khi update game structure, dùng version để migrate save cũ.'},
+
+  {sec:'save',cat:'sdata',step:'Data design',name:'ISaveable interface',
+   def:'Interface đánh dấu object nào cần được lưu/load. Mỗi system (CharacterSheet, QuestLog, Inventory...) implement ISaveable với GetSaveData() và LoadFromData(). SaveManager thu thập tất cả.',
+   code:`public interface ISaveable {
+    string SaveID { get; }       // unique key trong save file
+    object GetSaveData();        // trả về [Serializable] object
+    void   LoadFromData(object data);
+}
+
+// CharacterSheet implement:
+public class CharacterSheet : MonoBehaviour, ISaveable {
+    public string SaveID => "character_" + characterID;
+    public object GetSaveData() => new CharacterSaveEntry {
+        characterID = characterID,
+        currentHP   = currentHP,
+        level       = level,
+        // ...
+    };
+    public void LoadFromData(object data) {
+        var d   = (CharacterSaveEntry)data;
+        currentHP = d.currentHP;
+        level     = d.level;
+    }
+}`,
+   tip:'SaveID phải unique và stable — đừng dùng index hoặc tên có thể đổi. Dùng GUID hoặc prefab asset name.'},
+
+  {sec:'save',cat:'sdata',step:'Data design',name:'Save slot system',
+   def:'RPG thường cho phép nhiều save slot (Auto, Quick, Manual 1-3). Mỗi slot là một file riêng với metadata (tên nhân vật, playtime, timestamp, thumbnail screenshot). Hiển thị trong Load Game UI.',
+   code:`public class SaveSlotInfo {
+    public int    slotIndex;
+    public string characterName;
+    public int    level;
+    public string locationName;
+    public float  playtimeSeconds;
+    public string timestamp;
+    public byte[] thumbnailPNG;    // screenshot 256x144
+}
+
+// Đường dẫn file:
+// Application.persistentDataPath + "/saves/slot_0.json"
+// Application.persistentDataPath + "/saves/slot_0_meta.json"
+// Lưu meta riêng để Load Game UI đọc nhanh
+// mà không cần load toàn bộ save file`,
+   tip:'Lưu metadata (thumbnail, time, location) tách khỏi save data — Load Game UI load nhanh hơn nhiều.'},
+
+  {sec:'save',cat:'sser',step:'Serialization',name:'JSON serialization',
+   def:'Chuyển object C# thành chuỗi JSON để lưu vào file. Unity có JsonUtility (đơn giản, nhanh) và Newtonsoft Json.NET (mạnh hơn, hỗ trợ Dictionary, polymorphism). Với RPG phức tạp nên dùng Newtonsoft.',
+   code:`// Newtonsoft (cài qua Package Manager: com.unity.nuget.newtonsoft-json):
+using Newtonsoft.Json;
+
+// Save:
+string json = JsonConvert.SerializeObject(saveData,
+    Formatting.Indented,
+    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+File.WriteAllText(path, json);
+
+// Load:
+string json = File.ReadAllText(path);
+var data = JsonConvert.DeserializeObject<SaveData>(json,
+    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });`,
+   tip:'TypeNameHandling.Auto cần thiết nếu save list có nhiều subtype (ví dụ: List<SpellEffect> với nhiều loại).'},
+
+  {sec:'save',cat:'sser',step:'Serialization',name:'ScriptableObject reference trong save',
+   def:'ScriptableObject (ItemSO, SpellSO, QuestSO) không serialize được trực tiếp — chỉ lưu ID (asset name hoặc GUID), khi load thì lookup lại từ Registry. Tránh lưu toàn bộ SO vào save file.',
+   code:`// KHÔNG làm — SO không serialize đúng:
+// public ItemData equippedWeapon; // lưu thẳng SO
+
+// ĐÚNG — lưu ID, lookup khi load:
+public string equippedWeaponID;  // "iron_sword"
+
+// SORegistry — lookup table toàn bộ SO:
+public class SORegistry : MonoBehaviour {
+    static Dictionary<string, ItemData> items = new();
+    public static ItemData GetItem(string id)
+        => items.TryGetValue(id, out var item) ? item : null;
+}
+// Khi load: sheet.weapon = SORegistry.GetItem(save.equippedWeaponID);`,
+   tip:'SORegistry là pattern bắt buộc khi dùng SO làm data layer — build nó song song với hệ thống save.'},
+
+  {sec:'save',cat:'sser',step:'Serialization',name:'Encryption & cloud save',
+   def:'Save file plain text dễ bị cheat. Encrypt bằng AES nếu cần. Cloud save (Steam Cloud, Google Play Games) sync file tự động giữa thiết bị. Unity Gaming Services cung cấp Cloud Save SDK.',
+   code:`// AES encryption đơn giản:
+using System.Security.Cryptography;
+public static string Encrypt(string plain, string key) {
+    using var aes = Aes.Create();
+    aes.Key = Encoding.UTF8.GetBytes(key.PadRight(32)[..32]);
+    aes.GenerateIV();
+    var enc = aes.CreateEncryptor();
+    var bytes = Encoding.UTF8.GetBytes(plain);
+    var cipher = enc.TransformFinalBlock(bytes, 0, bytes.Length);
+    return Convert.ToBase64String(aes.IV.Concat(cipher).ToArray());
+}
+// Steam Cloud: bật trong Steamworks SDK
+// chỉ cần set path, Steam tự sync`,
+   tip:'Với indie game đơn người chơi, encrypt là đủ để ngăn cheat casual. Cloud save nên làm trước khi release Steam.'},
+
+  {sec:'save',cat:'sflow',step:'Save flow',name:'SaveManager',
+   def:'Singleton quản lý toàn bộ flow save/load — thu thập data từ tất cả ISaveable, serialize, ghi file. Khi load đọc file, deserialize, distribute data về từng ISaveable. Hỗ trợ autosave và quick save.',
+   code:`public class SaveManager : MonoBehaviour {
+    public static SaveManager Instance { get; private set; }
+    List<ISaveable> saveables = new();
+
+    public void RegisterSaveable(ISaveable s) => saveables.Add(s);
+
+    public void SaveGame(int slot) {
+        var data = new SaveData();
+        data.timestamp = DateTime.Now.ToString();
+        foreach (var s in saveables)
+            data.genericData[s.SaveID] = s.GetSaveData();
+        string json = JsonConvert.SerializeObject(data, Formatting.Indented);
+        File.WriteAllText(GetPath(slot), json);
+        TakeScreenshot(slot);
+    }
+    public void LoadGame(int slot) {
+        string json = File.ReadAllText(GetPath(slot));
+        var data = JsonConvert.DeserializeObject<SaveData>(json);
+        foreach (var s in saveables)
+            if (data.genericData.TryGetValue(s.SaveID, out var d))
+                s.LoadFromData(d);
+    }
+}`,
+   tip:'Load game nên xảy ra SAU khi scene mới đã load xong — dùng SceneManager.LoadScene rồi load data trong Start().'},
+
+  {sec:'save',cat:'sflow',step:'Save flow',name:'Autosave & checkpoint',
+   def:'Autosave tự động khi: vào dungeon mới, sau combat, khi rest. Checkpoint là điểm save cố định trong map — player không mất quá nhiều progress khi chết. Hiển thị autosave indicator nhỏ trên màn hình.',
+   code:`public class AutosaveManager : MonoBehaviour {
+    void Start() {
+        CombatEventBus.OnCombatEnd  += _ => TriggerAutosave("post_combat");
+        SceneEventBus.OnSceneLoaded += _ => TriggerAutosave("scene_enter");
+        RestSystem.OnLongRest       += TriggerAutosave;
+    }
+    async void TriggerAutosave(string reason) {
+        SaveManager.Instance.SaveGame(slotIndex: 0); // slot 0 = autosave
+        autosaveIndicator.Show($"Tự động lưu...");
+        await Task.Delay(2000);
+        autosaveIndicator.Hide();
+    }
+}`,
+   tip:'Autosave sau combat, không trước — tránh trường hợp autosave lúc player đang thua trận không thể cứu vãn.'},
+
+  {sec:'save',cat:'sflow',step:'Save flow',name:'Scene transition & persistence',
+   def:'Khi chuyển Scene, data cần được giữ lại — dùng DontDestroyOnLoad cho GameManager + PartyManager + SaveManager, hoặc save/load mini khi transition. Không để data quan trọng nằm trong scene object.',
+   code:`// Pattern 1: DontDestroyOnLoad (đơn giản hơn)
+// GameManager, PartyManager tồn tại xuyên scene
+
+// Pattern 2: Mini-save trước transition
+public IEnumerator TransitionToScene(string sceneName) {
+    SaveManager.Instance.SaveTransitionData(); // lưu temp
+    yield return FadeOut();
+    yield return SceneManager.LoadSceneAsync(sceneName);
+    yield return null; // chờ 1 frame để scene init
+    SaveManager.Instance.LoadTransitionData(); // restore
+    yield return FadeIn();
+}`,
+   tip:'DontDestroyOnLoad đơn giản hơn nhưng cần cẩn thận với duplicate khi reload scene — luôn check Instance != null.'},
+
+  // ── PHẦN 8: AUDIO, VFX & POLISH ─────────────────────────────────
+  {sec:'avfx',cat:'audio',step:'Audio',name:'Audio architecture — tổng quan',
+   def:'Unity Audio có 3 component: AudioSource (phát âm thanh trên object), AudioListener (1 cái duy nhất, thường gắn vào camera), AudioMixer (routing, volume, effects). Với RPG cần ít nhất 3 mixer group: Master → Music, SFX, UI.',
+   code:`// Mixer Groups:
+// Master
+//   ├─ Music  (BGM, ambient)
+//   ├─ SFX    (combat, footstep, spell)
+//   └─ UI     (button click, notification)
+
+// Volume control qua Mixer exposed param:
+AudioMixer.SetFloat("MusicVolume", Mathf.Log10(vol) * 20);
+// Dùng log10 vì volume hoạt động theo dB (logarithmic)
+
+// Mute khi game pause:
+AudioMixer.SetFloat("SFXVolume", isPaused ? -80f : 0f);`,
+   tip:'Luôn dùng AudioMixer — không set AudioSource.volume trực tiếp. Mixer cho phép player chỉnh volume riêng từng group.'},
+
+  {sec:'avfx',cat:'audio',step:'Audio',name:'AudioManager & Sound Bank',
+   def:'AudioManager là Singleton quản lý tất cả âm thanh — pool AudioSource, lookup SoundBank SO, phát nhạc nền với crossfade. Không gọi AudioSource.PlayOneShot trực tiếp từ mọi nơi trong code.',
+   code:`[CreateAssetMenu(menuName="RPG/Audio/Sound Bank")]
+public class SoundBankSO : ScriptableObject {
+    public SoundEntry[] sounds;
+}
+[System.Serializable]
+public class SoundEntry {
+    public string      id;          // "sword_hit", "spell_fire"
+    public AudioClip[] variants;    // random một clip
+    [Range(0f,1f)] public float volume = 1f;
+    [Range(0.8f,1.2f)] public float pitchVariance = 1f;
+}
+// Phát từ bất kỳ đâu:
+AudioManager.Instance.Play("sword_hit", transform.position);`,
+   tip:'Dùng variants array (2-3 clip cho cùng 1 SFX) + pitch variance — tránh audio fatigue khi SFX lặp lại nhiều lần.'},
+
+  {sec:'avfx',cat:'audio',step:'Audio',name:'Music crossfade & state',
+   def:'Nhạc nền thay đổi theo context — exploration BGM, combat BGM, town BGM, dungeon BGM. Transition mượt bằng crossfade (fade out track cũ, fade in track mới). Dùng 2 AudioSource để crossfade.',
+   code:`public IEnumerator CrossfadeTo(AudioClip newClip, float duration=1.5f) {
+    // Source A đang phát, source B sẽ phát mới
+    sourceB.clip = newClip;
+    sourceB.volume = 0f;
+    sourceB.Play();
+    float t = 0f;
+    while (t < duration) {
+        t += Time.unscaledDeltaTime;
+        float pct = t / duration;
+        sourceA.volume = Mathf.Lerp(currentVol, 0f, pct);
+        sourceB.volume = Mathf.Lerp(0f, targetVol,  pct);
+        yield return null;
+    }
+    sourceA.Stop();
+    (sourceA, sourceB) = (sourceB, sourceA); // swap
+}`,
+   tip:'Dùng Time.unscaledDeltaTime cho music crossfade — nhạc không bị pause khi game pause (timeScale = 0).'},
+
+  {sec:'avfx',cat:'audio',step:'Audio',name:'Spatial audio & footstep',
+   def:'AudioSource có Spatial Blend (0=2D, 1=3D) — âm thanh 3D nhỏ dần theo khoảng cách. Footstep cần surface detection — gạch đá, cỏ, gỗ phát ra clip khác nhau. Dùng Raycast xuống để detect material.',
+   code:`void PlayFootstep() {
+    // Detect surface bên dưới:
+    if (Physics2D.Raycast(transform.position, Vector2.down,
+        0.1f, groundLayer, out var hit)) {
+        var surface = hit.collider.GetComponent<SurfaceType>();
+        var clip = surface?.type switch {
+            Surface.Stone => stoneClips,
+            Surface.Grass => grassClips,
+            Surface.Wood  => woodClips,
+            _             => defaultClips
+        };
+        AudioManager.Instance.Play(clip, transform.position, spatialBlend:0.7f);
+    }
+}`,
+   tip:'Footstep sound design tạo ra immersion lớn nhất so với effort bỏ ra — đừng bỏ qua.'},
+
+  {sec:'avfx',cat:'vfx',step:'VFX',name:'Particle System',
+   def:'Unity Particle System tạo hiệu ứng — lửa, khói, tia sáng, máu, impact. Mỗi effect là 1 Prefab với ParticleSystem component. Gọi Play() khi cần, Prefab tự destroy sau khi particle hết.',
+   code:`// Spawn VFX từ pool:
+public void SpawnEffect(string effectID, Vector3 pos, Quaternion rot) {
+    var prefab = vfxBank.Get(effectID);
+    var go     = vfxPool.Get(prefab);
+    go.transform.SetPositionAndRotation(pos, rot);
+    go.GetComponent<ParticleSystem>().Play();
+
+    // Tự trả về pool sau khi xong:
+    var ps = go.GetComponent<ParticleSystem>();
+    StartCoroutine(ReturnAfter(go, ps.main.duration + ps.main.startLifetime.constantMax));
+}
+// Khi hit target:
+VFXManager.Instance.SpawnEffect("blood_hit",
+    hitPoint, Quaternion.LookRotation(hitNormal));`,
+   tip:'Pool VFX prefab giống damage number — combat có thể spawn 10+ effect/giây, không pool sẽ lag ngay.'},
+
+  {sec:'avfx',cat:'vfx',step:'VFX',name:'Shader Graph & 2D Lighting (URP)',
+   def:'URP hỗ trợ 2D Lighting với Normal Map — tạo chiều sâu cho sprite phẳng. Shader Graph cho phép tạo shader custom không cần code HLSL — dissolve, outline, hit flash, transparency.',
+   code:`// Hit flash shader (Shader Graph):
+// Input: _FlashColor (Color), _FlashAmount (Float 0-1)
+// Node: Lerp(Texture.rgb, _FlashColor, _FlashAmount)
+// Output: thay thế màu sprite
+
+// Trigger hit flash trong code:
+IEnumerator HitFlash(SpriteRenderer sr) {
+    sr.material.SetFloat("_FlashAmount", 1f);
+    yield return new WaitForSeconds(0.05f);
+    sr.material.SetFloat("_FlashAmount", 0f);
+}
+
+// 2D Normal Map: tạo trong Sprite Editor
+// Light 2D: Point Light theo dõi torch, Global Light cho ambient`,
+   tip:'Hit flash (trắng 0.05s) là visual feedback đơn giản nhất tạo ra cảm giác combat "punch" ngay lập tức.'},
+
+  {sec:'avfx',cat:'vfx',step:'VFX',name:'Sprite animation polish',
+   def:'Animation state machine trong Unity Animator — Idle, Walk, Attack, Hit, Death. Blend Tree cho movement (8 hướng isometric). Animation Event để trigger SFX và VFX đúng frame.',
+   code:`// Animation Event trong Animation clip:
+// Frame 5 của Attack: trigger SFX "sword_swing"
+// Frame 8 của Attack: trigger hitbox active
+// Frame 12 của Attack: trigger hitbox inactive
+
+// Code xử lý Animation Event:
+public class CharacterAnimator : MonoBehaviour {
+    public void OnAnimationEvent_SFX(string sfxID)
+        => AudioManager.Instance.Play(sfxID, transform.position);
+    public void OnAnimationEvent_HitboxActive()
+        => hitbox.SetActive(true);
+    public void OnAnimationEvent_HitboxInactive()
+        => hitbox.SetActive(false);
+}`,
+   tip:'Animation Events là cách chính xác nhất để sync SFX với animation frame — đừng dùng timer cố định.'},
+
+  {sec:'avfx',cat:'feel',step:'Game feel',name:'Screen shake',
+   def:'Rung màn hình khi có impact lớn — critical hit, explosion, boss attack. Implement bằng Cinemachine Impulse Source. Magnitude và duration theo độ mạnh của event.',
+   code:`// Cài Cinemachine Impulse Source lên object:
+CinemachineImpulseSource impulse;
+
+public void ShakeScreen(float magnitude, float duration) {
+    impulse.m_ImpulseDefinition.m_AmplitudeGain = magnitude;
+    impulse.m_ImpulseDefinition.m_FrequencyGain = duration;
+    impulse.GenerateImpulse();
+}
+// Dùng theo tier:
+// Light hit:    ShakeScreen(0.1f, 0.1f)
+// Heavy hit:    ShakeScreen(0.3f, 0.2f)
+// Critical:     ShakeScreen(0.5f, 0.3f)
+// Boss slam:    ShakeScreen(1.0f, 0.5f)`,
+   tip:'Screen shake với Cinemachine tự smooth out tự nhiên — đừng tự translate camera, bị choppy và không controllable.'},
+
+  {sec:'avfx',cat:'feel',step:'Game feel',name:'Hit stop (freeze frame)',
+   def:'Pause game cực ngắn (2-4 frame) khi đòn đánh trúng mục tiêu — tạo cảm giác "impact" mạnh mẽ. Dùng Time.timeScale = 0 trong ~0.05s rồi restore. Kết hợp với screen shake và hit flash.',
+   code:`public IEnumerator HitStop(float duration = 0.05f) {
+    float original = Time.timeScale;
+    Time.timeScale = 0f;
+    // Dùng unscaled time vì timeScale = 0:
+    yield return new WaitForSecondsRealtime(duration);
+    Time.timeScale = original;
+}
+// Trigger khi attack hit:
+if (attackResult.hit) {
+    StartCoroutine(HitStop(attackResult.critical ? 0.1f : 0.05f));
+    StartCoroutine(HitFlash(targetRenderer));
+    ShakeScreen(attackResult.critical ? 0.5f : 0.2f);
+    SpawnVFX("blood_hit", hitPoint);
+    PlaySFX("sword_hit");
+}`,
+   tip:'Combo HitStop + HitFlash + ScreenShake + SFX = combat feel ngay lập tức. Thiếu 1 trong 4 thứ này thì feel giảm đáng kể.'},
+
+  {sec:'avfx',cat:'feel',step:'Game feel',name:'Tween & animation UI',
+   def:'Animate UI element bằng DOTween (thư viện phổ biến nhất) hoặc Unity Animation. Bounce khi nhận item, slide in panel, shake khi input sai password. Micro-animation tạo UI "sống động".',
+   code:`// DOTween (cài từ Asset Store, miễn phí):
+// using DG.Tweening;
+
+// Panel slide in:
+panel.DOAnchorPos(new Vector2(0, 0), 0.3f).SetEase(Ease.OutBack);
+
+// Item bounce khi nhận:
+icon.transform.DOPunchScale(Vector3.one * 0.3f, 0.4f, 5, 0.5f);
+
+// Shake khi sai:
+inputField.transform.DOShakePosition(0.3f, 10f, 20);
+
+// Fade in:
+canvasGroup.DOFade(1f, 0.2f);
+
+// Sequence (nhiều tween nối tiếp):
+DOTween.Sequence()
+    .Append(icon.DOScale(1.2f, 0.1f))
+    .Append(icon.DOScale(1f,   0.1f));`,
+   tip:'DOTween Ease.OutBack cho panel open tạo cảm giác "snappy" rất đẹp — dùng cho hầu hết UI animation.'},
+
+  {sec:'avfx',cat:'feel',step:'Game feel',name:'Ambient & atmosphere',
+   def:'Môi trường sống động hơn với: ambient sound (tiếng gió, chim, nước chảy theo zone), torch flickering light, NPC idle animation, lá rơi particle. Những chi tiết nhỏ tạo nên immersion lớn.',
+   code:`// Ambient sound zone (trigger-based):
+public class AmbientZone : MonoBehaviour {
+    [SerializeField] AudioClip ambientClip;
+    [SerializeField] float     fadeTime = 2f;
+    void OnTriggerEnter2D(Collider2D col) {
+        if (col.CompareTag("Player"))
+            AudioManager.Instance.FadeToAmbient(ambientClip, fadeTime);
+    }
+}
+// Torch flicker (Shader Graph):
+// Sin(Time * flickerSpeed + RandomOffset) → Light Intensity
+// 2D Point Light gắn vào torch object
+// intensity = 0.8 + sin(time*12)*0.15`,
+   tip:'Ambient sound zone là effort thấp, impact cao nhất cho atmosphere — một dungeon silent hoàn toàn cảm giác rất "dead".'},
+
+  // ── PHẦN 9: MAP DESIGN & CONTENT ────────────────────────────────
+  {sec:'mapcon',cat:'mmap',step:'Map design',name:'Dungeon design principles',
+   def:'Dungeon RPG tốt có: mục tiêu rõ ràng (main path), nhánh phụ thưởng exploration, room variety (combat/puzzle/rest/secret), visual landmark để player không bị lạc. Dùng graph trên giấy trước khi tile.',
+   code:`// Cấu trúc dungeon cơ bản:
+// Entry Room → Corridor → Combat Room
+//           ↘ Optional Branch (loot) ↗
+//                    ↓
+//           Key Room (boss key, NPC)
+//                    ↓
+//           Boss Room → Exit
+
+// Room types:
+// Safe Room:   không có enemy, có chest, rest point
+// Combat Room: 1-3 encounter groups
+// Secret Room: hidden wall, reward for exploration
+// Puzzle Room: alternative to combat`,
+   tip:'Mỗi dungeon nên có ít nhất 1 secret room — tạo ra cảm giác reward cho player chịu khó explore.'},
+
+  {sec:'mapcon',cat:'mmap',step:'Map design',name:'Tilemap layer stack',
+   def:'Isometric map dùng nhiều Tilemap layer chồng lên nhau theo thứ tự: Ground (floor) → Decal (stain, crack) → Wall → Object (furniture, barrel) → Overhead (ceiling, arch che nhân vật).',
+   code:`// Layer stack (thứ tự từ dưới lên):
+// [0] Ground      — floor tiles, Z=0
+// [1] Ground Decal— blood, stain (optional)
+// [2] Wall        — wall tiles, Z=0-2
+// [3] Wall Deco   — paintings, torches
+// [4] Object      — chest, table, barrel
+// [5] Character   — nhân vật (managed by Y-sort)
+// [6] Overhead    — arch, ceiling (alpha khi player đứng dưới)
+
+// Overhead fade: khi player enter trigger
+//   overhead.GetComponent<SpriteRenderer>().DOFade(0.3f, 0.2f)`,
+   tip:'Overhead layer với alpha fade khi player ở dưới là chi tiết nhỏ nhưng tạo ra depth rõ rệt cho isometric map.'},
+
+  {sec:'mapcon',cat:'mmap',step:'Map design',name:'Encounter zone & spawn',
+   def:'Thay vì đặt enemy cố định, dùng Encounter Zone — vùng trigger xác định loại enemy và số lượng, spawn khi player vào. Cho phép respawn sau rest, thay đổi composition theo story progress.',
+   code:`public class EncounterZone : MonoBehaviour {
+    [SerializeField] EncounterSO encounter;
+    [SerializeField] bool        respawnOnRest = false;
+    bool triggered = false;
+
+    void OnTriggerEnter2D(Collider2D col) {
+        if (!col.CompareTag("Player") || triggered) return;
+        triggered = true;
+        CombatManager.Instance.StartEncounter(encounter, transform.position);
+    }
+    public void OnLongRest() {
+        if (respawnOnRest) triggered = false;
+    }
+}
+[CreateAssetMenu(menuName="RPG/Encounter")]
+public class EncounterSO : ScriptableObject {
+    public EnemySpawnEntry[] enemies;
+    public LootTableSO       lootTable;
+    public int               xpReward;
+}`,
+   tip:'EncounterSO cho phép balance encounter từ Inspector mà không sửa scene — rất quan trọng khi playtesting.'},
+
+  {sec:'mapcon',cat:'mcon',step:'Content',name:'Content pipeline — tổng quan',
+   def:'Workflow tạo content cho RPG: Design (thiết kế trên giấy/doc) → Data (tạo SO) → Scene (đặt tile, encounter) → Script (dialogue, quest) → Test → Balance. Lặp lại cho mỗi dungeon/zone.',
+   code:`// Content checklist cho 1 dungeon:
+// □ Floor plan trên giấy (5-10 phút)
+// □ Tilemap ground + wall layer
+// □ Encounter zones (3-5 combat)
+// □ Chest + loot tables
+// □ NPC nếu có (rescue, merchant)
+// □ Dialogue nodes
+// □ Quest integration (nếu dungeon là quest location)
+// □ Ambient sound zone
+// □ Lighting (torches, darkness)
+// □ Playtest: timing, difficulty, rewards`,
+   tip:'Floor plan trên giấy trước khi tile giúp tiết kiệm 50% thời gian làm map — thay đổi trên giấy nhanh hơn xóa tile nhiều.'},
+
+  {sec:'mapcon',cat:'mcon',step:'Content',name:'Loot table',
+   def:'ScriptableObject định nghĩa những gì drop từ enemy hoặc chest — list item với xác suất, quantity range, guaranteed drop. Roll ngẫu nhiên khi combat kết thúc. Có thể stack nhiều loot table.',
+   code:`[CreateAssetMenu(menuName="RPG/Loot Table")]
+public class LootTableSO : ScriptableObject {
+    public LootEntry[] entries;
+    public int goldMin, goldMax;
+}
+[System.Serializable]
+public class LootEntry {
+    public ItemData item;
+    [Range(0f,1f)] public float dropChance;
+    public int quantityMin = 1, quantityMax = 1;
+    public bool isGuaranteed;
+}
+public List<ItemStack> Roll() {
+    var result = new List<ItemStack>();
+    foreach (var e in entries) {
+        if (e.isGuaranteed || Random.value <= e.dropChance)
+            result.Add(new ItemStack(e.item,
+                Random.Range(e.quantityMin, e.quantityMax + 1)));
+    }
+    result.Add(new ItemStack(goldItem, Random.Range(goldMin, goldMax+1)));
+    return result;
+}`,
+   tip:'Guaranteed drop cho boss (unique item) + random drop cho common enemy — tạo ra cảm giác progression rõ ràng.'},
+
+  {sec:'mapcon',cat:'mcon',step:'Content',name:'Item database & naming',
+   def:'Tổ chức tất cả ItemSO theo convention rõ ràng — thư mục theo type, tên file theo tier và type. Dùng AssetDatabase.FindAssets() để build runtime registry. Tránh reference trực tiếp bằng tay trong code.',
+   code:`// Cấu trúc folder:
+// Assets/_Game/ScriptableObjects/Items/
+//   Weapons/
+//     Swords/  iron_sword.asset, steel_sword.asset
+//     Bows/
+//   Armor/
+//     Chest/
+//   Consumables/
+//     Potions/
+
+// Naming convention: {tier}_{type}_{variant}
+// iron_sword, steel_longsword, mithril_greatsword
+// minor_healing_potion, greater_healing_potion
+
+// Runtime registry build:
+var guids = AssetDatabase.FindAssets("t:ItemData");`,
+   tip:'Naming convention nhất quán từ đầu — 200 item không có quy tắc sẽ mất hàng giờ để tìm khi balance.'},
+
+  {sec:'mapcon',cat:'mbal',step:'Balancing',name:'XP curve & level scaling',
+   def:'Tốc độ level lên ảnh hưởng đến toàn bộ feel của game. XP cần cho level N thường theo exponential curve. Enemy XP reward tính theo CR (Challenge Rating). Quá nhanh = player overpowered, quá chậm = boring grind.',
+   code:`// Exponential XP curve:
+public static int XPRequired(int level) {
+    return Mathf.RoundToInt(100 * Mathf.Pow(level, 1.5f));
+}
+// Level 1→2: 100 XP
+// Level 2→3: 283 XP
+// Level 3→4: 520 XP
+// Level 5→6: 1118 XP
+
+// Enemy XP theo CR (Challenge Rating):
+// CR 1/4 goblin: 50 XP
+// CR 1   orc:    200 XP
+// CR 5   ogre:   1800 XP
+
+// Target: 3-5 combat encounters per level`,
+   tip:'Target 3-5 encounters per level cho pacing tốt — ít hơn thì cảm giác level up quá nhanh, mất weight.'},
+
+  {sec:'mapcon',cat:'mbal',step:'Balancing',name:'Combat difficulty scaling',
+   def:'Adjust độ khó theo cách tăng số lượng enemy, thêm elite enemy, tăng CR, không nên chỉ tăng HP. Playtest với "God run" (best gear) và "Fresh run" (minimum gear) để tìm range acceptable.',
+   code:`// Difficulty tiers:
+// Easy:   enemy CR = player level - 2
+// Normal: enemy CR = player level
+// Hard:   enemy CR = player level + 2
+
+// Elite enemy: normal stats x1.5 HP, x1.25 damage
+//              + 1 special ability
+//              + 50% more XP/loot
+
+// Boss: CR = player level + 3-4
+//       Multiple phases
+//       Unique mechanics (shield, summon, enrage)
+
+// Rule of thumb: nếu player dùng hết 50%+ resource
+//   mỗi combat → difficulty là đúng`,
+   tip:'Playtest combat với nhân vật CHƯA được optimal gear — đó là experience của đa số người chơi thực tế.'},
+
+  // ── PHẦN 10: BUILD, OPTIMIZE & SHIP ─────────────────────────────
+  {sec:'build',cat:'bopt',step:'Optimization',name:'Profiler — công cụ cốt lõi',
+   def:'Unity Profiler (Window > Analysis > Profiler) record CPU/GPU/memory per frame. Frame Debugger xem từng draw call. Memory Profiler xem allocation. Không đoán mò — profile trước, optimize sau.',
+   code:`// Mở Profiler: Window > Analysis > Profiler
+// Bật Deep Profile để xem chi tiết method calls
+// (Deep Profile chạy chậm hơn — chỉ dùng khi cần)
+
+// Profiler markers trong code:
+using Unity.Profiling;
+static ProfilerMarker s_combat = new("CombatManager.ResolveTurn");
+
+void ResolveTurn() {
+    using (s_combat.Auto()) {
+        // code trong này sẽ được track riêng
+    }
+}
+// Frame > 16ms = dưới 60fps → cần optimize
+// Tìm peak frame, không average frame`,
+   tip:'80% performance issue đến từ 20% code. Profile để tìm đúng chỗ — optimize sai chỗ lãng phí thời gian.'},
+
+  {sec:'build',cat:'bopt',step:'Optimization',name:'Draw call & batching',
+   def:'Draw call là lần CPU gửi lệnh render cho GPU — nhiều draw call = CPU bottleneck. Giảm bằng: Sprite Atlas (gộp texture), Static Batching (object không di chuyển), GPU Instancing (nhiều object cùng mesh).',
+   code:`// Kiểm tra draw calls: Game View > Stats > Batches
+
+// Sprite Atlas: gộp nhiều sprite → 1 texture
+// → giảm từ N draw calls xuống 1 per atlas
+
+// Static Batching: tick "Static" trên GameObject
+// → Unity gộp các mesh không di chuyển
+
+// GPU Instancing: nhiều object cùng Material
+// Material > Enable GPU Instancing = true
+
+// Target draw calls:
+// Mobile:  < 100 draw calls / frame
+// Desktop: < 500 draw calls / frame`,
+   tip:'Kiểm tra Stats window sau mỗi scene mới — draw call tăng đột biến thường do quên set Sprite Atlas.'},
+
+  {sec:'build',cat:'bopt',step:'Optimization',name:'Object Pooling (runtime)',
+   def:'Thay vì Instantiate/Destroy liên tục (tốn GC), tạo pool trước và reuse. Áp dụng cho: enemy prefab, projectile, VFX, damage number, loot drop. Dùng Unity ObjectPool<T> built-in.',
+   code:`// Unity built-in ObjectPool (Unity 2021+):
+using UnityEngine.Pool;
+
+public class EnemySpawner : MonoBehaviour {
+    IObjectPool<EnemyController> pool;
+
+    void Awake() {
+        pool = new ObjectPool<EnemyController>(
+            createFunc:     () => Instantiate(enemyPrefab).GetComponent<EnemyController>(),
+            actionOnGet:    e  => e.gameObject.SetActive(true),
+            actionOnRelease:e  => e.gameObject.SetActive(false),
+            actionOnDestroy:e  => Destroy(e.gameObject),
+            defaultCapacity: 10, maxSize: 50
+        );
+    }
+    public EnemyController Spawn(Vector3 pos) {
+        var e = pool.Get();
+        e.transform.position = pos;
+        e.Initialize(pool); // enemy tự gọi pool.Release khi chết
+        return e;
+    }
+}`,
+   tip:'Pool size = max số object xuất hiện cùng lúc + 20% buffer. Quá nhỏ → pool miss, quá lớn → tốn memory.'},
+
+  {sec:'build',cat:'bopt',step:'Optimization',name:'Memory management & GC',
+   def:'Garbage Collector (GC) chạy khi cần free memory — gây spike lag. Nguyên nhân phổ biến: string concatenation trong Update(), new allocation trong loop, LINQ trong hot path. Dùng StringBuilder và cache.',
+   code:`// BAD — tạo string mới mỗi frame:
+void Update() {
+    hpText.text = "HP: " + currentHP + "/" + maxHP;
+}
+
+// GOOD — chỉ update khi cần:
+void OnHPChanged(int cur, int max) {
+    hpText.text = $"HP: {cur}/{max}"; // chỉ gọi khi HP đổi
+}
+
+// BAD — LINQ trong Update:
+var enemies = allObjects.Where(o => o.isEnemy).ToList();
+
+// GOOD — cache và maintain list:
+List<Enemy> activeEnemies = new(); // update khi spawn/die
+
+// Check GC allocation: Profiler > Memory > GC Alloc column`,
+   tip:'GC spike thường ở UI update và string formatting — profile "GC Alloc" column để tìm nguồn.'},
+
+  {sec:'build',cat:'bprf',step:'Profiling',name:'Frame time budget',
+   def:'60fps = 16.67ms per frame. 30fps = 33.33ms. Budget: CPU ~8ms (game logic + physics), Rendering ~6ms, Audio ~1ms, Misc ~1ms. Khi frame over budget, Profiler sẽ chỉ ra đâu chiếm nhiều nhất.',
+   code:`// Frame budget breakdown (60fps target):
+// Game Logic (Update, AI, Combat):  ~4ms
+// Physics:                           ~2ms
+// Rendering (draw calls, batching):  ~6ms
+// Audio:                             ~1ms
+// UI:                                ~1ms
+// GC + misc:                         ~2ms
+// Total budget: 16ms
+
+// Kiểm tra: Profiler > CPU Usage > hierarchy view
+// Sort by "Total" để thấy hàm nào ngốn nhiều nhất
+// Sort by "GC Alloc" để tìm allocation`,
+   tip:'Đặt target 60fps ngay từ đầu development — optimize sau khi game hoàn thiện thường tốn gấp 3 lần effort.'},
+
+  {sec:'build',cat:'bprf',step:'Profiling',name:'Build size optimization',
+   def:'RPG có thể nặng do texture, audio, animation. Giảm size bằng: texture compression, audio compression (MP3/Vorbis), strip unused assets, Addressables để lazy load. Target: < 500MB cho PC indie.',
+   code:`// Texture compression:
+// PC: BC7 (DXT5 cũ hơn, nhỏ hơn)
+// Android: ETC2 (hardware decode)
+// iOS: ASTC (tốt nhất, iOS 8+)
+// Bật "Generate Mip Maps": TẮT cho UI sprite
+
+// Audio compression:
+// Music BGM: Vorbis, quality 70%, Load Type: Streaming
+// Short SFX: Vorbis, quality 50%, Load Type: Decompress on Load
+// Very short: PCM (không compress), Load In Background: false
+
+// Strip unused assets:
+// Edit > Project Settings > Player > Strip Engine Code`,
+   tip:'Music streaming là tiết kiệm memory lớn nhất — 1 bài BGM 3 phút có thể 30-50MB nếu không stream.'},
+
+  {sec:'build',cat:'bship',step:'Ship',name:'Build pipeline',
+   def:'File > Build Settings → chọn platform → Build. Development Build cho debug (có FPS counter, profiler connection). Release Build tắt debug code. CI/CD với GitHub Actions tự động build khi push.',
+   code:`// Build Settings checklist trước release:
+// □ Tắt Development Build
+// □ Tắt Script Debugging
+// □ Strip Engine Code: ON (giảm size)
+// □ IL2CPP thay vì Mono (nhanh hơn, khó reverse engineer)
+// □ Architecture: x86_64 cho PC
+// □ Company Name, Product Name, Version đúng
+// □ Icon và splash screen đã set
+// □ Tất cả scene trong Build Settings list
+// □ Test build trên máy clean (không có Unity)`,
+   tip:'Test build trên máy không cài Unity trước khi upload lên Steam — nhiều bug chỉ xuất hiện ở build thực tế.'},
+
+  {sec:'build',cat:'bship',step:'Ship',name:'Steam & itch.io release',
+   def:'itch.io: đăng ký miễn phí, upload zip, set price. Tốt để release demo và early access. Steam: $100 Steamworks fee một lần, cần ít nhất 2 tuần review. Cần Store page, screenshots, trailer, capsule art.',
+   code:`// Itch.io checklist:
+// □ Build zip (không có .pdb debug file)
+// □ itch.io page: description, screenshots (min 3), tags
+// □ Butler CLI để upload nhanh: butler push build/ game:channel
+
+// Steam checklist:
+// □ Steamworks SDK tích hợp (achievements, cloud save)
+// □ Store assets: capsule 460x215, header 460x215, screenshots
+// □ Trailer 30-90s
+// □ SteamworksController.cs: Init(appID)
+// □ Submit for review (7-14 ngày)
+// □ Build depot upload qua SteamPipe`,
+   tip:'Release demo trên itch.io trước Steam — feedback từ người thật trước khi trả $100 Steamworks fee.'},
+
+  {sec:'build',cat:'bship',step:'Ship',name:'Post-release & patch workflow',
+   def:'Sau release: theo dõi crash report (Unity Cloud Diagnostics hoặc Sentry), đọc player feedback, prioritize bug fix. Patch nhỏ trong 1-2 tuần đầu. Version number semantic: Major.Minor.Patch.',
+   code:`// Version numbering:
+// 1.0.0 — initial release
+// 1.0.1 — hotfix (bug critical)
+// 1.1.0 — minor update (thêm content, fix nhiều bug)
+// 2.0.0 — major update (thêm feature lớn, có thể break save)
+
+// Save migration khi update:
+// saveData.version = "1.0.0"
+// Khi load: if version < "1.1.0" → RunMigration_1_1_0()
+
+// Crash reporting (miễn phí):
+// Unity Cloud Diagnostics: Dashboard > Diagnostics
+// Sentry (sentry.io): install package, 1 line init`,
+   tip:'Chuẩn bị migration code cho save data trước khi release — update 1.1 thay đổi structure mà không có migration = tất cả save cũ bị broken.'},
+
+  // ── PHẦN 11: VERSION CONTROL ─────────────────────────────────────
+  {sec:'vcs',cat:'vgit',step:'Git cơ bản',name:'Git — tổng quan cho Unity',
+   def:'Git theo dõi lịch sử thay đổi của mọi file. Với Unity có 2 loại file cần quản lý khác nhau: text file (C# script, .meta, scene YAML) merge được bằng Git bình thường, và binary file (texture, audio, prefab lớn) cần Git LFS. Phân biệt 2 loại này là quan trọng nhất.',
+   code:`// Cài Git: git-scm.com
+// Cài Git LFS: git-lfs.github.com
+// Khởi tạo repo:
+git init
+git lfs install
+
+// Project Unity cần commit CẢ .meta file:
+// .meta lưu GUID — mất .meta = mất reference trong prefab/scene
+
+// Kiểm tra status:
+git status
+git diff --stat  // xem file nào thay đổi`,
+   tip:'Unity dùng GUID thay vì tên file để link asset — .meta file chính là cái giữ GUID đó. Không commit .meta = broken reference.'},
+
+  {sec:'vcs',cat:'vgit',step:'Git cơ bản',name:'.gitignore cho Unity',
+   def:'Một số thư mục Unity tạo ra tự động và không cần commit — Library/ (cache), Temp/, obj/, Build/. Commit những thứ này làm repo nặng hàng GB không cần thiết. Phải setup .gitignore trước commit đầu tiên.',
+   code:`# Unity .gitignore chuẩn:
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# IDE:
+.vs/
+.idea/
+*.csproj
+*.sln
+
+# KHÔNG ignore: Assets/ và Packages/
+# KHÔNG ignore: *.meta (quan trọng!)
+# KHÔNG ignore: ProjectSettings/`,
+   tip:'Dùng gitignore.io (search "Unity") để generate file chuẩn — tự viết dễ bỏ sót.'},
+
+  {sec:'vcs',cat:'vgit',step:'Git cơ bản',name:'Commit convention',
+   def:'Tên commit nhất quán giúp đọc history dễ hơn. Convention phổ biến: type(scope): description. Type gồm: feat (feature mới), fix (sửa bug), art (asset mới/sửa), refactor, docs, chore (config, package).',
+   code:`# Commit convention:
+# feat(combat): add initiative roll system
+# fix(ui): healthbar not updating on crit
+# art(tileset): add dungeon floor variants
+# refactor(stats): extract modifier calculation
+# chore(packages): update Cinemachine to 2.9
+
+# Commit nhỏ, thường xuyên — tốt hơn commit to mỗi tuần:
+# Sau mỗi feature nhỏ hoàn chỉnh → commit
+# Cuối mỗi buổi làm việc → commit
+# Trước khi refactor lớn → commit (safety net)`,
+   tip:'Commit nhỏ + message rõ = dễ revert đúng điểm khi có bug. Commit "WIP everything" = vô dụng khi cần rollback.'},
+
+  {sec:'vcs',cat:'vgit',step:'Git cơ bản',name:'Branch strategy cho solo/nhóm nhỏ',
+   def:'Solo dev: main branch + feature branch cho mỗi tính năng lớn. Nhóm 2-3 người: thêm develop branch làm integration point. Không làm việc trực tiếp trên main — main luôn là bản stable có thể build được.',
+   code:`# Solo workflow:
+# main (stable, luôn build được)
+# └─ feature/combat-system
+# └─ feature/dialogue-ui
+# └─ fix/sorting-artifacts
+
+# Tạo branch mới:
+git checkout -b feature/inventory-system
+
+# Merge về main sau khi xong:
+git checkout main
+git merge feature/inventory-system --no-ff
+# --no-ff giữ lại merge commit để dễ track
+
+# Xoá branch sau merge:
+git branch -d feature/inventory-system`,
+   tip:'--no-ff khi merge giữ lại "bubble" commit — history rõ ràng hơn fast-forward, dễ revert cả feature.'},
+
+  {sec:'vcs',cat:'vart',step:'Asset & Binary',name:'Git LFS — Large File Storage',
+   def:'Git không hiệu quả với binary file lớn (texture, audio, prefab compiled) — mỗi lần thay đổi lưu toàn bộ file mới, repo phình to nhanh. Git LFS lưu pointer nhỏ trong repo, file thực tế trên LFS server.',
+   code:`# Cài và khởi tạo LFS:
+git lfs install
+
+# Track các loại binary:
+git lfs track "*.png"
+git lfs track "*.jpg"
+git lfs track "*.psd"
+git lfs track "*.wav"
+git lfs track "*.mp3"
+git lfs track "*.ogg"
+git lfs track "*.fbx"
+git lfs track "*.prefab"   # prefab lớn
+git lfs track "*.unity"    # scene file
+
+# Kiểm tra file đang track LFS:
+git lfs ls-files
+
+# .gitattributes tự được tạo — commit nó vào repo`,
+   tip:'Track .gitattributes ngay sau git lfs install — file này định nghĩa rule LFS cho toàn team/máy khác.'},
+
+  {sec:'vcs',cat:'vart',step:'Asset & Binary',name:'Phân loại tài nguyên theo cách quản lý',
+   def:'5 loại tài nguyên cần chiến lược quản lý khác nhau trong Git: (1) Source code — text, merge được. (2) Scene/Prefab — YAML text nhưng conflict khó resolve. (3) Art source (PSD, AI) — binary, lưu LFS. (4) Compiled asset (texture, audio) — binary, LFS. (5) External dependency (package) — quản lý qua Package Manager.',
+   code:`# Phân loại và cách lưu:
+
+# [TEXT — Git thường]
+# *.cs, *.asmdef, *.json, *.xml, *.md
+# *.meta (QUAN TRỌNG — luôn commit)
+# ProjectSettings/*.asset
+
+# [YAML TEXT — Git thường, nhưng cẩn thận merge]
+# *.unity (scene), *.prefab, *.asset (SO nhỏ)
+# → Bật Force Text serialization
+
+# [BINARY — Git LFS bắt buộc]
+# *.png, *.jpg, *.psd, *.ai, *.svg (raster)
+# *.wav, *.mp3, *.ogg, *.aif
+# *.fbx, *.obj, *.blend (3D model)
+# *.ttf, *.otf (font)
+
+# [KHÔNG commit — ignore]
+# Library/, Temp/, Build/, *.csproj`,
+   tip:'Rule đơn giản: mọi thứ bạn tạo bằng phần mềm khác (Photoshop, Audacity, Blender) → LFS. Code và config → Git thường.'},
+
+  {sec:'vcs',cat:'vart',step:'Asset & Binary',name:'Force Text serialization',
+   def:'Unity mặc định serialize scene và prefab dạng binary — Git không thể diff hay merge được. Chuyển sang Force Text để scene/prefab lưu dạng YAML text, Git có thể đọc và diff được (dù vẫn khó merge khi conflict).',
+   code:`// Bật Force Text:
+// Edit > Project Settings > Editor
+// Asset Serialization > Mode = Force Text
+
+// Sau khi bật: mở lại từng scene/prefab để re-serialize
+// (hoặc dùng script batch re-serialize)
+
+// Kết quả: .unity và .prefab thành YAML text
+// Có thể git diff để thấy thay đổi:
+// git diff HEAD Assets/Scenes/Dungeon.unity
+// → thấy object nào được thêm/xoá/sửa`,
+   tip:'Force Text là setting BẮT BUỘC trước commit đầu tiên — đổi sau khi đã có lịch sử commit rất phức tạp.'},
+
+  {sec:'vcs',cat:'vart',step:'Asset & Binary',name:'Asset Store package & Packages/ folder',
+   def:'Unity packages (từ Package Manager) lưu trong Library/ (ignore) và Packages/manifest.json. Asset Store assets download vào Library local — không commit. Chỉ commit manifest.json để recreate đúng phiên bản.',
+   code:`// Packages/manifest.json — commit cái này:
+{
+  "dependencies": {
+    "com.unity.cinemachine": "2.9.7",
+    "com.unity.inputsystem": "1.6.3",
+    "com.unity.textmeshpro": "3.0.6",
+    "com.unity.2d.tilemap": "1.0.0"
+  }
+}
+// Khi clone repo mới: Unity tự download packages
+
+// Asset Store assets (mua từ store):
+// → KHÔNG commit vào Git (vi phạm license + nặng)
+// → Lưu .unitypackage backup ở nơi khác
+// → Document trong README: "Required: A* Pathfinding Pro v4.x"`,
+   tip:'Ghi rõ asset store dependencies vào README — người clone repo (hoặc chính bạn sau 6 tháng) sẽ biết cần mua/import gì.'},
+
+  {sec:'vcs',cat:'vcode',step:'Code & Scene',name:'Scene merge conflict',
+   def:'Khi 2 người sửa cùng 1 scene (hoặc bạn sửa từ 2 branch khác nhau), Git tạo conflict markers trong YAML. Unity có Smart Merge tool (UnityYAMLMerge) giải quyết nhiều conflict tự động. Cách tốt nhất là tránh conflict bằng ownership.',
+   code:`# Cài UnityYAMLMerge làm merge tool:
+# .gitconfig:
+[merge]
+    tool = unityyamlmerge
+[mergetool "unityyamlmerge"]
+    trustExitCode = false
+    cmd = 'C:/Program Files/Unity/Hub/Editor/6000.x/Editor/Data/Tools/UnityYAMLMerge.exe' merge -p "$BASE" "$REMOTE" "$LOCAL" "$MERGED"
+
+# Khi có conflict:
+git mergetool  # Unity tự resolve nếu có thể
+
+# Tránh conflict tốt hơn là resolve:
+# Solo: 1 scene per branch
+# Nhóm: mỗi người own 1 scene riêng`,
+   tip:'Conflict trong scene file rất khó đọc — tốt nhất là workflow tránh 2 người sửa cùng scene cùng lúc.'},
+
+  {sec:'vcs',cat:'vcode',step:'Code & Scene',name:'Prefab override & conflict',
+   def:'Prefab Variant và Override lưu dạng YAML — conflict khi 2 branch sửa cùng prefab. Chiến lược: chia nhỏ prefab (Character, Equipment, AI là 3 prefab riêng), không 1 God Prefab chứa tất cả.',
+   code:`// Cấu trúc prefab tránh conflict:
+// Enemy_Base.prefab        → stats, animator (ít thay đổi)
+//   ├─ Goblin.prefab       → variant của Base
+//   └─ Orc.prefab          → variant của Base
+
+// Sửa visual? → chỉ sửa Goblin.prefab
+// Sửa AI?     → chỉ sửa EnemyAI.cs (code, không phải prefab)
+// Sửa stats?  → chỉ sửa GoblinStats.asset (SO riêng)
+
+// Nested Prefab tốt hơn monolithic:
+// Player.prefab chứa:
+//   → PlayerVisual.prefab (artist owns)
+//   → PlayerCombat.prefab (gameplay programmer owns)`,
+   tip:'Nested prefab + SO data tách biệt = mỗi file có 1 owner rõ ràng → conflict giảm đáng kể khi làm nhóm.'},
+
+  {sec:'vcs',cat:'vcode',step:'Code & Scene',name:'.asmdef (Assembly Definition)',
+   def:'Chia code thành nhiều Assembly Definition File — mỗi .asmdef là 1 C# assembly độc lập. Giúp: compile time nhanh hơn (chỉ recompile assembly bị thay đổi), enforce dependency rõ ràng, dễ test.',
+   code:`// Cấu trúc asmdef cho RPG:
+// Assets/_Game/Scripts/
+//   Core/          → RPG.Core.asmdef       (no dependencies)
+//   Combat/        → RPG.Combat.asmdef     (depends: Core)
+//   UI/            → RPG.UI.asmdef         (depends: Core, Combat)
+//   Dialogue/      → RPG.Dialogue.asmdef   (depends: Core)
+//   Tests/         → RPG.Tests.asmdef      (test only)
+
+// Tạo: chuột phải folder > Create > Assembly Definition
+// Lợi ích:
+// - Sửa UI code → chỉ compile RPG.UI (nhanh hơn)
+// - Combat không thể import UI namespace (enforce separation)`,
+   tip:'.asmdef giảm compile time đáng kể khi project lớn — RPG với 100+ script mà không có asmdef = compile 10-20s mỗi lần.'},
+
+  {sec:'vcs',cat:'vflow',step:'Workflow',name:'GitHub/GitLab repo setup cho Unity',
+   def:'Setup đúng từ đầu tiết kiệm nhiều headache sau này. Checklist: tạo repo với .gitignore Unity, bật LFS, set Force Text serialization, tạo nhánh main làm default, protect main branch.',
+   code:`# Thứ tự setup từ đầu:
+# 1. Tạo repo trên GitHub/GitLab (chọn gitignore: Unity)
+# 2. Clone về máy
+# 3. git lfs install  (trong thư mục repo)
+# 4. Tạo Unity project VÀO TRONG thư mục repo
+# 5. Edit > Project Settings > Editor > Force Text
+# 6. Tạo .gitattributes cho LFS tracks
+# 7. git add . && git commit -m "chore: initial Unity project"
+# 8. git push
+
+# GitHub repo settings:
+# Settings > Branches > Add rule: main
+# ✓ Require pull request before merging (nếu nhóm)
+# ✓ Require status checks (nếu có CI)`,
+   tip:'Tạo repo TRƯỚC khi tạo Unity project — tránh phải setup gitignore và LFS sau khi đã có hàng nghìn file.'},
+
+  {sec:'vcs',cat:'vflow',step:'Workflow',name:'Git workflow hàng ngày',
+   def:'Quy trình làm việc hàng ngày để tránh mất data và conflict: pull trước khi bắt đầu, commit thường xuyên khi feature nhỏ xong, push cuối buổi làm. Không để uncommitted changes qua đêm nếu có thể.',
+   code:`# Đầu buổi làm việc:
+git pull origin main          # lấy changes mới nhất
+git checkout -b feature/xxx   # tạo branch mới nếu cần
+
+# Trong khi làm:
+git status                    # xem gì đang thay đổi
+git add Assets/Scripts/Combat/TurnManager.cs
+git add Assets/Scripts/Combat/TurnManager.cs.meta
+git commit -m "feat(combat): implement turn order queue"
+
+# Cuối buổi:
+git push origin feature/xxx
+
+# Merge về main khi feature xong:
+git checkout main
+git pull origin main
+git merge feature/xxx --no-ff
+git push origin main`,
+   tip:'Luôn add .meta cùng với file C# — commit thiếu .meta = người khác clone về bị broken reference.'},
+
+  {sec:'vcs',cat:'vflow',step:'Workflow',name:'Tag & Release versioning',
+   def:'Dùng Git Tag để đánh dấu mỗi release — v1.0.0, v1.0.1-hotfix, v1.1.0. Tag giúp rollback về đúng version release, tạo GitHub Release với changelog, và link với build artifact.',
+   code:`# Tạo tag khi release:
+git tag -a v1.0.0 -m "Initial release"
+git push origin v1.0.0
+
+# Semantic versioning: MAJOR.MINOR.PATCH
+# v1.0.0 → launch
+# v1.0.1 → hotfix bug crash
+# v1.1.0 → thêm content, fix nhiều bug
+# v2.0.0 → thay đổi lớn (có thể break save)
+
+# Xem tất cả tags:
+git tag -l
+
+# Checkout về tag cũ để debug:
+git checkout v1.0.0 -b hotfix/v1.0.0-investigate`,
+   tip:'Tag mỗi lần upload build lên Steam/itch.io — biết chính xác commit nào là bản người chơi đang dùng.'},
+
+  {sec:'vcs',cat:'vflow',step:'Workflow',name:'Stash — lưu tạm changes',
+   def:'git stash lưu tạm changes chưa commit để bạn có thể switch branch hoặc pull mà không bị conflict. Khi quay lại thì pop ra. Hữu ích khi đang làm dở feature nhưng cần fix bug hotfix khẩn.',
+   code:`# Đang làm dở feature, cần fix bug gấp:
+git stash push -m "WIP: inventory drag-drop half done"
+
+# Switch sang main để fix bug:
+git checkout main
+git checkout -b fix/crash-on-load
+# ... fix bug ...
+git commit -m "fix: null ref crash on scene load"
+git checkout main && git merge fix/crash-on-load
+
+# Quay lại feature đang làm dở:
+git checkout feature/inventory
+git stash pop    # restore changes
+
+# Xem danh sách stash:
+git stash list`,
+   tip:'Đặt tên cho stash (-m) — stash list không có tên rất khó biết cái nào là gì sau vài ngày.'},
+
+  {sec:'vcs',cat:'vci',step:'CI/CD & Backup',name:'GitHub Actions cho Unity',
+   def:'CI/CD tự động build và test mỗi khi push code. GameCI (game.ci) cung cấp GitHub Actions workflow sẵn cho Unity — build PC/Android/WebGL, chạy unit test, upload artifact tự động.',
+   code:`# .github/workflows/build.yml
+name: Build Unity Project
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { lfs: true }   # checkout kèm LFS files
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: \${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: StandaloneWindows64
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-windows
+          path: build/StandaloneWindows64`,
+   tip:'CI build thất bại = biết ngay có code break build — tốt hơn là phát hiện sau 2 tuần khi chuẩn bị release.'},
+
+  {sec:'vcs',cat:'vci',step:'CI/CD & Backup',name:'Unity License trong CI',
+   def:'Unity cần license để build — CI server cần Personal hoặc Pro license. GameCI hỗ trợ cả 2. Với Personal license: activate một lần, lưu license file vào GitHub Secrets. Không bao giờ commit license file vào repo.',
+   code:`# Lấy Unity license file để dùng trong CI:
+# Bước 1: chạy activation workflow một lần
+# game-ci/unity-request-activation-file action
+# → tạo file .ulf (Unity License File)
+
+# Bước 2: lưu vào GitHub Secrets:
+# GitHub repo > Settings > Secrets > New secret
+# UNITY_LICENSE = (paste nội dung file .ulf)
+# UNITY_EMAIL   = email tài khoản Unity
+# UNITY_PASSWORD= password tài khoản Unity
+
+# Bước 3: dùng trong workflow:
+env:
+  UNITY_LICENSE:  \${{ secrets.UNITY_LICENSE }}
+  UNITY_EMAIL:    \${{ secrets.UNITY_EMAIL }}
+  UNITY_PASSWORD: \${{ secrets.UNITY_PASSWORD }}`,
+   tip:'License Personal free hoạt động tốt cho CI — không cần trả tiền Pro chỉ để build tự động.'},
+
+  {sec:'vcs',cat:'vci',step:'CI/CD & Backup',name:'Backup strategy — 3-2-1 rule',
+   def:'Rule 3-2-1: 3 bản copy, 2 loại storage khác nhau, 1 bản offsite. Với game dev: Git remote (GitHub/GitLab) là offsite backup chính. Thêm cloud storage cho LFS file lớn và asset source (Photoshop, Blender).',
+   code:`# Backup strategy cho indie solo dev:
+
+# Primary: Git + Git LFS trên GitHub
+#   → Tất cả code, scene, prefab, compiled asset
+#   → LFS cho binary lớn (texture, audio)
+
+# Secondary: External HDD hàng tuần
+#   → Full project folder bao gồm Library/
+#   → Phục hồi nhanh hơn clone + reimport
+
+# Asset source files (PSD, AI, Blend):
+#   → Google Drive hoặc Dropbox (nếu không dùng LFS)
+#   → Hoặc Git LFS nếu plan trả phí storage
+
+# GitHub free: 1GB LFS storage, 1GB/tháng bandwidth
+# GitHub Pro: 2GB LFS storage
+# Vượt quá: mua thêm data pack ($5/50GB)`,
+   tip:'GitHub free 1GB LFS thường đủ cho game indie nhỏ — theo dõi usage trong repo Settings > Billing.'},
+
+  {sec:'vcs',cat:'vci',step:'CI/CD & Backup',name:'GitLab vs GitHub cho game dev',
+   def:'Cả 2 đều hỗ trợ Git LFS. GitHub phổ biến hơn, ecosystem lớn hơn (GameCI chạy tốt), free private repo. GitLab có CI/CD mạnh hơn built-in, self-hosted option. Với solo indie: GitHub là lựa chọn đơn giản hơn.',
+   code:`# So sánh nhanh:
+
+# GitHub:
+# + Phổ biến hơn, nhiều tutorial
+# + GameCI hỗ trợ tốt hơn
+# + GitHub Actions dễ dùng
+# + Free: unlimited private repos, 2000 CI min/tháng
+# - LFS free chỉ 1GB storage
+
+# GitLab:
+# + CI/CD pipeline mạnh hơn built-in
+# + Self-hosted (hoàn toàn kiểm soát)
+# + Free: 5GB LFS storage
+# - Ít tutorial Unity hơn
+# - GameCI cần config thêm
+
+# Recommendation cho solo RPG dev:
+# → GitHub + Git LFS (đơn giản nhất để bắt đầu)
+# → Upgrade storage nếu cần ($5/50GB/tháng)`,
+   tip:'Bắt đầu với GitHub — dễ tìm help nhất. Migrate sang GitLab self-hosted sau nếu cần kiểm soát nhiều hơn.'},
+
+  // ── PHẦN 12: XỬ LÝ 3D ──────────────────────────────────────────
+  {sec:'td',cat:'3dcore',step:'3D Core',name:'3D Coordinate system & tay phải/trái',
+   def:'Unity dùng hệ toạ độ tay trái: X sang phải, Y lên trên, Z hướng vào màn hình (forward). Khác với 3D software như Blender (tay phải, Z lên). Khi import model từ Blender sẽ bị xoay -90° trục X — cần bù lại hoặc fix khi export.',
+   code:`// Trục Unity 3D:
+// X → phải    (Right)
+// Y → lên     (Up)
+// Z → vào     (Forward)
+
+// Vector directions:
+Vector3.forward  = (0, 0,  1)  // hướng vào màn hình
+Vector3.back     = (0, 0, -1)
+Vector3.up       = (0,  1, 0)
+Vector3.right    = (1, 0,  0)
+
+// Blender export fix:
+// Apply rotation trong Blender trước khi export FBX
+// hoặc: wrapper empty GameObject xoay (90, 0, 0)`,
+   tip:'Luôn Apply All Transforms trong Blender trước khi export FBX — tránh model import bị nghiêng 90°.'},
+
+  {sec:'td',cat:'3dcore',step:'3D Core',name:'Mesh & MeshRenderer',
+   def:'Mesh là dữ liệu hình học 3D — vertices, triangles, UV, normals. MeshRenderer render mesh với Material. MeshFilter giữ reference đến Mesh. Bộ ba này là nền tảng của mọi object 3D trong Unity.',
+   code:`// 3 component cơ bản của object 3D:
+// MeshFilter    → giữ Mesh data (hình dạng)
+// MeshRenderer  → render với Material (màu/texture)
+// Collider      → vật lý (BoxCollider, MeshCollider...)
+
+// Tạo mesh đơn giản bằng code:
+var mesh = new Mesh();
+mesh.vertices  = new Vector3[] { v0, v1, v2, v3 };
+mesh.triangles = new int[]     { 0, 1, 2, 0, 2, 3 };
+mesh.uv        = new Vector2[] { uv0, uv1, uv2, uv3 };
+mesh.RecalculateNormals();
+GetComponent<MeshFilter>().mesh = mesh;`,
+   tip:'MeshCollider chính xác hơn BoxCollider nhưng nặng hơn nhiều — chỉ dùng MeshCollider cho terrain/environment phức tạp.'},
+
+  {sec:'td',cat:'3dcore',step:'3D Core',name:'Transform trong 3D',
+   def:'Giống 2D nhưng có thêm trục Z. Rotation dùng Quaternion (tránh Gimbal Lock) hoặc Euler angles (dễ đọc). Local space vs World space quan trọng hơn trong 3D vì object thường có parent phức tạp.',
+   code:`// Di chuyển theo hướng local (forward của object):
+transform.Translate(Vector3.forward * speed * Time.deltaTime);
+
+// Di chuyển theo world space:
+transform.position += Vector3.forward * speed * Time.deltaTime;
+
+// Xoay mượt bằng Quaternion:
+transform.rotation = Quaternion.Slerp(
+    transform.rotation,
+    targetRotation,
+    rotSpeed * Time.deltaTime);
+
+// Nhìn về phía target:
+transform.LookAt(target.position);`,
+   tip:'Dùng Quaternion.Slerp cho rotation mượt — Lerp với Euler angle tạo ra path không tự nhiên.'},
+
+  {sec:'td',cat:'3dcore',step:'3D Core',name:'Camera 3D — Perspective vs Orthographic',
+   def:'3D game thường dùng Perspective camera — vật xa nhỏ hơn vật gần, tạo chiều sâu. Field of View (FOV) quyết định góc nhìn. FOV thấp (40-50°) = telephoto, ít distortion. FOV cao (80-90°) = wide angle, nhiều distortion.',
+   code:`// Perspective camera:
+Camera.main.fieldOfView = 60f;  // default 60°
+Camera.main.nearClipPlane = 0.1f;
+Camera.main.farClipPlane  = 1000f;
+
+// FOV theo game type:
+// First Person:   60-90° (rộng để thấy xung quanh)
+// Third Person:   50-65° (cân bằng)
+// Cinematic:      30-40° (telephoto, đẹp)
+// Racing:         80-100° (cảm giác speed)
+
+// Depth of Field (URP Post Processing):
+// Blur vật ở xa/gần để tạo cảm giác cinematic`,
+   tip:'FOV 60° là sweet spot cho third-person RPG 3D — đủ rộng để thấy môi trường, không quá nhiều distortion.'},
+
+  {sec:'td',cat:'3dren',step:'3D Rendering',name:'Material & Shader trong 3D',
+   def:'Material quyết định bề mặt trông như thế nào — màu, texture, độ bóng, metallic. URP dùng Lit shader mặc định với PBR (Physically Based Rendering). Các thuộc tính chính: Albedo, Normal Map, Metallic, Smoothness, Emission.',
+   code:`// PBR Material properties:
+// Albedo (Base Color): màu/texture cơ bản
+// Normal Map:  giả lập chi tiết bề mặt không cần poly
+// Metallic:    0 = plastic/wood, 1 = kim loại
+// Smoothness:  0 = matte/rough, 1 = bóng loáng
+// Emission:    tự phát sáng (torch, glowing rune)
+
+// Set material property bằng code:
+renderer.material.SetColor("_BaseColor", Color.red);
+renderer.material.SetFloat("_Metallic", 0.8f);
+renderer.material.SetTexture("_BaseMap", newTexture);`,
+   tip:'Normal Map tạo ra sự khác biệt lớn nhất về visual quality so với chi phí performance — luôn bake normal map cho prop quan trọng.'},
+
+  {sec:'td',cat:'3dren',step:'3D Rendering',name:'Lighting 3D — Real-time vs Baked',
+   def:'Real-time lighting tính toán mỗi frame — chính xác nhưng tốn GPU. Baked lighting tính toán trước (Lightmap) — nhanh hơn nhưng static, không thay đổi khi runtime. RPG 3D thường dùng kết hợp: baked cho environment, real-time cho dynamic object.',
+   code:`// Light types:
+// Directional: ánh sáng mặt trời (1 direction toàn scene)
+// Point:        bóng đèn (toả đều mọi hướng, có range)
+// Spot:         đèn pin/torch (hình nón, có angle)
+// Area:         mảng ánh sáng (chỉ baked, không real-time)
+
+// Bake Lightmap:
+// Object > Static > Contribute GI = true
+// Window > Rendering > Lighting > Generate Lighting
+
+// Mixed mode: Direct = real-time, Indirect = baked
+// Tốt nhất cho RPG: character real-time, dungeon baked`,
+   tip:'Bake lightmap cho dungeon/environment tĩnh giúp tăng FPS đáng kể — lighting đẹp hơn real-time nhờ GI được tính toán kỹ hơn.'},
+
+  {sec:'td',cat:'3dren',step:'3D Rendering',name:'Shadow & LOD',
+   def:'Shadow tốn GPU đáng kể — giới hạn shadow distance và quality theo platform. LOD (Level of Detail) tự động dùng mesh đơn giản hơn khi object ở xa — giảm vertex count mà player không nhận ra sự khác biệt.',
+   code:`// Shadow settings (URP):
+// Project Settings > Quality > Shadows
+// Shadow Distance: 50-100m cho RPG indoor
+// Cascade Count: 2-4 (nhiều hơn = mượt hơn, nặng hơn)
+
+// LOD Group:
+LODGroup lodGroup = obj.AddComponent<LODGroup>();
+LOD[] lods = new LOD[3];
+lods[0] = new LOD(0.6f, highPolyRenderers);   // > 60% screen
+lods[1] = new LOD(0.2f, midPolyRenderers);    // > 20% screen
+lods[2] = new LOD(0.05f, lowPolyRenderers);   // > 5% screen
+lodGroup.SetLODs(lods);
+lodGroup.RecalculateBounds();`,
+   tip:'LOD là optimization quan trọng nhất cho open world / dungeon lớn — giảm 60-70% vertex count ở khoảng cách vừa mà mắt không thấy.'},
+
+  {sec:'td',cat:'3dren',step:'3D Rendering',name:'Post Processing (URP)',
+   def:'Hiệu ứng xử lý sau khi render xong frame — Bloom (ánh sáng lan ra), Color Grading (chỉnh màu tổng thể), Ambient Occlusion (bóng tối ở góc khuất), Depth of Field, Vignette. Tạo ra visual style đặc trưng.',
+   code:`// Thêm Volume component vào scene:
+// GameObject > Volume > Global Volume
+
+// Các effect quan trọng cho RPG 3D:
+// Bloom:            torch và magic glow
+// Color Grading:    warm = town, cold = dungeon, red = combat
+// SSAO:             ambient occlusion realtime (nặng)
+// Depth of Field:   blur foreground/background (cinematic)
+// Vignette:         tối góc màn hình (thêm tension)
+
+// Thay đổi runtime (ví dụ: khi combat bắt đầu):
+Volume.profile.TryGet(out ColorAdjustments ca);
+ca.saturation.value = -30f; // desaturate khi nguy hiểm`,
+   tip:'Color Grading là cách nhanh nhất tạo ra mood khác nhau cho zone — warm amber cho town, cool blue cho ice dungeon.'},
+
+  {sec:'td',cat:'3dphys',step:'3D Physics',name:'Rigidbody 3D vs 2D',
+   def:'Rigidbody (3D) hoạt động trong không gian 3 chiều đầy đủ — gravity, drag, angular drag, constraints. Khác Rigidbody2D: không có trục Z lock mặc định, cần set Freeze Position/Rotation constraints để tránh object lăn bất ngờ.',
+   code:`Rigidbody rb = GetComponent<Rigidbody>();
+
+// Di chuyển character 3D đúng cách:
+rb.MovePosition(rb.position + moveDir * speed * Time.fixedDeltaTime);
+
+// Constraints để tránh lăn:
+rb.constraints = RigidbodyConstraints.FreezeRotationX
+               | RigidbodyConstraints.FreezeRotationZ;
+// Chỉ cho xoay trục Y (nhân vật quay trái/phải)
+
+// Nhảy:
+rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);`,
+   tip:'FreezeRotation X và Z cho character controller 3D — không lock thì nhân vật ngã lăn mỗi khi va vào wall.'},
+
+  {sec:'td',cat:'3dphys',step:'3D Physics',name:'CharacterController vs Rigidbody',
+   def:'CharacterController là component đặc biệt cho nhân vật 3D — không dùng physics engine, di chuyển bằng Move(). Không bị physics tác động (không bị đẩy). Dùng khi muốn kiểm soát movement hoàn toàn. Rigidbody dùng khi cần physics tương tác thực sự.',
+   code:`// CharacterController:
+CharacterController cc = GetComponent<CharacterController>();
+
+void Update() {
+    Vector3 move = new Vector3(input.x, 0, input.y);
+    move = Camera.main.transform.TransformDirection(move);
+    move.y = 0;
+
+    // Apply gravity thủ công:
+    verticalVelocity += Physics.gravity.y * Time.deltaTime;
+    move.y = verticalVelocity;
+
+    cc.Move(move * speed * Time.deltaTime);
+    if (cc.isGrounded) verticalVelocity = -0.5f;
+}`,
+   tip:'CharacterController là lựa chọn chuẩn cho RPG/action game 3D — kiểm soát movement tốt hơn Rigidbody rất nhiều.'},
+
+  {sec:'td',cat:'3dphys',step:'3D Physics',name:'Raycast 3D',
+   def:'Bắn tia từ điểm A theo hướng nào đó, phát hiện va chạm đầu tiên. Dùng cho: phát hiện ground (isGrounded), tầm nhìn enemy (Line of Sight), click chọn object, projectile hit. Trong 3D thường dùng nhiều hơn 2D.',
+   code:`// Ground check:
+bool isGrounded = Physics.Raycast(
+    transform.position, Vector3.down, 0.1f, groundLayer);
+
+// Click to select object:
+Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+if (Physics.Raycast(ray, out RaycastHit hit, 100f)) {
+    Debug.Log("Hit: " + hit.collider.name);
+    Debug.DrawLine(ray.origin, hit.point, Color.red);
+}
+
+// Line of Sight (enemy AI):
+bool canSee = !Physics.Linecast(
+    eyePosition, target.position, obstacleLayers);`,
+   tip:'Dùng LayerMask trong Raycast — không mask thì ray hit chính bản thân mình trước, gây bug khó debug.'},
+
+  {sec:'td',cat:'3danim',step:'3D Animation',name:'Animator & Animation Clip 3D',
+   def:'Animator Controller quản lý state machine animation giống 2D nhưng phức tạp hơn — Blend Tree cho locomotion (walk/run theo speed), Avatar Mask để animate chỉ upper body khi tấn công. Animation Rigging cho IK (inverse kinematics).',
+   code:`// Animator parameters:
+animator.SetFloat("Speed",   moveSpeed);
+animator.SetBool("IsGrounded", isGrounded);
+animator.SetTrigger("Attack");
+
+// Blend Tree cho locomotion:
+// Parameter: Speed (float 0-1)
+// Speed 0:   Idle clip
+// Speed 0.5: Walk clip
+// Speed 1:   Run clip
+// → Unity tự blend mượt giữa các clip
+
+// Avatar Mask — chỉ animate upper body khi đánh:
+// Layer "UpperBody" Weight=1, Avatar Mask=UpperBody
+// → chân vẫn đi bình thường, tay đánh riêng`,
+   tip:'Blend Tree cho locomotion là chuẩn cho mọi game 3D có nhân vật di chuyển — không dùng separate clip Walk/Run riêng lẻ.'},
+
+  {sec:'td',cat:'3danim',step:'3D Animation',name:'Humanoid Avatar & Retargeting',
+   def:'Unity có Humanoid rig system cho phép reuse animation giữa các character khác nhau — gọi là Animation Retargeting. Import model với Animation Type = Humanoid, Unity tự map bone. 1 bộ animation walk/run/attack có thể dùng cho Warrior, Mage, NPC.',
+   code:`// Import settings cho Humanoid character:
+// Model > Rig > Animation Type = Humanoid
+// Avatar Definition = Create From This Model
+// Unity tự map bone thành Avatar
+
+// Retargeting: dùng animation từ character khác
+// Animator > Controller: assign cùng 1 Animator Controller
+// Animation clip tự adapt theo skeleton mỗi character
+
+// Free motion capture animations:
+// Mixamo (mixamo.com) — Adobe, miễn phí
+// Export: FBX for Unity, With Skin, 30fps`,
+   tip:'Mixamo miễn phí có hàng trăm animation humanoid chất lượng tốt — đủ dùng cho RPG indie mà không cần bake motion capture.'},
+
+  {sec:'td',cat:'3danim',step:'3D Animation',name:'Inverse Kinematics (IK)',
+   def:'IK tính toán rotation của joint chain để đầu cuối (hand, foot) đến được vị trí target. Dùng cho: hand đặt đúng lên bàn/tường, foot đặt đúng lên mặt đất không đồng đều, mắt nhìn theo target. Unity Animation Rigging package.',
+   code:`// Animation Rigging package:
+// Window > Package Manager > Animation Rigging
+
+// Two Bone IK (hand IK):
+// Rig > Add Rig > Add Two Bone IK Constraint
+// Root: Shoulder, Mid: Elbow, Tip: Hand
+// Target: empty GameObject follow target position
+
+// Foot IK (đặt chân đúng mặt đất):
+void OnAnimatorIK(int layerIndex) {
+    // Left foot:
+    animator.SetIKPositionWeight(AvatarIKGoal.LeftFoot, 1f);
+    if (Physics.Raycast(leftFootPos, Vector3.down, out var hit))
+        animator.SetIKPosition(AvatarIKGoal.LeftFoot, hit.point);
+}`,
+   tip:'Foot IK là chi tiết nhỏ nhưng tạo ra sự khác biệt lớn khi nhân vật đứng trên địa hình không bằng phẳng.'},
+
+  {sec:'td',cat:'3ddiff',step:'Khác 2D',name:'NavMesh trong 3D (đúng cách dùng)',
+   def:'NavMesh là hệ thống pathfinding 3D built-in của Unity — bake mesh đi được từ geometry của scene. AI Agent di chuyển trên NavMesh tự tránh obstacle. Trong 3D dùng được tốt (khác với 2D isometric đã đề cập ở Phần 2 không nên dùng).',
+   code:`// Bake NavMesh:
+// Window > AI > Navigation
+// Bake tab > Bake button
+// Object cần bake: Static = Navigation Static
+
+// NavMeshAgent trên enemy:
+NavMeshAgent agent = GetComponent<NavMeshAgent>();
+agent.speed        = 3.5f;
+agent.stoppingDistance = 1.5f;
+
+// Di chuyển đến target:
+agent.SetDestination(player.position);
+
+// Kiểm tra đã đến nơi:
+bool arrived = !agent.pathPending
+    && agent.remainingDistance <= agent.stoppingDistance;`,
+   tip:'NavMesh bake lại mỗi khi thay đổi geometry — nếu dungeon có dynamic door/wall cần dùng NavMeshObstacle thay vì rebake.'},
+
+  {sec:'td',cat:'3ddiff',step:'Khác 2D',name:'3D vs 2D — những thứ thay đổi',
+   def:'Chuyển sang 3D không phải học lại từ đầu — phần lớn concept giữ nguyên. Những thứ thực sự khác: Physics (3D thay vì 2D component), Camera (Perspective thay vì Orthographic), Collider (Box/Capsule/Mesh thay vì 2D variant), Raycast (không cần suffix 2D).',
+   code:`// Mapping 2D → 3D:
+// Rigidbody2D        → Rigidbody
+// Collider2D         → Collider (Box, Capsule, Mesh...)
+// Physics2D.Raycast  → Physics.Raycast
+// OnCollisionEnter2D → OnCollisionEnter
+// OnTriggerEnter2D   → OnTriggerEnter
+// SpriteRenderer     → MeshRenderer + Material
+// Camera Orthographic→ Camera Perspective
+
+// Giữ nguyên:
+// MonoBehaviour lifecycle (Awake, Start, Update...)
+// ScriptableObject, Prefab, tag/layer
+// UI Canvas (vẫn dùng như cũ)
+// AudioSource, AudioMixer
+// Animator, Animation clip`,
+   tip:'Học 2D trước rồi mới 3D là đúng thứ tự — 2D ít biến số hơn, hiểu concept xong thì 3D chỉ là thêm 1 chiều.'},
+
+  {sec:'td',cat:'3ddiff',step:'Khác 2D',name:'3D Template — chọn cái nào',
+   def:'Khi tạo project 3D trong Unity Hub: chọn "3D (URP)" cho hầu hết game indie. "3D (HDRP)" cho game AAA cần visual cực đẹp (yêu cầu GPU mạnh). "3D (Built-in)" tránh dùng — legacy, sẽ bị deprecated.',
+   code:`// Template comparison:
+// 3D (URP):
+//   → Tốt cho: RPG, platformer, action, indie
+//   → GPU: mid-range là đủ
+//   → Mobile support: có
+//   → Shader Graph: có
+
+// 3D (HDRP):
+//   → Tốt cho: AAA, simulation, cinematic
+//   → GPU: cần RTX / RX 6000+
+//   → Mobile: KHÔNG support
+//   → Ray tracing: có
+
+// Switch từ URP sang HDRP sau khi có asset = đau đớn
+// → Tất cả material cần làm lại từ đầu`,
+   tip:'URP cho 99% indie 3D game — HDRP chỉ khi bạn chắc chắn cần ray tracing và target PC/Console only.'},
+
+  {sec:'td',cat:'3ddiff',step:'Khác 2D',name:'Cinemachine 3D — camera follow & orbit',
+   def:'Cinemachine trong 3D có nhiều Virtual Camera type hơn 2D. FreeLook Camera cho third-person orbit (xoay quanh nhân vật). Brain trên Main Camera điều phối blend giữa các Virtual Camera.',
+   code:`// Third-person FreeLook Camera:
+// Add CinemachineFreeLook lên scene
+// Follow: Player transform
+// Look At: Player transform (+ height offset)
+// Orbits: 3 ring (top, mid, bottom) chỉnh radius + height
+
+// Blend giữa cameras (ví dụ combat → cinematic):
+CinemachineBrain brain = Camera.main.GetComponent<CinemachineBrain>();
+brain.m_DefaultBlend.m_Time = 1.5f; // blend 1.5s
+
+// Priority: camera priority cao hơn = active
+explorationCam.Priority = 10;
+combatCam.Priority      = 20; // combat cam win`,
+   tip:'Dùng Priority để switch camera — không Activate/Deactivate GameObject. Priority cao nhất luôn là camera active.'},
+];
+
+var activeFilters = {};
+Object.keys(CAT_META).forEach(function(k){ activeFilters[k] = true; });
+
+function buildFilters() {
+  var sec1 = ['editor','scene','go','code','asset'];
+  var sec2 = ['cam','tile','sort','path','coord'];
+  var wrap = document.getElementById('filters');
+  wrap.innerHTML = '';
+
+  function makeBtn(cats, sepLabel) {
+    var sep = document.createElement('span');
+    sep.style.cssText = 'font-family:var(--mono);font-size:10px;color:var(--hint);padding:4px 4px 4px 0;letter-spacing:.05em;align-self:center;';
+    sep.textContent = sepLabel;
+    wrap.appendChild(sep);
+    cats.forEach(function(cat){
+      var btn = document.createElement('button');
+      btn.className = 'f-btn active-' + cat;
+      btn.textContent = CAT_META[cat].label;
+      btn.dataset.cat = cat;
+      btn.onclick = function(){ toggle(cat, btn); };
+      wrap.appendChild(btn);
+    });
+  }
+  makeBtn(sec1, 'Phần 1');
+  makeBtn(sec2, 'Phần 2');
+  makeBtn(['dnd','so','arch','calc','pat'], 'Phần 3');
+  makeBtn(['turn','action','spell','cstate','carch'], 'Phần 4');
+  makeBtn(['dlg','node','quest','npc','darch'], 'Phần 5');
+  makeBtn(['canvas','hud','inv','tooltip','uiarch'], 'Phần 6');
+  makeBtn(['sdata','sser','sflow'], 'Phần 7');
+  makeBtn(['audio','vfx','feel'], 'Phần 8');
+  makeBtn(['mmap','mcon','mbal'], 'Phần 9');
+  makeBtn(['bopt','bprf','bship'], 'Phần 10');
+  makeBtn(['vgit','vart','vcode','vflow','vci'], 'Phần 11');
+  makeBtn(['3dcore','3dren','3dphys','3danim','3ddiff'], 'Phần 12');
+}
+
+function toggle(cat, btn) {
+  activeFilters[cat] = !activeFilters[cat];
+  if (activeFilters[cat]) btn.classList.add('active-'+cat);
+  else btn.classList.remove('active-'+cat);
+  render();
+}
+
+function render() {
+  var q = document.getElementById('search').value.toLowerCase().trim();
+  var list = document.getElementById('list');
+  var countEl = document.getElementById('countLine');
+
+  var visible = DATA.filter(function(d){
+    if (!activeFilters[d.cat]) return false;
+    if (!q) return true;
+    return (d.name + d.def + d.tip).toLowerCase().includes(q);
+  });
+
+  countEl.textContent = visible.length + ' thuật ngữ hiển thị — bấm để mở';
+
+  if (!visible.length) {
+    list.innerHTML = '<div class="empty">Không tìm thấy thuật ngữ nào</div>';
+    return;
+  }
+
+  var html = '';
+  var shownSecs = {};
+  SECTIONS.forEach(function(sec){
+    var secItems = visible.filter(function(d){ return d.sec === sec.id; });
+    if (!secItems.length) return;
+    if (!shownSecs[sec.id]) {
+      html += '<div class="section-sep"><span class="label" style="color:var(--hint)">' + sec.label + '</span><span class="line"></span></div>';
+      shownSecs[sec.id] = true;
+    }
+    secItems.forEach(function(d){
+      var idx = DATA.indexOf(d);
+      var meta = CAT_META[d.cat];
+      html += '<div class="card" id="card-'+idx+'" onclick="tog('+idx+')">' +
+        '<div class="card-head">' +
+        '<span class="pill ' + meta.pill + '">' + meta.label + '</span>' +
+        '<span class="card-name">' + d.name + '</span>' +
+        '<span class="step-tag">' + d.step + '</span>' +
+        '<span class="chevron">▼</span>' +
+        '</div>' +
+        '<div class="card-body">' +
+        '<p class="def">' + d.def + '</p>' +
+        '<pre class="code-block">' + d.code + '</pre>' +
+        '<p class="tip-box">' + d.tip + '</p>' +
+        '</div></div>';
+    });
+  });
+  list.innerHTML = html;
+}
+
+function tog(idx) {
+  var el = document.getElementById('card-'+idx);
+  if (el) el.classList.toggle('open');
+}
+
+buildFilters();
+render();
+</script>
+</body>
+</html>

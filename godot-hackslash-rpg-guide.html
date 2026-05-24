@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Godot 4 — Hack & Slash Isometric RPG</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0c0804;
+    --bg2:      #110e09;
+    --surface:  #1a1409;
+    --card:     #1f1a0d;
+    --border:   #2e2410;
+    --border2:  #3d3118;
+    --fire:     #e8650a;
+    --gold:     #c9a227;
+    --gold2:    #f0d060;
+    --blood:    #8b1a1a;
+    --gem:      #00b4d8;
+    --poison:   #4a9e4a;
+    --text:     #d4c5a0;
+    --muted:    #7a6a50;
+    --code-bg:  #080604;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    font-size: 17px;
+    line-height: 1.75;
+  }
+
+  /* PARCHMENT TEXTURE */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(232,101,10,.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(139,26,26,.05) 0%, transparent 60%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:0;
+  }
+
+  #prog {
+    position:fixed; top:0; left:0; height:3px;
+    background: linear-gradient(90deg, var(--blood), var(--fire), var(--gold));
+    z-index:1000; transition:width .1s;
+    box-shadow: 0 0 8px var(--fire);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    position:fixed; top:0; left:0;
+    width:240px; height:100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border2);
+    overflow-y:auto; z-index:100;
+    padding-bottom:40px;
+  }
+
+  .sidebar-head {
+    padding:28px 20px 22px;
+    border-bottom:1px solid var(--border2);
+    background: linear-gradient(180deg, rgba(232,101,10,.08) 0%, transparent 100%);
+    margin-bottom:6px;
+  }
+
+  .sidebar-rune {
+    font-family:'Cinzel', serif;
+    font-size:.6rem; letter-spacing:4px;
+    text-transform:uppercase; color:var(--fire);
+    margin-bottom:8px; opacity:.8;
+  }
+
+  .sidebar-title {
+    font-family:'Cinzel', serif;
+    font-size:1rem; font-weight:900;
+    color:var(--gold2); line-height:1.3;
+    text-shadow: 0 0 20px rgba(240,208,96,.3);
+  }
+
+  .nav-group {
+    padding:12px 0 4px 20px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:.58rem; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--muted);
+    opacity:.6;
+  }
+
+  .nav-link {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 20px;
+    text-decoration:none;
+    font-family:'Crimson Pro', serif;
+    font-size:.88rem; color:var(--muted);
+    border-left:2px solid transparent;
+    transition:all .15s;
+  }
+
+  .nav-link:hover { color:var(--text); background:rgba(201,162,39,.04); }
+  .nav-link.active {
+    color:var(--gold); border-left-color:var(--gold);
+    background:rgba(201,162,39,.07);
+  }
+
+  .nav-icon { font-size:.75rem; width:16px; text-align:center; flex-shrink:0; }
+
+  /* MAIN */
+  .main {
+    margin-left:240px;
+    padding:0 60px 120px;
+    max-width:900px;
+    position:relative; z-index:1;
+  }
+
+  @media(max-width:760px){
+    .sidebar{display:none;}
+    .main{margin-left:0; padding:0 20px 80px;}
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding:80px 0 56px;
+    border-bottom:1px solid var(--border2);
+    margin-bottom:64px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .hero-rune {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.62rem; letter-spacing:4px;
+    text-transform:uppercase; color:var(--fire);
+    margin-bottom:14px;
+    opacity:.9;
+  }
+
+  h1 {
+    font-family:'Cinzel', serif;
+    font-size:clamp(2rem, 4.5vw, 3.2rem);
+    font-weight:900; line-height:1.1;
+    color:var(--gold2);
+    text-shadow: 0 0 40px rgba(232,101,10,.4), 0 2px 4px rgba(0,0,0,.8);
+  }
+
+  h1 .blood { color:#c0392b; text-shadow:0 0 20px rgba(192,57,43,.6); }
+  h1 .gem   { color:var(--gem); text-shadow:0 0 20px rgba(0,180,216,.4); }
+
+  .hero-lore {
+    font-style:italic; color:var(--muted);
+    font-size:.95rem; margin-top:16px;
+    max-width:540px; line-height:1.6;
+    border-left:2px solid var(--border2);
+    padding-left:14px;
+  }
+
+  .hero-chips {
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-top:22px;
+  }
+
+  .hchip {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.62rem; letter-spacing:1px;
+    text-transform:uppercase; padding:4px 12px;
+    border-radius:1px; border:1px solid;
+  }
+
+  .hc-fire   { color:var(--fire);   border-color:rgba(232,101,10,.35); background:rgba(232,101,10,.08); }
+  .hc-gold   { color:var(--gold);   border-color:rgba(201,162,39,.35); background:rgba(201,162,39,.07); }
+  .hc-gem    { color:var(--gem);    border-color:rgba(0,180,216,.3);   background:rgba(0,180,216,.07); }
+  .hc-poison { color:var(--poison); border-color:rgba(74,158,74,.3);   background:rgba(74,158,74,.07); }
+  .hc-blood  { color:#c0392b;       border-color:rgba(192,57,43,.35);  background:rgba(192,57,43,.08); }
+
+  /* Decorative skull */
+  .hero-deco {
+    position:absolute; right:0; top:50%;
+    transform:translateY(-50%);
+    font-size:8rem; opacity:.04;
+    pointer-events:none;
+    user-select:none;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom:72px;
+    scroll-margin-top:32px;
+  }
+
+  .section-eyebrow {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.6rem; letter-spacing:3px;
+    text-transform:uppercase; color:var(--fire);
+    margin-bottom:6px; opacity:.8;
+  }
+
+  .section-title-row {
+    display:flex; align-items:baseline;
+    gap:14px; margin-bottom:28px; flex-wrap:wrap;
+  }
+
+  h2 {
+    font-family:'Cinzel', serif;
+    font-size:1.55rem; font-weight:700;
+    color:var(--gold); line-height:1.2;
+  }
+
+  .time-tag {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.58rem; letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted); border:1px solid var(--border2);
+    padding:3px 10px; border-radius:1px;
+    white-space:nowrap;
+  }
+
+  h3 {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.65rem; letter-spacing:2.5px;
+    text-transform:uppercase; color:var(--fire);
+    margin:32px 0 12px;
+    padding-bottom:6px;
+    border-bottom:1px solid rgba(232,101,10,.2);
+  }
+
+  h4 {
+    font-family:'Cinzel', serif;
+    font-size:.95rem; color:var(--gold);
+    margin:18px 0 6px;
+  }
+
+  p { color:#b0a080; margin-bottom:12px; font-size:.95rem; }
+  strong { color:var(--text); font-weight:600; }
+  em { color:var(--gold2); font-style:italic; }
+
+  /* ── CARDS ── */
+  .card {
+    background:var(--card);
+    border:1px solid var(--border2);
+    border-radius:2px;
+    padding:20px 24px;
+    margin-bottom:14px;
+    position:relative;
+    transition:border-color .2s;
+  }
+
+  .card:hover { border-color:var(--border2); }
+
+  .card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:0; transition:opacity .3s;
+  }
+
+  .card:hover::before { opacity:.4; }
+
+  .card-fire   { border-left:2px solid var(--fire); }
+  .card-gold   { border-left:2px solid var(--gold); }
+  .card-gem    { border-left:2px solid var(--gem); }
+  .card-blood  { border-left:2px solid var(--blood); }
+  .card-poison { border-left:2px solid var(--poison); }
+
+  .g2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; }
+  @media(max-width:600px){ .g2,.g3{grid-template-columns:1fr;} }
+
+  /* ── CODE ── */
+  pre {
+    background:var(--code-bg);
+    border:1px solid var(--border2);
+    border-left:2px solid var(--fire);
+    border-radius:2px;
+    padding:20px 24px;
+    overflow-x:auto;
+    margin:14px 0 20px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:.73rem;
+    line-height:1.95;
+  }
+
+  pre code { color:#c8b890; }
+
+  .kw { color:#e06c75; }
+  .fn { color:#7ec8e3; }
+  .st { color:#98c379; }
+  .cm { color:#4a3e28; font-style:italic; }
+  .nm { color:#e5a830; }
+  .tp { color:#e5c07b; }
+  .an { color:#89ddff; }
+  .cn { color:var(--fire); }
+
+  p code, li code {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.74rem;
+    background:rgba(232,101,10,.1);
+    border:1px solid rgba(232,101,10,.2);
+    padding:1px 6px; border-radius:2px;
+    color:#e8a070;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-radius:2px; padding:14px 18px;
+    margin:16px 0; font-size:.9rem;
+    color:#a09070; border-left:2px solid;
+  }
+
+  .co-fire   { background:rgba(232,101,10,.07); border-color:var(--fire); }
+  .co-gold   { background:rgba(201,162,39,.07); border-color:var(--gold); }
+  .co-gem    { background:rgba(0,180,216,.06);  border-color:var(--gem); }
+  .co-blood  { background:rgba(139,26,26,.08);  border-color:var(--blood); }
+  .co-poison { background:rgba(74,158,74,.07);  border-color:var(--poison); }
+
+  .callout strong { display:block; margin-bottom:4px; color:var(--text); }
+
+  /* ── TABLE ── */
+  table { width:100%; border-collapse:collapse; font-size:.85rem; margin:12px 0; }
+  th {
+    font-family:'Share Tech Mono', monospace; font-size:.6rem;
+    letter-spacing:2px; text-transform:uppercase;
+    color:var(--muted); padding:8px 14px;
+    border-bottom:1px solid var(--border2); text-align:left;
+  }
+  td {
+    padding:10px 14px;
+    border-bottom:1px solid rgba(46,36,16,.8);
+    color:#a09070; vertical-align:top;
+  }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(232,101,10,.03); }
+  td:first-child {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.72rem; color:var(--gem);
+  }
+
+  /* ── SCENE BOX ── */
+  .scene-box {
+    background:var(--code-bg); border:1px solid var(--border2);
+    border-radius:2px; overflow:hidden; margin:14px 0;
+    font-family:'Share Tech Mono', monospace; font-size:.72rem;
+  }
+
+  .scene-head {
+    background:rgba(255,255,255,.02); border-bottom:1px solid var(--border2);
+    padding:7px 16px; color:var(--muted);
+    font-size:.6rem; letter-spacing:1.5px; text-transform:uppercase;
+  }
+
+  .scene-body { padding:14px 16px; line-height:2.1; }
+  .sn  { color:var(--text); }
+  .stype { color:var(--gem); }
+  .sscript { color:var(--poison); font-size:.65rem; }
+  .snote { color:var(--muted); font-size:.65rem; }
+
+  /* ── STAT BLOCK ── */
+  .stat-block {
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:2px; padding:18px 22px;
+    font-family:'Share Tech Mono', monospace; font-size:.74rem;
+  }
+
+  .stat-title {
+    font-family:'Cinzel', serif; font-size:.9rem;
+    color:var(--gold); margin-bottom:12px;
+    padding-bottom:8px; border-bottom:1px solid var(--border2);
+  }
+
+  .stat-row {
+    display:flex; justify-content:space-between;
+    align-items:center; padding:5px 0;
+    border-bottom:1px solid rgba(46,36,16,.5);
+    color:#a09070;
+  }
+
+  .stat-row:last-child { border-bottom:none; }
+  .stat-name { color:var(--muted); }
+  .stat-val  { color:var(--gold2); font-weight:600; }
+  .stat-formula { color:var(--fire); font-size:.65rem; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    position:relative; margin:64px 0;
+    height:1px; background:var(--border2);
+    overflow:visible;
+  }
+
+  .divider::after {
+    content:'⚔';
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    background:var(--bg); color:var(--border2);
+    padding:0 12px; font-size:1rem;
+  }
+
+  /* ── SKILL CARD ── */
+  .skill-card {
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:2px; padding:16px;
+    display:flex; gap:14px; align-items:flex-start;
+    margin-bottom:10px;
+  }
+
+  .skill-icon {
+    font-size:1.6rem; flex-shrink:0;
+    width:40px; text-align:center;
+  }
+
+  .skill-name {
+    font-family:'Cinzel', serif;
+    font-size:.85rem; color:var(--gold); margin-bottom:4px;
+  }
+
+  .skill-desc { font-size:.82rem; color:#a09070; margin:0; }
+
+  .skill-stats {
+    margin-top:8px; display:flex; gap:10px; flex-wrap:wrap;
+  }
+
+  .ss {
+    font-family:'Share Tech Mono', monospace;
+    font-size:.62rem; padding:2px 8px;
+    border-radius:1px; border:1px solid;
+  }
+
+  .ss-fire   { color:var(--fire);   border-color:rgba(232,101,10,.3);  background:rgba(232,101,10,.07); }
+  .ss-gold   { color:var(--gold);   border-color:rgba(201,162,39,.3);  background:rgba(201,162,39,.06); }
+  .ss-gem    { color:var(--gem);    border-color:rgba(0,180,216,.25);  background:rgba(0,180,216,.06); }
+  .ss-poison { color:var(--poison); border-color:rgba(74,158,74,.25);  background:rgba(74,158,74,.06); }
+
+  /* ── CHECKLIST ── */
+  .cklist { list-style:none; padding:0; }
+  .cklist li {
+    display:flex; align-items:flex-start; gap:10px;
+    padding:8px 0; border-bottom:1px solid rgba(46,36,16,.6);
+    font-size:.88rem; color:#a09070;
+  }
+
+  .cklist li:last-child { border-bottom:none; }
+  .cklist li::before {
+    content:'◇';
+    font-family:'Share Tech Mono', monospace;
+    color:var(--muted); flex-shrink:0; margin-top:2px;
+  }
+
+  ul, ol { padding-left:20px; color:#a09070; font-size:.9rem; }
+  li { margin-bottom:7px; }
+  li::marker { color:var(--fire); }
+
+  /* ── FLOW ── */
+  .flow {
+    display:flex; align-items:center;
+    flex-wrap:wrap; gap:0; margin:16px 0;
+  }
+
+  .fbox {
+    background:var(--card); border:1px solid var(--border2);
+    border-radius:2px; padding:10px 14px;
+    font-family:'Share Tech Mono', monospace;
+    font-size:.68rem; text-align:center;
+    color:var(--text); min-width:100px; flex:1;
+  }
+
+  .fbox.active { border-color:var(--fire); color:var(--fire); background:rgba(232,101,10,.07); }
+  .fbox.done   { border-color:var(--poison); color:var(--poison); background:rgba(74,158,74,.07); }
+  .farrow      { color:var(--muted); padding:0 6px; font-size:.9rem; }
+
+  /* BACK TOP */
+  .back-top {
+    position:fixed; bottom:24px; right:24px;
+    width:42px; height:42px;
+    background:var(--surface); border:1px solid var(--border2);
+    border-radius:2px; color:var(--muted);
+    display:flex; align-items:center; justify-content:center;
+    text-decoration:none; font-size:.85rem;
+    transition:all .2s; z-index:200;
+    font-family:'Share Tech Mono', monospace;
+  }
+
+  .back-top:hover { border-color:var(--fire); color:var(--fire); box-shadow:0 0 8px rgba(232,101,10,.2); }
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav class="sidebar">
+  <div class="sidebar-head">
+    <div class="sidebar-rune">// Godot 4 · Diablo Style</div>
+    <div class="sidebar-title">Hack & Slash<br>Isometric RPG</div>
+  </div>
+
+  <div class="nav-group">Architecture</div>
+  <a class="nav-link active" href="#architecture"><span class="nav-icon">🏛</span>Kiến trúc game</a>
+  <a class="nav-link" href="#stats"><span class="nav-icon">📊</span>Stat System</a>
+
+  <div class="nav-group">Combat</div>
+  <a class="nav-link" href="#combat"><span class="nav-icon">⚔️</span>Combat Core</a>
+  <a class="nav-link" href="#skills"><span class="nav-icon">🔥</span>Skill System</a>
+  <a class="nav-link" href="#hitbox"><span class="nav-icon">💥</span>Hitbox & Damage</a>
+  <a class="nav-link" href="#enemies"><span class="nav-icon">💀</span>Enemy AI</a>
+
+  <div class="nav-group">Progression</div>
+  <a class="nav-link" href="#leveling"><span class="nav-icon">⬆️</span>Level Up</a>
+  <a class="nav-link" href="#loot"><span class="nav-icon">💎</span>Loot & Items</a>
+  <a class="nav-link" href="#inventory"><span class="nav-icon">🎒</span>Inventory</a>
+
+  <div class="nav-group">Systems</div>
+  <a class="nav-link" href="#dungeon"><span class="nav-icon">🗺</span>Dungeon / Room</a>
+  <a class="nav-link" href="#ui"><span class="nav-icon">🖥</span>HUD & UI</a>
+  <a class="nav-link" href="#vfx"><span class="nav-icon">✨</span>VFX & Juice</a>
+  <a class="nav-link" href="#checklist"><span class="nav-icon">📜</span>Checklist</a>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-deco">⚔</div>
+    <div class="hero-rune">// Godot 4 · Hack & Slash · Isometric RPG</div>
+    <h1>Blood & <span class="blood">Dungeon</span><br>Build Guide</h1>
+    <p class="hero-lore">"Giết quái, nhặt đồ, lên level, lại giết quái. Vòng lặp đơn giản — nhưng cần architecture đúng để mở rộng được."</p>
+    <div class="hero-chips">
+      <span class="hchip hc-fire">~8 tiếng</span>
+      <span class="hchip hc-blood">Combat System</span>
+      <span class="hchip hc-gold">Progression</span>
+      <span class="hchip hc-gem">Loot & Inventory</span>
+      <span class="hchip hc-poison">Enemy AI</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════
+       1. ARCHITECTURE
+  ════════════════════════════════ -->
+  <div class="section" id="architecture">
+    <div class="section-eyebrow">// 01 · Foundation</div>
+    <div class="section-title-row">
+      <h2>Kiến trúc Game</h2>
+      <span class="time-tag">đọc 10 phút</span>
+    </div>
+
+    <p>Hack & slash phức tạp hơn platformer. Cần <strong>architecture rõ ràng từ đầu</strong> — không thì code sẽ rối khi thêm tính năng.</p>
+
+    <div class="flow">
+      <div class="fbox active">GameManager<br><small>Autoload</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox">Player<br><small>Scene</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox">Combat<br><small>Component</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox">Enemy<br><small>Scene</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox done">LootDrop<br><small>Scene</small></div>
+    </div>
+
+    <h3>Autoload (Singletons) cần tạo</h3>
+    <p>Vào <strong>Project → Project Settings → Autoload</strong>, thêm:</p>
+
+    <div class="g2">
+      <div class="card card-fire">
+        <h4>GameManager.gd</h4>
+        <p style="font-size:.85rem">Trạng thái game toàn cục: gold, wave, game state (playing/paused/dead). Reset khi chơi lại.</p>
+      </div>
+      <div class="card card-gold">
+        <h4>ItemDB.gd</h4>
+        <p style="font-size:.85rem">Database toàn bộ item trong game. Load từ JSON/resource. Cung cấp hàm <code>get_item(id)</code>.</p>
+      </div>
+      <div class="card card-gem">
+        <h4>EventBus.gd</h4>
+        <p style="font-size:.85rem">Signal relay trung tâm. Tránh coupling trực tiếp giữa các hệ thống (combat → UI, loot → inventory...).</p>
+      </div>
+      <div class="card card-poison">
+        <h4>SaveSystem.gd</h4>
+        <p style="font-size:.85rem">Lưu/load character: level, stat, inventory. Dùng <code>FileAccess</code> + JSON.</p>
+      </div>
+    </div>
+
+    <h3>EventBus — Pattern quan trọng</h3>
+    <pre><code><span class="cm"># EventBus.gd (Autoload)</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+
+<span class="cm"># Combat</span>
+<span class="kw">signal</span> <span class="fn">entity_damaged</span>(entity, amount, damage_type)
+<span class="kw">signal</span> <span class="fn">entity_died</span>(entity, position)
+<span class="kw">signal</span> <span class="fn">player_healed</span>(amount)
+
+<span class="cm"># Loot & Inventory</span>
+<span class="kw">signal</span> <span class="fn">item_dropped</span>(item_data, world_pos)
+<span class="kw">signal</span> <span class="fn">item_picked_up</span>(item_data)
+<span class="kw">signal</span> <span class="fn">item_equipped</span>(item_data, slot)
+<span class="kw">signal</span> <span class="fn">gold_changed</span>(amount, total)
+
+<span class="cm"># Progression</span>
+<span class="kw">signal</span> <span class="fn">xp_gained</span>(amount)
+<span class="kw">signal</span> <span class="fn">level_up</span>(new_level, stat_points)
+<span class="kw">signal</span> <span class="fn">skill_unlocked</span>(skill_id)
+
+<span class="cm"># UI</span>
+<span class="kw">signal</span> <span class="fn">show_damage_number</span>(amount, pos, damage_type)
+<span class="kw">signal</span> <span class="fn">show_item_tooltip</span>(item_data, screen_pos)
+
+<span class="cm"># Ví dụ dùng từ bất kỳ đâu:</span>
+<span class="cm"># EventBus.entity_damaged.emit(enemy, 45, "fire")</span>
+<span class="cm"># EventBus.item_dropped.emit(sword_data, enemy.position)</span></code></pre>
+
+    <h3>Cấu trúc thư mục</h3>
+    <div class="scene-box">
+      <div class="scene-head">res:// project structure</div>
+      <div class="scene-body" style="font-size:.7rem; line-height:2.1;">
+        <div><span style="color:var(--gold)">autoloads/</span> <span class="snote">← GameManager, EventBus, ItemDB, SaveSystem</span></div>
+        <div><span style="color:var(--gold)">scenes/</span></div>
+        <div>&nbsp;&nbsp;<span style="color:var(--fire)">player/</span> <span class="snote">Player.tscn + scripts</span></div>
+        <div>&nbsp;&nbsp;<span style="color:var(--fire)">enemies/</span> <span class="snote">Skeleton.tscn, Demon.tscn, Boss.tscn</span></div>
+        <div>&nbsp;&nbsp;<span style="color:var(--fire)">combat/</span> <span class="snote">Hitbox.tscn, Projectile.tscn, AOE.tscn</span></div>
+        <div>&nbsp;&nbsp;<span style="color:var(--fire)">loot/</span> <span class="snote">ItemDrop.tscn, GoldDrop.tscn</span></div>
+        <div>&nbsp;&nbsp;<span style="color:var(--fire)">ui/</span> <span class="snote">HUD.tscn, Inventory.tscn, SkillBar.tscn</span></div>
+        <div>&nbsp;&nbsp;<span style="color:var(--fire)">world/</span> <span class="snote">Dungeon.tscn, Room.tscn</span></div>
+        <div><span style="color:var(--gold)">resources/</span></div>
+        <div>&nbsp;&nbsp;<span class="snote">items/  skills/  enemies/  ← .tres resource files</span></div>
+        <div><span style="color:var(--gold)">data/</span></div>
+        <div>&nbsp;&nbsp;<span class="snote">items.json  enemies.json  skills.json</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ STAT SYSTEM ═══ -->
+  <div class="section" id="stats">
+    <div class="section-eyebrow">// 02 · Foundation</div>
+    <div class="section-title-row">
+      <h2>Stat System</h2>
+      <span class="time-tag">45 phút</span>
+    </div>
+
+    <p>Đây là <strong>xương sống</strong> của mọi RPG. Làm đúng từ đầu — mọi thứ khác (combat, loot, level up) đều phụ thuộc vào đây.</p>
+
+    <div class="stat-block" style="margin:16px 0;">
+      <div class="stat-title">◆ Stat cơ bản (đủ cho Hack & Slash)</div>
+      <div class="stat-row"><span class="stat-name">STRENGTH</span><span class="stat-val">+Physical DMG</span><span class="stat-formula">dmg = str × 2.5 + weapon</span></div>
+      <div class="stat-row"><span class="stat-name">INTELLIGENCE</span><span class="stat-val">+Spell DMG</span><span class="stat-formula">spell = int × 3 + staff</span></div>
+      <div class="stat-row"><span class="stat-name">DEXTERITY</span><span class="stat-val">+Crit / Dodge</span><span class="stat-formula">crit% = dex × 0.3</span></div>
+      <div class="stat-row"><span class="stat-name">VITALITY</span><span class="stat-val">+Max HP</span><span class="stat-formula">hp = 100 + vit × 15</span></div>
+      <div class="stat-row"><span class="stat-name">DEFENSE</span><span class="stat-val">-Dmg taken</span><span class="stat-formula">reduction = def / (def + 100)</span></div>
+      <div class="stat-row"><span class="stat-name">MOVE SPEED</span><span class="stat-val">px/s</span><span class="stat-formula">base 200 + boots bonus</span></div>
+    </div>
+
+    <h3>StatComponent.gd — Tái sử dụng cho mọi entity</h3>
+    <pre><code><span class="cm"># stat_component.gd — gắn vào Player VÀ Enemy</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+<span class="kw">class_name</span> StatComponent
+
+<span class="cm"># Base stats (từ class/race)</span>
+<span class="an">@export</span> <span class="kw">var</span> base_strength:     <span class="tp">int</span> = <span class="nm">10</span>
+<span class="an">@export</span> <span class="kw">var</span> base_intelligence: <span class="tp">int</span> = <span class="nm">5</span>
+<span class="an">@export</span> <span class="kw">var</span> base_dexterity:    <span class="tp">int</span> = <span class="nm">8</span>
+<span class="an">@export</span> <span class="kw">var</span> base_vitality:     <span class="tp">int</span> = <span class="nm">10</span>
+<span class="an">@export</span> <span class="kw">var</span> base_defense:      <span class="tp">int</span> = <span class="nm">5</span>
+
+<span class="cm"># Bonus từ equipment (cộng dồn khi equip)</span>
+<span class="kw">var</span> bonus_strength:     <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> bonus_intelligence: <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> bonus_dexterity:    <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> bonus_vitality:     <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> bonus_defense:      <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> bonus_move_speed:   <span class="tp">float</span> = <span class="nm">0.0</span>
+
+<span class="cm"># ── Computed properties ──</span>
+<span class="kw">var</span> strength:     <span class="tp">int</span>: <span class="kw">get</span>: <span class="kw">return</span> base_strength     + bonus_strength
+<span class="kw">var</span> intelligence: <span class="tp">int</span>: <span class="kw">get</span>: <span class="kw">return</span> base_intelligence + bonus_intelligence
+<span class="kw">var</span> dexterity:    <span class="tp">int</span>: <span class="kw">get</span>: <span class="kw">return</span> base_dexterity    + bonus_dexterity
+<span class="kw">var</span> vitality:     <span class="tp">int</span>: <span class="kw">get</span>: <span class="kw">return</span> base_vitality     + bonus_vitality
+<span class="kw">var</span> defense:      <span class="tp">int</span>: <span class="kw">get</span>: <span class="kw">return</span> base_defense      + bonus_defense
+
+<span class="cm"># ── Derived stats ──</span>
+<span class="kw">var</span> max_hp:       <span class="tp">int</span>:   <span class="kw">get</span>: <span class="kw">return</span> <span class="nm">100</span> + vitality * <span class="nm">15</span>
+<span class="kw">var</span> phys_damage:  <span class="tp">int</span>:   <span class="kw">get</span>: <span class="kw">return</span> strength * <span class="nm">2</span>
+<span class="kw">var</span> spell_damage: <span class="tp">int</span>:   <span class="kw">get</span>: <span class="kw">return</span> intelligence * <span class="nm">3</span>
+<span class="kw">var</span> crit_chance:  <span class="tp">float</span>: <span class="kw">get</span>: <span class="kw">return</span> dexterity * <span class="nm">0.003</span>   <span class="cm"># 0-1</span>
+<span class="kw">var</span> dodge_chance: <span class="tp">float</span>: <span class="kw">get</span>: <span class="kw">return</span> dexterity * <span class="nm">0.002</span>
+<span class="kw">var</span> move_speed:   <span class="tp">float</span>: <span class="kw">get</span>: <span class="kw">return</span> <span class="nm">200.0</span> + bonus_move_speed
+
+<span class="cm"># Defense formula (Diablo-style: diminishing returns)</span>
+<span class="kw">func</span> <span class="fn">get_damage_reduction</span>() -> <span class="tp">float</span>:
+    <span class="kw">return</span> <span class="kw">float</span>(defense) / (<span class="kw">float</span>(defense) + <span class="nm">100.0</span>)   <span class="cm"># max ~0.9</span>
+
+<span class="cm"># Apply bonus khi equip/unequip</span>
+<span class="kw">func</span> <span class="fn">apply_item_bonus</span>(item: ItemData, equipping: <span class="tp">bool</span>):
+    <span class="kw">var</span> sign = <span class="nm">1</span> <span class="kw">if</span> equipping <span class="kw">else</span> <span class="nm">-1</span>
+    bonus_strength     += item.bonus_str   * sign
+    bonus_intelligence += item.bonus_int   * sign
+    bonus_dexterity    += item.bonus_dex   * sign
+    bonus_vitality     += item.bonus_vit   * sign
+    bonus_defense      += item.bonus_def   * sign
+    bonus_move_speed   += item.bonus_speed * sign</code></pre>
+
+    <div class="callout co-gold">
+      <strong>◆ Dùng Resource cho ItemData</strong>
+      Tạo <code>class_name ItemData extends Resource</code> với các <code>@export var</code>. Lưu thành file <code>.tres</code>. Dễ tạo trong editor, dễ serialize, dễ thêm item mới mà không cần code.
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ COMBAT CORE ═══ -->
+  <div class="section" id="combat">
+    <div class="section-eyebrow">// 03 · Combat</div>
+    <div class="section-title-row">
+      <h2>Combat Core</h2>
+      <span class="time-tag">60 phút</span>
+    </div>
+
+    <h3>Player Scene</h3>
+    <div class="scene-box">
+      <div class="scene-head">📂 Player.tscn</div>
+      <div class="scene-body">
+        <div><span class="stype">CharacterBody2D</span> "Player" <span class="sscript">📜 player.gd</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">AnimatedSprite2D</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">CollisionShape2D</span> <span class="snote">← hình tròn, chỉ ở chân</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">StatComponent</span> <span class="sscript">📜 stat_component.gd</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">HealthComponent</span> <span class="sscript">📜 health_component.gd</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">SkillComponent</span> <span class="sscript">📜 skill_component.gd</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">InventoryComponent</span> <span class="sscript">📜 inventory.gd</span></div>
+        <div>&nbsp;&nbsp;├─ <span class="stype">Node2D</span> "WeaponPivot" <span class="snote">← xoay theo chuột</span></div>
+        <div>&nbsp;&nbsp;│&nbsp;&nbsp;└─ <span class="stype">Node2D</span> "WeaponSlot" <span class="snote">← weapon scene attach ở đây</span></div>
+        <div>&nbsp;&nbsp;└─ <span class="stype">Camera2D</span></div>
+      </div>
+    </div>
+
+    <h3>player.gd — Movement & Attack</h3>
+    <pre><code><span class="kw">extends</span> <span class="tp">CharacterBody2D</span>
+
+<span class="an">@onready</span> <span class="kw">var</span> stats     = <span class="fn">$StatComponent</span>
+<span class="an">@onready</span> <span class="kw">var</span> health    = <span class="fn">$HealthComponent</span>
+<span class="an">@onready</span> <span class="kw">var</span> skills    = <span class="fn">$SkillComponent</span>
+<span class="an">@onready</span> <span class="kw">var</span> sprite    = <span class="fn">$AnimatedSprite2D</span>
+<span class="an">@onready</span> <span class="kw">var</span> wpn_pivot = <span class="fn">$WeaponPivot</span>
+
+<span class="kw">var</span> facing_dir: <span class="tp">Vector2</span> = <span class="nm">Vector2.RIGHT</span>
+<span class="kw">var</span> is_attacking: <span class="tp">bool</span> = <span class="kw">false</span>
+
+<span class="kw">func</span> <span class="fn">_ready</span>():
+    health.died.<span class="fn">connect</span>(<span class="fn">_on_died</span>)
+    <span class="fn">add_to_group</span>(<span class="st">"player"</span>)
+
+<span class="kw">func</span> <span class="fn">_physics_process</span>(delta):
+    <span class="fn">_move</span>(delta)
+    <span class="fn">_rotate_weapon_to_mouse</span>()
+    <span class="fn">_update_animation</span>()
+    <span class="fn">move_and_slide</span>()
+
+<span class="kw">func</span> <span class="fn">_unhandled_input</span>(event):
+    <span class="cm"># Left click = basic attack</span>
+    <span class="kw">if</span> event <span class="kw">is</span> <span class="tp">InputEventMouseButton</span>:
+        <span class="kw">if</span> event.button_index == <span class="tp">MOUSE_BUTTON_LEFT</span> <span class="kw">and</span> event.pressed:
+            skills.<span class="fn">use_skill</span>(<span class="st">"basic_attack"</span>, <span class="fn">get_global_mouse_position</span>())
+
+    <span class="cm"># Skill hotkeys</span>
+    <span class="kw">if</span> event <span class="kw">is</span> <span class="tp">InputEventKey</span> <span class="kw">and</span> event.pressed:
+        <span class="kw">match</span> event.keycode:
+            <span class="tp">KEY_Q</span>: skills.<span class="fn">use_skill</span>(<span class="st">"skill_1"</span>, <span class="fn">get_global_mouse_position</span>())
+            <span class="tp">KEY_W</span>: skills.<span class="fn">use_skill</span>(<span class="st">"skill_2"</span>, <span class="fn">get_global_mouse_position</span>())
+            <span class="tp">KEY_E</span>: skills.<span class="fn">use_skill</span>(<span class="st">"skill_3"</span>, <span class="fn">get_global_mouse_position</span>())
+            <span class="tp">KEY_R</span>: skills.<span class="fn">use_skill</span>(<span class="st">"ultimate"</span>, <span class="fn">get_global_mouse_position</span>())
+            <span class="tp">KEY_SPACE</span>: <span class="fn">_dash</span>()
+
+<span class="cm"># ===== MOVEMENT (iso 8-dir) =====</span>
+<span class="kw">func</span> <span class="fn">_move</span>(_delta):
+    <span class="kw">if</span> is_attacking: <span class="kw">return</span>   <span class="cm"># lock movement khi attack (tùy chọn)</span>
+    <span class="kw">var</span> input = <span class="nm">Vector2</span>(
+        <span class="tp">Input</span>.<span class="fn">get_axis</span>(<span class="st">"move_left"</span>, <span class="st">"move_right"</span>),
+        <span class="tp">Input</span>.<span class="fn">get_axis</span>(<span class="st">"move_up"</span>,   <span class="st">"move_down"</span>)
+    )
+    <span class="kw">if</span> input.length() > <span class="nm">0</span>:
+        facing_dir = input.<span class="fn">normalized</span>()
+        <span class="cm"># Iso conversion</span>
+        velocity = <span class="nm">Vector2</span>(
+            input.x - input.y,
+            (input.x + input.y) * <span class="nm">0.5</span>
+        ).<span class="fn">normalized</span>() * stats.move_speed
+    <span class="kw">else</span>:
+        velocity = velocity.<span class="fn">lerp</span>(<span class="nm">Vector2.ZERO</span>, <span class="nm">0.2</span>)
+
+<span class="cm"># ===== WEAPON ROTATION =====</span>
+<span class="kw">func</span> <span class="fn">_rotate_weapon_to_mouse</span>():
+    <span class="kw">var</span> mouse = <span class="fn">get_global_mouse_position</span>()
+    <span class="kw">var</span> angle = (mouse - global_position).<span class="fn">angle</span>()
+    wpn_pivot.rotation = angle
+    <span class="cm"># Flip sprite theo hướng chuột</span>
+    sprite.flip_h = mouse.x < global_position.x
+
+<span class="cm"># ===== DASH =====</span>
+<span class="kw">var</span> dash_cooldown: <span class="tp">bool</span> = <span class="kw">false</span>
+<span class="kw">func</span> <span class="fn">_dash</span>():
+    <span class="kw">if</span> dash_cooldown: <span class="kw">return</span>
+    dash_cooldown = <span class="kw">true</span>
+    velocity = facing_dir * <span class="nm">800.0</span>
+    <span class="cm"># Invincible during dash</span>
+    health.invincible = <span class="kw">true</span>
+    <span class="kw">await get_tree</span>().<span class="fn">create_timer</span>(<span class="nm">0.2</span>).timeout
+    health.invincible = <span class="kw">false</span>
+    <span class="kw">await get_tree</span>().<span class="fn">create_timer</span>(<span class="nm">0.8</span>).timeout  <span class="cm"># cooldown</span>
+    dash_cooldown = <span class="kw">false</span>
+
+<span class="kw">func</span> <span class="fn">_on_died</span>():
+    <span class="fn">get_tree</span>().<span class="fn">change_scene_to_file</span>(<span class="st">"res://scenes/ui/GameOver.tscn"</span>)</code></pre>
+
+    <h3>HealthComponent.gd</h3>
+    <pre><code><span class="cm"># health_component.gd — dùng cho Player VÀ Enemy</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+<span class="kw">class_name</span> HealthComponent
+
+<span class="kw">signal</span> <span class="fn">health_changed</span>(current: <span class="tp">int</span>, maximum: <span class="tp">int</span>)
+<span class="kw">signal</span> <span class="fn">died</span>
+
+<span class="kw">var</span> current_hp: <span class="tp">int</span>
+<span class="kw">var</span> invincible: <span class="tp">bool</span> = <span class="kw">false</span>
+
+<span class="an">@onready</span> <span class="kw">var</span> stats: StatComponent = <span class="fn">get_parent</span>().<span class="fn">get_node</span>(<span class="st">"StatComponent"</span>)
+
+<span class="kw">func</span> <span class="fn">_ready</span>():
+    current_hp = stats.max_hp
+
+<span class="kw">func</span> <span class="fn">take_damage</span>(raw_damage: <span class="tp">int</span>, damage_type: <span class="tp">String</span> = <span class="st">"physical"</span>) -> <span class="tp">int</span>:
+    <span class="kw">if</span> invincible: <span class="kw">return</span> <span class="nm">0</span>
+
+    <span class="cm"># Dodge check</span>
+    <span class="kw">if</span> <span class="fn">randf</span>() < stats.dodge_chance:
+        <span class="tp">EventBus</span>.<span class="fn">show_damage_number.emit</span>(<span class="nm">0</span>, <span class="fn">get_parent</span>().global_position, <span class="st">"dodge"</span>)
+        <span class="kw">return</span> <span class="nm">0</span>
+
+    <span class="cm"># Defense reduction</span>
+    <span class="kw">var</span> final_dmg = raw_damage
+    <span class="kw">if</span> damage_type == <span class="st">"physical"</span>:
+        final_dmg = <span class="fn">max</span>(<span class="nm">1</span>, <span class="nm">int</span>(raw_damage * (<span class="nm">1.0</span> - stats.<span class="fn">get_damage_reduction</span>())))
+
+    <span class="cm"># Critical hit (attacker's crit, not defender's)</span>
+    <span class="cm"># (passed in raw_damage already, see SkillComponent)</span>
+
+    current_hp = <span class="fn">max</span>(<span class="nm">0</span>, current_hp - final_dmg)
+    <span class="fn">health_changed.emit</span>(current_hp, stats.max_hp)
+    <span class="tp">EventBus</span>.<span class="fn">show_damage_number.emit</span>(final_dmg, <span class="fn">get_parent</span>().global_position, damage_type)
+    <span class="tp">EventBus</span>.<span class="fn">entity_damaged.emit</span>(<span class="fn">get_parent</span>(), final_dmg, damage_type)
+
+    <span class="kw">if</span> current_hp <= <span class="nm">0</span>:
+        <span class="fn">died.emit</span>()
+        <span class="tp">EventBus</span>.<span class="fn">entity_died.emit</span>(<span class="fn">get_parent</span>(), <span class="fn">get_parent</span>().global_position)
+
+    <span class="kw">return</span> final_dmg
+
+<span class="kw">func</span> <span class="fn">heal</span>(amount: <span class="tp">int</span>):
+    current_hp = <span class="fn">min</span>(current_hp + amount, stats.max_hp)
+    <span class="fn">health_changed.emit</span>(current_hp, stats.max_hp)</code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ SKILL SYSTEM ═══ -->
+  <div class="section" id="skills">
+    <div class="section-eyebrow">// 04 · Combat</div>
+    <div class="section-title-row">
+      <h2>Skill System</h2>
+      <span class="time-tag">60 phút</span>
+    </div>
+
+    <p>Mỗi skill là 1 <strong>Resource</strong>. SkillComponent load và execute. Thiết kế này cho phép thêm skill mới chỉ bằng cách tạo file <code>.tres</code> mới.</p>
+
+    <h3>SkillData — Resource</h3>
+    <pre><code><span class="cm"># skill_data.gd</span>
+<span class="kw">extends</span> <span class="tp">Resource</span>
+<span class="kw">class_name</span> SkillData
+
+<span class="an">@export</span> <span class="kw">var</span> id:           <span class="tp">String</span>      = <span class="st">"basic_attack"</span>
+<span class="an">@export</span> <span class="kw">var</span> skill_name:   <span class="tp">String</span>      = <span class="st">"Chém cơ bản"</span>
+<span class="an">@export</span> <span class="kw">var</span> cooldown:     <span class="tp">float</span>       = <span class="nm">0.4</span>
+<span class="an">@export</span> <span class="kw">var</span> mana_cost:    <span class="tp">int</span>         = <span class="nm">0</span>
+<span class="an">@export</span> <span class="kw">var</span> damage_mult:  <span class="tp">float</span>       = <span class="nm">1.0</span>   <span class="cm"># × phys_damage</span>
+<span class="an">@export</span> <span class="kw">var</span> damage_type:  <span class="tp">String</span>      = <span class="st">"physical"</span>  <span class="cm"># physical/fire/ice/poison</span>
+<span class="an">@export</span> <span class="kw">var</span> range:        <span class="tp">float</span>       = <span class="nm">80.0</span>
+<span class="an">@export</span> <span class="kw">var</span> aoe_radius:   <span class="tp">float</span>       = <span class="nm">0.0</span>   <span class="cm"># 0 = single target</span>
+<span class="an">@export</span> <span class="kw">var</span> projectile:   <span class="tp">PackedScene</span>            <span class="cm"># null = melee</span>
+<span class="an">@export</span> <span class="kw">var</span> cast_anim:    <span class="tp">String</span>      = <span class="st">"attack"</span>
+<span class="an">@export</span> <span class="kw">var</span> icon:         <span class="tp">Texture2D</span></code></pre>
+
+    <h3>4 Skill mẫu (tạo .tres trong editor)</h3>
+
+    <div class="skill-card">
+      <div class="skill-icon">⚔️</div>
+      <div>
+        <div class="skill-name">Basic Attack</div>
+        <p class="skill-desc">Chém melee phía trước. Cooldown thấp, damage × 1.0. Không tốn mana.</p>
+        <div class="skill-stats">
+          <span class="ss ss-gold">cooldown: 0.4s</span>
+          <span class="ss ss-fire">dmg ×1.0</span>
+          <span class="ss ss-gem">range: 80px</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-icon">🔥</div>
+      <div>
+        <div class="skill-name">Fireball</div>
+        <p class="skill-desc">Bắn projectile về phía chuột. Nổ AOE khi chạm mục tiêu, damage × 2.5.</p>
+        <div class="skill-stats">
+          <span class="ss ss-gold">cooldown: 1.5s</span>
+          <span class="ss ss-fire">fire dmg ×2.5</span>
+          <span class="ss ss-gem">aoe: 60px</span>
+          <span class="ss ss-poison">mana: 20</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-icon">⚡</div>
+      <div>
+        <div class="skill-name">Chain Lightning</div>
+        <p class="skill-desc">Tia sét nhảy qua tối đa 4 kẻ địch gần nhau. Damage giảm 20% mỗi bước nhảy.</p>
+        <div class="skill-stats">
+          <span class="ss ss-gold">cooldown: 3s</span>
+          <span class="ss ss-fire">lightning ×2.0</span>
+          <span class="ss ss-gem">chain: 4</span>
+          <span class="ss ss-poison">mana: 35</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <div class="skill-icon">💀</div>
+      <div>
+        <div class="skill-name">Death Nova (Ultimate)</div>
+        <p class="skill-desc">AOE khổng lồ xung quanh player. Knockback tất cả kẻ địch. Cooldown dài.</p>
+        <div class="skill-stats">
+          <span class="ss ss-gold">cooldown: 15s</span>
+          <span class="ss ss-fire">dark ×5.0</span>
+          <span class="ss ss-gem">aoe: 200px</span>
+          <span class="ss ss-poison">mana: 80</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>SkillComponent.gd</h3>
+    <pre><code><span class="cm"># skill_component.gd</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+<span class="kw">class_name</span> SkillComponent
+
+<span class="an">@export</span> <span class="kw">var</span> skills: <span class="tp">Array</span>[<span class="tp">SkillData</span>] = []
+
+<span class="kw">var</span> cooldowns: <span class="tp">Dictionary</span> = {}     <span class="cm"># skill_id → time remaining</span>
+<span class="kw">var</span> current_mana: <span class="tp">int</span> = <span class="nm">100</span>
+<span class="kw">var</span> max_mana: <span class="tp">int</span> = <span class="nm">100</span>
+
+<span class="an">@onready</span> <span class="kw">var</span> stats: StatComponent = <span class="fn">get_parent</span>().<span class="fn">get_node</span>(<span class="st">"StatComponent"</span>)
+
+<span class="kw">func</span> <span class="fn">_process</span>(delta):
+    <span class="cm"># Giảm cooldown mỗi frame</span>
+    <span class="kw">for</span> id <span class="kw">in</span> cooldowns.<span class="fn">keys</span>():
+        cooldowns[id] = <span class="fn">max</span>(<span class="nm">0</span>, cooldowns[id] - delta)
+    <span class="cm"># Regen mana</span>
+    current_mana = <span class="fn">min</span>(max_mana, current_mana + <span class="nm">5</span> * delta)
+
+<span class="kw">func</span> <span class="fn">use_skill</span>(skill_id: <span class="tp">String</span>, target_pos: <span class="tp">Vector2</span>) -> <span class="tp">bool</span>:
+    <span class="kw">var</span> skill = <span class="fn">_get_skill</span>(skill_id)
+    <span class="kw">if not</span> skill: <span class="kw">return false</span>
+    <span class="kw">if</span> cooldowns.<span class="fn">get</span>(skill_id, <span class="nm">0.0</span>) > <span class="nm">0</span>: <span class="kw">return false</span>
+    <span class="kw">if</span> current_mana < skill.mana_cost: <span class="kw">return false</span>
+
+    <span class="cm"># Pay cost</span>
+    current_mana -= skill.mana_cost
+    cooldowns[skill_id] = skill.cooldown
+
+    <span class="cm"># Execute</span>
+    <span class="kw">if</span> skill.projectile:
+        <span class="fn">_fire_projectile</span>(skill, target_pos)
+    <span class="kw">elif</span> skill.aoe_radius > <span class="nm">0</span>:
+        <span class="fn">_execute_aoe</span>(skill, target_pos)
+    <span class="kw">else</span>:
+        <span class="fn">_execute_melee</span>(skill, target_pos)
+
+    <span class="kw">return true</span>
+
+<span class="kw">func</span> <span class="fn">_calculate_damage</span>(skill: SkillData) -> <span class="tp">int</span>:
+    <span class="kw">var</span> base = stats.phys_damage <span class="kw">if</span> skill.damage_type == <span class="st">"physical"</span> <span class="kw">else</span> stats.spell_damage
+    <span class="kw">var</span> dmg = <span class="nm">int</span>(base * skill.damage_mult)
+    <span class="cm"># Crit check</span>
+    <span class="kw">if</span> <span class="fn">randf</span>() < stats.crit_chance:
+        dmg = <span class="nm">int</span>(dmg * <span class="nm">2.0</span>)   <span class="cm"># 200% crit</span>
+        <span class="cm"># Tag damage as crit for red number display</span>
+    <span class="kw">return</span> dmg
+
+<span class="kw">func</span> <span class="fn">_execute_melee</span>(skill: SkillData, target_pos: <span class="tp">Vector2</span>):
+    <span class="kw">var</span> dmg = <span class="fn">_calculate_damage</span>(skill)
+    <span class="kw">var</span> dir = (<span class="tp">get_parent</span>().global_position - target_pos).<span class="fn">normalized</span>()
+    <span class="cm"># Tìm enemy trong range theo hướng</span>
+    <span class="kw">var</span> enemies = <span class="fn">get_tree</span>().<span class="fn">get_nodes_in_group</span>(<span class="st">"enemies"</span>)
+    <span class="kw">for</span> e <span class="kw">in</span> enemies:
+        <span class="kw">if</span> e.global_position.<span class="fn">distance_to</span>(<span class="fn">get_parent</span>().global_position) <= skill.range:
+            e.<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).<span class="fn">take_damage</span>(dmg, skill.damage_type)
+
+<span class="kw">func</span> <span class="fn">_execute_aoe</span>(skill: SkillData, center: <span class="tp">Vector2</span>):
+    <span class="kw">var</span> dmg = <span class="fn">_calculate_damage</span>(skill)
+    <span class="kw">for</span> e <span class="kw">in</span> <span class="fn">get_tree</span>().<span class="fn">get_nodes_in_group</span>(<span class="st">"enemies"</span>):
+        <span class="kw">if</span> e.global_position.<span class="fn">distance_to</span>(center) <= skill.aoe_radius:
+            e.<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).<span class="fn">take_damage</span>(dmg, skill.damage_type)
+
+<span class="kw">func</span> <span class="fn">_fire_projectile</span>(skill: SkillData, target_pos: <span class="tp">Vector2</span>):
+    <span class="kw">var</span> proj = skill.projectile.<span class="fn">instantiate</span>()
+    <span class="fn">get_tree</span>().root.<span class="fn">add_child</span>(proj)
+    proj.global_position = <span class="fn">get_parent</span>().global_position
+    proj.<span class="fn">setup</span>(target_pos, <span class="fn">_calculate_damage</span>(skill), skill.damage_type, skill.aoe_radius)
+
+<span class="kw">func</span> <span class="fn">_get_skill</span>(id: <span class="tp">String</span>) -> SkillData:
+    <span class="kw">for</span> s <span class="kw">in</span> skills:
+        <span class="kw">if</span> s.id == id: <span class="kw">return</span> s
+    <span class="kw">return null</span></code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ HITBOX ═══ -->
+  <div class="section" id="hitbox">
+    <div class="section-eyebrow">// 05 · Combat</div>
+    <div class="section-title-row">
+      <h2>Hitbox & Projectile</h2>
+      <span class="time-tag">30 phút</span>
+    </div>
+
+    <h3>Projectile.gd — Fireball / Arrow</h3>
+    <pre><code><span class="cm"># projectile.gd</span>
+<span class="kw">extends</span> <span class="tp">Area2D</span>
+
+<span class="kw">var</span> damage:       <span class="tp">int</span>
+<span class="kw">var</span> damage_type:  <span class="tp">String</span>
+<span class="kw">var</span> aoe_radius:   <span class="tp">float</span>
+<span class="kw">var</span> speed:        <span class="tp">float</span> = <span class="nm">400.0</span>
+<span class="kw">var</span> direction:    <span class="tp">Vector2</span>
+<span class="kw">var</span> lifetime:     <span class="tp">float</span> = <span class="nm">3.0</span>
+
+<span class="kw">func</span> <span class="fn">setup</span>(target: <span class="tp">Vector2</span>, dmg: <span class="tp">int</span>, dtype: <span class="tp">String</span>, aoe: <span class="tp">float</span>):
+    damage      = dmg
+    damage_type = dtype
+    aoe_radius  = aoe
+    direction   = (target - global_position).<span class="fn">normalized</span>()
+    rotation    = direction.<span class="fn">angle</span>()
+
+<span class="kw">func</span> <span class="fn">_ready</span>():
+    body_entered.<span class="fn">connect</span>(<span class="fn">_on_hit</span>)
+
+<span class="kw">func</span> <span class="fn">_physics_process</span>(delta):
+    position += direction * speed * delta
+    lifetime -= delta
+    <span class="kw">if</span> lifetime <= <span class="nm">0</span>: <span class="fn">queue_free</span>()
+
+<span class="kw">func</span> <span class="fn">_on_hit</span>(body):
+    <span class="kw">if</span> body.<span class="fn">is_in_group</span>(<span class="st">"player"</span>): <span class="kw">return</span>   <span class="cm"># không tự bắn mình</span>
+
+    <span class="kw">if</span> aoe_radius > <span class="nm">0</span>:
+        <span class="cm"># AOE explosion</span>
+        <span class="kw">for</span> e <span class="kw">in</span> <span class="fn">get_tree</span>().<span class="fn">get_nodes_in_group</span>(<span class="st">"enemies"</span>):
+            <span class="kw">if</span> e.global_position.<span class="fn">distance_to</span>(global_position) <= aoe_radius:
+                e.<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).<span class="fn">take_damage</span>(damage, damage_type)
+        <span class="cm"># Spawn explosion VFX</span>
+        <span class="tp">EventBus</span>.<span class="fn">item_dropped.emit</span>(<span class="kw">null</span>, global_position)   <span class="cm"># reuse for VFX signal</span>
+    <span class="kw">else</span>:
+        <span class="kw">if</span> body.<span class="fn">has_node</span>(<span class="st">"HealthComponent"</span>):
+            body.<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).<span class="fn">take_damage</span>(damage, damage_type)
+
+    <span class="fn">queue_free</span>()</code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ ENEMY AI ═══ -->
+  <div class="section" id="enemies">
+    <div class="section-eyebrow">// 06 · Combat</div>
+    <div class="section-title-row">
+      <h2>Enemy AI — State Machine</h2>
+      <span class="time-tag">60 phút</span>
+    </div>
+
+    <p>Dùng <strong>State Machine đơn giản</strong> cho enemy. Mỗi state là 1 func. Dễ thêm state mới (Rage, Flee, Summon...).</p>
+
+    <div class="flow">
+      <div class="fbox">IDLE<br><small>đứng yên</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox active">CHASE<br><small>đuổi player</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox">ATTACK<br><small>đánh</small></div>
+      <div class="farrow">→</div>
+      <div class="fbox done">DEAD<br><small>drop loot</small></div>
+    </div>
+
+    <pre><code><span class="cm"># enemy.gd</span>
+<span class="kw">extends</span> <span class="tp">CharacterBody2D</span>
+
+<span class="kw">enum</span> State { IDLE, PATROL, CHASE, ATTACK, STAGGERED, DEAD }
+
+<span class="an">@export</span> <span class="kw">var</span> enemy_data: <span class="tp">EnemyData</span>   <span class="cm"># Resource chứa stats, loot table...</span>
+<span class="kw">var</span> state: State = State.IDLE
+<span class="kw">var</span> player: <span class="tp">Node2D</span>
+<span class="kw">var</span> nav_path: <span class="tp">Array</span>[<span class="tp">Vector2</span>] = []
+
+<span class="an">@onready</span> <span class="kw">var</span> stats  = <span class="fn">$StatComponent</span>
+<span class="an">@onready</span> <span class="kw">var</span> health = <span class="fn">$HealthComponent</span>
+<span class="an">@onready</span> <span class="kw">var</span> sprite = <span class="fn">$AnimatedSprite2D</span>
+<span class="an">@onready</span> <span class="kw">var</span> nav_timer = <span class="fn">$NavTimer</span>   <span class="cm"># wait 0.3s</span>
+<span class="an">@onready</span> <span class="kw">var</span> attack_timer = <span class="fn">$AttackTimer</span>
+
+<span class="kw">const</span> DETECT_RANGE = <span class="nm">250.0</span>
+<span class="kw">const</span> ATTACK_RANGE = <span class="nm">70.0</span>
+<span class="kw">const</span> LOSE_RANGE   = <span class="nm">450.0</span>
+
+<span class="kw">func</span> <span class="fn">_ready</span>():
+    <span class="fn">add_to_group</span>(<span class="st">"enemies"</span>)
+    player = <span class="fn">get_tree</span>().<span class="fn">get_first_node_in_group</span>(<span class="st">"player"</span>)
+    health.died.<span class="fn">connect</span>(<span class="fn">_on_died</span>)
+    nav_timer.timeout.<span class="fn">connect</span>(<span class="fn">_recalc_nav</span>)
+
+<span class="kw">func</span> <span class="fn">_physics_process</span>(delta):
+    <span class="kw">match</span> state:
+        State.IDLE:    <span class="fn">_state_idle</span>()
+        State.CHASE:   <span class="fn">_state_chase</span>(delta)
+        State.ATTACK:  <span class="fn">_state_attack</span>()
+        State.STAGGERED: <span class="kw">pass</span>
+    <span class="fn">move_and_slide</span>()
+
+<span class="cm"># ── IDLE ──</span>
+<span class="kw">func</span> <span class="fn">_state_idle</span>():
+    velocity = <span class="nm">Vector2.ZERO</span>
+    <span class="kw">if</span> player <span class="kw">and</span> _dist_to_player() < DETECT_RANGE:
+        state = State.CHASE
+        nav_timer.<span class="fn">start</span>()
+
+<span class="cm"># ── CHASE (dùng pathfinding) ──</span>
+<span class="kw">func</span> <span class="fn">_state_chase</span>(delta):
+    <span class="kw">if</span> _dist_to_player() > LOSE_RANGE:
+        state = State.IDLE; <span class="kw">return</span>
+    <span class="kw">if</span> _dist_to_player() < ATTACK_RANGE:
+        state = State.ATTACK; <span class="kw">return</span>
+
+    <span class="kw">if</span> nav_path.<span class="fn">size</span>() > <span class="nm">0</span>:
+        <span class="kw">var</span> target = nav_path[<span class="nm">0</span>]
+        <span class="kw">var</span> dir = (target - global_position).<span class="fn">normalized</span>()
+        velocity = dir * stats.move_speed
+        sprite.flip_h = velocity.x < <span class="nm">0</span>
+        sprite.<span class="fn">play</span>(<span class="st">"walk"</span>)
+        <span class="kw">if</span> global_position.<span class="fn">distance_to</span>(target) < <span class="nm">10</span>:
+            nav_path.<span class="fn">remove_at</span>(<span class="nm">0</span>)
+
+<span class="cm"># ── ATTACK ──</span>
+<span class="kw">func</span> <span class="fn">_state_attack</span>():
+    velocity = <span class="nm">Vector2.ZERO</span>
+    <span class="kw">if</span> _dist_to_player() > ATTACK_RANGE * <span class="nm">1.5</span>:
+        state = State.CHASE; <span class="kw">return</span>
+
+    <span class="kw">if</span> attack_timer.is_stopped():
+        sprite.<span class="fn">play</span>(<span class="st">"attack"</span>)
+        <span class="kw">var</span> dmg = <span class="nm">int</span>(stats.phys_damage * enemy_data.attack_mult)
+        player.<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).<span class="fn">take_damage</span>(dmg)
+        attack_timer.<span class="fn">start</span>(enemy_data.attack_speed)
+
+<span class="cm"># ── DIE ──</span>
+<span class="kw">func</span> <span class="fn">_on_died</span>():
+    state = State.DEAD
+    <span class="cm"># Drop XP + Loot</span>
+    <span class="tp">EventBus</span>.<span class="fn">xp_gained.emit</span>(enemy_data.xp_reward)
+    LootSystem.<span class="fn">roll_loot</span>(enemy_data.loot_table, global_position)
+    sprite.<span class="fn">play</span>(<span class="st">"die"</span>)
+    <span class="kw">await</span> sprite.animation_finished
+    <span class="fn">queue_free</span>()
+
+<span class="cm"># ── STAGGER khi bị hit ──</span>
+<span class="kw">func</span> <span class="fn">stagger</span>(duration: <span class="tp">float</span> = <span class="nm">0.3</span>):
+    <span class="kw">var</span> prev = state
+    state = State.STAGGERED
+    sprite.<span class="fn">play</span>(<span class="st">"hurt"</span>)
+    <span class="kw">await get_tree</span>().<span class="fn">create_timer</span>(duration).timeout
+    state = prev
+
+<span class="kw">func</span> <span class="fn">_dist_to_player</span>() -> <span class="tp">float</span>:
+    <span class="kw">return</span> global_position.<span class="fn">distance_to</span>(player.global_position) <span class="kw">if</span> player <span class="kw">else</span> <span class="nm">9999</span>
+
+<span class="kw">func</span> <span class="fn">_recalc_nav</span>():
+    <span class="kw">if</span> player <span class="kw">and</span> state == State.CHASE:
+        nav_path = <span class="fn">get_node</span>(<span class="st">"/root/Main/Pathfinder"</span>).<span class="fn">find_path</span>(global_position, player.global_position)</code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ LEVEL UP ═══ -->
+  <div class="section" id="leveling">
+    <div class="section-eyebrow">// 07 · Progression</div>
+    <div class="section-title-row">
+      <h2>Level Up System</h2>
+      <span class="time-tag">40 phút</span>
+    </div>
+
+    <pre><code><span class="cm"># xp_component.gd — gắn vào Player</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+<span class="kw">class_name</span> XPComponent
+
+<span class="kw">var</span> level:       <span class="tp">int</span> = <span class="nm">1</span>
+<span class="kw">var</span> current_xp:  <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> stat_points: <span class="tp">int</span> = <span class="nm">0</span>   <span class="cm"># phân bổ khi lên level</span>
+<span class="kw">var</span> skill_points:<span class="tp">int</span> = <span class="nm">0</span>
+
+<span class="an">@onready</span> <span class="kw">var</span> stats: StatComponent = <span class="fn">get_parent</span>().<span class="fn">get_node</span>(<span class="st">"StatComponent"</span>)
+
+<span class="cm"># XP cần để lên level: 100 × level^1.5 (Diablo-style curve)</span>
+<span class="kw">func</span> <span class="fn">xp_needed</span>() -> <span class="tp">int</span>:
+    <span class="kw">return</span> <span class="nm">int</span>(<span class="nm">100</span> * pow(level, <span class="nm">1.5</span>))
+
+<span class="kw">func</span> <span class="fn">_ready</span>():
+    <span class="tp">EventBus</span>.xp_gained.<span class="fn">connect</span>(<span class="fn">gain_xp</span>)
+
+<span class="kw">func</span> <span class="fn">gain_xp</span>(amount: <span class="tp">int</span>):
+    current_xp += amount
+    <span class="kw">while</span> current_xp >= <span class="fn">xp_needed</span>():
+        current_xp -= <span class="fn">xp_needed</span>()
+        <span class="fn">_level_up</span>()
+
+<span class="kw">func</span> <span class="fn">_level_up</span>():
+    level += <span class="nm">1</span>
+    stat_points  += <span class="nm">3</span>    <span class="cm"># phân bổ vào STR/INT/DEX/VIT/DEF</span>
+    skill_points += <span class="nm">1</span>    <span class="cm"># mở skill mới</span>
+
+    <span class="cm"># Auto-increase base stats nhỏ</span>
+    stats.base_strength     += <span class="nm">1</span>
+    stats.base_vitality     += <span class="nm">1</span>
+
+    <span class="tp">EventBus</span>.<span class="fn">level_up.emit</span>(level, stat_points)
+    <span class="cm"># Heal lên full khi lên level (Diablo 1 style)</span>
+    <span class="fn">get_parent</span>().<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).<span class="fn">heal</span>(<span class="nm">9999</span>)
+
+<span class="cm"># ── PHÂN BỔ STAT ──</span>
+<span class="kw">func</span> <span class="fn">invest_stat</span>(stat_name: <span class="tp">String</span>) -> <span class="tp">bool</span>:
+    <span class="kw">if</span> stat_points <= <span class="nm">0</span>: <span class="kw">return false</span>
+    stat_points -= <span class="nm">1</span>
+    <span class="kw">match</span> stat_name:
+        <span class="st">"strength"</span>:     stats.base_strength     += <span class="nm">2</span>
+        <span class="st">"intelligence"</span>: stats.base_intelligence += <span class="nm">2</span>
+        <span class="st">"dexterity"</span>:    stats.base_dexterity    += <span class="nm">2</span>
+        <span class="st">"vitality"</span>:     stats.base_vitality     += <span class="nm">2</span>
+        <span class="st">"defense"</span>:      stats.base_defense      += <span class="nm">2</span>
+    <span class="kw">return true</span></code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ LOOT ═══ -->
+  <div class="section" id="loot">
+    <div class="section-eyebrow">// 08 · Progression</div>
+    <div class="section-title-row">
+      <h2>Loot System</h2>
+      <span class="time-tag">50 phút</span>
+    </div>
+
+    <h3>ItemData Resource</h3>
+    <pre><code><span class="cm"># item_data.gd</span>
+<span class="kw">extends</span> <span class="tp">Resource</span>
+<span class="kw">class_name</span> ItemData
+
+<span class="kw">enum</span> Rarity { COMMON, MAGIC, RARE, LEGENDARY }
+<span class="kw">enum</span> ItemType { WEAPON, HELMET, CHEST, BOOTS, RING, CONSUMABLE }
+
+<span class="an">@export</span> <span class="kw">var</span> id:          <span class="tp">String</span>
+<span class="an">@export</span> <span class="kw">var</span> item_name:   <span class="tp">String</span>
+<span class="an">@export</span> <span class="kw">var</span> description: <span class="tp">String</span>
+<span class="an">@export</span> <span class="kw">var</span> icon:        <span class="tp">Texture2D</span>
+<span class="an">@export</span> <span class="kw">var</span> item_type:   ItemType
+<span class="an">@export</span> <span class="kw">var</span> rarity:      Rarity = Rarity.COMMON
+
+<span class="cm"># Stat bonuses</span>
+<span class="an">@export</span> <span class="kw">var</span> bonus_str:    <span class="tp">int</span> = <span class="nm">0</span>
+<span class="an">@export</span> <span class="kw">var</span> bonus_int:    <span class="tp">int</span> = <span class="nm">0</span>
+<span class="an">@export</span> <span class="kw">var</span> bonus_dex:    <span class="tp">int</span> = <span class="nm">0</span>
+<span class="an">@export</span> <span class="kw">var</span> bonus_vit:    <span class="tp">int</span> = <span class="nm">0</span>
+<span class="an">@export</span> <span class="kw">var</span> bonus_def:    <span class="tp">int</span> = <span class="nm">0</span>
+<span class="an">@export</span> <span class="kw">var</span> bonus_speed:  <span class="tp">float</span> = <span class="nm">0.0</span>
+<span class="an">@export</span> <span class="kw">var</span> weapon_damage:<span class="tp">int</span> = <span class="nm">0</span>   <span class="cm"># cộng thêm vào phys_damage</span>
+<span class="an">@export</span> <span class="kw">var</span> sell_price:   <span class="tp">int</span> = <span class="nm">10</span>
+<span class="an">@export</span> <span class="kw">var</span> level_req:    <span class="tp">int</span> = <span class="nm">1</span>
+
+<span class="cm"># Màu theo rarity</span>
+<span class="kw">func</span> <span class="fn">get_rarity_color</span>() -> <span class="tp">Color</span>:
+    <span class="kw">match</span> rarity:
+        Rarity.COMMON:    <span class="kw">return</span> <span class="tp">Color</span>.WHITE
+        Rarity.MAGIC:     <span class="kw">return</span> <span class="tp">Color</span>.CORNFLOWER_BLUE
+        Rarity.RARE:      <span class="kw">return</span> <span class="tp">Color</span>.YELLOW
+        Rarity.LEGENDARY: <span class="kw">return</span> <span class="tp">Color</span>.ORANGE
+    <span class="kw">return</span> <span class="tp">Color</span>.WHITE</code></pre>
+
+    <h3>LootSystem — Drop với tỉ lệ</h3>
+    <pre><code><span class="cm"># loot_system.gd (Autoload)</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+
+<span class="an">@export</span> <span class="kw">var</span> item_drop_scene: <span class="tp">PackedScene</span>
+
+<span class="cm"># Rarity weights (dựa theo player MagicFind stat)</span>
+<span class="kw">func</span> <span class="fn">roll_loot</span>(loot_table: <span class="tp">Array</span>[<span class="tp">Dictionary</span>], spawn_pos: <span class="tp">Vector2</span>):
+    <span class="kw">for</span> entry <span class="kw">in</span> loot_table:
+        <span class="cm"># entry = { item_id, weight, min_qty, max_qty }</span>
+        <span class="kw">if</span> <span class="fn">randf</span>() <= entry[<span class="st">"weight"</span>]:
+            <span class="kw">var</span> qty = <span class="fn">randi_range</span>(entry[<span class="st">"min_qty"</span>], entry[<span class="st">"max_qty"</span>])
+            <span class="kw">var</span> item = ItemDB.<span class="fn">get_item</span>(entry[<span class="st">"item_id"</span>])
+            <span class="kw">for</span> i <span class="kw">in</span> qty:
+                <span class="fn">_spawn_drop</span>(item, spawn_pos + <span class="nm">Vector2</span>(
+                    <span class="fn">randf_range</span>(<span class="nm">-30</span>, <span class="nm">30</span>),
+                    <span class="fn">randf_range</span>(<span class="nm">-20</span>, <span class="nm">20</span>)
+                ))
+
+<span class="kw">func</span> <span class="fn">_spawn_drop</span>(item: ItemData, pos: <span class="tp">Vector2</span>):
+    <span class="kw">var</span> drop = item_drop_scene.<span class="fn">instantiate</span>()
+    <span class="fn">get_tree</span>().root.<span class="fn">add_child</span>(drop)
+    drop.global_position = pos
+    drop.<span class="fn">setup</span>(item)
+
+<span class="cm"># LootTable ví dụ cho Skeleton:</span>
+<span class="cm"># [</span>
+<span class="cm">#   { "item_id": "gold_small", "weight": 0.8, "min_qty": 1, "max_qty": 3 },</span>
+<span class="cm">#   { "item_id": "bone",       "weight": 0.4, "min_qty": 1, "max_qty": 2 },</span>
+<span class="cm">#   { "item_id": "iron_sword", "weight": 0.05,"min_qty": 1, "max_qty": 1 },</span>
+<span class="cm"># ]</span></code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ INVENTORY ═══ -->
+  <div class="section" id="inventory">
+    <div class="section-eyebrow">// 09 · Progression</div>
+    <div class="section-title-row">
+      <h2>Inventory & Equipment</h2>
+      <span class="time-tag">50 phút</span>
+    </div>
+
+    <pre><code><span class="cm"># inventory.gd — gắn vào Player</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+<span class="kw">class_name</span> InventoryComponent
+
+<span class="kw">const</span> MAX_SLOTS = <span class="nm">30</span>
+
+<span class="cm"># Grid inventory [slot_idx] → ItemData | null</span>
+<span class="kw">var</span> slots: <span class="tp">Array</span> = []
+
+<span class="cm"># Equipment slots</span>
+<span class="kw">var</span> equipped: <span class="tp">Dictionary</span> = {
+    <span class="st">"weapon"</span>: <span class="kw">null</span>,
+    <span class="st">"helmet"</span>: <span class="kw">null</span>,
+    <span class="st">"chest"</span>:  <span class="kw">null</span>,
+    <span class="st">"boots"</span>:  <span class="kw">null</span>,
+    <span class="st">"ring_1"</span>: <span class="kw">null</span>,
+    <span class="st">"ring_2"</span>: <span class="kw">null</span>,
+}
+
+<span class="kw">signal</span> <span class="fn">inventory_changed</span>
+<span class="kw">signal</span> <span class="fn">item_equipped</span>(slot, item)
+
+<span class="an">@onready</span> <span class="kw">var</span> stats: StatComponent = <span class="fn">get_parent</span>().<span class="fn">get_node</span>(<span class="st">"StatComponent"</span>)
+
+<span class="kw">func</span> <span class="fn">_ready</span>():
+    slots.<span class="fn">resize</span>(MAX_SLOTS)
+    slots.<span class="fn">fill</span>(<span class="kw">null</span>)
+    <span class="tp">EventBus</span>.item_picked_up.<span class="fn">connect</span>(<span class="fn">add_item</span>)
+
+<span class="kw">func</span> <span class="fn">add_item</span>(item: ItemData) -> <span class="tp">bool</span>:
+    <span class="kw">var</span> empty_slot = slots.<span class="fn">find</span>(<span class="kw">null</span>)
+    <span class="kw">if</span> empty_slot == <span class="nm">-1</span>: <span class="kw">return false</span>   <span class="cm"># đầy</span>
+    slots[empty_slot] = item
+    <span class="fn">inventory_changed.emit</span>()
+    <span class="kw">return true</span>
+
+<span class="kw">func</span> <span class="fn">equip_item</span>(slot_idx: <span class="tp">int</span>) -> <span class="tp">bool</span>:
+    <span class="kw">var</span> item: ItemData = slots[slot_idx]
+    <span class="kw">if not</span> item: <span class="kw">return false</span>
+
+    <span class="kw">var</span> equip_slot = <span class="fn">_get_equip_slot</span>(item.item_type)
+    <span class="kw">if</span> equip_slot == <span class="st">""</span>: <span class="kw">return false</span>
+
+    <span class="cm"># Unequip cái cũ → về inventory</span>
+    <span class="kw">if</span> equipped[equip_slot]:
+        <span class="fn">unequip_item</span>(equip_slot)
+
+    <span class="cm"># Equip mới</span>
+    equipped[equip_slot] = item
+    slots[slot_idx] = <span class="kw">null</span>
+    stats.<span class="fn">apply_item_bonus</span>(item, <span class="kw">true</span>)
+    <span class="fn">item_equipped.emit</span>(equip_slot, item)
+    <span class="tp">EventBus</span>.<span class="fn">item_equipped.emit</span>(item, equip_slot)
+    <span class="fn">inventory_changed.emit</span>()
+    <span class="kw">return true</span>
+
+<span class="kw">func</span> <span class="fn">unequip_item</span>(equip_slot: <span class="tp">String</span>):
+    <span class="kw">var</span> item = equipped[equip_slot]
+    <span class="kw">if not</span> item: <span class="kw">return</span>
+    equipped[equip_slot] = <span class="kw">null</span>
+    stats.<span class="fn">apply_item_bonus</span>(item, <span class="kw">false</span>)
+    <span class="fn">add_item</span>(item)
+
+<span class="kw">func</span> <span class="fn">_get_equip_slot</span>(type: ItemData.ItemType) -> <span class="tp">String</span>:
+    <span class="kw">match</span> type:
+        ItemData.ItemType.WEAPON:  <span class="kw">return</span> <span class="st">"weapon"</span>
+        ItemData.ItemType.HELMET:  <span class="kw">return</span> <span class="st">"helmet"</span>
+        ItemData.ItemType.CHEST:   <span class="kw">return</span> <span class="st">"chest"</span>
+        ItemData.ItemType.BOOTS:   <span class="kw">return</span> <span class="st">"boots"</span>
+    <span class="kw">return</span> <span class="st">""</span></code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ DUNGEON ═══ -->
+  <div class="section" id="dungeon">
+    <div class="section-eyebrow">// 10 · Systems</div>
+    <div class="section-title-row">
+      <h2>Dungeon & Wave System</h2>
+      <span class="time-tag">40 phút</span>
+    </div>
+
+    <div class="g2">
+      <div class="card card-blood">
+        <h4>Static Dungeon</h4>
+        <p style="font-size:.85rem">Vẽ bằng TileMap iso trong editor. Đặt EnemySpawner node tại các vị trí spawn. Đơn giản, dễ design.</p>
+        <p style="font-size:.8rem; color:var(--muted)">→ Phù hợp game có story, boss fight cố định</p>
+      </div>
+      <div class="card card-fire">
+        <h4>Wave System</h4>
+        <p style="font-size:.85rem">Spawn enemy theo wave. Mỗi wave khó hơn — nhiều enemy hơn, loại mạnh hơn. Dễ implement.</p>
+        <p style="font-size:.8rem; color:var(--muted)">→ Phù hợp roguelike, arena mode</p>
+      </div>
+    </div>
+
+    <h3>Wave Manager</h3>
+    <pre><code><span class="cm"># wave_manager.gd</span>
+<span class="kw">extends</span> <span class="tp">Node</span>
+
+<span class="an">@export</span> <span class="kw">var</span> enemy_scenes: <span class="tp">Array</span>[<span class="tp">PackedScene</span>] = []
+<span class="an">@export</span> <span class="kw">var</span> spawn_points: <span class="tp">Array</span>[<span class="tp">Node2D</span>]     = []
+
+<span class="kw">var</span> current_wave: <span class="tp">int</span> = <span class="nm">0</span>
+<span class="kw">var</span> enemies_alive: <span class="tp">int</span> = <span class="nm">0</span>
+
+<span class="kw">signal</span> <span class="fn">wave_started</span>(wave_num)
+<span class="kw">signal</span> <span class="fn">wave_cleared</span>(wave_num)
+<span class="kw">signal</span> <span class="fn">all_waves_done</span>
+
+<span class="kw">func</span> <span class="fn">start_next_wave</span>():
+    current_wave += <span class="nm">1</span>
+    <span class="fn">wave_started.emit</span>(current_wave)
+
+    <span class="cm"># Số lượng và loại enemy tăng dần</span>
+    <span class="kw">var</span> count = <span class="nm">5</span> + current_wave * <span class="nm">3</span>
+    enemies_alive = count
+
+    <span class="kw">for</span> i <span class="kw">in</span> count:
+        <span class="kw">await get_tree</span>().<span class="fn">create_timer</span>(<span class="nm">0.5</span>).timeout
+        <span class="fn">_spawn_enemy</span>()
+
+<span class="kw">func</span> <span class="fn">_spawn_enemy</span>():
+    <span class="kw">var</span> spawn = spawn_points[<span class="fn">randi</span>() % spawn_points.<span class="fn">size</span>()]
+    <span class="cm"># Chọn enemy type theo wave (khó dần)</span>
+    <span class="kw">var</span> tier = <span class="fn">min</span>(current_wave / <span class="nm">3</span>, enemy_scenes.<span class="fn">size</span>() - <span class="nm">1</span>)
+    <span class="kw">var</span> enemy = enemy_scenes[tier].<span class="fn">instantiate</span>()
+    <span class="fn">add_child</span>(enemy)
+    enemy.global_position = spawn.global_position
+    enemy.<span class="fn">get_node</span>(<span class="st">"HealthComponent"</span>).died.<span class="fn">connect</span>(<span class="fn">_on_enemy_died</span>)
+
+<span class="kw">func</span> <span class="fn">_on_enemy_died</span>():
+    enemies_alive -= <span class="nm">1</span>
+    <span class="kw">if</span> enemies_alive <= <span class="nm">0</span>:
+        <span class="fn">wave_cleared.emit</span>(current_wave)
+        <span class="kw">await get_tree</span>().<span class="fn">create_timer</span>(<span class="nm">3.0</span>).timeout
+        <span class="fn">start_next_wave</span>()</code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ UI ═══ -->
+  <div class="section" id="ui">
+    <div class="section-eyebrow">// 11 · Systems</div>
+    <div class="section-title-row">
+      <h2>HUD & UI</h2>
+      <span class="time-tag">40 phút</span>
+    </div>
+
+    <div class="scene-box">
+      <div class="scene-head">HUD Layout — CanvasLayer</div>
+      <div class="scene-body" style="font-size:.7rem; line-height:2.2;">
+        <div><span class="stype">CanvasLayer</span> "HUD" <span class="sscript">📜 hud.gd</span></div>
+        <div>&nbsp;├─ <span class="stype">Panel</span> "BottomBar" <span class="snote">← anchor Bottom</span></div>
+        <div>&nbsp;│  ├─ <span class="stype">TextureProgressBar</span> "HPBar"</div>
+        <div>&nbsp;│  ├─ <span class="stype">TextureProgressBar</span> "ManaBar"</div>
+        <div>&nbsp;│  ├─ <span class="stype">TextureProgressBar</span> "XPBar"</div>
+        <div>&nbsp;│  └─ <span class="stype">HBoxContainer</span> "SkillBar" <span class="snote">← 4 skill slots</span></div>
+        <div>&nbsp;├─ <span class="stype">Label</span> "LevelLabel" <span class="snote">← anchor Top Left</span></div>
+        <div>&nbsp;├─ <span class="stype">Label</span> "GoldLabel"</div>
+        <div>&nbsp;├─ <span class="stype">Control</span> "DamageNumbers" <span class="snote">← floating text container</span></div>
+        <div>&nbsp;└─ <span class="stype">Control</span> "Inventory" <span class="snote">← ẩn/hiện bằng I key</span></div>
+      </div>
+    </div>
+
+    <h3>Damage Numbers — Float up & fade</h3>
+    <pre><code><span class="cm"># damage_number.gd — scene nhỏ: Label + Tween</span>
+<span class="kw">extends</span> <span class="tp">Label</span>
+
+<span class="kw">func</span> <span class="fn">setup</span>(amount: <span class="tp">int</span>, pos: <span class="tp">Vector2</span>, dtype: <span class="tp">String</span>):
+    global_position = pos + <span class="nm">Vector2</span>(<span class="fn">randf_range</span>(<span class="nm">-20</span>, <span class="nm">20</span>), <span class="nm">0</span>)
+
+    <span class="kw">match</span> dtype:
+        <span class="st">"dodge"</span>:    text = <span class="st">"DODGE"</span>; add_theme_color_override(<span class="st">"font_color"</span>, <span class="tp">Color</span>.WHITE)
+        <span class="st">"fire"</span>:     text = <span class="nm">str</span>(amount); add_theme_color_override(<span class="st">"font_color"</span>, <span class="tp">Color</span>.ORANGE_RED)
+        <span class="st">"poison"</span>:   text = <span class="nm">str</span>(amount); add_theme_color_override(<span class="st">"font_color"</span>, <span class="tp">Color</span>.GREEN)
+        _:           text = <span class="nm">str</span>(amount); add_theme_color_override(<span class="st">"font_color"</span>, <span class="tp">Color</span>.WHITE)
+
+    <span class="kw">var</span> tween = <span class="fn">create_tween</span>().<span class="fn">set_parallel</span>()
+    tween.<span class="fn">tween_property</span>(<span class="kw">self</span>, <span class="st">"position:y"</span>, position.y - <span class="nm">60</span>, <span class="nm">1.0</span>)
+    tween.<span class="fn">tween_property</span>(<span class="kw">self</span>, <span class="st">"modulate:a"</span>, <span class="nm">0.0</span>, <span class="nm">1.0</span>).<span class="fn">set_delay</span>(<span class="nm">0.5</span>)
+    tween.finished.<span class="fn">connect</span>(<span class="fn">queue_free</span>)
+
+<span class="cm"># Trong HUD._ready() — kết nối EventBus:</span>
+<span class="cm"># EventBus.show_damage_number.connect(func(amt, pos, dtype):</span>
+<span class="cm">#     var num = damage_number_scene.instantiate()</span>
+<span class="cm">#     add_child(num)</span>
+<span class="cm">#     num.setup(amt, pos, dtype))</span></code></pre>
+
+    <h3>Skill Bar với Cooldown</h3>
+    <pre><code><span class="cm"># skill_slot.gd — 1 slot trong skill bar</span>
+<span class="kw">extends</span> <span class="tp">Panel</span>
+
+<span class="an">@onready</span> <span class="kw">var</span> icon_rect     = <span class="fn">$Icon</span>
+<span class="an">@onready</span> <span class="kw">var</span> cooldown_overlay = <span class="fn">$CooldownOverlay</span>   <span class="cm"># TextureProgressBar dark overlay</span>
+<span class="an">@onready</span> <span class="kw">var</span> key_label     = <span class="fn">$KeyLabel</span>
+<span class="an">@onready</span> <span class="kw">var</span> skill_ref: SkillData
+
+<span class="kw">func</span> <span class="fn">_process</span>(_delta):
+    <span class="kw">if not</span> skill_ref: <span class="kw">return</span>
+    <span class="kw">var</span> skills = <span class="fn">get_node</span>(<span class="st">"/root/Main/Player/SkillComponent"</span>)
+    <span class="kw">var</span> cd_left = skills.cooldowns.<span class="fn">get</span>(skill_ref.id, <span class="nm">0.0</span>)
+    <span class="kw">var</span> cd_total = skill_ref.cooldown
+    cooldown_overlay.value = (cd_left / cd_total) * <span class="nm">100.0</span> <span class="kw">if</span> cd_total > <span class="nm">0</span> <span class="kw">else</span> <span class="nm">0</span></code></pre>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ VFX ═══ -->
+  <div class="section" id="vfx">
+    <div class="section-eyebrow">// 12 · Polish</div>
+    <div class="section-title-row">
+      <h2>VFX & Game Feel</h2>
+      <span class="time-tag">30 phút</span>
+    </div>
+
+    <div class="g2">
+      <div class="card card-fire">
+        <h4>🔥 Hit Flash</h4>
+        <p style="font-size:.85rem">Enemy flash trắng khi bị hit. Dùng <code>modulate</code> + tween. Rất nhanh, rất hiệu quả.</p>
+        <pre style="margin:8px 0 0; font-size:.68rem; padding:10px;"><code><span class="kw">func</span> <span class="fn">flash_white</span>():
+  modulate = <span class="tp">Color</span>.WHITE * <span class="nm">3</span>
+  <span class="kw">await get_tree</span>().<span class="fn">create_timer</span>(<span class="nm">0.08</span>).timeout
+  modulate = <span class="tp">Color</span>.WHITE</code></pre>
+      </div>
+      <div class="card card-gem">
+        <h4>💎 Screen Shake</h4>
+        <p style="font-size:.85rem">Khi bị đánh, skill mạnh nổ, boss chết. Camera shake ngắn = game feel tốt hơn nhiều.</p>
+        <pre style="margin:8px 0 0; font-size:.68rem; padding:10px;"><code><span class="kw">func</span> <span class="fn">shake</span>(str=<span class="nm">6.0</span>, dur=<span class="nm">0.25</span>):
+  <span class="kw">var</span> t = <span class="nm">0.0</span>
+  <span class="kw">while</span> t < dur:
+    offset = <span class="nm">Vector2</span>(<span class="fn">randf_range</span>(-str,str),
+             <span class="fn">randf_range</span>(-str,str))
+    t += <span class="kw">await get_tree</span>().<span class="fn">process_frame</span>
+    t += <span class="fn">get_process_delta_time</span>()
+  offset = <span class="nm">Vector2.ZERO</span></code></pre>
+      </div>
+    </div>
+
+    <h3>Checklist VFX tối thiểu</h3>
+    <ul class="cklist">
+      <li>Hit flash trắng khi enemy bị đánh</li>
+      <li>Floating damage numbers (màu theo loại damage)</li>
+      <li>Screen shake khi boss nổ hoặc bị đánh mạnh</li>
+      <li>Particle máu/spark khi hit</li>
+      <li>Level up: particle vàng + sound</li>
+      <li>Item drop: ánh sáng glow theo rarity color</li>
+      <li>Skill cooldown overlay trên icon</li>
+      <li>Death animation trước khi queue_free()</li>
+      <li>Dash afterimage (trail effect)</li>
+      <li>HP bar enemy hiện khi bị hit, ẩn sau 2s</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══ CHECKLIST ═══ -->
+  <div class="section" id="checklist">
+    <div class="section-eyebrow">// Final</div>
+    <div class="section-title-row">
+      <h2>Checklist & Build Order</h2>
+    </div>
+
+    <div class="callout co-gold">
+      <strong>◆ Thứ tự build khuyến nghị</strong>
+      StatComponent → HealthComponent → Player movement → 1 enemy cơ bản → Basic attack → Level up → Loot drop → Inventory → Skills → HUD → VFX. Đừng làm inventory trước khi combat chạy được.
+    </div>
+
+    <div class="g2" style="margin-top:20px">
+      <div>
+        <h3>Phase 1 — Core</h3>
+        <ul class="cklist">
+          <li>StatComponent + HealthComponent</li>
+          <li>Player iso movement 8 hướng</li>
+          <li>Basic melee attack</li>
+          <li>1 enemy chase + tấn công</li>
+          <li>Entity chết → queue_free</li>
+          <li>XP gain khi giết enemy</li>
+          <li>Level up + phân bổ stat point</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Phase 2 — Content</h3>
+        <ul class="cklist">
+          <li>ItemData resource + ItemDB</li>
+          <li>Loot drop với tỉ lệ</li>
+          <li>Inventory 30 slot</li>
+          <li>Equip/unequip item</li>
+          <li>Skill system (3+ skills)</li>
+          <li>Projectile + AOE</li>
+          <li>Wave spawner</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div>
+        <h3>Phase 3 — UX</h3>
+        <ul class="cklist">
+          <li>HUD: HP/Mana/XP bar</li>
+          <li>Skill bar + cooldown display</li>
+          <li>Floating damage numbers</li>
+          <li>Item tooltip khi hover</li>
+          <li>Game Over screen</li>
+          <li>Pause menu</li>
+          <li>Save/Load character</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Phase 4 — Polish</h3>
+        <ul class="cklist">
+          <li>Hit flash + stagger enemy</li>
+          <li>Screen shake</li>
+          <li>Particle effects</li>
+          <li>Sound effects (hit, skill, loot)</li>
+          <li>Item drop glow theo rarity</li>
+          <li>Death animation</li>
+          <li>Dash afterimage trail</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout co-blood" style="margin-top:24px">
+      <strong>🩸 Lời khuyên cuối</strong>
+      Hack & slash sống nhờ <em>game feel</em>. Khi combat chạy được: tập trung vào hit flash, screen shake, damage numbers — những thứ này tạo ra cảm giác impact mạnh hơn bất kỳ tính năng mới nào. Diablo 1 ra đời 1996 mà vẫn feel tốt vì impact của từng cú đánh được thiết kế kỹ.
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<a class="back-top" href="#">↑</a>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const s = document.documentElement;
+    document.getElementById('prog').style.width =
+      (s.scrollTop / (s.scrollHeight - s.clientHeight) * 100) + '%';
+  });
+
+  const sections = document.querySelectorAll('.section[id]');
+  const links = document.querySelectorAll('.nav-link');
+
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`.nav-link[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { threshold: 0.2 }).observe
+    ? sections.forEach(s =>
+        new IntersectionObserver(e => {
+          if (e[0].isIntersecting) {
+            links.forEach(l => l.classList.remove('active'));
+            const a = document.querySelector(`.nav-link[href="#${s.id}"]`);
+            if (a) a.classList.add('active');
+          }
+        }, { threshold: 0.2 }).observe(s)
+      )
+    : null;
+</script>
+</body>
+</html>

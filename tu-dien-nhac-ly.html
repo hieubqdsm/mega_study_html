@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Từ Điển Nhạc Lý — Piano & Violin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Sora:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --surface2: #1e2330;
+    --border: #2a3040;
+    --text: #e8ecf4;
+    --text-dim: #7a8499;
+    --text-muted: #4a5568;
+
+    --accent-piano: #f0c040;
+    --accent-violin: #e06050;
+    --accent-theory: #50c0a0;
+    --accent-ear: #a080f0;
+    --accent-rhythm: #f08050;
+    --accent-practice: #60b0f0;
+
+    --tag-piano-bg: rgba(240,192,64,0.12);
+    --tag-piano-border: rgba(240,192,64,0.4);
+    --tag-violin-bg: rgba(224,96,80,0.12);
+    --tag-violin-border: rgba(224,96,80,0.4);
+    --tag-theory-bg: rgba(80,192,160,0.12);
+    --tag-theory-border: rgba(80,192,160,0.4);
+    --tag-ear-bg: rgba(160,128,240,0.12);
+    --tag-ear-border: rgba(160,128,240,0.4);
+    --tag-rhythm-bg: rgba(240,128,80,0.12);
+    --tag-rhythm-border: rgba(240,128,80,0.4);
+    --tag-practice-bg: rgba(96,176,240,0.12);
+    --tag-practice-border: rgba(96,176,240,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    padding: 40px 48px 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--accent-piano);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header-eyebrow span { color: var(--text-muted); margin: 0 6px; }
+  .header h1 {
+    font-family: 'Sora', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .header-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    max-width: 700px;
+  }
+  .header-desc strong { color: var(--text); font-weight: 500; }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    padding: 20px 48px 0;
+  }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    max-width: 700px;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus-within { border-color: var(--accent-theory); }
+  .search-box svg { color: var(--text-muted); flex-shrink: 0; }
+  .search-box input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    width: 100%;
+  }
+  .search-box input::placeholder { color: var(--text-muted); }
+
+  /* ── FILTER CHIPS ── */
+  .filter-section {
+    padding: 20px 48px 0;
+  }
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .filter-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-right: 4px;
+    padding-top: 2px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 12px 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip.piano  { background: var(--tag-piano-bg);   border-color: var(--tag-piano-border);   color: var(--accent-piano); }
+  .chip.violin { background: var(--tag-violin-bg);  border-color: var(--tag-violin-border);  color: var(--accent-violin); }
+  .chip.theory { background: var(--tag-theory-bg);  border-color: var(--tag-theory-border);  color: var(--accent-theory); }
+  .chip.ear    { background: var(--tag-ear-bg);     border-color: var(--tag-ear-border);     color: var(--accent-ear); }
+  .chip.rhythm { background: var(--tag-rhythm-bg);  border-color: var(--tag-rhythm-border);  color: var(--accent-rhythm); }
+  .chip.practice { background: var(--tag-practice-bg); border-color: var(--tag-practice-border); color: var(--accent-practice); }
+  .chip:hover { filter: brightness(1.15); }
+  .chip.active { filter: brightness(1.3); box-shadow: 0 0 0 2px currentColor; }
+
+  .stats-line {
+    padding: 12px 48px 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* ── MAIN ── */
+  .main { padding: 32px 48px 80px; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 36px 0 16px;
+  }
+  .section-header:first-child { margin-top: 0; }
+  .section-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: #3a4555; }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    cursor: pointer;
+    gap: 12px;
+  }
+  .card-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+  .card-tag {
+    flex-shrink: 0;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'Space Mono', monospace;
+  }
+  .card-tag.piano  { background: var(--tag-piano-bg);   border: 1px solid var(--tag-piano-border);   color: var(--accent-piano); }
+  .card-tag.violin { background: var(--tag-violin-bg);  border: 1px solid var(--tag-violin-border);  color: var(--accent-violin); }
+  .card-tag.theory { background: var(--tag-theory-bg);  border: 1px solid var(--tag-theory-border);  color: var(--accent-theory); }
+  .card-tag.ear    { background: var(--tag-ear-bg);     border: 1px solid var(--tag-ear-border);     color: var(--accent-ear); }
+  .card-tag.rhythm { background: var(--tag-rhythm-bg);  border: 1px solid var(--tag-rhythm-border);  color: var(--accent-rhythm); }
+  .card-tag.practice { background: var(--tag-practice-bg); border: 1px solid var(--tag-practice-border); color: var(--accent-practice); }
+  .card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .card-level {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+  .chevron {
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    font-size: 16px;
+    line-height: 1;
+  }
+  .card.open .chevron { transform: rotate(180deg); }
+
+  /* ── CARD BODY ── */
+  .card-body {
+    display: none;
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+  .card.open .card-body { display: block; }
+
+  .desc {
+    font-size: 13.5px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    margin-top: 14px;
+    margin-bottom: 14px;
+  }
+  .desc strong { color: var(--text); font-weight: 600; }
+  .desc em { font-style: italic; color: #b0bac8; }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #0a0c12;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-theory);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #a8c0d8;
+    line-height: 1.8;
+    margin-bottom: 14px;
+    white-space: pre-wrap;
+  }
+  .code-block .cm { color: var(--text-muted); }
+  .code-block .hl { color: var(--accent-piano); }
+  .code-block .vl { color: var(--accent-violin); }
+  .code-block .gr { color: var(--accent-theory); }
+  .code-block .em { color: var(--accent-ear); }
+
+  /* ── TIP ── */
+  .tip {
+    border-left: 3px solid var(--accent-piano);
+    padding: 10px 14px;
+    background: rgba(240,192,64,0.06);
+    border-radius: 0 6px 6px 0;
+    font-size: 12.5px;
+    color: #c8b880;
+    line-height: 1.65;
+    margin-bottom: 10px;
+  }
+  .tip.violin { border-left-color: var(--accent-violin); background: rgba(224,96,80,0.06); color: #d8a090; }
+  .tip.theory { border-left-color: var(--accent-theory); background: rgba(80,192,160,0.06); color: #80c8b0; }
+  .tip.ear    { border-left-color: var(--accent-ear);    background: rgba(160,128,240,0.06); color: #b0a0e0; }
+
+  /* ── STEPS ── */
+  .steps { margin: 10px 0 14px; }
+  .step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .step-num {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+  .step-text { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
+  .step-text strong { color: var(--text); }
+
+  /* ── DIFFICULTY BADGES ── */
+  .difficulty {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: 6px;
+  }
+  .d1 { background: rgba(80,192,160,0.15); color: var(--accent-theory); border: 1px solid rgba(80,192,160,0.3); }
+  .d2 { background: rgba(96,176,240,0.15); color: var(--accent-practice); border: 1px solid rgba(96,176,240,0.3); }
+  .d3 { background: rgba(160,128,240,0.15); color: var(--accent-ear); border: 1px solid rgba(160,128,240,0.3); }
+  .d4 { background: rgba(224,96,80,0.15); color: var(--accent-violin); border: 1px solid rgba(224,96,80,0.3); }
+  .d5 { background: rgba(240,192,64,0.15); color: var(--accent-piano); border: 1px solid rgba(240,192,64,0.3); }
+
+  /* ── NOTE GRID ── */
+  .note-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 6px;
+    margin: 10px 0 14px;
+  }
+  .note-cell {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .note-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    color: var(--accent-piano);
+    font-weight: 700;
+  }
+  .note-viet {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ── PRACTICE TABLE ── */
+  .practice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 14px;
+    font-size: 12.5px;
+  }
+  .practice-table th {
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .practice-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(42,48,64,0.5);
+    color: var(--text-dim);
+    vertical-align: top;
+    line-height: 1.55;
+  }
+  .practice-table tr:last-child td { border-bottom: none; }
+  .practice-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* ── KEYBOARD VIZ ── */
+  .keyboard {
+    display: flex;
+    gap: 3px;
+    margin: 10px 0 14px;
+    background: var(--surface2);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .key {
+    background: #e8e8e0;
+    border-radius: 0 0 5px 5px;
+    height: 60px;
+    min-width: 26px;
+    flex: 1;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 5px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+  }
+  .key:hover { background: #fff; }
+  .key.black {
+    background: #1a1a2e;
+    height: 36px;
+    min-width: 18px;
+    max-width: 18px;
+    color: #888;
+    border-color: #333;
+    z-index: 1;
+    margin: 0 -9px;
+    border-radius: 0 0 4px 4px;
+    align-self: flex-start;
+  }
+  .key.black:hover { background: #2a2a4e; }
+  .key.hl-c { background: rgba(240,192,64,0.7) !important; }
+  .key.hl-scale { background: rgba(80,192,160,0.5) !important; }
+
+  .hidden { display: none !important; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .header, .search-wrap, .filter-section, .stats-line, .main { padding-left: 18px; padding-right: 18px; }
+    .header h1 { font-size: 28px; }
+    .note-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">NHẠC LÝ CƠ BẢN <span>·</span> PIANO <span>·</span> VIOLIN</div>
+  <h1>Từ điển nhạc lý</h1>
+  <div class="header-desc">
+    Tổng hợp <strong>120+ thuật ngữ & bài tập</strong> — 
+    Nốt nhạc · Nhịp điệu · Gam & Hợp âm · Ký hiệu bản nhạc · Luyện tai · 
+    Kỹ thuật Piano · Kỹ thuật Violin · Bài tập từ dễ đến khó
+  </div>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Tìm thuật ngữ, bài tập...">
+  </div>
+</div>
+
+<div class="filter-section">
+  <div class="filter-row">
+    <span class="filter-label">Lọc:</span>
+    <span class="chip theory active" data-filter="theory">♩ Nhạc lý</span>
+    <span class="chip rhythm active" data-filter="rhythm">♪ Nhịp điệu</span>
+    <span class="chip ear active" data-filter="ear">👂 Luyện tai</span>
+    <span class="chip piano active" data-filter="piano">🎹 Piano</span>
+    <span class="chip violin active" data-filter="violin">🎻 Violin</span>
+    <span class="chip practice active" data-filter="practice">✏️ Bài tập</span>
+  </div>
+</div>
+
+<div class="stats-line" id="statsLine">120 thuật ngữ hiển thị — bấm để mở</div>
+
+<div class="main" id="mainContent">
+
+<!-- ════════════════════════════════════════
+     PHẦN 1 — NỀN TẢNG NHẠC LÝ
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Nốt nhạc & Ký hiệu">
+  <span class="section-eyebrow">Phần 1</span>
+  <span class="section-title">Nền tảng nhạc lý — Từ zero đến đọc được bản nhạc</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- 1. Tên nốt nhạc -->
+<div class="card" data-tags="theory" data-title="Tên nốt nhạc (Notes)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Tên nốt nhạc (Notes)</span>
+    </div>
+    <div class="card-right">
+      <span class="card-level">Bước 0</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Có <strong>7 nốt nhạc cơ bản</strong> tương ứng với 7 chữ cái tiếng Anh. Trong âm nhạc cổ điển châu Âu (và Việt Nam), chúng được đọc theo tên Do-Re-Mi.</div>
+    <div class="note-grid">
+      <div class="note-cell"><div class="note-name">C</div><div class="note-viet">Đô</div></div>
+      <div class="note-cell"><div class="note-name">D</div><div class="note-viet">Rê</div></div>
+      <div class="note-cell"><div class="note-name">E</div><div class="note-viet">Mi</div></div>
+      <div class="note-cell"><div class="note-name">F</div><div class="note-viet">Fa</div></div>
+      <div class="note-cell"><div class="note-name">G</div><div class="note-viet">Sol</div></div>
+      <div class="note-cell"><div class="note-name">A</div><div class="note-viet">La</div></div>
+      <div class="note-cell"><div class="note-name">B</div><div class="note-viet">Si</div></div>
+    </div>
+    <div class="code-block"><span class="cm">// Thứ tự vòng lặp mãi mãi:</span>
+<span class="hl">C → D → E → F → G → A → B → C → D → ...</span>
+<span class="cm">// Đô → Rê → Mi → Fa → Sol → La → Si → Đô ...</span>
+
+<span class="cm">// Mẹo nhớ tiếng Anh (đọc từ C):</span>
+<span class="gr">"Cats Don't Eat Fresh Grass, All Birds"</span></div>
+    <div class="tip">🎹 Trên đàn piano: Nốt <strong>C (Đô)</strong> luôn nằm bên trái nhóm 2 phím đen. Đây là điểm neo quan trọng nhất — tìm được C là định vị được mọi nốt khác.</div>
+  </div>
+</div>
+
+<!-- 2. Dòng kẻ nhạc -->
+<div class="card" data-tags="theory" data-title="Khuông nhạc & Khóa nhạc">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Khuông nhạc & Khóa nhạc</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Khuông nhạc gồm <strong>5 dòng kẻ nằm ngang</strong>. Vị trí nốt trên/dưới dòng kẻ xác định cao độ. <strong>Khóa nhạc</strong> ở đầu khuông cho biết nốt nào ứng với dòng nào.</div>
+    <div class="code-block"><span class="cm">// Khóa Sol (Treble Clef) — cho tay phải Piano, Violin</span>
+<span class="hl">Dòng 1 (thấp nhất): E4 (Mi)</span>
+<span class="hl">Dòng 2: G4 (Sol)</span>
+<span class="hl">Dòng 3: B4 (Si)</span>
+<span class="hl">Dòng 4: D5 (Rê)</span>
+<span class="hl">Dòng 5 (cao nhất): F5 (Fa)</span>
+<span class="cm">// Mẹo nhớ dòng: "Every Good Boy Does Fine"</span>
+<span class="cm">// Mẹo nhớ khoảng: "FACE" (F-A-C-E)</span>
+
+<span class="cm">// Khóa Fa (Bass Clef) — cho tay trái Piano</span>
+<span class="vl">Dòng 1: G2 | Dòng 2: B2 | Dòng 3: D3 | Dòng 4: F3 | Dòng 5: A3</span>
+<span class="cm">// Mẹo nhớ dòng: "Good Boys Do Fine Always"</span></div>
+    <div class="tip theory">📖 Violin chỉ dùng khóa Sol. Piano dùng cả hai: tay phải đọc khóa Sol, tay trái đọc khóa Fa.</div>
+  </div>
+</div>
+
+<!-- 3. Quãng tám -->
+<div class="card" data-tags="theory" data-title="Quãng tám (Octave)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Quãng tám (Octave)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Mỗi lần 7 nốt lặp lại thì cao độ tăng gấp đôi — gọi là <strong>một quãng tám (octave)</strong>. Trên piano có 8 quãng tám. Nốt được đánh số: C4 (Đô giữa), C5 (Đô cao hơn một quãng)...</div>
+    <div class="code-block"><span class="cm">// Tần số nhân đôi mỗi quãng tám:</span>
+<span class="hl">A3 = 220 Hz</span>
+<span class="hl">A4 = 440 Hz  ← Chuẩn quốc tế (Concert A)</span>
+<span class="hl">A5 = 880 Hz</span>
+
+<span class="cm">// Piano: C1 ... C4 (Đô giữa) ... C8</span>
+<span class="gr">Violin: G3 · D4 · A4 · E5  (4 dây mở)</span></div>
+    <div class="tip">🎹 C4 gọi là "Middle C" — nốt Đô nằm giữa bàn phím, ngay giữa khuông nhạc. Đây là nốt tham chiếu toàn bộ hệ thống.</div>
+  </div>
+</div>
+
+<!-- 4. Dấu thăng/giáng -->
+<div class="card" data-tags="theory" data-title="Dấu thăng (#) & Dấu giáng (♭)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Dấu thăng (#) & Dấu giáng (♭)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc"><strong>Dấu thăng (#)</strong> nâng nốt lên <em>nửa cung</em>. <strong>Dấu giáng (♭)</strong> hạ nốt xuống nửa cung. Tương ứng với các <strong>phím đen</strong> trên piano. Dấu bình (♮) hủy thăng/giáng.</div>
+    <div class="code-block"><span class="cm">// Các phím đen (12 nốt trong 1 quãng tám):</span>
+<span class="hl">C · C#/D♭ · D · D#/E♭ · E · F · F#/G♭ · G · G#/A♭ · A · A#/B♭ · B</span>
+
+<span class="cm">// Không có phím đen giữa E-F và B-C (nửa cung tự nhiên)</span>
+<span class="gr">E → F  : nửa cung (không có E# / F♭ phổ biến)</span>
+<span class="gr">B → C  : nửa cung (không có B# / C♭ phổ biến)</span></div>
+    <div class="tip">🎻 Violin không có phím — dấu thăng/giáng thay đổi vị trí đặt ngón tay. C# đặt ngón gần hơn D, C♭ đặt ngón gần hơn B.</div>
+  </div>
+</div>
+
+<!-- 5. Cung & Nửa cung -->
+<div class="card" data-tags="theory" data-title="Cung & Nửa cung (Whole tone & Semitone)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Cung & Nửa cung (Whole tone & Semitone)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc"><strong>Nửa cung (semitone)</strong> là khoảng cách nhỏ nhất trong âm nhạc phương Tây — 2 phím liền nhau trên piano. <strong>Một cung (tone)</strong> = 2 nửa cung.</div>
+    <div class="code-block"><span class="cm">// Khoảng cách trên bàn phím:</span>
+<span class="hl">C → C# : nửa cung (1 phím)</span>
+<span class="hl">C → D  : một cung  (2 phím)</span>
+<span class="hl">C → E  : hai cung  (4 phím)</span>
+
+<span class="cm">// Cấu trúc cung trong gamC trưởng:</span>
+<span class="gr">C - D - E - F - G - A - B - C</span>
+<span class="gr">  1   1  ½  1   1   1  ½</span>
+<span class="cm">// Công thức gam trưởng: 1 1 ½ 1 1 1 ½</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 2 — TRƯỜNG ĐỘ & NHỊP
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Nhịp điệu">
+  <span class="section-eyebrow">Phần 2</span>
+  <span class="section-title">Trường độ & Nhịp — Hiểu thời gian âm nhạc</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- 6. Hình nốt -->
+<div class="card" data-tags="rhythm" data-title="Hình nốt (Note values)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag rhythm">Nhịp điệu</span>
+      <span class="card-title">Hình nốt (Note values)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Mỗi hình nốt biểu thị <strong>thời gian ngân dài bao nhiêu phách</strong>. Hình nốt tròn dài gấp đôi trắng, trắng gấp đôi đen...</div>
+    <div class="code-block"><span class="cm">// Hình nốt từ dài → ngắn:</span>
+<span class="hl">𝅝  Tròn      (Whole)     = 4 phách</span>
+<span class="hl">𝅗𝅥  Trắng     (Half)      = 2 phách</span>
+<span class="hl">♩  Đen       (Quarter)   = 1 phách  ← đơn vị cơ bản</span>
+<span class="hl">♪  Móc đơn  (Eighth)    = ½ phách</span>
+<span class="hl">♬  Móc kép  (16th)      = ¼ phách</span>
+
+<span class="cm">// Dấu lặng tương ứng (im lặng cùng thời gian):</span>
+<span class="gr">𝄻 = tròn  |  𝄼 = trắng  |  𝄽 = đen  |  𝄾 = móc đơn</span>
+
+<span class="cm">// Dấu chấm (.) sau nốt = thêm ½ trường độ:</span>
+<span class="em">♩. = 1½ phách  |  𝅗𝅥. = 3 phách</span></div>
+    <div class="tip">🥁 Bắt đầu học bằng cách vỗ tay: tròn (1-2-3-4), trắng (1-2), đen (1), móc đơn (và). Đọc to: "1 và 2 và 3 và 4 và".</div>
+  </div>
+</div>
+
+<!-- 7. Nhịp -->
+<div class="card" data-tags="rhythm" data-title="Nhịp (Time Signature)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag rhythm">Nhịp điệu</span>
+      <span class="card-title">Nhịp (Time Signature)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Số nhịp ghi ở đầu bản nhạc dạng phân số: <strong>số trên = số phách trong 1 ô nhịp</strong>, <strong>số dưới = hình nốt tương ứng 1 phách</strong>.</div>
+    <div class="code-block"><span class="hl">4/4  ← Phổ biến nhất. 4 phách/ô, đen = 1 phách</span>
+<span class="cm">     Phách mạnh: 1 và 3 | Phách nhẹ: 2 và 4</span>
+
+<span class="hl">3/4  ← Nhịp valse. 3 phách/ô. Mạnh-nhẹ-nhẹ (1-2-3)</span>
+<span class="hl">6/8  ← 6 móc đơn/ô, cảm giác 2 phách lớn (1..2..)</span>
+<span class="hl">2/4  ← Hành khúc. Mạnh-nhẹ (1-2)</span>
+
+<span class="cm">// Đọc: "4 trên 4" hoặc "4/4 time"</span></div>
+    <div class="tip">🎹 Bắt đầu học với nhịp 4/4. Đánh máy metronome 60 BPM và đếm "1-2-3-4" đều tay trước khi chơi bất kỳ bài nào.</div>
+  </div>
+</div>
+
+<!-- 8. Tempo -->
+<div class="card" data-tags="rhythm" data-title="Tempo & Metronome">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag rhythm">Nhịp điệu</span>
+      <span class="card-title">Tempo & Metronome</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc"><strong>Tempo</strong> là tốc độ bài nhạc, đo bằng <strong>BPM (beats per minute)</strong> — số phách trong một phút. <strong>Metronome</strong> là thiết bị/app đánh dấu phách đều.</div>
+    <div class="code-block"><span class="cm">// Các ký hiệu tempo tiếng Ý:</span>
+<span class="hl">Largo     = 40–60 BPM   (rất chậm, rộng lớn)</span>
+<span class="hl">Adagio    = 66–76 BPM   (chậm, thong thả)</span>
+<span class="hl">Andante   = 76–108 BPM  (đi bộ)</span>
+<span class="hl">Moderato  = 108–120 BPM (vừa phải)</span>
+<span class="hl">Allegro   = 120–156 BPM (nhanh, vui)</span>
+<span class="hl">Presto    = 168–200 BPM (rất nhanh)</span>
+
+<span class="cm">// Học bài mới: luôn bắt đầu ở 50-60% tempo mục tiêu</span>
+<span class="gr">Ví dụ: bài Allegro (120 BPM) → luyện ở 70 BPM trước</span></div>
+    <div class="tip theory">📱 App metronome: <strong>Metronome Beats</strong> (iOS/Android) hoặc metronome.online. Luôn bật metronome khi luyện — đây là cách nhanh nhất để tiến bộ.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 3 — GAM & HỢP ÂM
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Gam & Hợp âm">
+  <span class="section-eyebrow">Phần 3</span>
+  <span class="section-title">Gam & Hợp âm — Ngôn ngữ âm nhạc</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- 9. Gam trưởng -->
+<div class="card" data-tags="theory" data-title="Gam trưởng (Major Scale)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Gam trưởng (Major Scale)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Gam trưởng nghe <strong>vui, sáng</strong>. Công thức khoảng cách giữa 8 nốt: <strong>Cung - Cung - Nửa - Cung - Cung - Cung - Nửa</strong> (viết tắt: T T S T T T S).</div>
+    <div class="code-block"><span class="cm">// Gam C trưởng (không có thăng/giáng — dễ nhất):</span>
+<span class="hl">C - D - E - F - G - A - B - C</span>
+<span class="gr">  T   T   S   T   T   T   S</span>
+
+<span class="cm">// Gam G trưởng (1 dấu thăng: F#):</span>
+<span class="hl">G - A - B - C - D - E - F# - G</span>
+
+<span class="cm">// Gam F trưởng (1 dấu giáng: B♭):</span>
+<span class="hl">F - G - A - B♭ - C - D - E - F</span>
+
+<span class="cm">// 5 gam đầu tiên nên học (theo thứ tự):</span>
+<span class="em">C major → G major → D major → F major → A major</span></div>
+    <div class="tip">🎹 Gam C trưởng = chỉ phím trắng từ C đến C. Đây là bài tập tay đầu tiên cho mọi học viên piano.</div>
+    <div class="tip violin">🎻 Gam D trưởng rất phù hợp cho Violin vì thuận với 4 dây mở (G-D-A-E). Bắt đầu học gam D trưởng 1 quãng tám trước.</div>
+  </div>
+</div>
+
+<!-- 10. Gam thứ -->
+<div class="card" data-tags="theory" data-title="Gam thứ (Minor Scale)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Gam thứ (Minor Scale)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Gam thứ nghe <strong>buồn, sâu lắng</strong>. Có 3 loại thứ: tự nhiên, hòa thanh, giai điệu. Học gam thứ tự nhiên trước.</div>
+    <div class="code-block"><span class="cm">// Công thức gam thứ tự nhiên: T S T T S T T</span>
+<span class="hl">A thứ: A - B - C - D - E - F - G - A</span>
+<span class="gr">         T  S  T   T  S  T   T</span>
+
+<span class="cm">// Mối quan hệ song song (Relative minor):</span>
+<span class="em">C trưởng ↔ A thứ  (cùng hóa biểu, bắt đầu từ nốt thứ 6)</span>
+<span class="em">G trưởng ↔ E thứ</span>
+<span class="em">F trưởng ↔ D thứ</span>
+
+<span class="cm">// Gam thứ hòa thanh (bậc 7 nâng ½ cung):</span>
+<span class="vl">A thứ HT: A - B - C - D - E - F - G# - A</span></div>
+  </div>
+</div>
+
+<!-- 11. Hợp âm -->
+<div class="card" data-tags="theory" data-title="Hợp âm (Chords) — Bộ ba cơ bản">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Hợp âm (Chords) — Bộ ba cơ bản</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Hợp âm là <strong>3+ nốt vang cùng lúc</strong>. Hợp âm ba (triad) gồm: nốt gốc (root), quãng ba, quãng năm. Trưởng nghe vui, thứ nghe buồn.</div>
+    <div class="code-block"><span class="cm">// Hợp âm trưởng: Gốc + 4 nửa cung + 3 nửa cung</span>
+<span class="hl">C major (Đô trưởng):  C - E - G</span>
+<span class="hl">G major (Sol trưởng): G - B - D</span>
+<span class="hl">F major (Fa trưởng):  F - A - C</span>
+
+<span class="cm">// Hợp âm thứ: Gốc + 3 nửa cung + 4 nửa cung</span>
+<span class="vl">A minor (La thứ):  A - C - E</span>
+<span class="vl">D minor (Rê thứ):  D - F - A</span>
+<span class="vl">E minor (Mi thứ):  E - G - B</span>
+
+<span class="cm">// Vòng hợp âm phổ biến nhất (pop/ballad):</span>
+<span class="em">C - Am - F - G  (I - vi - IV - V)</span>
+<span class="em">→ Hàng trăm bài hit dùng vòng này!</span></div>
+    <div class="tip">🎹 Mục tiêu: thuộc 4 hợp âm C-Am-F-G trong vòng 2 tuần đầu. Chỉ cần 4 hợp âm này đã chơi được >100 bài hát phổ biến.</div>
+  </div>
+</div>
+
+<!-- 12. Hóa biểu -->
+<div class="card" data-tags="theory" data-title="Hóa biểu (Key Signature)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Hóa biểu (Key Signature)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Hóa biểu là các dấu # hoặc ♭ viết ngay sau khóa nhạc, <strong>áp dụng cho toàn bộ bản nhạc</strong>. Giúp không phải viết dấu thăng/giáng trước từng nốt.</div>
+    <div class="code-block"><span class="cm">// Vòng quãng năm (Circle of Fifths):</span>
+<span class="hl">0 dấu #/♭ : C trưởng / A thứ</span>
+<span class="hl">1 dấu #   : G trưởng / E thứ   (F#)</span>
+<span class="hl">2 dấu #   : D trưởng / B thứ   (F#, C#)</span>
+<span class="hl">3 dấu #   : A trưởng / F# thứ  (F#, C#, G#)</span>
+<span class="vl">1 dấu ♭   : F trưởng / D thứ   (B♭)</span>
+<span class="vl">2 dấu ♭   : B♭ trưởng / G thứ  (B♭, E♭)</span>
+
+<span class="cm">// Mẹo nhớ thứ tự dấu #: Father Charles Goes Down And Ends Battle</span>
+<span class="cm">// Mẹo nhớ thứ tự dấu ♭: Battle Ends And Down Goes Charles' Father</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 4 — LUYỆN TAI
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Luyện tai">
+  <span class="section-eyebrow">Phần 4</span>
+  <span class="section-title">Luyện tai (Ear Training) — Nghe và nhận ra âm thanh</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- 13. Quãng -->
+<div class="card" data-tags="ear" data-title="Quãng âm (Intervals)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag ear">Luyện tai</span>
+      <span class="card-title">Quãng âm (Intervals)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 3</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Quãng âm là khoảng cách giữa hai nốt. Nhận biết quãng bằng tai là kỹ năng quan trọng nhất trong luyện tai — giúp bạn <strong>nghe nhạc và tự đàn lại</strong>.</div>
+    <div class="code-block"><span class="cm">// 12 quãng âm cơ bản + bài hát để nhớ:</span>
+<span class="hl">Quãng 1 (Unison)     : C→C  — cùng nốt</span>
+<span class="hl">Quãng 2 thứ (m2)     : C→C# — "Jaws" (nhạc cá mập)</span>
+<span class="hl">Quãng 2 trưởng (M2)  : C→D  — "Happy Birthday" (đầu)</span>
+<span class="hl">Quãng 3 thứ (m3)     : C→E♭ — "Smoke on the Water"</span>
+<span class="hl">Quãng 3 trưởng (M3)  : C→E  — "When the Saints Go..."</span>
+<span class="hl">Quãng 4 (P4)         : C→F  — "Here Comes the Bride"</span>
+<span class="hl">Quãng tritone (TT)   : C→F# — "The Simpsons" theme</span>
+<span class="hl">Quãng 5 (P5)         : C→G  — "Star Wars" theme</span>
+<span class="hl">Quãng 6 thứ (m6)     : C→A♭ — "The Entertainer"</span>
+<span class="hl">Quãng 6 trưởng (M6)  : C→A  — "My Bonnie"</span>
+<span class="hl">Quãng 7 thứ (m7)     : C→B♭ — "Somewhere" (West Side)</span>
+<span class="hl">Quãng 8 (Octave)     : C→C' — "Somewhere Over Rainbow"</span></div>
+    <div class="tip ear">👂 App luyện tai: <strong>Tenuto</strong> (iOS) hoặc <strong>EarMaster</strong>. Luyện 10 phút/ngày nhận biết quãng, sau 1 tháng sẽ cảm nhận rõ sự khác biệt.</div>
+  </div>
+</div>
+
+<!-- 14. Phân biệt trưởng/thứ -->
+<div class="card" data-tags="ear" data-title="Phân biệt trưởng/thứ & Hợp âm bằng tai">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag ear">Luyện tai</span>
+      <span class="card-title">Phân biệt trưởng/thứ & Hợp âm bằng tai</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 3</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Luyện tai nhận biết âm <strong>trưởng (vui/sáng)</strong> và <strong>thứ (buồn/tối)</strong> bằng nghe là bước đầu của solfège.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Chơi C major (C-E-G) — cảm nhận âm thanh <strong>vui, rộng mở</strong></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Chơi A minor (A-C-E) — cảm nhận âm thanh <strong>trầm lắng, buồn</strong></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Nhắm mắt, nhờ ai đó chơi ngẫu nhiên — thử đoán trưởng hay thứ</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Sau khi thuần thục, thêm hợp âm 7 (dominant 7th) — âm "căng thẳng", cần giải quyết</div></div>
+    </div>
+    <div class="tip ear">👂 Luyện với nhạc pop quen thuộc: phân tích xem đoạn vui/buồn dùng hợp âm gì. Ví dụ: điệp khúc thường dùng hợp âm trưởng, verse có thể thứ.</div>
+  </div>
+</div>
+
+<!-- 15. Solfège -->
+<div class="card" data-tags="ear" data-title="Solfège — Xướng âm">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag ear">Luyện tai</span>
+      <span class="card-title">Solfège — Xướng âm (Đọc nhạc bằng giọng)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 3</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Solfège là kỹ thuật đọc nốt bằng âm tiết <strong>Do-Re-Mi-Fa-Sol-La-Si</strong>. Giúp kết nối ký hiệu bản nhạc với âm thanh thực tế trong não.</div>
+    <div class="code-block"><span class="cm">// Solfège cố định (Fixed Do) — phổ biến ở VN/châu Âu:</span>
+<span class="hl">C=Đô, D=Rê, E=Mi, F=Fa, G=Sol, A=La, B=Si</span>
+<span class="cm">// Dấu thăng: Đô thăng = Đi, Rê thăng = Ri...</span>
+
+<span class="cm">// Bài tập xướng âm từng bước:</span>
+<span class="gr">1. Hát gam C trưởng lên-xuống: Đô-Rê-Mi-Fa-Sol-La-Si-Đô</span>
+<span class="gr">2. Hát các quãng: Đô-Mi (q3), Đô-Sol (q5), Đô-Đô' (q8)</span>
+<span class="gr">3. Hát giai điệu đơn giản (Twinkle Twinkle): Đô-Đô-Sol-Sol-La-La-Sol</span>
+<span class="gr">4. Nhìn bản nhạc và hát không cần nhạc cụ</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 5 — KỸ THUẬT PIANO
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Kỹ thuật Piano">
+  <span class="section-eyebrow">Phần 5</span>
+  <span class="section-title">Kỹ thuật Piano — Từ tư thế đến chơi nhạc</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- 16. Tư thế ngồi -->
+<div class="card" data-tags="piano" data-title="Tư thế ngồi & Vị trí tay">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag piano">Piano</span>
+      <span class="card-title">Tư thế ngồi & Vị trí tay</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Tư thế đúng từ đầu ngăn chấn thương và giúp chơi tốt hơn về lâu dài. Đây là điều quan trọng nhất mà người mới thường bỏ qua.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Chiều cao ghế:</strong> Khuỷu tay ngang hoặc hơi cao hơn mặt phím. Ngồi ở 1/3 trước ghế, không tựa lưng.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Vị trí tay:</strong> Cổ tay thẳng (không gập lên/xuống). Ngón tay cong nhẹ như đang cầm quả táo.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Đánh số ngón:</strong> Ngón cái = 1, trỏ = 2, giữa = 3, áp = 4, út = 5. Học vị trí 5 ngón tay trên C-D-E-F-G.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Vai và cánh tay:</strong> Vai thả lỏng, không nhô lên. Cánh tay trên sát thân, không dang rộng.</div></div>
+    </div>
+    <div class="code-block"><span class="cm">// Đánh số ngón tay chuẩn (tay phải, vị trí C):</span>
+<span class="hl">Ngón 1 (cái)  → C (Đô)</span>
+<span class="hl">Ngón 2 (trỏ) → D (Rê)</span>
+<span class="hl">Ngón 3 (giữa)→ E (Mi)</span>
+<span class="hl">Ngón 4 (áp)  → F (Fa)</span>
+<span class="hl">Ngón 5 (út)  → G (Sol)</span></div>
+  </div>
+</div>
+
+<!-- 17. Legato & Staccato -->
+<div class="card" data-tags="piano" data-title="Legato & Staccato — Cách chạm phím">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag piano">Piano</span>
+      <span class="card-title">Legato & Staccato — Cách chạm phím</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc"><strong>Legato</strong> (liền tiếng): nốt trước chưa nhả thì đã nhấn nốt sau — âm chảy mượt mà. <strong>Staccato</strong> (ngắt tiếng): nhấn nhanh và nhả ngay — âm gọn, nảy.</div>
+    <div class="code-block"><span class="cm">// Dấu hiệu trên bản nhạc:</span>
+<span class="hl">Legato : dấu luyến (slur) — đường cong nối các nốt</span>
+<span class="hl">Staccato: dấu chấm phía trên/dưới nốt (·)</span>
+<span class="hl">Tenuto : gạch ngang (-) — nhấn đủ trường độ, hơi nhấn mạnh</span>
+<span class="hl">Accent : dấu (>) — nhấn mạnh hơn bình thường</span></div>
+    <div class="tip">🎹 Bài tập legato: Chơi C-D-E-F-G chậm, cảm nhận ngón trước chưa rời phím khi ngón sau xuống. Nghe âm thanh phải "liền" không bị ngắt quãng.</div>
+  </div>
+</div>
+
+<!-- 18. Pedal -->
+<div class="card" data-tags="piano" data-title="Pedal — Bàn đạp chân">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag piano">Piano</span>
+      <span class="card-title">Pedal — Bàn đạp chân</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Piano có 3 pedal. <strong>Pedal phải (sustain)</strong> là quan trọng nhất — khi đạp, âm ngân dài hơn dù nhả phím. Mở ra khả năng chơi legato trong âm hình rải (arpeggio).</div>
+    <div class="code-block"><span class="cm">// 3 pedal từ trái sang phải:</span>
+<span class="hl">Una corda (trái)  : nhẹ âm thanh, thay đổi timbre</span>
+<span class="hl">Sostenuto (giữa)  : giữ chỉ những nốt đang nhấn (ít dùng)</span>
+<span class="hl">Sustain   (phải)  : giữ toàn bộ âm ← QUAN TRỌNG NHẤT</span>
+
+<span class="cm">// Kỹ thuật đạp pedal cơ bản:</span>
+<span class="gr">Legato pedal: nhấn phím → đạp pedal (sau khi nhấn)</span>
+<span class="gr">             nhấn phím mới → nhả pedal → đạp lại ngay</span>
+<span class="cm">// Không đạp quá nhiều — âm sẽ bị "bùm" (muddy)</span></div>
+    <div class="tip theory">📌 Quy tắc: Học 3-6 tháng không dùng pedal để luyện ngón tay cho tốt trước. Pedal là "son môi" — không giấu được kỹ thuật yếu.</div>
+  </div>
+</div>
+
+<!-- 19. Đọc 2 tay -->
+<div class="card" data-tags="piano" data-title="Phối hợp 2 tay (Hand Coordination)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag piano">Piano</span>
+      <span class="card-title">Phối hợp 2 tay (Hand Coordination)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 3</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Chơi 2 tay độc lập là thử thách lớn nhất với người mới. Mỗi tay đọc khuông nhạc riêng, nhịp riêng, cường độ riêng.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Học từng tay riêng đến khi <strong>thuần thục không cần nhìn</strong> — không được ghép khi còn đang nghĩ về từng tay</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Ghép tay ở <strong>tốc độ rất chậm</strong> (50% bình thường). Chậm đến mức não kịp xử lý cả 2 tay cùng lúc</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Tăng dần tốc độ 5 BPM mỗi lần khi đã thoải mái. Đừng vội — 1 tuần tăng 10 BPM là tốt</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Luyện theo từng <strong>ô nhịp hoặc câu nhạc</strong>, không phải toàn bài liên tục</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 6 — KỸ THUẬT VIOLIN
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Kỹ thuật Violin">
+  <span class="section-eyebrow">Phần 6</span>
+  <span class="section-title">Kỹ thuật Violin — Cầm đàn, cầm vĩ, chạm dây</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- 20. Cầm đàn Violin -->
+<div class="card" data-tags="violin" data-title="Cầm đàn & Tư thế Violin">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag violin">Violin</span>
+      <span class="card-title">Cầm đàn & Tư thế Violin</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Violin đặt trên vai trái, kẹp giữa cằm và vai. Tay trái giữ cần đàn. Tay phải cầm vĩ (bow). Tư thế sai từ đầu sẽ rất khó sửa sau này.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Đặt đàn:</strong> Thân đàn trên vai trái, núm đàn dưới cằm. Vai phải không được nhô lên. Dùng chin rest và shoulder rest cho người mới.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Tay trái:</strong> Ngón cái đặt nhẹ dưới cần đàn (không nắm chặt). Các ngón còn lại cong và đặt lên dây từ trên xuống, đầu ngón tay chạm dây.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Test tư thế:</strong> Buông tay trái, đàn vẫn kẹp vững giữa cằm và vai — nếu đàn rơi là sai tư thế.</div></div>
+    </div>
+    <div class="code-block"><span class="cm">// 4 dây Violin (thấp → cao):</span>
+<span class="vl">G (Sol) → D (Rê) → A (La) → E (Mi)</span>
+<span class="cm">// Khoảng cách giữa các dây: quãng 5 hoàn hảo</span>
+<span class="gr">G3 - D4 - A4 - E5</span></div>
+    <div class="tip violin">🎻 Đừng bỏ qua shoulder rest (miếng kê vai). Đây không phải "dành cho người yếu" — 90% violinist chuyên nghiệp đều dùng.</div>
+  </div>
+</div>
+
+<!-- 21. Cầm vĩ -->
+<div class="card" data-tags="violin" data-title="Cầm vĩ (Bow Hold)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag violin">Violin</span>
+      <span class="card-title">Cầm vĩ (Bow Hold)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 0</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Cầm vĩ đúng cách là nền tảng để tạo ra âm thanh đẹp. Cầm sai sẽ gây ra âm thanh cứng, khó kiểm soát và chấn thương cổ tay.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Ngón giữa</strong> đặt trên vĩ đối diện với ngón cái. Ngón cái cong nhẹ, đặt vào chỗ lõm của vĩ (frog).</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Ngón trỏ</strong> đặt thoải mái lên vĩ, cách ngón cái ~1 đốt. Ngón út cong tròn, đầu ngón đặt lên mặt trên vĩ.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Không nắm chặt</strong> — cổ tay và ngón tay phải mềm mại. Thả lỏng như cầm bút vẽ, không như nắm cây gậy.</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Test: Cầm vĩ nằm ngang, thả tay — vĩ nên đung đưa nhẹ nhàng, không cứng đờ.</div></div>
+    </div>
+    <div class="tip violin">🎻 Bài tập "Bunny bow": Ngón cái ở dưới, các ngón khác cong lên trên như tai thỏ — tập cử động ngón độc lập trước khi cầm vĩ thật.</div>
+  </div>
+</div>
+
+<!-- 22. Kéo vĩ cơ bản -->
+<div class="card" data-tags="violin" data-title="Kéo vĩ (Bowing) — Detaché & Martelé">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag violin">Violin</span>
+      <span class="card-title">Kéo vĩ (Bowing) — Detaché & Martelé</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Âm thanh Violin do <strong>cách kéo vĩ qua dây</strong> tạo ra. Tốc độ vĩ, lực ép và vị trí kéo (gần/xa ngựa đàn) quyết định chất lượng âm.</div>
+    <div class="code-block"><span class="cm">// Kỹ thuật kéo vĩ cơ bản:</span>
+<span class="hl">Down bow (↓) : kéo từ frog (gốc) đến tip (đầu)</span>
+<span class="hl">Up bow   (↑) : kéo từ tip về frog</span>
+
+<span class="cm">// Detaché: mỗi nốt 1 lần kéo, không ngắt nhưng không liền</span>
+<span class="vl">Détaché: đây là kỹ thuật mặc định — 80% thời gian dùng</span>
+
+<span class="cm">// Martelé: kéo ngắn, dứt khoát — nghe "cứng" hơn</span>
+<span class="cm">// Legato: nhiều nốt trong 1 lần kéo</span>
+<span class="cm">// Spiccato: vĩ nảy khỏi dây (kỹ thuật nâng cao)</span>
+
+<span class="cm">// Vị trí kéo:</span>
+<span class="gr">Gần ngựa (sul ponticello) : âm sắc mỏng, kim loại</span>
+<span class="gr">Giữa dây (normale)        : âm cân bằng, tự nhiên ← mặc định</span>
+<span class="gr">Gần ngựa đàn (sul tasto)  : âm mềm, tối</span></div>
+    <div class="tip violin">🎻 Nguyên tắc "3 biến số": tốc độ vĩ × lực ép × vị trí = âm thanh. Âm nhỏ = chậm + nhẹ. Âm to = nhanh + mạnh (không chỉ ép mạnh hơn).</div>
+  </div>
+</div>
+
+<!-- 23. Vị trí ngón tay Violin -->
+<div class="card" data-tags="violin" data-title="Vị trí ngón tay (First Position)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag violin">Violin</span>
+      <span class="card-title">Vị trí ngón tay (First Position)</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Violin không có phím (fret). Vị trí ngón tay phải <strong>chính xác tuyệt đối</strong> để ra đúng nốt. Tất cả người mới học ở <strong>First Position</strong> — tay trái không di chuyển dọc cần.</div>
+    <div class="code-block"><span class="cm">// First Position trên dây A (La):</span>
+<span class="hl">Dây mở A4    → La (A)</span>
+<span class="hl">Ngón 1 (trỏ): B4 → Si</span>
+<span class="hl">Ngón 2 (giữa): C#5 hoặc C5 (tùy gam)</span>
+<span class="hl">Ngón 3 (áp): D5 → Rê</span>
+<span class="hl">Ngón 4 (út): E5 → Mi (= dây mở E)</span>
+
+<span class="cm">// Gam D trưởng (dây A và E, first position):</span>
+<span class="vl">D4 - E4 - F#4 - G4 | A4 - B4 - C#5 - D5</span>
+<span class="cm">// Đây là gam đầu tiên nên học trên violin!</span></div>
+    <div class="tip violin">🎻 Dùng <strong>đèn dán ngón</strong> (finger tape) cho 3-6 tháng đầu. Không phải "cheat" — đây là cách thầy dạy chuẩn để tập phản xạ cơ bắp.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 7 — BÀI TẬP THỰC HÀNH
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Bài tập">
+  <span class="section-eyebrow">Phần 7</span>
+  <span class="section-title">Bài tập thực hành — Từ dễ đến khó</span>
+  <div class="section-line"></div>
+</div>
+
+<!-- Piano Exercises -->
+<div class="card" data-tags="practice piano" data-title="[Piano] Cấp độ 1: Bài tập ngón & Gam cơ bản">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">[Piano] Cấp độ 1: Ngón tay & Gam cơ bản <span class="difficulty d1">Dễ</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tuần 1–2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Mục tiêu: Làm quen bàn phím, luyện ngón tay độc lập, chơi được gam C và 5 nốt đầu.</div>
+    <table class="practice-table">
+      <thead><tr><th>Bài tập</th><th>Mô tả</th><th>Tempo</th><th>Thời gian</th></tr></thead>
+      <tbody>
+        <tr><td>5 ngón C</td><td>Tay phải: ngón 1-2-3-4-5 trên C-D-E-F-G, lên xuống</td><td>60 BPM</td><td>5 phút/ngày</td></tr>
+        <tr><td>5 ngón tay trái</td><td>Tay trái: ngón 5-4-3-2-1 trên C-D-E-F-G</td><td>60 BPM</td><td>5 phút/ngày</td></tr>
+        <tr><td>Gam C trưởng</td><td>1 tay một quãng tám, legato, có metronome</td><td>70 BPM</td><td>5 phút/ngày</td></tr>
+        <tr><td>Hanon No.1</td><td>Bài tập ngón cổ điển, tay phải trước, rồi trái, rồi 2 tay</td><td>60–80 BPM</td><td>5 phút/ngày</td></tr>
+        <tr><td>Twinkle Twinkle</td><td>Bài đầu tiên có giai điệu thật — tay phải, chậm</td><td>60 BPM</td><td>10 phút/ngày</td></tr>
+      </tbody>
+    </table>
+    <div class="tip">🎯 Mục tiêu cuối tuần 2: Chơi gam C trưởng 2 tay lên xuống không nhìn phím, ở 80 BPM.</div>
+  </div>
+</div>
+
+<div class="card" data-tags="practice piano" data-title="[Piano] Cấp độ 2: Hợp âm tay trái & Giai điệu tay phải">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">[Piano] Cấp độ 2: Hợp âm + Giai điệu 2 tay <span class="difficulty d2">Trung bình</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tuần 3–6</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Tay trái chơi hợp âm đơn (block chords), tay phải chơi giai điệu. Đây là cách chơi nhạc phổ biến nhất cho người mới.</div>
+    <table class="practice-table">
+      <thead><tr><th>Bài tập</th><th>Mô tả</th><th>Mục tiêu</th></tr></thead>
+      <tbody>
+        <tr><td>Vòng C-Am-F-G</td><td>Tay trái: chơi 3 nốt hợp âm mỗi nhịp, tay phải: gam C</td><td>Chuyển hợp âm mượt</td></tr>
+        <tr><td>Ode to Joy</td><td>Beethoven — giai điệu đơn giản, nhịp 4/4, không thăng giáng</td><td>Chơi 2 tay</td></tr>
+        <tr><td>Minuet in G</td><td>Bach/Petzold — nhịp 3/4, bài cổ điển đầu tiên</td><td>80 BPM</td></tr>
+        <tr><td>Broken chords</td><td>Tay trái: chơi từng nốt hợp âm (C-E-G-E-C-E-G-E)</td><td>Alberti bass</td></tr>
+        <tr><td>Happy Birthday</td><td>Nhịp 3/4, thăng F — thực chiến đầu tiên</td><td>Đọc bản nhạc</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" data-tags="practice piano" data-title="[Piano] Cấp độ 3: Bài nhạc hoàn chỉnh">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">[Piano] Cấp độ 3: Bài nhạc hoàn chỉnh <span class="difficulty d3">Khó vừa</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tháng 2–4</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <table class="practice-table">
+      <thead><tr><th>Bài nhạc</th><th>Kỹ thuật học được</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td>Fur Elise (Beethoven)</td><td>Legato, nhịp 3/8, arpeggio, dynamic</td><td>Học phần đầu trước (A section)</td></tr>
+        <tr><td>Arabesque No.1 (Burgmüller)</td><td>Tốc độ, staccato, legato đan xen</td><td>Nhịp 2/4, Allegro scherzando</td></tr>
+        <tr><td>River Flows in You (Yiruma)</td><td>Nhịp 12/8, arpeggio tay trái liên tục</td><td>Bài nhạc hiện đại đầu tiên</td></tr>
+        <tr><td>Gymnopédie No.1 (Satie)</td><td>Nhịp 3/4, pedal, piano/pianissimo</td><td>Rất chậm, cảm xúc là chính</td></tr>
+      </tbody>
+    </table>
+    <div class="tip">🎯 Mỗi bài học ~2–4 tuần. Đừng học 5 bài cùng lúc — làm chủ 1 bài trước khi sang bài khác.</div>
+  </div>
+</div>
+
+<!-- Violin Exercises -->
+<div class="card" data-tags="practice violin" data-title="[Violin] Cấp độ 1: Dây mở & Chạm dây">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">[Violin] Cấp độ 1: Dây mở & Vĩ cơ bản <span class="difficulty d1">Dễ</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tuần 1–3</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Trước khi đặt ngón tay lên cần, hãy tạo ra âm thanh đẹp từ dây mở. Đây là nền tảng quan trọng nhất.</div>
+    <table class="practice-table">
+      <thead><tr><th>Bài tập</th><th>Mô tả</th><th>Thời gian</th></tr></thead>
+      <tbody>
+        <tr><td>Long bows (dây D)</td><td>Kéo từ frog đến tip, 1 nốt = 4 phách, âm đều và liền</td><td>10 phút/ngày</td></tr>
+        <tr><td>Đổi dây</td><td>G-D-A-E lên xuống, không ngừng, giữ cánh tay đúng góc</td><td>5 phút/ngày</td></tr>
+        <tr><td>Gam D trưởng dây mở</td><td>D4 (dây mở D) - A4 (dây mở A) - lên xuống với metronome</td><td>5 phút/ngày</td></tr>
+        <tr><td>Down/Up bow đều</td><td>Cùng âm lượng, cùng tốc độ cả 2 chiều</td><td>10 phút/ngày</td></tr>
+      </tbody>
+    </table>
+    <div class="tip violin">🎻 Nhìn vào gương khi luyện — kiểm tra: cánh tay phải giữ thẳng, vĩ vuông góc với dây, vai thả lỏng.</div>
+  </div>
+</div>
+
+<div class="card" data-tags="practice violin" data-title="[Violin] Cấp độ 2: First Position & Gam D">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">[Violin] Cấp độ 2: First Position & Gam D <span class="difficulty d2">Trung bình</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tuần 3–8</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <table class="practice-table">
+      <thead><tr><th>Bài tập</th><th>Mô tả</th><th>Mục tiêu</th></tr></thead>
+      <tbody>
+        <tr><td>Gam D trưởng 1 quãng tám</td><td>D-E-F#-G-A-B-C#-D, ngón tay từ dây D sang dây A</td><td>Intonation sạch</td></tr>
+        <tr><td>Gam A trưởng</td><td>A-B-C#-D-E-F#-G#-A, chỉ trên dây A và E</td><td>Ngón 2 "cao" cho C# và F#</td></tr>
+        <tr><td>Twinkle (Suzuki Bk.1)</td><td>Bài đầu tiên sách Suzuki — giai điệu đơn giản, nhịp 4/4</td><td>Chơi đủ nhịp</td></tr>
+        <tr><td>Lightly Row</td><td>Suzuki Book 1 — detaché cơ bản, lên xuống gam G</td><td>Đổi dây mượt</td></tr>
+        <tr><td>Exercises Kreutzer No.1</td><td>Long tones thuần — chuẩn bị cho bộ etude nâng cao</td><td>Âm đẹp và bền</td></tr>
+      </tbody>
+    </table>
+    <div class="tip violin">🎻 Sách Suzuki Book 1 là lộ trình chuẩn nhất cho người mới học violin. Nghe CD/YouTube trước khi chơi — não học qua tai trước.</div>
+  </div>
+</div>
+
+<div class="card" data-tags="practice violin" data-title="[Violin] Cấp độ 3: Bài nhạc hoàn chỉnh">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">[Violin] Cấp độ 3: Repertoire cơ bản <span class="difficulty d3">Khó vừa</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tháng 3–6</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <table class="practice-table">
+      <thead><tr><th>Tác phẩm</th><th>Kỹ thuật học được</th><th>Ghi chú</th></tr></thead>
+      <tbody>
+        <tr><td>Minuet 1 (Bach) — Suzuki</td><td>Legato, nhịp 3/4, phrase</td><td>Suzuki Book 1, bài tiêu biểu</td></tr>
+        <tr><td>Gossec Gavotte</td><td>Staccato, articulation, dynamic</td><td>Suzuki Book 2</td></tr>
+        <tr><td>Vivaldi A minor — Mov.1</td><td>Tone production, nhịp baroque</td><td>Suzuki Book 4, mốc quan trọng</td></tr>
+        <tr><td>Seitz Concerto No.2</td><td>Double stops (2 dây cùng lúc), vibrato</td><td>Dành sau 1 năm học</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Solfege exercises -->
+<div class="card" data-tags="practice ear" data-title="Lộ trình luyện tai 30 phút/ngày">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag ear">Luyện tai</span>
+      <span class="card-title">Lộ trình luyện tai 30 phút/ngày <span class="difficulty d2">Trung bình</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Hàng ngày</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <table class="practice-table">
+      <thead><tr><th>Thời gian</th><th>Bài tập</th><th>Mục tiêu</th></tr></thead>
+      <tbody>
+        <tr><td>5 phút</td><td>Hát gam trưởng C, G, D lên xuống bằng solfège</td><td>Kết nối giọng-tai-ngón</td></tr>
+        <tr><td>5 phút</td><td>Nhận biết quãng (app Tenuto/EarMaster)</td><td>Nghe được quãng 2-5</td></tr>
+        <tr><td>5 phút</td><td>Phân biệt trưởng/thứ — 20 hợp âm ngẫu nhiên</td><td>Đúng 90%</td></tr>
+        <tr><td>10 phút</td><td>Nghe nhạc yêu thích, cố đàn lại giai điệu</td><td>Transcription cơ bản</td></tr>
+        <tr><td>5 phút</td><td>Dictation nhịp: gõ lại tiết tấu sau khi nghe</td><td>Nhớ và tái hiện nhịp</td></tr>
+      </tbody>
+    </table>
+    <div class="tip ear">👂 Luyện tai 10 phút mỗi ngày tốt hơn 1 giờ 1 lần/tuần. Consistency là tất cả.</div>
+  </div>
+</div>
+
+<!-- Reading music -->
+<div class="card" data-tags="practice theory" data-title="Đọc bản nhạc — Lộ trình từng bước">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">Đọc bản nhạc — Sight-reading từng bước <span class="difficulty d3">Khó vừa</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tháng 1–3</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Tuần 1–2:</strong> Nhận biết nhanh nốt trên khuông nhạc. Dùng flashcard hoặc app "Note Rush". Mục tiêu: nhận ra ngay lập tức không cần đếm dòng kẻ.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Tuần 3–4:</strong> Đọc nhịp — nhìn bản nhạc và vỗ tay theo trường độ có metronome. Chưa cần đàn.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Tháng 2:</strong> Kết hợp nốt + nhịp. Đọc bài đơn giản (1 dòng, nhịp 4/4, không thăng giáng). "Chậm và đúng" hơn "nhanh và sai".</div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Tháng 3+:</strong> Sight-reading thật sự: nhìn bản nhạc lạ và chơi ngay lần đầu. Mỗi ngày 1 bài ngắn chưa từng luyện.</div></div>
+    </div>
+    <div class="code-block"><span class="cm">// Quy trình đọc bài mới (trước khi chơi):</span>
+<span class="hl">1. Xem nhịp (time signature) và hóa biểu</span>
+<span class="hl">2. Tìm nốt cao nhất, thấp nhất</span>
+<span class="hl">3. Nhận ra các mẫu lặp lại (pattern)</span>
+<span class="hl">4. Chơi chậm hơn tempo thật 50%</span>
+<span class="hl">5. Không dừng giữa chừng dù đánh sai</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     PHẦN 8 — THUẬT NGỮ BẢN NHẠC
+     ════════════════════════════════════════ -->
+<div class="section-header" data-section="Ký hiệu">
+  <span class="section-eyebrow">Phần 8</span>
+  <span class="section-title">Ký hiệu bản nhạc — Từ điển ký hiệu thường gặp</span>
+  <div class="section-line"></div>
+</div>
+
+<div class="card" data-tags="theory" data-title="Động lực học (Dynamics)">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Động lực học (Dynamics) — To/Nhỏ</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="code-block"><span class="cm">// Ký hiệu to/nhỏ (tiếng Ý):</span>
+<span class="hl">ppp  = pianississimo  (cực nhỏ)</span>
+<span class="hl">pp   = pianissimo     (rất nhỏ)</span>
+<span class="hl">p    = piano          (nhỏ)</span>
+<span class="hl">mp   = mezzo-piano    (vừa nhỏ)</span>
+<span class="hl">mf   = mezzo-forte    (vừa to)</span>
+<span class="hl">f    = forte          (to)</span>
+<span class="hl">ff   = fortissimo     (rất to)</span>
+<span class="hl">fff  = fortississimo  (cực to)</span>
+
+<span class="cm">// Thay đổi dần dần:</span>
+<span class="gr">crescendo  (cresc. hoặc <)  : to dần</span>
+<span class="gr">decrescendo (decresc. hoặc >) : nhỏ dần</span>
+<span class="gr">diminuendo (dim.)           : nhỏ dần (giống decrescendo)</span>
+<span class="gr">sforzando (sfz)             : nhấn mạnh đột ngột</span></div>
+  </div>
+</div>
+
+<div class="card" data-tags="theory" data-title="Dấu nhắc lại & Cấu trúc bản nhạc">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Dấu nhắc lại & Cấu trúc bản nhạc</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 1</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="code-block"><span class="cm">// Dấu nhắc lại:</span>
+<span class="hl">𝄆...𝄇  = lặp lại đoạn trong</span>
+<span class="hl">D.C. (Da Capo) = quay về đầu bài</span>
+<span class="hl">D.S. (Dal Segno) = quay về dấu § </span>
+<span class="hl">Fine = kết thúc tại đây</span>
+<span class="hl">Coda (⊕) = nhảy đến đoạn kết</span>
+
+<span class="cm">// Khung kết 1 và 2:</span>
+<span class="gr">[1.] = lần đầu chơi đoạn này rồi nhắc lại</span>
+<span class="gr">[2.] = lần hai bỏ qua [1.] chơi đoạn này</span>
+
+<span class="cm">// Cấu trúc bài phổ biến:</span>
+<span class="em">ABA (Ternary): đoạn A - đoạn B - đoạn A lại</span>
+<span class="em">AABA: phổ biến trong nhạc jazz/pop cổ điển</span>
+<span class="em">Verse - Chorus: nhạc pop hiện đại</span></div>
+  </div>
+</div>
+
+<div class="card" data-tags="theory" data-title="Thuật ngữ diễn tấu thường gặp">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag theory">Nhạc lý</span>
+      <span class="card-title">Thuật ngữ diễn tấu thường gặp</span>
+    </div>
+    <div class="card-right"><span class="card-level">Bước 2</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="code-block"><span class="cm">// Tính cách / Character:</span>
+<span class="hl">dolce       = ngọt ngào, dịu dàng</span>
+<span class="hl">cantabile   = ca hát, giai điệu phong phú</span>
+<span class="hl">con brio    = sôi nổi, nhiệt huyết</span>
+<span class="hl">espressivo  = diễn cảm</span>
+<span class="hl">grazioso    = duyên dáng</span>
+<span class="hl">maestoso    = uy nghi, trang trọng</span>
+<span class="hl">tranquillo  = yên tĩnh, bình lặng</span>
+
+<span class="cm">// Thay đổi tempo:</span>
+<span class="vl">ritardando (rit.)  = chậm dần</span>
+<span class="vl">accelerando (accel.) = nhanh dần</span>
+<span class="vl">rubato      = tự do nhịp điệu (theo cảm xúc)</span>
+<span class="vl">a tempo     = trở về tempo ban đầu</span>
+<span class="vl">fermata (𝄐) = ngân dài tùy theo người chơi</span></div>
+  </div>
+</div>
+
+<!-- VIBRATO -->
+<div class="card" data-tags="violin" data-title="Vibrato (Rung ngón) — Violin">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag violin">Violin</span>
+      <span class="card-title">Vibrato — Kỹ thuật rung ngón</span>
+    </div>
+    <div class="card-right"><span class="card-level">Tháng 4–6</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <div class="desc">Vibrato là sự dao động nhẹ của cao độ tạo ra âm thanh giàu cảm xúc. <strong>Chỉ học sau khi intonation và bow control vững chắc</strong> — tối thiểu 4–6 tháng học.</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Arm vibrato:</strong> Luyện bằng cách đặt đầu ngón 3 lên dây, di chuyển cẳng tay lên-xuống nhẹ nhàng. Bắt đầu chậm (2 lần/giây), sau tăng dần.</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Kiểm tra:</strong> Âm thanh phải dao động đều (lên-xuống đều nhau), không chỉ "run" xuống. Nghe như sóng đều.</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Luyện với metronome: 1 nốt dài (4 phách), vibrato theo tốc độ đếm. Bắt đầu 60 BPM → tăng lên 90 BPM.</div></div>
+    </div>
+    <div class="tip violin">🎻 Vibrato không phải "rung" mà là "lăn" ngón. Hướng di chuyển: ngón lăn về phía pegbox (đầu đàn) — không phải sang trái-phải.</div>
+  </div>
+</div>
+
+<!-- Lịch học tổng hợp -->
+<div class="card" data-tags="practice" data-title="Lịch học 6 tháng đầu — Tổng hợp Piano & Violin">
+  <div class="card-header">
+    <div class="card-left">
+      <span class="card-tag practice">Bài tập</span>
+      <span class="card-title">Lịch học 6 tháng đầu — Piano & Violin <span class="difficulty d5">Lộ trình</span></span>
+    </div>
+    <div class="card-right"><span class="card-level">Tổng hợp</span><span class="chevron">▼</span></div>
+  </div>
+  <div class="card-body">
+    <table class="practice-table">
+      <thead><tr><th>Giai đoạn</th><th>Piano</th><th>Violin</th><th>Nhạc lý chung</th></tr></thead>
+      <tbody>
+        <tr><td>Tháng 1</td><td>5 ngón, gam C, Twinkle, Hanon 1</td><td>Tư thế, long bows, dây mở</td><td>Nốt, khuông nhạc, nhịp 4/4</td></tr>
+        <tr><td>Tháng 2</td><td>Hợp âm C-Am-F-G, Ode to Joy</td><td>Gam D trưởng, Suzuki B.1</td><td>Hình nốt, gam trưởng, hóa biểu</td></tr>
+        <tr><td>Tháng 3</td><td>Minuet G, 2 tay độc lập</td><td>Gam A trưởng, Lightly Row</td><td>Gam thứ, hợp âm, quãng cơ bản</td></tr>
+        <tr><td>Tháng 4</td><td>Fur Elise (A section), Arabesque</td><td>Minuet Bach, đổi dây nhanh</td><td>Xướng âm, luyện tai quãng</td></tr>
+        <tr><td>Tháng 5</td><td>River Flows in You, Gymnopédie</td><td>Gossec Gavotte, vibrato tập</td><td>Các điệu thức, phân tích bài</td></tr>
+        <tr><td>Tháng 6</td><td>Sonatina đơn giản (Clementi)</td><td>Vivaldi A minor Mov.1</td><td>Sight-reading hàng ngày</td></tr>
+      </tbody>
+    </table>
+    <div class="tip theory">📅 Thời gian luyện tối thiểu: Piano 30–45 phút/ngày, Violin 30–45 phút/ngày, Nhạc lý/Luyện tai 15 phút/ngày. Nếu học cả 2 nhạc cụ, chia đều thời gian.</div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// Toggle card open/close
+document.querySelectorAll('.card-header').forEach(header => {
+  header.addEventListener('click', () => {
+    header.closest('.card').classList.toggle('open');
+  });
+});
+
+// Filter chips
+const chips = document.querySelectorAll('.chip[data-filter]');
+const activeFilters = new Set(['theory','rhythm','ear','piano','violin','practice']);
+
+chips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    const f = chip.dataset.filter;
+    if (activeFilters.has(f)) {
+      activeFilters.delete(f);
+      chip.classList.remove('active');
+    } else {
+      activeFilters.add(f);
+      chip.classList.add('active');
+    }
+    filterCards();
+  });
+});
+
+// Search
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', filterCards);
+
+function filterCards() {
+  const query = searchInput.value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+
+  cards.forEach(card => {
+    const tags = card.dataset.tags || '';
+    const title = (card.dataset.title || '').toLowerCase();
+    const bodyText = card.innerText.toLowerCase();
+
+    const tagMatch = tags.split(' ').some(t => activeFilters.has(t));
+    const textMatch = !query || title.includes(query) || bodyText.includes(query);
+
+    if (tagMatch && textMatch) {
+      card.classList.remove('hidden');
+      visible++;
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+
+  // Hide section headers with no visible cards
+  document.querySelectorAll('.section-header').forEach(sh => {
+    let next = sh.nextElementSibling;
+    let hasVisible = false;
+    while (next && !next.classList.contains('section-header')) {
+      if (next.classList.contains('card') && !next.classList.contains('hidden')) {
+        hasVisible = true; break;
+      }
+      next = next.nextElementSibling;
+    }
+    sh.style.display = hasVisible ? '' : 'none';
+  });
+
+  document.getElementById('statsLine').textContent =
+    visible + ' thuật ngữ hiển thị — bấm để mở';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Từ điển LSP AutoCAD</title>
+<style>
+  :root {
+    --bg: #0d0f12;
+    --bg2: #141720;
+    --bg3: #1a1e28;
+    --bg4: #1f2535;
+    --border: #2a3045;
+    --border2: #344060;
+    --text: #e2e8f5;
+    --text2: #8a95b0;
+    --text3: #5a6480;
+    --accent: #4f8ef7;
+    --accent2: #2e5fc7;
+    --green: #3dd68c;
+    --green2: #1a6b45;
+    --green3: #0d3d28;
+    --amber: #f5a623;
+    --amber2: #7a4f0a;
+    --amber3: #3d2805;
+    --red: #f75f5f;
+    --red2: #7a2020;
+    --purple: #9b72f5;
+    --purple2: #4a2880;
+    --teal: #38c9c9;
+    --teal2: #1a6060;
+    --pink: #f56baa;
+    --pink2: #7a2050;
+    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .header { padding: 28px 32px 16px; border-bottom: 1px solid var(--border); }
+  .breadcrumb { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  h1 { font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .subtitle { color: var(--text3); font-size: 13px; margin-top: 6px; }
+  .search-bar { padding: 12px 32px; border-bottom: 1px solid var(--border); background: var(--bg); position: sticky; top: 0; z-index: 100; }
+  .search-wrap { position: relative; }
+  .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; }
+  #search { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px 9px 40px; color: var(--text); font-size: 13.5px; outline: none; font-family: inherit; transition: border-color 0.15s; }
+  #search:focus { border-color: var(--accent2); }
+  #search::placeholder { color: var(--text3); }
+  .filters { padding: 10px 32px 0; border-bottom: 1px solid var(--border); overflow-x: auto; white-space: nowrap; -ms-overflow-style: none; scrollbar-width: none; }
+  .filters::-webkit-scrollbar { display: none; }
+  .filter-row { display: inline-flex; gap: 4px; padding-bottom: 10px; align-items: center; flex-wrap: wrap; }
+  .phan-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-right: 4px; margin-left: 8px; }
+  .phan-label:first-child { margin-left: 0; }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.12s; white-space: nowrap; }
+  .tag:hover { opacity: 0.85; }
+  .tag-blue   { background: #162040; color: #6fa8f7; border-color: #2a4080; }
+  .tag-green  { background: var(--green3); color: #5de8a5; border-color: var(--green2); }
+  .tag-amber  { background: var(--amber3); color: #f5c060; border-color: var(--amber2); }
+  .tag-red    { background: var(--red2); color: #f79090; border-color: #a83030; }
+  .tag-purple { background: var(--purple2); color: #c8a8f8; border-color: #6535a0; }
+  .tag-teal   { background: var(--teal2); color: #70e0e0; border-color: #258080; }
+  .tag-pink   { background: var(--pink2); color: #f898cc; border-color: #a02860; }
+  .tag-gray   { background: #1e2230; color: #8890a8; border-color: #303850; }
+  .tag.active.tag-blue   { background: #2a4090; color: #a8ccff; border-color: #4060c0; }
+  .tag.active.tag-green  { background: #1a5035; color: #80f0c0; border-color: #30a060; }
+  .tag.active.tag-amber  { background: #604010; color: #f8d080; border-color: #c08020; }
+  .tag.active.tag-red    { background: #902020; color: #ffb0b0; border-color: #d05050; }
+  .tag.active.tag-purple { background: #502090; color: #d8c0ff; border-color: #8060d0; }
+  .tag.active.tag-teal   { background: #104848; color: #90f0f0; border-color: #30c0c0; }
+  .tag.active.tag-pink   { background: #701840; color: #ffb0d8; border-color: #d04080; }
+  .tag.active.tag-gray   { background: #283040; color: #c0c8d8; border-color: #506080; }
+  .stats { padding: 8px 32px; font-size: 12px; color: var(--text3); border-bottom: 1px solid var(--border); }
+  .section-header { padding: 20px 32px 8px; font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .section-header:first-of-type { border-top: none; margin-top: 0; }
+  .card { margin: 0 32px 8px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; transition: border-color 0.12s; }
+  .card:hover { border-color: var(--border2); }
+  .card-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px; cursor: pointer; user-select: none; }
+  .card-tag { font-size: 10.5px; padding: 2px 8px; border-radius: 12px; font-weight: 600; flex-shrink: 0; }
+  .card-title { font-size: 14.5px; font-weight: 600; color: var(--text); flex: 1; }
+  .chevron { font-size: 13px; color: var(--text3); transition: transform 0.15s; flex-shrink: 0; }
+  .card.open .chevron { transform: rotate(180deg); }
+  .card-body { display: none; padding: 0 16px 16px; }
+  .card.open .card-body { display: block; }
+  .desc { color: var(--text2); font-size: 13.5px; margin-bottom: 12px; line-height: 1.65; }
+  pre { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 14px 16px; font-family: var(--mono); font-size: 12.5px; color: #c8d4f0; overflow-x: auto; line-height: 1.7; margin-bottom: 10px; }
+  .comment { color: #4a6070; }
+  .kw      { color: #9b72f5; }
+  .fn      { color: #4f8ef7; }
+  .str     { color: #3dd68c; }
+  .num     { color: #f5a623; }
+  .var     { color: #f56baa; }
+  .paren   { color: #7090b0; }
+  .tip { border-left: 3px solid var(--accent2); padding: 8px 12px; background: #0d1a30; border-radius: 0 6px 6px 0; font-size: 12.5px; color: #7090c0; line-height: 1.6; }
+  .empty-state { padding: 48px 32px; text-align: center; color: var(--text3); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="breadcrumb">AutoCAD · LSP / AutoLISP · Lập trình</div>
+  <h1>Từ điển LSP AutoCAD</h1>
+  <div class="subtitle">Tổng hợp thuật ngữ &amp; hàm quan trọng — Cú pháp · Biến · Hình học · Entity · Selection · Lệnh · I/O · Layer · Nâng cao</div>
+</div>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input id="search" type="text" placeholder="Tìm hàm, thuật ngữ, ví dụ..." autocomplete="off">
+  </div>
+</div>
+
+<div class="filters">
+  <div class="filter-row" id="filterRow">
+    <span class="phan-label">Phần 1</span>
+    <span class="tag tag-blue active"  data-filter="Cú pháp cơ bản">Cú pháp cơ bản</span>
+    <span class="tag tag-green active" data-filter="Biến &amp; Kiểu dữ liệu">Biến &amp; Kiểu dữ liệu</span>
+    <span class="tag tag-amber active" data-filter="Hàm toán học">Hàm toán học</span>
+    <span class="tag tag-teal active"  data-filter="Chuỗi &amp; Text">Chuỗi &amp; Text</span>
+    <span class="phan-label">Phần 2</span>
+    <span class="tag tag-purple active" data-filter="Hình học &amp; Điểm">Hình học &amp; Điểm</span>
+    <span class="tag tag-pink active"   data-filter="Entity &amp; Object">Entity &amp; Object</span>
+    <span class="tag tag-red active"    data-filter="Selection Set">Selection Set</span>
+    <span class="phan-label">Phần 3</span>
+    <span class="tag tag-amber active" data-filter="Lệnh AutoCAD">Lệnh AutoCAD</span>
+    <span class="tag tag-blue active"  data-filter="Nhập xuất người dùng">Nhập xuất người dùng</span>
+    <span class="tag tag-green active" data-filter="Điều kiện &amp; Vòng lặp">Điều kiện &amp; Vòng lặp</span>
+    <span class="phan-label">Phần 4</span>
+    <span class="tag tag-teal active"   data-filter="Danh sách &amp; Dữ liệu">Danh sách &amp; Dữ liệu</span>
+    <span class="tag tag-purple active" data-filter="Layer &amp; Block">Layer &amp; Block</span>
+    <span class="tag tag-gray active"   data-filter="File &amp; Hệ thống">File &amp; Hệ thống</span>
+    <span class="tag tag-red active"    data-filter="Nâng cao">Nâng cao</span>
+    <span class="phan-label">Phần 5</span>
+    <span class="tag tag-teal active"   data-filter="Chuỗi nâng cao">Chuỗi nâng cao</span>
+    <span class="tag tag-amber active"  data-filter="Bảng định nghĩa">Bảng định nghĩa</span>
+    <span class="tag tag-blue active"   data-filter="Text &amp; Dimension">Text &amp; Dimension</span>
+    <span class="tag tag-green active"  data-filter="Polyline">Polyline</span>
+    <span class="phan-label">Phần 6</span>
+    <span class="tag tag-pink active"   data-filter="XData &amp; Dictionary">XData &amp; Dictionary</span>
+    <span class="tag tag-purple active" data-filter="Tọa độ &amp; UCS">Tọa độ &amp; UCS</span>
+    <span class="tag tag-amber active"  data-filter="Sắp xếp &amp; Lọc">Sắp xếp &amp; Lọc</span>
+    <span class="tag tag-teal active"   data-filter="Layout &amp; Viewport">Layout &amp; Viewport</span>
+    <span class="tag tag-green active"  data-filter="Hatch">Hatch</span>
+    <span class="tag tag-red active"    data-filter="ssget nâng cao">ssget nâng cao</span>
+  </div>
+</div>
+
+<div class="stats" id="stats">Đang tải...</div>
+<div id="content"></div>
+
+<script>
+const D = [
+  // ===== CÚ PHÁP CƠ BẢN =====
+  { cat:"Cú pháp cơ bản", color:"blue", title:"defun — Định nghĩa hàm",
+    desc:"Câu lệnh cơ bản nhất để tạo một hàm AutoLISP. Dùng tiền tố c: để tạo lệnh AutoCAD gõ trực tiếp trong Command Line. Phần sau dấu / là biến cục bộ.",
+    code:`<span class="comment">;; Hàm thông thường</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">tinh-dien-tich</span> <span class="paren">(</span><span class="var">rong cao</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">*</span> <span class="var">rong cao</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Lệnh AutoCAD (gõ VEVONG trong Command Line)</span>
+<span class="paren">(</span><span class="kw">defun</span> c:<span class="fn">VEVONG</span> <span class="paren">(</span> / <span class="var">pt r</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">pt</span> <span class="paren">(</span><span class="fn">getpoint</span> <span class="str">"\nTâm đường tròn: "</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">r</span>  <span class="paren">(</span><span class="fn">getreal</span>  <span class="str">"\nBán kính: "</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">command</span> <span class="str">"CIRCLE"</span> <span class="var">pt r</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Luôn khai báo biến cục bộ sau dấu / để tránh ô nhiễm namespace toàn cục. Kết thúc bằng (princ) để không in nil." },
+
+  { cat:"Cú pháp cơ bản", color:"blue", title:"setq — Gán biến",
+    desc:"Gán giá trị cho một hoặc nhiều biến cùng lúc. Là hàm được dùng nhiều nhất trong AutoLISP.",
+    code:`<span class="comment">;; Gán đơn</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">x</span>   <span class="num">10.5</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ten</span> <span class="str">"AutoCAD LSP"</span><span class="paren">)</span>
+
+<span class="comment">;; Gán nhiều biến cùng lúc</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">a</span> <span class="num">5</span>  <span class="var">b</span> <span class="num">10</span>  <span class="var">c</span> <span class="num">15</span><span class="paren">)</span>
+
+<span class="comment">;; Gán kết quả tính toán</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">tong</span> <span class="paren">(</span><span class="fn">+</span> <span class="var">a b c</span><span class="paren">))</span>   <span class="comment">; tong = 30</span>
+
+<span class="comment">;; Gán kết quả hàm</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">pt</span> <span class="paren">(</span><span class="fn">getpoint</span> <span class="str">"\nChọn điểm: "</span><span class="paren">))</span>`,
+    tip:"setq = SET Quote. Biến AutoLISP không cần khai báo kiểu trước, gán thẳng là dùng được." },
+
+  { cat:"Cú pháp cơ bản", color:"blue", title:"load — Nạp file LSP",
+    desc:"Nạp file .lsp vào phiên làm việc AutoCAD. Có thể dùng appload (giao diện), kéo thả file, hoặc gõ lệnh load trong VLIDE.",
+    code:`<span class="comment">;; Nạp theo đường dẫn đầy đủ</span>
+<span class="paren">(</span><span class="fn">load</span> <span class="str">"C:/LSP/my-tools.lsp"</span><span class="paren">)</span>
+
+<span class="comment">;; Nạp từ thư mục Support Path</span>
+<span class="paren">(</span><span class="fn">load</span> <span class="str">"my-tools"</span><span class="paren">)</span>
+
+<span class="comment">;; Nạp kèm kiểm tra file tồn tại</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">findfile</span> <span class="str">"my-tools.lsp"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">load</span> <span class="str">"my-tools.lsp"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">alert</span> <span class="str">"Không tìm thấy file!"</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Thêm (load \"my-tools\") vào file acaddoc.lsp để tự động nạp mỗi khi mở bản vẽ mới." },
+
+  { cat:"Cú pháp cơ bản", color:"blue", title:"princ / print / prin1 — In ra",
+    desc:"Ba hàm in kết quả ra Command Line. princ không in dấu ngoặc kép — dùng để kết thúc hàm sạch (không hiện nil).",
+    code:`<span class="paren">(</span><span class="fn">princ</span> <span class="str">"Xin chào!"</span><span class="paren">)</span>         <span class="comment">; in không xuống dòng</span>
+<span class="paren">(</span><span class="fn">print</span> <span class="str">"Xin chào!"</span><span class="paren">)</span>         <span class="comment">; in + xuống dòng trước</span>
+<span class="paren">(</span><span class="fn">prin1</span> <span class="str">"Xin chào!"</span><span class="paren">)</span>         <span class="comment">; giữ nguyên escape char</span>
+
+<span class="comment">;; In biến số thực</span>
+<span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\nKết quả: "</span> <span class="paren">(</span><span class="fn">rtos</span> <span class="var">ket-qua</span> <span class="num">2 3</span><span class="paren">)))</span>
+
+<span class="comment">;; Kết thúc hàm sạch — không in nil</span>
+<span class="paren">(</span><span class="kw">defun</span> c:<span class="fn">TEST</span> <span class="paren">()</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nLệnh đã chạy xong."</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>  <span class="comment">; &lt;-- luôn kết thúc bằng (princ)</span>
+<span class="paren">)</span>`,
+    tip:"Luôn kết thúc defun lệnh (c:...) bằng (princ) để không in 'nil' ra Command Line." },
+
+  // ===== BIẾN & KIỂU DỮ LIỆU =====
+  { cat:"Biến & Kiểu dữ liệu", color:"green", title:"Kiểu dữ liệu cơ bản",
+    desc:"AutoLISP có 6 kiểu dữ liệu chính. Dùng hàm type để kiểm tra kiểu. AutoLISP tự động ép kiểu khi cần thiết.",
+    code:`<span class="comment">;; INTEGER — số nguyên</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">n</span> <span class="num">42</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">type</span> <span class="var">n</span><span class="paren">)</span>     <span class="comment">; → INT</span>
+
+<span class="comment">;; REAL — số thực</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">r</span> <span class="num">3.14159</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">type</span> <span class="var">r</span><span class="paren">)</span>     <span class="comment">; → REAL</span>
+
+<span class="comment">;; STRING — chuỗi</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">s</span> <span class="str">"AutoCAD LSP"</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">type</span> <span class="var">s</span><span class="paren">)</span>     <span class="comment">; → STR</span>
+
+<span class="comment">;; LIST — danh sách / điểm 2D-3D</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">pt</span> <span class="str">'</span><span class="paren">(</span><span class="num">100.0 200.0 0.0</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">type</span> <span class="var">pt</span><span class="paren">)</span>    <span class="comment">; → LIST</span>
+
+<span class="comment">;; ENAME — tên entity</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span> <span class="paren">(</span><span class="fn">entlast</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">type</span> <span class="var">en</span><span class="paren">)</span>    <span class="comment">; → ENAME</span>
+
+<span class="comment">;; SYM — symbol (nil, T)</span>
+<span class="paren">(</span><span class="fn">type</span> nil<span class="paren">)</span>   <span class="comment">; → SYM</span>
+<span class="paren">(</span><span class="fn">type</span> T<span class="paren">)</span>     <span class="comment">; → SYM</span>`,
+    tip:"Trong AutoLISP: nil = false = danh sách rỗng. T = true. Số 0 và chuỗi rỗng đều là 'đúng' (non-nil)." },
+
+  { cat:"Biến & Kiểu dữ liệu", color:"green", title:"Chuyển đổi kiểu dữ liệu",
+    desc:"Các hàm chuyển đổi giữa integer, real và string. Cực kỳ thường dùng khi ghép số vào chuỗi thông báo.",
+    code:`<span class="comment">;; Số → Chuỗi</span>
+<span class="paren">(</span><span class="fn">itoa</span> <span class="num">42</span><span class="paren">)</span>           <span class="comment">; → "42"</span>
+<span class="paren">(</span><span class="fn">rtos</span> <span class="num">3.14159</span> <span class="num">2 3</span><span class="paren">)</span>  <span class="comment">; → "3.142"  (mode 2=decimal, 3 chữ số lẻ)</span>
+<span class="paren">(</span><span class="fn">rtos</span> <span class="num">1500.0</span>  <span class="num">2 0</span><span class="paren">)</span>  <span class="comment">; → "1500"</span>
+
+<span class="comment">;; Chuỗi → Số</span>
+<span class="paren">(</span><span class="fn">atoi</span> <span class="str">"42"</span><span class="paren">)</span>          <span class="comment">; → 42</span>
+<span class="paren">(</span><span class="fn">atof</span> <span class="str">"3.14"</span><span class="paren">)</span>         <span class="comment">; → 3.14</span>
+
+<span class="comment">;; Integer ↔ Real</span>
+<span class="paren">(</span><span class="fn">float</span> <span class="num">10</span><span class="paren">)</span>           <span class="comment">; → 10.0</span>
+<span class="paren">(</span><span class="fn">fix</span>   <span class="num">3.99</span><span class="paren">)</span>          <span class="comment">; → 3  (cắt, không làm tròn)</span>
+
+<span class="comment">;; Thực tế: in số ra thông báo</span>
+<span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span>
+  <span class="str">"\nDiện tích: "</span> <span class="paren">(</span><span class="fn">rtos</span> <span class="var">dt</span> <span class="num">2 2</span><span class="paren">)</span> <span class="str">" m2"</span>
+<span class="paren">))</span>`,
+    tip:"rtos mode: 1=Scientific, 2=Decimal, 3=Engineering, 4=Architectural, 5=Fractional. Mode 2 dùng nhiều nhất." },
+
+  // ===== HÀM TOÁN HỌC =====
+  { cat:"Hàm toán học", color:"amber", title:"Phép tính cơ bản",
+    desc:"AutoLISP dùng ký pháp prefix — toán tử đứng trước các toán hạng. Có thể tính nhiều số cùng lúc.",
+    code:`<span class="comment">;; Cộng, trừ, nhân, chia</span>
+<span class="paren">(</span><span class="fn">+</span> <span class="num">5 3 2</span><span class="paren">)</span>          <span class="comment">; → 10</span>
+<span class="paren">(</span><span class="fn">-</span> <span class="num">20 5 3</span><span class="paren">)</span>         <span class="comment">; → 12</span>
+<span class="paren">(</span><span class="fn">*</span> <span class="num">4 5 2</span><span class="paren">)</span>          <span class="comment">; → 40</span>
+<span class="paren">(</span><span class="fn">/</span> <span class="num">100.0 4</span><span class="paren">)</span>        <span class="comment">; → 25.0</span>
+
+<span class="comment">;; Chia lấy dư, luỹ thừa, căn</span>
+<span class="paren">(</span><span class="fn">rem</span>  <span class="num">17 5</span><span class="paren">)</span>          <span class="comment">; → 2</span>
+<span class="paren">(</span><span class="fn">expt</span> <span class="num">2 10</span><span class="paren">)</span>          <span class="comment">; → 1024</span>
+<span class="paren">(</span><span class="fn">sqrt</span> <span class="num">144.0</span><span class="paren">)</span>         <span class="comment">; → 12.0</span>
+<span class="paren">(</span><span class="fn">abs</span>  <span class="num">-42</span><span class="paren">)</span>           <span class="comment">; → 42</span>
+
+<span class="comment">;; Tăng / giảm 1</span>
+<span class="paren">(</span><span class="fn">1+</span> <span class="var">i</span><span class="paren">)</span>               <span class="comment">; → i + 1</span>
+<span class="paren">(</span><span class="fn">1-</span> <span class="var">i</span><span class="paren">)</span>               <span class="comment">; → i - 1</span>
+
+<span class="comment">;; Min / Max</span>
+<span class="paren">(</span><span class="fn">max</span> <span class="num">3 8 5</span><span class="paren">)</span>          <span class="comment">; → 8</span>
+<span class="paren">(</span><span class="fn">min</span> <span class="num">3 8 5</span><span class="paren">)</span>          <span class="comment">; → 3</span>`,
+    tip:"Chú ý: (/ 10 3) = 3 (integer), phải dùng (/ 10.0 3) = 3.333 để có kết quả thực." },
+
+  { cat:"Hàm toán học", color:"amber", title:"Lượng giác & Góc",
+    desc:"AutoLISP dùng radian. Phải chuyển đổi khi làm việc với góc độ. Hàm angle tính góc giữa 2 điểm.",
+    code:`<span class="comment">;; Hằng số PI</span>
+<span class="var">pi</span>                  <span class="comment">; → 3.14159265...</span>
+
+<span class="comment">;; Đổi độ → radian và ngược lại</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">d2r</span> <span class="paren">(</span><span class="var">d</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">*</span> <span class="var">d</span> <span class="paren">(</span><span class="fn">/</span> <span class="var">pi</span> <span class="num">180.0</span><span class="paren">)))</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">r2d</span> <span class="paren">(</span><span class="var">r</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">*</span> <span class="var">r</span> <span class="paren">(</span><span class="fn">/</span> <span class="num">180.0</span> <span class="var">pi</span><span class="paren">)))</span>
+
+<span class="comment">;; Lượng giác cơ bản</span>
+<span class="paren">(</span><span class="fn">sin</span>  <span class="paren">(</span><span class="fn">d2r</span> <span class="num">30</span><span class="paren">))</span>       <span class="comment">; → 0.5</span>
+<span class="paren">(</span><span class="fn">cos</span>  <span class="paren">(</span><span class="fn">d2r</span> <span class="num">60</span><span class="paren">))</span>       <span class="comment">; → 0.5</span>
+<span class="paren">(</span><span class="fn">atan</span> <span class="num">1.0</span><span class="paren">)</span>            <span class="comment">; → 0.785 (= pi/4 = 45°)</span>
+<span class="paren">(</span><span class="fn">atan</span> <span class="num">1.0 0.0</span><span class="paren">)</span>        <span class="comment">; atan2: tính góc hướng</span>
+
+<span class="comment">;; Góc giữa 2 điểm (hay dùng nhất)</span>
+<span class="paren">(</span><span class="fn">angle</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">1 1</span><span class="paren">))</span>  <span class="comment">; → 0.785 (45°)</span>
+<span class="paren">(</span><span class="fn">angle</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">1 0</span><span class="paren">))</span>  <span class="comment">; → 0 (0°, hướng phải)</span>`,
+    tip:"Hàm angle trả về radian đo ngược chiều kim đồng hồ từ trục X dương — giống hệ tọa độ AutoCAD." },
+
+  // ===== CHUỖI & TEXT =====
+  { cat:"Chuỗi & Text", color:"teal", title:"Thao tác chuỗi",
+    desc:"Các hàm xử lý string. strcat nối chuỗi, substr cắt, strlen đếm độ dài. Lưu ý index bắt đầu từ 1.",
+    code:`<span class="comment">;; Nối chuỗi</span>
+<span class="paren">(</span><span class="fn">strcat</span> <span class="str">"Hello"</span> <span class="str">" "</span> <span class="str">"World"</span><span class="paren">)</span>   <span class="comment">; "Hello World"</span>
+
+<span class="comment">;; Độ dài</span>
+<span class="paren">(</span><span class="fn">strlen</span> <span class="str">"AutoCAD"</span><span class="paren">)</span>               <span class="comment">; 7</span>
+
+<span class="comment">;; Cắt chuỗi — index bắt đầu từ 1!</span>
+<span class="paren">(</span><span class="fn">substr</span> <span class="str">"AutoCAD"</span> <span class="num">5</span> <span class="num">3</span><span class="paren">)</span>           <span class="comment">; "CAD"</span>
+<span class="paren">(</span><span class="fn">substr</span> <span class="str">"AutoCAD"</span> <span class="num">1</span> <span class="num">4</span><span class="paren">)</span>           <span class="comment">; "Auto"</span>
+
+<span class="comment">;; Hoa / Thường</span>
+<span class="paren">(</span><span class="fn">strcase</span> <span class="str">"hello"</span><span class="paren">)</span>               <span class="comment">; "HELLO"</span>
+<span class="paren">(</span><span class="fn">strcase</span> <span class="str">"HELLO"</span> T<span class="paren">)</span>             <span class="comment">; "hello"</span>
+
+<span class="comment">;; Tìm vị trí chuỗi con (trả về index hoặc nil)</span>
+<span class="paren">(</span><span class="fn">vl-string-search</span> <span class="str">"CAD"</span> <span class="str">"AutoCAD"</span><span class="paren">)</span>  <span class="comment">; → 4</span>
+
+<span class="comment">;; Thay thế chuỗi con</span>
+<span class="paren">(</span><span class="fn">vl-string-subst</span> <span class="str">"MAP"</span> <span class="str">"CAD"</span> <span class="str">"AutoCAD"</span><span class="paren">)</span>  <span class="comment">; "AutoMAP"</span>`,
+    tip:"substr dùng index từ 1, khác với hầu hết ngôn ngữ khác (từ 0). Đây là bẫy phổ biến nhất." },
+
+  // ===== HÌNH HỌC & ĐIỂM =====
+  { cat:"Hình học & Điểm", color:"purple", title:"Điểm và khoảng cách",
+    desc:"Điểm là list (X Y) hoặc (X Y Z). Dùng car/cadr/caddr để lấy tọa độ. distance tính khoảng cách.",
+    code:`<span class="comment">;; Khai báo điểm</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">p1</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0 0.0 0.0</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">p2</span> <span class="str">'</span><span class="paren">(</span><span class="num">100.0 75.0 0.0</span><span class="paren">))</span>
+
+<span class="comment">;; Lấy tọa độ X, Y, Z</span>
+<span class="paren">(</span><span class="fn">car</span>   <span class="var">p2</span><span class="paren">)</span>     <span class="comment">; X = 100.0</span>
+<span class="paren">(</span><span class="fn">cadr</span>  <span class="var">p2</span><span class="paren">)</span>     <span class="comment">; Y = 75.0</span>
+<span class="paren">(</span><span class="fn">caddr</span> <span class="var">p2</span><span class="paren">)</span>     <span class="comment">; Z = 0.0</span>
+
+<span class="comment">;; Khoảng cách</span>
+<span class="paren">(</span><span class="fn">distance</span> <span class="var">p1 p2</span><span class="paren">)</span>   <span class="comment">; → 125.0</span>
+
+<span class="comment">;; Điểm giữa (midpoint)</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">mid</span> <span class="paren">(</span><span class="var">a b</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">list</span>
+    <span class="paren">(</span><span class="fn">/</span> <span class="paren">(</span><span class="fn">+</span> <span class="paren">(</span><span class="fn">car</span>   <span class="var">a</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">car</span>   <span class="var">b</span><span class="paren">))</span> <span class="num">2.0</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">/</span> <span class="paren">(</span><span class="fn">+</span> <span class="paren">(</span><span class="fn">cadr</span>  <span class="var">a</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">cadr</span>  <span class="var">b</span><span class="paren">))</span> <span class="num">2.0</span><span class="paren">)</span>
+  <span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Dùng (list x y) khi có biến, dùng '(x y) khi có số thô. Hai cú pháp cho cùng kết quả." },
+
+  { cat:"Hình học & Điểm", color:"purple", title:"polar — Điểm từ góc & khoảng cách",
+    desc:"Tính điểm mới từ điểm gốc, góc (radian) và khoảng cách. Hàm không thể thiếu khi vẽ hình.",
+    code:`<span class="comment">;; (polar điểm-gốc góc khoảng-cách)</span>
+<span class="paren">(</span><span class="fn">polar</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span>  <span class="num">0</span>              <span class="num">100</span><span class="paren">)</span>  <span class="comment">; → (100 0)   đi phải</span>
+<span class="paren">(</span><span class="fn">polar</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span>  <span class="var">pi</span>             <span class="num">100</span><span class="paren">)</span>  <span class="comment">; → (-100 0)  đi trái</span>
+<span class="paren">(</span><span class="fn">polar</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span>  <span class="paren">(</span><span class="fn">/</span> <span class="var">pi</span> <span class="num">2</span><span class="paren">)</span>       <span class="num">100</span><span class="paren">)</span>  <span class="comment">; → (0 100)   đi lên</span>
+
+<span class="comment">;; Vẽ hình chữ nhật từ góc + kích thước</span>
+<span class="paren">(</span><span class="kw">defun</span> c:<span class="fn">HCN</span> <span class="paren">(</span> / <span class="var">p1 p2 p3 p4 w h</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">p1</span> <span class="paren">(</span><span class="fn">getpoint</span> <span class="str">"\nGóc dưới trái: "</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">w</span>  <span class="paren">(</span><span class="fn">getreal</span>  <span class="str">"\nChiều rộng: "</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">h</span>  <span class="paren">(</span><span class="fn">getreal</span>  <span class="str">"\nChiều cao: "</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">p2</span> <span class="paren">(</span><span class="fn">polar</span> <span class="var">p1</span> <span class="num">0</span>          <span class="var">w</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">p3</span> <span class="paren">(</span><span class="fn">polar</span> <span class="var">p2</span> <span class="paren">(</span><span class="fn">/</span> <span class="var">pi</span> <span class="num">2</span><span class="paren">)</span>  <span class="var">h</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">p4</span> <span class="paren">(</span><span class="fn">polar</span> <span class="var">p1</span> <span class="paren">(</span><span class="fn">/</span> <span class="var">pi</span> <span class="num">2</span><span class="paren">)</span>  <span class="var">h</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">command</span> <span class="str">"LINE"</span> <span class="var">p1 p2 p3 p4</span> <span class="str">"C"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"polar thay thế việc tính sin/cos thủ công. Là hàm vẽ hình học quan trọng nhất trong AutoLISP." },
+
+  { cat:"Hình học & Điểm", color:"purple", title:"inters — Giao điểm hai đường",
+    desc:"Tính giao điểm của 2 đường thẳng. Tham số cuối nil = đường vô hạn, T = chỉ trong đoạn thẳng.",
+    code:`<span class="comment">;; (inters p1 p2 p3 p4 on-segment?)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">gd</span> <span class="paren">(</span><span class="fn">inters</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span>   <span class="str">'</span><span class="paren">(</span><span class="num">100 100</span><span class="paren">)</span>   <span class="comment">; đường 1: từ (0,0) đến (100,100)</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">0 100</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">100 0</span><span class="paren">)</span>    <span class="comment">; đường 2</span>
+  nil                     <span class="comment">; nil = kéo dài vô tận nếu cần</span>
+<span class="paren">))</span>
+<span class="comment">; → (50.0 50.0 0.0)</span>
+
+<span class="comment">;; Chỉ giao trong phạm vi đoạn thẳng</span>
+<span class="paren">(</span><span class="fn">inters</span> <span class="var">p1 p2 p3 p4</span> T<span class="paren">)</span>   <span class="comment">; nil nếu không cắt nhau</span>
+
+<span class="comment">;; Kiểm tra trước khi dùng</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">gd</span> <span class="paren">(</span><span class="fn">inters</span> <span class="var">p1 p2 p3 p4</span> nil<span class="paren">))</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="var">gd</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nCó giao điểm"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nSong song"</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Trả về nil nếu 2 đường song song hoặc không cắt nhau (khi dùng T). Luôn kiểm tra nil trước khi dùng kết quả." },
+
+  // ===== ENTITY & OBJECT =====
+  { cat:"Entity & Object", color:"pink", title:"entget — Đọc thuộc tính Entity",
+    desc:"entget trả về association list chứa tất cả thuộc tính của một object. Mỗi thuộc tính là dotted pair (mã . giá trị).",
+    code:`<span class="comment">;; Lấy entity cuối vừa vẽ</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span> <span class="paren">(</span><span class="fn">entlast</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">))</span>
+
+<span class="comment">;; Mã DXF thường dùng nhất:</span>
+<span class="comment">;  0  → loại entity: "LINE", "CIRCLE", "TEXT"...</span>
+<span class="comment">;  8  → tên layer</span>
+<span class="comment">;  10 → điểm bắt đầu / tâm</span>
+<span class="comment">;  11 → điểm kết thúc</span>
+<span class="comment">;  40 → bán kính / chiều cao text</span>
+<span class="comment">;  1  → nội dung text</span>
+<span class="comment">;  62 → màu sắc (color index)</span>
+
+<span class="comment">;; Lấy giá trị theo mã</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span>  <span class="num">0</span> <span class="var">ed</span><span class="paren">))</span>   <span class="comment">; → "LINE"</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span>  <span class="num">8</span> <span class="var">ed</span><span class="paren">))</span>   <span class="comment">; → "0" (tên layer)</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">10</span> <span class="var">ed</span><span class="paren">))</span>   <span class="comment">; → (x y z) điểm đầu</span>`,
+    tip:"Nhớ thuộc: 0=type, 8=layer, 10=start/center, 11=end, 40=radius, 1=text content, 62=color." },
+
+  { cat:"Entity & Object", color:"pink", title:"entmod — Sửa thuộc tính Entity",
+    desc:"Sửa thuộc tính object bằng cách thay thế dotted pair trong alist rồi gọi entmod để cập nhật vào bản vẽ.",
+    code:`<span class="comment">;; Đổi layer của object được chọn</span>
+<span class="paren">(</span><span class="kw">defun</span> c:<span class="fn">DOILAYER</span> <span class="paren">(</span> / <span class="var">en ed old new</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span>  <span class="paren">(</span><span class="fn">car</span> <span class="paren">(</span><span class="fn">entsel</span> <span class="str">"\nChọn object: "</span><span class="paren">)))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span>  <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">old</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">8</span> <span class="var">ed</span><span class="paren">))</span>           <span class="comment">; dotted pair cũ</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">new</span> <span class="paren">(</span><span class="fn">cons</span>  <span class="num">8</span> <span class="str">"LAYER_MOI"</span><span class="paren">))</span>  <span class="comment">; dotted pair mới</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span>  <span class="paren">(</span><span class="fn">subst</span> <span class="var">new old ed</span><span class="paren">))</span>    <span class="comment">; thay thế trong list</span>
+  <span class="paren">(</span><span class="fn">entmod</span> <span class="var">ed</span><span class="paren">)</span>                      <span class="comment">; cập nhật vào bản vẽ</span>
+  <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Quy trình chuẩn: entget → sửa list → entmod. Gọi entupd nếu cần refresh hiển thị ngay lập tức." },
+
+  { cat:"Entity & Object", color:"pink", title:"entmake — Tạo Entity không qua lệnh",
+    desc:"Tạo object trực tiếp bằng code, không cần dùng hàm command. Nhanh hơn nhiều khi tạo hàng loạt.",
+    code:`<span class="comment">;; Tạo đường thẳng</span>
+<span class="paren">(</span><span class="fn">entmake</span> <span class="paren">(</span><span class="fn">list</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">0</span> <span class="str">"LINE"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">8</span> <span class="str">"VE"</span><span class="paren">)</span>              <span class="comment">; layer</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0 0.0 0.0</span><span class="paren">))</span>   <span class="comment">; điểm đầu</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">11</span> <span class="str">'</span><span class="paren">(</span><span class="num">100.0 0.0 0.0</span><span class="paren">))</span> <span class="comment">; điểm cuối</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Tạo hình tròn</span>
+<span class="paren">(</span><span class="fn">entmake</span> <span class="paren">(</span><span class="fn">list</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">0</span> <span class="str">"CIRCLE"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">8</span> <span class="str">"0"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">50.0 50.0 0.0</span><span class="paren">))</span>  <span class="comment">; tâm</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">40</span> <span class="num">25.0</span><span class="paren">)</span>              <span class="comment">; bán kính</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Tạo text</span>
+<span class="paren">(</span><span class="fn">entmake</span> <span class="paren">(</span><span class="fn">list</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">0</span> <span class="str">"TEXT"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0 0.0 0.0</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">40</span> <span class="num">5.0</span><span class="paren">)</span>               <span class="comment">; chiều cao</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">1</span> <span class="str">"Nội dung text"</span><span class="paren">)</span>
+<span class="paren">))</span>`,
+    tip:"entmake nhanh hơn command ~10 lần. Dùng khi cần tạo hàng nghìn object trong vòng lặp." },
+
+  // ===== SELECTION SET =====
+  { cat:"Selection Set", color:"red", title:"ssget — Tạo tập chọn",
+    desc:"Tạo tập hợp object theo điều kiện lọc. Nền tảng để xử lý hàng loạt entity trong bản vẽ.",
+    code:`<span class="comment">;; Cho người dùng chọn tự do</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span><span class="paren">))</span>
+
+<span class="comment">;; Chọn tất cả trong bản vẽ</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"X"</span><span class="paren">))</span>
+
+<span class="comment">;; Lọc theo loại</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"X"</span> <span class="str">'</span><span class="paren">((</span><span class="num">0</span> . <span class="str">"LINE"</span><span class="paren">))))</span>
+
+<span class="comment">;; Lọc theo layer</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"X"</span> <span class="str">'</span><span class="paren">((</span><span class="num">8</span> . <span class="str">"WALL"</span><span class="paren">))))</span>
+
+<span class="comment">;; Kết hợp nhiều bộ lọc</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"X"</span>
+  <span class="str">'</span><span class="paren">((</span><span class="num">0</span> . <span class="str">"CIRCLE"</span><span class="paren">)</span> <span class="paren">(</span><span class="num">8</span> . <span class="str">"COLUMN"</span><span class="paren">))))</span>
+
+<span class="comment">;; Đếm số lượng</span>
+<span class="paren">(</span><span class="fn">sslength</span> <span class="var">ss</span><span class="paren">)</span>       <span class="comment">; số entity trong ss</span>`,
+    tip:"ssget 'X' = chọn tất cả không hỏi người dùng. Luôn kiểm tra (if ss ...) trước khi dùng." },
+
+  { cat:"Selection Set", color:"red", title:"ssname — Duyệt Selection Set",
+    desc:"ssname lấy entity thứ n từ selection set. Kết hợp với while để xử lý từng object.",
+    code:`<span class="comment">;; Duyệt và xử lý từng entity</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">duyet-ss</span> <span class="paren">(</span><span class="var">ss</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="kw">if</span> <span class="var">ss</span>
+    <span class="paren">(</span><span class="kw">progn</span>
+      <span class="paren">(</span><span class="fn">setq</span> <span class="var">i</span> <span class="num">0</span>
+            <span class="var">n</span> <span class="paren">(</span><span class="fn">sslength</span> <span class="var">ss</span><span class="paren">))</span>
+      <span class="paren">(</span><span class="kw">while</span> <span class="paren">(</span><span class="fn">&lt;</span> <span class="var">i n</span><span class="paren">)</span>
+        <span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span> <span class="paren">(</span><span class="fn">ssname</span> <span class="var">ss i</span><span class="paren">))</span>
+        <span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">))</span>
+        <span class="comment">;; ---- xử lý object ----</span>
+        <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\n"</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">0</span> <span class="var">ed</span><span class="paren">))))</span>
+        <span class="paren">(</span><span class="fn">setq</span> <span class="var">i</span> <span class="paren">(</span><span class="fn">1+</span> <span class="var">i</span><span class="paren">))</span>
+      <span class="paren">)</span>
+    <span class="paren">)</span>
+  <span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Index ssname bắt đầu từ 0. Dùng (1+ i) để tăng đếm — ngắn hơn (+ i 1)." },
+
+  // ===== LỆNH AUTOCAD =====
+  { cat:"Lệnh AutoCAD", color:"amber", title:"command — Gọi lệnh AutoCAD",
+    desc:"Gọi bất kỳ lệnh AutoCAD từ LSP. Tham số truyền vào giống như gõ tay, chuỗi rỗng tương đương Enter.",
+    code:`<span class="comment">;; Vẽ đường thẳng</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"LINE"</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">100 0</span><span class="paren">)</span> <span class="str">""</span><span class="paren">)</span>
+
+<span class="comment">;; Vẽ hình tròn</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"CIRCLE"</span> <span class="str">'</span><span class="paren">(</span><span class="num">50 50</span><span class="paren">)</span> <span class="num">25</span><span class="paren">)</span>
+
+<span class="comment">;; Offset</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"OFFSET"</span> <span class="num">10</span> <span class="var">en</span> <span class="str">'</span><span class="paren">(</span><span class="num">100 50</span><span class="paren">)</span> <span class="str">""</span><span class="paren">)</span>
+
+<span class="comment">;; Di chuyển selection set</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"MOVE"</span> <span class="var">ss</span> <span class="str">""</span> <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">50 0</span><span class="paren">)</span><span class="paren">)</span>
+
+<span class="comment">;; Tạo hatch</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"HATCH"</span> <span class="str">"ANSI31"</span> <span class="num">1</span> <span class="num">0</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">50 50</span><span class="paren">)</span> <span class="str">""</span><span class="paren">)</span>
+
+<span class="comment">;; Tắt echo trong khi chạy lệnh</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="num">0</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"ZOOM"</span> <span class="str">"E"</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="num">1</span><span class="paren">)</span>`,
+    tip:"Truyền \"\" = Enter, pause = chờ người dùng nhập, nil = kết thúc lệnh đang chạy." },
+
+  { cat:"Lệnh AutoCAD", color:"amber", title:"VLA-Object — ActiveX",
+    desc:"ActiveX (VLA) là API hiện đại, mạnh hơn entmod, hỗ trợ đầy đủ tính năng AutoCAD như 3D solid, events.",
+    code:`<span class="comment">;; Kích hoạt Visual LISP COM</span>
+<span class="paren">(</span><span class="fn">vl-load-com</span><span class="paren">)</span>
+
+<span class="comment">;; Lấy document đang mở</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">doc</span> <span class="paren">(</span><span class="fn">vla-get-activedocument</span>
+  <span class="paren">(</span><span class="fn">vlax-get-acad-object</span><span class="paren">)))</span>
+
+<span class="comment">;; Chuyển entity → VLA object</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">obj</span> <span class="paren">(</span><span class="fn">vlax-ename-&gt;vla-object</span> <span class="var">en</span><span class="paren">))</span>
+
+<span class="comment">;; Đọc / ghi thuộc tính VLA</span>
+<span class="paren">(</span><span class="fn">vla-get-layer</span> <span class="var">obj</span><span class="paren">)</span>             <span class="comment">; đọc layer</span>
+<span class="paren">(</span><span class="fn">vla-put-layer</span> <span class="var">obj</span> <span class="str">"NEW_LYR"</span><span class="paren">)</span>    <span class="comment">; ghi layer</span>
+<span class="paren">(</span><span class="fn">vla-get-color</span> <span class="var">obj</span><span class="paren">)</span>             <span class="comment">; đọc màu</span>
+<span class="paren">(</span><span class="fn">vla-put-color</span> <span class="var">obj</span> <span class="num">1</span><span class="paren">)</span>            <span class="comment">; đỏ</span>
+
+<span class="comment">;; Xóa object</span>
+<span class="paren">(</span><span class="fn">vla-delete</span> <span class="var">obj</span><span class="paren">)</span>`,
+    tip:"Hàm VLA bắt đầu bằng vla-get-* để đọc, vla-put-* để ghi. Nhanh và ổn định hơn entmod." },
+
+  // ===== NHẬP XUẤT NGƯỜI DÙNG =====
+  { cat:"Nhập xuất người dùng", color:"blue", title:"Nhóm hàm get* — Nhận input",
+    desc:"Nhóm hàm get* nhận input từ người dùng qua Command Line hoặc click chuột. Tất cả trả về nil nếu nhấn Esc.",
+    code:`<span class="comment">;; Click chọn điểm</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">pt</span>  <span class="paren">(</span><span class="fn">getpoint</span>  <span class="str">"\nChọn điểm: "</span><span class="paren">))</span>
+
+<span class="comment">;; Nhập số thực</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">r</span>   <span class="paren">(</span><span class="fn">getreal</span>   <span class="str">"\nNhập bán kính: "</span><span class="paren">))</span>
+
+<span class="comment">;; Nhập số nguyên</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">n</span>   <span class="paren">(</span><span class="fn">getint</span>    <span class="str">"\nNhập số cạnh: "</span><span class="paren">))</span>
+
+<span class="comment">;; Nhập chuỗi (T = cho phép khoảng trắng)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ten</span> <span class="paren">(</span><span class="fn">getstring</span> T <span class="str">"\nNhập tên: "</span><span class="paren">))</span>
+
+<span class="comment">;; Nhập góc (radian)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ang</span> <span class="paren">(</span><span class="fn">getangle</span>  <span class="str">"\nNhập góc: "</span><span class="paren">))</span>
+
+<span class="comment">;; Nhập khoảng cách</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">d</span>   <span class="paren">(</span><span class="fn">getdist</span>   <span class="str">"\nNhập khoảng cách: "</span><span class="paren">))</span>
+
+<span class="comment">;; Chọn 1 object</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span>  <span class="paren">(</span><span class="fn">car</span> <span class="paren">(</span><span class="fn">entsel</span> <span class="str">"\nChọn object: "</span><span class="paren">)))</span>`,
+    tip:"Tất cả hàm get* trả về nil khi Esc. Luôn kiểm tra (if pt ...) trước khi tiếp tục." },
+
+  { cat:"Nhập xuất người dùng", color:"blue", title:"initget / getkword — Từ khóa",
+    desc:"initget thiết lập từ khóa hợp lệ và cờ kiểm tra. getkword cho người dùng chọn từ danh sách.",
+    code:`<span class="comment">;; Chọn từ danh sách Yes/No</span>
+<span class="paren">(</span><span class="fn">initget</span> <span class="str">"Yes No"</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ans</span> <span class="paren">(</span><span class="fn">getkword</span> <span class="str">"\nTiếp tục? [Yes/No]: "</span><span class="paren">))</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">=</span> <span class="var">ans</span> <span class="str">"Yes"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nĐồng ý!"</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; initget bits — kiểm soát input số</span>
+<span class="comment">; 1 = cấm Enter rỗng (bắt buộc nhập)</span>
+<span class="comment">; 2 = cấm giá trị = 0</span>
+<span class="comment">; 4 = cấm giá trị âm</span>
+<span class="paren">(</span><span class="fn">initget</span> <span class="paren">(</span><span class="fn">+</span> <span class="num">1 2 4</span><span class="paren">))</span>    <span class="comment">; bắt buộc nhập số dương</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">r</span> <span class="paren">(</span><span class="fn">getreal</span> <span class="str">"\nBán kính (>0): "</span><span class="paren">))</span>`,
+    tip:"initget bits cộng lại: 1+2+4=7 = bắt buộc nhập số dương khác 0. Rất hữu ích để validate input." },
+
+  // ===== ĐIỀU KIỆN & VÒNG LẶP =====
+  { cat:"Điều kiện & Vòng lặp", color:"green", title:"if / cond — Rẽ nhánh",
+    desc:"if kiểm tra một điều kiện. cond kiểm tra nhiều nhánh — tương đương switch/case. progn nhóm nhiều lệnh.",
+    code:`<span class="comment">;; if đơn</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">&gt;</span> <span class="var">x</span> <span class="num">0</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nDương"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nÂm hoặc zero"</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; if nhiều lệnh → dùng progn</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="var">pt</span>
+  <span class="paren">(</span><span class="kw">progn</span>
+    <span class="paren">(</span><span class="fn">setq</span> <span class="var">x</span> <span class="paren">(</span><span class="fn">car</span>  <span class="var">pt</span><span class="paren">))</span>
+    <span class="paren">(</span><span class="fn">setq</span> <span class="var">y</span> <span class="paren">(</span><span class="fn">cadr</span> <span class="var">pt</span><span class="paren">))</span>
+  <span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; cond — nhiều nhánh (như switch)</span>
+<span class="paren">(</span><span class="kw">cond</span>
+  <span class="paren">((</span><span class="fn">=</span> <span class="var">loai</span> <span class="str">"A"</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">setq</span> <span class="var">gia</span> <span class="num">100</span><span class="paren">))</span>
+  <span class="paren">((</span><span class="fn">=</span> <span class="var">loai</span> <span class="str">"B"</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">setq</span> <span class="var">gia</span> <span class="num">150</span><span class="paren">))</span>
+  <span class="paren">((</span><span class="fn">=</span> <span class="var">loai</span> <span class="str">"C"</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">setq</span> <span class="var">gia</span> <span class="num">200</span><span class="paren">))</span>
+  <span class="paren">(</span>T            <span class="paren">(</span><span class="fn">setq</span> <span class="var">gia</span>   <span class="num">0</span><span class="paren">))</span>   <span class="comment">; default</span>
+<span class="paren">)</span>`,
+    tip:"Nhánh T cuối cond là default — luôn đúng, bắt mọi trường hợp còn lại không match." },
+
+  { cat:"Điều kiện & Vòng lặp", color:"green", title:"while / repeat / foreach",
+    desc:"Ba loại vòng lặp. while theo điều kiện, repeat đúng n lần, foreach duyệt từng phần tử của list.",
+    code:`<span class="comment">;; while — lặp theo điều kiện</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">i</span> <span class="num">0</span><span class="paren">)</span>
+<span class="paren">(</span><span class="kw">while</span> <span class="paren">(</span><span class="fn">&lt;</span> <span class="var">i</span> <span class="num">5</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\n"</span> <span class="paren">(</span><span class="fn">itoa</span> <span class="var">i</span><span class="paren">)))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">i</span> <span class="paren">(</span><span class="fn">1+</span> <span class="var">i</span><span class="paren">))</span>
+<span class="paren">)</span>
+
+<span class="comment">;; repeat — đúng n lần</span>
+<span class="paren">(</span><span class="fn">repeat</span> <span class="num">4</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nXin chào!"</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; foreach — duyệt list (hay dùng nhất)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">layers</span> <span class="str">'</span><span class="paren">(</span><span class="str">"WALL" "DOOR" "WINDOW" "COLUMN"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">foreach</span> <span class="var">lyr layers</span>
+  <span class="paren">(</span><span class="fn">command</span> <span class="str">"LAYER"</span> <span class="str">"NEW"</span> <span class="var">lyr</span> <span class="str">""</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"foreach là cách gọn nhất để xử lý list mà không cần quản lý index thủ công." },
+
+  // ===== DANH SÁCH & DỮ LIỆU =====
+  { cat:"Danh sách & Dữ liệu", color:"teal", title:"car / cdr / list — Thao tác List",
+    desc:"List là cấu trúc dữ liệu nền tảng của LISP. car = phần tử đầu, cdr = phần còn lại. Kết hợp: cadr=pt2, caddr=pt3.",
+    code:`<span class="comment">;; Tạo list</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">lst</span> <span class="str">'</span><span class="paren">(</span><span class="str">"A" "B" "C" "D"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">pt</span>  <span class="paren">(</span><span class="fn">list</span> <span class="num">10.0 20.0 0.0</span><span class="paren">))</span>
+
+<span class="comment">;; Lấy phần tử</span>
+<span class="paren">(</span><span class="fn">car</span>   <span class="var">lst</span><span class="paren">)</span>    <span class="comment">; "A"  — phần tử 1</span>
+<span class="paren">(</span><span class="fn">cadr</span>  <span class="var">lst</span><span class="paren">)</span>    <span class="comment">; "B"  — phần tử 2</span>
+<span class="paren">(</span><span class="fn">caddr</span> <span class="var">lst</span><span class="paren">)</span>    <span class="comment">; "C"  — phần tử 3</span>
+<span class="paren">(</span><span class="fn">last</span>  <span class="var">lst</span><span class="paren">)</span>    <span class="comment">; "D"  — phần tử cuối</span>
+<span class="paren">(</span><span class="fn">nth</span> <span class="num">2</span> <span class="var">lst</span><span class="paren">)</span>    <span class="comment">; "C"  — index từ 0</span>
+
+<span class="comment">;; Thêm, nối, đếm</span>
+<span class="paren">(</span><span class="fn">cons</span>   <span class="str">"X"</span> <span class="var">lst</span><span class="paren">)</span>          <span class="comment">; ("X" "A" "B"...)</span>
+<span class="paren">(</span><span class="fn">append</span> <span class="var">lst</span> <span class="str">'</span><span class="paren">(</span><span class="str">"E"</span><span class="paren">))</span>       <span class="comment">; (...thêm "E" vào cuối)</span>
+<span class="paren">(</span><span class="fn">length</span> <span class="var">lst</span><span class="paren">)</span>              <span class="comment">; 4</span>
+<span class="paren">(</span><span class="fn">member</span> <span class="str">"C"</span> <span class="var">lst</span><span class="paren">)</span>          <span class="comment">; ("C" "D") hoặc nil</span>
+<span class="paren">(</span><span class="fn">reverse</span> <span class="var">lst</span><span class="paren">)</span>             <span class="comment">; ("D" "C" "B" "A")</span>`,
+    tip:"nth dùng index từ 0, còn substr từ 1 — điểm dễ nhầm nhất trong AutoLISP." },
+
+  { cat:"Danh sách & Dữ liệu", color:"teal", title:"mapcar / apply / lambda",
+    desc:"Lập trình hàm. mapcar áp dụng hàm lên từng phần tử list. apply gọi hàm với list làm tham số.",
+    code:`<span class="comment">;; mapcar — áp hàm lên từng phần tử</span>
+<span class="paren">(</span><span class="fn">mapcar</span> <span class="str">'</span><span class="fn">1+</span> <span class="str">'</span><span class="paren">(</span><span class="num">1 2 3 4</span><span class="paren">))</span>
+<span class="comment">; → (2 3 4 5)</span>
+
+<span class="paren">(</span><span class="fn">mapcar</span> <span class="str">'</span><span class="fn">car</span> <span class="str">'</span><span class="paren">((</span><span class="num">1 2</span><span class="paren">)</span> <span class="paren">(</span><span class="num">3 4</span><span class="paren">)</span> <span class="paren">(</span><span class="num">5 6</span><span class="paren">)))</span>
+<span class="comment">; → (1 3 5)</span>
+
+<span class="comment">;; lambda — hàm không tên</span>
+<span class="paren">(</span><span class="fn">mapcar</span>
+  <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">v</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">*</span> <span class="var">v</span> <span class="num">2</span><span class="paren">)))</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">10 20 30</span><span class="paren">)</span>
+<span class="paren">)</span>
+<span class="comment">; → (20 40 60)</span>
+
+<span class="comment">;; apply — gọi hàm với list</span>
+<span class="paren">(</span><span class="fn">apply</span> <span class="str">'</span><span class="fn">+</span>   <span class="str">'</span><span class="paren">(</span><span class="num">1 2 3 4 5</span><span class="paren">))</span>  <span class="comment">; → 15</span>
+<span class="paren">(</span><span class="fn">apply</span> <span class="str">'</span><span class="fn">max</span> <span class="str">'</span><span class="paren">(</span><span class="num">3 8 1 5 2</span><span class="paren">))</span>  <span class="comment">; → 8</span>`,
+    tip:"mapcar + lambda = combo mạnh nhất để xử lý dữ liệu mà không cần vòng lặp while." },
+
+  // ===== LAYER & BLOCK =====
+  { cat:"Layer & Block", color:"purple", title:"Quản lý Layer",
+    desc:"Tạo layer, đặt màu, set current, freeze/thaw, lock/unlock — dùng command hoặc VLA.",
+    code:`<span class="comment">;; Tạo layer và đặt màu</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"LAYER"</span>
+  <span class="str">"NEW"</span>   <span class="str">"STRUCTURE"</span>
+  <span class="str">"COLOR"</span> <span class="str">"RED"</span>    <span class="str">"STRUCTURE"</span>
+  <span class="str">"LTYPE"</span> <span class="str">"CONTINUOUS"</span> <span class="str">"STRUCTURE"</span>
+  <span class="str">""</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Đặt layer hiện tại</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CLAYER"</span> <span class="str">"STRUCTURE"</span><span class="paren">)</span>
+
+<span class="comment">;; Tạo nhiều layer bằng VLA (sạch hơn)</span>
+<span class="paren">(</span><span class="fn">vl-load-com</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">layersColl</span>
+  <span class="paren">(</span><span class="fn">vla-get-layers</span>
+    <span class="paren">(</span><span class="fn">vla-get-activedocument</span>
+      <span class="paren">(</span><span class="fn">vlax-get-acad-object</span><span class="paren">))))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">lyr</span> <span class="paren">(</span><span class="fn">vla-add</span> <span class="var">layersColl</span> <span class="str">"MEP"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">vla-put-color</span> <span class="var">lyr</span> <span class="num">5</span><span class="paren">)</span>   <span class="comment">; xanh dương</span>`,
+    tip:"CLAYER là system variable lưu layer hiện tại. setvar/getvar để đọc/ghi bất kỳ system variable nào." },
+
+  { cat:"Layer & Block", color:"purple", title:"Block & Attribute",
+    desc:"Chèn block, đọc và sửa attribute của block INSERT bằng cách duyệt sub-entity.",
+    code:`<span class="comment">;; Chèn block</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"INSERT"</span>
+  <span class="str">"TEN_BLOCK"</span>         <span class="comment">; tên block</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">100 200 0</span><span class="paren">)</span>        <span class="comment">; điểm chèn</span>
+  <span class="num">1</span>                    <span class="comment">; tỉ lệ X</span>
+  <span class="num">1</span>                    <span class="comment">; tỉ lệ Y</span>
+  <span class="num">0</span>                    <span class="comment">; góc</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Đọc tất cả attribute của block INSERT</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ins</span> <span class="paren">(</span><span class="fn">car</span> <span class="paren">(</span><span class="fn">entsel</span> <span class="str">"\nChọn block: "</span><span class="paren">)))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">att</span> <span class="paren">(</span><span class="fn">entnext</span> <span class="var">ins</span><span class="paren">))</span>
+<span class="paren">(</span><span class="kw">while</span> <span class="paren">(</span><span class="fn">=</span> <span class="str">"ATTRIB"</span>
+    <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">0</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">att</span><span class="paren">))))</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span>  <span class="num">2</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">att</span><span class="paren">))))</span>  <span class="comment">; tag</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span>  <span class="num">1</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">att</span><span class="paren">))))</span>  <span class="comment">; giá trị</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">att</span> <span class="paren">(</span><span class="fn">entnext</span> <span class="var">att</span><span class="paren">))</span>
+<span class="paren">)</span>`,
+    tip:"Block INSERT có sub-entity là ATTRIB. entnext để duyệt qua từng attribute. Mã 2=tag, 1=giá trị." },
+
+  // ===== FILE & HỆ THỐNG =====
+  { cat:"File & Hệ thống", color:"gray", title:"Đọc / Ghi file text",
+    desc:"AutoLISP đọc và ghi file text. Dùng để xuất bảng số liệu, lưu cấu hình, import dữ liệu.",
+    code:`<span class="comment">;; Ghi file</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">f</span> <span class="paren">(</span><span class="fn">open</span> <span class="str">"C:/output.txt"</span> <span class="str">"w"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">write-line</span> <span class="str">"Dòng đầu tiên"</span> <span class="var">f</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">write-line</span> <span class="str">"Dòng thứ hai"</span>  <span class="var">f</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">close</span> <span class="var">f</span><span class="paren">)</span>
+
+<span class="comment">;; Đọc file từng dòng</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">f</span> <span class="paren">(</span><span class="fn">open</span> <span class="str">"C:/output.txt"</span> <span class="str">"r"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="kw">while</span> <span class="paren">(</span><span class="fn">setq</span> <span class="var">line</span> <span class="paren">(</span><span class="fn">read-line</span> <span class="var">f</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\n"</span> <span class="var">line</span><span class="paren">))</span>
+<span class="paren">)</span>
+<span class="paren">(</span><span class="fn">close</span> <span class="var">f</span><span class="paren">)</span>
+
+<span class="comment">;; Ghi thêm vào file có sẵn</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">f</span> <span class="paren">(</span><span class="fn">open</span> <span class="str">"C:/log.txt"</span> <span class="str">"a"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">write-line</span> <span class="str">"Thêm dòng mới"</span> <span class="var">f</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">close</span> <span class="var">f</span><span class="paren">)</span>`,
+    tip:"Mode: 'r'=đọc, 'w'=ghi mới (xóa cũ), 'a'=ghi thêm. Luôn close file sau khi dùng." },
+
+  { cat:"File & Hệ thống", color:"gray", title:"getvar / setvar — Biến hệ thống",
+    desc:"AutoCAD có hàng trăm system variable. getvar đọc, setvar ghi. Dùng để điều khiển hành vi AutoCAD.",
+    code:`<span class="comment">;; Đọc system variable thường dùng</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"CLAYER"</span><span class="paren">)</span>    <span class="comment">; layer đang dùng</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"OSMODE"</span><span class="paren">)</span>    <span class="comment">; chế độ snap</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"DIMSCALE"</span><span class="paren">)</span>  <span class="comment">; tỉ lệ dim</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"DWGNAME"</span><span class="paren">)</span>   <span class="comment">; tên bản vẽ</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"INSUNITS"</span><span class="paren">)</span>  <span class="comment">; đơn vị bản vẽ</span>
+
+<span class="comment">;; Thay đổi và phục hồi (pattern chuẩn)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">old-os</span>   <span class="paren">(</span><span class="fn">getvar</span> <span class="str">"OSMODE"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">old-echo</span> <span class="paren">(</span><span class="fn">getvar</span> <span class="str">"CMDECHO"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"OSMODE"</span>  <span class="num">0</span><span class="paren">)</span>   <span class="comment">; tắt snap</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="num">0</span><span class="paren">)</span>   <span class="comment">; tắt echo</span>
+<span class="comment">;; --- làm việc ---</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"OSMODE"</span>  <span class="var">old-os</span><span class="paren">)</span>    <span class="comment">; phục hồi</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="var">old-echo</span><span class="paren">)</span>`,
+    tip:"Luôn lưu và phục hồi system variable sau khi dùng — tránh gây lỗi cho người dùng AutoCAD." },
+
+  // ===== NÂNG CAO =====
+  { cat:"Nâng cao", color:"red", title:"*error* — Xử lý lỗi & Esc",
+    desc:"Ghi đè hàm *error* để bắt lỗi và phục hồi trạng thái khi lệnh bị hủy bởi Esc hoặc lỗi runtime.",
+    code:`<span class="paren">(</span><span class="kw">defun</span> c:<span class="fn">ANLOAN</span> <span class="paren">(</span> / <span class="var">*error* old-layer old-echo</span><span class="paren">)</span>
+
+  <span class="comment">;; Lưu trạng thái</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">old-layer</span> <span class="paren">(</span><span class="fn">getvar</span> <span class="str">"CLAYER"</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">old-echo</span>  <span class="paren">(</span><span class="fn">getvar</span> <span class="str">"CMDECHO"</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="num">0</span><span class="paren">)</span>
+
+  <span class="comment">;; Hàm lỗi cục bộ</span>
+  <span class="paren">(</span><span class="kw">defun</span> <span class="fn">*error*</span> <span class="paren">(</span><span class="var">msg</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CLAYER"</span>  <span class="var">old-layer</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="var">old-echo</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">/=</span> <span class="var">msg</span> <span class="str">"Function cancelled"</span><span class="paren">)</span>
+      <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\nLỗi: "</span> <span class="var">msg</span><span class="paren">))</span>
+    <span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>
+  <span class="paren">)</span>
+
+  <span class="comment">;; --- nội dung lệnh ---</span>
+  <span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CLAYER"</span>  <span class="var">old-layer</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CMDECHO"</span> <span class="var">old-echo</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"*error* là biến cục bộ trong ví dụ — override cục bộ này an toàn hơn override toàn cục." },
+
+  { cat:"Nâng cao", color:"red", title:"Dialog DCL — Hộp thoại tùy chỉnh",
+    desc:"Tạo UI dialog bằng DCL (Dialog Control Language) kết hợp LSP. Tạo 2 file: .dcl (giao diện) và .lsp (logic).",
+    code:`<span class="comment">;; === File: my_dlg.dcl ===</span>
+<span class="comment">/*
+my_dlg : dialog {
+  label = "Nhập thông số vẽ";
+  : edit_box {
+    key   = "width";
+    label = "Chiều rộng";
+    value = "100";
+  }
+  : edit_box {
+    key   = "height";
+    label = "Chiều cao";
+    value = "50";
+  }
+  ok_cancel;
+}
+*/</span>
+
+<span class="comment">;; === File: my_tools.lsp ===</span>
+<span class="paren">(</span><span class="kw">defun</span> c:<span class="fn">NHAPSO</span> <span class="paren">(</span> / <span class="var">did w h</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">did</span> <span class="paren">(</span><span class="fn">load_dialog</span> <span class="str">"my_dlg.dcl"</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">new_dialog</span> <span class="str">"my_dlg"</span> <span class="var">did</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">action_tile</span> <span class="str">"accept"</span>
+    <span class="str">"(setq w (atof (get_tile \"width\"))
+       h (atof (get_tile \"height\")))
+     (done_dialog 1)"</span>
+  <span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">start_dialog</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">unload_dialog</span> <span class="var">did</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"File DCL và LSP phải cùng thư mục hoặc trong Support Path. DCL key phải unique trong dialog." },
+
+  { cat:"Nâng cao", color:"red", title:"VLR Reactor — Sự kiện tự động",
+    desc:"VLR Reactor chạy code tự động khi có sự kiện AutoCAD: tạo object, lưu file, thay đổi thuộc tính...",
+    code:`<span class="paren">(</span><span class="fn">vl-load-com</span><span class="paren">)</span>
+
+<span class="comment">;; Callback chạy khi có object mới</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">on-object-added</span> <span class="paren">(</span><span class="var">owner reactor params</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span> <span class="paren">(</span><span class="fn">entlast</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\n[LOG] Tạo mới: "</span>
+    <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">0</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">)))))</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Đăng ký reactor theo database</span>
+<span class="paren">(</span><span class="fn">vlr-database-reactor</span> nil
+  <span class="str">'</span><span class="paren">((</span><span class="fn">:vlr-objectAppended</span> . <span class="fn">on-object-added</span><span class="paren">))</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Xem reactor đang active</span>
+<span class="paren">(</span><span class="fn">vlr-reactors</span> <span class="fn">:vlr-database-reactor</span><span class="paren">)</span>
+
+<span class="comment">;; Xóa tất cả reactor (cleanup)</span>
+<span class="paren">(</span><span class="fn">mapcar</span> <span class="str">'</span><span class="fn">vlr-remove</span>
+  <span class="paren">(</span><span class="fn">vlr-reactors</span> <span class="fn">:vlr-database-reactor</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"Reactor chạy ngầm — cẩn thận vòng đệ quy khi callback lại tạo entity. Luôn cleanup khi không dùng." },
+
+  // ===== CHUỖI NÂNG CAO =====
+  { cat:"Chuỗi nâng cao", color:"teal", title:"wcmatch — Wildcard so khớp chuỗi",
+    desc:"So khớp chuỗi theo pattern kiểu wildcard. Rất hữu ích để lọc tên layer, block, textstyle theo mẫu.",
+    code:`<span class="comment">;; Ký tự đặc biệt:</span>
+<span class="comment">; *  = bất kỳ chuỗi nào</span>
+<span class="comment">; ?  = đúng 1 ký tự bất kỳ</span>
+<span class="comment">; #  = đúng 1 chữ số</span>
+<span class="comment">; @  = đúng 1 chữ cái</span>
+<span class="comment">; ~  = phủ định (không khớp)</span>
+
+<span class="paren">(</span><span class="fn">wcmatch</span> <span class="str">"WALL-01"</span>  <span class="str">"WALL*"</span><span class="paren">)</span>     <span class="comment">; T</span>
+<span class="paren">(</span><span class="fn">wcmatch</span> <span class="str">"DOOR"</span>     <span class="str">"WALL*"</span><span class="paren">)</span>     <span class="comment">; nil</span>
+<span class="paren">(</span><span class="fn">wcmatch</span> <span class="str">"DIM-3"</span>   <span class="str">"DIM-#"</span><span class="paren">)</span>     <span class="comment">; T</span>
+<span class="paren">(</span><span class="fn">wcmatch</span> <span class="str">"ARCH"</span>    <span class="str">"~WALL*"</span><span class="paren">)</span>    <span class="comment">; T (không bắt đầu bằng WALL)</span>
+
+<span class="comment">;; Thực tế: lọc layer theo prefix</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"X"</span>
+  <span class="paren">(</span><span class="fn">list</span>
+    <span class="paren">(</span><span class="fn">cons</span> <span class="num">8</span> <span class="str">"WALL*,DOOR*,WIN*"</span><span class="paren">)</span>   <span class="comment">; nhiều pattern, phân cách ,</span>
+  <span class="paren">)</span>
+<span class="paren">))</span>`,
+    tip:"ssget filter hỗ trợ wcmatch trực tiếp với dấu phẩy phân cách nhiều pattern: \"A*,B*,C*\"." },
+
+  { cat:"Chuỗi nâng cao", color:"teal", title:"vl-string-trim / vl-string-elt",
+    desc:"Trim khoảng trắng đầu/cuối, lấy ký tự theo vị trí, split chuỗi theo dấu phân cách.",
+    code:`<span class="comment">;; Trim khoảng trắng</span>
+<span class="paren">(</span><span class="fn">vl-string-trim</span>       <span class="str">" "</span> <span class="str">"  hello  "</span><span class="paren">)</span>  <span class="comment">; "hello"</span>
+<span class="paren">(</span><span class="fn">vl-string-left-trim</span>  <span class="str">" "</span> <span class="str">"  hello  "</span><span class="paren">)</span>  <span class="comment">; "hello  "</span>
+<span class="paren">(</span><span class="fn">vl-string-right-trim</span> <span class="str">" "</span> <span class="str">"  hello  "</span><span class="paren">)</span>  <span class="comment">; "  hello"</span>
+
+<span class="comment">;; Lấy mã ASCII của ký tự thứ n (từ 0)</span>
+<span class="paren">(</span><span class="fn">vl-string-elt</span> <span class="str">"ABCDE"</span> <span class="num">0</span><span class="paren">)</span>   <span class="comment">; 65 (mã ASCII 'A')</span>
+<span class="paren">(</span><span class="fn">chr</span> <span class="num">65</span><span class="paren">)</span>                     <span class="comment">; "A"</span>
+<span class="paren">(</span><span class="fn">ascii</span> <span class="str">"A"</span><span class="paren">)</span>                  <span class="comment">; 65</span>
+
+<span class="comment">;; Split chuỗi theo dấu phân cách</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">str-split</span> <span class="paren">(</span><span class="var">str delim</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">vl-string-search</span> <span class="var">delim</span> <span class="var">str</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">cons</span> <span class="paren">(</span><span class="fn">substr</span> <span class="var">str</span> <span class="num">1</span> <span class="paren">(</span><span class="fn">vl-string-search</span> <span class="var">delim</span> <span class="var">str</span><span class="paren">))</span>
+      <span class="paren">(</span><span class="fn">str-split</span> <span class="paren">(</span><span class="fn">substr</span> <span class="var">str</span> <span class="paren">(</span><span class="fn">+</span> <span class="num">2</span> <span class="paren">(</span><span class="fn">vl-string-search</span> <span class="var">delim</span> <span class="var">str</span><span class="paren">)))</span> <span class="var">delim</span><span class="paren">))</span>
+    <span class="paren">(</span><span class="fn">list</span> <span class="var">str</span><span class="paren">)</span>
+  <span class="paren">)</span>
+<span class="paren">)</span>
+<span class="comment">; (str-split "A,B,C" ",") → ("A" "B" "C")</span>`,
+    tip:"vl-string-elt dùng index từ 0. Kết hợp chr/ascii để xử lý encoding và kiểm tra ký tự đặc biệt." },
+
+  // ===== BẢNG ĐỊNH NGHĨA =====
+  { cat:"Bảng định nghĩa", color:"amber", title:"tblsearch / tblnext — Tìm trong bảng",
+    desc:"Tìm kiếm block, layer, linetype, textstyle, dimstyle trong symbol table của bản vẽ.",
+    code:`<span class="comment">;; Kiểm tra layer có tồn tại không</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">tblsearch</span> <span class="str">"LAYER"</span> <span class="str">"WALL"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nLayer WALL đã tồn tại"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">command</span> <span class="str">"LAYER"</span> <span class="str">"NEW"</span> <span class="str">"WALL"</span> <span class="str">""</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Kiểm tra block có trong bản vẽ chưa</span>
+<span class="paren">(</span><span class="fn">tblsearch</span> <span class="str">"BLOCK"</span> <span class="str">"CHUONG_HOI"</span><span class="paren">)</span>
+
+<span class="comment">;; Kiểm tra textstyle</span>
+<span class="paren">(</span><span class="fn">tblsearch</span> <span class="str">"STYLE"</span> <span class="str">"ROMANS"</span><span class="paren">)</span>
+
+<span class="comment">;; Duyệt tất cả layer trong bản vẽ</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">lyr</span> <span class="paren">(</span><span class="fn">tblnext</span> <span class="str">"LAYER"</span> T<span class="paren">))</span>   <span class="comment">; T = reset về đầu</span>
+<span class="paren">(</span><span class="kw">while</span> <span class="var">lyr</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">2</span> <span class="var">lyr</span><span class="paren">)))</span>   <span class="comment">; mã 2 = tên</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">lyr</span> <span class="paren">(</span><span class="fn">tblnext</span> <span class="str">"LAYER"</span><span class="paren">))</span>
+<span class="paren">)</span>`,
+    tip:"Bảng hợp lệ: LAYER, BLOCK, LTYPE, STYLE, DIMSTYLE, UCS, VIEW, VPORT, APPID." },
+
+  // ===== TEXT & DIMENSION =====
+  { cat:"Text & Dimension", color:"blue", title:"Tạo TEXT và MTEXT",
+    desc:"Tạo text đơn (TEXT/DTEXT) và text nhiều dòng (MTEXT) bằng entmake hoặc command.",
+    code:`<span class="comment">;; Tạo TEXT bằng entmake (nhanh nhất)</span>
+<span class="paren">(</span><span class="fn">entmake</span> <span class="paren">(</span><span class="fn">list</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">0</span> <span class="str">"TEXT"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">8</span> <span class="str">"TEXT_LAYER"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0 0.0 0.0</span><span class="paren">))</span>  <span class="comment">; vị trí</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">40</span> <span class="num">3.0</span><span class="paren">)</span>             <span class="comment">; chiều cao</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">1</span> <span class="str">"Nội dung text"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">7</span> <span class="str">"ROMANS"</span><span class="paren">)</span>         <span class="comment">; style</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">50</span> <span class="num">0.0</span><span class="paren">)</span>             <span class="comment">; góc xoay (radian)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">72</span> <span class="num">1</span><span class="paren">)</span>               <span class="comment">; căn lề: 0=left,1=center,2=right</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">11</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0 0.0 0.0</span><span class="paren">))</span>  <span class="comment">; align point (khi căn center/right)</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Tạo MTEXT bằng command</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"MTEXT"</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span>       <span class="comment">; góc trên trái</span>
+  <span class="str">"H"</span> <span class="num">3.0</span>      <span class="comment">; chiều cao</span>
+  <span class="str">"W"</span> <span class="num">100.0</span>    <span class="comment">; chiều rộng box</span>
+  <span class="str">"Nội dung nhiều dòng\nDòng thứ 2"</span>
+  <span class="str">""</span>
+<span class="paren">)</span>`,
+    tip:"Mã 72 căn ngang (0-2), mã 73 căn dọc (1-3). Khi dùng căn ngang ≠ 0, phải có mã 11 (align point)." },
+
+  { cat:"Text & Dimension", color:"blue", title:"Đọc và sửa Dimension",
+    desc:"Dimension là entity phức tạp. Đọc giá trị đo, override text, thay đổi dimstyle bằng entget/entmod.",
+    code:`<span class="comment">;; Chọn và đọc dimension</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span> <span class="paren">(</span><span class="fn">car</span> <span class="paren">(</span><span class="fn">entsel</span> <span class="str">"\nChọn dimension: "</span><span class="paren">)))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">))</span>
+
+<span class="comment">;; Mã DXF của Dimension:</span>
+<span class="comment">; 0   → loại: "DIMENSION"</span>
+<span class="comment">; 1   → override text (rỗng = dùng giá trị đo)</span>
+<span class="comment">; 2   → tên block dim</span>
+<span class="comment">; 3   → tên dimstyle</span>
+<span class="comment">; 10  → definition point</span>
+<span class="comment">; 70  → flags loại dim</span>
+
+<span class="comment">;; Override text của dimension</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">old</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">1</span> <span class="var">ed</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">new</span> <span class="paren">(</span><span class="fn">cons</span>  <span class="num">1</span> <span class="str">"&lt;&gt; (TYP)"</span><span class="paren">))</span>  <span class="comment">; &lt;&gt; = giữ giá trị đo</span>
+<span class="paren">(</span><span class="fn">entmod</span> <span class="paren">(</span><span class="fn">subst</span> <span class="var">new old ed</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">entupd</span> <span class="var">en</span><span class="paren">)</span>
+
+<span class="comment">;; Đổi dimstyle</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ds-old</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">3</span> <span class="var">ed</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">entmod</span> <span class="paren">(</span><span class="fn">subst</span> <span class="paren">(</span><span class="fn">cons</span> <span class="num">3</span> <span class="str">"DIMSTYLE_MOI"</span><span class="paren">)</span> <span class="var">ds-old ed</span><span class="paren">))</span>`,
+    tip:"'<>' trong override text nghĩa là 'giữ nguyên giá trị đo'. Dùng '<> (TYP)' để thêm chữ sau giá trị." },
+
+  // ===== POLYLINE =====
+  { cat:"Polyline", color:"green", title:"Tạo và đọc LWPOLYLINE",
+    desc:"LWPOLYLINE (Lightweight Polyline) là entity hay gặp nhất trong bản vẽ kiến trúc. Vertex lưu trong mã 10, bulge (cung) trong mã 42.",
+    code:`<span class="comment">;; Tạo LWPOLYLINE bằng entmake</span>
+<span class="paren">(</span><span class="fn">entmake</span> <span class="paren">(</span><span class="fn">list</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">0</span>  <span class="str">"LWPOLYLINE"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span>  <span class="num">8</span>  <span class="str">"0"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">90</span>  <span class="num">4</span><span class="paren">)</span>               <span class="comment">; số đỉnh</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">70</span>  <span class="num">1</span><span class="paren">)</span>               <span class="comment">; 1=closed, 0=open</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">43</span>  <span class="num">0.0</span><span class="paren">)</span>             <span class="comment">; width toàn bộ</span>
+  <span class="comment">;; Các đỉnh (mỗi đỉnh 1 mã 10)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0   0.0</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">42</span>  <span class="num">0.0</span><span class="paren">)</span>             <span class="comment">; bulge = 0 (thẳng)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">100.0 0.0</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">42</span>  <span class="num">0.0</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">100.0 50.0</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">42</span>  <span class="num">1.0</span><span class="paren">)</span>             <span class="comment">; bulge = 1 = nửa vòng tròn</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">10</span> <span class="str">'</span><span class="paren">(</span><span class="num">0.0   50.0</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">cons</span> <span class="num">42</span>  <span class="num">0.0</span><span class="paren">)</span>
+<span class="paren">))</span>`,
+    tip:"Bulge = tan(góc/4). Bulge=1 là nửa vòng tròn, bulge=0.4142 ≈ cung 90°. Âm = cong theo chiều ngược." },
+
+  { cat:"Polyline", color:"green", title:"Đọc vertex của LWPOLYLINE",
+    desc:"Duyệt tất cả đỉnh của LWPOLYLINE bằng cách lọc mã 10 từ entity data. Lấy bulge từ mã 42.",
+    code:`<span class="comment">;; Lấy tất cả vertex của pline</span>
+<span class="paren">(</span><span class="kw">defun</span> <span class="fn">get-vertices</span> <span class="paren">(</span><span class="var">en</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">=</span> <span class="str">"LWPOLYLINE"</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">0</span> <span class="var">ed</span><span class="paren">)))</span>
+    <span class="paren">(</span><span class="fn">mapcar</span> <span class="str">'</span><span class="fn">cdr</span>
+      <span class="paren">(</span><span class="fn">vl-remove-if-not</span>
+        <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">x</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">=</span> <span class="num">10</span> <span class="paren">(</span><span class="fn">car</span> <span class="var">x</span><span class="paren">))))</span>
+        <span class="var">ed</span>
+      <span class="paren">)</span>
+    <span class="paren">)</span>
+  <span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Đếm số đỉnh (mã 90)</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">90</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">)))</span>
+
+<span class="comment">;; Kiểm tra closed (mã 70, bit 1)</span>
+<span class="paren">(</span><span class="fn">logand</span> <span class="num">1</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">70</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">)))))</span>  <span class="comment">; 1=closed</span>`,
+    tip:"vl-remove-if-not là filter mạnh — giữ lại phần tử thỏa điều kiện. Đối ngược là vl-remove-if." },
+
+  // ===== XDATA & DICTIONARY =====
+  { cat:"XData & Dictionary", color:"pink", title:"XData — Dữ liệu mở rộng trên Entity",
+    desc:"Gán dữ liệu tùy chỉnh vào bất kỳ entity nào. XData lưu trực tiếp trong entity, theo APPID đăng ký.",
+    code:`<span class="comment">;; Đăng ký Application ID trước</span>
+<span class="paren">(</span><span class="fn">regapp</span> <span class="str">"MY_APP"</span><span class="paren">)</span>
+
+<span class="comment">;; Gán xdata vào entity</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">en</span> <span class="paren">(</span><span class="fn">entlast</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span> <span class="str">'</span><span class="paren">(</span><span class="str">"MY_APP"</span><span class="paren">)))</span>  <span class="comment">; load cả xdata</span>
+
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">xd</span> <span class="paren">(</span><span class="fn">list</span>
+  <span class="paren">(</span><span class="fn">list</span> <span class="num">-3</span>
+    <span class="paren">(</span><span class="fn">list</span> <span class="str">"MY_APP"</span>
+      <span class="paren">(</span><span class="fn">cons</span> <span class="num">1000</span> <span class="str">"So phong"</span><span class="paren">)</span>    <span class="comment">; chuỗi</span>
+      <span class="paren">(</span><span class="fn">cons</span> <span class="num">1070</span> <span class="num">301</span><span class="paren">)</span>           <span class="comment">; integer</span>
+      <span class="paren">(</span><span class="fn">cons</span> <span class="num">1040</span> <span class="num">45.5</span><span class="paren">)</span>          <span class="comment">; real</span>
+    <span class="paren">)</span>
+  <span class="paren">)</span>
+<span class="paren">))</span>
+<span class="paren">(</span><span class="fn">entmod</span> <span class="paren">(</span><span class="fn">append</span> <span class="var">ed xd</span><span class="paren">))</span>
+
+<span class="comment">;; Đọc xdata</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">-3</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span> <span class="str">'</span><span class="paren">(</span><span class="str">"MY_APP"</span><span class="paren">))))</span>`,
+    tip:"Mã xdata: 1000=string, 1010=point, 1040=real, 1070=int16, 1071=int32. Luôn regapp trước khi ghi." },
+
+  { cat:"XData & Dictionary", color:"pink", title:"Dictionary — Lưu dữ liệu vào bản vẽ",
+    desc:"Dictionary cho phép lưu dữ liệu có cấu trúc vào bản vẽ (không gắn vào entity cụ thể). Lưu cấu hình, settings.",
+    code:`<span class="comment">;; Tạo / truy cập dictionary của bản vẽ</span>
+<span class="paren">(</span><span class="fn">vl-load-com</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">doc</span> <span class="paren">(</span><span class="fn">vla-get-activedocument</span>
+  <span class="paren">(</span><span class="fn">vlax-get-acad-object</span><span class="paren">)))</span>
+
+<span class="comment">;; Tạo entry trong Named Object Dictionary</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">nod</span> <span class="paren">(</span><span class="fn">namedobjdict</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">mydict</span> <span class="paren">(</span><span class="fn">dictsearch</span> <span class="var">nod</span> <span class="str">"MY_SETTINGS"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">not</span> <span class="var">mydict</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">setq</span> <span class="var">mydict</span> <span class="paren">(</span><span class="fn">dictadd</span> <span class="var">nod</span> <span class="str">"MY_SETTINGS"</span>
+    <span class="paren">(</span><span class="fn">entmakex</span> <span class="str">'</span><span class="paren">((</span><span class="num">0</span> . <span class="str">"DICTIONARY"</span><span class="paren">)</span> <span class="paren">(</span><span class="num">100</span> . <span class="str">"AcDbDictionary"</span><span class="paren">)))))</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Lưu Xrecord vào dictionary</span>
+<span class="paren">(</span><span class="fn">dictadd</span> <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">-1</span> <span class="var">mydict</span><span class="paren">))</span> <span class="str">"VERSION"</span>
+  <span class="paren">(</span><span class="fn">entmakex</span> <span class="paren">(</span><span class="fn">list</span>
+    <span class="paren">(</span><span class="fn">cons</span>   <span class="num">0</span> <span class="str">"XRECORD"</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">cons</span> <span class="num">100</span> <span class="str">"AcDbXrecord"</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">cons</span>   <span class="num">1</span> <span class="str">"v2.1"</span><span class="paren">)</span>
+  <span class="paren">))</span>
+<span class="paren">)</span>`,
+    tip:"Dictionary lưu trong bản vẽ vĩnh viễn, không bị xóa khi purge entity. Dùng để lưu config script." },
+
+  // ===== TỌA ĐỘ =====
+  { cat:"Tọa độ & UCS", color:"purple", title:"trans — Chuyển đổi hệ tọa độ",
+    desc:"Chuyển điểm giữa WCS (World), UCS (User), DCS (Display), PCS (Paper). Quan trọng khi làm việc với UCS tùy chỉnh.",
+    code:`<span class="comment">;; (trans điểm từ đến)</span>
+<span class="comment">;  0 = WCS (World)   1 = UCS hiện tại</span>
+<span class="comment">;  2 = DCS           3 = Paper space</span>
+
+<span class="comment">;; WCS → UCS</span>
+<span class="paren">(</span><span class="fn">trans</span> <span class="str">'</span><span class="paren">(</span><span class="num">100 100 0</span><span class="paren">)</span> <span class="num">0</span> <span class="num">1</span><span class="paren">)</span>
+
+<span class="comment">;; UCS → WCS</span>
+<span class="paren">(</span><span class="fn">trans</span> <span class="str">'</span><span class="paren">(</span><span class="num">100 100 0</span><span class="paren">)</span> <span class="num">1</span> <span class="num">0</span><span class="paren">)</span>
+
+<span class="comment">;; Điểm nhập từ user (UCS) → lưu vào entity (WCS)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">pt-ucs</span> <span class="paren">(</span><span class="fn">getpoint</span> <span class="str">"\nChọn điểm: "</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">pt-wcs</span> <span class="paren">(</span><span class="fn">trans</span> <span class="var">pt-ucs</span> <span class="num">1</span> <span class="num">0</span><span class="paren">))</span>
+
+<span class="comment">;; Thực tế: lấy UCS matrix hiện tại</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"UCSORG"</span><span class="paren">)</span>    <span class="comment">; gốc UCS</span>
+<span class="paren">(</span><span class="fn">getvar</span> "UCSXDIR"<span class="paren">)</span>   <span class="comment">; hướng trục X</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"UCSYDIR"</span><span class="paren">)</span>   <span class="comment">; hướng trục Y</span>`,
+    tip:"getpoint trả về tọa độ trong UCS. entget trả về tọa độ trong WCS. Luôn dùng trans để chuyển đổi." },
+
+  // ===== SẮP XẾP & LỌC =====
+  { cat:"Sắp xếp & Lọc", color:"amber", title:"vl-sort — Sắp xếp list",
+    desc:"Sắp xếp list theo điều kiện tùy chỉnh. Mạnh hơn bất kỳ hàm sort nào trong AutoLISP chuẩn.",
+    code:`<span class="comment">;; Sắp xếp số tăng dần</span>
+<span class="paren">(</span><span class="fn">vl-sort</span> <span class="str">'</span><span class="paren">(</span><span class="num">5 2 8 1 9 3</span><span class="paren">)</span> <span class="str">'</span><span class="fn">&lt;</span><span class="paren">)</span>
+<span class="comment">; → (1 2 3 5 8 9)</span>
+
+<span class="comment">;; Sắp xếp giảm dần</span>
+<span class="paren">(</span><span class="fn">vl-sort</span> <span class="str">'</span><span class="paren">(</span><span class="num">5 2 8 1</span><span class="paren">)</span> <span class="str">'</span><span class="fn">&gt;</span><span class="paren">)</span>
+<span class="comment">; → (8 5 2 1)</span>
+
+<span class="comment">;; Sắp xếp chuỗi theo ABC</span>
+<span class="paren">(</span><span class="fn">vl-sort</span>
+  <span class="str">'</span><span class="paren">(</span><span class="str">"WALL" "ARCH" "DIM" "BEAM"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">a b</span><span class="paren">)</span>
+    <span class="paren">(</span><span class="fn">&lt;</span> <span class="paren">(</span><span class="fn">ascii</span> <span class="var">a</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">ascii</span> <span class="var">b</span><span class="paren">))</span>
+  <span class="paren">))</span>
+<span class="paren">)</span>
+<span class="comment">; → ("ARCH" "BEAM" "DIM" "WALL")</span>
+
+<span class="comment">;; Sắp xếp list of list theo phần tử thứ 2</span>
+<span class="paren">(</span><span class="fn">vl-sort</span>
+  <span class="str">'</span><span class="paren">((</span><span class="str">"A"</span> <span class="num">3</span><span class="paren">)</span> <span class="paren">(</span><span class="str">"B"</span> <span class="num">1</span><span class="paren">)</span> <span class="paren">(</span><span class="str">"C"</span> <span class="num">2</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">a b</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">&lt;</span> <span class="paren">(</span><span class="fn">cadr</span> <span class="var">a</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">cadr</span> <span class="var">b</span><span class="paren">))))</span>
+<span class="paren">)</span>`,
+    tip:"vl-sort không sửa list gốc — trả về list mới đã sắp xếp. Dùng vl-sort-i nếu cần giữ index gốc." },
+
+  { cat:"Sắp xếp & Lọc", color:"amber", title:"vl-remove-if / vl-remove-if-not — Lọc list",
+    desc:"Lọc list theo điều kiện tùy chỉnh. vl-remove-if xóa phần tử thỏa điều kiện, vl-remove-if-not giữ lại.",
+    code:`<span class="comment">;; Giữ chỉ số dương</span>
+<span class="paren">(</span><span class="fn">vl-remove-if-not</span>
+  <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">x</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">&gt;</span> <span class="var">x</span> <span class="num">0</span><span class="paren">)))</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">-3 1 -2 5 -1 4</span><span class="paren">)</span>
+<span class="paren">)</span>
+<span class="comment">; → (1 5 4)</span>
+
+<span class="comment">;; Xóa nil khỏi list</span>
+<span class="paren">(</span><span class="fn">vl-remove-if</span> <span class="str">'</span><span class="fn">null</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">1</span> nil <span class="num">2</span> nil <span class="num">3</span><span class="paren">)</span>
+<span class="paren">)</span>
+<span class="comment">; → (1 2 3)</span>
+
+<span class="comment">;; Lọc entity LINE trong selection set</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">lines</span>
+  <span class="paren">(</span><span class="fn">vl-remove-if-not</span>
+    <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">en</span><span class="paren">)</span>
+      <span class="paren">(</span><span class="fn">=</span> <span class="str">"LINE"</span>
+        <span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">0</span> <span class="paren">(</span><span class="fn">entget</span> <span class="var">en</span><span class="paren">))))</span>
+    <span class="paren">))</span>
+    <span class="var">entity-list</span>
+  <span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"vl-remove-if-not = filter/keep. vl-remove-if = reject. Kết hợp với mapcar để pipeline xử lý dữ liệu." },
+
+  { cat:"Sắp xếp & Lọc", color:"amber", title:"vl-catch-all-apply — Gọi hàm an toàn",
+    desc:"Gọi hàm mà không crash chương trình nếu có lỗi. Trả về error object thay vì crash.",
+    code:`<span class="comment">;; Thay vì (apply 'fn args) có thể crash,</span>
+<span class="comment">;; dùng vl-catch-all-apply để bắt lỗi</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">result</span>
+  <span class="paren">(</span><span class="fn">vl-catch-all-apply</span> <span class="str">'</span><span class="fn">sqrt</span> <span class="str">'</span><span class="paren">(</span><span class="num">-1</span><span class="paren">))</span>  <span class="comment">; sqrt(-1) gây lỗi</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Kiểm tra có lỗi không</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">vl-catch-all-error-p</span> <span class="var">result</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\nLỗi: "</span>
+    <span class="paren">(</span><span class="fn">vl-catch-all-error-message</span> <span class="var">result</span><span class="paren">)))</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\nKết quả: "</span> <span class="paren">(</span><span class="fn">rtos</span> <span class="var">result</span><span class="paren">)))</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Thực tế: load file an toàn</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">r</span> <span class="paren">(</span><span class="fn">vl-catch-all-apply</span>
+  <span class="str">'</span><span class="fn">load</span> <span class="str">'</span><span class="paren">(</span><span class="str">"khong-ton-tai.lsp"</span><span class="paren">)))</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">vl-catch-all-error-p</span> <span class="var">r</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nKhông load được file"</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"vl-catch-all-apply là cách duy nhất bắt lỗi runtime mà không cần dùng *error*. Dùng cho code phòng thủ." },
+
+  // ===== LAYOUT & VIEWPORT =====
+  { cat:"Layout & Viewport", color:"teal", title:"Chuyển Model Space / Paper Space",
+    desc:"Làm việc với layout (paper space) và chuyển đổi giữa model/paper space trong LSP.",
+    code:`<span class="comment">;; Kiểm tra đang ở space nào</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"CVPORT"</span><span class="paren">)</span>   <span class="comment">; 1=paper space, 2+=model/viewport</span>
+<span class="paren">(</span><span class="fn">getvar</span> <span class="str">"TILEMODE"</span><span class="paren">)</span> <span class="comment">; 1=model space, 0=layout</span>
+
+<span class="comment">;; Chuyển sang paper space</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"PSPACE"</span><span class="paren">)</span>
+
+<span class="comment">;; Chuyển sang model space</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"MSPACE"</span><span class="paren">)</span>
+
+<span class="comment">;; Dùng VLA để chọn layout</span>
+<span class="paren">(</span><span class="fn">vl-load-com</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">doc</span>     <span class="paren">(</span><span class="fn">vla-get-activedocument</span> <span class="paren">(</span><span class="fn">vlax-get-acad-object</span><span class="paren">)))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">layouts</span> <span class="paren">(</span><span class="fn">vla-get-layouts</span> <span class="var">doc</span><span class="paren">))</span>
+
+<span class="comment">;; Duyệt tất cả layout</span>
+<span class="paren">(</span><span class="fn">vlax-for</span> <span class="var">lay layouts</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="paren">(</span><span class="fn">strcat</span> <span class="str">"\n"</span> <span class="paren">(</span><span class="fn">vla-get-name</span> <span class="var">lay</span><span class="paren">)))</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Set layout active</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"CTAB"</span> <span class="str">"Layout1"</span><span class="paren">)</span>`,
+    tip:"CTAB là system variable lưu tên tab đang active. Đặt CTAB = 'Model' để về model space." },
+
+  { cat:"Layout & Viewport", color:"teal", title:"Tạo Viewport trong Layout",
+    desc:"Tạo và điều chỉnh viewport trong paper space bằng entmake hoặc VLA.",
+    code:`<span class="comment">;; Tạo viewport bằng command (đơn giản nhất)</span>
+<span class="paren">(</span><span class="fn">setvar</span> <span class="str">"TILEMODE"</span> <span class="num">0</span><span class="paren">)</span>   <span class="comment">; vào layout</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"PSPACE"</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"VPORTS"</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">10 10</span><span class="paren">)</span>     <span class="comment">; góc dưới trái</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">200 150</span><span class="paren">)</span>   <span class="comment">; góc trên phải</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Thiết lập tỉ lệ viewport bằng VLA</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">vp</span> <span class="paren">(</span><span class="fn">vlax-ename-&gt;vla-object</span> <span class="paren">(</span><span class="fn">entlast</span><span class="paren">)))</span>
+<span class="paren">(</span><span class="fn">vla-put-standardscale</span>     <span class="var">vp</span> <span class="num">16</span><span class="paren">)</span>   <span class="comment">; 1:100</span>
+<span class="paren">(</span><span class="fn">vla-put-customscale</span>       <span class="var">vp</span> <span class="num">0.01</span><span class="paren">)</span> <span class="comment">; hoặc custom scale</span>
+<span class="paren">(</span><span class="fn">vla-put-displaylocked</span>     <span class="var">vp</span> <span class="fn">:vlax-true</span><span class="paren">)</span>  <span class="comment">; lock tỉ lệ</span>`,
+    tip:"StandardScale 16 = 1:100 theo bảng scale AutoCAD. Dùng CustomScale (số thực) cho tỉ lệ tự do." },
+
+  // ===== SSGET NÂNG CAO =====
+  { cat:"ssget nâng cao", color:"red", title:"ssget với Window, Fence, Crossing",
+    desc:"Các chế độ lựa chọn nâng cao: cửa sổ, crossing, fence, điểm đơn. Kết hợp với filter list.",
+    code:`<span class="comment">;; Chọn trong window (hoàn toàn bên trong)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"W"</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span>       <span class="comment">; góc 1</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">500 500</span><span class="paren">)</span>  <span class="comment">; góc 2</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Crossing (cắt ngang hoặc bên trong)</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"C"</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">500 500</span><span class="paren">)</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Fence — chọn theo đường gãy</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"F"</span>
+  <span class="str">'</span><span class="paren">((</span><span class="num">0 0</span><span class="paren">)</span> <span class="paren">(</span><span class="num">100 100</span><span class="paren">)</span> <span class="paren">(</span><span class="num">200 50</span><span class="paren">))</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Window + filter layer</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">"W"</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">0 0</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">500 500</span><span class="paren">)</span>
+  <span class="str">'</span><span class="paren">((</span><span class="num">8</span> . <span class="str">"WALL"</span><span class="paren">))</span>   <span class="comment">; chỉ lấy layer WALL</span>
+<span class="paren">))</span>
+
+<span class="comment">;; Chọn tại điểm</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ss</span> <span class="paren">(</span><span class="fn">ssget</span> <span class="str">'</span><span class="paren">(</span><span class="num">50 50</span><span class="paren">)))</span>   <span class="comment">; pick tại điểm</span>`,
+    tip:"'W' chỉ lấy object hoàn toàn bên trong. 'C' (crossing) lấy cả object chỉ cắt ngang viền." },
+
+  // ===== HATCH =====
+  { cat:"Hatch", color:"green", title:"Tạo HATCH bằng command và entmake",
+    desc:"Tạo hatch fill trong vùng kín. Dùng command HATCH hoặc -HATCH để điều khiển qua LSP.",
+    code:`<span class="comment">;; Tạo hatch bằng -HATCH (dễ nhất)</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"-HATCH"</span>
+  <span class="str">"P"</span>        <span class="comment">; Pattern</span>
+  <span class="str">"ANSI31"</span>   <span class="comment">; tên pattern</span>
+  <span class="num">5</span>          <span class="comment">; scale</span>
+  <span class="num">0</span>          <span class="comment">; góc</span>
+  <span class="str">"S"</span>        <span class="comment">; Select objects</span>
+  <span class="var">ss</span>         <span class="comment">; selection set boundary</span>
+  <span class="str">""</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Hatch solid (màu đặc)</span>
+<span class="paren">(</span><span class="fn">command</span> <span class="str">"-HATCH"</span>
+  <span class="str">"P"</span> <span class="str">"SOLID"</span> <span class="str">""</span> <span class="str">""</span>
+  <span class="str">"S"</span> <span class="var">ss</span> <span class="str">""</span>
+<span class="paren">)</span>
+
+<span class="comment">;; Đọc thông tin hatch</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ed</span> <span class="paren">(</span><span class="fn">entget</span> <span class="paren">(</span><span class="fn">car</span> <span class="paren">(</span><span class="fn">entsel</span><span class="paren">))))</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span>  <span class="num">2</span> <span class="var">ed</span><span class="paren">))</span>   <span class="comment">; tên pattern</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">41</span> <span class="var">ed</span><span class="paren">))</span>   <span class="comment">; scale</span>
+<span class="paren">(</span><span class="fn">cdr</span> <span class="paren">(</span><span class="fn">assoc</span> <span class="num">52</span> <span class="var">ed</span><span class="paren">))</span>   <span class="comment">; góc</span>`,
+    tip:"Dùng -HATCH (có dấu gạch) thay vì HATCH để điều khiển hoàn toàn qua command line trong LSP." },
+
+  // ===== VL MEMBER / POSITION =====
+  { cat:"Sắp xếp & Lọc", color:"amber", title:"vl-position / vl-member-if — Tìm trong list",
+    desc:"Tìm vị trí phần tử trong list, kiểm tra điều kiện. Mạnh hơn hàm member chuẩn.",
+    code:`<span class="comment">;; Tìm vị trí (index) của phần tử</span>
+<span class="paren">(</span><span class="fn">vl-position</span> <span class="str">"C"</span> <span class="str">'</span><span class="paren">(</span><span class="str">"A" "B" "C" "D"</span><span class="paren">))</span>  <span class="comment">; → 2</span>
+<span class="paren">(</span><span class="fn">vl-position</span> <span class="str">"Z"</span> <span class="str">'</span><span class="paren">(</span><span class="str">"A" "B" "C"</span><span class="paren">))</span>     <span class="comment">; → nil</span>
+
+<span class="comment">;; Tìm phần tử đầu tiên thỏa điều kiện</span>
+<span class="paren">(</span><span class="fn">vl-member-if</span>
+  <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">x</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">&gt;</span> <span class="var">x</span> <span class="num">5</span><span class="paren">)))</span>
+  <span class="str">'</span><span class="paren">(</span><span class="num">1 3 7 2 9</span><span class="paren">)</span>
+<span class="paren">)</span>
+<span class="comment">; → (7 2 9)  — từ phần tử thỏa điều kiện trở đi</span>
+
+<span class="comment">;; Kiểm tra có phần tử nào thỏa không</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">vl-member-if</span>
+  <span class="paren">(</span><span class="fn">function</span> <span class="paren">(</span><span class="kw">lambda</span> <span class="paren">(</span><span class="var">x</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">=</span> <span class="var">x</span> <span class="str">"WALL"</span><span class="paren">)))</span>
+  <span class="var">layer-list</span>
+<span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nCó layer WALL"</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"vl-position trả về index từ 0. vl-member-if trả về đuôi list (giống member), không phải phần tử." },
+
+  // ===== ĐIỀU KIỆN NÂNG CAO =====
+  { cat:"Điều kiện & Vòng lặp", color:"green", title:"and / or / not — Toán tử logic",
+    desc:"Kết hợp nhiều điều kiện. and = tất cả đúng, or = ít nhất một đúng. Dùng trong if và while.",
+    code:`<span class="comment">;; and — tất cả phải đúng</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">and</span> <span class="var">pt</span> <span class="paren">(</span><span class="fn">&gt;</span> <span class="var">r</span> <span class="num">0</span><span class="paren">)</span> <span class="paren">(</span><span class="fn">&lt;</span> <span class="var">r</span> <span class="num">1000</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">command</span> <span class="str">"CIRCLE"</span> <span class="var">pt r</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; or — ít nhất một đúng</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">or</span>
+  <span class="paren">(</span><span class="fn">=</span> <span class="var">loai</span> <span class="str">"LINE"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">=</span> <span class="var">loai</span> <span class="str">"ARC"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">=</span> <span class="var">loai</span> <span class="str">"CIRCLE"</span><span class="paren">)</span>
+<span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nLà đường cơ bản"</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; not — phủ định</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="paren">(</span><span class="fn">not</span> <span class="paren">(</span><span class="fn">tblsearch</span> <span class="str">"LAYER"</span> <span class="str">"WALL"</span><span class="paren">))</span>
+  <span class="paren">(</span><span class="fn">command</span> <span class="str">"LAYER"</span> <span class="str">"NEW"</span> <span class="str">"WALL"</span> <span class="str">""</span><span class="paren">)</span>
+<span class="paren">)</span>
+
+<span class="comment">;; So sánh: = /= < > <= >=</span>
+<span class="paren">(</span><span class="fn">equal</span> <span class="str">'</span><span class="paren">(</span><span class="num">1 2 3</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">1 2 3</span><span class="paren">))</span>   <span class="comment">; T (so sánh list)</span>
+<span class="paren">(</span><span class="fn">eq</span> <span class="var">a b</span><span class="paren">)</span>                    <span class="comment">; T nếu cùng một atom</span>`,
+    tip:"Dùng equal để so sánh list và điểm (2 list cùng giá trị). Dùng = chỉ cho số và chuỗi đơn." },
+
+  // ===== OSNAP & GEOMETRY =====
+  { cat:"Hình học & Điểm", color:"purple", title:"osnap — Bắt điểm Object Snap",
+    desc:"Lấy điểm snap trên entity: endpoint, midpoint, center, intersection... Dùng trong code để bắt điểm chính xác.",
+    code:`<span class="comment">;; (osnap điểm mode)</span>
+<span class="comment">; Mode string: "END", "MID", "CEN", "INT",</span>
+<span class="comment">;             "PER", "TAN", "NEA", "QUA"</span>
+
+<span class="comment">;; Bắt endpoint gần điểm pt nhất</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">ep</span> <span class="paren">(</span><span class="fn">osnap</span> <span class="var">pt</span> <span class="str">"END"</span><span class="paren">))</span>
+
+<span class="comment">;; Bắt midpoint</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">mp</span> <span class="paren">(</span><span class="fn">osnap</span> <span class="var">pt</span> <span class="str">"MID"</span><span class="paren">))</span>
+
+<span class="comment">;; Bắt center của circle/arc</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">cp</span> <span class="paren">(</span><span class="fn">osnap</span> <span class="var">pt</span> <span class="str">"CEN"</span><span class="paren">))</span>
+
+<span class="comment">;; Thực tế: snap tự động khi vẽ</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">click</span> <span class="paren">(</span><span class="fn">getpoint</span> <span class="str">"\nClick gần endpoint: "</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">snapped</span> <span class="paren">(</span><span class="fn">osnap</span> <span class="var">click</span> <span class="str">"END,MID,CEN"</span><span class="paren">))</span>
+<span class="paren">(</span><span class="kw">if</span> <span class="var">snapped</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nĐã snap!"</span><span class="paren">)</span>
+  <span class="paren">(</span><span class="fn">princ</span> <span class="str">"\nKhông tìm thấy snap point"</span><span class="paren">)</span>
+<span class="paren">)</span>`,
+    tip:"osnap trả về nil nếu không tìm thấy điểm snap trong vùng aperture hiện tại. Tắt OSMODE trước khi dùng để kiểm soát hoàn toàn." },
+
+  // ===== BIẾN NÂNG CAO =====
+  { cat:"Cú pháp cơ bản", color:"blue", title:"quote / eval / apply — Cú pháp nâng cao",
+    desc:"quote ngăn evaluation, eval thực thi list như code, apply gọi hàm động. Nền tảng của lập trình meta.",
+    code:`<span class="comment">;; quote (') — không evaluate</span>
+<span class="str">'</span><span class="paren">(</span><span class="fn">+ 1 2</span><span class="paren">)</span>       <span class="comment">; → list (+ 1 2), không tính</span>
+<span class="paren">(</span><span class="fn">+</span> <span class="num">1 2</span><span class="paren">)</span>       <span class="comment">; → 3 (tính)</span>
+
+<span class="comment">;; eval — thực thi list</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">code</span> <span class="str">'</span><span class="paren">(</span><span class="fn">+</span> <span class="num">1 2</span><span class="paren">))</span>
+<span class="paren">(</span><span class="fn">eval</span> <span class="var">code</span><span class="paren">)</span>   <span class="comment">; → 3</span>
+
+<span class="comment">;; Tạo hàm động</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">fn-name</span> <span class="str">'</span><span class="fn">sqrt</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">apply</span> <span class="var">fn-name</span> <span class="str">'</span><span class="paren">(</span><span class="num">144</span><span class="paren">))</span>   <span class="comment">; → 12.0</span>
+
+<span class="comment">;; Gọi hàm theo tên chuỗi</span>
+<span class="paren">(</span><span class="fn">setq</span> <span class="var">fn-str</span> <span class="str">"sqrt"</span><span class="paren">)</span>
+<span class="paren">(</span><span class="fn">apply</span> <span class="paren">(</span><span class="fn">read</span> <span class="var">fn-str</span><span class="paren">)</span> <span class="str">'</span><span class="paren">(</span><span class="num">144</span><span class="paren">))</span>  <span class="comment">; → 12.0</span>
+
+<span class="comment">;; read — parse chuỗi thành expression</span>
+<span class="paren">(</span><span class="fn">read</span> <span class="str">"(+ 1 2)"</span><span class="paren">)</span>  <span class="comment">; → list (+ 1 2)</span>
+<span class="paren">(</span><span class="fn">read</span> <span class="str">"42"</span><span class="paren">)</span>      <span class="comment">; → 42</span>`,
+    tip:"read + eval là combo để thực thi code từ file text hoặc từ input người dùng. Dùng thận trọng — eval có thể chạy bất kỳ code nào." }
+];
+
+const COLOR_MAP = {
+  blue:"tag-blue", green:"tag-green", amber:"tag-amber", red:"tag-red",
+  purple:"tag-purple", teal:"tag-teal", pink:"tag-pink", gray:"tag-gray"
+};
+
+const SECTIONS = [
+  { name:"PHẦN 1 · NỀN TẢNG — CÚ PHÁP, BIẾN, TOÁN HỌC, CHUỖI",
+    cats:["Cú pháp cơ bản","Biến & Kiểu dữ liệu","Hàm toán học","Chuỗi & Text"] },
+  { name:"PHẦN 2 · HÌNH HỌC & BẢN VẼ — ĐIỂM, ENTITY, SELECTION",
+    cats:["Hình học & Điểm","Entity & Object","Selection Set"] },
+  { name:"PHẦN 3 · TƯƠNG TÁC — LỆNH, NHẬP LIỆU, ĐIỀU KIỆN",
+    cats:["Lệnh AutoCAD","Nhập xuất người dùng","Điều kiện & Vòng lặp"] },
+  { name:"PHẦN 4 · NÂNG CAO — DỮ LIỆU, LAYER, FILE, REACTOR",
+    cats:["Danh sách & Dữ liệu","Layer & Block","File & Hệ thống","Nâng cao"] },
+  { name:"PHẦN 5 · CHUYÊN SÂU — CHUỖI, BẢNG, TEXT, POLYLINE",
+    cats:["Chuỗi nâng cao","Bảng định nghĩa","Text & Dimension","Polyline"] },
+  { name:"PHẦN 6 · CHUYÊN GIA — XDATA, UCS, LỌC, LAYOUT, HATCH",
+    cats:["XData & Dictionary","Tọa độ & UCS","Sắp xếp & Lọc","Layout & Viewport","Hatch","ssget nâng cao"] }
+];
+
+// Decode HTML entities in filter names for comparison
+function decodeHtml(html) {
+  var t = document.createElement("textarea");
+  t.innerHTML = html;
+  return t.value;
+}
+
+let activeFilters = new Set(D.map(d => d.cat));
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const content = document.getElementById('content');
+  const statsEl = document.getElementById('stats');
+  content.innerHTML = '';
+  let shown = 0;
+
+  SECTIONS.forEach(sec => {
+    let secItems = [];
+    sec.cats.forEach(cat => {
+      if (!activeFilters.has(cat)) return;
+      const items = D.filter(d => {
+        if (d.cat !== cat) return false;
+        if (!q) { shown++; return true; }
+        const match = d.title.toLowerCase().includes(q)
+                   || d.desc.toLowerCase().includes(q)
+                   || d.code.replace(/<[^>]+>/g,'').toLowerCase().includes(q);
+        if (match) shown++;
+        return match;
+      });
+      secItems = secItems.concat(items);
+    });
+    if (secItems.length === 0) return;
+
+    const hdr = document.createElement('div');
+    hdr.className = 'section-header';
+    hdr.textContent = sec.name;
+    content.appendChild(hdr);
+
+    secItems.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const cls = COLOR_MAP[item.color] || 'tag-gray';
+      card.innerHTML = `
+        <div class="card-header" onclick="toggle(this)">
+          <span class="card-tag ${cls}">${item.cat}</span>
+          <span class="card-title">${item.title}</span>
+          <span class="chevron">▾</span>
+        </div>
+        <div class="card-body">
+          <p class="desc">${item.desc}</p>
+          <pre>${item.code}</pre>
+          ${item.tip ? `<div class="tip">💡 ${item.tip}</div>` : ''}
+        </div>`;
+      content.appendChild(card);
+    });
+  });
+
+  if (shown === 0) {
+    content.innerHTML = `<div class="empty-state">Không tìm thấy kết quả phù hợp.</div>`;
+  }
+  statsEl.textContent = q
+    ? `${shown} kết quả cho "${document.getElementById('search').value}"`
+    : `${shown} thuật ngữ — bấm tiêu đề để mở`;
+}
+
+function toggle(header) {
+  header.closest('.card').classList.toggle('open');
+}
+
+document.getElementById('search').addEventListener('input', render);
+
+document.getElementById('filterRow').addEventListener('click', e => {
+  const tag = e.target.closest('.tag');
+  if (!tag) return;
+  const f = decodeHtml(tag.dataset.filter);
+  if (activeFilters.has(f)) { activeFilters.delete(f); tag.classList.remove('active'); }
+  else                       { activeFilters.add(f);    tag.classList.add('active'); }
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

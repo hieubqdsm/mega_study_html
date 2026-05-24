@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEC Domain Knowledge</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+  :root {
+    --bg:#0a0c0f; --bg2:#111318; --bg3:#181c24; --bg4:#1e2330;
+    --border:#252d3d; --border2:#2e3a50;
+    --text:#dce6f5; --text2:#7d90b0; --text3:#445060;
+    --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif;
+    --mep:#f0a500; --cad:#3b9eff; --bim:#3dd68c; --qs:#c46ef5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;}
+  .header{padding:28px 32px 0;}
+  .breadcrumb{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+  h1{font-size:24px;font-weight:600;letter-spacing:-0.3px;}
+  .subtitle{color:var(--text3);font-size:12.5px;margin-top:4px;font-family:var(--mono);}
+  .tabs{display:flex;padding:20px 32px 0;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{padding:10px 22px 12px;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:7px;user-select:none;}
+  .tab:hover{color:var(--text2);}
+  .tab[data-tab="mep"].active{color:var(--mep);border-color:var(--mep);}
+  .tab[data-tab="cad"].active{color:var(--cad);border-color:var(--cad);}
+  .tab[data-tab="bim"].active{color:var(--bim);border-color:var(--bim);}
+  .tab[data-tab="qs"].active{color:var(--qs);border-color:var(--qs);}
+  .toolbar{padding:12px 32px;background:var(--bg);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px;}
+  .search-wrap{position:relative;}
+  .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);}
+  #search{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:8px 12px 8px 36px;color:var(--text);font-size:13px;outline:none;font-family:var(--sans);transition:border-color .15s;}
+  #search:focus{border-color:var(--border2);}
+  #search::placeholder{color:var(--text3);}
+  .filter-row{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
+  .tag{padding:2px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid transparent;transition:all .12s;font-family:var(--mono);letter-spacing:.3px;opacity:.4;}
+  .tag.active{opacity:1;} .tag:hover{opacity:.75;}
+  .tag-mep-ov{background:#1a1a00;color:#d4d400;border-color:#3a3a00;}
+  .tag-mep-e{background:#2a1800;color:#f0a500;border-color:#5a3500;}
+  .tag-mep-p{background:#001a2a;color:#3b9eff;border-color:#003a5a;}
+  .tag-mep-h{background:#001a0f;color:#3dd68c;border-color:#003a20;}
+  .tag-mep-f{background:#2a0000;color:#f55;border-color:#5a0000;}
+  .tag-cad-n{background:#001a2a;color:#3b9eff;border-color:#003a5a;}
+  .tag-cad-l{background:#0d1a2a;color:#70c0ff;border-color:#1a3a5a;}
+  .tag-cad-b{background:#1a0a2a;color:#c46ef5;border-color:#3a1a5a;}
+  .tag-cad-d{background:#001a10;color:#3dd68c;border-color:#003a25;}
+  .tag-bim-c{background:#001a10;color:#3dd68c;border-color:#003a25;}
+  .tag-bim-i{background:#2a1800;color:#f0a500;border-color:#5a3500;}
+  .tag-bim-p{background:#1a0a2a;color:#c46ef5;border-color:#3a1a5a;}
+  .tag-qs-u{background:#1a0a2a;color:#c46ef5;border-color:#3a1a5a;}
+  .tag-qs-b{background:#2a1800;color:#f0a500;border-color:#5a3500;}
+  .tag-qs-c{background:#001a10;color:#3dd68c;border-color:#003a25;}
+  .tag-qs-o{background:#001a2a;color:#3b9eff;border-color:#003a5a;}
+  .stats{padding:7px 32px;font-size:11px;color:var(--text3);font-family:var(--mono);border-bottom:1px solid var(--border);}
+  .sec-hdr{padding:18px 32px 6px;font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:2px;font-family:var(--mono);border-top:1px solid var(--border);margin-top:4px;}
+  .sec-hdr:first-of-type{border-top:none;}
+  .card{margin:0 32px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .12s;}
+  .card:hover{border-color:var(--border2);}
+  .card-hdr{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;}
+  .badge{font-family:var(--mono);font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;flex-shrink:0;letter-spacing:.5px;}
+  .card-title{font-size:13.5px;font-weight:500;color:var(--text);flex:1;}
+  .card-en{font-size:11px;color:var(--text3);font-family:var(--mono);flex-shrink:0;margin-left:auto;padding-left:10px;}
+  .chev{font-size:11px;color:var(--text3);transition:transform .15s;flex-shrink:0;}
+  .card.open .chev{transform:rotate(180deg);}
+  .card-body{display:none;padding:0 14px 14px;}
+  .card.open .card-body{display:block;}
+  .desc{color:var(--text2);font-size:13px;margin-bottom:10px;line-height:1.75;}
+  .bilingual{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .bil-col{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:8px 11px;}
+  .bil-lang{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+  .bil-content{font-size:12.5px;color:var(--text2);line-height:1.6;}
+  .note{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:10px 13px;margin-bottom:10px;font-size:12.5px;color:var(--text2);line-height:1.65;}
+  .note-lbl{font-family:var(--mono);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+  .sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:5px;margin-bottom:10px;}
+  .sym{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:7px 10px;}
+  .sym-code{font-family:var(--mono);font-weight:600;font-size:12.5px;}
+  .sym-en{font-size:11px;color:var(--text2);margin-top:1px;}
+  .sym-vi{font-size:11px;color:var(--text3);margin-top:1px;}
+  .tip{border-left:2px solid var(--border2);padding:7px 11px;font-size:12px;color:var(--text3);font-family:var(--mono);line-height:1.6;border-radius:0 4px 4px 0;margin-top:8px;}
+  pre{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:11px 14px;font-family:var(--mono);font-size:12px;color:#c0d0e8;overflow-x:auto;line-height:1.7;margin-bottom:10px;white-space:pre;}
+  .c{color:#445060;} .kw{color:#c46ef5;} .fn{color:#3b9eff;} .st{color:#3dd68c;} .nm{color:#f0a500;}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+  .compare-col{background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:10px 12px;}
+  .compare-title{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+  .compare-item{font-size:12px;color:var(--text2);padding:2px 0;border-bottom:1px solid var(--border);line-height:1.6;}
+  .compare-item:last-child{border-bottom:none;}
+  .empty{padding:48px 32px;text-align:center;color:var(--text3);font-family:var(--mono);}
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+  @media(max-width:600px){.bilingual,.compare{grid-template-columns:1fr;}.sym-grid{grid-template-columns:1fr 1fr;}.card,.sec-hdr{margin-left:16px;margin-right:16px;}.header,.toolbar,.stats{padding-left:16px;padding-right:16px;}.tabs{padding-left:16px;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="breadcrumb">AEC · Domain Knowledge · Data Extraction System</div>
+  <h1>Từ điển Domain AEC</h1>
+  <div class="subtitle">MEP · AutoCAD · BIM/Revit · Quantity Surveying — đầy đủ · song ngữ · góc nhìn data system</div>
+</div>
+<div class="tabs">
+  <div class="tab active" data-tab="mep">⚡ MEP cơ bản</div>
+  <div class="tab" data-tab="cad">📐 AutoCAD</div>
+  <div class="tab" data-tab="bim">🧊 BIM / Revit</div>
+  <div class="tab" data-tab="qs">📊 Quantity Surveying</div>
+</div>
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input id="search" type="text" placeholder="Tìm thuật ngữ EN hoặc VI..." autocomplete="off">
+  </div>
+  <div class="filter-row" id="filterRow"></div>
+</div>
+<div class="stats" id="stats"></div>
+<div id="content"></div>
+
+<script>
+const TABS={
+  mep:{color:"#f0a500",filters:[
+    {key:"Tổng quan",cls:"tag-mep-ov",label:"📋 Tổng quan"},
+    {key:"Electrical",cls:"tag-mep-e",label:"⚡ Electrical"},
+    {key:"Plumbing",cls:"tag-mep-p",label:"💧 Plumbing"},
+    {key:"HVAC",cls:"tag-mep-h",label:"❄️ HVAC"},
+    {key:"Fire Protection",cls:"tag-mep-f",label:"🔥 Fire Protection"},
+  ]},
+  cad:{color:"#3b9eff",filters:[
+    {key:"Navigation",cls:"tag-cad-n",label:"🖥 Navigation"},
+    {key:"Layer & Data",cls:"tag-cad-l",label:"📂 Layer"},
+    {key:"Block & Object",cls:"tag-cad-b",label:"🔲 Block"},
+    {key:"Data Extraction",cls:"tag-cad-d",label:"📤 Extraction"},
+  ]},
+  bim:{color:"#3dd68c",filters:[
+    {key:"Khái niệm BIM",cls:"tag-bim-c",label:"🧊 Concepts"},
+    {key:"IFC & Format",cls:"tag-bim-i",label:"📦 IFC"},
+    {key:"Python & BIM",cls:"tag-bim-p",label:"🐍 Python"},
+  ]},
+  qs:{color:"#c46ef5",filters:[
+    {key:"Đơn vị & QTO",cls:"tag-qs-u",label:"📏 Units & QTO"},
+    {key:"BOQ & Dự toán",cls:"tag-qs-b",label:"📋 BOQ"},
+    {key:"Phân loại",cls:"tag-qs-c",label:"🗂 Classification"},
+    {key:"Output & Hồ sơ",cls:"tag-qs-o",label:"📄 Output"},
+  ]}
+};
+
+const DATA={
+// ══════════════════════════════════════════════════════════════
+// MEP
+// ══════════════════════════════════════════════════════════════
+mep:[
+  {cat:"Tổng quan",en:"MEP Overview",
+   title:"MEP là gì — và tại sao quan trọng với hệ thống bạn build",
+   desc:"MEP = Mechanical, Electrical, Plumbing. Ba hệ thống kỹ thuật chạy bên trong mọi công trình. Khi nhìn bản vẽ, mỗi hệ thống nằm trên layer riêng, màu riêng, và quan trọng nhất — có bộ block name riêng.",
+   bilingual:[
+     {vi:"Mechanical — Cơ khí (HVAC, máy móc)", en:"Mechanical — all moving/machine systems: HVAC, pumps, fans"},
+     {vi:"Electrical — Điện (động lực, chiếu sáng, nhẹ)", en:"Electrical — power, lighting, ELV (data, camera, phone)"},
+     {vi:"Plumbing — Nước (cấp, thoát, chữa cháy)", en:"Plumbing — water supply, drainage, fire protection"},
+   ],
+   note:{lbl:"Data extraction perspective",text:"Mỗi hệ thống MEP = một tập block name riêng biệt.\nViệc của bạn: block name → loại thiết bị → hạng mục → đơn giá.\nHiểu MEP giúp bạn biết block nào quan trọng (cần count), cái nào bỏ qua (structural, annotation)."},
+   syms:[
+     {code:"M",en:"Mechanical",vi:"Cơ khí — HVAC, máy móc"},
+     {code:"E",en:"Electrical",vi:"Điện động lực & chiếu sáng"},
+     {code:"P",en:"Plumbing",vi:"Cấp thoát nước"},
+     {code:"FP / F",en:"Fire Protection",vi:"Phòng cháy chữa cháy — PCCC"},
+     {code:"ELV",en:"Extra Low Voltage",vi:"Điện nhẹ — data, camera, phone, BMS"},
+     {code:"BAS / BMS",en:"Building Automation System",vi:"Hệ thống tự động hóa tòa nhà"},
+   ],
+   tip:"Khi gặp bản vẽ lạ, đọc Legend sheet trước — đây là 'từ điển' riêng của bản vẽ đó. Legend map ký hiệu → tên thiết bị."},
+
+  {cat:"Tổng quan",en:"Drawing Types",
+   title:"Các loại bản vẽ — loại nào chứa data cần extract",
+   desc:"Một dự án có nhiều loại bản vẽ với mục đích khác nhau. Biết loại để đọc đúng, extract đúng sheet.",
+   syms:[
+     {code:"Layout / Floor Plan",en:"Layout drawing",vi:"Mặt bằng — vị trí thiết bị, hay dùng nhất"},
+     {code:"SD — Schematic Diagram",en:"Schematic",vi:"Sơ đồ nguyên lý — logic, không có vị trí thật"},
+     {code:"SLD — Single Line Diagram",en:"Single Line Diagram",vi:"Sơ đồ 1 sợi — cho hệ thống điện"},
+     {code:"RCP — Reflected Ceiling Plan",en:"Reflected Ceiling Plan",vi:"Mặt bằng nhìn từ trần — đèn, điều hòa, sprinkler"},
+     {code:"Schedule / Equipment List",en:"Schedule",vi:"Bảng thống kê — ĐÃ CÓ số lượng, extract trực tiếp"},
+     {code:"Detail",en:"Detail drawing",vi:"Chi tiết lắp đặt — không cần extract data"},
+     {code:"Legend",en:"Legend / Symbol List",vi:"Bảng chú giải ký hiệu — đọc trước tiên"},
+   ],
+   note:{lbl:"Tip thực tế quan trọng",text:"Sheet 'Schedule' hoặc 'Equipment Schedule' đã có sẵn bảng số lượng thiết bị do drafter tổng hợp từ bản vẽ.\nNếu có sheet này → extract trực tiếp bằng table parser, nhanh và chính xác hơn đếm block.\nKiểm tra mỗi file DWG có sheet Schedule trước khi viết code đếm block."},
+   tip:"Tên sheet thường có prefix chuẩn: E-xxx = Electrical, M-xxx = Mechanical, P-xxx = Plumbing, F-xxx = Fire."},
+
+  {cat:"Tổng quan",en:"Reading a Drawing",
+   title:"Cách đọc bản vẽ MEP — quy trình 5 bước",
+   desc:"Quy trình đọc bản vẽ có hệ thống, áp dụng được khi inspect thủ công hoặc khi design pipeline extract.",
+   note:{lbl:"5 bước đọc bản vẽ MEP",text:"1. TITLE BLOCK (góc phải dưới) → tên dự án, số bản vẽ, ngày, revision\n2. LEGEND → ký hiệu và ý nghĩa, note đặc biệt của dự án này\n3. LAYER LIST → hiểu cấu trúc dữ liệu, hệ thống nào có layer gì\n4. SCALE → đơn vị và tỉ lệ, quan trọng khi tính chiều dài\n5. ENTITIES → mới bắt đầu đọc nội dung chính"},
+   syms:[
+     {code:"Title Block",en:"Title block",vi:"Khung tên — thông tin dự án, tên bản vẽ"},
+     {code:"Revision Cloud",en:"Revision cloud",vi:"Mây revision — vùng đã chỉnh sửa so với bản trước"},
+     {code:"North Arrow",en:"North arrow",vi:"Mũi tên hướng Bắc — định hướng mặt bằng"},
+     {code:"Grid Line",en:"Grid line",vi:"Lưới trục — A, B, C... và 1, 2, 3... để định vị"},
+     {code:"Section Mark",en:"Section mark",vi:"Ký hiệu cắt — dẫn đến bản vẽ chi tiết"},
+   ],
+   tip:"Grid line (trục A1, B2...) là hệ tọa độ logic của bản vẽ. Khi báo cáo với client, dùng grid ref thay vì tọa độ số."},
+
+  // ELECTRICAL
+  {cat:"Electrical",en:"Electrical Systems",
+   title:"Electrical — tổng quan hệ thống điện trong công trình",
+   desc:"Hệ thống điện chia thành 3 nhánh chính: Power (động lực), Lighting (chiếu sáng), và ELV (Extra Low Voltage — điện nhẹ). Mỗi nhánh thường có bản vẽ riêng và bộ block riêng.",
+   compare:[
+     {title:"HV — High Voltage (>1000V)",items:["Trạm biến áp (Transformer)","> 1kV","Ít gặp trong bản vẽ nội thất","Layer: E-HV-*"]},
+     {title:"LV — Low Voltage (≤1000V)",items:["Tủ điện chính MDB/SDB","220V/380V hầu hết","Phổ biến nhất trong MEP","Layer: E-LV-*"]},
+   ],
+   syms:[
+     {code:"MDB",en:"Main Distribution Board",vi:"Tủ điện tổng — đầu nguồn của tòa nhà"},
+     {code:"SDB / DB",en:"Sub / Distribution Board",vi:"Tủ điện tầng / phân khu"},
+     {code:"SMDB",en:"Sub-Main DB",vi:"Tủ trung gian MDB → SDB"},
+     {code:"MCB",en:"Miniature Circuit Breaker",vi:"Cầu dao tự động nhỏ — 1 cực, thường ≤63A"},
+     {code:"MCCB",en:"Moulded Case Circuit Breaker",vi:"Cầu dao tự động lớn — ≥63A"},
+     {code:"RCCB / ELCB",en:"Residual Current Circuit Breaker",vi:"CB chống dò điện — an toàn ổ cắm"},
+     {code:"ATS",en:"Automatic Transfer Switch",vi:"Tự động chuyển nguồn dự phòng"},
+     {code:"UPS",en:"Uninterruptible Power Supply",vi:"Nguồn điện liên tục — server, y tế"},
+     {code:"Busbar / Busduct",en:"Busbar / Busduct",vi:"Thanh cái / máng đồng — truyền tải công suất lớn"},
+   ],
+   note:{lbl:"Với data extraction",text:"Block điện hay extract nhất: ổ cắm (GPO/socket), đèn (light point), công tắc (switch), tủ điện (DB).\nHierarchy: MDB → SDB → MCB → Thiết bị\nBlock name thường encode: 'E-GPO-2G-WP' = Electrical, General Power Outlet, 2 Gang, Weatherproof."},
+   tip:"ELV (Extra Low Voltage < 50V DC) thường có bản vẽ riêng: ICT drawings, Security drawings, BMS drawings — extract riêng từng loại."},
+
+  {cat:"Electrical",en:"Lighting",
+   title:"Lighting System — hệ thống chiếu sáng",
+   desc:"Chiếu sáng có nhiều loại đèn khác nhau với đơn giá rất khác nhau. Phân biệt đúng loại = match đúng giá.",
+   syms:[
+     {code:"LP — Light Point",en:"Light point (generic)",vi:"Điểm đèn chung"},
+     {code:"DL — Downlight",en:"Recessed downlight",vi:"Đèn âm trần — phổ biến nhất"},
+     {code:"FL — Fluorescent",en:"Fluorescent / Linear",vi:"Đèn huỳnh quang / tuýp"},
+     {code:"EL — Emergency Light",en:"Emergency light",vi:"Đèn sự cố — bật khi mất điện"},
+     {code:"EX — Exit Light",en:"Exit sign",vi:"Đèn exit / biển thoát hiểm"},
+     {code:"SPL — Spotlight",en:"Spotlight / track light",vi:"Đèn rọi / ray"},
+     {code:"WL — Wall Light",en:"Wall light",vi:"Đèn tường"},
+     {code:"LCP",en:"Lighting Control Panel",vi:"Tủ điều khiển chiếu sáng"},
+     {code:"DALI / DMX",en:"Lighting control protocol",vi:"Giao thức điều khiển đèn thông minh"},
+   ],
+   bilingual:[
+     {vi:"Wattage (W) — công suất đèn → ảnh hưởng đơn giá", en:"Wattage determines price tier: 6W ≠ 12W ≠ 24W downlight"},
+     {vi:"CCT — Colour Temperature: 3000K ấm, 4000K trung tính, 6500K lạnh", en:"CCT = Correlated Colour Temperature, in Kelvin"},
+     {vi:"CRI — Colour Rendering Index: >80 tiêu chuẩn, >90 cao cấp", en:"CRI = how accurately colours are rendered, 0-100"},
+     {vi:"IP Rating: IP65 = chống bụi + tia nước, IP68 = ngâm nước", en:"IP = Ingress Protection, format IPxy"},
+   ],
+   tip:"Block name đèn thường chứa: loại (DL/FL/WL) + kích thước (600x600) + watt (36W). Parse đủ 3 thứ này = match chính xác đơn giá."},
+
+  {cat:"Electrical",en:"Power & Wiring",
+   title:"Power System & Wiring — ổ cắm, dây cáp, máng cáp",
+   desc:"Hệ thống power gồm ổ cắm (socket/outlet), dây cáp (cable), máng cáp (cable tray) và ống luồn (conduit). Count theo cái và mét dài.",
+   syms:[
+     {code:"GPO",en:"General Power Outlet",vi:"Ổ cắm điện thông thường"},
+     {code:"DS — Double Socket",en:"Double socket / 2-gang",vi:"Ổ cắm đôi — 2 lỗ"},
+     {code:"SS — Single Socket",en:"Single socket / 1-gang",vi:"Ổ cắm đơn — 1 lỗ"},
+     {code:"WP",en:"Weatherproof",vi:"Chống thấm — outdoor socket"},
+     {code:"Floor Box / FB",en:"Floor box",vi:"Hộp âm sàn — phòng họp, văn phòng"},
+     {code:"Cable Tray / CT",en:"Cable tray",vi:"Máng cáp — khung đỡ cáp, tính mét dài"},
+     {code:"Conduit",en:"Conduit",vi:"Ống luồn dây — PVC hoặc GI, tính mét dài"},
+     {code:"XLPE",en:"Cross-linked Polyethylene",vi:"Vỏ cáp chịu nhiệt cao — cáp chính"},
+     {code:"mm² / mm2",en:"Cross-sectional area",vi:"Tiết diện dây: 2.5, 4, 6, 10, 16, 25mm²"},
+   ],
+   note:{lbl:"Parse block name ổ cắm",text:"'E-GPO-2G-WP-FL' →\nE = Electrical system\nGPO = General Power Outlet\n2G = 2 Gang (double)\nWP = Weatherproof\nFL = Floor mounted\n\nNếu parse được đủ attribute → match chính xác mà không cần AI."},
+   tip:"Cable tray và conduit tính theo mét dài (linear meter) từ chiều dài LINE/POLYLINE trên layer tương ứng. INSUNITS phải check trước."},
+
+  // PLUMBING
+  {cat:"Plumbing",en:"Plumbing Overview",
+   title:"Plumbing — hệ thống cấp thoát nước tổng quan",
+   desc:"Plumbing chia thành 4 sub-system chính. Mỗi sub-system có layer riêng, ký hiệu riêng, và đơn giá khác nhau ngay cả với cùng đường kính ống.",
+   compare:[
+     {title:"Cấp nước (Supply)",items:["CWS — Cold Water Supply","HWS — Hot Water Supply","HWR — Hot Water Return","Áp lực dương — nước chảy vào"]},
+     {title:"Thoát nước (Drainage)",items:["SW — Soil Water (nước đen)","WW — Waste Water (nước xám)","RW — Rain Water (nước mưa)","Chảy tự nhiên — dốc ống"]},
+   ],
+   syms:[
+     {code:"CWS",en:"Cold Water Supply",vi:"Cấp nước lạnh"},
+     {code:"HWS",en:"Hot Water Supply",vi:"Cấp nước nóng"},
+     {code:"HWR",en:"Hot Water Return",vi:"Hồi nước nóng — vòng tuần hoàn"},
+     {code:"SW",en:"Soil Water",vi:"Nước thải đen — từ WC"},
+     {code:"WW",en:"Waste Water",vi:"Nước thải xám — từ lavabo, shower"},
+     {code:"RWP",en:"Rainwater Pipe",vi:"Ống thoát nước mưa"},
+     {code:"VT / VP",en:"Vent Pipe",vi:"Ống thông hơi — tránh mùi, duy trì áp"},
+     {code:"FCU drainage",en:"Condensate drain",vi:"Đường thoát nước ngưng từ điều hòa"},
+   ],
+   tip:"Đường kính ống ghi bằng DN (Diameter Nominal) hoặc NPS (Nominal Pipe Size). DN100 ≈ 4 inch. Layer thường: P-CWS-DN50 = Plumbing, ColdWater, DN50."},
+
+  {cat:"Plumbing",en:"Sanitary Fixtures",
+   title:"Sanitary Fixtures — thiết bị vệ sinh",
+   desc:"Thiết bị vệ sinh là block hay gặp nhất trong Plumbing drawings. Mỗi loại là 1 block riêng, đơn giá khác nhau.",
+   syms:[
+     {code:"WC / Toilet",en:"Water Closet",vi:"Bồn cầu / bàn cầu"},
+     {code:"UR",en:"Urinal",vi:"Bồn tiểu nam"},
+     {code:"WHB / LHB",en:"Wash Hand Basin / Lavatory Hand Basin",vi:"Chậu rửa tay"},
+     {code:"SHW",en:"Shower",vi:"Vòi sen"},
+     {code:"BT",en:"Bathtub",vi:"Bồn tắm"},
+     {code:"KS",en:"Kitchen Sink",vi:"Chậu rửa bát"},
+     {code:"FD",en:"Floor Drain",vi:"Ga thoát sàn"},
+     {code:"CO",en:"Clean Out",vi:"Ga vệ sinh đường ống"},
+     {code:"GM / WM",en:"Gas / Water Meter",vi:"Đồng hồ gas / đồng hồ nước"},
+   ],
+   note:{lbl:"Count vs Linear",text:"Sanitary fixtures = COUNT (cái, bộ)\nPipe = LINEAR (mét dài theo layer + DN)\nValves & fittings = COUNT (thường extract riêng)\n\nBlock name sanitary thường chuẩn hơn vì ít thay đổi: 'P-WC-FLOOR', 'P-WHB-WM' (wall-mounted)."},
+   tip:"Một WC set đầy đủ gồm: bồn cầu + két nước + ống cấp + ống xả. BOQ có thể tính theo 'set' hoặc tách riêng từng thứ — hỏi template client."},
+
+  {cat:"Plumbing",en:"Pipes & Valves",
+   title:"Pipes, Valves & Fittings — ống, van, phụ kiện",
+   desc:"Đường ống là hạng mục chiếm tỷ trọng lớn trong Plumbing BOQ. Phân biệt material và DN để match đúng đơn giá.",
+   syms:[
+     {code:"uPVC",en:"Unplasticized PVC",vi:"Ống nhựa cứng — thoát nước, giá rẻ"},
+     {code:"CPVC",en:"Chlorinated PVC",vi:"Ống nhựa chịu nhiệt — cấp nước nóng"},
+     {code:"PPR",en:"Polypropylene Random",vi:"Ống nhựa cao cấp — cấp nước lạnh/nóng"},
+     {code:"GI",en:"Galvanized Iron",vi:"Ống thép mạ kẽm — cấp nước, fire"},
+     {code:"SS / Stainless",en:"Stainless Steel",vi:"Ống inox — y tế, food grade"},
+     {code:"BV",en:"Ball Valve",vi:"Van bi — đóng/mở nhanh"},
+     {code:"GV",en:"Gate Valve",vi:"Van cổng — đóng/mở chậm, chính xác"},
+     {code:"CV / NRV",en:"Check Valve / Non-Return Valve",vi:"Van 1 chiều — ngăn nước chảy ngược"},
+     {code:"PRV",en:"Pressure Reducing Valve",vi:"Van giảm áp — duy trì áp ổn định"},
+     {code:"Elbow / Tee / Reducer",en:"Pipe fittings",vi:"Co / Chữ T / Giảm — phụ kiện nối ống"},
+   ],
+   tip:"Layer pipe encode đầy đủ: P-CWS-PPR-DN25 = Plumbing, ColdWater, PPR material, DN25. Parse layer name để tự động classify material + size."},
+
+  // HVAC
+  {cat:"HVAC",en:"HVAC Overview",
+   title:"HVAC — tổng quan hệ thống điều hòa thông gió",
+   desc:"HVAC = Heating, Ventilation, Air Conditioning. Phức tạp nhất trong MEP vì có cả hệ thống gió (duct) và hệ thống nước lạnh (chilled water). Mỗi loại tính theo đơn vị khác nhau.",
+   compare:[
+     {title:"Air Side (Ductwork)",items:["Duct — ống gió, tính m² bề mặt hoặc kg","Diffuser / Grille — miệng thổi/hút, tính cái","Fan — quạt, tính cái","AHU — máy xử lý gió, tính cái"]},
+     {title:"Water Side (Piping)",items:["Chiller — máy làm lạnh nước, tính cái/kW","CHW Pipe — ống nước lạnh, tính mét dài/DN","FCU — điều hòa hộp, tính cái","Pump — bơm, tính cái/kW"]},
+   ],
+   syms:[
+     {code:"AHU",en:"Air Handling Unit",vi:"Máy xử lý không khí — trung tâm"},
+     {code:"FCU",en:"Fan Coil Unit",vi:"Điều hòa dạng hộp — ceiling cassette, wall mount"},
+     {code:"VRV / VRF",en:"Variable Refrigerant Volume/Flow",vi:"Hệ thống điều hòa multi — 1 outdoor nhiều indoor"},
+     {code:"CH / Chiller",en:"Water-cooled Chiller",vi:"Máy làm lạnh nước — công suất lớn"},
+     {code:"CT",en:"Cooling Tower",vi:"Tháp giải nhiệt — đi kèm chiller"},
+     {code:"PAU",en:"Primary Air Unit",vi:"Máy xử lý gió tươi — fresh air"},
+     {code:"VAV",en:"Variable Air Volume box",vi:"Hộp điều tiết lưu lượng gió tự động"},
+   ],
+   note:{lbl:"Đơn vị HVAC hay gặp",text:"Duct  → m² (diện tích bề mặt) hoặc kg (khối lượng tấm)\nPipe  → mét dài theo DN\nEquipment (AHU, FCU, Chiller) → cái, hoặc kW/TR\nTR = Ton of Refrigeration = 3.517 kW (đơn vị làm lạnh Mỹ)"},
+   tip:"Duct size ghi dạng 800×400 (rộng × cao, mm). Convert sang m² để tính giá: chu vi × chiều dài. Layer thường: M-HVAC-DUCT-SA (Supply Air)."},
+
+  {cat:"HVAC",en:"Duct & Diffuser",
+   title:"Ductwork & Air Terminals — ống gió và miệng thổi",
+   desc:"Ductwork là mạng lưới ống phân phối gió. Air terminals (diffuser, grille) là điểm cuối tiếp xúc với không gian.",
+   syms:[
+     {code:"SA — Supply Air",en:"Supply Air duct",vi:"Ống gió cấp — từ AHU tới phòng"},
+     {code:"RA — Return Air",en:"Return Air duct",vi:"Ống gió hồi — từ phòng về AHU"},
+     {code:"EA — Exhaust Air",en:"Exhaust Air duct",vi:"Ống gió thải — ra ngoài công trình"},
+     {code:"OA — Outside Air",en:"Outside/Fresh Air",vi:"Gió tươi — từ ngoài vào AHU"},
+     {code:"SD — Square Diffuser",en:"Square ceiling diffuser",vi:"Miệng thổi vuông âm trần"},
+     {code:"RD — Round Diffuser",en:"Round diffuser",vi:"Miệng thổi tròn"},
+     {code:"LG — Linear Grille",en:"Linear grille",vi:"Lưới gió tuyến tính"},
+     {code:"FD",en:"Fire Damper",vi:"Van chặn lửa — bắt buộc xuyên tường/sàn chống cháy"},
+     {code:"MD / VCD",en:"Motorised / Volume Control Damper",vi:"Van điều chỉnh lưu lượng"},
+   ],
+   tip:"Block name diffuser thường: 'DIFF-SQ-600×600' hoặc 'RD-300'. Parse kích thước từ block name để tính diện tích miệng gió."},
+
+  // FIRE PROTECTION
+  {cat:"Fire Protection",en:"Fire Protection Overview",
+   title:"Fire Protection — PCCC tổng quan",
+   desc:"Hệ thống PCCC gồm 2 nhánh chính: Active (tự động chữa cháy — sprinkler, gas suppression) và Passive (vật liệu chống cháy). Tại VN phải tuân thủ QCVN 04 và TCVN.",
+   compare:[
+     {title:"Active Fire Protection",items:["Sprinkler system — tự động phun nước","Fire alarm — phát hiện và báo động","Hydrant / Hose reel — chữa cháy thủ công","Gas suppression — CO2/FM200 cho server room"]},
+     {title:"Passive Fire Protection",items:["Fire rated wall/door — vách/cửa chống cháy","Firestopping — bịt xuyên tường/sàn","Intumescent seal — màng phồng nở chặn lửa","Fire retardant coating — sơn chống cháy"]},
+   ],
+   syms:[
+     {code:"SPK / SP",en:"Sprinkler head",vi:"Đầu phun tự động"},
+     {code:"WD / MD",en:"Wet / Dry pipe system",vi:"Hệ thống ướt / khô"},
+     {code:"SD",en:"Smoke Detector",vi:"Đầu báo khói — ion hoặc quang"},
+     {code:"HD",en:"Heat Detector",vi:"Đầu báo nhiệt — ROR hoặc fixed temp"},
+     {code:"MCP / BCP",en:"Manual Call Point / Break Glass",vi:"Nút nhấn báo cháy tay / tủ kính đập"},
+     {code:"HS / HR",en:"Hose Station / Hose Reel",vi:"Tủ vòi chữa cháy / cuộn vòi"},
+     {code:"FH",en:"Fire Hydrant",vi:"Trụ / họng nước chữa cháy"},
+     {code:"FAP / FACP",en:"Fire Alarm (Control) Panel",vi:"Tủ báo cháy trung tâm"},
+     {code:"RIU / ZM",en:"Remote Indicator Unit / Zone Module",vi:"Đèn chỉ thị vùng / module vùng"},
+   ],
+   note:{lbl:"QCVN và khoảng cách sprinkler",text:"QCVN 04 quy định khoảng cách tối đa giữa các đầu sprinkler:\n• Hazard Light: max 4.6m × 4.6m (21.2m²/đầu)\n• Hazard Ordinary: max 4.0m × 4.0m (12m²/đầu)\n\nBlock PCCC thường có tên chuẩn hơn vì phải follow code — extract dễ hơn Electrical."},
+   tip:"Sprinkler loại: Pendant (treo xuống), Upright (ngửa lên), Sidewall (gắn tường), Concealed (ẩn trần) — đơn giá khác nhau. Block name thường có loại: 'SPK-PEND', 'SPK-CONCL'."},
+],
+
+// ══════════════════════════════════════════════════════════════
+// CAD
+// ══════════════════════════════════════════════════════════════
+cad:[
+  {cat:"Navigation",en:"AutoCAD Basics",
+   title:"AutoCAD cơ bản — những gì cần biết để đọc bản vẽ",
+   desc:"Không cần biết vẽ. Chỉ cần navigate, inspect object, và hiểu cấu trúc dữ liệu. Các thao tác dưới đây là đủ.",
+   syms:[
+     {code:"Scroll wheel",en:"Zoom in/out",vi:"Zoom tại vị trí con trỏ — trực quan nhất"},
+     {code:"Middle drag",en:"Pan",vi:"Di chuyển view — giữ middle click và kéo"},
+     {code:"Z → E → Enter",en:"Zoom Extents",vi:"Xem toàn bộ bản vẽ — dùng khi mở file"},
+     {code:"Ctrl+1",en:"Properties palette",vi:"Mở panel Properties — xem thuộc tính object"},
+     {code:"Ctrl+F",en:"Find text",vi:"Tìm text trong bản vẽ — tìm tên block, số"},
+     {code:"Esc",en:"Cancel / Deselect",vi:"Hủy lệnh hoặc bỏ chọn"},
+     {code:"LIST",en:"List entity info",vi:"In thông tin chi tiết của entity ra Command Line"},
+     {code:"QSELECT",en:"Quick Select",vi:"Chọn theo điều kiện — đếm block nhanh"},
+   ],
+   note:{lbl:"Quy trình inspect bản vẽ lạ",text:"1. Z → E → Enter (xem toàn bộ)\n2. Ctrl+1 mở Properties palette\n3. Click vào object → đọc: loại entity, tên block, layer\n4. Gõ QSELECT → filter theo Block Name → đếm số lượng\n5. Gõ DATAEXTRACTION → export block data ra Excel trực tiếp"},
+   tip:"DATAEXTRACTION là công cụ built-in của AutoCAD. Trước khi viết code Python, thử cái này — đôi khi không cần code!"},
+
+  {cat:"Navigation",en:"Inspect with LSP",
+   title:"Inspect nhanh bằng AutoLISP trong Command Line",
+   desc:"Gõ các lệnh LSP trực tiếp vào Command Line để lấy thông tin — không cần file .lsp.",
+   syms:[
+     {code:"(entget (car (entsel)))",en:"Get entity data",vi:"Xem toàn bộ DXF data của object → click để chọn"},
+     {code:"(cdr (assoc 0 ...))",en:"Get entity type",vi:"Lấy loại entity: LINE, INSERT, TEXT..."},
+     {code:"(cdr (assoc 2 ...))",en:"Get block name",vi:"Lấy tên block của INSERT entity"},
+     {code:"(cdr (assoc 8 ...))",en:"Get layer name",vi:"Lấy tên layer"},
+     {code:"(sslength (ssget \"X\"))",en:"Count all entities",vi:"Đếm tổng số entity trong bản vẽ"},
+   ],
+   note:{lbl:"One-liner hữu ích nhất",text:"Lấy tên block → click vào object:\n(cdr (assoc 2 (entget (car (entsel)))))\n\nĐếm block theo tên:\n(sslength (ssget \"X\" '((0 . \"INSERT\") (2 . \"TEN-BLOCK\"))))\n\nList tất cả block name unique:\n(mapcar 'cdr (ssnamex (ssget \"X\" '((0 . \"INSERT\")))))"},
+   tip:"Gõ trực tiếp vào Command Line không cần dấu Command: → Sau đó chạy luôn. Rất nhanh để verify trước khi viết code."},
+
+  {cat:"Layer & Data",en:"Layer System",
+   title:"Layer — cách AutoCAD tổ chức dữ liệu MEP",
+   desc:"Layer trong CAD tương đương 'category' của dữ liệu. Hiểu naming convention của layer = tự động classify entity theo hệ thống mà không cần AI.",
+   note:{lbl:"AIA Layer Naming Standard (phổ biến nhất)",text:"[Discipline]-[Major]-[Minor]-[Status]\nVí dụ thực tế:\nE-POWR-EQUIP  = Electrical, Power, Equipment\nE-LITE-EQUIP  = Electrical, Lighting, Equipment\nM-HVAC-DUCT   = Mechanical, HVAC, Ductwork\nP-SANR-PIPE   = Plumbing, Sanitary, Pipe\nF-SPKL-PIPE   = Fire, Sprinkler, Pipe\n\nKhông phải project nào cũng theo chuẩn này — nhưng pattern thường tương tự."},
+   syms:[
+     {code:"Layer 0",en:"Default layer",vi:"Layer mặc định — block thường inherit layer của INSERT"},
+     {code:"Defpoints",en:"Definition points",vi:"Layer tự động của AutoCAD — không in được"},
+     {code:"Freeze ❄",en:"Freeze layer",vi:"Layer bị ẩn — entity vẫn tồn tại nhưng không vẽ"},
+     {code:"Lock 🔒",en:"Lock layer",vi:"Layer bị khóa — hiển thị nhưng không select được"},
+     {code:"Off 💡",en:"Layer off",vi:"Layer tắt — entity không hiển thị"},
+     {code:"Plot / No-Plot",en:"Printable layer",vi:"Layer có/không in ra bản in"},
+   ],
+   tip:"Khi extract, lấy TẤT CẢ entity kể cả trên layer frozen/off — chúng vẫn tồn tại trong file. Chỉ bỏ qua layer Defpoints."},
+
+  {cat:"Layer & Data",en:"Layer Python",
+   title:"Parse Layer trong Python — classify entity tự động",
+   desc:"Dùng layer name để tự động phân loại entity về hệ thống MEP mà không cần AI.",
+   code:`<span class="kw">import</span> ezdxf, re
+<span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+doc = ezdxf.<span class="fn">readfile</span>(<span class="st">"mep.dxf"</span>)
+
+<span class="c"># Mapping layer prefix → MEP system</span>
+SYSTEM_MAP = {
+    <span class="st">"E-"</span>: <span class="st">"Electrical"</span>,
+    <span class="st">"M-"</span>: <span class="st">"Mechanical"</span>,
+    <span class="st">"P-"</span>: <span class="st">"Plumbing"</span>,
+    <span class="st">"F-"</span>: <span class="st">"Fire Protection"</span>,
+}
+
+<span class="kw">def</span> <span class="fn">classify_layer</span>(layer_name):
+    layer = layer_name.<span class="fn">upper</span>()
+    <span class="kw">for</span> prefix, system <span class="kw">in</span> SYSTEM_MAP.items():
+        <span class="kw">if</span> layer.<span class="fn">startswith</span>(prefix):
+            <span class="kw">return</span> system
+    <span class="kw">return</span> <span class="st">"Unknown"</span>
+
+<span class="c"># Group INSERT entities theo hệ thống</span>
+by_system = defaultdict(list)
+<span class="kw">for</span> e <span class="kw">in</span> doc.modelspace().query(<span class="st">"INSERT"</span>):
+    system = <span class="fn">classify_layer</span>(e.dxf.layer)
+    by_system[system].append(e.dxf.name)
+
+<span class="kw">for</span> system, blocks <span class="kw">in</span> by_system.items():
+    <span class="fn">print</span>(<span class="st">f"{system}: {len(blocks)} blocks"</span>)`,
+   tip:"Layer prefix không chuẩn? Dùng keyword matching: 'HVAC' in layer_name.upper() thay vì prefix."},
+
+  {cat:"Block & Object",en:"Block Deep Dive",
+   title:"Block — hiểu sâu để extract đúng",
+   desc:"Block trong AutoCAD tương đương class/instance trong OOP. Block Definition = class template. Block Insert (INSERT entity) = instance. Hiểu phân biệt này rất quan trọng khi extract.",
+   compare:[
+     {title:"Block Definition (BLOCK)",items:["Stored trong BLOCKS section của DXF","Là template — không có vị trí thật","Chứa geometry, ATTDEF (attribute template)","Dùng doc.blocks['block_name'] để truy cập"]},
+     {title:"Block Insert (INSERT entity)",items:["Stored trong ENTITIES/modelspace","Là instance — có vị trí, scale, rotation","Chứa ATTRIB (attribute values)","Là cái bạn COUNT khi extract"]},
+   ],
+   syms:[
+     {code:"dxf.name",en:"Block definition name",vi:"Tên block — dùng để classify"},
+     {code:"dxf.insert",en:"Insertion point (x,y,z)",vi:"Vị trí chèn — tọa độ trong bản vẽ"},
+     {code:"dxf.xscale / yscale",en:"Scale factors",vi:"Tỉ lệ — thường là 1.0, khác 1.0 cần chú ý"},
+     {code:"dxf.rotation",en:"Rotation angle (degrees)",vi:"Góc xoay — degrees, không phải radian"},
+     {code:"dxf.layer",en:"Layer of insert",vi:"Layer của instance — có thể khác layer của geometry bên trong"},
+     {code:"attribs()",en:"Attribute instances",vi:"Danh sách ATTRIB — text data gắn vào block"},
+     {code:"virtual_entities()",en:"Exploded geometry",vi:"Unpack nested block — lấy entity bên trong"},
+   ],
+   note:{lbl:"Nested Block — vấn đề thực tế",text:"Block lồng block: INSERT chứa INSERT khác.\nVí dụ: block 'FLOOR-PLAN' chứa block 'TABLE' chứa block 'SOCKET'.\n\nĐể đếm đúng SOCKET:\n1. Traverse đệ quy qua tất cả INSERT\n2. Với mỗi INSERT, nếu block definition chứa INSERT khác → đệ quy vào\n3. Cộng dồn count từ tất cả cấp"},
+   tip:"e.dxf.xscale = -1 nghĩa là block bị mirror. Không ảnh hưởng đến count, nhưng ảnh hưởng orientation khi vẽ lại."},
+
+  {cat:"Block & Object",en:"Attribute",
+   title:"Attribute (ATTRIB) — dữ liệu text gắn vào block",
+   desc:"Attribute là text field gắn vào block, có thể hiển thị hoặc ẩn. Hay chứa mã thiết bị, model number, room number. Đây là metadata quý giá nhất trong block.",
+   code:`<span class="kw">import</span> ezdxf
+
+doc = ezdxf.<span class="fn">readfile</span>(<span class="st">"mep.dxf"</span>)
+msp = doc.modelspace()
+
+<span class="c"># Extract block kèm tất cả attribute</span>
+results = []
+<span class="kw">for</span> insert <span class="kw">in</span> msp.query(<span class="st">"INSERT"</span>):
+    <span class="c"># Attribute: dict {tag: value}</span>
+    attribs = {}
+    <span class="kw">for</span> att <span class="kw">in</span> insert.attribs():
+        attribs[att.dxf.tag] = att.dxf.text
+
+    results.append({
+        <span class="st">"block_name"</span>: insert.dxf.name,
+        <span class="st">"layer"</span>:      insert.dxf.layer,
+        <span class="st">"x"</span>:           insert.dxf.insert.x,
+        <span class="st">"y"</span>:           insert.dxf.insert.y,
+        <span class="st">"tag_ITEM"</span>:    attribs.get(<span class="st">"ITEM"</span>,   <span class="st">""</span>),
+        <span class="st">"tag_MODEL"</span>:   attribs.get(<span class="st">"MODEL"</span>,  <span class="st">""</span>),
+        <span class="st">"tag_REMARK"</span>:  attribs.get(<span class="st">"REMARK"</span>, <span class="st">""</span>),
+    })`,
+   tip:"Attribute tag (ITEM, MODEL...) do drafter đặt tên — không chuẩn hóa. Luôn list tất cả tag trước khi assume tên."},
+
+  {cat:"Data Extraction",en:"DXF Structure",
+   title:"Cấu trúc DXF & những thứ cần check đầu tiên",
+   desc:"DXF là text file có cấu trúc section rõ ràng. Biết section nào chứa gì giúp debug nhanh khi thiếu data.",
+   syms:[
+     {code:"HEADER section",en:"System variables",vi:"Biến hệ thống: $INSUNITS (đơn vị!), $ACADVER, $MEASUREMENT"},
+     {code:"CLASSES section",en:"Object class definitions",vi:"Định nghĩa object class — thường bỏ qua"},
+     {code:"TABLES section",en:"Symbol tables",vi:"Bảng: LAYER, LTYPE, STYLE, BLOCK (list tên block)"},
+     {code:"BLOCKS section",en:"Block definitions",vi:"Nội dung template của mỗi block"},
+     {code:"ENTITIES section",en:"Model space entities (old)",vi:"Entity trong model space — DXF cũ (R12)"},
+     {code:"OBJECTS section",en:"Non-graphical objects",vi:"Dictionary, XData, Extension Dictionary"},
+   ],
+   note:{lbl:"3 thứ check TRƯỚC KHI extract",text:"1. $INSUNITS → đơn vị bản vẽ (4=mm, 6=meter, 1=inch)\n   Sai đơn vị = sai chiều dài hoàn toàn\n\n2. List tất cả layer → hiểu cấu trúc, tìm prefix pattern\n\n3. List tất cả block name duy nhất → xem có bao nhiêu loại, tên có pattern gì"},
+   code:`<span class="c"># 3 bước check đầu tiên</span>
+<span class="kw">import</span> ezdxf
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+doc = ezdxf.<span class="fn">readfile</span>(<span class="st">"drawing.dxf"</span>)
+msp = doc.modelspace()
+
+<span class="c"># 1. Check đơn vị</span>
+units = {<span class="nm">1</span>:<span class="st">'inch'</span>,<span class="nm">4</span>:<span class="st">'mm'</span>,<span class="nm">6</span>:<span class="st">'meter'</span>}
+ins = doc.header.get(<span class="st">'$INSUNITS'</span>,<span class="nm">0</span>)
+<span class="fn">print</span>(<span class="st">f"Unit: {units.get(ins,'unknown ({ins})')}"</span>)
+
+<span class="c"># 2. List layers</span>
+layers = [l.dxf.name <span class="kw">for</span> l <span class="kw">in</span> doc.layers]
+<span class="fn">print</span>(<span class="st">f"Layers ({len(layers)}): {layers[:10]}"</span>)
+
+<span class="c"># 3. Block frequency</span>
+blocks = Counter(e.dxf.name <span class="kw">for</span> e <span class="kw">in</span>
+                 msp.query(<span class="st">"INSERT"</span>))
+<span class="fn">print</span>(blocks.most_common(<span class="nm">20</span>))`,
+   tip:"most_common(20) cho bạn thấy 20 block dùng nhiều nhất — đây là những block quan trọng nhất cần map vào catalog."},
+
+  {cat:"Data Extraction",en:"Block Name Matching",
+   title:"Block Name Matching — rule-based + AI hybrid",
+   desc:"Cùng 1 thiết bị, 50 công ty đặt 50 tên block khác nhau. Hybrid approach: rule-based match trước, AI fallback khi rule miss.",
+   code:`<span class="kw">import</span> re
+<span class="kw">from</span> sentence_transformers <span class="kw">import</span> SentenceTransformer
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="c"># ── BƯỚC 1: Rule-based (nhanh, không cần GPU) ──</span>
+RULES = [
+    (<span class="st">r'GPO|SOCKET|OUTLET|PLUG'</span>, <span class="st">'Power Outlet'</span>),
+    (<span class="st">r'DS|DBL.SOCK|2.GANG'</span>,   <span class="st">'Double Socket'</span>),
+    (<span class="st">r'LIGHT|LAMP|DL|DOWN'</span>,   <span class="st">'Light Fixture'</span>),
+    (<span class="st">r'SPK|SPKR|SPRINK'</span>,      <span class="st">'Sprinkler'</span>),
+    (<span class="st">r'DB|MDB|SDB|DIST.BOARD'</span>,<span class="st">'Distribution Board'</span>),
+    (<span class="st">r'FCU|FAN.COIL'</span>,          <span class="st">'Fan Coil Unit'</span>),
+]
+
+<span class="kw">def</span> <span class="fn">rule_match</span>(block_name):
+    name = block_name.<span class="fn">upper</span>()
+    <span class="kw">for</span> pattern, label <span class="kw">in</span> RULES:
+        <span class="kw">if</span> re.<span class="fn">search</span>(pattern, name):
+            <span class="kw">return</span> label, <span class="nm">1.0</span>
+    <span class="kw">return</span> <span class="nm">None</span>, <span class="nm">0.0</span>
+
+<span class="c"># ── BƯỚC 2: AI fallback (chỉ khi rule miss) ──</span>
+model = SentenceTransformer(<span class="st">'all-MiniLM-L6-v2'</span>)
+CATALOG = [<span class="st">"Power Outlet"</span>, <span class="st">"Double Socket"</span>,
+           <span class="st">"Light Fixture"</span>, <span class="st">"Sprinkler"</span>]
+cat_emb = model.<span class="fn">encode</span>(CATALOG)
+
+<span class="kw">def</span> <span class="fn">match</span>(block_name):
+    label, conf = <span class="fn">rule_match</span>(block_name)
+    <span class="kw">if</span> label: <span class="kw">return</span> label, conf, <span class="st">'rule'</span>
+    q = model.<span class="fn">encode</span>([block_name])
+    scores = np.<span class="fn">dot</span>(q, cat_emb.T)[<span class="nm">0</span>]
+    i = np.<span class="fn">argmax</span>(scores)
+    <span class="kw">return</span> CATALOG[i], <span class="fn">float</span>(scores[i]), <span class="st">'ai'</span>`,
+   note:{lbl:"Confidence thresholds",text:"conf >= 0.9 → auto-accept, đưa vào BOQ\nconf 0.7–0.9 → accept nhưng flag để review\nconf < 0.7  → reject, flag là UNMATCHED\n\nLuôn export danh sách UNMATCHED ra Excel để review thủ công. Không bao giờ auto-accept 100%."},
+   tip:"Build và refine RULES từ dữ liệu thực tế của từng client. Rule library ngày càng tốt hơn sau mỗi project."},
+
+  {cat:"Data Extraction",en:"Linear Measurement",
+   title:"Đo chiều dài — pipe, cable, duct từ DXF",
+   desc:"Tính chiều dài đường ống và cáp từ LINE, LWPOLYLINE, SPLINE entities. Kết quả phải nhân với hệ số đơn vị.",
+   code:`<span class="kw">import</span> ezdxf, math
+
+doc = ezdxf.<span class="fn">readfile</span>(<span class="st">"plumbing.dxf"</span>)
+msp = doc.modelspace()
+
+<span class="c"># Scale factor từ INSUNITS về meter</span>
+SCALE = {<span class="nm">1</span>:<span class="nm">0.0254</span>, <span class="nm">4</span>:<span class="nm">0.001</span>, <span class="nm">6</span>:<span class="nm">1.0</span>}
+ins = doc.header.get(<span class="st">'$INSUNITS'</span>, <span class="nm">4</span>)
+scale = SCALE.get(ins, <span class="nm">0.001</span>)  <span class="c"># default mm</span>
+
+pipe_length = <span class="nm">0.0</span>
+
+<span class="kw">for</span> e <span class="kw">in</span> msp.query(<span class="st">'*[layer=="P-CWS-PIPE"]'</span>):
+    <span class="kw">if</span> e.dxftype() == <span class="st">'LINE'</span>:
+        s, end = e.dxf.start, e.dxf.end
+        pipe_length += math.<span class="fn">dist</span>(
+            (s.x,s.y,s.z), (end.x,end.y,end.z))
+
+    <span class="kw">elif</span> e.dxftype() == <span class="st">'LWPOLYLINE'</span>:
+        pts = list(e.get_points())
+        <span class="kw">for</span> i <span class="kw">in</span> range(len(pts)-<span class="nm">1</span>):
+            pipe_length += math.<span class="fn">dist</span>(
+                pts[i][:2], pts[i+<span class="nm">1</span>][:2])
+
+<span class="fn">print</span>(<span class="st">f"Pipe CWS: {pipe_length * scale:.2f} m"</span>)`,
+   tip:"SPLINE pipe: dùng e.flattening(0.01) để convert sang polyline points trước khi tính chiều dài."},
+],
+
+// ══════════════════════════════════════════════════════════════
+// BIM
+// ══════════════════════════════════════════════════════════════
+bim:[
+  {cat:"Khái niệm BIM",en:"BIM vs CAD",
+   title:"BIM vs CAD — sự khác biệt căn bản",
+   desc:"CAD = vẽ hình. BIM = model hóa thông tin công trình. Cùng một cái đèn: trong CAD là LINE và CIRCLE, trong BIM là object có type, wattage, brand, cost code, maintenance schedule.",
+   compare:[
+     {title:"CAD (AutoCAD .dwg)",items:["Object = geometry thuần túy","Không có type chuẩn — tùy drafter","Block name không chuẩn hóa","Cần AI matching để classify","Thông tin trong layer name và block name"]},
+     {title:"BIM (Revit → IFC)",items:["Object = geometry + dữ liệu đầy đủ","Type chuẩn theo IFC (IfcLightFixture)","Property set chuẩn (Pset_LightingType)","Ít cần AI — type đã classify sẵn","Thông tin trong Property Sets (Pset_*)"]},
+   ],
+   note:{lbl:"Thực tế tại VN hiện tại",text:"~70% dự án vẫn dùng 2D CAD (DWG)\n~20% dùng BIM nhưng chỉ ở design stage\n~10% thực sự có BIM data đầy đủ cho QS\n\nBIM adoption đang tăng nhanh, đặc biệt dự án Nhà nước từ 2025 trở đi.\nChuẩn bị pipeline IFC song song với DXF là đầu tư đúng."},
+   tip:"Khi client có Revit model → yêu cầu export IFC 2x3 hoặc IFC 4. Không cần mua license Revit để đọc IFC — dùng ifcopenshell miễn phí."},
+
+  {cat:"Khái niệm BIM",en:"LOD",
+   title:"LOD — Level of Development, độ chi tiết BIM model",
+   desc:"LOD xác định mức độ chi tiết và độ tin cậy của data trong model. LOD 300+ mới đủ để QS extract chính xác.",
+   syms:[
+     {code:"LOD 100",en:"Conceptual mass",vi:"Khối lượng sơ bộ — không đủ cho QS"},
+     {code:"LOD 200",en:"Approximate geometry",vi:"Kích thước gần đúng — estimate chỉ"},
+     {code:"LOD 300",en:"Precise geometry",vi:"Kích thước chính xác — đủ để thi công và QS"},
+     {code:"LOD 350",en:"Construction coordination",vi:"Đủ để phối hợp giữa các hệ thống"},
+     {code:"LOD 400",en:"Fabrication-ready",vi:"Đủ để sản xuất — chi tiết nhà máy"},
+     {code:"LOD 500",en:"As-built",vi:"Như thực tế xây dựng — for facility management"},
+   ],
+   bilingual:[
+     {vi:"LOD 300 là minimum cho QS extract — kích thước chính xác, count chính xác", en:"LOD 300 minimum: precise dimensions, counts, system classification"},
+     {vi:"LOD 200 chỉ dùng được cho estimate sơ bộ ±20%", en:"LOD 200 suitable for ±20% budget estimate only"},
+     {vi:"Luôn hỏi client LOD của model trước khi extract — tránh false precision", en:"Always confirm LOD before extracting — avoid false precision"},
+   ],
+   tip:"Một model có thể có LOD khác nhau cho các phần khác nhau. Revit: check 'Level of Detail' property trong Type Properties."},
+
+  {cat:"Khái niệm BIM",en:"BIM Property Sets",
+   title:"Property Sets — cách BIM lưu trữ data",
+   desc:"Mỗi object BIM có nhiều nhóm property (Property Set / Pset). Biết Pset nào chứa gì = biết cần query gì khi extract.",
+   syms:[
+     {code:"Pset_Common",en:"Common properties",vi:"Properties chung: Name, Description, Tag"},
+     {code:"Pset_[Type]Common",en:"Type-specific",vi:"Ví dụ: Pset_LightFixtureTypeCommon → Wattage, Luminous Flux"},
+     {code:"Pset_ElectricalDeviceCommon",en:"Electrical device",vi:"Voltage, Current, Power, PowerFactor"},
+     {code:"Pset_SanitaryTerminalTypeCommon",en:"Sanitary",vi:"Shape, Color, Material, DrainSize"},
+     {code:"Qto_[Type]BaseQuantities",en:"Quantity set",vi:"Count, Length, Area, Volume — extracted quantities"},
+     {code:"Custom Pset",en:"Project-specific",vi:"Tự tạo: CostCode, BOQRef, MfgModel — rất hay gặp"},
+   ],
+   note:{lbl:"Mapping Pset → BOQ",text:"Pset_Common.Name           → Description trong BOQ\nPset_[Type].ModelReference → Model number → match catalog\nCustom.CostCode            → Hạng mục trong WBS\nQto_*.Count                → Quantity trong BOQ\n\nCustom Pset tên tùy dự án — hỏi BIM manager tên Pset chứa cost code."},
+   tip:"ifcopenshell: ifcopenshell.util.element.get_psets(element) trả về dict tất cả Pset. Xem key để biết tên Pset và property."},
+
+  {cat:"IFC & Format",en:"IFC Classes",
+   title:"IFC Class Hierarchy — type chuẩn cho MEP",
+   desc:"IFC có hierarchy class rõ ràng. Biết class name = tự động classify không cần AI. Đây là lợi thế lớn nhất của BIM so với CAD.",
+   syms:[
+     {code:"IfcFlowTerminal",en:"Flow terminal base class",vi:"Base class cho tất cả thiết bị đầu cuối MEP"},
+     {code:"IfcElectricAppliance",en:"Electric appliance",vi:"Ổ cắm, switch, socket — Electrical"},
+     {code:"IfcLightFixture",en:"Light fixture",vi:"Đèn các loại — Lighting"},
+     {code:"IfcAirTerminal",en:"Air terminal",vi:"Diffuser, grille, slot — HVAC"},
+     {code:"IfcSanitaryTerminal",en:"Sanitary terminal",vi:"WC, WHB, shower, urinal — Plumbing"},
+     {code:"IfcFireSuppressionTerminal",en:"Fire suppression terminal",vi:"Sprinkler head — Fire Protection"},
+     {code:"IfcDistributionFlowElement",en:"Distribution element",vi:"Pipe, duct, cable — đường phân phối"},
+     {code:"IfcFlowSegment",en:"Pipe/duct segment",vi:"Đoạn ống / duct — có Length property"},
+     {code:"IfcFlowFitting",en:"Pipe/duct fitting",vi:"Elbow, tee, reducer — phụ kiện"},
+     {code:"IfcFlowController",en:"Flow controller",vi:"Valve, damper — van điều khiển"},
+   ],
+   code:`<span class="c"># Đếm tất cả MEP equipment theo type</span>
+<span class="kw">import</span> ifcopenshell
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+
+model = ifcopenshell.<span class="fn">open</span>(<span class="st">"building.ifc"</span>)
+
+mep_types = [
+    <span class="st">"IfcElectricAppliance"</span>,
+    <span class="st">"IfcLightFixture"</span>,
+    <span class="st">"IfcAirTerminal"</span>,
+    <span class="st">"IfcSanitaryTerminal"</span>,
+    <span class="st">"IfcFireSuppressionTerminal"</span>,
+]
+
+<span class="kw">for</span> ifc_type <span class="kw">in</span> mep_types:
+    items = model.by_type(ifc_type)
+    names = Counter(i.Name <span class="kw">for</span> i <span class="kw">in</span> items
+                    <span class="kw">if</span> i.Name)
+    <span class="fn">print</span>(<span class="st">f"\\n{ifc_type} ({len(items)}):"</span>)
+    <span class="fn">print</span>(names.most_common(<span class="nm">5</span>))`,
+   tip:"by_type() có tính kế thừa: by_type('IfcFlowTerminal') trả về tất cả subtype. Dùng để count tổng MEP terminals."},
+
+  {cat:"IFC & Format",en:"IFC Extract Full",
+   title:"Extract đầy đủ từ IFC — pattern production-ready",
+   desc:"Pipeline hoàn chỉnh để extract MEP data từ IFC ra DataFrame, sẵn sàng match với bảng giá.",
+   code:`<span class="kw">import</span> ifcopenshell
+<span class="kw">import</span> ifcopenshell.util.element <span class="kw">as</span> util
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+model = ifcopenshell.<span class="fn">open</span>(<span class="st">"building.ifc"</span>)
+
+<span class="kw">def</span> <span class="fn">extract_element</span>(elem):
+    psets = util.<span class="fn">get_psets</span>(elem)
+    <span class="c"># Flatten tất cả Pset vào 1 dict</span>
+    flat = {}
+    <span class="kw">for</span> pset_name, props <span class="kw">in</span> psets.items():
+        <span class="kw">for</span> k, v <span class="kw">in</span> props.items():
+            flat[<span class="st">f"{pset_name}.{k}"</span>] = v
+
+    <span class="c"># Lấy spatial location</span>
+    storey = util.<span class="fn">get_container</span>(elem)
+
+    <span class="kw">return</span> {
+        <span class="st">"GlobalId"</span>:   elem.GlobalId,
+        <span class="st">"IFC_Type"</span>:   elem.is_a(),
+        <span class="st">"Name"</span>:       elem.Name,
+        <span class="st">"Level"</span>:      storey.Name <span class="kw">if</span> storey <span class="kw">else</span> <span class="st">""</span>,
+        **flat
+    }
+
+<span class="c"># Extract tất cả MEP terminals</span>
+rows = [<span class="fn">extract_element</span>(e)
+        <span class="kw">for</span> e <span class="kw">in</span> model.by_type(<span class="st">"IfcFlowTerminal"</span>)]
+df = pd.<span class="fn">DataFrame</span>(rows)
+df.<span class="fn">to_excel</span>(<span class="st">"mep_extract.xlsx"</span>, index=<span class="nm">False</span>)`,
+   tip:"get_container() lấy floor/level của element — quan trọng khi BOQ cần breakdown theo tầng."},
+
+  {cat:"Python & BIM",en:"ezdxf vs ifcopenshell",
+   title:"ezdxf vs ifcopenshell — khi nào dùng cái nào",
+   desc:"Hai thư viện cho hai format. Lý tưởng là pipeline của bạn xử lý được cả hai vì thực tế client có cả hai.",
+   compare:[
+     {title:"ezdxf (cho DWG/DXF)",items:["pip install ezdxf","Đọc .dxf và .dwg (qua thư viện nội bộ)","Entity: LINE, INSERT, TEXT, HATCH...","Cần AI matching để classify block","Layer name là metadata chính","Phổ biến: 70% bản vẽ VN"]},
+     {title:"ifcopenshell (cho IFC)",items:["pip install ifcopenshell","Đọc .ifc, .ifczip, .ifcxml","Object có type chuẩn IfcXxx","Ít cần AI — type đã classify","Pset là metadata chính","Tương lai: BIM adoption đang tăng"]},
+   ],
+   note:{lbl:"Khi nào dùng gì",text:"File .dwg / .dxf  → ezdxf\nFile .ifc          → ifcopenshell\nFile .rvt (Revit)  → yêu cầu export IFC\nFile .pdf          → pdfplumber + camelot\nFile .dwf          → convert sang DXF trước\n\nNếu client có cả DWG lẫn IFC của cùng project → ưu tiên IFC. Data sạch hơn, ít effort hơn."},
+   syms:[
+     {code:"ezdxf",en:"pip install ezdxf",vi:"Đọc DWG/DXF — block, layer, polyline"},
+     {code:"ifcopenshell",en:"pip install ifcopenshell",vi:"Đọc IFC — object type chuẩn, property sets"},
+     {code:"ODA File Converter",en:"Free DWG→DXF converter",vi:"Convert DWG → DXF miễn phí, batch"},
+     {code:"FreeCAD / BIM tools",en:"Open BIM viewer",vi:"Xem IFC miễn phí, không cần Revit"},
+   ],
+   tip:"ODA File Converter (miễn phí từ Open Design Alliance) convert hàng loạt DWG → DXF. Quan trọng vì ezdxf đọc DXF tốt hơn DWG."},
+
+  {cat:"Python & BIM",en:"Full Pipeline",
+   title:"Full Pipeline — từ DXF/IFC đến DataFrame BOQ",
+   desc:"Architecture tổng thể của hệ thống extract. Mỗi bước xử lý một concern riêng.",
+   note:{lbl:"Pipeline architecture",text:"┌─────────────────────────────────────┐\n│ INPUT: DWG/DXF hoặc IFC             │\n└──────────────┬──────────────────────┘\n               ↓\n┌─────────────────────────────────────┐\n│ PARSE: ezdxf hoặc ifcopenshell      │\n│ → raw entities / objects            │\n└──────────────┬──────────────────────┘\n               ↓\n┌─────────────────────────────────────┐\n│ CLASSIFY: rule-based + AI fallback  │\n│ block_name → equipment type         │\n└──────────────┬──────────────────────┘\n               ↓\n┌─────────────────────────────────────┐\n│ AGGREGATE: count + measure          │\n│ {type: qty, unit}                   │\n└──────────────┬──────────────────────┘\n               ↓\n┌─────────────────────────────────────┐\n│ MATCH: fuzzy + embedding            │\n│ equipment type → price list item    │\n└──────────────┬──────────────────────┘\n               ↓\n┌─────────────────────────────────────┐\n│ OUTPUT: BOQ DataFrame → Excel       │\n│ + UNMATCHED list for review         │\n└─────────────────────────────────────┘"},
+   tip:"Bước MATCH (equipment → price list) là khó nhất và tốn thời gian nhất. Đầu tư vào bước này = accuracy cao nhất."},
+],
+
+// ══════════════════════════════════════════════════════════════
+// QS
+// ══════════════════════════════════════════════════════════════
+qs:[
+  {cat:"Đơn vị & QTO",en:"Units of Measurement",
+   title:"Đơn vị tính — normalize trước khi match",
+   desc:"Mỗi hạng mục có đơn vị tính riêng. Bảng giá và bản vẽ có thể dùng đơn vị khác nhau cho cùng một thứ. Normalize tất cả về chuẩn trước khi match.",
+   syms:[
+     {code:"m / m' / LM / mét dài",en:"Linear meter",vi:"Mét dài — đường ống, cáp, ống gió, máng cáp"},
+     {code:"m² / sqm / sq.m",en:"Square meter",vi:"Mét vuông — sàn, tường, trần, hatch area"},
+     {code:"m³ / m3 / cu.m",en:"Cubic meter",vi:"Mét khối — đất đào, bê tông, sand fill"},
+     {code:"cái / bộ / set / nos / no.",en:"Number / Set",vi:"Đơn chiếc — hầu hết thiết bị MEP"},
+     {code:"kg / tấn / MT",en:"Kilogram / Metric Ton",vi:"Khối lượng — thép, cáp nặng (kg = 1000kg/tấn)"},
+     {code:"kW / kVA / TR / HP",en:"Power units",vi:"Công suất — thiết bị lớn (1 TR = 3.517 kW = 12,000 BTU/h)"},
+     {code:"l/s / m³/h / CFM",en:"Flow rate",vi:"Lưu lượng — pump, fan, ống (1 m³/h = 0.278 l/s)"},
+     {code:"Pa / mbar / psi",en:"Pressure",vi:"Áp suất — pump head, fan static pressure"},
+   ],
+   note:{lbl:"Normalize dictionary",text:"Python dict để normalize trước khi match:\nunits = {\n  'm dài': 'm', 'LM': 'm', 'ml': 'm',\n  'mét': 'm', 'lin.m': 'm',\n  'm2': 'm2', 'sqm': 'm2', 'sq.m': 'm2',\n  'm3': 'm3', 'cu.m': 'm3',\n  'no.': 'nos', 'nos.': 'nos', 'set': 'nos',\n  'bộ': 'nos', 'cái': 'nos',\n}"},
+   tip:"Lỗi đơn vị rất khó phát hiện — số lượng đúng nhưng giá sai. Luôn log unit của từng line item để review."},
+
+  {cat:"Đơn vị & QTO",en:"Quantity Takeoff",
+   title:"Quantity Takeoff (QTO) — phương pháp đo đếm",
+   desc:"QTO là quá trình đo đếm số lượng từ bản vẽ. Automation level khác nhau theo loại measurement. Bắt đầu từ dễ nhất.",
+   compare:[
+     {title:"Count (đếm số lượng)",items:["Đếm INSERT entity theo block name","Độ khó: ⭐☆☆☆☆ — DỄ NHẤT","Thiết bị MEP: đèn, socket, sprinkler...","Accuracy cao nếu block name chuẩn"]},
+     {title:"Linear (chiều dài)",items:["Tổng độ dài LINE/POLYLINE theo layer","Độ khó: ⭐⭐☆☆☆ — TRUNG BÌNH","Ống, cáp, máng cáp, duct","Cần check INSUNITS và scale"]},
+   ],
+   syms:[
+     {code:"Count",en:"Quantity by count",vi:"Đếm số lượng — cái, bộ, set"},
+     {code:"Linear / LM",en:"Linear measurement",vi:"Chiều dài — m, mét dài"},
+     {code:"Area / sqm",en:"Area measurement",vi:"Diện tích — m², hay dùng HATCH"},
+     {code:"Volume / m3",en:"Volume measurement",vi:"Thể tích — m³, civil works chủ yếu"},
+     {code:"Weight",en:"Weight",vi:"Khối lượng — kg, cho thép, cáp nặng"},
+   ],
+   note:{lbl:"Automation roadmap",text:"Phase 1 (bây giờ): Count thiết bị MEP\n→ Extract INSERT, classify block name, count\n\nPhase 2 (tiếp theo): Linear measurement\n→ Sum length của POLYLINE theo layer\n\nPhase 3 (sau): Area measurement\n→ Calculate HATCH area cho ceiling, wall\n\nPhase 4 (BIM): All quantities từ IFC Qto_ sets"},
+   tip:"Với MEP BOQ, 80% giá trị nằm ở Count (thiết bị). Linear (ống, cáp) quan trọng cho estimate nhưng ít critical hơn."},
+
+  {cat:"BOQ & Dự toán",en:"BOQ Structure",
+   title:"BOQ — Bill of Quantities, cấu trúc đầy đủ",
+   desc:"BOQ là tài liệu trung tâm của quá trình đấu thầu. Mỗi column có ý nghĩa cụ thể. Hiểu đúng để build output đúng.",
+   syms:[
+     {code:"Item No.",en:"Item number",vi:"Số thứ tự — thường có prefix section (B1.1, B1.2...)"},
+     {code:"Description",en:"Work description",vi:"Mô tả đầy đủ: tên thiết bị + spec + tiêu chuẩn"},
+     {code:"Unit",en:"Unit of measurement",vi:"Đơn vị tính — đã normalize"},
+     {code:"Qty",en:"Quantity",vi:"Số lượng — kết quả từ QTO"},
+     {code:"Unit Rate",en:"Unit rate / unit price",vi:"Đơn giá — từ bảng giá, chưa VAT hoặc đã tùy"},
+     {code:"Amount",en:"Line item amount",vi:"Thành tiền = Qty × Unit Rate"},
+     {code:"Remarks",en:"Remarks / notes",vi:"Ghi chú — spec bổ sung, điều kiện, UNMATCHED flag"},
+   ],
+   note:{lbl:"Full example BOQ line item",text:"Item: B1.3.05\nDescription: Double socket outlet, 2-gang, 13A, 250V,\n             surface-mounted, complete with enclosure\n             to BS1363, white, Legrand Mosaic or equal\nUnit: nos\nQty: 48\nUnit Rate: 185,000 VND\nAmount: 8,880,000 VND\nRemarks: As per drawing E-P-01, level 3"},
+   tip:"Description tốt = ít bị tranh chấp với nhà thầu. Include: tên thiết bị + spec kỹ thuật + tiêu chuẩn áp dụng + brand reference."},
+
+  {cat:"BOQ & Dự toán",en:"Price List",
+   title:"Bảng giá — parse, match, cạm bẫy",
+   desc:"Matching bảng giá với hạng mục là khó nhất trong toàn bộ pipeline. Hiểu cấu trúc bảng giá để build matcher đúng.",
+   note:{lbl:"Cấu trúc bảng giá thường gặp",text:"Flat list: Item | Description | Unit | Rate\nHierarchical: Section > Sub-section > Item\nWith spec: Item | Full Spec | Brand | Unit | Rate\nWith conditions: Rate_supply | Rate_install | Rate_combined\n\nMỗi client một format — cần ETL riêng cho từng client."},
+   syms:[
+     {code:"Supply Only",en:"Materials only",vi:"Chỉ giá vật tư — không bao gồm nhân công lắp đặt"},
+     {code:"Supply & Install",en:"Supply and install",vi:"Vật tư + nhân công — giá hoàn chỉnh"},
+     {code:"Labour Only",en:"Labour only",vi:"Chỉ nhân công — khi owner mua vật tư riêng"},
+     {code:"PC Sum",en:"Prime Cost Sum",vi:"Mua trực tiếp từ manufacturer — nhà thầu không markup"},
+     {code:"Provisional Sum",en:"Provisional Sum",vi:"Dự phòng cho hạng mục chưa xác định"},
+     {code:"Contingency",en:"Contingency allowance",vi:"Dự phòng rủi ro — thường 5-10% tổng"},
+     {code:"Ex VAT / Inc VAT",en:"Excluding / Including VAT",vi:"Chưa / đã bao gồm thuế GTGT 10%"},
+   ],
+   note:{lbl:"5 cạm bẫy matching phổ biến",text:"1. Tên khác nhau cùng thiết bị:\n   'LED Downlight' vs 'Recessed Spotlight' vs 'Đèn âm trần'\n\n2. Spec level khác:\n   'MCB 16A' (generic) vs 'MCB 1P 16A C-curve 6kA' (full spec)\n   → Đơn giá có thể chênh 30-50%\n\n3. VAT status không ghi rõ:\n   Luôn xác nhận với client: ex-VAT hay inc-VAT?\n\n4. Supply vs Supply+Install:\n   Bảng giá nào? Nếu bản vẽ chỉ count thiết bị nhưng\n   giá là supply+install → tính đúng mà vẫn đúng\n\n5. Brand/grade khác nhau:\n   'Standard grade' vs 'Premium grade' cùng spec\n   → Luôn note brand ref trong Description"},
+   tip:"Khi không chắc match đúng không → đừng match, flag REVIEW. Một line item sai có thể làm lệch cả trăm triệu."},
+
+  {cat:"Phân loại",en:"WBS MEP",
+   title:"Work Breakdown Structure — phân cấp hạng mục MEP",
+   desc:"WBS là cách phân cấp công việc từ tổng đến chi tiết. Phải hiểu WBS để output BOQ đúng format mà client expect.",
+   syms:[
+     {code:"Level 1 — Division",en:"Major division",vi:"Nhóm lớn: Civil Works, M&E Works, Finishes"},
+     {code:"Level 2 — Section",en:"Work section",vi:"Phân khu: Electrical, Mechanical, Plumbing, Fire"},
+     {code:"Level 3 — Sub-section",en:"Sub-section",vi:"LV Distribution, Lighting, Power, ELV, HVAC..."},
+     {code:"Level 4 — Line Item",en:"Measurable item",vi:"Hạng mục cụ thể tính được: 'LED Downlight 12W'"},
+   ],
+   note:{lbl:"WBS MEP thực tế đầy đủ",text:"SECTION B: MECHANICAL & ELECTRICAL WORKS\n  B1: ELECTRICAL\n    B1.1: LV Distribution (MDB, SDB, busduct)\n    B1.2: Lighting (đèn các loại)\n    B1.3: Power (ổ cắm, floor box, UPS)\n    B1.4: Earthing & Lightning Protection\n    B1.5: ELV — ICT & Data\n    B1.6: ELV — Security (camera, access)\n    B1.7: ELV — BMS\n  B2: MECHANICAL (HVAC)\n    B2.1: Chilled Water System\n    B2.2: Air Distribution\n    B2.3: Ventilation & Exhaust\n    B2.4: Controls & BMS Interface\n  B3: PLUMBING\n    B3.1: Cold & Hot Water Supply\n    B3.2: Sanitary & Drainage\n    B3.3: Rainwater\n  B4: FIRE PROTECTION\n    B4.1: Sprinkler System\n    B4.2: Fire Alarm System\n    B4.3: Portable Extinguishers"},
+   tip:"WBS này là gợi ý phổ biến. Client/PM có thể dùng WBS khác — luôn xin template trước khi build output."},
+
+  {cat:"Phân loại",en:"CSI MasterFormat",
+   title:"CSI MasterFormat — chuẩn phân loại quốc tế",
+   desc:"MasterFormat là hệ thống phân loại của Construction Specifications Institute (Mỹ). Phổ biến trong dự án quốc tế và ODA (World Bank, ADB).",
+   syms:[
+     {code:"Division 03",en:"Concrete",vi:"Bê tông — Civil"},
+     {code:"Division 05",en:"Metals",vi:"Kim loại — thép kết cấu"},
+     {code:"Division 21",en:"Fire Suppression",vi:"PCCC — sprinkler, fire alarm"},
+     {code:"Division 22",en:"Plumbing",vi:"Cấp thoát nước"},
+     {code:"Division 23",en:"Heating, Ventilating, AC",vi:"HVAC"},
+     {code:"Division 25",en:"Integrated Automation",vi:"BMS, building automation"},
+     {code:"Division 26",en:"Electrical",vi:"Điện — LV, lighting, power"},
+     {code:"Division 27",en:"Communications",vi:"ICT, data, telecom"},
+     {code:"Division 28",en:"Electronic Safety & Security",vi:"Camera, access control, fire alarm"},
+   ],
+   bilingual:[
+     {vi:"Nhớ 3 số quan trọng: 26=Electrical, 22=Plumbing, 23=HVAC", en:"Core MEP divisions: 26=Electrical, 22=Plumbing, 23=HVAC, 21=Fire"},
+     {vi:"Division 28 hay bị nhầm với 26 — ELV (camera, access) = 28 không phải 26", en:"ELV (CCTV, access control) = Division 28, not 26"},
+     {vi:"Khi layer name có '26-' hoặc attribute có 'DIV26' → tự động classify Electrical", en:"Parse Division code from layer/attribute → auto-classify without AI"},
+   ],
+   tip:"ODA project (WB/ADB) thường require MasterFormat trong BOQ. Khi thấy attribute 'DIV' hoặc 'CSI' trong block → đó là MasterFormat code."},
+
+  {cat:"Phân loại",en:"Vietnamese Standards",
+   title:"Tiêu chuẩn Việt Nam — TCVN & QCVN",
+   desc:"Dự án trong nước theo TCVN (Tiêu chuẩn Quốc gia) và QCVN (Quy chuẩn Quốc gia). Số hiệu TCVN trong bảng giá Nhà nước là key để lookup.",
+   syms:[
+     {code:"TCVN 9206:2012",en:"Electrical installation",vi:"Tiêu chuẩn lắp đặt điện"},
+     {code:"QCVN 04:2021",en:"Fire protection",vi:"Quy chuẩn PCCC — bắt buộc tuân thủ"},
+     {code:"TCVN 9385:2012",en:"Lightning protection",vi:"Chống sét"},
+     {code:"TCVN 7447",en:"LV electrical installation",vi:"Hệ thống điện hạ áp — nhiều phần"},
+     {code:"Đơn giá Bộ Xây dựng",en:"MoC unit rate",vi:"Bảng giá do Bộ XD ban hành — dùng cho dự án Nhà nước"},
+     {code:"ABCC / BCA",en:"Building costs benchmarks",vi:"Suất đầu tư tham khảo cho estimate"},
+   ],
+   note:{lbl:"Dự án Nhà nước vs Tư nhân",text:"Dự án Nhà nước:\n→ BOQ theo định mức của Bộ XD/Bộ ngành\n→ Đơn giá theo quyết định UBND tỉnh\n→ Số hiệu TCVN/QCVN bắt buộc trong spec\n\nDự án Tư nhân (FDI, văn phòng, khách sạn):\n→ BOQ theo template của PM/QS company\n→ Đơn giá thị trường, có thể theo brand\n→ Thường dùng BS / IEC standards"},
+   tip:"Hỏi PM/QS consultant dự án theo Nhà nước hay tư nhân trước — output format và reference standard khác nhau hoàn toàn."},
+
+  {cat:"Output & Hồ sơ",en:"Tender Context",
+   title:"Hồ sơ đấu thầu — context để build đúng output",
+   desc:"BOQ là một phần của hồ sơ đấu thầu. Hiểu context toàn bộ để đặt đúng câu hỏi với client và không bị surprise.",
+   syms:[
+     {code:"ITT / ITB",en:"Invitation to Tender / Bid",vi:"Thư mời thầu — tài liệu đầu tiên"},
+     {code:"Specification / Spec",en:"Technical specification",vi:"Thuyết minh kỹ thuật — mô tả yêu cầu chi tiết"},
+     {code:"BOQ",en:"Bill of Quantities",vi:"Bảng khối lượng ← bạn build cái này"},
+     {code:"Drawings",en:"Construction drawings",vi:"Bản vẽ kèm theo ← bạn extract từ đây"},
+     {code:"Form of Tender",en:"Bid form",vi:"Mẫu đề xuất giá của nhà thầu"},
+     {code:"Conditions of Contract",en:"Contract conditions",vi:"FIDIC, NEC, hoặc điều kiện VN"},
+     {code:"Addendum",en:"Amendment to tender",vi:"Tài liệu sửa đổi bổ sung sau khi phát hành"},
+   ],
+   note:{lbl:"Tender timeline",text:"Phát hành hồ sơ → Clarification period (Q&A) → Đóng thầu → Đánh giá → Award\n\nBOQ thường được phát hành cùng hồ sơ. Nếu có Addendum → BOQ phải update.\nTimeline thường: 2-4 tuần cho tender period. Hệ thống của bạn cần chạy được trong < 1 ngày."},
+   tip:"BOQ sai → nhà thầu bỏ giá sai → tranh chấp sau khi award. Accuracy của BOQ là critical — không phải best-effort."},
+
+  {cat:"Output & Hồ sơ",en:"Validation",
+   title:"Validate BOQ — checklist trước khi giao",
+   desc:"Validation layer phát hiện lỗi trước khi đến tay client. Tốt hơn là thiếu và biết mình thiếu, hơn là đủ nhưng sai.",
+   note:{lbl:"Checklist validate đầy đủ",text:"QUANTITY CHECK\n✓ Count có hợp lý? (benchmark: ~1 socket / 10m², ~1 đèn / 8m²)\n✓ Linear có hợp lý? (ống CW thường = 1.5-2× perimeter of areas)\n✓ Có object nào count = 0 không? → block không được classify\n\nUNIT CHECK\n✓ Đơn vị đã normalize chưa?\n✓ Có line item nào đơn vị không match catalog không?\n\nPRICE CHECK\n✓ Có line item nào Unit Rate = 0 không? → UNMATCHED\n✓ Có line item nào Amount bất thường cao/thấp không?\n✓ VAT status đã xác nhận với client chưa?\n\nCOMPLETENESS\n✓ Tất cả layer MEP đã extract chưa?\n✓ INSUNITS đã check chưa?\n✓ Có nested block nào bị bỏ sót không?"},
+   code:`<span class="kw">def</span> <span class="fn">validate_boq</span>(df, benchmarks=<span class="nm">None</span>):
+    issues = []
+    unmatched = df[df[<span class="st">'unit_rate'</span>] == <span class="nm">0</span>]
+    <span class="kw">if</span> len(unmatched) > <span class="nm">0</span>:
+        issues.append({
+          <span class="st">'level'</span>:<span class="st">'ERROR'</span>,
+          <span class="st">'msg'</span>:<span class="st">f"{len(unmatched)} UNMATCHED items"</span>,
+          <span class="st">'items'</span>: unmatched[<span class="st">'description'</span>].tolist()
+        })
+    high_qty = df[df[<span class="st">'qty'</span>] > <span class="nm">5000</span>]
+    <span class="kw">if</span> len(high_qty) > <span class="nm">0</span>:
+        issues.append({
+          <span class="st">'level'</span>:<span class="st">'WARNING'</span>,
+          <span class="st">'msg'</span>:<span class="st">'High quantity — verify'</span>,
+          <span class="st">'items'</span>: high_qty[<span class="st">'description'</span>].tolist()
+        })
+    <span class="kw">return</span> issues`,
+   tip:"Export UNMATCHED list vào tab riêng trong Excel output. Client hoặc QS consultant có thể fill giá thủ công cho những item này."},
+]
+};
+
+// ── State ──
+let tab="mep", filters=new Set();
+
+function initFilters(){
+  const t=TABS[tab];
+  filters=new Set(t.filters.map(f=>f.key));
+  const row=document.getElementById("filterRow");
+  row.innerHTML="";
+  t.filters.forEach(f=>{
+    const el=document.createElement("span");
+    el.className=`tag ${f.cls} active`;
+    el.textContent=f.label;
+    el.dataset.key=f.key;
+    el.addEventListener("click",()=>{
+      if(filters.has(f.key)){filters.delete(f.key);el.classList.remove("active");}
+      else{filters.add(f.key);el.classList.add("active");}
+      render();
+    });
+    row.appendChild(el);
+  });
+}
+
+function mkSym(s){
+  return `<div class="sym"><div class="sym-code">${s.code}</div><div class="sym-en">${s.en||""}</div><div class="sym-vi">${s.vi||""}</div></div>`;
+}
+function mkBil(b){
+  return `<div class="bil-col"><div class="bil-lang">🇻🇳 Tiếng Việt</div><div class="bil-content">${b.vi}</div></div><div class="bil-col"><div class="bil-lang">🇬🇧 English</div><div class="bil-content">${b.en}</div></div>`;
+}
+function mkCompare(c){
+  return `<div class="compare-col"><div class="compare-title" style="color:${TABS[tab].color}">${c.title}</div>${c.items.map(i=>`<div class="compare-item">${i}</div>`).join("")}</div>`;
+}
+
+function render(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  const content=document.getElementById("content");
+  content.innerHTML="";
+  let shown=0;
+  const items=DATA[tab]||[];
+  const t=TABS[tab];
+  const groups={};
+  items.forEach(item=>{
+    if(!filters.has(item.cat))return;
+    const searchText=(item.title+item.en+item.desc+
+      (item.note?.text||"")+(item.note?.lbl||"")+
+      (item.syms||[]).map(s=>`${s.code} ${s.en} ${s.vi}`).join(" ")+
+      (item.bilingual||[]).map(b=>`${b.vi} ${b.en}`).join(" ")+
+      (item.compare||[]).map(c=>`${c.title} ${c.items.join(" ")}`).join(" ")
+    ).toLowerCase();
+    if(q&&!searchText.includes(q))return;
+    if(!groups[item.cat])groups[item.cat]=[];
+    groups[item.cat].push(item);
+    shown++;
+  });
+
+  Object.entries(groups).forEach(([cat,catItems])=>{
+    const hdr=document.createElement("div");
+    hdr.className="sec-hdr";
+    hdr.textContent=cat;
+    content.appendChild(hdr);
+    catItems.forEach(item=>{
+      const card=document.createElement("div");
+      card.className="card";
+      const fcls=t.filters.find(f=>f.key===item.cat)?.cls||"tag-mep-ov";
+      const symsHtml=item.syms?`<div class="sym-grid">${item.syms.map(mkSym).join("")}</div>`:"";
+      const bilHtml=item.bilingual?`<div class="bilingual">${item.bilingual.map(mkBil).join("")}</div>`:"";
+      const cmpHtml=item.compare?`<div class="compare">${item.compare.map(mkCompare).join("")}</div>`:"";
+      const noteHtml=item.note?`<div class="note"><div class="note-lbl" style="color:${t.color}">${item.note.lbl}</div>${item.note.text.replace(/\n/g,"<br>")}</div>`:"";
+      const codeHtml=item.code?`<pre>${item.code}</pre>`:"";
+      const tipHtml=item.tip?`<div class="tip">→ ${item.tip}</div>`:"";
+      card.innerHTML=`
+        <div class="card-hdr" onclick="this.closest('.card').classList.toggle('open')">
+          <span class="badge ${fcls}">${item.cat}</span>
+          <span class="card-title">${item.title}</span>
+          <span class="card-en">${item.en||""}</span>
+          <span class="chev">▾</span>
+        </div>
+        <div class="card-body">
+          <p class="desc">${item.desc}</p>
+          ${cmpHtml}${symsHtml}${bilHtml}${noteHtml}${codeHtml}${tipHtml}
+        </div>`;
+      content.appendChild(card);
+    });
+  });
+
+  if(shown===0)content.innerHTML=`<div class="empty">// no results</div>`;
+  document.getElementById("stats").textContent=
+    `${shown} entries · ${tab.toUpperCase()} · ${q?`"${document.getElementById("search").value}"`:"all categories"}`;
+}
+
+document.querySelectorAll(".tab").forEach(t=>{
+  t.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    t.classList.add("active");
+    tab=t.dataset.tab;
+    document.getElementById("search").value="";
+    initFilters();render();
+  });
+});
+document.getElementById("search").addEventListener("input",render);
+initFilters();render();
+</script>
+</body>
+</html>

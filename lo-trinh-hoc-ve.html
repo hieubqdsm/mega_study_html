@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lộ trình học vẽ</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --bg2: #16161a;
+    --bg3: #1e1e24;
+    --bg4: #26262e;
+    --border: #2e2e38;
+    --border2: #3a3a48;
+    --text: #e8e8f0;
+    --muted: #888898;
+    --dim: #555566;
+    --accent-sketch: #7c9eff;
+    --accent-color: #ff9f7c;
+    --accent-digital: #7cffd4;
+    --accent-adv: #d47cff;
+    --accent-project: #ffd47c;
+    --accent-manga: #ff7cbe;
+    --accent-game: #7cddff;
+    --tag-bg: #1e1e2e;
+    --code-bg: #111118;
+    --tip-border: #3a3a80;
+    --tip-bg: #14142a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 40px 20px 80px;
+  }
+
+  .container { max-width: 820px; margin: 0 auto; }
+
+  .breadcrumb {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  h1 {
+    font-size: 42px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    color: #fff;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 28px;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 16px 13px 44px;
+    color: var(--text);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--border2); }
+  .search-wrap input::placeholder { color: var(--dim); }
+  .search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--dim); font-size: 16px; pointer-events: none;
+  }
+
+  /* Filter tags */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    align-items: center;
+  }
+
+  .phase-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+    margin-top: 2px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tag.sketch { background: rgba(124,158,255,0.1); color: var(--accent-sketch); border-color: rgba(124,158,255,0.25); }
+  .tag.color  { background: rgba(255,159,124,0.1); color: var(--accent-color);  border-color: rgba(255,159,124,0.25); }
+  .tag.digital{ background: rgba(124,255,212,0.1); color: var(--accent-digital);border-color: rgba(124,255,212,0.25); }
+  .tag.adv    { background: rgba(212,124,255,0.1); color: var(--accent-adv);    border-color: rgba(212,124,255,0.25); }
+  .tag.project{ background: rgba(255,212,124,0.1); color: var(--accent-project);border-color: rgba(255,212,124,0.25); }
+  .tag.manga  { background: rgba(255,124,190,0.1); color: var(--accent-manga);  border-color: rgba(255,124,190,0.25); }
+  .tag.game   { background: rgba(124,221,255,0.1); color: var(--accent-game);   border-color: rgba(124,221,255,0.25); }
+
+  .tag:hover { filter: brightness(1.2); }
+  .tag.active { filter: brightness(1.3); border-width: 1.5px; }
+
+  /* Stats */
+  .stats {
+    font-size: 12px;
+    color: var(--dim);
+    margin-bottom: 28px;
+  }
+  .stats span { color: var(--muted); font-weight: 500; }
+
+  /* Phase header */
+  .phase-section { margin-bottom: 12px; }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+
+  .phase-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .phase-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  /* Lesson card */
+  .lesson {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+
+  .lesson:hover { border-color: var(--border2); }
+  .lesson.open  { border-color: var(--border2); }
+
+  .lesson-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .lesson-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .lesson-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .lesson-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .step-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+
+  .chevron {
+    color: var(--dim);
+    font-size: 12px;
+    transition: transform 0.2s;
+  }
+  .lesson.open .chevron { transform: rotate(180deg); }
+
+  /* Lesson body */
+  .lesson-body {
+    display: none;
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .lesson.open .lesson-body { display: block; }
+
+  .desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 14px 0 12px;
+    line-height: 1.65;
+  }
+
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #aaaacc;
+    line-height: 1.7;
+    margin-bottom: 12px;
+    white-space: pre-line;
+  }
+
+  .code-block .c { color: var(--dim); }
+  .code-block .k { color: var(--accent-sketch); }
+  .code-block .s { color: var(--accent-digital); }
+  .code-block .n { color: var(--accent-color); }
+
+  .tip-block {
+    background: var(--tip-bg);
+    border-left: 3px solid var(--tip-border);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #8888cc;
+    line-height: 1.6;
+    margin-bottom: 2px;
+  }
+
+  /* Practice list */
+  .practice-section { margin-top: 16px; }
+
+  .practice-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .practice-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--bg3);
+    border-radius: 7px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .practice-item:hover {
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  .practice-item.done {
+    color: var(--dim);
+    text-decoration: line-through;
+  }
+
+  .practice-item.done .check { color: var(--accent-digital) !important; }
+
+  .check {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: transparent;
+    transition: all 0.15s;
+  }
+
+  .difficulty {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .diff-easy    { background: rgba(124,255,212,0.08); color: var(--accent-digital); }
+  .diff-medium  { background: rgba(255,212,124,0.08); color: var(--accent-project); }
+  .diff-hard    { background: rgba(212,124,255,0.08); color: var(--accent-adv); }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="breadcrumb">HỌC VẼ · CƠ BẢN ĐẾN NÂNG CAO</div>
+  <h1>Lộ trình<br>học vẽ</h1>
+  <div class="subtitle">
+    Tổng hợp lộ trình học vẽ từ zero — Nét cơ bản · Phối cảnh · Ánh sáng &amp; bóng · Màu sắc · Nhân vật · Digital Art · Style &amp; Portfolio · Manga · Game Art
+  </div>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Tìm bài học..." />
+  </div>
+
+  <div class="filters" id="filters">
+    <span class="phase-label">Phần 1</span>
+    <span class="tag sketch active" data-filter="sketch">Nét & hình cơ bản</span>
+    <span class="tag sketch active" data-filter="perspective">Phối cảnh</span>
+    <span class="phase-label">Phần 2</span>
+    <span class="tag color active" data-filter="light">Sáng bóng</span>
+    <span class="tag color active" data-filter="color">Màu sắc</span>
+    <span class="phase-label">Phần 3</span>
+    <span class="tag digital active" data-filter="figure">Nhân vật</span>
+    <span class="tag digital active" data-filter="digital">Digital Art</span>
+    <span class="phase-label">Phần 4</span>
+    <span class="tag adv active" data-filter="style">Style cá nhân</span>
+    <span class="tag project active" data-filter="portfolio">Portfolio</span>
+    <span class="phase-label">Phần 5</span>
+    <span class="tag manga active" data-filter="manga-basics">Manga cơ bản</span>
+    <span class="tag manga active" data-filter="manga-panel">Trang & Panel</span>
+    <span class="tag manga active" data-filter="manga-story">Story & Script</span>
+    <span class="phase-label">Phần 6</span>
+    <span class="tag game active" data-filter="game-concept">Concept Art</span>
+    <span class="tag game active" data-filter="game-asset">Game Asset</span>
+    <span class="tag game active" data-filter="game-ui">UI & VFX</span>
+  </div>
+
+  <div class="stats" id="stats">— bấm vào bài học để mở</div>
+
+  <div id="lessons-container">
+
+  <!-- PHASE 1 -->
+  <div class="phase-section" data-phase="sketch perspective">
+    <div class="phase-header">
+      <span class="phase-number">Phần 1</span>
+      <span class="phase-title">Nền tảng vẽ tay — từ zero đến tự tin cầm bút</span>
+    </div>
+
+    <div class="lesson" data-tags="sketch">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag sketch">Nét & hình cơ bản</span>
+        <span class="lesson-title">Kiểm soát nét — warm-up & đường thẳng</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 0 ▲</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Nền tảng đầu tiên: tay bạn phải quen với bút trước khi vẽ bất cứ thứ gì. Luyện warm-up hằng ngày 10–15 phút giúp nét ổn định, tự tin, không run.</div>
+        <div class="code-block"><span class="c">// Dụng cụ tối thiểu</span>
+<span class="k">Bút chì</span>  <span class="s">HB, 2B, 4B</span>  <span class="c">// 3 loại là đủ</span>
+<span class="k">Giấy</span>     <span class="s">A4 trắng</span>     <span class="c">// không cần giấy đắt</span>
+<span class="k">Tẩy</span>      <span class="s">tẩy mềm</span>      <span class="c">// tẩy cục, không dùng tẩy bút</span>
+
+<span class="c">// Bài warm-up hằng ngày</span>
+<span class="n">Đường thẳng ngang</span>  × 20 nét
+<span class="n">Đường thẳng dọc</span>   × 20 nét
+<span class="n">Đường cong</span>         × 20 nét
+<span class="n">Vòng tròn liên tục</span>  × 10 vòng</div>
+        <div class="tip-block">Đừng vẽ chậm từng nét — vẽ nhanh, tự tin hơn. Nét chậm run nhiều hơn nét nhanh.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Điền đầy tờ A4 với đường thẳng đều nhau (ngang + dọc) <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 50 vòng tròn không dùng compas, cố gắng đều <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Luyện bảng đậm nhạt bằng nét chì (gradient từ trắng → đen) <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="sketch">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag sketch">Nét & hình cơ bản</span>
+        <span class="lesson-title">Hình học cơ bản — khối 2D & 3D</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 1 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Mọi vật thể đều là tổ hợp của hình đơn giản. Nắm vững hộp, cầu, trụ, nón trước khi vẽ bất kỳ thứ gì phức tạp.</div>
+        <div class="code-block"><span class="c">// 4 khối cơ bản</span>
+<span class="k">Hộp (Box)</span>         → bàn, nhà, điện thoại
+<span class="k">Hình cầu (Sphere)</span>  → đầu người, trái cây
+<span class="k">Trụ (Cylinder)</span>    → cốc, thân người, cây
+<span class="k">Nón (Cone)</span>        → mái nhà, cây thông</div>
+        <div class="tip-block">Trước khi vẽ bất kỳ vật gì, hãy nhìn và phân tích xem nó là tổ hợp khối nào.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 10 hộp ở các góc nhìn khác nhau <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ một chiếc cốc = trụ + elip miệng + tay cầm <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Phân tích 5 đồ vật trong nhà thành các khối cơ bản rồi phác thảo <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="perspective">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag sketch">Phối cảnh</span>
+        <span class="lesson-title">Phối cảnh 1 điểm tụ</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 2 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Phối cảnh 1 điểm tụ là nền tảng để vẽ nội thất, đường phố, hành lang. Mọi đường song song đều hội tụ về 1 điểm trên đường chân trời.</div>
+        <div class="code-block"><span class="c">// Các yếu tố cần nắm</span>
+<span class="k">Horizon line (HL)</span>    <span class="c">// đường chân trời = tầm mắt</span>
+<span class="k">Vanishing point (VP)</span>  <span class="c">// điểm tụ — 1 điểm</span>
+<span class="k">Orthogonal lines</span>      <span class="c">// các đường chạy về VP</span>
+
+<span class="c">// Bố cục cơ bản</span>
+<span class="n">VP trên HL</span>  → nhìn thẳng
+<span class="n">VP thấp</span>     → cảm giác vật lớn, hoành tráng
+<span class="n">VP cao</span>      → góc nhìn bird-eye</div>
+        <div class="tip-block">Luôn vẽ đường HL trước — đây là "không gian" của bức tranh bạn.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ căn phòng đơn giản với 1 điểm tụ <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ đường phố với nhà 2 bên hội tụ vào 1 VP <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ cùng 1 con hẻm với VP thấp vs VP cao, so sánh cảm giác <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="perspective">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag sketch">Phối cảnh</span>
+        <span class="lesson-title">Phối cảnh 2 điểm tụ</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 3 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Phối cảnh 2 điểm tụ dùng khi nhìn vào góc của vật thể — phổ biến nhất trong vẽ kiến trúc và đồ vật.</div>
+        <div class="code-block"><span class="k">VP1</span> bên trái HL  <span class="k">VP2</span> bên phải HL
+<span class="c">// Các cạnh dọc vẫn thẳng đứng song song</span>
+<span class="c">// Chỉ các cạnh ngang mới chạy về VP1 / VP2</span>
+
+<span class="n">Luyện vẽ</span>: hộp → nhà → block nhà phố</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 10 hộp với 2 điểm tụ, thay đổi vị trí VP <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ góc phố với 3 tòa nhà nhìn từ góc 45° <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ chiếc bàn + ghế từ góc nhìn 2 điểm tụ <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-section" data-phase="light color">
+    <div class="phase-header">
+      <span class="phase-number">Phần 2</span>
+      <span class="phase-title">Ánh sáng, bóng & màu sắc — cho bức vẽ có chiều sâu</span>
+    </div>
+
+    <div class="lesson" data-tags="light">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag color">Sáng bóng</span>
+        <span class="lesson-title">Ánh sáng & bóng đổ trên khối 3D</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 0 ▲</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Ánh sáng và bóng tạo ra ảo giác chiều sâu. Nắm vững 5 vùng ánh sáng trên hình cầu là đủ để áp dụng lên mọi vật thể.</div>
+        <div class="code-block"><span class="c">// 5 vùng giá trị trên hình cầu</span>
+<span class="k">Highlight</span>      <span class="c">// điểm sáng nhất</span>
+<span class="k">Light</span>          <span class="c">// vùng được chiếu sáng</span>
+<span class="k">Halftone</span>       <span class="c">// chuyển tiếp sáng → tối</span>
+<span class="k">Core shadow</span>    <span class="c">// vùng tối nhất</span>
+<span class="k">Reflected light</span> <span class="c">// ánh sáng phản chiếu từ nền</span>
+<span class="n">Cast shadow</span>    <span class="c">// bóng đổ xuống bề mặt</span></div>
+        <div class="tip-block">Bóng đổ (cast shadow) luôn tối hơn bóng trên vật (form shadow). Đừng tô đều nhau.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ hình cầu với 5 vùng ánh sáng từ đèn trái, đèn phải, đèn trên <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ hộp + bóng đổ với nguồn sáng ở 3 vị trí khác nhau <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ still life: 1 quả táo + 1 cái cốc, tô bóng bằng chì <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="light">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag color">Sáng bóng</span>
+        <span class="lesson-title">Giá trị (Value) — trước khi dùng màu</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 1 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Value (độ sáng tối) quan trọng hơn màu sắc. Một bức tranh đúng value có thể thiếu màu vẫn đẹp — nhưng màu đẹp mà sai value thì rối mắt.</div>
+        <div class="code-block"><span class="c">// Thang value 1–10</span>
+<span class="s">1</span> = trắng tinh   <span class="s">10</span> = đen tuyệt đối
+<span class="c">// Bài tập quan trọng nhất</span>
+<span class="n">Squint test</span>  <span class="c">// nheo mắt nhìn ảnh → thấy value rõ hơn</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ thang 9 ô gradient từ trắng → đen bằng bút chì <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Chụp ảnh bất kỳ, chuyển grayscale, vẽ lại chỉ bằng 3 value <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ thumbnail notan (2 value: đen/trắng) của 5 ảnh tham khảo <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="color">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag color">Màu sắc</span>
+        <span class="lesson-title">Lý thuyết màu sắc cơ bản</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 2 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Màu có 3 thuộc tính: Hue (màu gốc), Saturation (độ bão hòa), Value (độ sáng). Hiểu 3 thứ này là đủ để bắt đầu dùng màu tốt.</div>
+        <div class="code-block"><span class="k">Hue</span>         <span class="c">// đỏ, cam, vàng, xanh…</span>
+<span class="k">Saturation</span>  <span class="c">// xám ↔ màu rực</span>
+<span class="k">Value</span>       <span class="c">// tối ↔ sáng</span>
+
+<span class="c">// Palette tối giản cho người mới</span>
+<span class="n">Warm white</span> + <span class="n">Cool black</span>
+<span class="n">Màu nóng</span> (đỏ/vàng) + <span class="n">Màu lạnh</span> (xanh)</div>
+        <div class="tip-block">Bóng = màu lạnh hơn + ít saturation. Ánh sáng = màu nóng hơn + nhiều saturation.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Tô màu 1 hình cầu bằng màu nước — đổ bóng warm/cool <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ still life bằng 3 màu: 1 nóng, 1 lạnh, 1 trung tính <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Copy một bức tranh master, chú ý palette màu gốc <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-section" data-phase="figure digital">
+    <div class="phase-header">
+      <span class="phase-number">Phần 3</span>
+      <span class="phase-title">Nhân vật & Digital Art — bước vào vẽ số</span>
+    </div>
+
+    <div class="lesson" data-tags="figure">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag digital">Nhân vật</span>
+        <span class="lesson-title">Tỉ lệ cơ thể người — canon 8 đầu</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 0 ▲</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Tỉ lệ người lý tưởng = 8 đầu. Nhân vật phim hoạt hình thường 6–7 đầu. Manga hero 9–10 đầu. Nắm tỉ lệ trước, chi tiết tính sau.</div>
+        <div class="code-block"><span class="c">// Mốc 8 đầu từ trên xuống</span>
+<span class="n">1</span>  → đỉnh đầu đến cằm
+<span class="n">2</span>  → núm vú
+<span class="n">3</span>  → rốn
+<span class="n">4</span>  → mấu chuyển (crotch)
+<span class="n">5</span>  → giữa đùi
+<span class="n">6</span>  → đầu gối
+<span class="n">7</span>  → bắp chân
+<span class="n">8</span>  → gót chân</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ skeleton stick figure 8 đầu × 20 lần <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ mannequin blocky (khối hộp + trụ) từ skeleton <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Gesture drawing 30 giây × 50 pose trên line-of-action.com <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="figure">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag digital">Nhân vật</span>
+        <span class="lesson-title">Khuôn mặt — tỉ lệ & biểu cảm</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 1 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Mắt nằm giữa chiều cao khuôn mặt — không phải trên. Đây là lỗi phổ biến nhất. Nắm tỉ lệ Loomis là cách học nhanh nhất.</div>
+        <div class="code-block"><span class="c">// Tỉ lệ mặt chuẩn (nhìn thẳng)</span>
+<span class="k">Mắt</span>  → giữa chiều cao đầu
+<span class="k">Mũi</span>  → giữa mắt và cằm
+<span class="k">Miệng</span>→ 1/3 từ mũi xuống cằm
+<span class="k">Tai</span>  → từ mắt đến mũi
+<span class="k">Rộng mặt</span> ≈ 5 mắt (eye-width rule)</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 20 khuôn mặt oval với tỉ lệ chuẩn + đường trục <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 7 biểu cảm cơ bản: vui, buồn, giận, sợ, ngạc nhiên, ghê, khinh <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ khuôn mặt ở 5 góc nhìn: thẳng, 3/4, side, hướng lên, hướng xuống <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="digital">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag digital">Digital Art</span>
+        <span class="lesson-title">Bắt đầu với Procreate / Krita / Clip Studio</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 2 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Digital art không dễ hơn vẽ tay — chỉ là công cụ khác. Bắt đầu với 3 layer cơ bản: sketch, lineart, color. Đừng bị lạc trong 1000 tính năng.</div>
+        <div class="code-block"><span class="c">// Workflow cơ bản</span>
+<span class="k">Layer 1</span>  <span class="s">Sketch</span>     opacity 30–40%
+<span class="k">Layer 2</span>  <span class="s">Lineart</span>    opacity 100%
+<span class="k">Layer 3</span>  <span class="s">Color</span>      mode: Multiply / Normal
+<span class="k">Layer 4</span>  <span class="s">Shadow</span>     mode: Multiply
+<span class="k">Layer 5</span>  <span class="s">Highlight</span>  mode: Add / Screen
+
+<span class="c">// App khuyên dùng</span>
+<span class="n">iPad</span>      → Procreate (tốt nhất cho mobile)
+<span class="n">PC miễn phí</span>→ Krita (free, đủ dùng)
+<span class="n">Manga/anime</span>→ Clip Studio Paint</div>
+        <div class="tip-block">Mua được bảng vẽ Wacom cũng tốt — nhưng chuột vẫn vẽ được. Đừng đợi có đồ xịn mới bắt đầu.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Luyện đường thẳng + hình tròn bằng bảng vẽ × 15 phút <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 1 nhân vật đơn giản theo workflow 5 layer <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Lineart 1 sketch tay đã vẽ trước, tô màu flat + bóng đơn giản <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="digital">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag digital">Digital Art</span>
+        <span class="lesson-title">Tô màu cel-shading & soft rendering</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 3 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Cel-shading (bóng phẳng kiểu anime) và soft rendering (mờ dần như ảnh chụp) là 2 style phổ biến nhất để bắt đầu.</div>
+        <div class="code-block"><span class="c">// Cel-shading</span>
+<span class="k">Flat color</span>  → 1 màu base
+<span class="k">Shadow</span>      → Multiply layer, màu lạnh hơn
+<span class="k">Highlight</span>   → Add layer, màu nóng hơn
+<span class="c">// Không blur — cứng gọn</span>
+
+<span class="c">// Soft rendering</span>
+<span class="k">Base</span>        → tô flat
+<span class="k">Round brush</span> → blend bóng mờ dần
+<span class="k">Airbrush</span>    → highlight mượt</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Tô màu cel-shading 1 nhân vật anime đơn giản <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ soft-render portrait từ ảnh tham khảo <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Thử cả 2 style với cùng 1 nhân vật, so sánh kết quả <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-section" data-phase="style portfolio">
+    <div class="phase-header">
+      <span class="phase-number">Phần 4</span>
+      <span class="phase-title">Style cá nhân & Portfolio — nâng cao</span>
+    </div>
+
+    <div class="lesson" data-tags="style">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag adv">Style cá nhân</span>
+        <span class="lesson-title">Phân tích & học từ artist yêu thích</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 0 ▲</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Style không phải thứ bạn "bịa ra" — nó là kết quả của việc học nhiều artist rồi chắt lọc. Phân tích bằng mắt trước khi copy.</div>
+        <div class="code-block"><span class="c">// Câu hỏi khi phân tích artist</span>
+<span class="k">Lineart</span>   → dày mỏng thế nào? có weight không?
+<span class="k">Màu</span>       → palette bao nhiêu màu? nóng/lạnh?
+<span class="k">Bóng</span>      → cel / soft / texture / painterly?
+<span class="k">Bố cục</span>   → nhân vật đặt ở đâu? không gian?
+<span class="k">Cảm xúc</span>  → bức tranh muốn truyền gì?</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Chọn 3 artist yêu thích, viết phân tích 1 trang cho mỗi người <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Copy 3 bức tranh (1 của mỗi artist), cố bắt chước sát nhất có thể <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ cùng 1 nhân vật theo 3 style khác nhau, tìm điểm chung <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="style">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag adv">Style cá nhân</span>
+        <span class="lesson-title">Environment & background cơ bản</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 1 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Nhân vật cần môi trường. Background không cần chi tiết — cần depth: foreground, midground, background với 3 level value khác nhau.</div>
+        <div class="code-block"><span class="c">// Luật atmospheric perspective</span>
+<span class="k">Gần</span>  → tối hơn, chi tiết hơn, saturation cao
+<span class="k">Xa</span>   → sáng hơn, mờ hơn, saturation thấp
+<span class="c">// → tạo cảm giác không gian tự nhiên</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ thumbnail cảnh thiên nhiên 3 lớp: cây gần, đồi giữa, núi xa <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ cảnh đường phố ban đêm có ánh đèn neon <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ illustration hoàn chỉnh: nhân vật + background có 3 layer depth <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="portfolio">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag project">Portfolio</span>
+        <span class="lesson-title">Xây dựng portfolio 10 bức</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 2 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Portfolio không cần nhiều — cần tốt và đa dạng. 10 bức chất lượng cao tốt hơn 100 bức trung bình. Cấu trúc tốt nhất cho portfolio ban đầu:</div>
+        <div class="code-block"><span class="c">// 10 bức portfolio tối thiểu</span>
+<span class="n">3</span> × portrait / character study
+<span class="n">2</span> × full body illustration
+<span class="n">2</span> × environment / background
+<span class="n">1</span> × scene với nhân vật + background
+<span class="n">1</span> × bảng concept / character sheet
+<span class="n">1</span> × bức tốt nhất — showpiece
+
+<span class="c">// Đăng lên</span>
+<span class="k">ArtStation</span>  <span class="c">// chuyên nghiệp nhất</span>
+<span class="k">Instagram</span>   <span class="c">// reach cao nhất</span>
+<span class="k">Twitter/X</span>   <span class="c">// cộng đồng artist lớn</span></div>
+        <div class="tip-block">Đăng đều đặn quan trọng hơn đăng ít mà hoàn hảo. Xấu mà đăng vẫn tốt hơn đẹp mà giấu trong máy.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Tạo tài khoản ArtStation + upload 3 bức đầu tiên <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Hoàn thành 10 bức portfolio theo cấu trúc trên <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Tham gia 1 art challenge (Inktober, Drawlloween…) để luyện đều đặn <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="portfolio">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag project">Portfolio</span>
+        <span class="lesson-title">Tài nguyên học thêm — sách & khóa hay nhất</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 3 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Tài nguyên tốt nhất để tiếp tục hành trình sau khi đã có nền tảng vững:</div>
+        <div class="code-block"><span class="c">// Sách kinh điển</span>
+<span class="k">Drawing on the Right Side of the Brain</span>  — Betty Edwards
+<span class="k">Fun with a Pencil</span>  — Andrew Loomis
+<span class="k">Color and Light</span>   — James Gurney
+
+<span class="c">// Kênh YouTube miễn phí</span>
+<span class="n">Proko</span>         <span class="c">// anatomy & figure</span>
+<span class="n">Marc Brunet</span>   <span class="c">// digital art tips</span>
+<span class="n">Sinix Design</span>  <span class="c">// color & rendering</span>
+<span class="n">Ctrl+Paint</span>    <span class="c">// digital painting foundation</span>
+
+<span class="c">// Khóa có phí (giá trị nhất)</span>
+<span class="k">Schoolism</span>     <span class="c">// cao cấp, có thầy chấm bài</span>
+<span class="k">NMA Online</span>   <span class="c">// anatomy chuyên sâu</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Đọc xong "Fun with a Pencil" và vẽ theo toàn bộ bài tập <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Xem toàn bộ series Ctrl+Paint (miễn phí) và áp dụng <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Dành 100 giờ vẽ có chủ đích trong 3 tháng — theo dõi bằng Toggl <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end lessons-container - REPLACED -->
+
+  <!-- PHASE 5: MANGA -->
+  <div class="phase-section" data-phase="manga-basics manga-panel manga-story">
+    <div class="phase-header">
+      <span class="phase-number">Phần 5</span>
+      <span class="phase-title">Manga — từ nét bút tới trang truyện hoàn chỉnh</span>
+    </div>
+
+    <div class="lesson" data-tags="manga-basics">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Manga cơ bản</span>
+        <span class="lesson-title">Lineart manga — nét sạch & line weight</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 0 ▲</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Manga sống bằng lineart — không có màu, chỉ có nét và trắng đen. Nét viền ngoài (outline) phải dày hơn nét bên trong (interior line). Đây là quy tắc số 1.</div>
+        <div class="code-block"><span class="c">// Line weight hierarchy</span>
+<span class="k">Outline nhân vật</span>   → nét dày nhất (3–4px)
+<span class="k">Nét chi tiết mặt</span>  → nét trung bình (1.5–2px)
+<span class="k">Nét texture/fold</span>  → nét mảnh nhất (0.5–1px)
+<span class="k">Nét nền/bg</span>        → mảnh + nhạt hơn nhân vật
+
+<span class="c">// Dụng cụ vẽ tay</span>
+<span class="n">Manga nib G-pen</span>   <span class="c">// nét có độ co giãn</span>
+<span class="n">Tachikawa School G</span><span class="c">// cứng hơn, dễ kiểm soát</span>
+<span class="n">Maru nib</span>           <span class="c">// nét mảnh chi tiết</span>
+<span class="c">// Digital: Clip Studio Paint ink brush</span></div>
+        <div class="tip-block">Nhân vật phải "bật" ra khỏi background. Nét nhân vật luôn đậm hơn nét background — không bao giờ đều nhau.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Luyện nét có pressure variation: từ mảnh → dày → mảnh trong 1 stroke × 30 lần <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Lineart 1 khuôn mặt manga đúng 3 cấp độ line weight <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Copy 1 trang manga yêu thích chỉ bằng bút lông/nib, không bút chì <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="manga-basics">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Manga cơ bản</span>
+        <span class="lesson-title">Screentone & tô trắng đen kiểu manga</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 1 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Manga truyền thống không dùng màu — dùng screentone (chấm bi) và hatching để tạo bóng và texture. Đây là ngôn ngữ thị giác đặc trưng của manga.</div>
+        <div class="code-block"><span class="c">// Kỹ thuật tô bóng manga</span>
+<span class="k">Solid black</span>    → vùng tối nhất, shadow sâu
+<span class="k">Screentone</span>     → bóng nhẹ, skin tone, fabric
+<span class="k">Hatching</span>       → texture nhanh, vùng chuyển tiếp
+<span class="k">Feathering</span>     → nét tỏa ra từ vùng tối
+<span class="k">White ink</span>      → highlight mắt, ánh sáng rực
+
+<span class="c">// Clip Studio: Layer → Tone</span>
+<span class="n">Frequency</span> 60    <span class="c">// chuẩn print</span>
+<span class="n">Frequency 30–40</span> <span class="c">// chấm to, coarse feel</span></div>
+        <div class="tip-block">Quy tắc "3 vùng": trắng (light) — tone (midtone) — đen (shadow). Không cần hơn 3 mức để trang trông gọn.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ bust shot nhân vật, tô bóng bằng đúng 3 vùng value <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Luyện 5 kiểu hatching khác nhau: parallel, cross, feather, contour, scribble <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Tô screentone 1 nhân vật hoàn chỉnh trong Clip Studio <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="manga-basics">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Manga cơ bản</span>
+        <span class="lesson-title">Mắt & biểu cảm manga — chibi đến realistic</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 2 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Mắt manga là "linh hồn" của nhân vật. Style mắt quyết định cả aesthetic của truyện — từ shounen cứng rắn đến shoujo lung linh đến seinen thực tế.</div>
+        <div class="code-block"><span class="c">// Cấu trúc mắt manga</span>
+<span class="k">Upper lash line</span>   → dày, đậm — quan trọng nhất
+<span class="k">Lower lash line</span>   → mảnh hơn (đôi khi bỏ)
+<span class="k">Iris</span>              → hình elip, có gradient/shine
+<span class="k">Pupil</span>             → đen tuyệt đối
+<span class="k">Highlight</span>         → 1–2 chấm trắng, tạo sự sống
+
+<span class="c">// Biểu cảm qua mắt</span>
+<span class="n">Mắt to tròn</span>   → ngạc nhiên / dễ thương
+<span class="n">Mắt nhỏ lại</span>  → tức giận / nghi ngờ
+<span class="n">Mắt nửa nhắm</span> → buồn / mệt mỏi
+<span class="n">Không highlight</span>→ chết / vô cảm</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 20 kiểu mắt manga khác nhau từ simple đến detail <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ cùng 1 nhân vật với 6 biểu cảm: vui, buồn, giận, sợ, ngại, ngơ ngác <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Thiết kế mắt riêng cho 3 nhân vật có tính cách khác nhau <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="manga-panel">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Trang & Panel</span>
+        <span class="lesson-title">Bố cục trang — panel layout & flow</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 3 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Manga đọc từ phải sang trái (JP) hoặc trái sang phải (webtoon). Bố cục panel điều khiển nhịp đọc — panel lớn = nhấn mạnh, panel nhỏ = nhanh.</div>
+        <div class="code-block"><span class="c">// Nguyên tắc bố cục trang</span>
+<span class="k">Reading flow</span>   JP: phải→trái, trên→dưới
+<span class="k">Gutter</span>         khoảng trắng giữa panel (3–5mm)
+<span class="k">Bleed panel</span>    panel không có viền → dramatic
+<span class="k">Splash page</span>    1 panel = toàn trang → impact lớn
+
+<span class="c">// Nhịp điệu</span>
+<span class="n">Panel nhỏ + nhỏ + LỚN</span>  → build-up → payoff
+<span class="n">Panel cao hẹp</span>           → cảm giác cao / nhanh
+<span class="n">Panel rộng ngang</span>        → cảnh rộng / chậm rãi</div>
+        <div class="tip-block">Đừng làm tất cả panel bằng nhau — boring. Ít nhất 1 panel mỗi trang phải nổi bật về size.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Phác thảo 5 layout khác nhau cho 1 trang 6 panel <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 1 trang cảnh hành động: nhân vật chạy + né đòn + phản công <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 1 trang cảnh cảm xúc: nhân vật nhận tin buồn → phản ứng <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="manga-panel">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Trang & Panel</span>
+        <span class="lesson-title">Speed lines, SFX & hiệu ứng động</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 4 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Speed lines và SFX (sound effects) là ngôn ngữ riêng của manga. Chúng truyền đạt tốc độ, cảm xúc và âm thanh không thể vẽ trực tiếp.</div>
+        <div class="code-block"><span class="c">// Các loại speed line</span>
+<span class="k">Radial lines</span>    → focus vào 1 điểm, tạo impact
+<span class="k">Parallel lines</span>  → chuyển động theo hướng
+<span class="k">Background blur</span> → nhân vật đứng yên, bg chuyển
+<span class="k">Emotion lines</span>   → tỏa ra từ mặt → shock/blush
+
+<span class="c">// SFX kiểu manga</span>
+<span class="n">ドン (DON)</span>   → cú đấm mạnh
+<span class="n">ザーッ (ZAA)</span> → mưa / gió
+<span class="n">ドキドキ</span>      → tim đập nhanh
+<span class="c">// Viết bằng katakana tích hợp vào hình</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Luyện vẽ radial speed line bằng tay × 10 panel <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ cảnh đấm có radial line + impact frame + SFX <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Dùng Clip Studio auto-tool speed line, tùy chỉnh cho 3 cảnh khác nhau <span class="difficulty diff-medium">tb</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="manga-story">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Story & Script</span>
+        <span class="lesson-title">Character design cho manga</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 5 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Nhân vật manga phải nhận ra được chỉ từ silhouette. Design tốt = mỗi nhân vật có shape language riêng thể hiện tính cách.</div>
+        <div class="code-block"><span class="c">// Shape language cơ bản</span>
+<span class="k">Tròn</span>    → dễ thương, thân thiện, hero trẻ
+<span class="k">Vuông</span>   → mạnh mẽ, đáng tin, ổn định
+<span class="k">Nhọn</span>   → nguy hiểm, nhanh nhẹn, villain
+
+<span class="c">// Character sheet tối thiểu</span>
+<span class="n">Front view</span>  full body
+<span class="n">Side view</span>   full body
+<span class="n">Back view</span>   (đặc biệt quan trọng cho tóc)
+<span class="n">Facial expressions</span>  × 6
+<span class="n">Costume detail</span>      closeup</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Thiết kế 3 nhân vật chỉ dùng hình học: hero tròn, rival vuông, villain nhọn <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ character sheet đầy đủ cho 1 nhân vật chính <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Test silhouette: tô đen nhân vật → vẫn nhận ra không? Sửa đến khi được <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="manga-story">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag manga">Story & Script</span>
+        <span class="lesson-title">Storyboard & chapter đầu tiên</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 6 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Storyboard (name/nemu) là bước quan trọng nhất trước khi vẽ chính thức. Phác thảo cực thô — chỉ cần hiểu được camera, action, dialogue placement.</div>
+        <div class="code-block"><span class="c">// Workflow làm chapter</span>
+<span class="k">1. Script</span>      → viết từng beat cảnh
+<span class="k">2. Thumbnails</span>  → layout trang 3×3cm (rất thô)
+<span class="k">3. Nemu</span>        → storyboard rõ hơn, rough sketch
+<span class="k">4. Pencil</span>      → vẽ chi tiết bằng chì
+<span class="k">5. Ink</span>         → lineart sạch bằng nib/brush
+<span class="k">6. Screentone</span>  → tô bóng
+<span class="k">7. Dialogue</span>    → thêm text + speech bubble
+<span class="k">8. Cleanup</span>     → tẩy pencil, scan/export</div>
+        <div class="tip-block">Đừng skip storyboard. Mọi vấn đề cần phát hiện ở bước thô — sửa ở bước ink tốn gấp 10 lần công.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Storyboard 4 trang cảnh: 2 nhân vật gặp nhau lần đầu <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Hoàn thành chapter 0 (giới thiệu): 8–12 trang từ script đến ink <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Đăng chapter đầu lên MangaDex / Tapas / Instagram và nhận feedback <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 6: GAME ART -->
+  <div class="phase-section" data-phase="game-concept game-asset game-ui">
+    <div class="phase-header">
+      <span class="phase-number">Phần 6</span>
+      <span class="phase-title">Game Art — concept, asset, UI cho game developer</span>
+    </div>
+
+    <div class="lesson" data-tags="game-concept">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">Concept Art</span>
+        <span class="lesson-title">Concept art là gì & quy trình trong studio</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 0 ▲</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Concept artist không vẽ đẹp — vẽ nhanh và vẽ đúng ý team. Mục tiêu là communicate idea, không phải tạo ra artwork hoàn chỉnh.</div>
+        <div class="code-block"><span class="c">// Loại concept art trong game</span>
+<span class="k">Character concept</span>   → visual + personality
+<span class="k">Environment concept</span> → mood, atmosphere, scale
+<span class="k">Prop concept</span>        → vũ khí, đồ vật, vehicle
+<span class="k">Color script</span>        → palette cho từng act/scene
+<span class="k">Keyframe art</span>        → illustration cho marketing
+
+<span class="c">// Pipeline thực tế</span>
+<span class="n">Brief</span> → <span class="n">Exploration sketches</span> → <span class="n">Review</span>
+→ <span class="n">Refined concept</span> → <span class="n">Orthographic view</span>
+→ <span class="n">Hand-off to 3D/2D team</span></div>
+        <div class="tip-block">Vẽ nhanh quan trọng hơn vẽ đẹp trong concept. 10 idea thô trong 1 giờ > 1 idea đẹp trong 3 giờ.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Sketch 10 thumbnail nhân vật warrior trong 30 phút (3 phút/thumbnail) <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Chọn 2 thumbnail tốt nhất, refined lên thành concept hoàn chỉnh <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ environment concept: 1 dungeon level với 3 mood khác nhau (bright, dark, fog) <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="game-concept">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">Concept Art</span>
+        <span class="lesson-title">Character concept cho game — từ brief đến orthographic</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 1 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Character concept game cần orthographic view (front/side/back) để team 3D model chính xác. Đây là khác biệt lớn nhất giữa game art và illustration.</div>
+        <div class="code-block"><span class="c">// Character turnaround (orthographic)</span>
+<span class="k">Front</span>   0°   → main design view
+<span class="k">Side</span>    90°  → silhouette & depth
+<span class="k">Back</span>    180° → back design, hair detail
+<span class="k">3/4</span>     45°  → hero shot, thường nhất
+
+<span class="c">// Thông tin cần có trong concept sheet</span>
+<span class="n">Height reference</span>   <span class="c">// so với nhân vật khác</span>
+<span class="n">Color palette</span>      <span class="c">// hex code hoặc swatches</span>
+<span class="n">Material callout</span>   <span class="c">// da thuộc / kim loại / vải</span>
+<span class="n">Detail zoom</span>        <span class="c">// closeup logo, buckle, weapon</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ full turnaround (front/side/back) cho 1 nhân vật đơn giản <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Tạo concept sheet đầy đủ: turnaround + palette + material callout <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Thiết kế nhân vật RPG: warrior, mage, rogue — 3 silhouette rõ ràng khác nhau <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="game-asset">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">Game Asset</span>
+        <span class="lesson-title">Pixel art — từ 16×16 đến sprite sheet</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 2 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Pixel art là kỹ năng thiết yếu cho indie game. Hạn chế màu và resolution không phải nhược điểm — là ngôn ngữ thẩm mỹ riêng cần thành thạo.</div>
+        <div class="code-block"><span class="c">// Kích thước chuẩn theo thể loại</span>
+<span class="k">16×16</span>   → item, icon, tile đơn giản
+<span class="k">32×32</span>   → character indie, Stardew-style
+<span class="k">48×48</span>   → character có animation phong phú
+<span class="k">64×64</span>   → boss, NPC chi tiết
+
+<span class="c">// Nguyên tắc pixel art</span>
+<span class="n">Palette tối đa</span>  8–16 màu (bắt đầu)
+<span class="n">Anti-aliasing</span>   thủ công (không dùng AA tự động)
+<span class="n">Pillow shading</span>  → lỗi phổ biến nhất, tránh!
+<span class="n">Consistent light source</span> → 1 hướng thôi
+
+<span class="c">// Tool: Aseprite (tốt nhất, ~20$)</span></div>
+        <div class="tip-block">Pillow shading = bóng đổ theo viền hình, không theo nguồn sáng. Cực kỳ phổ biến khi mới học — hãy tránh ngay từ đầu.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 10 icon item 16×16 (kiếm, khiên, bình máu, chìa khóa…) <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ nhân vật 32×32 với đúng light source, tối đa 12 màu <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ tileset 16×16 cho 1 map theme: dungeon hoặc forest (tối thiểu 20 tile) <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="game-asset">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">Game Asset</span>
+        <span class="lesson-title">Animation sprite — idle, walk, attack</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 3 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Animation trong game không cần mượt mà như phim hoạt hình — cần readable và có impact. 4–8 frame thường là đủ cho hầu hết action.</div>
+        <div class="code-block"><span class="c">// Frame count chuẩn cho indie</span>
+<span class="k">Idle</span>       4–6 frame   <span class="c">// thở nhẹ</span>
+<span class="k">Walk</span>       8 frame     <span class="c">// 2 bước = 1 cycle</span>
+<span class="k">Run</span>        6 frame     <span class="c">// nhanh hơn walk</span>
+<span class="k">Attack</span>     5–8 frame   <span class="c">// anticipate → strike → recovery</span>
+<span class="k">Jump</span>       4 frame     <span class="c">// squat → up → peak → land</span>
+<span class="k">Death</span>      8–10 frame  <span class="c">// có weight</span>
+
+<span class="c">// Nguyên lý animation quan trọng</span>
+<span class="n">Squash & Stretch</span>  → cảm giác có trọng lượng
+<span class="n">Anticipation</span>      → trước đánh phải lùi/nạp
+<span class="n">Follow-through</span>    → sau đánh tiếp tục chuyển động</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Làm idle animation 4 frame cho nhân vật 32×32 trong Aseprite <span class="difficulty diff-easy">dễ</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Làm walk cycle 8 frame, export thành sprite sheet PNG <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Làm full animation set: idle + walk + attack + death cho 1 nhân vật <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="game-asset">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">Game Asset</span>
+        <span class="lesson-title">2D game asset — background & tilesets</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 4 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Background cho game cần parallax layers và tileability. Đây là khác biệt cơ bản giữa vẽ illustration và vẽ game asset.</div>
+        <div class="code-block"><span class="c">// Parallax background structure</span>
+<span class="k">Layer 1 (xa nhất)</span>  sky / stars       tốc độ 10%
+<span class="k">Layer 2</span>             mountains / clouds   30%
+<span class="k">Layer 3</span>             far trees            50%
+<span class="k">Layer 4</span>             near trees           70%
+<span class="k">Layer 5 (gần nhất)</span> foreground / ground  100%
+
+<span class="c">// Tileable texture</span>
+<span class="n">Tile phải seamless</span>  → cạnh trái = cạnh phải
+<span class="n">Tránh pattern lặp rõ</span>→ thêm variation tile
+<span class="n">Auto-tile</span>           → hệ thống tile thông minh (Wang tile)</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ seamless grass tile 16×16, kiểm tra bằng cách tile 8×8 trên canvas <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ background 5 layer cho side-scroller: rừng hoặc thành phố <span class="difficulty diff-hard">khó</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Import asset vào Unity/Godot, test parallax scrolling thực tế <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="game-ui">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">UI & VFX</span>
+        <span class="lesson-title">Game UI design — HUD, menu, icon</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 5 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">Game UI phải readable trong 0.1 giây — player không nhìn UI, họ liếc qua. Contrast và size hierarchy là tất cả.</div>
+        <div class="code-block"><span class="c">// Thành phần HUD cơ bản</span>
+<span class="k">Health bar</span>     → đỏ, dài, góc trái
+<span class="k">Mana / Energy</span>  → xanh / vàng, dưới health
+<span class="k">Minimap</span>        → góc phải hoặc trái
+<span class="k">Skill hotbar</span>   → dưới màn hình, icon rõ
+<span class="k">Boss HP</span>        → giữa trên, to rõ
+
+<span class="c">// Nguyên tắc thiết kế</span>
+<span class="n">8-bit border</span>   <span class="c">// frame UI dạng pixel</span>
+<span class="n">Fantasy scroll</span> <span class="c">// dialog box hình cuộn giấy</span>
+<span class="n">Sci-fi panel</span>   <span class="c">// HUD hologram/glowing</span>
+<span class="c">// Style phải khớp với game world</span></div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Thiết kế bộ icon 20 skill/item 32×32 cho RPG fantasy <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ mockup HUD hoàn chỉnh cho 1 game: health + mana + minimap + hotbar <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Thiết kế toàn bộ main menu screen: title, start, options, quit — có thematic <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson" data-tags="game-ui">
+      <div class="lesson-header" onclick="toggle(this)">
+        <span class="lesson-tag tag game">UI & VFX</span>
+        <span class="lesson-title">VFX 2D — hiệu ứng kỹ năng & particle</span>
+        <div class="lesson-meta">
+          <span class="step-badge">Bước 6 ▼</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="lesson-body">
+        <div class="desc">VFX (visual effects) là thứ làm game feel "juicy". Một cú đánh không có VFX cảm giác chết — có VFX đúng cảm giác như phát nổ.</div>
+        <div class="code-block"><span class="c">// Các loại VFX 2D cơ bản</span>
+<span class="k">Hit flash</span>       → nhân vật trắng 1–2 frame khi bị đánh
+<span class="k">Impact sprite</span>   → sprite animation vụ nổ / slash
+<span class="k">Particle burst</span>  → chấm nhỏ bắn ra từ va chạm
+<span class="k">Screen shake</span>    → màn hình rung (code, không phải art)
+<span class="k">Afterimage</span>      → ghost trail khi di chuyển nhanh
+
+<span class="c">// Sprite VFX animation</span>
+<span class="n">Fire</span>     → 8 frame, 3–4 shade cam/đỏ/vàng
+<span class="n">Explosion</span>→ 12 frame, expand → dissipate
+<span class="n">Magic</span>    → glow + particle, additive blend mode</div>
+        <div class="tip-block">Additive blend mode làm VFX "phát sáng" tự nhiên — đặt layer mode thành Add/Screen khi render lửa và phép thuật.</div>
+        <div class="practice-section">
+          <div class="practice-title">Danh sách thực hành</div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ sprite animation lửa 8 frame trong Aseprite <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Vẽ 3 loại impact sprite: slash, explosion, magic burst <span class="difficulty diff-medium">tb</span></span></div>
+          <div class="practice-item" onclick="checkItem(this)"><span class="check">✓</span><span>Import VFX vào game, combine với screen shake và hit flash — test game feel <span class="difficulty diff-hard">khó</span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end lessons-container -->
+
+<script>
+  function toggle(header) {
+    const lesson = header.parentElement;
+    lesson.classList.toggle('open');
+    updateStats();
+  }
+
+  function checkItem(item) {
+    item.classList.toggle('done');
+    const check = item.querySelector('.check');
+    if (item.classList.contains('done')) {
+      check.style.background = 'rgba(124,255,212,0.15)';
+      check.style.borderColor = '#7cffd4';
+      check.style.color = '#7cffd4';
+    } else {
+      check.style.background = '';
+      check.style.borderColor = '';
+      check.style.color = 'transparent';
+    }
+  }
+
+  function updateStats() {
+    const lessons = document.querySelectorAll('.lesson:not(.hidden)');
+    const open = document.querySelectorAll('.lesson.open:not(.hidden)');
+    const stats = document.getElementById('stats');
+    stats.innerHTML = `${lessons.length} bài học hiển thị — <span>${open.length} đang mở</span>`;
+  }
+
+  // Filter
+  const tags = document.querySelectorAll('.tag[data-filter]');
+  let activeFilters = new Set(['sketch','perspective','light','color','figure','digital','style','portfolio','manga-basics','manga-panel','manga-story','game-concept','game-asset','game-ui']);
+
+  tags.forEach(tag => {
+    tag.addEventListener('click', () => {
+      const f = tag.dataset.filter;
+      if (activeFilters.has(f)) {
+        activeFilters.delete(f);
+        tag.classList.remove('active');
+      } else {
+        activeFilters.add(f);
+        tag.classList.add('active');
+      }
+      applyFilters();
+    });
+  });
+
+  function applyFilters() {
+    const q = document.getElementById('search').value.toLowerCase();
+    document.querySelectorAll('.lesson').forEach(lesson => {
+      const lessonTags = lesson.dataset.tags.split(' ');
+      const tagMatch = lessonTags.some(t => activeFilters.has(t));
+      const titleMatch = lesson.querySelector('.lesson-title').textContent.toLowerCase().includes(q);
+      const descMatch = lesson.querySelector('.desc') ? lesson.querySelector('.desc').textContent.toLowerCase().includes(q) : false;
+      if (tagMatch && (q === '' || titleMatch || descMatch)) {
+        lesson.classList.remove('hidden');
+      } else {
+        lesson.classList.add('hidden');
+      }
+    });
+    updateStats();
+  }
+
+  document.getElementById('search').addEventListener('input', applyFilters);
+
+  updateStats();
+</script>
+</body>
+</html>

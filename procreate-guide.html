@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Từ điển thuật ngữ Procreate</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d12;
+    --surface: #16161f;
+    --surface2: #1e1e2a;
+    --border: #2a2a3a;
+    --accent1: #ff6b9d;
+    --accent2: #a78bfa;
+    --accent3: #34d399;
+    --accent4: #fbbf24;
+    --accent5: #60a5fa;
+    --accent6: #f97316;
+    --text: #e8e8f0;
+    --text-muted: #8888aa;
+    --text-dim: #55556a;
+    --tag-bg: #1e1e2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    padding: 40px 40px 20px;
+    border-bottom: 1px solid var(--border);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .header-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent1);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .header-meta span { color: var(--text-muted); margin: 0 4px; }
+
+  h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+
+  .header-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.8;
+    max-width: 700px;
+  }
+
+  /* ===== SEARCH ===== */
+  .search-wrap {
+    padding: 24px 40px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .search-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    gap: 10px;
+    transition: border-color 0.2s;
+  }
+
+  .search-box:focus-within {
+    border-color: var(--accent2);
+  }
+
+  .search-box svg { color: var(--text-dim); flex-shrink: 0; }
+
+  .search-box input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .search-box input::placeholder { color: var(--text-dim); }
+
+  /* ===== TAG FILTER ===== */
+  .tag-section {
+    padding: 0 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .part-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+    padding: 2px 0;
+    white-space: nowrap;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid;
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+    user-select: none;
+    letter-spacing: 0.04em;
+  }
+
+  .tag:hover { opacity: 0.8; transform: translateY(-1px); }
+  .tag.active { opacity: 1; }
+
+  .tag-pink   { color: var(--accent1); border-color: var(--accent1); }
+  .tag-purple { color: var(--accent2); border-color: var(--accent2); }
+  .tag-green  { color: var(--accent3); border-color: var(--accent3); }
+  .tag-yellow { color: var(--accent4); border-color: var(--accent4); }
+  .tag-blue   { color: var(--accent5); border-color: var(--accent5); }
+  .tag-orange { color: var(--accent6); border-color: var(--accent6); }
+
+  .tag.active.tag-pink   { background: rgba(255,107,157,0.15); }
+  .tag.active.tag-purple { background: rgba(167,139,250,0.15); }
+  .tag.active.tag-green  { background: rgba(52,211,153,0.15); }
+  .tag.active.tag-yellow { background: rgba(251,191,36,0.15); }
+  .tag.active.tag-blue   { background: rgba(96,165,250,0.15); }
+  .tag.active.tag-orange { background: rgba(249,115,22,0.15); }
+
+  /* ===== SUMMARY ===== */
+  .summary {
+    padding: 0 40px 28px;
+    max-width: 900px;
+    margin: 0 auto;
+    color: var(--text-dim);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .summary b { color: var(--text-muted); }
+
+  /* ===== CHAPTER HEADING ===== */
+  .chapter-heading {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 10px 40px 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .chapter-heading-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .chapter-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ===== CARDS ===== */
+  .cards-wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: var(--border); }
+  .card.open { border-color: var(--border); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    cursor: pointer;
+    gap: 12px;
+    user-select: none;
+  }
+
+  .card-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    border: 1px solid;
+  }
+
+  .card-title {
+    font-weight: 600;
+    font-size: 14px;
+    flex: 1;
+    color: var(--text);
+  }
+
+  .card-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .card-toggle {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+  }
+
+  .card.open .card-toggle { transform: rotate(180deg); }
+
+  .card-body {
+    display: none;
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card.open .card-body { display: block; }
+
+  .card-desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.75;
+    padding: 14px 0 12px;
+  }
+
+  .card-code {
+    background: #0a0a10;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.8;
+    margin: 4px 0 12px;
+    border: 1px solid #1a1a28;
+  }
+
+  .card-code .c-comment { color: #555570; }
+  .card-code .c-key     { color: var(--accent2); }
+  .card-code .c-val     { color: var(--accent3); }
+  .card-code .c-pink    { color: var(--accent1); }
+  .card-code .c-yellow  { color: var(--accent4); }
+
+  .card-tip {
+    border-left: 3px solid var(--accent4);
+    padding: 10px 14px;
+    background: rgba(251,191,36,0.05);
+    border-radius: 0 6px 6px 0;
+    color: var(--text-muted);
+    font-size: 12.5px;
+    line-height: 1.7;
+    margin-top: 8px;
+  }
+
+  .card-tip.blue {
+    border-left-color: var(--accent5);
+    background: rgba(96,165,250,0.05);
+  }
+
+  .card-tip.pink {
+    border-left-color: var(--accent1);
+    background: rgba(255,107,157,0.05);
+  }
+
+  .card-tip.green {
+    border-left-color: var(--accent3);
+    background: rgba(52,211,153,0.05);
+  }
+
+  /* hidden */
+  .card.hidden, .chapter-block.hidden { display: none !important; }
+
+  /* spacer */
+  .spacer { height: 60px; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 640px) {
+    .header, .search-wrap, .tag-section, .summary, .cards-wrap, .chapter-heading {
+      padding-left: 16px; padding-right: 16px;
+    }
+    h1 { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-meta">PROCREATE · IPAD · DIGITAL ART <span>·</span> TỪ CƠ BẢN ĐẾN NÂNG CAO</div>
+  <h1>Từ điển thuật ngữ Procreate</h1>
+  <p class="header-desc">
+    Tổng hợp 64 thuật ngữ & kỹ thuật — Giao diện cơ bản · Brush · Layer · Color · Transform · Selection · Mask · Drawing Guides · Animation · Text · Gesture · Export · Nâng cao
+  </p>
+</div>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Tìm thuật ngữ..." oninput="filterAll()">
+  </div>
+</div>
+
+<!-- TAGS -->
+<div class="tag-section">
+  <div class="tag-row">
+    <span class="part-label">Phần 1</span>
+    <span class="tag tag-pink active" onclick="toggleTag(this,'Interface')">Interface</span>
+    <span class="tag tag-pink active" onclick="toggleTag(this,'Gesture')">Gesture</span>
+    <span class="part-label">Phần 2</span>
+    <span class="tag tag-purple active" onclick="toggleTag(this,'Brush')">Brush</span>
+    <span class="tag tag-purple active" onclick="toggleTag(this,'Brush Studio')">Brush Studio</span>
+    <span class="part-label">Phần 3</span>
+    <span class="tag tag-green active" onclick="toggleTag(this,'Layer')">Layer</span>
+    <span class="tag tag-green active" onclick="toggleTag(this,'Blend Mode')">Blend Mode</span>
+  </div>
+  <div class="tag-row">
+    <span class="part-label">Phần 4</span>
+    <span class="tag tag-yellow active" onclick="toggleTag(this,'Color')">Color</span>
+    <span class="tag tag-yellow active" onclick="toggleTag(this,'Color Fill')">Color Fill</span>
+    <span class="part-label">Phần 5</span>
+    <span class="tag tag-blue active" onclick="toggleTag(this,'Transform')">Transform</span>
+    <span class="tag tag-blue active" onclick="toggleTag(this,'Selection')">Selection</span>
+    <span class="tag tag-blue active" onclick="toggleTag(this,'Drawing Guides')">Drawing Guides</span>
+    <span class="part-label">Phần 6</span>
+    <span class="tag tag-orange active" onclick="toggleTag(this,'Mask')">Mask</span>
+    <span class="tag tag-orange active" onclick="toggleTag(this,'Adjustments')">Adjustments</span>
+  </div>
+  <div class="tag-row">
+    <span class="part-label">Phần 7</span>
+    <span class="tag tag-pink active" onclick="toggleTag(this,'Text')">Text</span>
+    <span class="tag tag-pink active" onclick="toggleTag(this,'Animation')">Animation</span>
+    <span class="part-label">Phần 8</span>
+    <span class="tag tag-purple active" onclick="toggleTag(this,'Export')">Export</span>
+    <span class="tag tag-green active" onclick="toggleTag(this,'Advanced')">Advanced</span>
+  </div>
+  <div class="tag-row">
+    <span class="part-label">Phần 9</span>
+    <span class="tag tag-pink active" onclick="toggleTag(this,'Pro Tips')">Pro Tips</span>
+    <span class="tag tag-orange active" onclick="toggleTag(this,'Workflow Pro')">Workflow Pro</span>
+    <span class="tag tag-yellow active" onclick="toggleTag(this,'Color Science')">Color Science</span>
+    <span class="tag tag-blue active" onclick="toggleTag(this,'Hidden Feature')">Hidden Feature</span>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary" id="summaryText">
+  <b>64 thuật ngữ hiển thị</b> — bấm để mở
+</div>
+
+<!-- ===================== CONTENT ===================== -->
+
+<!-- PHẦN 1 -->
+<div class="chapter-block" data-chapter="1">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 1 · Giao diện & Cử chỉ — Làm quen từ đầu</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Interface">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Interface</span>
+        <span class="card-title">Canvas — Vùng vẽ</span>
+        <span class="card-meta">Bước 0 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Vùng trắng chính là nơi bạn vẽ. Khi tạo canvas mới, chọn kích thước phù hợp với mục đích: vẽ minh họa in ấn cần độ phân giải cao (300 DPI), vẽ cho màn hình dùng 72–150 DPI.</p>
+        <div class="card-code">
+<span class="c-comment">// Tạo canvas mới: Góc phải trên → dấu +</span>
+<span class="c-key">Kích thước khuyên dùng:</span>
+  <span class="c-val">A4 300dpi</span>   → In ấn, minh họa
+  <span class="c-val">2048×2048 px</span> → Avatar, icon
+  <span class="c-val">1920×1080 px</span> → Wallpaper, poster
+  <span class="c-val">Screen Size</span>  → Phác thảo nhanh
+        </div>
+        <div class="card-tip">⚠️ Canvas càng lớn + DPI cao → càng ít layer tối đa. Kiểm tra số layer cho phép trước khi vẽ dự án lớn.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Interface">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Interface</span>
+        <span class="card-title">Toolbar — 4 nút góc màn hình</span>
+        <span class="card-meta">Bước 0 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate có giao diện cực kỳ tối giản. 4 icon trên cùng bên phải điều khiển mọi thứ.</p>
+        <div class="card-code">
+<span class="c-key">🔧 Actions</span>   → Cài đặt canvas, import, export, share
+<span class="c-key">✦  Adjustments</span> → Bộ lọc màu, blur, hiệu ứng
+<span class="c-key">⟲  Selection</span>  → Chọn vùng để di chuyển / xóa
+<span class="c-key">⤢  Transform</span>  → Scale, xoay, warp đối tượng
+        </div>
+        <div class="card-tip blue">💡 Sidebar trái: thanh trượt trên là <b>Brush Size</b>, dưới là <b>Opacity</b>. Nút tròn giữa là Undo/Redo.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Gesture">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Gesture</span>
+        <span class="card-title">Gesture cơ bản — Shortcut ngón tay</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate được tối ưu cho cử chỉ ngón tay. Học thuộc các gesture này để vẽ nhanh gấp đôi.</p>
+        <div class="card-code">
+<span class="c-comment">// Cơ bản</span>
+<span class="c-pink">2 ngón chạm</span>     → Undo (hoàn tác)
+<span class="c-pink">3 ngón chạm</span>     → Redo (làm lại)
+<span class="c-pink">Pinch in/out</span>   → Zoom canvas
+<span class="c-pink">2 ngón xoay</span>    → Xoay canvas
+
+<span class="c-comment">// Nâng cao</span>
+<span class="c-yellow">3 ngón vuốt xuống</span> → Copy / Paste menu
+<span class="c-yellow">Giữ & chạm 2 ngón</span> → Undo liên tục
+<span class="c-yellow">Vuốt tay lên canvas</span> → Eyedropper (hút màu)
+        </div>
+        <div class="card-tip pink">🎯 Giữ ngón tay khi vẽ đường thẳng → QuickShape tự động chỉnh thành hình học chuẩn.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Gesture">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Gesture</span>
+        <span class="card-title">QuickShape — Vẽ hình chuẩn tự động</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Vẽ bất kỳ hình dạng nào rồi giữ nguyên bút — Procreate sẽ tự làm đẹp hình đó thành vòng tròn, hình chữ nhật, tam giác, đường thẳng hoàn hảo.</p>
+        <div class="card-code">
+<span class="c-comment">// Cách dùng</span>
+<span class="c-key">Vẽ hình</span> → <span class="c-val">Giữ bút không nhấc</span> → QuickShape kích hoạt
+<span class="c-key">Sau đó:</span>
+  Chạm thêm 1 ngón tay → Edit Shape (chỉnh chính xác)
+  Thả ngón tay          → Giữ nguyên hình đã làm đẹp
+        </div>
+        <div class="card-tip green">✅ Kết hợp QuickShape + Edit Shape để vẽ hình học chính xác mà không cần tool riêng.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 2 -->
+<div class="chapter-block" data-chapter="2">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 2 · Brush — Công cụ vẽ</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Brush">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-purple">Brush</span>
+        <span class="card-title">Brush Library — Thư viện cọ</span>
+        <span class="card-meta">Bước 0 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate có hàng trăm cọ mặc định chia theo nhóm. Bấm icon cọ trên góc phải để mở.</p>
+        <div class="card-code">
+<span class="c-comment">// Nhóm brush mặc định hay dùng</span>
+<span class="c-key">Sketching</span>  → 6B Pencil, HB Pencil (phác thảo)
+<span class="c-key">Inking</span>     → Studio Pen, Syrup (tô màu phẳng)
+<span class="c-key">Painting</span>   → Acrylic, Gouache (vẽ tranh)
+<span class="c-key">Airbrushing</span>→ Soft Airbrush (tô bóng mượt)
+<span class="c-key">Calligraphy</span>→ Monoline (chữ đều nét)
+        </div>
+        <div class="card-tip">📌 Import brush .brushset miễn phí từ internet: Actions → Add → Import</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Brush">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-purple">Brush</span>
+        <span class="card-title">Brush Size & Opacity — Kích thước & Độ trong</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Hai thanh trượt bên trái canvas điều khiển size và opacity của cọ đang dùng.</p>
+        <div class="card-code">
+<span class="c-comment">// Sidebar trái</span>
+<span class="c-key">Thanh trên</span>  → Brush Size (1% → 100%)
+<span class="c-key">Thanh dưới</span> → Opacity (1% → 100%)
+
+<span class="c-comment">// Apple Pencil</span>
+<span class="c-val">Lực nhấn mạnh</span>  → Nét to / đậm hơn
+<span class="c-val">Nghiêng bút</span>    → Hiệu ứng shading (với brush hỗ trợ)
+        </div>
+        <div class="card-tip blue">💡 Nhấn đúp vào nút tròn undo/redo ở giữa sidebar để reset opacity về 100%.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Brush Studio">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-purple">Brush Studio</span>
+        <span class="card-title">Brush Studio — Tùy chỉnh cọ</span>
+        <span class="card-meta">Bước 2 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Bấm vào tên brush để mở Brush Studio — nơi chỉnh chi tiết mọi thứ của cọ. Đây là nơi tạo brush riêng.</p>
+        <div class="card-code">
+<span class="c-comment">// Các tab quan trọng trong Brush Studio</span>
+<span class="c-key">Stroke Path</span>   → Khoảng cách, độ mượt nét vẽ
+<span class="c-key">Taper</span>          → Đầu nét nhọn / tù (calligraphy)
+<span class="c-key">Shape</span>          → Hình dạng đầu cọ (tròn / vuông / custom)
+<span class="c-key">Grain</span>          → Texture bề mặt cọ
+<span class="c-key">Dynamics</span>       → Jitter, speed, wobble
+<span class="c-key">Apple Pencil</span>  → Lực nhấn → Size / Opacity / Bleed
+        </div>
+        <div class="card-tip green">✅ Duplicate brush trước khi chỉnh để không mất bản gốc: vuốt trái tên brush → Duplicate.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Brush Studio">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-purple">Brush Studio</span>
+        <span class="card-title">Tạo Brush từ ảnh — Custom Stamp Brush</span>
+        <span class="card-meta">Bước 3 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Bạn có thể biến bất kỳ ảnh nào thành brush: hoa, lá, kết cấu vải, mây... Rất hữu ích cho vẽ background nhanh.</p>
+        <div class="card-code">
+<span class="c-comment">// Quy trình tạo stamp brush</span>
+1. Chuẩn bị ảnh PNG nền trắng (hoặc trong suốt)
+2. Brush Library → <span class="c-val">+</span> góc phải trên
+3. Brush Studio → <span class="c-key">Shape</span> → Edit → Import
+4. Vào <span class="c-key">Grain</span> → chọn Source (nếu cần texture)
+5. Chỉnh Spacing, Scatter để ra hiệu ứng rải đẹp
+6. Đặt tên → Done
+        </div>
+        <div class="card-tip pink">🎨 Brush stamp lá cây + Scatter cao + Random hue → tạo cành lá cực nhanh.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 3 -->
+<div class="chapter-block" data-chapter="3">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 3 · Layer — Lớp vẽ</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Layer">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Layer</span>
+        <span class="card-title">Layer Panel — Bảng quản lý lớp</span>
+        <span class="card-meta">Bước 0 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Layer là trụ cột của Procreate. Mỗi layer là một "tờ giấy trong suốt" xếp chồng. Bấm icon layer (2 hình vuông) để mở.</p>
+        <div class="card-code">
+<span class="c-comment">// Thao tác layer cơ bản</span>
+<span class="c-key">Bấm +</span>           → Thêm layer mới (phía trên layer đang chọn)
+<span class="c-key">Vuốt trái</span>       → Lock / Duplicate / Delete
+<span class="c-key">Kéo thả</span>         → Sắp xếp lại thứ tự
+<span class="c-key">Bấm tên layer</span>   → Rename, chọn Blend Mode, thêm Mask
+<span class="c-key">Tích checkbox</span>   → Ẩn / hiện layer
+        </div>
+        <div class="card-tip">⚠️ Số layer tối đa phụ thuộc RAM + kích thước canvas. iPad Pro có nhiều layer hơn iPad mini.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Layer">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Layer</span>
+        <span class="card-title">Alpha Lock — Tô màu trong vùng đã vẽ</span>
+        <span class="card-meta">Bước 2 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Alpha Lock khóa vùng trong suốt của layer — chỉ có thể vẽ thêm lên phần đã có nét/màu. Cực kỳ hữu ích để tô bóng mà không ra ngoài.</p>
+        <div class="card-code">
+<span class="c-comment">// Bật Alpha Lock</span>
+<span class="c-key">Cách 1:</span> Bấm tên layer → Alpha Lock
+<span class="c-key">Cách 2:</span> <span class="c-val">Vuốt phải 2 ngón</span> trên layer (nhanh hơn!)
+
+<span class="c-comment">// Khi Alpha Lock bật</span>
+→ Background layer thumbnail có dạng <span class="c-pink">kẻ ô bàn cờ</span>
+→ Mọi nét vẽ chỉ nằm trong vùng pixel có màu
+        </div>
+        <div class="card-tip blue">💡 Dùng Alpha Lock + Airbrush để tô bóng nhân vật nhanh: không cần selection, không tràn ra ngoài.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Layer">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Layer</span>
+        <span class="card-title">Group Layer — Nhóm các layer</span>
+        <span class="card-meta">Bước 2 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Khi số layer nhiều, gom lại thành group để dễ quản lý. Nhân vật một nhóm, background một nhóm.</p>
+        <div class="card-code">
+<span class="c-comment">// Tạo group</span>
+<span class="c-key">Cách 1:</span> Chọn nhiều layer (vuốt phải từng layer) → Group
+<span class="c-key">Cách 2:</span> Kéo layer này đè lên layer kia → tự tạo group
+
+<span class="c-comment">// Lợi ích</span>
+→ Move cả group cùng lúc
+→ Transform toàn bộ nhân vật như 1 khối
+→ Blend Mode cho cả group
+→ Flatten group khi xong → tiết kiệm layer slot
+        </div>
+        <div class="card-tip green">✅ Đặt tên group rõ ràng: "Nhân vật", "Background", "FX", "Text".</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Blend Mode">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Blend Mode</span>
+        <span class="card-title">Blend Mode — Chế độ hoà trộn layer</span>
+        <span class="card-meta">Bước 3 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Blend Mode quyết định cách layer hoà vào layer bên dưới. Đây là bí quyết tạo ánh sáng, bóng và hiệu ứng màu đẹp.</p>
+        <div class="card-code">
+<span class="c-comment">// Các Blend Mode quan trọng nhất</span>
+<span class="c-val">Multiply</span>    → Tối màu (tô bóng, shadow)
+<span class="c-val">Screen</span>      → Sáng màu (hiệu ứng ánh sáng)
+<span class="c-val">Overlay</span>     → Tăng tương phản, sắc màu
+<span class="c-val">Add</span>         → Glow, ánh sáng neon cực sáng
+<span class="c-val">Soft Light</span>  → Bóng mềm, tinh tế
+<span class="c-val">Color</span>       → Đổi màu giữ nguyên độ sáng
+<span class="c-val">Luminosity</span>  → Đổi độ sáng giữ nguyên màu
+        </div>
+        <div class="card-tip pink">🎨 Quy trình tô bóng chuyên nghiệp: Layer Multiply 40–60% opacity → tô bóng xanh/tím. Layer Add 30% → chấm highlight trắng.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 4 -->
+<div class="chapter-block" data-chapter="4">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 4 · Color — Màu sắc</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Color">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-yellow">Color</span>
+        <span class="card-title">Color Panel — 5 chế độ chọn màu</span>
+        <span class="card-meta">Bước 0 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Bấm vòng tròn màu góc phải trên để mở Color Panel. Có 5 tab chọn màu khác nhau.</p>
+        <div class="card-code">
+<span class="c-key">Disc</span>       → Bánh xe màu trực quan, dễ dùng nhất
+<span class="c-key">Classic</span>    → Ô vuông HSB — kiểm soát chính xác
+<span class="c-key">Harmony</span>    → Gợi ý bảng màu hài hoà tự động
+<span class="c-key">Value</span>      → Nhập HEX / RGB / HSB chính xác
+<span class="c-key">Palettes</span>  → Lưu bảng màu dự án
+        </div>
+        <div class="card-tip">📌 Tạo Palette từ ảnh: Palettes → + → New from Photos → chọn ảnh → Procreate tự trích 5 màu chủ đạo.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Color Fill">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-yellow">Color Fill</span>
+        <span class="card-title">ColorDrop — Đổ màu vào vùng kín</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Kéo vòng tròn màu thả vào vùng kín bất kỳ trên canvas → tô màu tức thì. Đây là kỹ thuật flat color nhanh nhất.</p>
+        <div class="card-code">
+<span class="c-comment">// ColorDrop nâng cao</span>
+<span class="c-key">Kéo thả + giữ</span>  → Hiện thanh "threshold"
+  → Kéo phải: threshold cao → fill tràn ra nhiều hơn
+  → Kéo trái: threshold thấp → fill bó chặt đường kẻ
+
+<span class="c-key">Reference Layer</span> → Fill sang layer khác dựa theo lineart
+  → Bật tính năng: Layer lineart → bấm tên → Reference
+  → Tạo layer mới bên dưới → fill sẽ "nhìn" vào Reference
+        </div>
+        <div class="card-tip blue">💡 Reference Layer là workflow tô màu chuyên nghiệp: lineart 1 layer, màu layer riêng, không bao giờ lẫn vào nhau.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Color">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-yellow">Color</span>
+        <span class="card-title">Eyedropper — Hút màu từ canvas</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Lấy màu từ bất kỳ điểm nào trên canvas để dùng tiếp.</p>
+        <div class="card-code">
+<span class="c-comment">// Kích hoạt Eyedropper</span>
+<span class="c-key">Cách 1:</span> Giữ ngón tay lên canvas (không dùng bút)
+<span class="c-key">Cách 2:</span> Bấm nút vuông nhỏ trên sidebar (nếu bật)
+<span class="c-key">Cách 3:</span> Actions → Prefs → Gesture Controls → Eyedropper
+
+<span class="c-comment">// Vòng tròn hiện ra</span>
+→ Nửa trên: màu đang hút
+→ Nửa dưới: màu hiện tại đang dùng
+        </div>
+        <div class="card-tip pink">🎯 Hút màu từ ảnh tham chiếu import vào canvas → dựng bảng màu chính xác cho dự án.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 5 -->
+<div class="chapter-block" data-chapter="5">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 5 · Transform · Selection · Drawing Guides</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Transform">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-blue">Transform</span>
+        <span class="card-title">Transform Tool — Di chuyển & biến đổi</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Bấm icon mũi tên (⤢) để vào Transform. Chọn nội dung layer và biến đổi theo nhiều cách.</p>
+        <div class="card-code">
+<span class="c-comment">// 4 chế độ Transform</span>
+<span class="c-key">Freeform</span>    → Kéo tự do (méo được)
+<span class="c-key">Uniform</span>     → Scale giữ tỉ lệ (khuyên dùng nhất)
+<span class="c-key">Distort</span>     → Kéo 4 góc độc lập (phối cảnh)
+<span class="c-key">Warp</span>        → Lưới biến dạng tự do (uốn cong)
+
+<span class="c-comment">// Tips</span>
+<span class="c-val">Bật Snapping</span> → canh giữa / canh đều tự động
+<span class="c-val">Flip Horizontal</span> → lật nhân vật qua phải
+        </div>
+        <div class="card-tip">⚠️ Transform sẽ bị vỡ ảnh nếu scale lên lớn hơn kích thước gốc. Vẽ to trước, thu nhỏ sau.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Selection">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-blue">Selection</span>
+        <span class="card-title">Selection Tool — Chọn vùng</span>
+        <span class="card-meta">Bước 2 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Bấm icon (⟲) để chọn vùng. Có 4 loại selection tool.</p>
+        <div class="card-code">
+<span class="c-key">Automatic</span>  → Chọn vùng màu giống nhau (như magic wand)
+<span class="c-key">Freehand</span>   → Vẽ tay vùng chọn tùy ý
+<span class="c-key">Rectangle</span>  → Chọn hình chữ nhật
+<span class="c-key">Ellipse</span>    → Chọn hình oval
+
+<span class="c-comment">// Sau khi có selection</span>
+→ <span class="c-val">Transform</span>: di chuyển vùng chọn
+→ <span class="c-val">Copy & Paste</span>: 3 ngón vuốt xuống → Copy, Paste
+→ <span class="c-val">Fill</span>: ColorDrop vào vùng chọn
+→ <span class="c-val">Clear</span>: vuốt 3 ngón → Clear
+        </div>
+        <div class="card-tip green">✅ Freehand selection + Feather cao → xóa / cắt dần mờ, không cứng cạnh.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Drawing Guides">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-blue">Drawing Guides</span>
+        <span class="card-title">Drawing Guides — Lưới hỗ trợ vẽ</span>
+        <span class="card-meta">Bước 2 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Actions → Canvas → Drawing Guide → Edit Drawing Guide. Công cụ cực mạnh giúp vẽ đúng tỉ lệ, phối cảnh, đối xứng.</p>
+        <div class="card-code">
+<span class="c-key">2D Grid</span>        → Lưới vuông thông thường
+<span class="c-key">Isometric</span>      → Lưới isometric (vẽ game 2.5D)
+<span class="c-key">Perspective</span>    → 1/2/3-point perspective tự động
+<span class="c-key">Symmetry</span>       → Đối xứng (vẽ 1 bên tự có bên kia)
+
+<span class="c-comment">// Assisted Drawing</span>
+→ Bật "Assisted" trên layer → nét vẽ tự snap theo guide
+→ Vẽ đường thẳng hoàn hảo không cần ruler
+        </div>
+        <div class="card-tip pink">🎨 Symmetry + Radial = vẽ mandala tự động. Vẽ 1 phần → có ngay đối xứng 8/16 chiều.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 6 -->
+<div class="chapter-block" data-chapter="6">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 6 · Mask & Adjustments — Hiệu ứng nâng cao</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Mask">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Mask</span>
+        <span class="card-title">Layer Mask — Che/hiện layer không phá hủy</span>
+        <span class="card-meta">Bước 3 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Mask là layer đen/trắng đính kèm layer gốc. Vẽ đen → ẩn vùng đó. Vẽ trắng → hiện lại. Không xóa pixel gốc — có thể hoàn tác bất kỳ lúc nào.</p>
+        <div class="card-code">
+<span class="c-comment">// Thêm Layer Mask</span>
+Bấm tên layer → <span class="c-val">Mask</span>
+→ Thumbnail mask (màu trắng) xuất hiện bên cạnh thumbnail layer
+
+<span class="c-comment">// Quy tắc Mask</span>
+<span class="c-pink">Vẽ đen lên mask</span> → ẩn (transparent)
+<span class="c-val">Vẽ trắng lên mask</span> → hiện (visible)
+<span class="c-key">Xám</span>              → bán trong suốt
+
+<span class="c-comment">// Nhớ bấm vào thumbnail MASK trước khi vẽ!</span>
+        </div>
+        <div class="card-tip">⚠️ Dễ nhầm: phải bấm chọn thumbnail mask (có viền xanh) mới vẽ lên mask. Nếu không, bạn đang vẽ thẳng lên layer gốc.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Mask">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Mask</span>
+        <span class="card-title">Clipping Mask — Tô màu trong hình dưới</span>
+        <span class="card-meta">Bước 3 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Clipping Mask "ghim" layer trên vào hình dạng của layer dưới. Mọi thứ vẽ trên layer clip chỉ hiện trong vùng có màu của layer bên dưới.</p>
+        <div class="card-code">
+<span class="c-comment">// Bật Clipping Mask</span>
+Bấm tên layer → <span class="c-val">Clipping Mask</span>
+→ Mũi tên nhỏ xuất hiện, chỉ vào layer bên dưới
+
+<span class="c-comment">// Use case kinh điển</span>
+<span class="c-key">Layer 3</span>: Highlight (Clipping Mask) ← chỉ hiện trong skin
+<span class="c-key">Layer 2</span>: Shadow   (Clipping Mask) ← chỉ hiện trong skin
+<span class="c-key">Layer 1</span>: Skin base color
+        </div>
+        <div class="card-tip blue">💡 Stack nhiều Clipping Mask lên 1 base layer → tô bóng sáng cực tự do, không bao giờ ra ngoài vùng màu gốc.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Adjustments">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Adjustments</span>
+        <span class="card-title">Adjustments — Bộ lọc & hiệu chỉnh</span>
+        <span class="card-meta">Bước 3 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Bấm icon ✦ để mở Adjustments. Dùng để chỉnh màu, thêm blur, glow, noise cho layer.</p>
+        <div class="card-code">
+<span class="c-comment">// Hay dùng nhất</span>
+<span class="c-key">Hue/Saturation/Brightness</span> → Chỉnh tone màu tổng thể
+<span class="c-key">Color Balance</span>             → Làm ấm / lạnh màu
+<span class="c-key">Curves</span>                    → Kiểm soát sáng/tối chuyên nghiệp
+<span class="c-key">Gaussian Blur</span>             → Làm mờ mượt (background bokeh)
+<span class="c-key">Motion Blur</span>               → Hiệu ứng tốc độ
+<span class="c-key">Glow</span>                      → Ánh sáng phát sáng
+<span class="c-key">Noise</span>                     → Thêm hạt film / texture
+
+<span class="c-comment">// Dùng Apple Pencil để chỉnh cục bộ</span>
+→ Chọn Pencil mode → vẽ vào vùng muốn apply
+        </div>
+        <div class="card-tip pink">🎨 Curves → kéo điểm giữa xuống → ảnh tối phim-noir. Kéo lên → ảnh overexposed dreamy.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 7 -->
+<div class="chapter-block" data-chapter="7">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 7 · Text & Animation</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Text">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Text</span>
+        <span class="card-title">Text Tool — Thêm chữ vào tranh</span>
+        <span class="card-meta">Bước 2 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Actions → Add → Add Text. Gõ chữ rồi dùng Style panel để chỉnh font, size, spacing.</p>
+        <div class="card-code">
+<span class="c-comment">// Text workflow</span>
+1. Actions → <span class="c-val">Add</span> → <span class="c-val">Add Text</span>
+2. Gõ nội dung → bàn phím hiện lên
+3. Bấm <span class="c-key">Aa</span> → Style panel:
+   - Font (import .ttf, .otf từ Files app)
+   - Size, Tracking (letter-spacing), Leading (line-height)
+   - Kern, Baseline
+4. <span class="c-key">Rasterize</span> khi xong → chuyển thành pixels để vẽ thêm lên
+        </div>
+        <div class="card-tip green">✅ Import font: mở file .ttf trong Files app → Chia sẻ → Procreate. Font sẽ có trong danh sách.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Animation">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Animation</span>
+        <span class="card-title">Animation Assist — Vẽ hoạt hình đơn giản</span>
+        <span class="card-meta">Bước 4 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate có tính năng vẽ frame-by-frame animation. Mỗi layer/group = 1 frame. Bật: Actions → Canvas → Animation Assist.</p>
+        <div class="card-code">
+<span class="c-comment">// Animation workflow cơ bản</span>
+1. Bật Animation Assist → thanh timeline xuất hiện dưới
+2. Mỗi layer = 1 frame
+3. Bật <span class="c-key">Onion Skinning</span> → thấy frame trước mờ → dễ canh
+4. Vẽ từng frame
+5. Chỉnh <span class="c-val">FPS</span> (4–12fps cho animation thủ công)
+6. Export → <span class="c-key">Animated GIF</span> hoặc <span class="c-key">Animated MP4</span>
+
+<span class="c-comment">// Tips</span>
+→ <span class="c-val">Background</span> layer: đánh dấu là Background → không tính là frame
+        </div>
+        <div class="card-tip blue">💡 Loop animation + 6–8 frame đủ cho sticker telegram / avatar động đơn giản.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 8 -->
+<div class="chapter-block" data-chapter="8">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 8 · Export & Advanced</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Export">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-purple">Export</span>
+        <span class="card-title">Share & Export — Xuất file</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Actions → Share để xuất file. Có nhiều định dạng, chọn đúng mục đích.</p>
+        <div class="card-code">
+<span class="c-comment">// Định dạng & mục đích</span>
+<span class="c-key">Procreate (.procreate)</span> → Backup toàn bộ layer (chỉ mở trên Procreate)
+<span class="c-key">PSD</span>           → Mở trên Photoshop, giữ layer
+<span class="c-key">PDF</span>           → In ấn chất lượng cao
+<span class="c-key">PNG</span>           → Ảnh trong suốt, web, sticker
+<span class="c-key">JPEG</span>          → Ảnh nhỏ, đăng mạng xã hội
+<span class="c-key">TIFF</span>          → In ấn chuyên nghiệp
+
+<span class="c-comment">// Nhanh: Share → PNG → Save to Photos</span>
+        </div>
+        <div class="card-tip">📌 Luôn giữ file .procreate gốc. Export PNG/JPG chỉ là bản phân phối — mất layer.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Export">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-purple">Export</span>
+        <span class="card-title">Time-lapse — Xuất video quá trình vẽ</span>
+        <span class="card-meta">Bước 1 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate tự động ghi lại mọi nét vẽ từ đầu. Bạn có thể xuất ra video time-lapse bất kỳ lúc nào.</p>
+        <div class="card-code">
+<span class="c-comment">// Xuất time-lapse</span>
+Actions → <span class="c-val">Video</span> → <span class="c-val">Export Time-lapse</span>
+→ <span class="c-key">Full Length</span>: video đầy đủ từng giây
+→ <span class="c-key">30 seconds</span>: cắt gọn cho social media
+
+<span class="c-comment">// Replay</span>
+Actions → Video → <span class="c-val">Time-lapse Replay</span>
+→ Xem lại toàn bộ quá trình vẽ ngay trong app
+        </div>
+        <div class="card-tip green">✅ Đăng time-lapse lên TikTok / Instagram Reels → tăng follow nghệ sĩ cực hiệu quả.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Advanced">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Advanced</span>
+        <span class="card-title">Liquify — Biến dạng tự do như nước</span>
+        <span class="card-meta">Bước 4 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Adjustments → Liquify. Công cụ kéo dãn pixel như chất lỏng. Dùng để chỉnh hình dạng, tóc, quần áo bay.</p>
+        <div class="card-code">
+<span class="c-comment">// Liquify tools</span>
+<span class="c-key">Push</span>      → Đẩy pixel theo hướng bút
+<span class="c-key">Pull</span>      → Kéo pixel lại
+<span class="c-key">Twirl</span>     → Xoáy tròn (Left/Right)
+<span class="c-key">Pinch</span>     → Kéo chụm vào giữa
+<span class="c-key">Expand</span>    → Phồng ra ngoài
+<span class="c-key">Crystals</span>  → Vỡ vụn nghệ thuật
+<span class="c-key">Reconstruct</span> → Hoàn tác từng vùng
+
+<span class="c-comment">// Chỉnh độ mạnh: Size + Distortion + Pressure</span>
+        </div>
+        <div class="card-tip pink">🎨 Liquify nhẹ nhàng trên khuôn mặt nhân vật → chỉnh tỉ lệ mắt, mũi, miệng mà không vẽ lại.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Advanced">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Advanced</span>
+        <span class="card-title">Snapping & Magnetic — Canh chỉnh chính xác</span>
+        <span class="card-meta">Bước 4 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Khi Transform, bật Snapping để object tự canh vào giữa, mép, hoặc các object khác chính xác không cần đo.</p>
+        <div class="card-code">
+<span class="c-comment">// Bật Snapping</span>
+Vào Transform → bật <span class="c-val">Snapping</span> (thanh dưới màn hình)
+→ <span class="c-key">Snap to Canvas</span>: canh mép canvas
+→ <span class="c-key">Snap to Other Layers</span>: canh theo layer khác
+→ <span class="c-key">Distance</span>: canh cách đều giữa các object
+
+<span class="c-comment">// Đường guide xanh/vàng = đang snap</span>
+        </div>
+        <div class="card-tip blue">💡 Bật Snapping khi làm layout, poster, pattern → không cần căn thước tay, chính xác tuyệt đối.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Advanced">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Advanced</span>
+        <span class="card-title">Procreate Workflow — Quy trình vẽ nhân vật</span>
+        <span class="card-meta">Bước 5 <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Workflow chuẩn từ sketch đến finish cho vẽ nhân vật anime/illustration.</p>
+        <div class="card-code">
+<span class="c-comment">// Quy trình 6 bước</span>
+<span class="c-val">1. Sketch thô</span>    → 6B Pencil, opacity 40%, layer riêng
+<span class="c-val">2. Lineart</span>        → Studio Pen, layer mới trên sketch
+   → Giảm opacity sketch xuống 20% để thấy rõ
+<span class="c-val">3. Base color</span>     → Flat color, ColorDrop + Reference
+   → Mỗi vùng màu 1 layer (da, tóc, áo, mắt...)
+<span class="c-val">4. Shadow</span>         → Clipping Mask lên base, Multiply 50%
+<span class="c-val">5. Highlight</span>      → Clipping Mask, Add hoặc Screen
+<span class="c-val">6. Detail & FX</span>   → Rim light, glow, texture, background
+        </div>
+        <div class="card-tip green">✅ Đây là workflow tối ưu nhất: tách riêng từng công đoạn → dễ sửa, không đè nhau.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Advanced">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-green">Advanced</span>
+        <span class="card-title">Procreate Pocket vs Procreate — Khác biệt</span>
+        <span class="card-meta">Ghi chú <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Có 2 phiên bản Procreate cho thiết bị Apple khác nhau.</p>
+        <div class="card-code">
+<span class="c-key">Procreate</span>        → iPad (full tính năng, khuyên dùng)
+<span class="c-key">Procreate Pocket</span> → iPhone (nhỏ hơn, ít tính năng hơn)
+
+<span class="c-comment">// Điểm khác nhau chính</span>
+<span class="c-val">Procreate iPad</span>:
+  ✓ Nhiều layer hơn
+  ✓ Hỗ trợ Apple Pencil đầy đủ
+  ✓ Canvas lớn hơn
+  ✓ Animation Assist đầy đủ
+
+<span class="c-val">Procreate Pocket</span>:
+  ✓ Dùng ngón tay / stylus thường
+  ✗ Giới hạn hơn về canvas và layer
+        </div>
+        <div class="card-tip">📌 Mua 1 lần, dùng mãi — không có subscription. Procreate iPad ~$12.99 USD.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PHẦN 9 -->
+<div class="chapter-block" data-chapter="9">
+  <div class="chapter-heading">
+    <span class="chapter-heading-text">Phần 9 · Pro Tips & Kỹ thuật nâng cao — Lên level thật sự</span>
+    <div class="chapter-line"></div>
+  </div>
+  <div class="cards-wrap">
+
+    <div class="card" data-cat="Pro Tips">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Pro Tips</span>
+        <span class="card-title">StreamLine — Làm mượt nét vẽ run tay</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">StreamLine là bộ ổn định nét vẽ built-in trong mỗi brush. Tăng StreamLine → nét vẽ mượt hơn, bù lại tay run nhẹ. Đây là bí quyết số 1 để có lineart đẹp.</p>
+        <div class="card-code">
+<span class="c-comment">// Bật StreamLine</span>
+Brush Studio → <span class="c-key">Stroke</span> → <span class="c-val">StreamLine</span>
+→ Kéo thanh từ 0% → 50–80%
+
+<span class="c-comment">// Mức khuyên dùng theo mục đích</span>
+<span class="c-val">0–20%</span>    → Sketch thô, nét có hồn / không hoàn hảo
+<span class="c-val">40–60%</span>   → Lineart nhân vật, nét chuẩn đẹp
+<span class="c-val">80–100%</span>  → Calligraphy, lettering, nét như máy
+
+<span class="c-comment">// Lưu ý: StreamLine cao → độ trễ nhiều hơn khi vẽ</span>
+        </div>
+        <div class="card-tip pink">🎯 Duplicate brush yêu thích → tạo bản "High Stabilization" riêng cho lineart, bản "Raw" riêng cho sketch.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Pro Tips">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Pro Tips</span>
+        <span class="card-title">Dynamic Brush Scaling — Vẽ chi tiết nhỏ không đổi size</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Khi zoom vào chi tiết nhỏ, brush sẽ trở nên "to" tương đối so với vùng vẽ. Dynamic Brush Scaling giải quyết điều này: brush giữ nguyên kích thước thực dù zoom bao nhiêu.</p>
+        <div class="card-code">
+<span class="c-comment">// Bật/tắt</span>
+Actions → <span class="c-key">Prefs</span> → <span class="c-val">Dynamic Brush Scaling</span>
+
+<span class="c-comment">// So sánh</span>
+<span class="c-val">BẬT</span>  → Brush size = tương đối theo zoom (mặc định)
+       → Zoom vào → brush "to" hơn so với canvas
+<span class="c-pink">TẮT</span>  → Brush size = cố định theo pixel thực
+       → Zoom 500% → vẫn vẽ nét nhỏ như lúc không zoom
+
+<span class="c-comment">// Dùng TẮT khi: vẽ texture chi tiết, lông tóc, da</span>
+        </div>
+        <div class="card-tip blue">💡 Bật Dynamic khi vẽ tổng thể, tắt khi zoom vào chi tiết nhỏ → workflow linh hoạt nhất.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Hidden Feature">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-blue">Hidden Feature</span>
+        <span class="card-title">Gesture Controls — Tùy chỉnh cử chỉ hoàn toàn</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate cho phép tùy chỉnh hành động của từng cử chỉ ngón tay. Đây là nơi ẩn rất nhiều shortcut mạnh mà ít người biết.</p>
+        <div class="card-code">
+<span class="c-comment">// Vào: Actions → Prefs → Gesture Controls</span>
+
+<span class="c-key">Smudge</span>    → Giữ ngón tay = Smudge (trộn màu)
+<span class="c-key">Erase</span>     → Giữ ngón tay = Eraser tạm thời
+<span class="c-key">Eyedropper</span>→ Touch + Hold hoặc Square button
+<span class="c-key">QuickMenu</span> → Giữ 1 ngón → menu 6 action tùy chỉnh
+<span class="c-key">Fullscreen</span>→ Bật để ẩn hết UI, chỉ còn canvas
+
+<span class="c-comment">// QuickMenu: gán các lệnh thường dùng vào 6 ô</span>
+→ Copy, Paste, Flip H, New Layer, Merge...
+        </div>
+        <div class="card-tip green">✅ Tùy chỉnh QuickMenu theo workflow cá nhân → giảm 50% số lần mở menu.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Hidden Feature">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-blue">Hidden Feature</span>
+        <span class="card-title">Reference Window — Xem ảnh tham chiếu ngay trong app</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Thay vì split-screen ra ngoài app khác, Procreate có cửa sổ Reference nổi ngay trên canvas. Hiện ảnh tham chiếu và vẽ cùng lúc trên 1 màn hình.</p>
+        <div class="card-code">
+<span class="c-comment">// Mở Reference Window</span>
+Actions → <span class="c-key">Canvas</span> → <span class="c-val">Reference</span>
+
+<span class="c-comment">// 3 chế độ</span>
+<span class="c-val">Canvas</span>   → Xem toàn bộ canvas đang vẽ (zoom out overview)
+<span class="c-val">Image</span>    → Import ảnh tham chiếu từ Photos
+<span class="c-val">Face</span>     → Dùng camera trước làm tham chiếu realtime
+
+<span class="c-comment">// Có thể kéo cửa sổ, resize, đặt bất kỳ góc nào</span>
+        </div>
+        <div class="card-tip pink">🎨 Chế độ Canvas trong Reference = minimap cực hữu ích: thấy tổng thể trong khi đang zoom vẽ chi tiết.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Color Science">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-yellow">Color Science</span>
+        <span class="card-title">Color Profile — RGB vs CMYK và tại sao quan trọng</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Color Profile ảnh hưởng trực tiếp đến màu sắc khi in hoặc xuất file. Chọn sai → màu đẹp trên iPad nhưng in ra nhợt nhạt hoặc lệch màu.</p>
+        <div class="card-code">
+<span class="c-comment">// Chọn khi tạo canvas mới: Color Profile</span>
+<span class="c-val">sRGB IEC61966-2.1</span>  → Web, màn hình, social media ✓
+<span class="c-val">Display P3</span>         → iPad / iPhone màn hình P3 (màu rực hơn)
+<span class="c-key">CMYK</span>               → In ấn (offset printing, thương mại)
+
+<span class="c-comment">// Lưu ý khi chuyển RGB → CMYK</span>
+→ Màu neon, xanh dương rực → bị xỉn đi đáng kể
+→ Luôn thiết kế CMYK ngay từ đầu nếu dự án để in
+→ Soft Proof: Actions → Canvas → Soft Proofing
+        </div>
+        <div class="card-tip">⚠️ Procreate mặc định là sRGB. Nếu in ấn chuyên nghiệp, nhớ đổi sang CMYK ngay từ canvas đầu tiên.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Color Science">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-yellow">Color Science</span>
+        <span class="card-title">Harmony Colors — Bảng màu hài hoà theo lý thuyết màu</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Tab Harmony trong Color Panel tự động tính các màu hài hoà theo bánh xe màu. Không cần học lý thuyết màu từ đầu.</p>
+        <div class="card-code">
+<span class="c-comment">// 5 kiểu Harmony</span>
+<span class="c-val">Complementary</span>   → 2 màu đối diện (tương phản mạnh)
+<span class="c-val">Split Comp</span>      → 1 màu + 2 màu gần bù (cân bằng hơn)
+<span class="c-val">Analogous</span>       → 3 màu kề nhau (hài hoà, nhẹ nhàng)
+<span class="c-val">Triadic</span>         → 3 màu tam giác đều (sống động)
+<span class="c-val">Tetradic</span>        → 4 màu hình thoi (phức tạp, cần kinh nghiệm)
+
+<span class="c-comment">// Workflow: chọn màu chủ → Harmony gợi ý ngay</span>
+→ Bấm vào chấm tròn trên bánh xe để chọn màu đó
+        </div>
+        <div class="card-tip blue">💡 Illustration dễ đẹp nhất: Analogous palette (3 màu kề) + 1 màu Complementary làm accent.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Workflow Pro">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Workflow Pro</span>
+        <span class="card-title">Merge & Flatten thông minh — Tiết kiệm layer slot</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Khi gần hết layer slot, biết cách merge đúng chỗ giúp tiếp tục vẽ mà không mất linh hoạt chỉnh sửa.</p>
+        <div class="card-code">
+<span class="c-comment">// Các kiểu merge</span>
+<span class="c-key">Merge Down</span>        → Gộp layer hiện tại + 1 layer bên dưới
+<span class="c-key">Flatten</span>           → Gộp TẤT CẢ layer → 1 layer duy nhất
+<span class="c-key">Flatten Group</span>     → Gộp group → 1 layer (giữ group khác)
+
+<span class="c-comment">// Chiến lược hợp lý</span>
+<span class="c-val">Merge xong</span>:
+  ✓ Nền / background đã ổn → Flatten group background
+  ✓ Phần đã không chỉnh nữa → Merge Down
+  ✗ Đừng flatten layer đang cần chỉnh độc lập
+
+<span class="c-comment">// Pinch 2 layer lại gần nhau → Merge nhanh</span>
+        </div>
+        <div class="card-tip green">✅ Trước khi merge quan trọng: duplicate cả group → ẩn bản gốc → làm việc với bản copy. Giữ nguyên bản phòng hờ.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Workflow Pro">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Workflow Pro</span>
+        <span class="card-title">Tracing & Import ảnh — Học anatomy và phối cảnh</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Import ảnh tham chiếu → giảm opacity → vẽ đè lên là kỹ thuật học cực nhanh. Không phải gian lận — đây là cách nghệ sĩ truyền thống học từ hàng trăm năm trước.</p>
+        <div class="card-code">
+<span class="c-comment">// Setup tracing layer</span>
+1. Actions → <span class="c-val">Add</span> → <span class="c-val">Insert a Photo</span>
+2. Giảm opacity ảnh xuống <span class="c-key">20–35%</span>
+3. Lock layer ảnh (vuốt trái → Lock)
+4. Tạo layer mới bên trên → bắt đầu trace
+
+<span class="c-comment">// Kỹ thuật học hiệu quả hơn</span>
+→ Trace 1 lần → ẩn layer ảnh → vẽ lại từ trí nhớ
+→ So sánh 2 bản → thấy ngay chỗ cần cải thiện
+→ Lặp lại 10 lần → não ghi nhớ proportion tự nhiên
+        </div>
+        <div class="card-tip pink">🎯 Import nhiều ảnh pose → Split View với Photos app → kéo thả từng ảnh vào Procreate cùng lúc.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Workflow Pro">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Workflow Pro</span>
+        <span class="card-title">Gallery Stack & Backup — Quản lý dự án chuyên nghiệp</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate không tự backup lên cloud. Mất iPad = mất hết file nếu không có workflow backup riêng.</p>
+        <div class="card-code">
+<span class="c-comment">// Tổ chức Gallery</span>
+<span class="c-key">Stack</span>: Kéo artwork đè lên artwork khác → tạo Stack
+→ Đặt tên Stack: "Nhân vật 2025", "Client Work", "Studies"
+
+<span class="c-comment">// Backup workflow an toàn</span>
+<span class="c-val">Cách 1:</span> Gallery → Select → chọn nhiều file
+         → Share → Procreate → lưu vào iCloud/Google Drive
+<span class="c-val">Cách 2:</span> Bật iCloud Drive sync tự động
+<span class="c-val">Cách 3:</span> Export PSD → lưu thêm bản Photoshop
+
+<span class="c-comment">// File .procreate giữ TOÀN BỘ layer, time-lapse, history</span>
+        </div>
+        <div class="card-tip">⚠️ Backup ít nhất 1 tuần/lần. Sau khi xong dự án lớn → backup ngay. Đừng để mất tháng công sức.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Pro Tips">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Pro Tips</span>
+        <span class="card-title">Smudge Tool — Trộn màu như sơn thật</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Nút Smudge (ngón tay ở giữa toolbar) dùng để blend màu mượt. Chọn đúng brush cho Smudge là bí quyết vẽ da, tóc, mây chuyên nghiệp.</p>
+        <div class="card-code">
+<span class="c-comment">// Setup Smudge brush tối ưu</span>
+Giữ nút Smudge → chọn brush cho Smudge (độc lập với brush vẽ)
+
+<span class="c-key">Brush cho Smudge hay dùng:</span>
+<span class="c-val">Soft Airbrush</span>   → Da mặt, gradient mượt
+<span class="c-val">Gouache</span>          → Texture sơn dầu, màu nước
+<span class="c-val">Round Brush</span>      → Blend tóc, kiểm soát tốt
+<span class="c-val">Noise brush</span>      → Blend có texture (không quá nhẵn)
+
+<span class="c-comment">// Smudge Opacity thấp (20–40%) → blend nhẹ nhiều lần</span>
+<span class="c-comment">// = kiểm soát tốt hơn Opacity cao blend 1 lần</span>
+        </div>
+        <div class="card-tip blue">💡 Smudge + Clipping Mask layer bóng → blend bóng vào da cực mượt, không lo tràn ra ngoài.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Pro Tips">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-pink">Pro Tips</span>
+        <span class="card-title">Stabilization — 3 lớp ổn định nét vẽ</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Procreate có 3 hệ thống ổn định hoạt động cùng lúc. Hiểu hết 3 cái → tuỳ chỉnh nét vẽ hoàn hảo cho từng phong cách.</p>
+        <div class="card-code">
+<span class="c-comment">// 3 lớp Stabilization</span>
+<span class="c-key">1. StreamLine</span> (trong Brush Studio)
+   → Làm mượt nét theo path, xử lý run tay
+   → Kéo 0–100%, sweet spot: 40–65%
+
+<span class="c-key">2. Stabilization</span> (trong Brush Studio → Stabilization)
+   → 3 kiểu: Stabilize, Motion Filtering, Predictive Stroke
+   → Stabilize: lag nhẹ, nét bám sau bút
+   → Motion Filtering: lọc rung lắc cao tần (tay run nhẹ)
+
+<span class="c-key">3. Expression</span>
+   → Giữ lại "năng lượng" nét vẽ thủ công
+   → Cao → nét có hồn hơn dù đã stabilize
+        </div>
+        <div class="card-tip pink">🎨 Motion Filtering = stabilization tốt nhất cho Apple Pencil 2. Thử mức 50–70% Motion Filtering, Expression 50%.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Hidden Feature">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-blue">Hidden Feature</span>
+        <span class="card-title">Split View & Slide Over — Multitask khi vẽ</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">iPad hỗ trợ multitask. Dùng Split View trong khi vẽ Procreate giúp tăng tốc workflow đáng kể.</p>
+        <div class="card-code">
+<span class="c-comment">// Các combo hữu ích</span>
+<span class="c-key">Procreate + Safari</span>    → Xem tutorial + vẽ cùng lúc
+<span class="c-key">Procreate + Photos</span>    → Kéo thả ảnh reference trực tiếp
+<span class="c-key">Procreate + Files</span>     → Import brush, font, swatch nhanh
+<span class="c-key">Procreate + Notes</span>     → Ghi chú màu, ý tưởng bên cạnh
+
+<span class="c-comment">// Slide Over: app nhỏ nổi trên Procreate</span>
+→ Vuốt từ mép phải vào → chọn app
+→ Không chiếm canvas, toggle ẩn/hiện nhanh
+
+<span class="c-comment">// Kéo màu từ palette app → thả vào Procreate</span>
+        </div>
+        <div class="card-tip green">✅ Split View Procreate + Reference photo = setup lý tưởng thay cho màn hình kép.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Color Science">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-yellow">Color Science</span>
+        <span class="card-title">Gradient Map — Recolor toàn bộ tranh trong 10 giây</span>
+        <span class="card-meta">Pro <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Adjustments → Gradient Map ánh xạ lại toàn bộ tông màu tối-sáng sang bảng màu mới. Thay đổi hoàn toàn vibe của tranh mà không vẽ lại.</p>
+        <div class="card-code">
+<span class="c-comment">// Cách dùng Gradient Map</span>
+Adjustments → <span class="c-val">Gradient Map</span>
+→ Thanh gradient: trái = vùng tối, phải = vùng sáng
+→ Bấm vào chấm màu để đổi màu tại điểm đó
+→ Thêm điểm giữa để map mid-tone sang màu khác
+
+<span class="c-comment">// Ứng dụng sáng tạo</span>
+<span class="c-val">Duotone</span>: 2 màu (tối xanh navy, sáng vàng) → poster retro
+<span class="c-val">Sepia</span>: nâu tối → kem sáng → tranh cổ điển
+<span class="c-val">Neon</span>: đen → tím → hồng neon → cyberpunk
+<span class="c-val">Sunset</span>: xanh dương → cam → vàng → bầu trời đẹp
+        </div>
+        <div class="card-tip pink">🎨 Vẽ grayscale trước → Gradient Map sau = workflow cực mạnh, tập trung vào form/light trước, màu sắc sau.</div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="Workflow Pro">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="card-tag tag-orange">Workflow Pro</span>
+        <span class="card-title">Grayscale First Workflow — Kỹ thuật vẽ pro nhất</span>
+        <span class="card-meta">Master <span class="card-toggle">▼</span></span>
+      </div>
+      <div class="card-body">
+        <p class="card-desc">Nhiều concept artist và illustrator chuyên nghiệp vẽ toàn bộ tranh bằng grayscale trước — chỉ tập trung vào hình dạng, ánh sáng, shadow — rồi mới thêm màu sau. Kết quả kiểm soát được tốt hơn nhiều.</p>
+        <div class="card-code">
+<span class="c-comment">// Workflow Grayscale → Color</span>
+<span class="c-val">Bước 1</span>: Vẽ toàn bộ bằng gray
+  → Chỉ dùng trắng-đen-xám
+  → Tập trung: form, light, shadow, contrast
+
+<span class="c-val">Bước 2</span>: Thêm màu bằng Blend Mode
+  → Tạo layer mới bên trên grayscale
+  → Đặt Blend Mode: <span class="c-key">Color</span> hoặc <span class="c-key">Hue</span>
+  → Tô màu thoải mái → màu không ảnh hưởng độ sáng tối
+
+<span class="c-val">Bước 3</span>: Tinh chỉnh
+  → Hue/Saturation để điều chỉnh
+  → Gradient Map để thay bảng màu tổng thể
+
+<span class="c-comment">// Kết quả: tranh có lighting chuẩn 100% trước khi màu sắc</span>
+        </div>
+        <div class="card-tip blue">💡 Đây là kỹ thuật của các concept artist game AAA và họa sĩ Disney. Cực kỳ hiệu quả cho người đang học lighting.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="spacer"></div>
+
+<script>
+  // ===== STATE =====
+  let activeTags = new Set([
+    'Interface','Gesture','Brush','Brush Studio','Layer','Blend Mode',
+    'Color','Color Fill','Transform','Selection','Drawing Guides',
+    'Mask','Adjustments','Text','Animation','Export','Advanced',
+    'Pro Tips','Workflow Pro','Color Science','Hidden Feature'
+  ]);
+
+  // ===== TOGGLE CARD =====
+  function toggleCard(header) {
+    const card = header.closest('.card');
+    card.classList.toggle('open');
+    updateSummary();
+  }
+
+  // ===== TOGGLE TAG =====
+  function toggleTag(el, tag) {
+    if (activeTags.has(tag)) {
+      activeTags.delete(tag);
+      el.classList.remove('active');
+    } else {
+      activeTags.add(tag);
+      el.classList.add('active');
+    }
+    filterAll();
+  }
+
+  // ===== FILTER =====
+  function filterAll() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    let visible = 0;
+
+    document.querySelectorAll('.card').forEach(card => {
+      const cat = card.dataset.cat || '';
+      const title = card.querySelector('.card-title')?.textContent.toLowerCase() || '';
+      const desc  = card.querySelector('.card-desc')?.textContent.toLowerCase() || '';
+
+      const tagMatch = activeTags.has(cat);
+      const searchMatch = !q || title.includes(q) || desc.includes(q) || cat.toLowerCase().includes(q);
+
+      if (tagMatch && searchMatch) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+        card.classList.remove('open');
+      }
+    });
+
+    // Hide empty chapters
+    document.querySelectorAll('.chapter-block').forEach(block => {
+      const anyVisible = [...block.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+      block.classList.toggle('hidden', !anyVisible);
+    });
+
+    updateSummary(visible);
+  }
+
+  function updateSummary(count) {
+    if (count === undefined) {
+      count = document.querySelectorAll('.card:not(.hidden)').length;
+    }
+    document.getElementById('summaryText').innerHTML =
+      `<b>${count} thuật ngữ hiển thị</b> — bấm để mở`;
+  }
+
+  // init
+  updateSummary();
+</script>
+</body>
+</html>
