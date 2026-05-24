@@ -1,0 +1,2675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Git - Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #f05133;
+    --primary-glow: #ff7043;
+    --secondary: #6cc644;
+    --accent: #f1e05a;
+    --branch: #6f42c1;
+    --merge: #28a745;
+    --conflict: #d73a49;
+    --info: #0366d6;
+    --dark: #0d1117;
+    --darker: #010409;
+    --light: #c9d1d9;
+    --light-strong: #f0f6fc;
+    --gray: #8b949e;
+    --card: #161b22;
+    --card-2: #1c2128;
+    --border: #30363d;
+    --terminal: #0a0e14;
+    --code-green: #7ee787;
+    --code-yellow: #ffa657;
+    --code-blue: #79c0ff;
+    --code-red: #ff7b72;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.7;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(240, 81, 51, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(111, 66, 193, 0.06) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 320px;
+    background: linear-gradient(180deg, var(--dark) 0%, #050810 100%);
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid var(--primary);
+    z-index: 100;
+    transition: transform 0.3s;
+    box-shadow: 4px 0 30px rgba(240, 81, 51, 0.15);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo {
+    text-align: center;
+    padding: 0 20px 25px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .logo .git-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 20px rgba(240, 81, 51, 0.5));
+  }
+  .logo h1 {
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--branch));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .logo p { font-size: 11px; color: var(--gray); margin-top: 8px; letter-spacing: 2px; }
+  .sidebar-search {
+    padding: 0 20px 15px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 15px;
+  }
+  .sidebar-search input {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--light);
+    font-size: 13px;
+    transition: all 0.3s;
+  }
+  .sidebar-search input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(240, 81, 51, 0.15);
+  }
+  .nav-menu { list-style: none; padding: 0 15px; }
+  .nav-menu li { margin-bottom: 4px; }
+  .nav-section-title {
+    font-size: 10px;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 15px 15px 8px;
+    font-weight: 700;
+  }
+  .nav-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: var(--gray);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+  }
+  .nav-menu a:hover, .nav-menu a.active {
+    background: rgba(240, 81, 51, 0.12);
+    color: var(--primary-glow);
+    border-left-color: var(--primary);
+    transform: translateX(5px);
+  }
+  .nav-menu .chapter-num {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 24px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+  .main-content {
+    margin-left: 320px;
+    flex: 1;
+    padding: 40px 60px;
+    max-width: calc(100% - 320px);
+  }
+  .hero {
+    background: linear-gradient(135deg, #4a0e0e 0%, #2d1b69 50%, #0a4d2e 100%);
+    padding: 70px 40px;
+    border-radius: 12px;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 60px rgba(240, 81, 51, 0.2);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(90deg, rgba(240, 81, 51, 0.06) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(111, 66, 193, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridShift 30s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(40px, 40px); }
+  }
+  .hero .git-logo {
+    font-size: 80px;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 30px rgba(240, 81, 51, 0.6));
+  }
+  .hero h1 {
+    font-size: 42px;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+    font-weight: 900;
+    color: var(--light-strong);
+    text-shadow: 0 0 40px rgba(255, 112, 67, 0.5);
+    letter-spacing: 2px;
+  }
+  .hero .subtitle {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 5px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+  }
+  .hero p { font-size: 18px; position: relative; z-index: 1; max-width: 850px; margin: 0 auto; color: var(--light); }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+    padding: 18px 26px;
+    border-radius: 8px;
+    min-width: 140px;
+    border: 1px solid var(--primary);
+  }
+  .stat-num { font-size: 30px; font-weight: 900; display: block; color: var(--primary-glow); text-shadow: 0 0 15px rgba(240, 81, 51, 0.5); }
+  .stat-label { font-size: 11px; opacity: 0.9; letter-spacing: 1px; }
+  .chapter {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    scroll-margin-top: 20px;
+    position: relative;
+  }
+  .chapter::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), var(--branch), transparent);
+    border-radius: 12px 12px 0 0;
+  }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-badge {
+    background: linear-gradient(135deg, var(--primary), var(--branch));
+    color: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(240, 81, 51, 0.3);
+  }
+  .chapter h2 {
+    color: var(--primary-glow);
+    font-size: 30px;
+    font-weight: 800;
+    text-shadow: 0 0 20px rgba(240, 81, 51, 0.2);
+  }
+  .chapter h3 {
+    color: var(--accent);
+    font-size: 21px;
+    margin: 28px 0 16px;
+    font-weight: 700;
+    padding-left: 14px;
+    border-left: 4px solid var(--primary);
+  }
+  .chapter h4 {
+    color: var(--code-blue);
+    font-size: 17px;
+    margin: 18px 0 10px;
+    font-weight: 600;
+  }
+  .chapter p { margin-bottom: 16px; color: var(--light); }
+  .chapter ul, .chapter ol { margin: 12px 0 16px 24px; }
+  .chapter li { margin-bottom: 8px; }
+  .chapter strong { color: var(--primary-glow); }
+  .chapter em { color: var(--accent); font-style: normal; }
+  .terminal {
+    background: var(--terminal);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+    margin: 16px 0;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+    white-space: pre;
+    tab-size: 4;
+  }
+  .terminal::before {
+    content: '● ● ●';
+    color: #fc6058;
+    letter-spacing: 6px;
+    display: block;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .terminal .prompt { color: var(--code-green); }
+  .terminal .cmd { color: var(--light-strong); }
+  .terminal .arg { color: var(--code-yellow); }
+  .terminal .opt { color: var(--code-blue); }
+  .terminal .comment { color: var(--gray); font-style: italic; }
+  .terminal .output { color: var(--gray); }
+  .terminal .branch { color: var(--branch); font-weight: bold; }
+  .terminal .hash { color: var(--code-yellow); }
+  .terminal .added { color: var(--code-green); }
+  .terminal .removed { color: var(--code-red); }
+  .info-box {
+    background: linear-gradient(135deg, rgba(3, 102, 214, 0.1), rgba(111, 66, 193, 0.08));
+    border-left: 4px solid var(--info);
+    padding: 18px 22px;
+    border-radius: 6px;
+    margin: 18px 0;
+  }
+  .warning-box {
+    background: linear-gradient(135deg, rgba(215, 58, 73, 0.1), rgba(240, 81, 51, 0.08));
+    border-left: 4px solid var(--conflict);
+    padding: 18px 22px;
+    border-radius: 6px;
+    margin: 18px 0;
+  }
+  .tip-box {
+    background: linear-gradient(135deg, rgba(108, 198, 68, 0.1), rgba(34, 197, 94, 0.08));
+    border-left: 4px solid var(--merge);
+    padding: 18px 22px;
+    border-radius: 6px;
+    margin: 18px 0;
+  }
+  .box-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+  }
+  .info-box .box-title { color: #58a6ff; }
+  .warning-box .box-title { color: #ff7b72; }
+  .tip-box .box-title { color: var(--code-green); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    background: var(--card-2);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: linear-gradient(135deg, var(--primary), #c0392b);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    font-size: 13px;
+    text-transform: uppercase;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: rgba(240, 81, 51, 0.05); }
+  td code { background: var(--terminal); padding: 2px 6px; border-radius: 4px; font-family: 'Consolas', monospace; color: var(--code-yellow); font-size: 13px; }
+  .inline-code {
+    background: var(--terminal);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    color: var(--code-yellow);
+    font-size: 14px;
+    border: 1px solid var(--border);
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 18px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 18px 0; }
+  .card-feature {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s;
+  }
+  .card-feature:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(240, 81, 51, 0.15);
+  }
+  .card-feature .icon { font-size: 32px; margin-bottom: 12px; display: block; }
+  .card-feature h4 { color: var(--primary-glow); margin-bottom: 8px; font-size: 16px; }
+  .card-feature p { font-size: 14px; color: var(--gray); margin: 0; }
+
+  /* Git diagram */
+  .git-diagram {
+    background: var(--terminal);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 25px;
+    margin: 20px 0;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre;
+    tab-size: 4;
+    color: var(--light);
+  }
+  .git-diagram .commit-node {
+    color: var(--code-yellow);
+    font-weight: bold;
+  }
+  .git-diagram .branch-name {
+    color: var(--branch);
+    font-weight: bold;
+  }
+  .git-diagram .main-branch { color: var(--merge); font-weight: bold; }
+
+  /* Glossary */
+  .glossary-search {
+    background: var(--card-2);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px 0;
+    box-shadow: 0 0 30px rgba(240, 81, 51, 0.15);
+  }
+  .glossary-search-input {
+    width: 100%;
+    padding: 16px 22px;
+    background: var(--terminal);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    color: var(--light-strong);
+    font-size: 17px;
+    font-family: 'Consolas', monospace;
+    transition: all 0.3s;
+  }
+  .glossary-search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(240, 81, 51, 0.2);
+  }
+  .glossary-filters {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 7px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--gray);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .filter-btn:hover { color: var(--light-strong); border-color: var(--primary); }
+  .filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  .glossary-stats {
+    margin-top: 15px;
+    color: var(--gray);
+    font-size: 13px;
+  }
+  .glossary-stats #count { color: var(--primary-glow); font-weight: bold; }
+  .glossary-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .term-card {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    padding: 18px 20px;
+    transition: all 0.3s;
+  }
+  .term-card.hidden { display: none; }
+  .term-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(240, 81, 51, 0.15);
+    border-left-color: var(--accent);
+  }
+  .term-card.cat-basic { border-left-color: var(--merge); }
+  .term-card.cat-branching { border-left-color: var(--branch); }
+  .term-card.cat-remote { border-left-color: var(--info); }
+  .term-card.cat-advanced { border-left-color: var(--primary); }
+  .term-card.cat-internal { border-left-color: var(--accent); }
+  .term-card.cat-workflow { border-left-color: #d73a49; }
+  .term-name {
+    font-size: 17px;
+    color: var(--light-strong);
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-family: 'Consolas', monospace;
+  }
+  .term-cat {
+    display: inline-block;
+    padding: 2px 10px;
+    background: rgba(240, 81, 51, 0.15);
+    color: var(--primary-glow);
+    border-radius: 12px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .term-card.cat-basic .term-cat { background: rgba(108, 198, 68, 0.15); color: var(--merge); }
+  .term-card.cat-branching .term-cat { background: rgba(111, 66, 193, 0.15); color: var(--branch); }
+  .term-card.cat-remote .term-cat { background: rgba(3, 102, 214, 0.15); color: #58a6ff; }
+  .term-card.cat-internal .term-cat { background: rgba(241, 224, 90, 0.15); color: var(--accent); }
+  .term-card.cat-workflow .term-cat { background: rgba(215, 58, 73, 0.15); color: var(--conflict); }
+  .term-def {
+    color: var(--light);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+  }
+  .term-example {
+    background: var(--terminal);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: var(--code-green);
+    margin-top: 8px;
+  }
+  .no-results {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--gray);
+    font-size: 16px;
+    grid-column: 1 / -1;
+  }
+  .no-results.hidden { display: none; }
+  .highlight {
+    background: rgba(241, 224, 90, 0.3);
+    color: var(--accent);
+    padding: 0 3px;
+    border-radius: 2px;
+  }
+
+  /* Comparison */
+  .vs-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 15px;
+    align-items: stretch;
+    margin: 20px 0;
+  }
+  .vs-card {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px;
+  }
+  .vs-card.left { border-top: 3px solid var(--merge); }
+  .vs-card.right { border-top: 3px solid var(--primary); }
+  .vs-card h4 { margin-top: 0; margin-bottom: 12px; }
+  .vs-card.left h4 { color: var(--merge); }
+  .vs-card.right h4 { color: var(--primary-glow); }
+  .vs-divider {
+    align-self: center;
+    background: var(--primary);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(240, 81, 51, 0.4);
+  }
+
+  /* Cheatsheet */
+  .cheatsheet {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+    margin: 20px 0;
+  }
+  .cheat-card {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+  .cheat-card h4 {
+    color: var(--primary-glow);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  .cheat-list { list-style: none; margin: 0; padding: 0; }
+  .cheat-list li {
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+    margin-bottom: 0;
+  }
+  .cheat-list li:last-child { border-bottom: none; }
+  .cheat-list code { color: var(--code-yellow); }
+  .cheat-list .desc { color: var(--gray); font-size: 11px; display: block; font-family: 'Segoe UI', sans-serif; margin-top: 3px; }
+
+  /* Roadmap */
+  .roadmap-step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .roadmap-num {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--branch));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(240, 81, 51, 0.3);
+  }
+  .roadmap-content {
+    flex: 1;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  .roadmap-content h4 { color: var(--accent); margin-bottom: 6px; }
+
+  .toggle-sidebar {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 200;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  @media (max-width: 1024px) {
+    .toggle-sidebar { display: block; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 70px 20px 40px; max-width: 100%; }
+    .hero h1 { font-size: 32px; }
+    .grid-2, .grid-3, .vs-container { grid-template-columns: 1fr; }
+    .vs-divider { margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+<button class="toggle-sidebar" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="git-icon">🌿</div>
+      <h1>GIT MASTERY</h1>
+      <p>BASIC → EXPERT</p>
+    </div>
+    <div class="sidebar-search">
+      <input type="text" id="navSearch" placeholder="🔎 Tìm chương..." oninput="filterNav(this.value)">
+    </div>
+    <div class="nav-section-title">📘 Phần I: Nền Tảng</div>
+    <ul class="nav-menu">
+      <li><a href="#chuong-1"><span class="chapter-num">1</span>Giới thiệu Git & VCS</a></li>
+      <li><a href="#chuong-2"><span class="chapter-num">2</span>Cài đặt & Cấu hình</a></li>
+      <li><a href="#chuong-3"><span class="chapter-num">3</span>Khái niệm Nền tảng</a></li>
+      <li><a href="#chuong-4"><span class="chapter-num">4</span>Lệnh Cơ bản</a></li>
+    </ul>
+    <div class="nav-section-title">🌿 Phần II: Branching</div>
+    <ul class="nav-menu">
+      <li><a href="#chuong-5"><span class="chapter-num">5</span>Branching - Nhánh</a></li>
+      <li><a href="#chuong-6"><span class="chapter-num">6</span>Merge - Hợp nhất</a></li>
+      <li><a href="#chuong-7"><span class="chapter-num">7</span>Remote & Collaboration</a></li>
+      <li><a href="#chuong-8"><span class="chapter-num">8</span>Xử lý Conflict</a></li>
+    </ul>
+    <div class="nav-section-title">⏪ Phần III: Undo & History</div>
+    <ul class="nav-menu">
+      <li><a href="#chuong-9"><span class="chapter-num">9</span>Undo - Hoàn tác</a></li>
+      <li><a href="#chuong-10"><span class="chapter-num">10</span>Stash & Tag</a></li>
+      <li><a href="#chuong-11"><span class="chapter-num">11</span>Rebase</a></li>
+      <li><a href="#chuong-12"><span class="chapter-num">12</span>Cherry-pick & Bisect</a></li>
+    </ul>
+    <div class="nav-section-title">🚀 Phần IV: Nâng Cao</div>
+    <ul class="nav-menu">
+      <li><a href="#chuong-13"><span class="chapter-num">13</span>Git Internals</a></li>
+      <li><a href="#chuong-14"><span class="chapter-num">14</span>Hooks & Automation</a></li>
+      <li><a href="#chuong-15"><span class="chapter-num">15</span>Workflows</a></li>
+      <li><a href="#chuong-16"><span class="chapter-num">16</span>Tips & Best Practices</a></li>
+    </ul>
+    <div class="nav-section-title">📖 Tra Cứu</div>
+    <ul class="nav-menu">
+      <li><a href="#glossary"><span class="chapter-num">📖</span>Glossary (200+)</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span>Cheatsheet</a></li>
+      <li><a href="#roadmap"><span class="chapter-num">🗺️</span>Lộ trình học</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <section class="hero">
+      <div class="git-logo">🌿</div>
+      <div class="subtitle">★ Distributed Version Control Master Class ★</div>
+      <h1>KHÓA HỌC GIT</h1>
+      <p>Từ người mới bắt đầu đến Expert - 16 chương đầy đủ phủ Git cơ bản, branching, merge, rebase, internals, workflows + Glossary 200+ thuật ngữ có tìm kiếm</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">16</span><span class="stat-label">CHAPTERS</span></div>
+        <div class="stat"><span class="stat-num">150+</span><span class="stat-label">COMMANDS</span></div>
+        <div class="stat"><span class="stat-num">200+</span><span class="stat-label">TERMS</span></div>
+        <div class="stat"><span class="stat-num">∞</span><span class="stat-label">UNDO</span></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 1 -->
+    <section class="chapter" id="chuong-1">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 1</div>
+        <h2>Giới Thiệu Git & Version Control</h2>
+      </div>
+
+      <h3>1.1. Version Control System (VCS) là gì?</h3>
+      <p><strong>Version Control System</strong> (Hệ thống quản lý phiên bản) là phần mềm giúp <em>theo dõi và quản lý thay đổi</em> trong source code theo thời gian. Nó cho phép nhiều người làm việc cùng lúc trên 1 dự án mà không "đè" code lên nhau.</p>
+
+      <div class="info-box">
+        <div class="box-title">💡 Hình dung đơn giản</div>
+        VCS giống như Google Docs cho code: bạn thấy ai sửa gì, khi nào, có thể quay lại bất kỳ phiên bản nào trong quá khứ, và làm việc song song với nhiều người mà không xung đột.
+      </div>
+
+      <h3>1.2. Lịch Sử Ra Đời Git</h3>
+      <p>Git được tạo ra bởi <strong>Linus Torvalds</strong> (cha đẻ Linux) vào năm <strong>2005</strong> sau khi BitKeeper - VCS đang được dùng cho Linux kernel - rút lại quyền sử dụng miễn phí.</p>
+      <ul>
+        <li><strong>10 ngày</strong> - thời gian Linus viết phiên bản đầu của Git</li>
+        <li><strong>"Git" = đồ ngu/đần</strong> (tiếng Anh-Anh slang) - Linus nói đùa "I name all my projects after myself"</li>
+        <li>Mục tiêu thiết kế: <em>tốc độ</em>, <em>thiết kế đơn giản</em>, <em>hỗ trợ phát triển phi tuyến tính</em>, <em>fully distributed</em></li>
+      </ul>
+
+      <h3>1.3. Centralized vs Distributed VCS</h3>
+      <div class="vs-container">
+        <div class="vs-card left">
+          <h4>📡 Centralized (SVN, CVS)</h4>
+          <ul>
+            <li>Có 1 server trung tâm chứa toàn bộ lịch sử</li>
+            <li>Client chỉ lấy phiên bản hiện tại</li>
+            <li>Cần kết nối mạng để commit/log</li>
+            <li>Server down → cả team đứng</li>
+            <li>Đơn giản, dễ hiểu cho người mới</li>
+          </ul>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="vs-card right">
+          <h4>🌐 Distributed (Git, Mercurial)</h4>
+          <ul>
+            <li>Mỗi máy đều có <strong>full copy</strong> của repository</li>
+            <li>Commit/branch offline thoải mái</li>
+            <li>Backup tự nhiên (mỗi clone là 1 backup)</li>
+            <li>Workflow linh hoạt (push lên đâu cũng được)</li>
+            <li>Học khó hơn nhưng mạnh hơn nhiều</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>1.4. Git vs GitHub - Đừng Nhầm!</h3>
+      <table>
+        <tr><th>Git</th><th>GitHub</th></tr>
+        <tr><td><strong>Phần mềm</strong> chạy local trên máy bạn</td><td><strong>Dịch vụ web</strong> host Git repository</td></tr>
+        <tr><td>Miễn phí, open-source</td><td>Có free tier, plan trả phí</td></tr>
+        <tr><td>Tạo ra bởi Linus Torvalds (2005)</td><td>Tạo ra 2008, Microsoft mua 2018 ($7.5B)</td></tr>
+        <tr><td>Lệnh command-line</td><td>Web UI + Issues + PR + CI/CD (Actions)</td></tr>
+      </table>
+      <p>Các "GitHub" khác: <span class="inline-code">GitLab</span>, <span class="inline-code">Bitbucket</span>, <span class="inline-code">Gitea</span>, <span class="inline-code">Codeberg</span>, <span class="inline-code">Azure DevOps Repos</span>.</p>
+
+      <h3>1.5. Tại Sao Mọi Developer Phải Biết Git?</h3>
+      <div class="grid-3">
+        <div class="card-feature">
+          <span class="icon">⏪</span>
+          <h4>Time Machine</h4>
+          <p>Quay về bất kỳ thời điểm nào trong lịch sử dự án</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">👥</span>
+          <h4>Cộng tác đội nhóm</h4>
+          <p>10-100+ dev cùng làm 1 codebase mà không "đè" code</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">🔀</span>
+          <h4>Thử nghiệm an toàn</h4>
+          <p>Tạo branch để thử ý tưởng, không sợ phá code chính</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">💼</span>
+          <h4>Yêu cầu công việc</h4>
+          <p>100% công ty IT yêu cầu biết Git - bắt buộc</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">🌍</span>
+          <h4>Open-source</h4>
+          <p>Đóng góp dự án mã nguồn mở qua Pull Request</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">🚀</span>
+          <h4>CI/CD</h4>
+          <p>Git là trung tâm của mọi pipeline DevOps hiện đại</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 2 -->
+    <section class="chapter" id="chuong-2">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 2</div>
+        <h2>Cài Đặt & Cấu Hình Git</h2>
+      </div>
+
+      <h3>2.1. Cài Đặt Git</h3>
+      <table>
+        <tr><th>OS</th><th>Cách cài</th></tr>
+        <tr><td>Windows</td><td>Tải tại <span class="inline-code">git-scm.com</span> hoặc dùng <span class="inline-code">winget install Git.Git</span></td></tr>
+        <tr><td>macOS</td><td><span class="inline-code">brew install git</span> hoặc cài Xcode Command Line Tools</td></tr>
+        <tr><td>Ubuntu/Debian</td><td><span class="inline-code">sudo apt install git</span></td></tr>
+        <tr><td>Fedora/RHEL</td><td><span class="inline-code">sudo dnf install git</span></td></tr>
+        <tr><td>Arch</td><td><span class="inline-code">sudo pacman -S git</span></td></tr>
+      </table>
+
+      <div class="terminal">
+<span class="comment"># Kiểm tra phiên bản sau khi cài</span>
+<span class="prompt">$</span> <span class="cmd">git --version</span>
+<span class="output">git version 2.43.0</span>
+      </div>
+
+      <h3>2.2. Cấu Hình Lần Đầu</h3>
+      <p>Trước khi commit code, Git cần biết bạn là ai để ghi vào lịch sử.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">user.name</span> <span class="arg">"Nguyen Van A"</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">user.email</span> <span class="arg">"vana@example.com"</span>
+
+<span class="comment"># Đặt editor mặc định (mở khi cần viết commit message dài)</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">core.editor</span> <span class="arg">"code --wait"</span>
+
+<span class="comment"># Đổi tên branch mặc định từ "master" thành "main"</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">init.defaultBranch</span> <span class="arg">main</span>
+
+<span class="comment"># Kiểm tra toàn bộ config</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--list</span>
+      </div>
+
+      <div class="info-box">
+        <div class="box-title">📍 3 Cấp Độ Config</div>
+        <ul>
+          <li><strong>--system</strong>: Toàn máy (mọi user) - <span class="inline-code">/etc/gitconfig</span></li>
+          <li><strong>--global</strong>: User hiện tại - <span class="inline-code">~/.gitconfig</span></li>
+          <li><strong>--local</strong> (mặc định): Repo hiện tại - <span class="inline-code">.git/config</span></li>
+        </ul>
+        Mức độ ưu tiên: local &gt; global &gt; system.
+      </div>
+
+      <h3>2.3. SSH Key vs HTTPS</h3>
+      <div class="vs-container">
+        <div class="vs-card left">
+          <h4>🔐 SSH</h4>
+          <ul>
+            <li>Authenticate bằng cặp khóa công khai/riêng tư</li>
+            <li>Không cần nhập password mỗi lần push</li>
+            <li>Setup 1 lần dùng mãi</li>
+            <li>URL: <span class="inline-code">git@github.com:user/repo.git</span></li>
+          </ul>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div class="vs-card right">
+          <h4>🌐 HTTPS</h4>
+          <ul>
+            <li>Authenticate bằng username + Personal Access Token</li>
+            <li>Dễ setup, hoạt động qua firewall doanh nghiệp</li>
+            <li>Cần credential helper để cache token</li>
+            <li>URL: <span class="inline-code">https://github.com/user/repo.git</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <h4>Tạo SSH Key (khuyến nghị)</h4>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">ssh-keygen</span> <span class="opt">-t</span> <span class="arg">ed25519</span> <span class="opt">-C</span> <span class="arg">"vana@example.com"</span>
+<span class="output">Generating public/private ed25519 key pair...
+Enter file in which to save the key (~/.ssh/id_ed25519): [Enter]
+Enter passphrase: [tuỳ chọn]</span>
+
+<span class="comment"># Copy public key, sau đó paste vào GitHub Settings → SSH Keys</span>
+<span class="prompt">$</span> <span class="cmd">cat</span> <span class="arg">~/.ssh/id_ed25519.pub</span>
+
+<span class="comment"># Test kết nối</span>
+<span class="prompt">$</span> <span class="cmd">ssh</span> <span class="opt">-T</span> <span class="arg">git@github.com</span>
+<span class="output">Hi vana! You've successfully authenticated...</span>
+      </div>
+
+      <h3>2.4. Git GUI Clients</h3>
+      <div class="grid-3">
+        <div class="card-feature"><h4>SourceTree</h4><p>Atlassian, free, mạnh, Windows/Mac</p></div>
+        <div class="card-feature"><h4>GitKraken</h4><p>Đẹp, trực quan, freemium, cross-platform</p></div>
+        <div class="card-feature"><h4>Fork</h4><p>Nhẹ, nhanh, $50 trọn đời (free trial)</p></div>
+        <div class="card-feature"><h4>GitHub Desktop</h4><p>Đơn giản, hợp người mới, free</p></div>
+        <div class="card-feature"><h4>VS Code Git</h4><p>Tích hợp sẵn, dùng được 90% trường hợp</p></div>
+        <div class="card-feature"><h4>Lazygit</h4><p>Terminal UI, nhanh, dev hardcore yêu thích</p></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 3 -->
+    <section class="chapter" id="chuong-3">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 3</div>
+        <h2>Khái Niệm Nền Tảng</h2>
+      </div>
+
+      <h3>3.1. Repository (Repo) là gì?</h3>
+      <p><strong>Repository</strong> là 1 thư mục chứa source code + toàn bộ lịch sử thay đổi (trong thư mục ẩn <span class="inline-code">.git</span>). Có 2 loại:</p>
+      <ul>
+        <li><strong>Local repository</strong>: Trên máy bạn</li>
+        <li><strong>Remote repository</strong>: Trên server (GitHub, GitLab...)</li>
+      </ul>
+
+      <h3>3.2. 3 Vùng Của Git - Quan Trọng Nhất Phải Hiểu!</h3>
+      <div class="git-diagram">
+┌────────────────────┐     git add      ┌────────────────────┐     git commit     ┌────────────────────┐
+│                    │   ──────────→    │                    │   ──────────→      │                    │
+│  Working Directory │                  │   Staging Area     │                    │  Local Repository  │
+│  (Thư mục làm việc)│   ←──────────    │   (Index)          │   ←──────────      │  (.git folder)     │
+│                    │   git restore    │                    │   git reset        │                    │
+└────────────────────┘                  └────────────────────┘                    └────────────────────┘
+                                                                                            │
+                                                                                            │ git push
+                                                                                            ↓
+                                                                                  ┌────────────────────┐
+                                                                                  │  Remote Repository │
+                                                                                  │  (GitHub/GitLab)   │
+                                                                                  └────────────────────┘
+      </div>
+
+      <div class="grid-3">
+        <div class="card-feature" style="border-left: 4px solid var(--info)">
+          <span class="icon">📂</span>
+          <h4>Working Directory</h4>
+          <p>Nơi bạn code, sửa file. File ở đây có thể là <strong>untracked</strong> (chưa biết) hoặc <strong>modified</strong> (đã sửa).</p>
+        </div>
+        <div class="card-feature" style="border-left: 4px solid var(--accent)">
+          <span class="icon">📋</span>
+          <h4>Staging Area (Index)</h4>
+          <p>"Phòng chờ" trước khi commit. Bạn <em>chọn</em> file nào sẽ commit bằng <span class="inline-code">git add</span>.</p>
+        </div>
+        <div class="card-feature" style="border-left: 4px solid var(--merge)">
+          <span class="icon">📦</span>
+          <h4>Local Repository</h4>
+          <p>Lịch sử chính thức trong <span class="inline-code">.git/</span>. Mỗi <span class="inline-code">git commit</span> lưu 1 snapshot.</p>
+        </div>
+      </div>
+
+      <h3>3.3. 3 Trạng Thái File</h3>
+      <table>
+        <tr><th>Trạng thái</th><th>Mô tả</th><th>Vùng</th></tr>
+        <tr><td><strong>Untracked</strong></td><td>File mới, Git chưa biết</td><td>Working Directory</td></tr>
+        <tr><td><strong>Modified</strong></td><td>File đã thay đổi nhưng chưa staged</td><td>Working Directory</td></tr>
+        <tr><td><strong>Staged</strong></td><td>Đã thêm vào staging, sẵn sàng commit</td><td>Staging Area</td></tr>
+        <tr><td><strong>Committed/Unmodified</strong></td><td>Đã lưu vào lịch sử</td><td>Local Repository</td></tr>
+      </table>
+
+      <h3>3.4. Commit Hash và HEAD</h3>
+      <p>Mỗi commit có 1 <strong>SHA-1 hash</strong> duy nhất, dài 40 ký tự, ví dụ:</p>
+      <div class="terminal">
+<span class="output">commit </span><span class="hash">a1b2c3d4e5f6789012345678901234567890abcd</span>
+<span class="output">Author: Nguyen Van A <vana@example.com>
+Date:   Wed May 20 10:30:00 2026 +0700
+
+    feat: thêm chức năng login</span>
+      </div>
+      <p>Thường chỉ dùng <strong>7 ký tự đầu</strong> để gọi commit (<span class="inline-code">a1b2c3d</span>). <strong>HEAD</strong> là 1 con trỏ đặc biệt - trỏ vào commit hiện tại trong branch hiện tại.</p>
+
+      <h3>3.5. Snapshot - Cách Git Lưu Dữ Liệu</h3>
+      <div class="info-box">
+        <div class="box-title">⚡ Git ≠ Diff-based</div>
+        Khác với SVN/CVS lưu các bản "delta" (chỉ thay đổi), Git lưu <strong>snapshot toàn bộ file</strong> tại mỗi commit. Nếu file không thay đổi, Git chỉ tạo 1 reference đến file cũ → vẫn nhanh và tiết kiệm. Đây là lý do Git rất nhanh khi log/diff/branch.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 4 -->
+    <section class="chapter" id="chuong-4">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 4</div>
+        <h2>Lệnh Cơ Bản - Workflow Hàng Ngày</h2>
+      </div>
+
+      <h3>4.1. git init - Khởi Tạo Repository</h3>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">mkdir</span> <span class="arg">my-project</span> <span class="cmd">&& cd</span> <span class="arg">my-project</span>
+<span class="prompt">$</span> <span class="cmd">git init</span>
+<span class="output">Initialized empty Git repository in /home/user/my-project/.git/</span>
+      </div>
+      <p>Lệnh này tạo thư mục ẩn <span class="inline-code">.git</span> chứa toàn bộ metadata. <strong>Đừng xóa</strong> nó - mất hết lịch sử!</p>
+
+      <h3>4.2. git clone - Sao Chép Repo Về Máy</h3>
+      <div class="terminal">
+<span class="comment"># HTTPS</span>
+<span class="prompt">$</span> <span class="cmd">git clone</span> <span class="arg">https://github.com/torvalds/linux.git</span>
+
+<span class="comment"># SSH</span>
+<span class="prompt">$</span> <span class="cmd">git clone</span> <span class="arg">git@github.com:torvalds/linux.git</span>
+
+<span class="comment"># Clone vào tên thư mục khác</span>
+<span class="prompt">$</span> <span class="cmd">git clone</span> <span class="arg">https://...</span> <span class="arg">my-folder</span>
+
+<span class="comment"># Clone chỉ 1 branch, depth=1 (siêu nhẹ, dùng cho CI)</span>
+<span class="prompt">$</span> <span class="cmd">git clone</span> <span class="opt">--depth=1</span> <span class="opt">--branch</span> <span class="arg">main</span> <span class="arg">https://...</span>
+      </div>
+
+      <h3>4.3. git status - Trạng Thái Hiện Tại</h3>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git status</span>
+<span class="output">On branch </span><span class="branch">main</span>
+<span class="output">Your branch is up to date with 'origin/main'.
+
+Changes to be committed:</span>
+<span class="added">  modified:   README.md</span>
+<span class="added">  new file:   src/login.js</span>
+
+<span class="output">Changes not staged for commit:</span>
+<span class="removed">  modified:   package.json</span>
+
+<span class="output">Untracked files:</span>
+<span class="removed">  .env.local</span>
+      </div>
+      <p>Lệnh dùng <strong>nhiều nhất</strong> trong workflow Git. Hiển thị: branch hiện tại, file staged/modified/untracked.</p>
+      <div class="tip-box">
+        <div class="box-title">💡 Tip</div>
+        Dùng <span class="inline-code">git status -s</span> (short) cho output gọn gàng hơn.
+      </div>
+
+      <h3>4.4. git add - Đưa File Vào Staging</h3>
+      <div class="terminal">
+<span class="comment"># Add 1 file</span>
+<span class="prompt">$</span> <span class="cmd">git add</span> <span class="arg">README.md</span>
+
+<span class="comment"># Add tất cả file thay đổi (kể cả untracked)</span>
+<span class="prompt">$</span> <span class="cmd">git add</span> <span class="arg">.</span>
+
+<span class="comment"># Add theo pattern</span>
+<span class="prompt">$</span> <span class="cmd">git add</span> <span class="arg">"*.js"</span>
+
+<span class="comment"># Interactive - chọn từng phần của file (cực mạnh!)</span>
+<span class="prompt">$</span> <span class="cmd">git add</span> <span class="opt">-p</span>
+      </div>
+
+      <h3>4.5. git commit - Lưu Vào Lịch Sử</h3>
+      <div class="terminal">
+<span class="comment"># Commit với message</span>
+<span class="prompt">$</span> <span class="cmd">git commit</span> <span class="opt">-m</span> <span class="arg">"feat: thêm chức năng login"</span>
+
+<span class="comment"># Commit + add tất cả modified file (không add untracked)</span>
+<span class="prompt">$</span> <span class="cmd">git commit</span> <span class="opt">-am</span> <span class="arg">"fix: sửa bug logout"</span>
+
+<span class="comment"># Sửa commit gần nhất (chưa push!)</span>
+<span class="prompt">$</span> <span class="cmd">git commit</span> <span class="opt">--amend</span>
+
+<span class="comment"># Commit không thay đổi message</span>
+<span class="prompt">$</span> <span class="cmd">git commit</span> <span class="opt">--amend</span> <span class="opt">--no-edit</span>
+      </div>
+
+      <div class="warning-box">
+        <div class="box-title">⚠️ Cẩn thận với --amend</div>
+        Lệnh <span class="inline-code">--amend</span> tạo commit MỚI thay thế commit cũ. <strong>Không bao giờ amend commit đã push</strong> lên remote chung, sẽ phá lịch sử của người khác!
+      </div>
+
+      <h3>4.6. git log - Xem Lịch Sử</h3>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git log</span>
+<span class="prompt">$</span> <span class="cmd">git log</span> <span class="opt">--oneline</span>          <span class="comment"># Gọn, mỗi commit 1 dòng</span>
+<span class="prompt">$</span> <span class="cmd">git log</span> <span class="opt">--graph --oneline --all</span>  <span class="comment"># Biểu đồ branch ASCII</span>
+<span class="prompt">$</span> <span class="cmd">git log</span> <span class="opt">-n</span> <span class="arg">5</span>               <span class="comment"># 5 commit gần nhất</span>
+<span class="prompt">$</span> <span class="cmd">git log</span> <span class="opt">--author</span><span class="arg">="Nguyen"</span>   <span class="comment"># Lọc theo tác giả</span>
+<span class="prompt">$</span> <span class="cmd">git log</span> <span class="opt">--since</span><span class="arg">="2 weeks ago"</span>
+<span class="prompt">$</span> <span class="cmd">git log</span> <span class="opt">-p</span> <span class="arg">file.js</span>       <span class="comment"># Lịch sử + diff của 1 file</span>
+      </div>
+
+      <h3>4.7. git diff - So Sánh Thay Đổi</h3>
+      <table>
+        <tr><th>Lệnh</th><th>So sánh</th></tr>
+        <tr><td><span class="inline-code">git diff</span></td><td>Working Dir vs Staging</td></tr>
+        <tr><td><span class="inline-code">git diff --staged</span></td><td>Staging vs Last Commit</td></tr>
+        <tr><td><span class="inline-code">git diff HEAD</span></td><td>Working Dir vs Last Commit</td></tr>
+        <tr><td><span class="inline-code">git diff main feature</span></td><td>Branch main vs branch feature</td></tr>
+        <tr><td><span class="inline-code">git diff abc123 def456</span></td><td>2 commit cụ thể</td></tr>
+      </table>
+
+      <h3>4.8. .gitignore - File Bỏ Qua</h3>
+      <p>File <span class="inline-code">.gitignore</span> liệt kê pattern các file/folder Git sẽ <strong>không theo dõi</strong>.</p>
+      <div class="terminal">
+<span class="comment"># .gitignore mẫu cho Node.js</span>
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.local
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+<span class="comment"># Bỏ qua tất cả .txt trừ important.txt</span>
+*.txt
+!important.txt
+      </div>
+      <div class="tip-box">
+        <div class="box-title">💡 Tip vàng</div>
+        Tham khảo <a href="https://github.com/github/gitignore" style="color: var(--primary-glow)">github.com/gitignore</a> - bộ sưu tập <em>.gitignore</em> chuẩn cho mọi ngôn ngữ/framework.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 5 -->
+    <section class="chapter" id="chuong-5">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 5</div>
+        <h2>Branching - Sức Mạnh Thực Sự Của Git</h2>
+      </div>
+
+      <h3>5.1. Tại Sao Cần Branch?</h3>
+      <p><strong>Branch</strong> (nhánh) cho phép bạn <em>phân tách</em> dòng phát triển ra khỏi nhánh chính để:</p>
+      <ul>
+        <li>Phát triển tính năng mới mà không ảnh hưởng main</li>
+        <li>Sửa bug khẩn cấp (hotfix) song song với feature đang dở</li>
+        <li>Thử nghiệm ý tưởng - xóa branch là quên</li>
+        <li>Code review trước khi merge vào main (qua Pull Request)</li>
+      </ul>
+
+      <div class="git-diagram">
+                                                    feature/login
+                                                          ↓
+                                    ●─────●─────●         (HEAD)
+                                   /
+        main:  ●─────●─────●─────●─────●─────●─────●
+                                            ↑
+                                            HEAD trước khi tạo branch
+      </div>
+
+      <h3>5.2. Lệnh git branch</h3>
+      <div class="terminal">
+<span class="comment"># Liệt kê branch local</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span>
+<span class="output">* </span><span class="branch">main</span>
+<span class="output">  feature/login
+  bugfix/header</span>
+
+<span class="comment"># Liệt kê tất cả (cả remote)</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span> <span class="opt">-a</span>
+
+<span class="comment"># Tạo branch mới (KHÔNG chuyển sang)</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span> <span class="arg">feature/payment</span>
+
+<span class="comment"># Xóa branch (an toàn - chỉ xóa nếu đã merge)</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span> <span class="opt">-d</span> <span class="arg">feature/login</span>
+
+<span class="comment"># Xóa cưỡng bức (CẨN THẬN - mất code chưa merge!)</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span> <span class="opt">-D</span> <span class="arg">feature/login</span>
+
+<span class="comment"># Đổi tên branch hiện tại</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span> <span class="opt">-m</span> <span class="arg">new-name</span>
+      </div>
+
+      <h3>5.3. git checkout vs git switch</h3>
+      <p>Từ Git 2.23 (2019), <span class="inline-code">checkout</span> được tách thành 2 lệnh chuyên biệt: <span class="inline-code">switch</span> (chuyển branch) và <span class="inline-code">restore</span> (khôi phục file).</p>
+
+      <div class="terminal">
+<span class="comment"># Cũ (vẫn hoạt động):</span>
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="arg">feature/login</span>
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="opt">-b</span> <span class="arg">new-branch</span>    <span class="comment"># Tạo + chuyển</span>
+
+<span class="comment"># Mới (khuyến khích dùng):</span>
+<span class="prompt">$</span> <span class="cmd">git switch</span> <span class="arg">feature/login</span>
+<span class="prompt">$</span> <span class="cmd">git switch</span> <span class="opt">-c</span> <span class="arg">new-branch</span>     <span class="comment"># Create + switch</span>
+<span class="prompt">$</span> <span class="cmd">git switch</span> <span class="opt">-</span>                  <span class="comment"># Quay lại branch trước (như cd -)</span>
+      </div>
+
+      <h3>5.4. Đặt Tên Branch Theo Convention</h3>
+      <table>
+        <tr><th>Prefix</th><th>Mục đích</th><th>Ví dụ</th></tr>
+        <tr><td><strong>feature/</strong></td><td>Tính năng mới</td><td><span class="inline-code">feature/user-login</span></td></tr>
+        <tr><td><strong>bugfix/</strong></td><td>Sửa bug thường</td><td><span class="inline-code">bugfix/login-redirect</span></td></tr>
+        <tr><td><strong>hotfix/</strong></td><td>Sửa bug khẩn cấp prod</td><td><span class="inline-code">hotfix/payment-down</span></td></tr>
+        <tr><td><strong>release/</strong></td><td>Chuẩn bị release</td><td><span class="inline-code">release/v2.1.0</span></td></tr>
+        <tr><td><strong>chore/</strong></td><td>Việc lặt vặt (deps, config)</td><td><span class="inline-code">chore/update-deps</span></td></tr>
+        <tr><td><strong>docs/</strong></td><td>Tài liệu</td><td><span class="inline-code">docs/api-readme</span></td></tr>
+      </table>
+
+      <h3>5.5. Detached HEAD - Trạng Thái "Đầu Lìa Khỏi Thân"</h3>
+      <p>Khi bạn <span class="inline-code">git checkout</span> trực tiếp vào 1 commit hash (không phải branch), HEAD trỏ thẳng vào commit đó → <strong>detached HEAD</strong>. Commit mới sẽ KHÔNG thuộc branch nào → dễ mất.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="hash">a1b2c3d</span>
+<span class="output">You are in 'detached HEAD' state...</span>
+
+<span class="comment"># Để cứu code, tạo branch ngay:</span>
+<span class="prompt">$</span> <span class="cmd">git switch</span> <span class="opt">-c</span> <span class="arg">save-my-work</span>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 6 -->
+    <section class="chapter" id="chuong-6">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 6</div>
+        <h2>Merge - Hợp Nhất Nhánh</h2>
+      </div>
+
+      <h3>6.1. Fast-Forward Merge</h3>
+      <p>Xảy ra khi branch đích KHÔNG có commit mới nào kể từ lúc tạo branch nguồn. Git chỉ cần "kéo" con trỏ về phía trước.</p>
+      <div class="git-diagram">
+TRƯỚC:
+        main:  A───B───C
+                       ↓
+                       feature: D───E───F (HEAD)
+
+SAU `git checkout main && git merge feature`:
+        main:  A───B───C───D───E───F (HEAD)
+                                   ↑
+                                   feature
+      </div>
+
+      <h3>6.2. 3-Way Merge (Recursive)</h3>
+      <p>Khi cả 2 branch đều có commit mới, Git tạo <strong>merge commit</strong> với 2 parent.</p>
+      <div class="git-diagram">
+TRƯỚC:
+        main:    A───B───C───G───H (HEAD)
+                         \
+                          D───E───F (feature)
+
+SAU `git merge feature`:
+        main:    A───B───C───G───H───M (HEAD)
+                         \           /
+                          D───E───F /
+                                   ↑
+                                   feature
+        (M = merge commit, có 2 parent: H và F)
+      </div>
+
+      <h3>6.3. Squash Merge</h3>
+      <p>Gộp <strong>toàn bộ commit của branch nguồn thành 1 commit duy nhất</strong> trên branch đích. Lịch sử sạch sẽ.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="arg">main</span>
+<span class="prompt">$</span> <span class="cmd">git merge</span> <span class="opt">--squash</span> <span class="arg">feature/login</span>
+<span class="prompt">$</span> <span class="cmd">git commit</span> <span class="opt">-m</span> <span class="arg">"feat: thêm chức năng login (squashed)"</span>
+      </div>
+
+      <h3>6.4. So Sánh 3 Loại Merge</h3>
+      <table>
+        <tr><th>Loại</th><th>Khi nào dùng</th><th>Ưu</th><th>Nhược</th></tr>
+        <tr><td>Fast-forward</td><td>Branch nguồn ngắn, không cần lưu lại</td><td>Lịch sử thẳng, đơn giản</td><td>Mất thông tin "đây là 1 feature"</td></tr>
+        <tr><td>3-way (--no-ff)</td><td>Feature lớn, cần thấy được nhánh</td><td>Bảo tồn cấu trúc branch</td><td>Lịch sử rối, nhiều merge commit</td></tr>
+        <tr><td>Squash</td><td>Feature nhiều commit lẻ tẻ (WIP, fix typo)</td><td>Sạch, dễ đọc, dễ revert</td><td>Mất chi tiết quá trình phát triển</td></tr>
+      </table>
+
+      <h3>6.5. --no-ff: Bắt Buộc Tạo Merge Commit</h3>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git merge</span> <span class="opt">--no-ff</span> <span class="arg">feature/login</span>
+      </div>
+      <p>Dù có thể fast-forward, vẫn tạo merge commit để <em>đánh dấu</em> "đây là chỗ feature được merge vào". Nhiều team dùng cho main branch.</p>
+    </section>
+
+    <!-- CHƯƠNG 7 -->
+    <section class="chapter" id="chuong-7">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 7</div>
+        <h2>Remote & Cộng Tác Nhóm</h2>
+      </div>
+
+      <h3>7.1. Quản Lý Remote</h3>
+      <div class="terminal">
+<span class="comment"># Liệt kê remote</span>
+<span class="prompt">$</span> <span class="cmd">git remote</span> <span class="opt">-v</span>
+<span class="output">origin  git@github.com:user/repo.git (fetch)
+origin  git@github.com:user/repo.git (push)</span>
+
+<span class="comment"># Thêm remote mới</span>
+<span class="prompt">$</span> <span class="cmd">git remote add</span> <span class="arg">upstream</span> <span class="arg">git@github.com:original/repo.git</span>
+
+<span class="comment"># Đổi URL</span>
+<span class="prompt">$</span> <span class="cmd">git remote set-url</span> <span class="arg">origin</span> <span class="arg">git@github.com:new/repo.git</span>
+
+<span class="comment"># Xóa</span>
+<span class="prompt">$</span> <span class="cmd">git remote remove</span> <span class="arg">upstream</span>
+      </div>
+
+      <h3>7.2. fetch vs pull - KHÁC NHAU!</h3>
+      <div class="vs-container">
+        <div class="vs-card left">
+          <h4>📥 git fetch</h4>
+          <ul>
+            <li>Tải code mới từ remote về</li>
+            <li><strong>KHÔNG</strong> tự động merge vào branch hiện tại</li>
+            <li>An toàn - không thay đổi working dir</li>
+            <li>Cập nhật các tracking branch (origin/main)</li>
+          </ul>
+          <div class="terminal" style="margin-top:10px;font-size:12px">
+<span class="prompt">$</span> <span class="cmd">git fetch</span> <span class="arg">origin</span>
+          </div>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div class="vs-card right">
+          <h4>📥+🔀 git pull</h4>
+          <ul>
+            <li><span class="inline-code">= fetch + merge</span></li>
+            <li>Tải về <strong>VÀ</strong> merge vào branch hiện tại</li>
+            <li>Có thể gây conflict</li>
+            <li><span class="inline-code">--rebase</span> để rebase thay vì merge</li>
+          </ul>
+          <div class="terminal" style="margin-top:10px;font-size:12px">
+<span class="prompt">$</span> <span class="cmd">git pull</span> <span class="opt">--rebase</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>7.3. git push</h3>
+      <div class="terminal">
+<span class="comment"># Push branch hiện tại lên origin</span>
+<span class="prompt">$</span> <span class="cmd">git push</span>
+
+<span class="comment"># Lần đầu push branch mới: cần set upstream</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="opt">-u</span> <span class="arg">origin</span> <span class="arg">feature/login</span>
+
+<span class="comment"># Push tất cả branch</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="opt">--all</span>
+
+<span class="comment"># Push tag</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="opt">--tags</span>
+
+<span class="comment"># Force push (NGUY HIỂM)</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="opt">--force-with-lease</span>  <span class="comment"># An toàn hơn --force</span>
+      </div>
+
+      <h3>7.4. Origin vs Upstream - Forking Workflow</h3>
+      <p>Khi fork 1 repo trên GitHub, convention là:</p>
+      <ul>
+        <li><strong>origin</strong> → fork của BẠN (bạn có quyền push)</li>
+        <li><strong>upstream</strong> → repo GỐC (chỉ pull để sync)</li>
+      </ul>
+      <div class="terminal">
+<span class="comment"># Đồng bộ fork với upstream</span>
+<span class="prompt">$</span> <span class="cmd">git fetch</span> <span class="arg">upstream</span>
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="arg">main</span>
+<span class="prompt">$</span> <span class="cmd">git merge</span> <span class="arg">upstream/main</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="arg">origin</span> <span class="arg">main</span>
+      </div>
+
+      <h3>7.5. Force Push - Khi Nào & Cẩn Thận!</h3>
+      <div class="warning-box">
+        <div class="box-title">🚨 Quy tắc Force Push</div>
+        <ul>
+          <li><strong>Không bao giờ</strong> force push lên <span class="inline-code">main</span> hay <span class="inline-code">develop</span></li>
+          <li>Chỉ force push lên branch CỦA RIÊNG BẠN (sau rebase/amend)</li>
+          <li>Luôn dùng <span class="inline-code">--force-with-lease</span> thay vì <span class="inline-code">--force</span> - an toàn hơn vì check remote chưa thay đổi</li>
+          <li>Trao đổi với team trước khi force push branch chia sẻ</li>
+        </ul>
+      </div>
+
+      <h3>7.6. Pull Request / Merge Request Workflow</h3>
+      <div class="roadmap-step">
+        <div class="roadmap-num">1</div>
+        <div class="roadmap-content"><h4>Tạo branch từ main</h4><span class="inline-code">git switch -c feature/login</span></div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">2</div>
+        <div class="roadmap-content"><h4>Code & commit</h4>Commit nhỏ, message rõ ràng theo Conventional Commits</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">3</div>
+        <div class="roadmap-content"><h4>Push lên remote</h4><span class="inline-code">git push -u origin feature/login</span></div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">4</div>
+        <div class="roadmap-content"><h4>Tạo Pull Request trên GitHub/GitLab</h4>Mô tả thay đổi, link issue, gắn reviewer</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">5</div>
+        <div class="roadmap-content"><h4>Code Review</h4>Reviewer comment, bạn sửa và push thêm commit</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">6</div>
+        <div class="roadmap-content"><h4>Merge & xóa branch</h4>Squash hoặc merge commit, sau đó xóa branch</div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 8 -->
+    <section class="chapter" id="chuong-8">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 8</div>
+        <h2>Xử Lý Conflict - Nỗi Ám Ảnh Của Developer</h2>
+      </div>
+
+      <h3>8.1. Tại Sao Có Conflict?</h3>
+      <p>Conflict xảy ra khi Git <strong>không thể tự động merge</strong> 2 branch vì cả hai cùng sửa <em>cùng 1 dòng</em> trong cùng 1 file theo cách khác nhau.</p>
+
+      <h3>8.2. Cấu Trúc Conflict Markers</h3>
+      <div class="terminal">
+<span class="output">function login(user) {</span>
+<span class="added"><<<<<<< HEAD                          ← Phần code BRANCH HIỆN TẠI (main)</span>
+<span class="output">    return authenticate(user.email, user.password);</span>
+<span class="added">=======                              ← Phân cách</span>
+<span class="output">    return authService.login(user);</span>
+<span class="removed">>>>>>>> feature/oauth                 ← Phần code BRANCH ĐANG MERGE VÀO</span>
+<span class="output">}</span>
+      </div>
+
+      <h3>8.3. Quy Trình Giải Quyết Conflict</h3>
+      <div class="roadmap-step">
+        <div class="roadmap-num">1</div>
+        <div class="roadmap-content"><h4>Chạy git status để xem file conflict</h4>File hiện trong "Unmerged paths"</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">2</div>
+        <div class="roadmap-content"><h4>Mở file, đọc kỹ cả 2 phía</h4>Hiểu logic cả 2 thay đổi - hỏi đồng nghiệp nếu cần</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">3</div>
+        <div class="roadmap-content"><h4>Sửa code, xóa markers</h4>Giữ phần đúng, xóa <code>&lt;&lt;&lt;&lt;</code>, <code>====</code>, <code>&gt;&gt;&gt;&gt;</code></div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">4</div>
+        <div class="roadmap-content"><h4>git add file đã sửa</h4>Đánh dấu conflict đã giải quyết</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">5</div>
+        <div class="roadmap-content"><h4>git commit để hoàn tất merge</h4>Git tự sinh message merge</div>
+      </div>
+
+      <h3>8.4. Tools Hỗ Trợ Giải Quyết</h3>
+      <div class="grid-3">
+        <div class="card-feature"><h4>VS Code</h4><p>Nhận diện tự động, nút "Accept Current/Incoming/Both"</p></div>
+        <div class="card-feature"><h4>git mergetool</h4><p>Mở merge tool đã config (kdiff3, vimdiff, meld)</p></div>
+        <div class="card-feature"><h4>GitKraken/Fork</h4><p>3-way merge editor trực quan, side-by-side</p></div>
+      </div>
+
+      <h3>8.5. Hủy Merge Giữa Chừng</h3>
+      <div class="terminal">
+<span class="comment"># Quay lại trạng thái trước khi bắt đầu merge</span>
+<span class="prompt">$</span> <span class="cmd">git merge</span> <span class="opt">--abort</span>
+
+<span class="comment"># Tương tự cho rebase</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">--abort</span>
+
+<span class="comment"># Hoặc cherry-pick</span>
+<span class="prompt">$</span> <span class="cmd">git cherry-pick</span> <span class="opt">--abort</span>
+      </div>
+
+      <h3>8.6. Chiến Lược Tránh Conflict</h3>
+      <ul>
+        <li><strong>Pull thường xuyên</strong>: Sync với main mỗi ngày, conflict nhỏ dễ giải quyết</li>
+        <li><strong>Branch ngắn hạn</strong>: Feature branch không quá 1-2 tuần</li>
+        <li><strong>Phân chia file</strong>: Mỗi người làm module riêng, ít đụng nhau</li>
+        <li><strong>Code style chuẩn</strong>: Prettier/ESLint tự động format → tránh conflict do tab/space</li>
+        <li><strong>Communicate</strong>: Báo cho team biết bạn đang refactor file lớn</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 9 -->
+    <section class="chapter" id="chuong-9">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 9</div>
+        <h2>Undo - Hoàn Tác Mọi Thứ</h2>
+      </div>
+
+      <h3>9.1. git restore (Git 2.23+)</h3>
+      <div class="terminal">
+<span class="comment"># Khôi phục file working dir về trạng thái như staging</span>
+<span class="prompt">$</span> <span class="cmd">git restore</span> <span class="arg">file.js</span>
+
+<span class="comment"># Khôi phục về trạng thái như HEAD (xóa cả thay đổi đã stage)</span>
+<span class="prompt">$</span> <span class="cmd">git restore</span> <span class="opt">--source</span><span class="arg">=HEAD</span> <span class="opt">--staged --worktree</span> <span class="arg">file.js</span>
+
+<span class="comment"># Unstage file (đẩy ra khỏi staging)</span>
+<span class="prompt">$</span> <span class="cmd">git restore</span> <span class="opt">--staged</span> <span class="arg">file.js</span>
+      </div>
+
+      <h3>9.2. git reset - 3 Mức Độ</h3>
+      <table>
+        <tr><th>Lệnh</th><th>Working Dir</th><th>Staging</th><th>HEAD</th><th>Dùng khi</th></tr>
+        <tr><td><span class="inline-code">--soft</span></td><td>Giữ nguyên</td><td>Giữ nguyên</td><td>Lùi</td><td>Đổi message commit cuối, gộp commit</td></tr>
+        <tr><td><span class="inline-code">--mixed</span> (mặc định)</td><td>Giữ nguyên</td><td>Reset</td><td>Lùi</td><td>Unstage tất cả, làm lại từ add</td></tr>
+        <tr><td><span class="inline-code">--hard</span> ⚠️</td><td>Reset</td><td>Reset</td><td>Lùi</td><td>Vứt sạch mọi thứ về commit cũ</td></tr>
+      </table>
+
+      <div class="terminal">
+<span class="comment"># Hủy commit cuối, giữ code đã sửa trong working dir</span>
+<span class="prompt">$</span> <span class="cmd">git reset</span> <span class="opt">--soft</span> <span class="arg">HEAD~1</span>
+
+<span class="comment"># Hủy 3 commit gần nhất, giữ code</span>
+<span class="prompt">$</span> <span class="cmd">git reset</span> <span class="opt">--mixed</span> <span class="arg">HEAD~3</span>
+
+<span class="comment"># NGUY HIỂM: Reset cứng về commit cụ thể - mất hết thay đổi sau đó</span>
+<span class="prompt">$</span> <span class="cmd">git reset</span> <span class="opt">--hard</span> <span class="hash">abc1234</span>
+      </div>
+
+      <h3>9.3. git revert - An Toàn Hơn Reset</h3>
+      <p>Tạo 1 commit MỚI để <em>hoàn tác</em> tác động của commit cũ. <strong>Không thay đổi lịch sử</strong> → an toàn cho branch chia sẻ.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git revert</span> <span class="hash">abc1234</span>
+<span class="comment"># Mở editor để viết message, sau đó tạo commit ngược</span>
+
+<span class="comment"># Revert nhiều commit liên tiếp</span>
+<span class="prompt">$</span> <span class="cmd">git revert</span> <span class="arg">HEAD~3..HEAD</span>
+
+<span class="comment"># Revert nhưng không tự commit (để gộp nhiều revert)</span>
+<span class="prompt">$</span> <span class="cmd">git revert</span> <span class="opt">--no-commit</span> <span class="hash">abc1234</span> <span class="hash">def5678</span>
+      </div>
+
+      <h3>9.4. So Sánh Reset vs Revert vs Restore</h3>
+      <table>
+        <tr><th>Lệnh</th><th>Thay đổi lịch sử?</th><th>An toàn cho remote?</th><th>Phạm vi</th></tr>
+        <tr><td><span class="inline-code">git restore</span></td><td>Không</td><td>Có</td><td>File trong WD/Staging</td></tr>
+        <tr><td><span class="inline-code">git reset</span></td><td><strong>Có</strong></td><td><strong>Không</strong> (nếu đã push)</td><td>Commit lùi HEAD</td></tr>
+        <tr><td><span class="inline-code">git revert</span></td><td>Không</td><td>Có</td><td>Tạo commit ngược</td></tr>
+      </table>
+
+      <h3>9.5. git reflog - Lá Bùa Cứu Mạng!</h3>
+      <p><strong>Reflog</strong> ghi lại MỌI thay đổi của HEAD trong 90 ngày. Khi bạn nghĩ "tôi mất commit rồi!", reflog gần như luôn cứu được.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git reflog</span>
+<span class="output">a1b2c3d HEAD@{0}: reset: moving to HEAD~5
+e4f5g6h HEAD@{1}: commit: feat: add payment
+i7j8k9l HEAD@{2}: commit: fix: login bug
+...</span>
+
+<span class="comment"># "Cứu" commit đã reset --hard mất</span>
+<span class="prompt">$</span> <span class="cmd">git reset</span> <span class="opt">--hard</span> <span class="arg">HEAD@{1}</span>
+      </div>
+      <div class="tip-box">
+        <div class="box-title">🛡️ Nhớ kỹ</div>
+        Nếu lỡ <span class="inline-code">git reset --hard</span> mất code, ĐỪNG hoảng. Mở reflog ngay - 99% trường hợp vẫn cứu được.
+      </div>
+
+      <h3>9.6. git clean - Dọn File Untracked</h3>
+      <div class="terminal">
+<span class="comment"># Dry run - xem sẽ xóa gì (LUÔN chạy trước)</span>
+<span class="prompt">$</span> <span class="cmd">git clean</span> <span class="opt">-n</span>
+
+<span class="comment"># Xóa file untracked</span>
+<span class="prompt">$</span> <span class="cmd">git clean</span> <span class="opt">-f</span>
+
+<span class="comment"># Xóa cả thư mục</span>
+<span class="prompt">$</span> <span class="cmd">git clean</span> <span class="opt">-fd</span>
+
+<span class="comment"># Xóa cả file trong .gitignore (RESET HOÀN TOÀN)</span>
+<span class="prompt">$</span> <span class="cmd">git clean</span> <span class="opt">-fdx</span>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 10 -->
+    <section class="chapter" id="chuong-10">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 10</div>
+        <h2>Stash & Tag</h2>
+      </div>
+
+      <h3>10.1. git stash - Cất Tạm Code</h3>
+      <p>Bạn đang code dở thì sếp bảo "fix gấp bug prod". Bạn không muốn commit code dở nhưng cũng không thể chuyển branch (Git không cho). → <span class="inline-code">git stash</span> giải quyết!</p>
+      <div class="terminal">
+<span class="comment"># Cất tạm</span>
+<span class="prompt">$</span> <span class="cmd">git stash</span>
+
+<span class="comment"># Cất kèm message (KHUYẾN KHÍCH)</span>
+<span class="prompt">$</span> <span class="cmd">git stash push</span> <span class="opt">-m</span> <span class="arg">"WIP: chức năng login dang dở"</span>
+
+<span class="comment"># Cất cả file untracked</span>
+<span class="prompt">$</span> <span class="cmd">git stash</span> <span class="opt">-u</span>
+
+<span class="comment"># Liệt kê</span>
+<span class="prompt">$</span> <span class="cmd">git stash list</span>
+<span class="output">stash@{0}: WIP: chức năng login dang dở
+stash@{1}: WIP on main: fix typo
+</span>
+
+<span class="comment"># Lấy ra (và xóa stash)</span>
+<span class="prompt">$</span> <span class="cmd">git stash pop</span>
+
+<span class="comment"># Lấy ra nhưng GIỮ stash (apply)</span>
+<span class="prompt">$</span> <span class="cmd">git stash apply</span> <span class="arg">stash@{1}</span>
+
+<span class="comment"># Xóa stash</span>
+<span class="prompt">$</span> <span class="cmd">git stash drop</span> <span class="arg">stash@{0}</span>
+
+<span class="comment"># Xóa hết stash</span>
+<span class="prompt">$</span> <span class="cmd">git stash clear</span>
+      </div>
+
+      <h3>10.2. git tag - Đánh Dấu Phiên Bản</h3>
+      <p>Tag dùng để <strong>đánh dấu phiên bản release</strong> (v1.0.0, v2.1.3...).</p>
+
+      <h4>Lightweight Tag vs Annotated Tag</h4>
+      <div class="vs-container">
+        <div class="vs-card left">
+          <h4>🏷️ Lightweight</h4>
+          <ul>
+            <li>Chỉ là 1 con trỏ đến commit</li>
+            <li>Không có author, date, message</li>
+            <li>Như "bookmark" tạm</li>
+          </ul>
+          <div class="terminal" style="font-size:12px">
+<span class="prompt">$</span> <span class="cmd">git tag</span> <span class="arg">v1.0</span>
+          </div>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div class="vs-card right">
+          <h4>🎖️ Annotated (khuyến nghị)</h4>
+          <ul>
+            <li>Object hoàn chỉnh trong Git</li>
+            <li>Có author, date, message, GPG sign</li>
+            <li>Dùng cho production release</li>
+          </ul>
+          <div class="terminal" style="font-size:12px">
+<span class="prompt">$</span> <span class="cmd">git tag</span> <span class="opt">-a</span> <span class="arg">v1.0.0</span> <span class="opt">-m</span> <span class="arg">"Release 1.0.0"</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal">
+<span class="comment"># Liệt kê tag</span>
+<span class="prompt">$</span> <span class="cmd">git tag</span>
+
+<span class="comment"># Tag 1 commit cũ</span>
+<span class="prompt">$</span> <span class="cmd">git tag</span> <span class="opt">-a</span> <span class="arg">v0.9</span> <span class="hash">abc1234</span> <span class="opt">-m</span> <span class="arg">"Beta release"</span>
+
+<span class="comment"># Push tag lên remote (push KHÔNG tự push tag!)</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="arg">origin</span> <span class="arg">v1.0.0</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="opt">--tags</span>     <span class="comment"># Push tất cả tag</span>
+
+<span class="comment"># Xóa tag</span>
+<span class="prompt">$</span> <span class="cmd">git tag</span> <span class="opt">-d</span> <span class="arg">v1.0.0</span>            <span class="comment"># Local</span>
+<span class="prompt">$</span> <span class="cmd">git push</span> <span class="arg">origin</span> <span class="opt">--delete</span> <span class="arg">v1.0.0</span>  <span class="comment"># Remote</span>
+      </div>
+
+      <h3>10.3. Semantic Versioning (SemVer)</h3>
+      <div class="info-box">
+        <div class="box-title">📐 Format: MAJOR.MINOR.PATCH</div>
+        <ul>
+          <li><strong>MAJOR</strong>: Breaking changes (không tương thích ngược) - v1.x.x → v2.0.0</li>
+          <li><strong>MINOR</strong>: Tính năng mới (vẫn tương thích) - v1.2.x → v1.3.0</li>
+          <li><strong>PATCH</strong>: Bug fix - v1.2.3 → v1.2.4</li>
+          <li>Pre-release: <span class="inline-code">v1.0.0-alpha.1</span>, <span class="inline-code">v1.0.0-rc.1</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 11 -->
+    <section class="chapter" id="chuong-11">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 11</div>
+        <h2>Rebase - Nghệ Thuật Viết Lại Lịch Sử</h2>
+      </div>
+
+      <h3>11.1. Rebase vs Merge - Bản Chất Khác Nhau</h3>
+      <div class="vs-container">
+        <div class="vs-card left">
+          <h4>🔀 Merge</h4>
+          <ul>
+            <li>Tạo merge commit, giữ cấu trúc branch</li>
+            <li>Bảo tồn lịch sử chính xác</li>
+            <li>Lịch sử "rối" (đan xen)</li>
+          </ul>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div class="vs-card right">
+          <h4>📐 Rebase</h4>
+          <ul>
+            <li>Di chuyển commit sang đỉnh branch khác</li>
+            <li>Viết lại lịch sử (tạo commit mới với hash mới)</li>
+            <li>Lịch sử thẳng, sạch sẽ</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="git-diagram">
+TRƯỚC khi rebase feature lên main:
+        main:    A───B───C───G───H
+                         \
+                          D───E───F (feature)
+
+SAU `git checkout feature && git rebase main`:
+        main:    A───B───C───G───H
+                                  \
+                                   D'──E'──F' (feature)
+        (D', E', F' là commit MỚI với nội dung giống D, E, F nhưng hash khác)
+      </div>
+
+      <h3>11.2. Lệnh git rebase</h3>
+      <div class="terminal">
+<span class="comment"># Rebase branch hiện tại lên main</span>
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="arg">feature</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="arg">main</span>
+
+<span class="comment"># Nếu conflict: sửa, add, rồi continue</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">--continue</span>
+
+<span class="comment"># Bỏ qua commit gây conflict</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">--skip</span>
+
+<span class="comment"># Hủy rebase, quay về trước</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">--abort</span>
+      </div>
+
+      <h3>11.3. Interactive Rebase - Siêu Năng Lực</h3>
+      <p>Cho phép bạn <strong>chỉnh sửa lịch sử commit</strong>: gộp, đổi tên, xóa, đổi thứ tự.</p>
+      <div class="terminal">
+<span class="comment"># Sửa 5 commit gần nhất</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">-i</span> <span class="arg">HEAD~5</span>
+      </div>
+      <p>Git sẽ mở editor với nội dung:</p>
+      <div class="terminal">
+<span class="output">pick a1b2c3d feat: add login form
+pick e4f5g6h fix typo
+pick i7j8k9l fix another typo
+pick m1n2o3p style: format code
+pick q4r5s6t feat: add validation
+
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous
+# f, fixup = like "squash", but discard message
+# d, drop = remove commit</span>
+      </div>
+
+      <h3>11.4. 6 Lệnh Quan Trọng Trong Interactive Rebase</h3>
+      <table>
+        <tr><th>Lệnh</th><th>Tác dụng</th></tr>
+        <tr><td><strong>pick</strong> (p)</td><td>Giữ nguyên commit</td></tr>
+        <tr><td><strong>reword</strong> (r)</td><td>Giữ commit nhưng sửa message</td></tr>
+        <tr><td><strong>edit</strong> (e)</td><td>Dừng lại để bạn amend commit</td></tr>
+        <tr><td><strong>squash</strong> (s)</td><td>Gộp vào commit phía TRÊN, gộp message</td></tr>
+        <tr><td><strong>fixup</strong> (f)</td><td>Gộp vào commit phía TRÊN, BỎ message</td></tr>
+        <tr><td><strong>drop</strong> (d)</td><td>Xóa commit hẳn</td></tr>
+      </table>
+
+      <h3>11.5. The Golden Rule of Rebasing - Quy Tắc Vàng</h3>
+      <div class="warning-box">
+        <div class="box-title">🚨 KHÔNG BAO GIỜ rebase branch đã public/shared</div>
+        Rebase tạo commit mới với hash mới. Nếu branch đã push và đồng nghiệp đã pull, rebase + force push sẽ <strong>phá lịch sử của họ</strong>. Chỉ rebase branch CỦA RIÊNG BẠN, hoặc khi cả team đồng ý.
+      </div>
+
+      <h3>11.6. git rebase --onto - Move Commit Tinh Vi</h3>
+      <p>Di chuyển 1 dãy commit từ branch này sang branch khác.</p>
+      <div class="terminal">
+<span class="comment"># Lấy commit của feature (sau khi tách từ wrong-branch) và đặt lên main</span>
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">--onto</span> <span class="arg">main</span> <span class="arg">wrong-branch</span> <span class="arg">feature</span>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 12 -->
+    <section class="chapter" id="chuong-12">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 12</div>
+        <h2>Cherry-pick & Bisect</h2>
+      </div>
+
+      <h3>12.1. git cherry-pick - "Hái" Commit</h3>
+      <p>Áp dụng 1 (hoặc nhiều) commit cụ thể từ branch khác vào branch hiện tại.</p>
+      <div class="terminal">
+<span class="comment"># Pick 1 commit</span>
+<span class="prompt">$</span> <span class="cmd">git cherry-pick</span> <span class="hash">a1b2c3d</span>
+
+<span class="comment"># Pick nhiều commit</span>
+<span class="prompt">$</span> <span class="cmd">git cherry-pick</span> <span class="hash">a1b2c3d</span> <span class="hash">e4f5g6h</span>
+
+<span class="comment"># Pick range (KHÔNG bao gồm commit đầu)</span>
+<span class="prompt">$</span> <span class="cmd">git cherry-pick</span> <span class="hash">a1b2c3d..e4f5g6h</span>
+
+<span class="comment"># Pick range (bao gồm cả 2 đầu)</span>
+<span class="prompt">$</span> <span class="cmd">git cherry-pick</span> <span class="hash">a1b2c3d^..e4f5g6h</span>
+
+<span class="comment"># Pick mà không tự commit (để gộp)</span>
+<span class="prompt">$</span> <span class="cmd">git cherry-pick</span> <span class="opt">--no-commit</span> <span class="hash">a1b2c3d</span>
+      </div>
+
+      <div class="tip-box">
+        <div class="box-title">💼 Use case thực tế</div>
+        Bạn fix bug trên branch <span class="inline-code">develop</span>, nhưng cần áp dụng ngay lên <span class="inline-code">main</span> (hotfix). Thay vì merge cả branch develop (kéo theo tính năng dở), chỉ cherry-pick commit fix.
+      </div>
+
+      <h3>12.2. git bisect - Truy Tìm Commit Gây Bug</h3>
+      <p>Dùng <strong>binary search</strong> trong lịch sử để tìm chính xác commit nào đã introduce 1 bug. Cực mạnh khi bug "lén" lọt vào từ lâu.</p>
+
+      <div class="terminal">
+<span class="comment"># Bắt đầu</span>
+<span class="prompt">$</span> <span class="cmd">git bisect start</span>
+
+<span class="comment"># Đánh dấu commit hiện tại là BUG</span>
+<span class="prompt">$</span> <span class="cmd">git bisect bad</span>
+
+<span class="comment"># Đánh dấu 1 commit cũ là GOOD (chưa có bug)</span>
+<span class="prompt">$</span> <span class="cmd">git bisect good</span> <span class="hash">a1b2c3d</span>
+
+<span class="comment"># Git tự checkout vào commit giữa - bạn test:</span>
+<span class="comment"># Nếu có bug: git bisect bad</span>
+<span class="comment"># Nếu không bug: git bisect good</span>
+<span class="comment"># Lặp đến khi tìm thấy → Git báo commit "first bad commit"</span>
+
+<span class="comment"># Kết thúc</span>
+<span class="prompt">$</span> <span class="cmd">git bisect reset</span>
+      </div>
+
+      <h4>Bisect Tự Động</h4>
+      <div class="terminal">
+<span class="comment"># Nếu có script test (exit 0 = good, exit 1 = bad)</span>
+<span class="prompt">$</span> <span class="cmd">git bisect start HEAD</span> <span class="hash">v1.0</span>
+<span class="prompt">$</span> <span class="cmd">git bisect run</span> <span class="arg">npm test</span>
+
+<span class="comment"># Git tự checkout, chạy test, đánh dấu, lặp đến khi tìm ra!</span>
+      </div>
+      <div class="info-box">
+        <div class="box-title">📊 Hiệu quả</div>
+        Với 1000 commit, bisect tìm ra commit lỗi sau <strong>~10 lần test</strong> (log₂ 1000 ≈ 10). Linear search tệ nhất cần 1000 lần.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 13 -->
+    <section class="chapter" id="chuong-13">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 13</div>
+        <h2>Git Internals - Bên Trong Git</h2>
+      </div>
+
+      <h3>13.1. Thư Mục .git/ - Trái Tim Của Git</h3>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">ls</span> <span class="opt">-la</span> <span class="arg">.git/</span>
+<span class="output">HEAD            ← Con trỏ tới branch hiện tại
+config          ← Cấu hình local
+description     ← (chỉ dùng cho GitWeb)
+hooks/          ← Scripts tự động chạy theo event
+info/           ← exclude (ignore không cần commit .gitignore)
+objects/        ← Toàn bộ data: blob, tree, commit, tag
+refs/           ← Pointers: branches, tags
+logs/           ← Reflog
+index           ← Staging area</span>
+      </div>
+
+      <h3>13.2. 4 Loại Git Objects</h3>
+      <div class="grid-2">
+        <div class="card-feature">
+          <span class="icon">📄</span>
+          <h4>Blob</h4>
+          <p>Lưu nội dung 1 file (không kèm tên/path). Mỗi nội dung khác nhau = 1 blob khác nhau.</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">🌳</span>
+          <h4>Tree</h4>
+          <p>Như "thư mục" - chứa tên file, mode, và pointer đến blob/tree con.</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">📌</span>
+          <h4>Commit</h4>
+          <p>Snapshot của project - chứa: tree gốc, parent commit(s), author, message.</p>
+        </div>
+        <div class="card-feature">
+          <span class="icon">🏷️</span>
+          <h4>Tag (annotated)</h4>
+          <p>Pointer đến 1 object (thường là commit) kèm message + GPG sign.</p>
+        </div>
+      </div>
+
+      <div class="git-diagram">
+Commit ─────────┐
+  │              │
+  │ tree:        ↓
+  └────────→  Tree (root)
+               │ ├── README.md  →  Blob ("# My Project...")
+               │ ├── src/       →  Tree
+               │ │   ├── main.js → Blob ("console.log...")
+               │ │   └── utils.js → Blob ("...")
+               │ └── docs/      →  Tree
+               │     └── api.md  → Blob ("...")
+      </div>
+
+      <h3>13.3. Plumbing vs Porcelain Commands</h3>
+      <table>
+        <tr><th>Porcelain (cao cấp)</th><th>Plumbing (thấp cấp)</th></tr>
+        <tr><td>git commit</td><td>git hash-object, git update-index, git write-tree, git commit-tree</td></tr>
+        <tr><td>git checkout</td><td>git read-tree, git update-ref</td></tr>
+        <tr><td>git log</td><td>git rev-list, git diff-tree</td></tr>
+      </table>
+      <p><strong>Porcelain</strong>: lệnh thường dùng (UI-friendly). <strong>Plumbing</strong>: lệnh nội bộ, dùng cho scripting/automation.</p>
+
+      <h3>13.4. Khám Phá Object Bằng Lệnh</h3>
+      <div class="terminal">
+<span class="comment"># Hash của file (chưa cần add)</span>
+<span class="prompt">$</span> <span class="cmd">echo</span> <span class="arg">"hello"</span> | <span class="cmd">git hash-object</span> <span class="opt">--stdin</span>
+<span class="output">ce013625030ba8dba906f756967f9e9ca394464a</span>
+
+<span class="comment"># Xem nội dung object</span>
+<span class="prompt">$</span> <span class="cmd">git cat-file</span> <span class="opt">-p</span> <span class="hash">ce0136</span>
+<span class="output">hello</span>
+
+<span class="comment"># Xem TYPE của object</span>
+<span class="prompt">$</span> <span class="cmd">git cat-file</span> <span class="opt">-t</span> <span class="hash">ce0136</span>
+<span class="output">blob</span>
+      </div>
+
+      <h3>13.5. git gc - Dọn Dẹp</h3>
+      <p>Garbage Collection: nén objects loose thành pack files, xóa object không reference (orphan).</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git gc</span>
+<span class="prompt">$</span> <span class="cmd">git gc</span> <span class="opt">--aggressive</span>   <span class="comment"># Nén tốt hơn, lâu hơn</span>
+<span class="prompt">$</span> <span class="cmd">git gc</span> <span class="opt">--prune=now</span>     <span class="comment"># Xóa cả object dưới 2 tuần</span>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 14 -->
+    <section class="chapter" id="chuong-14">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 14</div>
+        <h2>Hooks & Automation</h2>
+      </div>
+
+      <h3>14.1. Git Hooks là gì?</h3>
+      <p>Scripts tự động chạy <strong>trước/sau</strong> các sự kiện Git (commit, push, merge...). Nằm trong <span class="inline-code">.git/hooks/</span>.</p>
+
+      <h3>14.2. Client-side Hooks Quan Trọng</h3>
+      <table>
+        <tr><th>Hook</th><th>Chạy khi</th><th>Use case</th></tr>
+        <tr><td><strong>pre-commit</strong></td><td>Trước khi commit</td><td>Lint, format, run unit tests</td></tr>
+        <tr><td><strong>prepare-commit-msg</strong></td><td>Trước editor mở để viết message</td><td>Tự sinh template message</td></tr>
+        <tr><td><strong>commit-msg</strong></td><td>Sau khi viết message</td><td>Validate format (Conventional Commits)</td></tr>
+        <tr><td><strong>post-commit</strong></td><td>Sau commit thành công</td><td>Notification</td></tr>
+        <tr><td><strong>pre-push</strong></td><td>Trước khi push</td><td>Run integration tests</td></tr>
+        <tr><td><strong>post-merge</strong></td><td>Sau merge thành công</td><td>Reinstall dependencies</td></tr>
+      </table>
+
+      <h3>14.3. Server-side Hooks</h3>
+      <ul>
+        <li><strong>pre-receive</strong>: Reject push không đúng convention</li>
+        <li><strong>update</strong>: Per-branch validation</li>
+        <li><strong>post-receive</strong>: Deploy, notify CI/CD</li>
+      </ul>
+
+      <h3>14.4. Ví Dụ: pre-commit Hook</h3>
+      <div class="terminal">
+<span class="comment"># File: .git/hooks/pre-commit (chmod +x)</span>
+#!/bin/sh
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ Lint failed. Commit bị hủy."
+  exit 1
+fi
+npm test
+      </div>
+
+      <h3>14.5. Husky + lint-staged - Modern Hook Management</h3>
+      <p>Hook nằm trong <span class="inline-code">.git/hooks/</span> không được commit lên Git. <strong>Husky</strong> giải quyết bằng cách lưu hook vào <span class="inline-code">.husky/</span> và auto-install.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">npm install</span> <span class="opt">-D</span> <span class="arg">husky lint-staged</span>
+<span class="prompt">$</span> <span class="cmd">npx husky init</span>
+
+<span class="comment"># Thêm pre-commit hook</span>
+<span class="prompt">$</span> <span class="cmd">echo</span> <span class="arg">"npx lint-staged"</span> > <span class="arg">.husky/pre-commit</span>
+      </div>
+      <div class="terminal">
+<span class="comment"># package.json</span>
+{
+  "lint-staged": {
+    "*.{js,ts}": ["eslint --fix", "prettier --write"],
+    "*.{css,md}": ["prettier --write"]
+  }
+}
+      </div>
+
+      <h3>14.6. Conventional Commits + commitlint</h3>
+      <div class="info-box">
+        <div class="box-title">📝 Conventional Commits Format</div>
+        <code>&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</code><br>
+        <strong>Types</strong>: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert<br>
+        <strong>Ví dụ</strong>: <span class="inline-code">feat(auth): thêm OAuth Google login</span>
+      </div>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">npm install</span> <span class="opt">-D</span> <span class="arg">@commitlint/cli @commitlint/config-conventional</span>
+<span class="prompt">$</span> <span class="cmd">echo</span> <span class="arg">"module.exports = {extends: ['@commitlint/config-conventional']}"</span> > <span class="arg">commitlint.config.js</span>
+
+<span class="comment"># .husky/commit-msg</span>
+npx --no -- commitlint --edit $1
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 15 -->
+    <section class="chapter" id="chuong-15">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 15</div>
+        <h2>Workflows - Chiến Lược Quản Lý Nhánh</h2>
+      </div>
+
+      <h3>15.1. Gitflow (Vincent Driessen, 2010)</h3>
+      <p>Workflow cổ điển với 5 loại branch. Phù hợp cho dự án có <strong>release theo lịch</strong> (mobile app, desktop software).</p>
+      <table>
+        <tr><th>Branch</th><th>Mục đích</th><th>Tạo từ</th><th>Merge vào</th></tr>
+        <tr><td><strong>main</strong></td><td>Production code</td><td>-</td><td>-</td></tr>
+        <tr><td><strong>develop</strong></td><td>Integration của các feature</td><td>main</td><td>main (qua release)</td></tr>
+        <tr><td><strong>feature/*</strong></td><td>Tính năng mới</td><td>develop</td><td>develop</td></tr>
+        <tr><td><strong>release/*</strong></td><td>Chuẩn bị release (test, bug)</td><td>develop</td><td>main + develop</td></tr>
+        <tr><td><strong>hotfix/*</strong></td><td>Fix bug khẩn cấp production</td><td>main</td><td>main + develop</td></tr>
+      </table>
+
+      <h3>15.2. GitHub Flow - Đơn Giản Hơn</h3>
+      <p>Phù hợp <strong>continuous deployment</strong> (web app, SaaS).</p>
+      <ol>
+        <li>Tạo branch từ <span class="inline-code">main</span></li>
+        <li>Commit, push thường xuyên</li>
+        <li>Mở Pull Request sớm (kể cả khi chưa xong - WIP)</li>
+        <li>Review + CI tests</li>
+        <li>Merge vào main → Deploy ngay</li>
+      </ol>
+
+      <h3>15.3. Trunk-Based Development</h3>
+      <p>Mọi người commit thẳng vào <span class="inline-code">main</span> (trunk) - feature branch <strong>cực ngắn</strong> (&lt; 1 ngày). Dùng <strong>feature flags</strong> để ẩn code chưa xong.</p>
+      <div class="info-box">
+        <div class="box-title">🏢 Ai dùng?</div>
+        Google, Facebook, Microsoft dùng trunk-based. Yêu cầu: CI/CD mạnh, test automation tốt, feature flags.
+      </div>
+
+      <h3>15.4. So Sánh Workflow</h3>
+      <table>
+        <tr><th>Workflow</th><th>Phù hợp</th><th>Số branch chính</th><th>Release cadence</th></tr>
+        <tr><td>Gitflow</td><td>Mobile, Enterprise</td><td>main + develop</td><td>Theo lịch (1-3 tháng)</td></tr>
+        <tr><td>GitHub Flow</td><td>Web app, SaaS</td><td>main</td><td>Hàng ngày</td></tr>
+        <tr><td>GitLab Flow</td><td>Web + Environment</td><td>main + env branches</td><td>Hàng ngày</td></tr>
+        <tr><td>Trunk-based</td><td>FAANG-scale</td><td>main (trunk)</td><td>Hàng giờ/phút</td></tr>
+        <tr><td>Forking</td><td>Open-source</td><td>main (trên upstream)</td><td>Tùy maintainer</td></tr>
+      </table>
+
+      <h3>15.5. Chọn Workflow Phù Hợp Dự Án Của Bạn</h3>
+      <div class="grid-2">
+        <div class="card-feature">
+          <h4>📱 App mobile có release cycle</h4>
+          <p>→ Gitflow. Cần hotfix branch song song với feature đang dở.</p>
+        </div>
+        <div class="card-feature">
+          <h4>🌐 SaaS deploy liên tục</h4>
+          <p>→ GitHub Flow. Đơn giản, nhanh, dễ rollback.</p>
+        </div>
+        <div class="card-feature">
+          <h4>🏭 Microservices ở big tech</h4>
+          <p>→ Trunk-based + feature flags. Tối đa hóa tốc độ.</p>
+        </div>
+        <div class="card-feature">
+          <h4>🌍 Open-source project</h4>
+          <p>→ Forking workflow. Contributor fork, owner merge PR.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 16 -->
+    <section class="chapter" id="chuong-16">
+      <div class="chapter-header">
+        <div class="chapter-badge">Chương 16</div>
+        <h2>Tips, Best Practices & Troubleshooting</h2>
+      </div>
+
+      <h3>16.1. Commit Message Chuẩn (Conventional Commits)</h3>
+      <div class="terminal">
+<span class="comment"># ✅ TỐT</span>
+feat(auth): thêm Google OAuth login
+fix(api): timeout khi gọi /users với pagination > 100
+docs: cập nhật README phần cài đặt
+refactor(user): tách logic validation ra module riêng
+
+<span class="comment"># ❌ TỆ</span>
+update
+fix bug
+WIP
+asdf
+quick fix
+      </div>
+
+      <h3>16.2. Git Aliases - Tăng Tốc Làm Việc</h3>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.co</span> <span class="arg">checkout</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.br</span> <span class="arg">branch</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.st</span> <span class="arg">status</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.cm</span> <span class="arg">"commit -m"</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.lg</span> <span class="arg">"log --oneline --graph --all --decorate"</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.amend</span> <span class="arg">"commit --amend --no-edit"</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">alias.undo</span> <span class="arg">"reset HEAD~1 --soft"</span>
+      </div>
+
+      <h3>16.3. Git LFS - Quản Lý File Lớn</h3>
+      <p>Git xử lý file binary lớn (video, PSD, dataset) rất kém - mỗi version copy toàn bộ. <strong>Git LFS</strong> (Large File Storage) lưu file lớn ở server riêng, repo chỉ chứa pointer.</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git lfs install</span>
+<span class="prompt">$</span> <span class="cmd">git lfs track</span> <span class="arg">"*.psd"</span>
+<span class="prompt">$</span> <span class="cmd">git lfs track</span> <span class="arg">"*.mp4"</span>
+<span class="prompt">$</span> <span class="cmd">git add</span> <span class="arg">.gitattributes</span>
+<span class="prompt">$</span> <span class="cmd">git add</span> <span class="arg">file.psd</span>
+<span class="prompt">$</span> <span class="cmd">git commit</span> <span class="opt">-m</span> <span class="arg">"add design"</span>
+      </div>
+
+      <h3>16.4. Submodules & Worktree</h3>
+      <h4>Submodule - Repo Trong Repo</h4>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git submodule add</span> <span class="arg">https://github.com/lib/dep.git</span> <span class="arg">vendor/dep</span>
+<span class="prompt">$</span> <span class="cmd">git submodule update</span> <span class="opt">--init --recursive</span>
+      </div>
+
+      <h4>Worktree - Nhiều Working Dir Song Song</h4>
+      <div class="terminal">
+<span class="comment"># Tạo working dir cho branch khác mà không phải clone lại</span>
+<span class="prompt">$</span> <span class="cmd">git worktree add</span> <span class="arg">../my-feature</span> <span class="arg">feature/login</span>
+<span class="prompt">$</span> <span class="cmd">cd</span> <span class="arg">../my-feature</span>
+<span class="comment"># Giờ bạn có 2 thư mục, mỗi cái 1 branch khác nhau!</span>
+
+<span class="prompt">$</span> <span class="cmd">git worktree list</span>
+<span class="prompt">$</span> <span class="cmd">git worktree remove</span> <span class="arg">../my-feature</span>
+      </div>
+
+      <h3>16.5. GPG Sign Commits - Chữ Ký Số</h3>
+      <p>Chứng minh commit thật sự do BẠN tạo (không phải ai mạo danh bằng <span class="inline-code">user.email</span>).</p>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">gpg --gen-key</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">user.signingkey</span> <span class="arg">YOUR_KEY_ID</span>
+<span class="prompt">$</span> <span class="cmd">git config</span> <span class="opt">--global</span> <span class="arg">commit.gpgsign</span> <span class="arg">true</span>
+
+<span class="comment"># Mỗi commit sẽ có badge "Verified" trên GitHub</span>
+      </div>
+
+      <h3>16.6. Recovery Scenarios - Cứu Mạng</h3>
+
+      <h4>💀 "Tôi lỡ git reset --hard, mất hết code!"</h4>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git reflog</span>
+<span class="prompt">$</span> <span class="cmd">git reset</span> <span class="opt">--hard</span> <span class="arg">HEAD@{1}</span>
+      </div>
+
+      <h4>💀 "Tôi commit lên main thay vì feature branch!"</h4>
+      <div class="terminal">
+<span class="comment"># Đang ở main, đã commit nhầm</span>
+<span class="prompt">$</span> <span class="cmd">git branch</span> <span class="arg">feature/save-work</span>     <span class="comment"># Tạo branch giữ commit</span>
+<span class="prompt">$</span> <span class="cmd">git reset</span> <span class="opt">--hard</span> <span class="arg">HEAD~1</span>          <span class="comment"># Lùi main về trước commit</span>
+<span class="prompt">$</span> <span class="cmd">git checkout</span> <span class="arg">feature/save-work</span>      <span class="comment"># Sang branch mới</span>
+      </div>
+
+      <h4>💀 "Tôi push code có password lên GitHub!"</h4>
+      <div class="warning-box">
+        <div class="box-title">🚨 Khẩn cấp</div>
+        <ol>
+          <li><strong>Đổi password/token ngay</strong> - coi như đã lộ</li>
+          <li>Dùng <span class="inline-code">git filter-repo</span> hoặc BFG Repo-Cleaner xóa khỏi lịch sử</li>
+          <li>Force push lên remote (đã thông báo team)</li>
+          <li>GitHub có thể vẫn cache - cần liên hệ support</li>
+        </ol>
+      </div>
+
+      <h4>💀 "Conflict trong rebase, sợ quá!"</h4>
+      <div class="terminal">
+<span class="prompt">$</span> <span class="cmd">git rebase</span> <span class="opt">--abort</span>   <span class="comment"># Hủy, quay về như chưa rebase</span>
+      </div>
+
+      <h3>16.7. Performance Tips Cho Repo Lớn</h3>
+      <ul>
+        <li><strong>Partial clone</strong>: <span class="inline-code">git clone --filter=blob:none</span></li>
+        <li><strong>Shallow clone</strong>: <span class="inline-code">git clone --depth=1</span> (chỉ commit gần nhất)</li>
+        <li><strong>Sparse checkout</strong>: Chỉ checkout 1 phần của monorepo</li>
+        <li><strong>git maintenance</strong>: <span class="inline-code">git maintenance start</span> (Git 2.30+)</li>
+        <li><strong>fsmonitor</strong>: Theo dõi file change bằng OS-native API</li>
+      </ul>
+    </section>
+
+    <!-- CHEATSHEET -->
+    <section class="chapter" id="cheatsheet">
+      <div class="chapter-header">
+        <div class="chapter-badge">📋 Cheatsheet</div>
+        <h2>Bảng Lệnh Git Thường Dùng</h2>
+      </div>
+
+      <div class="cheatsheet">
+        <div class="cheat-card">
+          <h4>🚀 Setup</h4>
+          <ul class="cheat-list">
+            <li><code>git init</code><span class="desc">Khởi tạo repo</span></li>
+            <li><code>git clone &lt;url&gt;</code><span class="desc">Clone repo</span></li>
+            <li><code>git config --global user.name</code><span class="desc">Đặt tên</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>📝 Basic</h4>
+          <ul class="cheat-list">
+            <li><code>git status</code><span class="desc">Trạng thái</span></li>
+            <li><code>git add .</code><span class="desc">Add tất cả</span></li>
+            <li><code>git commit -m "..."</code><span class="desc">Commit</span></li>
+            <li><code>git log --oneline</code><span class="desc">Lịch sử ngắn</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>🌿 Branching</h4>
+          <ul class="cheat-list">
+            <li><code>git branch</code><span class="desc">List branch</span></li>
+            <li><code>git switch -c name</code><span class="desc">Tạo + chuyển</span></li>
+            <li><code>git merge branch</code><span class="desc">Merge vào</span></li>
+            <li><code>git branch -d name</code><span class="desc">Xóa branch</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>🌐 Remote</h4>
+          <ul class="cheat-list">
+            <li><code>git remote -v</code><span class="desc">List remote</span></li>
+            <li><code>git fetch</code><span class="desc">Tải về (không merge)</span></li>
+            <li><code>git pull</code><span class="desc">Tải + merge</span></li>
+            <li><code>git push -u origin name</code><span class="desc">Push branch mới</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>⏪ Undo</h4>
+          <ul class="cheat-list">
+            <li><code>git restore file</code><span class="desc">Khôi phục file</span></li>
+            <li><code>git reset --soft HEAD~1</code><span class="desc">Hủy commit cuối</span></li>
+            <li><code>git revert abc123</code><span class="desc">Tạo commit ngược</span></li>
+            <li><code>git reflog</code><span class="desc">Lịch sử HEAD</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>📦 Stash</h4>
+          <ul class="cheat-list">
+            <li><code>git stash</code><span class="desc">Cất tạm</span></li>
+            <li><code>git stash list</code><span class="desc">Liệt kê stash</span></li>
+            <li><code>git stash pop</code><span class="desc">Lấy + xóa</span></li>
+            <li><code>git stash drop</code><span class="desc">Xóa stash</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>🎯 Advanced</h4>
+          <ul class="cheat-list">
+            <li><code>git rebase -i HEAD~5</code><span class="desc">Interactive rebase</span></li>
+            <li><code>git cherry-pick abc</code><span class="desc">Hái commit</span></li>
+            <li><code>git bisect start</code><span class="desc">Tìm bug</span></li>
+            <li><code>git worktree add ...</code><span class="desc">Worktree</span></li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>🏷️ Tag</h4>
+          <ul class="cheat-list">
+            <li><code>git tag</code><span class="desc">List tag</span></li>
+            <li><code>git tag -a v1.0 -m "..."</code><span class="desc">Annotated tag</span></li>
+            <li><code>git push --tags</code><span class="desc">Push tags</span></li>
+            <li><code>git tag -d v1.0</code><span class="desc">Xóa tag</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="chapter" id="roadmap">
+      <div class="chapter-header">
+        <div class="chapter-badge">🗺️ Lộ Trình</div>
+        <h2>Đường Đi Từ Beginner Đến Expert</h2>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">1</div>
+        <div class="roadmap-content"><h4>Tuần 1: Cơ Bản (Ch 1-4)</h4>Cài đặt, hiểu 3 vùng Git, thuần thục init/add/commit/status/log/diff. Tạo repo riêng để thực hành.</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">2</div>
+        <div class="roadmap-content"><h4>Tuần 2: Branching (Ch 5-8)</h4>Tạo branch, merge, push/pull, giải quyết conflict. Tham gia 1 dự án nhóm nhỏ.</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">3</div>
+        <div class="roadmap-content"><h4>Tuần 3: Undo & Rebase (Ch 9-12)</h4>Reset/Revert/Restore/Reflog, rebase interactive, cherry-pick, bisect. Tự "phá" repo rồi sửa lại để học.</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">4</div>
+        <div class="roadmap-content"><h4>Tuần 4: Internals (Ch 13)</h4>Đọc kỹ ".git/", hiểu objects, refs. Đọc "Pro Git" chương 10.</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">5</div>
+        <div class="roadmap-content"><h4>Tuần 5: Automation (Ch 14-15)</h4>Setup Husky + lint-staged + commitlint cho dự án. Áp dụng GitHub Flow.</div>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-num">6</div>
+        <div class="roadmap-content"><h4>Tuần 6: Real-world (Ch 16)</h4>Đóng góp open-source qua Pull Request. Setup CI/CD đầu tiên với GitHub Actions.</div>
+      </div>
+
+      <div class="tip-box" style="margin-top:25px">
+        <div class="box-title">📚 Tài liệu nâng cao</div>
+        <ul>
+          <li><strong>Pro Git book</strong> (free): git-scm.com/book/vi - Sách kinh điển, dịch tiếng Việt</li>
+          <li><strong>Atlassian Git Tutorials</strong>: atlassian.com/git - Visual, dễ hiểu</li>
+          <li><strong>Learn Git Branching</strong>: learngitbranching.js.org - Game tương tác</li>
+          <li><strong>Oh Shit, Git!?!</strong>: ohshitgit.com - Recovery scenarios</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="chapter" id="glossary">
+      <div class="chapter-header">
+        <div class="chapter-badge">📖 Glossary</div>
+        <h2>Tra Cứu Thuật Ngữ Git (200+)</h2>
+      </div>
+
+      <p>Sử dụng ô tìm kiếm hoặc bộ lọc bên dưới để tra cứu nhanh bất kỳ thuật ngữ Git nào.</p>
+
+      <div class="glossary-search">
+        <input type="text" id="glossarySearch" class="glossary-search-input" placeholder="🔎 Gõ thuật ngữ cần tra... (vd: rebase, HEAD, conflict, blob)" oninput="searchGlossary()">
+        <div class="glossary-filters">
+          <button class="filter-btn active" data-cat="all" onclick="filterCategory('all')">Tất cả</button>
+          <button class="filter-btn" data-cat="basic" onclick="filterCategory('basic')">🟢 Cơ bản</button>
+          <button class="filter-btn" data-cat="branching" onclick="filterCategory('branching')">🟣 Branching</button>
+          <button class="filter-btn" data-cat="remote" onclick="filterCategory('remote')">🔵 Remote</button>
+          <button class="filter-btn" data-cat="advanced" onclick="filterCategory('advanced')">🟠 Nâng cao</button>
+          <button class="filter-btn" data-cat="internal" onclick="filterCategory('internal')">🟡 Internal</button>
+          <button class="filter-btn" data-cat="workflow" onclick="filterCategory('workflow')">🔴 Workflow</button>
+        </div>
+        <div class="glossary-stats">Đang hiển thị <span id="count">0</span> / <span id="total">0</span> thuật ngữ</div>
+      </div>
+
+      <div class="glossary-list" id="glossaryList">
+        <!-- Terms generated by JS -->
+        <div class="no-results hidden" id="noResults">
+          😢 Không tìm thấy thuật ngữ nào. Thử từ khóa khác.
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+// ========== GLOSSARY DATA ==========
+const glossaryTerms = [
+  // === BASIC ===
+  {term: "Repository (Repo)", cat: "basic", def: "Thư mục dự án có chứa .git/ - nơi Git theo dõi toàn bộ lịch sử thay đổi. Có thể là local (trên máy) hoặc remote (trên server).", example: "git init  # tạo repository"},
+  {term: "Working Directory", cat: "basic", def: "Thư mục làm việc - nơi bạn thực sự sửa code. Là 1 trong 3 vùng của Git (cùng với Staging Area và Local Repository).", example: ""},
+  {term: "Staging Area (Index)", cat: "basic", def: "Vùng 'phòng chờ' lưu các file đã add nhưng chưa commit. Cho phép bạn chọn lọc file nào sẽ vào commit tiếp theo.", example: "git add file.js  # đưa vào staging"},
+  {term: "Local Repository", cat: "basic", def: "Phần .git/ trong thư mục dự án - chứa toàn bộ lịch sử commit, branch, tag. Hoàn toàn offline.", example: ""},
+  {term: "Remote Repository", cat: "basic", def: "Repository lưu trên server (GitHub, GitLab, Bitbucket). Là nơi team chia sẻ code với nhau.", example: "git remote -v"},
+  {term: "Commit", cat: "basic", def: "Snapshot của project tại 1 thời điểm. Mỗi commit có hash SHA-1 duy nhất, parent commit, author, message.", example: 'git commit -m "feat: add login"'},
+  {term: "Commit Hash (SHA-1)", cat: "basic", def: "Chuỗi 40 ký tự hex định danh duy nhất 1 commit. Thường chỉ dùng 7 ký tự đầu để gọi.", example: "a1b2c3d4e5..."},
+  {term: "HEAD", cat: "basic", def: "Con trỏ đặc biệt trỏ vào commit hiện tại (thường là commit cuối của branch hiện tại). HEAD~1 = commit trước HEAD.", example: "git reset HEAD~1"},
+  {term: "Branch (Nhánh)", cat: "basic", def: "Con trỏ đến 1 commit. Cho phép phát triển song song nhiều dòng code. Mặc định là 'main' (hoặc 'master' cũ).", example: "git branch feature/login"},
+  {term: "Main / Master", cat: "basic", def: "Tên branch mặc định. 'master' là tên cũ, từ 2020 GitHub đổi mặc định thành 'main' vì lý do xã hội.", example: ""},
+  {term: "Tag", cat: "basic", def: "Nhãn đánh dấu 1 commit, thường dùng cho release version. Có 2 loại: lightweight và annotated.", example: "git tag -a v1.0 -m 'Release'"},
+  {term: ".gitignore", cat: "basic", def: "File text liệt kê pattern các file/folder Git sẽ bỏ qua (không theo dõi). Đặt ở gốc repo.", example: "node_modules/\n*.log\n.env"},
+  {term: ".git directory", cat: "basic", def: "Thư mục ẩn chứa toàn bộ metadata của Git: objects, refs, config, hooks. XÓA = mất hết lịch sử.", example: ""},
+  {term: "Untracked", cat: "basic", def: "Trạng thái file mới mà Git chưa biết đến (chưa từng git add). Hiện trong 'Untracked files' của git status.", example: ""},
+  {term: "Tracked", cat: "basic", def: "File đã được Git theo dõi (đã commit ít nhất 1 lần hoặc đang ở staging).", example: ""},
+  {term: "Modified", cat: "basic", def: "File đã được sửa từ lần commit cuối nhưng chưa staged.", example: ""},
+  {term: "Staged", cat: "basic", def: "File đã được đưa vào staging area, sẵn sàng để commit.", example: ""},
+  {term: "Snapshot", cat: "basic", def: "Cách Git lưu data - chụp toàn bộ project tại mỗi commit, không lưu delta. File không thay đổi → reference đến file cũ.", example: ""},
+  {term: "Author vs Committer", cat: "basic", def: "Author = người viết code gốc. Committer = người tạo commit. Thường giống nhau, khác khi rebase/cherry-pick.", example: ""},
+  {term: "Commit Message", cat: "basic", def: "Thông điệp mô tả commit. Nên ngắn gọn (dòng đầu < 50 ký tự), theo Conventional Commits.", example: "feat(auth): add OAuth"},
+
+  // === BRANCHING ===
+  {term: "Checkout", cat: "branching", def: "Lệnh cũ làm 2 việc: chuyển branch HOẶC khôi phục file. Từ Git 2.23 tách thành switch + restore.", example: "git checkout main"},
+  {term: "Switch", cat: "branching", def: "Lệnh mới (Git 2.23+) để chuyển branch. Rõ ràng hơn checkout.", example: "git switch -c feature/login"},
+  {term: "Restore", cat: "branching", def: "Lệnh mới (Git 2.23+) để khôi phục file trong working dir hoặc staging.", example: "git restore --staged file.js"},
+  {term: "Merge", cat: "branching", def: "Hợp nhất 2 branch. Tạo merge commit (3-way) hoặc fast-forward.", example: "git merge feature/login"},
+  {term: "Fast-Forward Merge", cat: "branching", def: "Merge mà không tạo commit mới - chỉ di chuyển con trỏ branch lên trước. Xảy ra khi branch đích không có commit mới.", example: "git merge --ff-only"},
+  {term: "3-Way Merge", cat: "branching", def: "Merge tạo commit mới với 2 parent. Xảy ra khi cả 2 branch đều có commit khác nhau từ điểm chia.", example: ""},
+  {term: "Merge Commit", cat: "branching", def: "Commit có 2+ parent, được tạo khi merge 3-way. Phân biệt với commit thường (1 parent).", example: ""},
+  {term: "Squash Merge", cat: "branching", def: "Gộp toàn bộ commit của branch nguồn thành 1 commit duy nhất khi merge. Lịch sử sạch.", example: "git merge --squash feature"},
+  {term: "--no-ff", cat: "branching", def: "Flag bắt buộc tạo merge commit dù có thể fast-forward. Dùng để đánh dấu rõ điểm merge.", example: "git merge --no-ff feature"},
+  {term: "Detached HEAD", cat: "branching", def: "Trạng thái khi HEAD trỏ thẳng vào 1 commit thay vì branch. Commit mới sẽ KHÔNG thuộc branch nào → dễ mất.", example: "git checkout a1b2c3d"},
+  {term: "Conflict", cat: "branching", def: "Xảy ra khi Git không tự merge được do 2 branch cùng sửa cùng dòng. Phải sửa thủ công.", example: ""},
+  {term: "Conflict Markers", cat: "branching", def: "Ký hiệu <<<<<<<, =======, >>>>>>> Git chèn vào file khi có conflict. Phải xóa hết khi giải quyết.", example: "<<<<<<< HEAD\n...\n======="},
+  {term: "Merge --abort", cat: "branching", def: "Hủy merge giữa chừng, quay về trạng thái trước khi bắt đầu merge.", example: "git merge --abort"},
+  {term: "Tracking Branch", cat: "branching", def: "Branch local có liên kết với 1 branch remote. git pull/push tự động biết phải tương tác với branch nào.", example: "git push -u origin feature"},
+  {term: "Upstream Branch", cat: "branching", def: "Branch remote mà branch local đang theo dõi. Hiển thị trong git status: 'Your branch is up to date with origin/main'.", example: ""},
+  {term: "Local Branch", cat: "branching", def: "Branch chỉ tồn tại trên máy bạn, chưa push lên remote.", example: ""},
+  {term: "Remote Branch", cat: "branching", def: "Branch trên server (origin/main, origin/feature). Là snapshot tại lần fetch gần nhất.", example: ""},
+  {term: "Orphan Branch", cat: "branching", def: "Branch không có parent commit nào - hoàn toàn riêng biệt. Dùng cho gh-pages, separate docs.", example: "git checkout --orphan gh-pages"},
+
+  // === REMOTE ===
+  {term: "Remote", cat: "remote", def: "Tham chiếu đến repository server. Mặc định gọi là 'origin' sau khi clone.", example: "git remote add origin URL"},
+  {term: "Origin", cat: "remote", def: "Tên mặc định cho remote chính (thường là nơi bạn clone về). Có thể đổi tên.", example: ""},
+  {term: "Upstream (remote)", cat: "remote", def: "Convention đặt tên cho remote 'gốc' khi bạn fork repo. origin = fork của bạn, upstream = repo gốc.", example: "git remote add upstream URL"},
+  {term: "Fetch", cat: "remote", def: "Tải các thay đổi từ remote về local NHƯNG không merge. An toàn, chỉ cập nhật tracking branches.", example: "git fetch origin"},
+  {term: "Pull", cat: "remote", def: "= fetch + merge (hoặc rebase). Tải về và tự động merge vào branch hiện tại.", example: "git pull --rebase"},
+  {term: "Push", cat: "remote", def: "Đẩy commit từ local lên remote. Cần có quyền write trên remote.", example: "git push origin main"},
+  {term: "Force Push", cat: "remote", def: "Push ghi đè lịch sử remote. NGUY HIỂM - có thể xóa code của người khác.", example: "git push --force"},
+  {term: "--force-with-lease", cat: "remote", def: "Force push an toàn hơn - chỉ push nếu remote không thay đổi từ lần fetch cuối. Tránh đè code đồng nghiệp.", example: "git push --force-with-lease"},
+  {term: "Clone", cat: "remote", def: "Tạo bản sao đầy đủ của remote repo về local. Tự động tạo remote 'origin'.", example: "git clone URL"},
+  {term: "Shallow Clone", cat: "remote", def: "Clone chỉ N commit gần nhất, không lấy toàn lịch sử. Nhẹ, dùng cho CI/CD.", example: "git clone --depth=1 URL"},
+  {term: "Bare Repository", cat: "remote", def: "Repo chỉ chứa thư mục .git, không có working dir. Dùng làm remote trên server.", example: "git init --bare"},
+  {term: "Pull Request (PR)", cat: "remote", def: "Yêu cầu merge code từ branch của bạn vào branch khác. Cho phép code review trước khi merge.", example: ""},
+  {term: "Merge Request (MR)", cat: "remote", def: "Tên gọi của Pull Request trên GitLab. Bản chất giống PR.", example: ""},
+  {term: "Fork", cat: "remote", def: "Tạo bản sao của repo trên server (vd: trên GitHub) thuộc về account của bạn. Khác clone (clone về local).", example: ""},
+  {term: "Refspec", cat: "remote", def: "Format chỉ định branch nguồn:đích khi push/fetch. Ví dụ: refs/heads/main:refs/heads/main.", example: ""},
+
+  // === ADVANCED ===
+  {term: "Rebase", cat: "advanced", def: "Di chuyển commit của branch hiện tại lên đỉnh branch khác. Tạo commit mới với hash khác - viết lại lịch sử.", example: "git rebase main"},
+  {term: "Interactive Rebase", cat: "advanced", def: "Cho phép edit, gộp, xóa, đổi thứ tự commit khi rebase. Cực mạnh để dọn lịch sử trước khi push.", example: "git rebase -i HEAD~5"},
+  {term: "Squash (rebase)", cat: "advanced", def: "Trong interactive rebase: gộp commit vào commit phía trên, GIỮ message để chỉnh sửa.", example: "s a1b2c3d"},
+  {term: "Fixup", cat: "advanced", def: "Trong interactive rebase: gộp như squash nhưng BỎ message của commit đó.", example: "f a1b2c3d"},
+  {term: "Reword", cat: "advanced", def: "Trong interactive rebase: giữ commit nhưng cho phép sửa message.", example: "r a1b2c3d"},
+  {term: "Pick", cat: "advanced", def: "Trong interactive rebase: giữ commit nguyên vẹn (mặc định).", example: "p a1b2c3d"},
+  {term: "Drop", cat: "advanced", def: "Trong interactive rebase: xóa commit khỏi lịch sử. Cẩn thận!", example: "d a1b2c3d"},
+  {term: "Cherry-pick", cat: "advanced", def: "Áp dụng 1 (hoặc nhiều) commit cụ thể từ branch khác vào branch hiện tại. Tạo commit mới với hash khác.", example: "git cherry-pick a1b2c3d"},
+  {term: "Bisect", cat: "advanced", def: "Binary search trong lịch sử để tìm commit gây bug. Cực hiệu quả với repo nhiều commit.", example: "git bisect start"},
+  {term: "Reset", cat: "advanced", def: "Lùi HEAD về commit cũ. Có 3 mức: --soft, --mixed (mặc định), --hard.", example: "git reset --soft HEAD~1"},
+  {term: "Reset --soft", cat: "advanced", def: "Reset chỉ lùi HEAD, giữ nguyên staging và working dir. Dùng để gộp commit hoặc đổi message.", example: "git reset --soft HEAD~1"},
+  {term: "Reset --mixed", cat: "advanced", def: "Reset lùi HEAD và clear staging, giữ working dir. Mặc định khi không chỉ định flag.", example: "git reset HEAD~1"},
+  {term: "Reset --hard", cat: "advanced", def: "Reset lùi HEAD VÀ XÓA staging + working dir về trạng thái commit đó. NGUY HIỂM - mất code.", example: "git reset --hard HEAD~1"},
+  {term: "Revert", cat: "advanced", def: "Tạo commit MỚI có nội dung ngược lại với commit cũ. An toàn vì KHÔNG xóa lịch sử.", example: "git revert a1b2c3d"},
+  {term: "Stash", cat: "advanced", def: "Cất tạm thay đổi chưa commit để chuyển branch hoặc pull. Lấy ra sau bằng pop/apply.", example: "git stash push -m 'WIP'"},
+  {term: "Stash Pop", cat: "advanced", def: "Lấy stash gần nhất ra và XÓA khỏi danh sách stash.", example: "git stash pop"},
+  {term: "Stash Apply", cat: "advanced", def: "Lấy stash ra NHƯNG GIỮ trong danh sách stash. Hữu ích để apply nhiều lần.", example: "git stash apply stash@{1}"},
+  {term: "Reflog", cat: "advanced", def: "Lịch sử mọi thay đổi của HEAD trong 90 ngày. Cứu mạng khi mất commit do reset --hard.", example: "git reflog"},
+  {term: "Annotated Tag", cat: "advanced", def: "Tag đầy đủ object trong Git: có author, date, message, có thể GPG sign. Khuyến nghị cho release.", example: "git tag -a v1.0 -m 'Release'"},
+  {term: "Lightweight Tag", cat: "advanced", def: "Tag đơn giản - chỉ là con trỏ đến commit, không có metadata. Như bookmark tạm.", example: "git tag v1.0"},
+  {term: "Worktree", cat: "advanced", def: "Tạo thư mục working dir thứ 2 cho branch khác mà không phải clone repo lại. Tiết kiệm dung lượng.", example: "git worktree add ../fix bugfix"},
+  {term: "Submodule", cat: "advanced", def: "Nhúng 1 Git repo khác vào trong repo hiện tại. Giữ link đến commit cụ thể của repo con.", example: "git submodule add URL path"},
+  {term: "Git LFS", cat: "advanced", def: "Large File Storage - extension lưu file lớn (video, binary) ở server riêng, repo chỉ chứa pointer.", example: "git lfs track '*.psd'"},
+  {term: "--amend", cat: "advanced", def: "Sửa commit gần nhất (đổi message, thêm file). Tạo commit MỚI thay thế commit cũ.", example: "git commit --amend"},
+  {term: "Sparse Checkout", cat: "advanced", def: "Chỉ checkout 1 phần của monorepo. Hữu ích với repo cực lớn.", example: "git sparse-checkout init"},
+  {term: "Partial Clone", cat: "advanced", def: "Clone nhưng không tải xuống blobs - tải lazy khi cần. Nhanh và nhẹ với repo lớn.", example: "git clone --filter=blob:none"},
+
+  // === INTERNAL ===
+  {term: "Blob", cat: "internal", def: "Git object lưu nội dung file (không kèm tên/path). Nội dung khác nhau = blob khác nhau.", example: ""},
+  {term: "Tree", cat: "internal", def: "Git object đại diện cho thư mục - chứa list tên file/folder + pointer tới blob/tree con.", example: ""},
+  {term: "Commit Object", cat: "internal", def: "Git object chứa: pointer đến tree gốc, parent commit(s), author, committer, message.", example: ""},
+  {term: "Tag Object", cat: "internal", def: "Git object cho annotated tag - chứa pointer đến object (thường là commit), tagger, message, signature.", example: ""},
+  {term: "Refs", cat: "internal", def: "File trong .git/refs chứa pointer đến commit. Branches là refs/heads/*, tags là refs/tags/*.", example: ""},
+  {term: "Pack File", cat: "internal", def: "File nén nhiều objects lại để tiết kiệm disk và tăng tốc network. Git gc tự tạo pack file.", example: ""},
+  {term: "Loose Object", cat: "internal", def: "Object lưu rời (1 file/object) trong .git/objects/xx/yyyyy. Trước khi gc nén thành pack.", example: ""},
+  {term: "Object Database", cat: "internal", def: "Tập hợp tất cả Git objects trong .git/objects/. Content-addressable - tìm bằng hash.", example: ""},
+  {term: "Plumbing Commands", cat: "internal", def: "Lệnh Git cấp thấp (low-level): hash-object, cat-file, update-ref. Dùng cho scripting.", example: "git cat-file -p HEAD"},
+  {term: "Porcelain Commands", cat: "internal", def: "Lệnh Git cấp cao thân thiện user: commit, log, branch. Dùng hàng ngày.", example: ""},
+  {term: "Garbage Collection (gc)", cat: "internal", def: "Dọn dẹp objects không reference, nén loose thành pack. Chạy tự động theo thời gian.", example: "git gc --aggressive"},
+  {term: "Pruning", cat: "internal", def: "Xóa objects orphan (không có ref nào trỏ tới). Mặc định gc giữ object 2 tuần.", example: "git prune"},
+  {term: "Index (.git/index)", cat: "internal", def: "File binary lưu trạng thái staging area. Mỗi git add cập nhật index.", example: ""},
+  {term: "HEAD file", cat: "internal", def: "File .git/HEAD chứa ref đến branch hiện tại (vd: 'ref: refs/heads/main') hoặc commit hash (detached).", example: ""},
+  {term: "Symbolic Ref", cat: "internal", def: "Ref trỏ đến ref khác (ví dụ HEAD → refs/heads/main). Phân biệt với ref trực tiếp đến hash.", example: ""},
+  {term: "Packed Refs", cat: "internal", def: "File .git/packed-refs nén nhiều refs để tăng tốc. git gc tự pack refs.", example: ""},
+
+  // === WORKFLOW ===
+  {term: "Gitflow", cat: "workflow", def: "Workflow của Vincent Driessen với 5 loại branch: main, develop, feature, release, hotfix. Phù hợp app có release theo lịch.", example: ""},
+  {term: "GitHub Flow", cat: "workflow", def: "Workflow đơn giản: branch từ main, PR, merge. Phù hợp continuous deployment, web app.", example: ""},
+  {term: "GitLab Flow", cat: "workflow", def: "Workflow của GitLab kết hợp main branch với environment branches (production, staging).", example: ""},
+  {term: "Trunk-Based Development", cat: "workflow", def: "Mọi người commit thẳng vào main, feature branch cực ngắn. Dùng feature flags để ẩn code dở. Google, Facebook dùng.", example: ""},
+  {term: "Forking Workflow", cat: "workflow", def: "Contributor fork repo, làm trên fork, gửi PR. Phổ biến trong open-source.", example: ""},
+  {term: "Feature Branch", cat: "workflow", def: "Branch dành riêng cho 1 tính năng. Convention: feature/tên-tính-năng.", example: "feature/user-login"},
+  {term: "Hotfix Branch", cat: "workflow", def: "Branch sửa bug khẩn cấp production. Tạo từ main, merge ngược về main và develop.", example: "hotfix/payment-error"},
+  {term: "Release Branch", cat: "workflow", def: "Branch chuẩn bị release: test, fix bug nhỏ, không thêm tính năng. Trong Gitflow.", example: "release/v2.1.0"},
+  {term: "Conventional Commits", cat: "workflow", def: "Convention viết commit message: type(scope): subject. Types: feat, fix, docs, style, refactor, test, chore.", example: "feat(auth): add OAuth"},
+  {term: "Semantic Versioning (SemVer)", cat: "workflow", def: "Format version MAJOR.MINOR.PATCH. Major = breaking, minor = feature, patch = fix.", example: "v2.1.3"},
+  {term: "Code Review", cat: "workflow", def: "Quy trình đồng nghiệp review code trước khi merge. Thường qua Pull Request.", example: ""},
+  {term: "CI/CD", cat: "workflow", def: "Continuous Integration / Continuous Deployment. Tự động test/build/deploy khi push code.", example: ""},
+  {term: "Monorepo", cat: "workflow", def: "Nhiều dự án trong 1 repo (Google, Facebook). Khác multi-repo (mỗi dự án 1 repo).", example: ""},
+  {term: "Feature Flag", cat: "workflow", def: "Cờ bật/tắt tính năng trong code mà không cần deploy. Cho phép merge code chưa hoàn thiện.", example: ""},
+  {term: "Git Hook", cat: "workflow", def: "Script tự động chạy khi có sự kiện Git (pre-commit, post-merge...). Nằm trong .git/hooks/.", example: ""},
+  {term: "Husky", cat: "workflow", def: "Tool quản lý Git hook trong dự án Node.js. Hook được commit cùng code (khác .git/hooks/).", example: "npx husky init"},
+  {term: "lint-staged", cat: "workflow", def: "Tool chạy linter chỉ trên file đã staged. Kết hợp với Husky pre-commit.", example: ""},
+  {term: "commitlint", cat: "workflow", def: "Tool validate commit message theo convention (thường Conventional Commits).", example: ""},
+  {term: "GPG Sign", cat: "workflow", def: "Ký số commit/tag để chứng minh tác giả. Hiện badge 'Verified' trên GitHub.", example: "git commit -S -m 'feat: ...'"},
+  {term: "Continuous Integration", cat: "workflow", def: "Practice: dev liên tục merge code vào branch chung, có CI tự động test/build sau mỗi push.", example: ""},
+  {term: "Continuous Deployment", cat: "workflow", def: "Tự động deploy lên production sau khi merge vào main và pass CI.", example: ""},
+
+  // === MORE BASIC ===
+  {term: "git init", cat: "basic", def: "Khởi tạo Git repository mới trong thư mục hiện tại. Tạo thư mục .git/.", example: "git init"},
+  {term: "git clone", cat: "basic", def: "Sao chép repo từ remote về local. Tự động tạo remote 'origin'.", example: "git clone URL [folder]"},
+  {term: "git status", cat: "basic", def: "Hiển thị trạng thái working dir và staging area: file modified/staged/untracked.", example: "git status -s"},
+  {term: "git add", cat: "basic", def: "Đưa file từ working dir vào staging area. -p để chọn từng phần (interactive).", example: "git add . / git add -p"},
+  {term: "git commit", cat: "basic", def: "Tạo commit từ staging area. -m để truyền message inline.", example: 'git commit -m "feat: ..."'},
+  {term: "git log", cat: "basic", def: "Hiển thị lịch sử commit. Nhiều flag: --oneline, --graph, --author, --since.", example: "git log --oneline --graph"},
+  {term: "git diff", cat: "basic", def: "So sánh thay đổi. Mặc định: working dir vs staging. --staged: staging vs HEAD.", example: "git diff HEAD"},
+  {term: "git show", cat: "basic", def: "Hiển thị nội dung của 1 commit (diff + metadata) hoặc object.", example: "git show HEAD"},
+  {term: "git blame", cat: "basic", def: "Hiển thị ai sửa dòng nào, ở commit nào. Hữu ích để truy nguồn bug.", example: "git blame file.js"},
+  {term: "git config", cat: "basic", def: "Quản lý cấu hình Git ở 3 cấp: --system, --global, --local.", example: "git config --global user.name"},
+
+  // === MORE REMOTE ===
+  {term: "git remote", cat: "remote", def: "Quản lý remote repositories: add, remove, set-url, rename.", example: "git remote -v"},
+  {term: "git fetch", cat: "remote", def: "Tải về data từ remote không merge. Chỉ cập nhật remote-tracking branches.", example: "git fetch origin main"},
+  {term: "git pull", cat: "remote", def: "fetch + merge (hoặc rebase với --rebase). Cập nhật branch local với remote.", example: "git pull --rebase"},
+  {term: "git push", cat: "remote", def: "Đẩy commit lên remote. -u để set tracking. --tags để push tag.", example: "git push -u origin feature"},
+  {term: "SSH Key", cat: "remote", def: "Cặp khóa công khai/riêng tư để authenticate với Git server không cần password.", example: "ssh-keygen -t ed25519"},
+  {term: "Personal Access Token", cat: "remote", def: "Token thay password cho HTTPS authentication. GitHub yêu cầu PAT thay vì password từ 2021.", example: ""},
+  {term: "Credential Helper", cat: "remote", def: "Tool cache credentials để không phải nhập lại. Ví dụ: git-credential-manager, keychain.", example: "git config credential.helper"},
+
+  // === MORE ADVANCED ===
+  {term: "git rebase --onto", cat: "advanced", def: "Di chuyển 1 dãy commit từ branch này sang branch khác. Cú pháp phức tạp nhưng rất mạnh.", example: "git rebase --onto main old new"},
+  {term: "Three-Dot Diff", cat: "advanced", def: "git diff A...B = diff từ điểm chia chung (merge-base) đến B. Khác A..B (diff trực tiếp).", example: "git diff main...feature"},
+  {term: "Two-Dot Range", cat: "advanced", def: "A..B = các commit có trong B mà không có trong A. Dùng với log, diff, cherry-pick.", example: "git log main..feature"},
+  {term: "git merge-base", cat: "advanced", def: "Tìm điểm chia chung (common ancestor) của 2 branch.", example: "git merge-base main feature"},
+  {term: "Octopus Merge", cat: "advanced", def: "Merge 3+ branch cùng lúc. Hiếm dùng vì khó debug khi conflict.", example: "git merge b1 b2 b3"},
+  {term: "Recursive Merge Strategy", cat: "advanced", def: "Strategy mặc định của git merge. Xử lý 3-way merge với common ancestor.", example: "git merge -s recursive"},
+  {term: "Ours Strategy", cat: "advanced", def: "Merge strategy bỏ hoàn toàn changes của branch kia, chỉ ghi nhận đã merge. Dùng đặc biệt.", example: "git merge -s ours"},
+  {term: "Theirs Strategy", cat: "advanced", def: "Trong conflict, lấy phiên bản 'theirs' (branch đang merge vào). Khác strategy 'ours'.", example: "git checkout --theirs file"},
+  {term: "git filter-repo", cat: "advanced", def: "Tool viết lại lịch sử Git (xóa file lớn, đổi email author). Thay thế git filter-branch deprecated.", example: ""},
+  {term: "git rerere", cat: "advanced", def: "Reuse Recorded Resolution - Git nhớ cách bạn giải quyết conflict trước đó để áp dụng lại.", example: "git config rerere.enabled true"},
+  {term: "git clean", cat: "advanced", def: "Xóa untracked files khỏi working dir. -n để xem trước, -fd để xóa file + folder.", example: "git clean -fdx"},
+  {term: "git archive", cat: "advanced", def: "Tạo file zip/tar từ 1 ref (branch, tag, commit). Hữu ích để release.", example: "git archive --format=zip HEAD"},
+  {term: "git notes", cat: "advanced", def: "Thêm note vào commit mà không thay đổi hash. Ít dùng nhưng hữu ích để annotate.", example: "git notes add -m 'note'"},
+  {term: "git describe", cat: "advanced", def: "Tạo tên dựa trên tag gần nhất + offset. Hữu ích để versioning trong CI.", example: "v1.0-3-ga1b2c3d"},
+  {term: "git shortlog", cat: "advanced", def: "Tóm tắt log theo author. Hữu ích để xem ai đóng góp bao nhiêu.", example: "git shortlog -sn"},
+
+  // === MORE WORKFLOW ===
+  {term: "Origin/HEAD", cat: "workflow", def: "Pointer trên remote chỉ định branch mặc định. git clone tự checkout vào branch mà origin/HEAD trỏ tới.", example: ""},
+  {term: "Branch Protection", cat: "workflow", def: "Quy tắc trên GitHub/GitLab giới hạn ai có thể push hay force push vào branch (thường là main).", example: ""},
+  {term: "Required Reviews", cat: "workflow", def: "Yêu cầu N reviewer approve trước khi merge PR. Cấu hình trong branch protection.", example: ""},
+  {term: "Status Check", cat: "workflow", def: "Check CI/CD/test phải pass trước khi merge PR. Tích hợp với GitHub Actions, CircleCI...", example: ""},
+  {term: "Draft PR", cat: "workflow", def: "Pull Request đánh dấu 'chưa sẵn sàng review'. Cho phép share progress sớm.", example: ""},
+  {term: "Squash and Merge", cat: "workflow", def: "Option trên GitHub merge PR: gộp tất cả commit của branch thành 1 commit trên main.", example: ""},
+  {term: "Rebase and Merge", cat: "workflow", def: "Option trên GitHub merge PR: rebase commits của branch lên main (giữ riêng từng commit).", example: ""},
+  {term: "Create a Merge Commit", cat: "workflow", def: "Option trên GitHub merge PR: tạo merge commit với --no-ff. Giữ cấu trúc branch.", example: ""},
+  {term: "Pull Request Template", cat: "workflow", def: "File .github/PULL_REQUEST_TEMPLATE.md hiện sẵn khi tạo PR. Đảm bảo PR có đủ info.", example: ""},
+  {term: "CODEOWNERS", cat: "workflow", def: "File .github/CODEOWNERS chỉ định ai phải review khi PR động vào file/folder cụ thể.", example: "*.js @frontend-team"},
+  {term: "Git Subtree", cat: "advanced", def: "Cách khác để nhúng repo vào repo - thay thế submodule, dễ dùng hơn nhưng có hạn chế.", example: "git subtree add --prefix=lib URL main"},
+
+  // === MORE TERMS ===
+  {term: "FETCH_HEAD", cat: "internal", def: "Ref lưu commit cuối của lần fetch gần nhất. git pull dùng FETCH_HEAD để merge.", example: ""},
+  {term: "ORIG_HEAD", cat: "internal", def: "Ref lưu HEAD trước khi thực hiện operation 'nguy hiểm' (merge, reset, rebase). Hữu ích để undo.", example: "git reset --hard ORIG_HEAD"},
+  {term: "MERGE_HEAD", cat: "internal", def: "Tồn tại tạm thời trong khi merge - trỏ đến commit branch đang được merge vào.", example: ""},
+  {term: "CHERRY_PICK_HEAD", cat: "internal", def: "Ref tạm khi đang cherry-pick. Cho phép --continue/--abort.", example: ""},
+  {term: "REBASE_HEAD", cat: "internal", def: "Ref tạm khi đang rebase. Cho phép --continue/--skip/--abort.", example: ""},
+  {term: "Object ID (OID)", cat: "internal", def: "SHA-1 hash của Git object. Định danh duy nhất mọi blob/tree/commit/tag.", example: ""},
+  {term: "Trailer", cat: "basic", def: "Metadata structured ở cuối commit message (Signed-off-by, Co-authored-by, Reviewed-by).", example: "Co-authored-by: Name <email>"},
+  {term: "Signed-off-by", cat: "workflow", def: "Trailer xác nhận tác giả có quyền commit code (Developer Certificate of Origin). Linux kernel yêu cầu.", example: "git commit -s"},
+  {term: "Co-authored-by", cat: "workflow", def: "Trailer ghi nhận đồng tác giả (pair programming). GitHub hiển thị cả 2 avatar.", example: ""},
+  {term: "Verified Commit", cat: "workflow", def: "Commit đã được GPG sign và GitHub verify được key. Hiện badge 'Verified' xanh.", example: ""},
+  {term: "Bot Commit", cat: "workflow", def: "Commit được tạo bởi bot (Dependabot, GitHub Actions). Có author là bot account.", example: ""},
+  {term: "Empty Commit", cat: "advanced", def: "Commit không có thay đổi file. Dùng để trigger CI/CD hoặc đánh dấu mốc.", example: "git commit --allow-empty"},
+  {term: "Cherry-pick Conflict", cat: "advanced", def: "Khi cherry-pick gặp conflict do commit dựa trên context khác. Phải resolve thủ công.", example: ""},
+  {term: "Empty Tree Hash", cat: "internal", def: "Hash của tree rỗng: 4b825dc642cb6eb9a060e54bf8d69288fbee4904. Hữu ích để diff từ initial state.", example: ""},
+  {term: "Initial Commit", cat: "basic", def: "Commit đầu tiên của repo - không có parent. git log không hiện 'parent' line.", example: ""},
+  {term: "Empty Commit Hash", cat: "internal", def: "Hash đặc biệt 0000...000 đại diện cho 'không commit nào'. Dùng trong refspec.", example: ""},
+  {term: "Annotated vs Lightweight Tag", cat: "advanced", def: "Annotated tag là object đầy đủ, có metadata. Lightweight chỉ là ref đến commit. Annotated khuyến nghị cho release.", example: ""},
+  {term: "git switch -", cat: "branching", def: "Chuyển nhanh về branch trước đó (như 'cd -' trong bash).", example: "git switch -"},
+  {term: "git checkout -", cat: "branching", def: "Như git switch - nhưng dùng checkout cũ. Vẫn hoạt động.", example: "git checkout -"},
+  {term: "Repository Health", cat: "advanced", def: "Đo lường tình trạng repo: số objects, dung lượng, pack ratio. git count-objects -v.", example: "git count-objects -v"},
+  {term: "Pack Ratio", cat: "internal", def: "Tỉ lệ objects được pack so với loose. gc tốt khi pack ratio cao.", example: ""},
+  {term: "Repack", cat: "internal", def: "Tạo lại pack files. Hữu ích sau khi xóa nhiều file hoặc thêm nhiều commit.", example: "git repack -ad"},
+  {term: "fsck", cat: "internal", def: "Filesystem check - kiểm tra integrity của Git database. Tìm dangling objects.", example: "git fsck --full"},
+  {term: "Dangling Object", cat: "internal", def: "Object tồn tại trong .git/objects/ nhưng không có ref nào trỏ tới. gc sẽ xóa sau 2 tuần.", example: ""},
+  {term: "Pre-receive Hook", cat: "workflow", def: "Server-side hook chạy trước khi nhận push. Có thể reject push không đúng convention.", example: ""},
+  {term: "Post-receive Hook", cat: "workflow", def: "Server-side hook chạy sau khi nhận push. Dùng để trigger deploy, gửi notification.", example: ""},
+  {term: "Update Hook", cat: "workflow", def: "Server-side hook chạy 1 lần cho mỗi branch được push. Có thể reject branch cụ thể.", example: ""},
+  {term: "Pre-push Hook", cat: "workflow", def: "Client-side hook chạy trước khi push. Dùng để run tests, validate.", example: ""},
+  {term: "Pre-commit Hook", cat: "workflow", def: "Client-side hook chạy trước khi commit. Dùng để lint, format, run tests nhanh.", example: ""},
+  {term: "Commit-msg Hook", cat: "workflow", def: "Client-side hook validate commit message sau khi viết. Reject nếu không đúng format.", example: ""},
+  {term: "Post-commit Hook", cat: "workflow", def: "Client-side hook chạy sau commit. Dùng để notification, không reject được commit.", example: ""},
+  {term: "post-merge Hook", cat: "workflow", def: "Client-side hook chạy sau khi merge thành công. Dùng để reinstall dependencies (npm install).", example: ""}
+];
+
+// ========== RENDER GLOSSARY ==========
+let currentFilter = 'all';
+
+function renderGlossary() {
+  const list = document.getElementById('glossaryList');
+  const search = document.getElementById('glossarySearch').value.toLowerCase().trim();
+  let html = '';
+  let visibleCount = 0;
+  const total = glossaryTerms.length;
+
+  glossaryTerms.forEach(t => {
+    const matchesCat = currentFilter === 'all' || t.cat === currentFilter;
+    const matchesSearch = !search ||
+      t.term.toLowerCase().includes(search) ||
+      t.def.toLowerCase().includes(search) ||
+      (t.example && t.example.toLowerCase().includes(search));
+
+    if (matchesCat && matchesSearch) {
+      visibleCount++;
+      let termDisplay = t.term;
+      let defDisplay = t.def;
+      if (search) {
+        const reg = new RegExp(`(${search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+        termDisplay = termDisplay.replace(reg, '<span class="highlight">$1</span>');
+        defDisplay = defDisplay.replace(reg, '<span class="highlight">$1</span>');
+      }
+      html += `
+        <div class="term-card cat-${t.cat}">
+          <div class="term-cat">${getCatLabel(t.cat)}</div>
+          <div class="term-name">${termDisplay}</div>
+          <div class="term-def">${defDisplay}</div>
+          ${t.example ? `<div class="term-example">${escapeHtml(t.example)}</div>` : ''}
+        </div>
+      `;
+    }
+  });
+
+  if (visibleCount === 0) {
+    html = '<div class="no-results">😢 Không tìm thấy thuật ngữ nào. Thử từ khóa khác.</div>';
+  }
+
+  list.innerHTML = html;
+  document.getElementById('count').textContent = visibleCount;
+  document.getElementById('total').textContent = total;
+}
+
+function getCatLabel(cat) {
+  const map = {
+    basic: '🟢 Cơ bản',
+    branching: '🟣 Branching',
+    remote: '🔵 Remote',
+    advanced: '🟠 Nâng cao',
+    internal: '🟡 Internal',
+    workflow: '🔴 Workflow'
+  };
+  return map[cat] || cat;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function searchGlossary() {
+  renderGlossary();
+}
+
+function filterCategory(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  renderGlossary();
+}
+
+// ========== NAV ==========
+function filterNav(q) {
+  q = q.toLowerCase().trim();
+  document.querySelectorAll('.nav-menu li').forEach(li => {
+    const text = li.textContent.toLowerCase();
+    li.style.display = !q || text.includes(q) ? '' : 'none';
+  });
+}
+
+// Highlight active section in sidebar
+function highlightNavOnScroll() {
+  const sections = document.querySelectorAll('.chapter');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+  let current = '';
+  sections.forEach(s => {
+    const top = s.offsetTop - 100;
+    if (window.scrollY >= top) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}
+window.addEventListener('scroll', highlightNavOnScroll);
+
+// Smooth scroll
+document.querySelectorAll('.nav-menu a').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      document.querySelector(href).scrollIntoView({behavior: 'smooth'});
+      document.querySelector('.sidebar').classList.remove('open');
+    }
+  });
+});
+
+// Init
+renderGlossary();
+</script>
+</body>
+</html>

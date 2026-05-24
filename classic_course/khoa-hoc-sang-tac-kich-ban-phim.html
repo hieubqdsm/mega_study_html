@@ -1,0 +1,3391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Sáng Tác Kịch Bản Phim - Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #d4af37;
+    --primary-light: #f5d76e;
+    --secondary: #c41e3a;
+    --accent: #e8b04b;
+    --cream: #f5e6d3;
+    --dark: #1a0e0a;
+    --darker: #0d0705;
+    --light: #f5e6d3;
+    --gray: #a89989;
+    --success: #4a9d6f;
+    --warning: #d97706;
+    --danger: #b91c1c;
+    --card: #2d1810;
+    --border: #4a2c1a;
+    --paper: #f5e6d3;
+  }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.8;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 30% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(196, 30, 58, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 320px;
+    background: linear-gradient(180deg, var(--dark) 0%, #150905 100%);
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid var(--primary);
+    z-index: 100;
+    transition: transform 0.3s;
+    box-shadow: 4px 0 30px rgba(212, 175, 55, 0.1);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo {
+    text-align: center;
+    padding: 0 20px 30px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .logo::before {
+    content: '★ ★ ★';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--primary);
+    font-size: 10px;
+    letter-spacing: 3px;
+  }
+  .logo h1 {
+    font-size: 24px;
+    color: var(--primary);
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    font-family: 'Georgia', serif;
+  }
+  .logo p { font-size: 12px; color: var(--gray); margin-top: 8px; letter-spacing: 1px; font-style: italic; }
+  .nav-menu { list-style: none; padding: 0 15px; }
+  .nav-menu li { margin-bottom: 5px; }
+  .nav-menu a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--gray);
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    font-family: 'Georgia', serif;
+  }
+  .nav-menu a:hover, .nav-menu a.active {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--primary-light);
+    border-left-color: var(--primary);
+    transform: translateX(5px);
+  }
+  .nav-menu .chapter-num {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 26px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+  .main-content {
+    margin-left: 320px;
+    flex: 1;
+    padding: 40px 60px;
+    max-width: calc(100% - 320px);
+  }
+  .hero {
+    background:
+      linear-gradient(135deg, rgba(26, 14, 10, 0.85) 0%, rgba(45, 24, 16, 0.85) 100%),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212, 175, 55, 0.03) 2px, rgba(212, 175, 55, 0.03) 4px);
+    padding: 80px 40px;
+    border-radius: 12px;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid var(--primary);
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.15), inset 0 0 100px rgba(0,0,0,0.5);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 20px; left: 20px; right: 20px; bottom: 20px;
+    border: 1px solid var(--primary);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    font-weight: 900;
+    color: var(--primary);
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 2px 2px 0 rgba(0,0,0,0.5);
+    letter-spacing: 3px;
+    font-family: 'Georgia', serif;
+  }
+  .hero .subtitle {
+    color: var(--secondary);
+    font-size: 14px;
+    letter-spacing: 5px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+  }
+  .hero p {
+    font-size: 18px;
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--cream);
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(0,0,0,0.5);
+    padding: 20px 30px;
+    border-radius: 8px;
+    min-width: 140px;
+    border: 1px solid var(--primary);
+  }
+  .stat-num {
+    font-size: 32px;
+    font-weight: 900;
+    display: block;
+    color: var(--primary-light);
+    text-shadow: 0 0 15px rgba(245, 215, 110, 0.5);
+  }
+  .stat-label { font-size: 13px; color: var(--cream); letter-spacing: 1px; }
+  .chapter {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 45px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    scroll-margin-top: 20px;
+    position: relative;
+  }
+  .chapter::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    border-radius: 8px 8px 0 0;
+  }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--primary);
+    position: relative;
+  }
+  .chapter-header::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 100px;
+    height: 4px;
+    background: var(--secondary);
+  }
+  .chapter-badge {
+    background: var(--primary);
+    color: var(--darker);
+    padding: 8px 16px;
+    border-radius: 0;
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    box-shadow: 3px 3px 0 var(--secondary);
+  }
+  .chapter h2 {
+    font-size: 32px;
+    color: var(--primary);
+    flex: 1;
+    font-family: 'Georgia', serif;
+    letter-spacing: 1px;
+  }
+  .chapter h3 {
+    font-size: 22px;
+    color: var(--primary-light);
+    margin: 30px 0 15px;
+    padding-left: 15px;
+    border-left: 4px solid var(--secondary);
+    font-style: italic;
+  }
+  .chapter h4 {
+    font-size: 18px;
+    color: var(--accent);
+    margin: 20px 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .chapter p { margin-bottom: 15px; color: var(--cream); }
+  .chapter ul, .chapter ol { margin: 15px 0 20px 25px; color: var(--cream); }
+  .chapter li { margin-bottom: 8px; }
+  .chapter strong { color: var(--primary-light); }
+  .info-box, .warning-box, .tip-box, .danger-box, .quote-box {
+    padding: 20px 25px;
+    border-radius: 4px;
+    margin: 20px 0;
+    border-left: 5px solid;
+  }
+  .info-box { background: rgba(212, 175, 55, 0.08); border-color: var(--primary); }
+  .warning-box { background: rgba(217, 119, 6, 0.08); border-color: var(--warning); }
+  .tip-box { background: rgba(74, 157, 111, 0.08); border-color: var(--success); }
+  .danger-box { background: rgba(185, 28, 28, 0.08); border-color: var(--danger); }
+  .quote-box {
+    background: rgba(196, 30, 58, 0.06);
+    border-color: var(--secondary);
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    position: relative;
+    padding: 30px 30px 30px 70px;
+  }
+  .quote-box::after {
+    content: '"';
+    position: absolute;
+    top: 5px;
+    left: 20px;
+    font-size: 60px;
+    color: var(--secondary);
+    font-family: 'Georgia', serif;
+    line-height: 1;
+  }
+  .info-box::before, .warning-box::before, .tip-box::before, .danger-box::before {
+    content: attr(data-title);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .info-box::before { color: var(--primary); }
+  .warning-box::before { color: var(--warning); }
+  .tip-box::before { color: var(--success); }
+  .danger-box::before { color: var(--danger); }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+  .card-item {
+    background: var(--dark);
+    padding: 22px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    position: relative;
+  }
+  .card-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+  }
+  .card-item h4 { color: var(--primary-light); margin-bottom: 10px; }
+  .card-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: var(--dark);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td { padding: 14px 18px; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: var(--primary);
+    color: var(--darker);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 13px;
+  }
+  tr:hover { background: rgba(212, 175, 55, 0.05); }
+  .screenplay-block {
+    background: #1a0e08;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: 4px;
+    padding: 25px;
+    font-family: 'Courier New', 'Courier', monospace;
+    font-size: 14px;
+    margin: 20px 0;
+    overflow-x: auto;
+    color: var(--cream);
+    line-height: 1.8;
+    position: relative;
+  }
+  .screenplay-block::before {
+    content: 'SCREENPLAY FORMAT';
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    font-size: 10px;
+    color: var(--primary);
+    letter-spacing: 2px;
+  }
+  .scene-heading {
+    text-transform: uppercase;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+  .character-name {
+    text-transform: uppercase;
+    text-align: center;
+    color: var(--primary-light);
+    margin-top: 15px;
+    margin-bottom: 5px;
+    margin-left: 80px;
+  }
+  .dialogue {
+    margin-left: 60px;
+    margin-right: 80px;
+    margin-bottom: 10px;
+  }
+  .parenthetical {
+    margin-left: 100px;
+    color: var(--gray);
+    font-style: italic;
+    margin-bottom: 5px;
+  }
+  .action {
+    margin-bottom: 12px;
+  }
+  .transition {
+    text-align: right;
+    text-transform: uppercase;
+    color: var(--secondary);
+    font-weight: bold;
+    margin-top: 15px;
+  }
+  .steps { counter-reset: step; margin: 20px 0; }
+  .step {
+    counter-increment: step;
+    padding: 20px 20px 20px 75px;
+    background: var(--dark);
+    border-radius: 4px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 4px solid var(--primary);
+  }
+  .step::before {
+    content: counter(step, upper-roman);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: var(--primary);
+    color: var(--darker);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 14px;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  }
+  .step h4 { color: var(--primary-light); margin-bottom: 5px; }
+  .progress-section {
+    position: fixed;
+    top: 0;
+    left: 320px;
+    right: 0;
+    height: 4px;
+    background: var(--dark);
+    z-index: 99;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--primary);
+  }
+  .quiz {
+    background: rgba(212, 175, 55, 0.06);
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+  .quiz-question {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--primary-light);
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    padding: 12px 18px;
+    background: var(--dark);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-option:hover { border-color: var(--primary); transform: translateX(5px); }
+  .quiz-option.correct { background: rgba(74, 157, 111, 0.2); border-color: var(--success); color: var(--success); }
+  .quiz-option.wrong { background: rgba(185, 28, 28, 0.2); border-color: var(--danger); color: var(--danger); }
+  .menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    background: var(--primary);
+    color: var(--darker);
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 4px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  }
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 280px; }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; padding: 70px 20px 20px; }
+    .menu-toggle { display: block; }
+    .progress-section { left: 0; }
+    .hero h1 { font-size: 32px; letter-spacing: 1px; }
+    .hero p { font-size: 16px; }
+    .chapter { padding: 25px 20px; }
+    .chapter h2 { font-size: 22px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 15px; }
+    .stat { padding: 15px 20px; min-width: 120px; }
+  }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+    font-style: italic;
+  }
+  .clapper-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: clap 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5));
+  }
+  @keyframes clap {
+    0%, 100% { transform: rotate(0deg); }
+    10% { transform: rotate(-15deg); }
+    20% { transform: rotate(0deg); }
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-classic { background: rgba(212, 175, 55, 0.2); color: var(--primary-light); }
+  .badge-modern { background: rgba(196, 30, 58, 0.2); color: var(--secondary); }
+  .badge-indie { background: rgba(74, 157, 111, 0.2); color: var(--success); }
+  .three-act-bar {
+    display: flex;
+    margin: 25px 0;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+  }
+  .act {
+    padding: 20px;
+    text-align: center;
+    color: var(--cream);
+    font-weight: bold;
+    position: relative;
+  }
+  .act-1 { background: rgba(212, 175, 55, 0.2); flex: 1; }
+  .act-2 { background: rgba(196, 30, 58, 0.2); flex: 2; }
+  .act-3 { background: rgba(74, 157, 111, 0.2); flex: 1; }
+  .act-num {
+    display: block;
+    font-size: 24px;
+    color: var(--primary-light);
+    margin-bottom: 5px;
+  }
+  .filmstrip-divider {
+    height: 30px;
+    background-image:
+      linear-gradient(90deg, var(--dark) 0%, var(--dark) 100%),
+      repeating-linear-gradient(90deg, transparent 0, transparent 30px, var(--primary) 30px, var(--primary) 32px);
+    border-top: 4px solid var(--primary);
+    border-bottom: 4px solid var(--primary);
+    margin: 30px 0;
+    position: relative;
+  }
+  .filmstrip-divider::before,
+  .filmstrip-divider::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 8px;
+    background-image: repeating-linear-gradient(90deg, var(--primary) 0, var(--primary) 12px, var(--dark) 12px, var(--dark) 30px);
+  }
+  .filmstrip-divider::before { top: 4px; }
+  .filmstrip-divider::after { bottom: 4px; }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<div class="progress-section">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <h1>🎬 SCREENWRITING</h1>
+      <p>Khóa Học Toàn Diện</p>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#intro" class="active"><span class="chapter-num">1</span>Giới thiệu</a></li>
+      <li><a href="#history"><span class="chapter-num">2</span>Lịch sử &amp; Bậc thầy</a></li>
+      <li><a href="#story"><span class="chapter-num">3</span>Câu chuyện là gì?</a></li>
+      <li><a href="#threeact"><span class="chapter-num">4</span>Cấu trúc 3 hồi</a></li>
+      <li><a href="#herojourney"><span class="chapter-num">5</span>Hero's Journey</a></li>
+      <li><a href="#savethecat"><span class="chapter-num">6</span>Save the Cat</a></li>
+      <li><a href="#premise"><span class="chapter-num">7</span>Premise &amp; Logline</a></li>
+      <li><a href="#theme"><span class="chapter-num">8</span>Theme &amp; Premise</a></li>
+      <li><a href="#character"><span class="chapter-num">9</span>Xây dựng nhân vật</a></li>
+      <li><a href="#arc"><span class="chapter-num">10</span>Character Arc</a></li>
+      <li><a href="#dialogue"><span class="chapter-num">11</span>Viết thoại (Dialogue)</a></li>
+      <li><a href="#scene"><span class="chapter-num">12</span>Cấu trúc Scene</a></li>
+      <li><a href="#showdont"><span class="chapter-num">13</span>Show Don't Tell</a></li>
+      <li><a href="#subtext"><span class="chapter-num">14</span>Subtext</a></li>
+      <li><a href="#conflict"><span class="chapter-num">15</span>Xung đột &amp; Stakes</a></li>
+      <li><a href="#pacing"><span class="chapter-num">16</span>Pacing &amp; Rhythm</a></li>
+      <li><a href="#genre"><span class="chapter-num">17</span>Thể loại phim</a></li>
+      <li><a href="#format"><span class="chapter-num">18</span>Format chuẩn</a></li>
+      <li><a href="#outline"><span class="chapter-num">19</span>Outline &amp; Treatment</a></li>
+      <li><a href="#rewrite"><span class="chapter-num">20</span>Rewriting</a></li>
+      <li><a href="#career"><span class="chapter-num">21</span>Bán kịch bản &amp; Sự nghiệp</a></li>
+      <li><a href="#quiz"><span class="chapter-num">22</span>Bài kiểm tra</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <section class="hero">
+      <span class="clapper-icon">🎬</span>
+      <div class="subtitle">★ Master Class ★</div>
+      <h1>SÁNG TÁC KỊCH BẢN PHIM</h1>
+      <p>Hành trình từ người yêu phim đến biên kịch chuyên nghiệp - 22 chương đầy đủ từ nguyên lý cổ điển đến kỹ thuật hiện đại của Hollywood, Hàn Quốc, và điện ảnh Việt Nam</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">22</span><span class="stat-label">CHAPTERS</span></div>
+        <div class="stat"><span class="stat-num">100+</span><span class="stat-label">EXAMPLES</span></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">SCENE BREAKDOWNS</span></div>
+        <div class="stat"><span class="stat-num">∞</span><span class="stat-label">STORIES</span></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 1: GIỚI THIỆU -->
+    <section id="intro" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 1</span>
+        <h2>Giới Thiệu Về Sáng Tác Kịch Bản</h2>
+      </div>
+
+      <h3>1.1. Kịch bản phim là gì?</h3>
+      <p><strong>Kịch bản phim (Screenplay)</strong> là <em>bản thiết kế của một bộ phim</em> - văn bản chứa đựng toàn bộ <strong>thoại, hành động, mô tả</strong> mà sẽ được chuyển thành hình ảnh và âm thanh trên màn ảnh.</p>
+
+      <div class="quote-box">
+        "A screenplay is not a literary form. It's an industrial form."<br>
+        <em>— Robert McKee (tác giả "Story")</em>
+      </div>
+
+      <h3>1.2. Kịch bản KHÁC tiểu thuyết như thế nào?</h3>
+      <table>
+        <thead>
+          <tr><th>Tiểu thuyết</th><th>Kịch bản phim</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Có thể vào nội tâm nhân vật ("Anh ấy cảm thấy buồn")</td><td>Chỉ có thể "show" - hành động bên ngoài</td></tr>
+          <tr><td>300-500 trang</td><td>Khoảng 90-120 trang (1 trang = 1 phút phim)</td></tr>
+          <tr><td>Ngôn ngữ trữ tình, mô tả chi tiết</td><td>Câu ngắn gọn, hành động hiện tại (present tense)</td></tr>
+          <tr><td>Một mình tác giả tạo nên</td><td>Bản thiết kế - đạo diễn, diễn viên, DP cùng làm thành phim</td></tr>
+          <tr><td>Đọc để thưởng thức</td><td>Đọc để "thấy" được phim</td></tr>
+          <tr><td>Người đọc tự tưởng tượng</td><td>Người đọc thấy "máy quay" trong đầu</td></tr>
+        </tbody>
+      </table>
+
+      <h3>1.3. Các loại kịch bản</h3>
+      <div class="grid-3">
+        <div class="card-item">
+          <span class="card-icon">🎬</span>
+          <h4>Feature Film</h4>
+          <p>Phim chiếu rạp 90-120 phút. Cấu trúc 3 hồi cổ điển.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">📺</span>
+          <h4>TV Series Pilot</h4>
+          <p>Tập đầu tiên 22-60 phút. Khác hẳn feature film.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🎭</span>
+          <h4>Short Film</h4>
+          <p>5-30 phút. Tập trung 1 ý tưởng.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">📱</span>
+          <h4>Web Series / Vertical</h4>
+          <p>5-15 phút mỗi tập, format ngắn cho mobile.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">📹</span>
+          <h4>Commercial</h4>
+          <p>30-60 giây. Kể chuyện cực nhanh.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🎞️</span>
+          <h4>Documentary</h4>
+          <p>Phim tài liệu - outline trước, viết theo footage.</p>
+        </div>
+      </div>
+
+      <h3>1.4. Tại sao học sáng tác kịch bản?</h3>
+      <ul>
+        <li><strong>Nghề nghiệp:</strong> Biên kịch chuyên nghiệp lương 50tr-500tr/dự án tại VN, 50-500k USD/script tại Hollywood</li>
+        <li><strong>Content creator:</strong> Mọi video YouTube/TikTok hay đều có kịch bản tốt</li>
+        <li><strong>Marketing:</strong> Quảng cáo, video doanh nghiệp cần storytelling</li>
+        <li><strong>Self-expression:</strong> Kể câu chuyện của mình ra thế giới</li>
+        <li><strong>Hiểu phim sâu hơn:</strong> Học sáng tác để đọc-vị mọi bộ phim bạn xem</li>
+      </ul>
+
+      <h3>1.5. Biên kịch làm gì hàng ngày?</h3>
+      <div class="card-item">
+        <h4>📅 Một ngày của biên kịch chuyên nghiệp</h4>
+        <ul>
+          <li><strong>9:00-12:00:</strong> Viết - 3 giờ "deep work" sáng tạo cao nhất</li>
+          <li><strong>13:00-15:00:</strong> Research - đọc, xem, nghiên cứu chủ đề</li>
+          <li><strong>15:00-17:00:</strong> Outline / Beat sheet - lên cấu trúc</li>
+          <li><strong>17:00-19:00:</strong> Meeting với producer, đạo diễn, notes</li>
+          <li><strong>Tối:</strong> Đọc kịch bản khác, xem phim phân tích</li>
+        </ul>
+      </div>
+
+      <h3>1.6. Thị trường biên kịch Việt Nam 2026</h3>
+      <ul>
+        <li><strong>Doanh thu điện ảnh VN:</strong> ~$200M/năm, tăng 15-20%/năm</li>
+        <li><strong>Top hãng:</strong> Galaxy, BHD, CGV, Lotte, Studio68</li>
+        <li><strong>Phim Việt thành công:</strong> "Mai" (Trấn Thành, 520tr+), "Lật Mặt" (Lý Hải), "Đất Rừng Phương Nam"</li>
+        <li><strong>OTT đang bùng nổ:</strong> Netflix VN, FPT Play, Galaxy Play - cần content gốc</li>
+        <li><strong>Mức lương biên kịch VN:</strong>
+          <ul>
+            <li>Junior (TV series): 5-15tr/tập</li>
+            <li>Feature film: 100-500tr/dự án</li>
+            <li>Showrunner: 1-5 tỷ/season</li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="tip-box" data-title="🎓 Lộ trình học cho người mới">
+        <ol>
+          <li><strong>Tháng 1-2:</strong> Xem 50 phim kinh điển + đọc kịch bản gốc (script.com)</li>
+          <li><strong>Tháng 3-4:</strong> Đọc 3 sách nền tảng (Story - McKee, Save the Cat, On Writing)</li>
+          <li><strong>Tháng 5-6:</strong> Viết 5 short film 5-10 phút</li>
+          <li><strong>Tháng 7-9:</strong> Viết 1 feature film hoàn chỉnh (draft 1)</li>
+          <li><strong>Tháng 10-12:</strong> Rewrite 3-5 lần. Submit contest, festival</li>
+          <li><strong>Năm 2:</strong> Build portfolio, network, pitch agents</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 2: LỊCH SỬ -->
+    <section id="history" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 2</span>
+        <h2>Lịch Sử &amp; Những Bậc Thầy</h2>
+      </div>
+
+      <p>Hiểu lịch sử kịch bản giúp bạn nắm được <strong>tại sao</strong> các kỹ thuật hiện đại được thiết kế như vậy. Mọi quy tắc đều có nguồn gốc.</p>
+
+      <h3>2.1. Các thời kỳ phát triển</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎭 Aristotle &amp; Poetics (300 TCN)</h4>
+          <p>Người đầu tiên định nghĩa <strong>cấu trúc 3 hồi</strong>. Khái niệm "catharsis" - thanh tẩy cảm xúc. Mọi quy tắc kể chuyện hiện đại đều bắt nguồn từ đây.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Silent Era (1895-1927)</h4>
+          <p>Phim câm - kể chuyện hoàn toàn bằng hình ảnh. Bài học: "Show don't tell" trở thành nguyên tắc số 1.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌟 Hollywood Golden Age (1930s-1950s)</h4>
+          <p>"Studio system" - biên kịch là công nhân trong xưởng phim. Định hình "classical Hollywood narrative".</p>
+        </div>
+        <div class="card-item">
+          <h4>🎥 New Hollywood (1960s-1970s)</h4>
+          <p>Coppola, Scorsese, Spielberg - đột phá. Phim ảnh thử nghiệm cấu trúc phi tuyến tính.</p>
+        </div>
+        <div class="card-item">
+          <h4>📺 Indie &amp; TV Renaissance (1990s-2010s)</h4>
+          <p>Tarantino, Sundance, HBO - kịch bản phức tạp, anti-hero, serialized storytelling.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Streaming Era (2010s-nay)</h4>
+          <p>Netflix, K-drama. Story-driven, binge-watching, đa dạng cultural. Genre fusion.</p>
+        </div>
+      </div>
+
+      <h3>2.2. Những bậc thầy kinh điển bạn phải biết</h3>
+
+      <h4>🎬 Aaron Sorkin</h4>
+      <p><strong>Phong cách:</strong> "Sorkin dialogue" - thoại nhanh, thông minh, chính trị.</p>
+      <p><strong>Phim tiêu biểu:</strong> The Social Network, A Few Good Men, The West Wing</p>
+      <p><strong>Bài học:</strong> Dialogue có thể là action. "Walk and talk" - vừa đi vừa nói.</p>
+
+      <h4>🎬 Quentin Tarantino</h4>
+      <p><strong>Phong cách:</strong> Cấu trúc phi tuyến, thoại dài về chuyện vặt, bạo lực phong cách.</p>
+      <p><strong>Phim tiêu biểu:</strong> Pulp Fiction, Kill Bill, Inglourious Basterds</p>
+      <p><strong>Bài học:</strong> Phá luật nhưng phải hiểu luật trước. Tension qua thoại đời thường.</p>
+
+      <h4>🎬 Christopher Nolan</h4>
+      <p><strong>Phong cách:</strong> High-concept, thời gian phi tuyến, ý tưởng triết học.</p>
+      <p><strong>Phim tiêu biểu:</strong> Memento, Inception, Interstellar, Oppenheimer</p>
+      <p><strong>Bài học:</strong> Khái niệm phức tạp nhưng nhân vật đơn giản. Cấu trúc = một phần ý tưởng.</p>
+
+      <h4>🎬 Charlie Kaufman</h4>
+      <p><strong>Phong cách:</strong> Meta, surreal, exploration tâm lý.</p>
+      <p><strong>Phim tiêu biểu:</strong> Being John Malkovich, Eternal Sunshine, Adaptation</p>
+      <p><strong>Bài học:</strong> Phá luật về "what's possible". Cảm xúc thật trong tình huống vô lý.</p>
+
+      <h4>🎬 Bong Joon-ho</h4>
+      <p><strong>Phong cách:</strong> Genre fusion, social commentary, tone shifts.</p>
+      <p><strong>Phim tiêu biểu:</strong> Parasite, Memories of Murder, Snowpiercer</p>
+      <p><strong>Bài học:</strong> Comedy + drama + horror cùng lúc. Class warfare qua hình ảnh.</p>
+
+      <h4>🎬 Hayao Miyazaki</h4>
+      <p><strong>Phong cách:</strong> Phim hoạt hình sâu sắc, anti-villain, môi trường.</p>
+      <p><strong>Phim tiêu biểu:</strong> Spirited Away, Princess Mononoke, My Neighbor Totoro</p>
+      <p><strong>Bài học:</strong> Không cần villain rõ ràng. "Ma" - khoảng lặng giữa các action.</p>
+
+      <h4>🎬 Greta Gerwig</h4>
+      <p><strong>Phong cách:</strong> Coming-of-age, female perspective, ensemble.</p>
+      <p><strong>Phim tiêu biểu:</strong> Lady Bird, Little Women, Barbie</p>
+      <p><strong>Bài học:</strong> Voice nữ tính authentic. Theme lớn trong câu chuyện đời thường.</p>
+
+      <h3>2.3. Các lý thuyết gia &amp; sách kinh điển</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📖 Aristotle - "Poetics" (300 TCN)</h4>
+          <p>Cấu trúc 3 hồi, catharsis, mimesis.</p>
+        </div>
+        <div class="card-item">
+          <h4>📖 Joseph Campbell - "The Hero with a Thousand Faces" (1949)</h4>
+          <p>Hero's Journey - monomyth. Ảnh hưởng đến Lucas (Star Wars).</p>
+        </div>
+        <div class="card-item">
+          <h4>📖 Syd Field - "Screenplay" (1979)</h4>
+          <p>Đại chúng hóa cấu trúc 3 hồi. Plot points cụ thể.</p>
+        </div>
+        <div class="card-item">
+          <h4>📖 Robert McKee - "Story" (1997)</h4>
+          <p>Bible của biên kịch hiện đại. Inciting incident, controlling idea.</p>
+        </div>
+        <div class="card-item">
+          <h4>📖 Blake Snyder - "Save the Cat!" (2005)</h4>
+          <p>15 beats - công thức Hollywood hiện đại.</p>
+        </div>
+        <div class="card-item">
+          <h4>📖 John Truby - "The Anatomy of Story" (2007)</h4>
+          <p>22 steps. Sâu hơn về moral argument.</p>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="📚 Đọc trước khi viết">
+        Lời khuyên của hầu hết bậc thầy: <strong>Đọc 10 kịch bản trước khi viết 1 kịch bản.</strong> Tải kịch bản miễn phí từ:<br>
+        • script-o-rama.com<br>
+        • simplyscripts.com<br>
+        • imsdb.com<br>
+        • The Oscars website (kịch bản chiến thắng)
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 3: STORY -->
+    <section id="story" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 3</span>
+        <h2>Câu Chuyện Là Gì?</h2>
+      </div>
+
+      <p>Trước khi viết kịch bản, phải hiểu <strong>câu chuyện là gì</strong>. 90% người mới viết "tình huống" (situation) chứ không phải "câu chuyện" (story).</p>
+
+      <div class="quote-box">
+        "Story is metaphor for life. Story is the equipment for living."<br>
+        <em>— Robert McKee</em>
+      </div>
+
+      <h3>3.1. Định nghĩa của Robert McKee</h3>
+      <p>Câu chuyện là chuỗi <strong>sự kiện</strong> mà mỗi sự kiện đều:</p>
+      <ol>
+        <li><strong>Thay đổi</strong> giá trị (value) của nhân vật</li>
+        <li><strong>Theo nguyên nhân-kết quả</strong> (causality, không phải coincidence)</li>
+        <li><strong>Có hậu quả</strong> dẫn đến sự kiện tiếp theo</li>
+      </ol>
+
+      <div class="info-box" data-title="📌 Value (Giá trị) là gì?">
+        Mỗi scene phải thay đổi 1 cặp giá trị trong nhân vật:<br>
+        • Sống ↔ Chết<br>
+        • Yêu ↔ Hận<br>
+        • Tự do ↔ Tù túng<br>
+        • Giàu ↔ Nghèo<br>
+        • Công lý ↔ Bất công<br>
+        • Hy vọng ↔ Tuyệt vọng<br><br>
+        Nếu scene không thay đổi value → cắt scene đó đi!
+      </div>
+
+      <h3>3.2. Tình huống vs Câu chuyện</h3>
+      <table>
+        <thead><tr><th>Tình huống (Situation)</th><th>Câu chuyện (Story)</th></tr></thead>
+        <tbody>
+          <tr><td>"Cô gái đi làm ở văn phòng"</td><td>"Cô gái muốn thăng tiến phải đối đầu với sếp tham nhũng"</td></tr>
+          <tr><td>"Anh chàng yêu cô gái"</td><td>"Anh chàng phải chọn giữa tình yêu và sự nghiệp"</td></tr>
+          <tr><td>"Gia đình đi nghỉ"</td><td>"Gia đình đối mặt khủng hoảng làm lộ ra bí mật giấu kín 20 năm"</td></tr>
+        </tbody>
+      </table>
+      <p>Story = Situation + <strong>Want</strong> + <strong>Conflict</strong> + <strong>Change</strong></p>
+
+      <h3>3.3. Công thức câu chuyện cơ bản</h3>
+      <div class="card-item">
+        <h4>📋 Công thức nền tảng</h4>
+        <p>Một câu chuyện hoàn chỉnh có:</p>
+        <ol>
+          <li><strong>SOMEBODY</strong> (Ai đó - protagonist)</li>
+          <li><strong>WANTS SOMETHING</strong> (Muốn gì đó - want/goal)</li>
+          <li><strong>BUT</strong> (Nhưng - obstacle/conflict)</li>
+          <li><strong>SO</strong> (Vì vậy - action/struggle)</li>
+          <li><strong>UNTIL</strong> (Cho đến khi - climax/resolution)</li>
+        </ol>
+        <p><strong>Ví dụ - Taken (2008):</strong></p>
+        <p>Một <em>cựu CIA</em> (somebody) <em>muốn cứu con gái bị bắt cóc</em> (wants), <em>nhưng cô bé ở Paris cách xa và bọn buôn người nguy hiểm</em> (but), <em>vì vậy anh ấy phải dùng "very particular set of skills" để truy đuổi</em> (so), <em>cho đến khi anh ấy giết hết bọn buôn người và cứu con</em> (until).</p>
+      </div>
+
+      <h3>3.4. Want vs Need</h3>
+      <p>Đây là khái niệm <strong>tinh tế nhất</strong> trong sáng tác kịch bản. Phân biệt được = nhân vật có chiều sâu.</p>
+
+      <div class="grid-2">
+        <div class="card-item" style="border-color: var(--primary);">
+          <h4>🎯 WANT (Muốn - External)</h4>
+          <p>Mục tiêu BÊN NGOÀI nhân vật theo đuổi suốt phim.</p>
+          <ul>
+            <li>Cứu con gái</li>
+            <li>Vô địch giải đấu</li>
+            <li>Thắng tình yêu</li>
+            <li>Đánh bại villain</li>
+          </ul>
+          <p><em>Nhân vật BIẾT mình muốn gì.</em></p>
+        </div>
+        <div class="card-item" style="border-color: var(--secondary);">
+          <h4>💎 NEED (Cần - Internal)</h4>
+          <p>Bài học BÊN TRONG nhân vật phải học để trở nên trọn vẹn.</p>
+          <ul>
+            <li>Học cách yêu thương</li>
+            <li>Vượt qua sợ hãi</li>
+            <li>Chấp nhận quá khứ</li>
+            <li>Tin vào bản thân</li>
+          </ul>
+          <p><em>Nhân vật KHÔNG biết mình cần gì cho đến cuối.</em></p>
+        </div>
+      </div>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: Toy Story (1995)</h4>
+        <p><strong>WANT của Woody:</strong> Là đồ chơi yêu thích của Andy (lấy lại vị trí)</p>
+        <p><strong>NEED của Woody:</strong> Học chia sẻ, chấp nhận thay đổi, làm bạn thật sự (với Buzz)</p>
+        <p>Cuối phim, Woody nhận ra Need quan trọng hơn Want. Đây là điểm tạo cảm xúc.</p>
+      </div>
+
+      <h3>3.5. Nguyên tắc Causality - Nhân quả</h3>
+      <p>Mọi sự kiện trong câu chuyện phải nối với nhau bằng "vì vậy" và "nhưng", KHÔNG phải "và rồi".</p>
+
+      <div class="warning-box" data-title="⚠️ Bài kiểm tra của Trey Parker (South Park)">
+        Trey Parker dạy: Giữa các beat câu chuyện, dùng từ <strong>"therefore"</strong> hoặc <strong>"but"</strong>, KHÔNG bao giờ "and then".<br><br>
+        ❌ "A đi đến cửa hàng. <em>Và rồi</em> B đến. <em>Và rồi</em> C xảy ra."<br>
+        ✅ "A đi đến cửa hàng <em>vì vậy</em> B đến tìm. <em>Nhưng</em> C xảy ra cản trở."<br><br>
+        Nếu chỉ "and then" được → bạn đang viết tình huống, không phải câu chuyện.
+      </div>
+
+      <h3>3.6. The Story Question</h3>
+      <p>Mỗi phim có 1 câu hỏi xuyên suốt mà khán giả muốn biết đáp án:</p>
+      <ul>
+        <li><strong>Jaws:</strong> "Liệu Brody có giết được cá mập không?"</li>
+        <li><strong>Titanic:</strong> "Liệu Jack và Rose sẽ sống sót cùng nhau?"</li>
+        <li><strong>The Shawshank Redemption:</strong> "Liệu Andy có trốn thoát không?"</li>
+        <li><strong>Parasite:</strong> "Gia đình họ có lừa được không?"</li>
+      </ul>
+      <p>Khi viết, hãy luôn biết Story Question của bạn là gì.</p>
+    </section>
+
+    <!-- CHƯƠNG 4: 3-ACT STRUCTURE -->
+    <section id="threeact" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 4</span>
+        <h2>Cấu Trúc 3 Hồi - The Three-Act Structure</h2>
+      </div>
+
+      <p>Cấu trúc 3 hồi có từ thời <strong>Aristotle (300 TCN)</strong> và vẫn là <em>nền tảng</em> của 95% phim Hollywood. Hiểu được = bạn đã đi qua 50% chặng đường.</p>
+
+      <h3>4.1. Tổng quan 3 hồi</h3>
+
+      <div class="three-act-bar">
+        <div class="act act-1">
+          <span class="act-num">ACT I</span>
+          <strong>SETUP</strong><br>
+          25% (~25-30 phút)
+        </div>
+        <div class="act act-2">
+          <span class="act-num">ACT II</span>
+          <strong>CONFRONTATION</strong><br>
+          50% (~50-60 phút)
+        </div>
+        <div class="act act-3">
+          <span class="act-num">ACT III</span>
+          <strong>RESOLUTION</strong><br>
+          25% (~25-30 phút)
+        </div>
+      </div>
+
+      <h3>4.2. ACT I - SETUP (Trang 1-30)</h3>
+      <div class="card-item">
+        <h4>🎬 Nhiệm vụ của Act I</h4>
+        <ul>
+          <li>Giới thiệu <strong>protagonist</strong> trong "ordinary world"</li>
+          <li>Cho khán giả thấy <strong>flaw</strong> của nhân vật</li>
+          <li>Thiết lập <strong>tone</strong>, <strong>genre</strong>, <strong>thế giới</strong></li>
+          <li>Đặt câu hỏi/vấn đề mà cả phim sẽ giải quyết</li>
+          <li>Kết thúc bằng <strong>Plot Point 1</strong> - nhân vật "vượt qua ngưỡng"</li>
+        </ul>
+      </div>
+
+      <h4>📌 Các Beat quan trọng trong Act I:</h4>
+      <ul>
+        <li><strong>Opening Image (Trang 1):</strong> Hình ảnh đầu tiên thiết lập tone</li>
+        <li><strong>Theme Statement (Trang 5):</strong> Ai đó nói "câu chủ đề" - thường nhân vật không hiểu</li>
+        <li><strong>Set-up (Trang 1-10):</strong> Giới thiệu nhân vật và thế giới thường nhật</li>
+        <li><strong>Catalyst / Inciting Incident (Trang 12-15):</strong> Sự kiện thay đổi cuộc đời nhân vật</li>
+        <li><strong>Debate (Trang 15-25):</strong> Nhân vật do dự - "Tôi có nên làm không?"</li>
+        <li><strong>Break into Act II / Plot Point 1 (Trang 25-30):</strong> Nhân vật quyết định hành động</li>
+      </ul>
+
+      <h3>4.3. ACT II - CONFRONTATION (Trang 30-90)</h3>
+      <p>Đây là phần <strong>dài nhất và khó nhất</strong> của kịch bản. 70% kịch bản tệ là vì Act II yếu.</p>
+
+      <div class="card-item">
+        <h4>🎬 Nhiệm vụ của Act II</h4>
+        <ul>
+          <li>Nhân vật ĐỐI MẶT với khó khăn dồn dập</li>
+          <li>Stakes tăng dần</li>
+          <li>Nhân vật học hỏi, thay đổi</li>
+          <li>Có <strong>Midpoint</strong> đảo lộn mọi thứ</li>
+          <li>Kết thúc bằng <strong>"All is Lost"</strong> - thất bại lớn nhất</li>
+        </ul>
+      </div>
+
+      <h4>📌 Các Beat trong Act II:</h4>
+      <ul>
+        <li><strong>B Story (Trang 30):</strong> Subplot/tình yêu bắt đầu - liên quan đến Theme</li>
+        <li><strong>Fun &amp; Games (Trang 30-55):</strong> "Promise of the premise" - lý do khán giả mua vé</li>
+        <li><strong>Midpoint (Trang 55-60):</strong> False victory hoặc false defeat - thay đổi mọi thứ</li>
+        <li><strong>Bad Guys Close In (Trang 60-75):</strong> Áp lực dồn nén, allies rời bỏ</li>
+        <li><strong>All is Lost (Trang 75):</strong> Mất tất cả. Often "whiff of death" - có thứ gì đó chết</li>
+        <li><strong>Dark Night of the Soul (Trang 75-85):</strong> Nhân vật chìm trong tuyệt vọng</li>
+        <li><strong>Break into Act III (Trang 85-90):</strong> Tìm ra giải pháp / nhận ra Need</li>
+      </ul>
+
+      <h3>4.4. ACT III - RESOLUTION (Trang 90-120)</h3>
+      <div class="card-item">
+        <h4>🎬 Nhiệm vụ của Act III</h4>
+        <ul>
+          <li>Nhân vật áp dụng <strong>Need</strong> (bài học) đã học</li>
+          <li><strong>Climax</strong> - đối đầu cuối cùng</li>
+          <li>Giải quyết <strong>Story Question</strong></li>
+          <li>Cho thấy nhân vật ĐÃ THAY ĐỔI</li>
+          <li><strong>Final Image</strong> - cặp đôi với Opening Image</li>
+        </ul>
+      </div>
+
+      <h4>📌 Các Beat trong Act III:</h4>
+      <ul>
+        <li><strong>Finale Set-up (Trang 90-95):</strong> Gather team, plan</li>
+        <li><strong>Execute Plan (Trang 95-105):</strong> Thực hiện</li>
+        <li><strong>Plan Fails (Trang 105-110):</strong> Plan đầu thất bại</li>
+        <li><strong>Climax (Trang 110-115):</strong> Đối đầu cuối, kết hợp Want + Need</li>
+        <li><strong>Final Image (Trang 115-120):</strong> Cho thấy thế giới mới</li>
+      </ul>
+
+      <h3>4.5. Phân tích The Matrix (1999)</h3>
+      <table>
+        <thead><tr><th>Beat</th><th>Trang</th><th>The Matrix</th></tr></thead>
+        <tbody>
+          <tr><td>Opening Image</td><td>1</td><td>Cảnh Trinity chạy thoát - mở thế giới phim</td></tr>
+          <tr><td>Theme Stated</td><td>5</td><td>"What is the Matrix?" - câu hỏi xuyên suốt</td></tr>
+          <tr><td>Set-up</td><td>1-12</td><td>Neo, hacker buồn chán, biết có gì đó sai</td></tr>
+          <tr><td>Catalyst</td><td>12</td><td>Trinity liên lạc, theo White Rabbit</td></tr>
+          <tr><td>Debate</td><td>15-25</td><td>Có nên gặp Morpheus không? Trốn ở văn phòng</td></tr>
+          <tr><td>Plot Point 1</td><td>30</td><td>Chọn viên thuốc đỏ - vào Act II</td></tr>
+          <tr><td>B Story</td><td>30</td><td>Mối quan hệ với Morpheus, Trinity</td></tr>
+          <tr><td>Fun &amp; Games</td><td>30-55</td><td>Học kung fu, học jumping, sparring</td></tr>
+          <tr><td>Midpoint</td><td>60</td><td>Gặp Oracle - "You're not the One" (false defeat)</td></tr>
+          <tr><td>Bad Guys Close In</td><td>60-75</td><td>Cypher phản bội, Agents tấn công</td></tr>
+          <tr><td>All is Lost</td><td>75</td><td>Morpheus bị bắt, có thể chết</td></tr>
+          <tr><td>Dark Night</td><td>75-85</td><td>Neo nghi ngờ bản thân, Oracle đã sai</td></tr>
+          <tr><td>Break Act III</td><td>85</td><td>Neo quyết định cứu Morpheus</td></tr>
+          <tr><td>Climax</td><td>110</td><td>Neo vs Agent Smith - "I know kung fu"</td></tr>
+          <tr><td>Final Image</td><td>120</td><td>Neo bay - thế giới mới hoàn toàn</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box" data-title="📐 Quy tắc số trang">
+        Mỗi <strong>1 trang kịch bản chuẩn = 1 phút phim</strong>. Phim 120 phút → kịch bản 120 trang. Đây là "quy tắc thiêng" trong ngành. Vượt quá 130 trang = đỏ cờ ngay với producer.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 5: HERO'S JOURNEY -->
+    <section id="herojourney" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 5</span>
+        <h2>Hero's Journey - Hành Trình Người Hùng</h2>
+      </div>
+
+      <p><strong>Joseph Campbell</strong> nghiên cứu thần thoại của hàng trăm văn hóa và phát hiện <em>cùng 1 mô típ</em>. Ông gọi đó là <strong>"Monomyth"</strong> (1949). George Lucas dùng nó cho Star Wars. Từ đó, Hollywood áp dụng cho 70% blockbuster.</p>
+
+      <div class="quote-box">
+        "A hero ventures forth from the world of common day into a region of supernatural wonder."<br>
+        <em>— Joseph Campbell</em>
+      </div>
+
+      <h3>5.1. 12 Bước của Hero's Journey (Christopher Vogler version)</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Ordinary World (Thế giới thường nhật)</h4>
+          <p>Nhân vật trong cuộc sống bình thường, có flaw chưa phát hiện.</p>
+          <p><em>Ví dụ: Luke ở Tatooine làm việc nhà; Neo làm việc văn phòng buồn chán.</em></p>
+        </div>
+        <div class="step">
+          <h4>Call to Adventure (Lời gọi phiêu lưu)</h4>
+          <p>Sự kiện mời gọi nhân vật rời khỏi cuộc sống quen thuộc.</p>
+          <p><em>Ví dụ: Tin nhắn của Princess Leia; Trinity gặp Neo.</em></p>
+        </div>
+        <div class="step">
+          <h4>Refusal of the Call (Từ chối lời gọi)</h4>
+          <p>Nhân vật do dự, sợ hãi, cảm thấy không đủ năng lực.</p>
+          <p><em>Ví dụ: Luke phải ở lại giúp chú thím; Frodo không muốn rời Shire.</em></p>
+        </div>
+        <div class="step">
+          <h4>Meeting the Mentor (Gặp người dẫn dắt)</h4>
+          <p>Một người khôn ngoan xuất hiện, cho lời khuyên/quà tặng.</p>
+          <p><em>Ví dụ: Obi-Wan Kenobi; Gandalf; Morpheus; Dumbledore.</em></p>
+        </div>
+        <div class="step">
+          <h4>Crossing the Threshold (Vượt qua ngưỡng cửa)</h4>
+          <p>Nhân vật rời khỏi thế giới quen thuộc, bước vào thế giới mới.</p>
+          <p><em>Ví dụ: Luke rời Tatooine; Neo uống pill đỏ; Frodo rời Shire.</em></p>
+        </div>
+        <div class="step">
+          <h4>Tests, Allies, Enemies (Thử thách, đồng minh, kẻ thù)</h4>
+          <p>Nhân vật học luật chơi của thế giới mới, kết bạn, gặp địch.</p>
+          <p><em>Ví dụ: Luke ở quán bar Mos Eisley; Neo training ở Nebuchadnezzar.</em></p>
+        </div>
+        <div class="step">
+          <h4>Approach to the Inmost Cave (Tiến vào hang sâu nhất)</h4>
+          <p>Chuẩn bị cho thử thách lớn nhất.</p>
+          <p><em>Ví dụ: Đến Death Star; tới hang Shelob; đào sâu vào tâm trí.</em></p>
+        </div>
+        <div class="step">
+          <h4>The Ordeal (Cơn khốn cùng)</h4>
+          <p>Nhân vật đối mặt với thử thách lớn nhất, "chết" theo nghĩa nào đó.</p>
+          <p><em>Ví dụ: Luke trong rác compactor; Neo bị Agent Smith bắn.</em></p>
+        </div>
+        <div class="step">
+          <h4>Reward / Seizing the Sword (Phần thưởng)</h4>
+          <p>Nhân vật giành được điều mình tìm.</p>
+          <p><em>Ví dụ: Cứu Princess Leia; nhận ra mình là The One.</em></p>
+        </div>
+        <div class="step">
+          <h4>The Road Back (Đường về)</h4>
+          <p>Bắt đầu hành trình về quê hương với phần thưởng.</p>
+          <p><em>Ví dụ: Trốn khỏi Death Star; trở lại Matrix lần cuối.</em></p>
+        </div>
+        <div class="step">
+          <h4>Resurrection (Sự hồi sinh)</h4>
+          <p>Thử thách cuối, nhân vật được tái sinh thành phiên bản mới.</p>
+          <p><em>Ví dụ: Luke trong X-wing tấn công Death Star; Neo phục sinh.</em></p>
+        </div>
+        <div class="step">
+          <h4>Return with the Elixir (Trở về với linh dược)</h4>
+          <p>Trở về thế giới cũ, cứu nó bằng kiến thức/sức mạnh mới.</p>
+          <p><em>Ví dụ: Phá hủy Death Star; cứu Zion; tiêu diệt Ring.</em></p>
+        </div>
+      </div>
+
+      <h3>5.2. Hero's Journey vs Cấu trúc 3 hồi</h3>
+      <table>
+        <thead><tr><th>Hero's Journey Steps</th><th>3-Act Structure</th></tr></thead>
+        <tbody>
+          <tr><td>Steps 1-5: Ordinary World → Crossing Threshold</td><td>Act I (Setup)</td></tr>
+          <tr><td>Steps 6-9: Tests → Reward</td><td>Act II (Confrontation)</td></tr>
+          <tr><td>Steps 10-12: Road Back → Return</td><td>Act III (Resolution)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>5.3. Khi nào dùng Hero's Journey?</h3>
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ Phù hợp</h4>
+          <ul>
+            <li>Phim phiêu lưu / fantasy</li>
+            <li>Coming-of-age</li>
+            <li>Superhero origin</li>
+            <li>Quest story</li>
+            <li>Action / Adventure</li>
+          </ul>
+          <p><em>Star Wars, LOTR, Matrix, Harry Potter</em></p>
+        </div>
+        <div class="card-item">
+          <h4>❌ Không phù hợp</h4>
+          <ul>
+            <li>Drama tâm lý</li>
+            <li>Slice of life</li>
+            <li>Bi kịch (tragedy)</li>
+            <li>Phim hài tình huống</li>
+            <li>Documentary</li>
+          </ul>
+          <p><em>Manchester by the Sea, Roma, Boyhood</em></p>
+        </div>
+      </div>
+
+      <div class="warning-box" data-title="⚠️ Đừng tuân thủ máy móc">
+        Hero's Journey là <strong>template, không phải công thức</strong>. Hollywood dùng quá nhiều khiến phim đoán được. Bạn có thể:<br>
+        • Bỏ qua bước (Frozen không có Mentor)<br>
+        • Đảo ngược (anti-hero journey - Walter White trong Breaking Bad)<br>
+        • Combine với cấu trúc khác<br><br>
+        Hiểu nó để biết khi nào áp dụng, khi nào phá.
+      </div>
+
+      <h3>5.4. Heroine's Journey (Maureen Murdock)</h3>
+      <p>Hero's Journey thiên về anh hùng nam. Maureen Murdock đề xuất phiên bản phù hợp với female protagonist:</p>
+      <ol>
+        <li>Separation from the feminine</li>
+        <li>Identification with masculine</li>
+        <li>Road of trials</li>
+        <li>Boon of success (giả tạo)</li>
+        <li>Awakening to spiritual aridity (nhận ra sự trống rỗng)</li>
+        <li>Initiation and descent (đi sâu vào nội tâm)</li>
+        <li>Urgent yearning to reconnect with feminine</li>
+        <li>Healing the mother/daughter split</li>
+        <li>Healing the wounded masculine</li>
+        <li>Integration of masculine and feminine</li>
+      </ol>
+      <p><em>Phù hợp cho: Frozen, Lady Bird, Little Women, Mulan, Wonder Woman</em></p>
+    </section>
+
+    <!-- CHƯƠNG 6: SAVE THE CAT -->
+    <section id="savethecat" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 6</span>
+        <h2>Save the Cat - Công Thức Hollywood Hiện Đại</h2>
+      </div>
+
+      <p><strong>Blake Snyder</strong> phát triển <em>Save the Cat!</em> (2005) - bản update của cấu trúc 3 hồi, cụ thể đến từng trang. Đây là <strong>công thức được dùng nhiều nhất ở Hollywood hiện tại</strong>.</p>
+
+      <h3>6.1. Tại sao tên "Save the Cat"?</h3>
+      <p>Blake Snyder dùng tên này để nhấn mạnh: <strong>"Phải làm khán giả thích nhân vật chính sớm"</strong>. Cho protagonist làm 1 hành động tử tế nhỏ (như cứu mèo) ở đầu phim → khán giả root for they suốt phim.</p>
+
+      <div class="info-box" data-title="💡 Ví dụ Save the Cat moments">
+        • <strong>Aladdin:</strong> Chia bánh mì cho 2 đứa trẻ đói<br>
+        • <strong>Joker:</strong> Phim phá luật - Joker dành cả phim KHÔNG save the cat<br>
+        • <strong>Shrek:</strong> Cứu Donkey khỏi quân lính<br>
+        • <strong>Sherlock (BBC):</strong> Khôi hài giúp Mrs. Hudson - nhỏ thôi nhưng đủ
+      </div>
+
+      <h3>6.2. 15 Beats của Save the Cat</h3>
+
+      <div class="card-item">
+        <h4>📋 Beat Sheet Hoàn Chỉnh (cho phim 110 trang)</h4>
+        <table>
+          <thead><tr><th>#</th><th>Beat</th><th>Trang</th><th>Mô tả</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Opening Image</td><td>1</td><td>Snapshot của thế giới trước khi mọi thứ thay đổi</td></tr>
+            <tr><td>2</td><td>Theme Stated</td><td>5</td><td>Ai đó nói chủ đề. Protag thường không hiểu</td></tr>
+            <tr><td>3</td><td>Set-up</td><td>1-10</td><td>Giới thiệu nhân vật, flaw, ordinary world</td></tr>
+            <tr><td>4</td><td>Catalyst</td><td>12</td><td>Sự kiện thay đổi - life-changing event</td></tr>
+            <tr><td>5</td><td>Debate</td><td>12-25</td><td>Nhân vật do dự "Tôi có nên không?"</td></tr>
+            <tr><td>6</td><td>Break into Two</td><td>25</td><td>Quyết định bước vào thế giới mới</td></tr>
+            <tr><td>7</td><td>B Story</td><td>30</td><td>Subplot/love interest - dạy bài học (Theme)</td></tr>
+            <tr><td>8</td><td>Fun and Games</td><td>30-55</td><td>"Promise of the premise" - phần fun nhất</td></tr>
+            <tr><td>9</td><td>Midpoint</td><td>55</td><td>False victory OR false defeat - mọi thứ thay đổi</td></tr>
+            <tr><td>10</td><td>Bad Guys Close In</td><td>55-75</td><td>Áp lực tăng, allies rời bỏ, internal conflicts</td></tr>
+            <tr><td>11</td><td>All is Lost</td><td>75</td><td>"Whiff of death" - rock bottom</td></tr>
+            <tr><td>12</td><td>Dark Night of the Soul</td><td>75-85</td><td>Nhân vật suy sụp, hopeless</td></tr>
+            <tr><td>13</td><td>Break into Three</td><td>85</td><td>Insight! Tìm ra giải pháp (thường từ B Story)</td></tr>
+            <tr><td>14</td><td>Finale</td><td>85-110</td><td>Apply bài học, climax</td></tr>
+            <tr><td>15</td><td>Final Image</td><td>110</td><td>Cặp đôi với Opening Image - cho thấy thay đổi</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>6.3. Phân tích Beat Sheet - Die Hard (1988)</h3>
+      <ul>
+        <li><strong>Opening Image:</strong> John McClane trên máy bay, sợ bay - "fish out of water"</li>
+        <li><strong>Theme Stated:</strong> Hành khách bên cạnh nói "Make fists with your toes" - về việc thích ứng</li>
+        <li><strong>Set-up:</strong> John đến LA, không hợp với vợ, vợ thăng tiến</li>
+        <li><strong>Catalyst:</strong> Khủng bố tấn công tòa Nakatomi</li>
+        <li><strong>Debate:</strong> John nên trốn hay đối đầu?</li>
+        <li><strong>Break into Two:</strong> Kéo chuông báo cháy - bước vào "war"</li>
+        <li><strong>B Story:</strong> Mối quan hệ qua radio với Al Powell (police)</li>
+        <li><strong>Fun &amp; Games:</strong> John ninja qua tòa nhà, giết khủng bố từng tên</li>
+        <li><strong>Midpoint:</strong> Lộ tên thật, vợ bị Hans đe dọa</li>
+        <li><strong>Bad Guys Close In:</strong> FBI ngu ngốc, Hans giả vờ hostage</li>
+        <li><strong>All is Lost:</strong> Vợ bị bắt làm con tin trực tiếp</li>
+        <li><strong>Dark Night:</strong> John bị thương, đối thoại tuyệt vọng với Al</li>
+        <li><strong>Break into Three:</strong> Nhớ "make fists with toes" - dán súng vào lưng</li>
+        <li><strong>Finale:</strong> Bắn Hans rơi khỏi tòa</li>
+        <li><strong>Final Image:</strong> John và vợ đoàn tụ - "Family"</li>
+      </ul>
+
+      <h3>6.4. 10 Thể loại của Save the Cat</h3>
+      <p>Snyder chia phim thành 10 thể loại "Genre" của riêng ông (khác Hollywood genre):</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>1. Monster in the House</h4>
+          <p>Quái vật khoá trong không gian + nhân vật mang tội.</p>
+          <p><em>Jaws, Alien, Halloween</em></p>
+        </div>
+        <div class="card-item">
+          <h4>2. Golden Fleece</h4>
+          <p>Quest đi tìm thứ gì đó, team đa dạng.</p>
+          <p><em>Wizard of Oz, Star Wars, Ocean's Eleven</em></p>
+        </div>
+        <div class="card-item">
+          <h4>3. Out of the Bottle</h4>
+          <p>Phép màu thay đổi cuộc sống nhân vật.</p>
+          <p><em>Big, Bruce Almighty, Liar Liar</em></p>
+        </div>
+        <div class="card-item">
+          <h4>4. Dude with a Problem</h4>
+          <p>Người bình thường bị kéo vào tình huống bất thường.</p>
+          <p><em>Die Hard, Taken, The Fugitive</em></p>
+        </div>
+        <div class="card-item">
+          <h4>5. Rites of Passage</h4>
+          <p>Coming-of-age, mid-life crisis, đối mặt giai đoạn đời.</p>
+          <p><em>Lady Bird, American Beauty, Boyhood</em></p>
+        </div>
+        <div class="card-item">
+          <h4>6. Buddy Love</h4>
+          <p>Phim tình yêu (KHÔNG chỉ rom-com). Có thể là bromance.</p>
+          <p><em>Titanic, Lethal Weapon, Brokeback Mountain</em></p>
+        </div>
+        <div class="card-item">
+          <h4>7. Whydunit</h4>
+          <p>Tại sao xảy ra? Detective/mystery.</p>
+          <p><em>Chinatown, Memento, Knives Out</em></p>
+        </div>
+        <div class="card-item">
+          <h4>8. The Fool Triumphant</h4>
+          <p>Người "ngu" thắng establishment.</p>
+          <p><em>Forrest Gump, Being There, Dumb and Dumber</em></p>
+        </div>
+        <div class="card-item">
+          <h4>9. Institutionalized</h4>
+          <p>Một người vs hệ thống.</p>
+          <p><em>Shawshank Redemption, The Firm, Black Mass</em></p>
+        </div>
+        <div class="card-item">
+          <h4>10. Superhero</h4>
+          <p>Người phi thường trong thế giới thường, vs nemesis ngang tài.</p>
+          <p><em>Spider-Man, A Beautiful Mind, Gladiator</em></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 7: PREMISE & LOGLINE -->
+    <section id="premise" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 7</span>
+        <h2>Premise &amp; Logline</h2>
+      </div>
+
+      <p>Trước khi viết 120 trang, bạn phải <strong>chứng minh ý tưởng đáng viết</strong>. Đó là việc của Premise và Logline. Producer chỉ đọc logline 10 giây - quyết định mua hay không.</p>
+
+      <h3>7.1. Logline là gì?</h3>
+      <p><strong>Logline</strong> = 1-2 câu tóm tắt phim, bao gồm:</p>
+      <ol>
+        <li><strong>Inciting incident</strong> (sự kiện châm ngòi)</li>
+        <li><strong>Protagonist</strong> (ai - mô tả ngắn, có irony)</li>
+        <li><strong>Goal</strong> (muốn gì)</li>
+        <li><strong>Antagonist/Obstacle</strong> (kẻ cản/khó khăn)</li>
+        <li><strong>Stakes</strong> (mất gì nếu thua)</li>
+      </ol>
+
+      <h3>7.2. Công thức Logline</h3>
+      <div class="card-item" style="font-family: 'Courier New', monospace;">
+        <p style="text-align: center; font-size: 16px; color: var(--primary);">
+          <strong>When [INCITING INCIDENT],<br>
+          a [ADJECTIVE] [PROTAGONIST]<br>
+          must [GOAL/ACTION]<br>
+          to [STAKES],<br>
+          before [TICKING CLOCK / ANTAGONIST CONSEQUENCE].</strong>
+        </p>
+      </div>
+
+      <h3>7.3. Ví dụ Logline xuất sắc</h3>
+
+      <div class="card-item">
+        <h4>🎬 Die Hard</h4>
+        <p><em>"When his estranged wife is taken hostage by terrorists at a Christmas party, an off-duty New York cop must single-handedly take them down inside a Los Angeles skyscraper."</em></p>
+      </div>
+
+      <div class="card-item">
+        <h4>🎬 The Matrix</h4>
+        <p><em>"A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers."</em></p>
+      </div>
+
+      <div class="card-item">
+        <h4>🎬 Parasite</h4>
+        <p><em>"All unemployed, Ki-taek's family take peculiar interest in the wealthy and glamorous Parks, as they ingratiate themselves into their lives and get entangled in an unexpected incident."</em></p>
+      </div>
+
+      <div class="card-item">
+        <h4>🎬 Get Out</h4>
+        <p><em>"A young African-American visits his white girlfriend's parents for the weekend, where his simmering uneasiness about their reception of him eventually reaches a boiling point."</em></p>
+      </div>
+
+      <h3>7.4. Yếu tố làm Logline mạnh</h3>
+
+      <ul>
+        <li><strong>Irony:</strong> Mâu thuẫn nội tại (cảnh sát SỢ BAY phải cứu hostage trên không trung)</li>
+        <li><strong>Visual:</strong> Có thể "thấy" được phim trong đầu</li>
+        <li><strong>High concept:</strong> Mô tả được trong 1 câu</li>
+        <li><strong>Identifiable hero:</strong> Khán giả empathize</li>
+        <li><strong>Worthy adversary:</strong> Đối thủ xứng đáng</li>
+        <li><strong>Stakes rõ ràng:</strong> Mất gì nếu thua?</li>
+      </ul>
+
+      <h3>7.5. Test Logline</h3>
+      <div class="tip-box" data-title="✅ Logline tốt sẽ:">
+        <ul>
+          <li>Khiến producer hỏi "Cho tôi xem script!"</li>
+          <li>Cho thấy MARKET (ai sẽ xem?)</li>
+          <li>Khác biệt với phim đã có</li>
+          <li>Hứa hẹn 1-2 cảnh tuyệt vời</li>
+          <li>Cho biết tone (drama? action? comedy?)</li>
+        </ul>
+      </div>
+
+      <h3>7.6. High Concept vs Low Concept</h3>
+      <table>
+        <thead><tr><th>High Concept</th><th>Low Concept</th></tr></thead>
+        <tbody>
+          <tr><td>Ý tưởng cao - dễ pitch</td><td>Ý tưởng tinh tế - khó pitch nhưng có thể sâu</td></tr>
+          <tr><td>"Cá mập tấn công bãi biển" (Jaws)</td><td>"Người đàn ông không thể bay khỏi LA" (Manchester by the Sea)</td></tr>
+          <tr><td>"AI girlfriend" (Her)</td><td>"3 phụ nữ trong gia đình thượng lưu" (Little Women)</td></tr>
+          <tr><td>Hollywood ưa thích, market lớn</td><td>Sundance, indie, award circuit</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.7. Bài tập viết Logline</h3>
+      <div class="card-item">
+        <h4>📝 Thực hành</h4>
+        <ol>
+          <li>Chọn 5 phim yêu thích</li>
+          <li>Viết logline cho từng phim (KHÔNG google trước)</li>
+          <li>So với logline thật</li>
+          <li>Notice: tại sao của bạn dài/ngắn/yếu hơn?</li>
+          <li>Lặp lại với 5 phim khác</li>
+        </ol>
+        <p><strong>Mục tiêu:</strong> Viết được logline cho ý tưởng của bạn trong 30 phút.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 8: THEME -->
+    <section id="theme" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 8</span>
+        <h2>Theme - Chủ Đề</h2>
+      </div>
+
+      <p><strong>Theme</strong> là <em>tuyên bố triết lý sống</em> mà bộ phim chứng minh qua câu chuyện. Đây là <strong>linh hồn</strong> của tác phẩm. Phim không có theme = giải trí tốt; phim có theme = nghệ thuật.</p>
+
+      <div class="quote-box">
+        "What is the film really about?"<br>
+        <em>— Câu hỏi quan trọng nhất khi bắt đầu viết</em>
+      </div>
+
+      <h3>8.1. Theme khác Plot</h3>
+      <ul>
+        <li><strong>Plot:</strong> Cái gì XẢY RA (what happens)</li>
+        <li><strong>Theme:</strong> Câu chuyện NÓI VỀ gì sâu xa (what it's about)</li>
+      </ul>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: The Godfather</h4>
+        <p><strong>Plot:</strong> Một gia đình mafia chuyển giao quyền lực từ cha sang con út.</p>
+        <p><strong>Theme:</strong> "Bạn không thể thoát khỏi gia đình. Quyền lực hủy hoại linh hồn."</p>
+        <p><em>Plot là cái bạn kể. Theme là cái khán giả cảm nhận.</em></p>
+      </div>
+
+      <h3>8.2. Cách phát biểu Theme</h3>
+      <p>Theme nên là <strong>câu khẳng định</strong>, không phải từ khóa.</p>
+
+      <table>
+        <thead><tr><th>❌ Không phải Theme</th><th>✅ Theme thực sự</th></tr></thead>
+        <tbody>
+          <tr><td>"Tình yêu"</td><td>"Tình yêu thật cần hy sinh"</td></tr>
+          <tr><td>"Trả thù"</td><td>"Trả thù hủy hoại cả người trả thù lẫn người bị trả thù"</td></tr>
+          <tr><td>"Gia đình"</td><td>"Bạn không thể chạy trốn quá khứ gia đình"</td></tr>
+          <tr><td>"Quyền lực"</td><td>"Người tốt cũng có thể trở nên xấu khi có quá nhiều quyền lực"</td></tr>
+        </tbody>
+      </table>
+
+      <h3>8.3. Theme Statement trong kịch bản</h3>
+      <p>Theo Save the Cat, ở <strong>trang 5</strong>, ai đó nên <em>phát biểu theme</em> nhưng protagonist KHÔNG hiểu lúc đó. Cuối phim, họ sẽ hiểu.</p>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: The Karate Kid (1984)</h4>
+        <p><strong>Theme:</strong> "True strength comes from within, not from fighting."</p>
+        <p><strong>Theme Statement (sớm trong phim):</strong> Mr. Miyagi nói "Karate for defense only" - Daniel không hiểu, chỉ muốn đánh bại bullies.</p>
+        <p><strong>Cuối phim:</strong> Daniel hiểu - chiến thắng không phải là đánh, mà là kiềm chế và kỷ luật nội tâm.</p>
+      </div>
+
+      <h3>8.4. Theme thông qua Character Arc</h3>
+      <p>Theme được CHỨNG MINH qua hành trình thay đổi của nhân vật:</p>
+
+      <div class="card-item">
+        <h4>📐 Công thức Theme + Arc</h4>
+        <ul>
+          <li><strong>Bắt đầu phim:</strong> Nhân vật tin/sống ngược với theme</li>
+          <li><strong>Giữa phim:</strong> Bị thử thách, suýt hiểu theme</li>
+          <li><strong>Climax:</strong> Phải CHỌN giữa cách cũ và cách mới (theme)</li>
+          <li><strong>Cuối phim:</strong> Sống theo theme - chứng minh nó đúng</li>
+        </ul>
+      </div>
+
+      <h3>8.5. Controlling Idea (Robert McKee)</h3>
+      <p>McKee gọi theme là <strong>"Controlling Idea"</strong> với công thức:</p>
+      <div class="card-item" style="font-family: 'Courier New', monospace; text-align: center; font-size: 18px; color: var(--primary);">
+        <strong>VALUE + CAUSE = CONTROLLING IDEA</strong>
+      </div>
+      <p>Ví dụ:</p>
+      <ul>
+        <li><strong>Justice triumphs</strong> (value: justice) <strong>because</strong> the protagonist is more cunning than the criminal (cause). <em>— Dirty Harry</em></li>
+        <li><strong>Love conquers all</strong> (value: love) <strong>because</strong> the lovers are honest with each other (cause). <em>— Romantic comedy</em></li>
+        <li><strong>Evil prevails</strong> (value) <strong>because</strong> the people in power are corrupt (cause). <em>— Chinatown</em></li>
+      </ul>
+
+      <div class="warning-box" data-title="⚠️ Đừng để Theme trở thành Lecture">
+        Theme phải <strong>được CẢM NHẬN, không phải được GIẢNG DẠY</strong>. Nếu nhân vật ngồi xuống và giảng cho khán giả về "tình yêu thật là...", đó là kịch bản tệ.<br><br>
+        Theme tốt = khán giả về nhà, nằm trên giường, tự nghĩ ra theme. Bạn chỉ <em>dẫn dắt</em> họ đến đó.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 9: CHARACTER -->
+    <section id="character" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 9</span>
+        <h2>Xây Dựng Nhân Vật</h2>
+      </div>
+
+      <p>Khán giả không nhớ plot - họ nhớ <strong>nhân vật</strong>. Nhân vật tốt = phim sống mãi. Nhân vật phẳng = phim bị quên ngay.</p>
+
+      <div class="quote-box">
+        "Character is plot, plot is character."<br>
+        <em>— F. Scott Fitzgerald</em>
+      </div>
+
+      <h3>9.1. Các loại nhân vật trong kịch bản</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>👑 Protagonist (Chính diện)</h4>
+          <p>Nhân vật chính - người mà khán giả theo dõi hành trình.</p>
+          <p>Có Want, Need, Flaw, Arc rõ ràng.</p>
+        </div>
+        <div class="card-item">
+          <h4>😈 Antagonist (Phản diện)</h4>
+          <p>Người/lực lượng cản protagonist đạt mục tiêu.</p>
+          <p>Có thể là người (Joker), system (matrix), thiên nhiên (cá mập), bản thân (drug).</p>
+        </div>
+        <div class="card-item">
+          <h4>🤝 Deuteragonist</h4>
+          <p>Nhân vật thứ 2 quan trọng, thường bạn thân hoặc đối tác.</p>
+          <p><em>Donkey (Shrek), Watson (Sherlock)</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🧙 Mentor</h4>
+          <p>Người dẫn dắt protagonist.</p>
+          <p><em>Yoda, Mr. Miyagi, Dumbledore</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Shapeshifter</h4>
+          <p>Nhân vật mà khán giả không chắc bạn hay thù.</p>
+          <p><em>Snape (Harry Potter), Cypher (Matrix)</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🃏 Trickster</h4>
+          <p>Comic relief, nhưng cũng có thể thay đổi ván cờ.</p>
+          <p><em>Han Solo, Loki, Captain Jack Sparrow</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🚪 Threshold Guardian</h4>
+          <p>Người/vật chặn protagonist ở từng bước.</p>
+          <p><em>Bouncer ở club, tên gác cổng</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👻 Herald</h4>
+          <p>Người mang Call to Adventure.</p>
+          <p><em>R2-D2 với tin nhắn Princess Leia, Hagrid</em></p>
+        </div>
+      </div>
+
+      <h3>9.2. Tạo nhân vật 3D</h3>
+      <p>Nhân vật phẳng (flat) = 2D. Nhân vật phức tạp = 3D với 3 chiều:</p>
+
+      <div class="grid-3">
+        <div class="card-item" style="border-color: var(--primary);">
+          <h4>🌐 Physiology</h4>
+          <p>Bên ngoài: tuổi, giới tính, vóc dáng, chủng tộc, sức khỏe, ngoại hình.</p>
+        </div>
+        <div class="card-item" style="border-color: var(--secondary);">
+          <h4>🏛️ Sociology</h4>
+          <p>Bối cảnh xã hội: gia đình, học vấn, nghề nghiệp, tôn giáo, tầng lớp, văn hóa.</p>
+        </div>
+        <div class="card-item" style="border-color: var(--success);">
+          <h4>🧠 Psychology</h4>
+          <p>Bên trong: nỗi sợ, ước mơ, trauma, MBTI, complex, ham muốn.</p>
+        </div>
+      </div>
+
+      <h3>9.3. Character Bible - Tài liệu nhân vật</h3>
+      <div class="card-item">
+        <h4>📋 Template Character Bible</h4>
+        <ol>
+          <li><strong>Tên, tuổi, ngoại hình</strong></li>
+          <li><strong>Một câu định nghĩa</strong> ("Anh ấy là kiểu người ___")</li>
+          <li><strong>Want</strong> (Goal bên ngoài)</li>
+          <li><strong>Need</strong> (Bài học bên trong)</li>
+          <li><strong>Flaw</strong> (Khiếm khuyết tâm lý)</li>
+          <li><strong>Ghost</strong> (Trauma quá khứ định hình họ)</li>
+          <li><strong>Backstory</strong> 1 trang</li>
+          <li><strong>Voice</strong> (Cách nói chuyện riêng biệt)</li>
+          <li><strong>Quirk</strong> (Đặc điểm độc lạ)</li>
+          <li><strong>Wardrobe / Look</strong></li>
+          <li><strong>Mối quan hệ</strong> với các nhân vật khác</li>
+          <li><strong>Arc</strong> dự kiến từ A → B</li>
+          <li><strong>Casting reference</strong> (diễn viên nào sẽ đóng?)</li>
+        </ol>
+      </div>
+
+      <h3>9.4. Flaw - Khiếm khuyết</h3>
+      <p>Nhân vật <strong>HOÀN HẢO</strong> = nhàm chán. Khán giả yêu nhân vật có flaw vì:</p>
+      <ul>
+        <li>Họ relatable - chúng ta cũng có flaw</li>
+        <li>Tạo conflict (flaw cản trở want)</li>
+        <li>Có không gian thay đổi (arc)</li>
+        <li>Tạo tension</li>
+      </ul>
+
+      <div class="card-item">
+        <h4>🎭 Các loại Flaw phổ biến</h4>
+        <ul>
+          <li><strong>Arrogance:</strong> Tony Stark, Sherlock Holmes</li>
+          <li><strong>Cowardice:</strong> Frodo (đôi khi), Marty McFly</li>
+          <li><strong>Selfishness:</strong> Scrooge, Han Solo (đầu phim)</li>
+          <li><strong>Distrust:</strong> Bruce Wayne, Ron Swanson</li>
+          <li><strong>Self-doubt:</strong> Luke Skywalker, Neo</li>
+          <li><strong>Addiction:</strong> House M.D., Walter White</li>
+          <li><strong>Workaholism:</strong> Andy Sachs (Devil Wears Prada)</li>
+          <li><strong>Inability to commit:</strong> Hitch, Bridget Jones</li>
+        </ul>
+      </div>
+
+      <h3>9.5. Ghost - Bóng ma quá khứ</h3>
+      <p><strong>Ghost</strong> = sự kiện trong quá khứ định hình con người hiện tại của nhân vật.</p>
+
+      <ul>
+        <li><strong>Bruce Wayne:</strong> Cha mẹ bị giết trong ngõ hẻm</li>
+        <li><strong>John McClane:</strong> Hôn nhân tan vỡ vì công việc</li>
+        <li><strong>Walter White:</strong> Đã rời Gray Matter, mất hàng triệu USD</li>
+        <li><strong>Captain America:</strong> Em trai bạn thân (Bucky) "chết"</li>
+        <li><strong>Forrest Gump:</strong> Mất Jenny lúc trẻ</li>
+      </ul>
+
+      <p>Ghost được <strong>reveal từ từ</strong> trong phim qua flashback, dialogue, hoặc tránh né.</p>
+
+      <h3>9.6. Make Them Active - Nhân vật chủ động</h3>
+      <div class="warning-box" data-title="⚠️ Quy tắc vàng">
+        Protagonist phải <strong>chủ động (active)</strong>, không phải bị động (passive). Họ phải <em>quyết định</em>, không chỉ <em>phản ứng</em>.<br><br>
+        Khán giả yêu người chủ động ngay cả khi sai. Họ ghét người bị động ngay cả khi đúng.<br><br>
+        <strong>Test:</strong> Trong mỗi scene, protag có làm gì để theo đuổi goal không? Nếu không → rewrite.
+      </div>
+
+      <h3>9.7. Phương pháp Stanislavski cho biên kịch</h3>
+      <p>Đối với mỗi scene, viết được:</p>
+      <ul>
+        <li><strong>Objective:</strong> Nhân vật muốn gì trong scene này?</li>
+        <li><strong>Obstacle:</strong> Điều gì cản trở?</li>
+        <li><strong>Action:</strong> Họ làm gì để vượt qua?</li>
+        <li><strong>Substext:</strong> Họ thực sự cảm thấy gì bên trong?</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 10: CHARACTER ARC -->
+    <section id="arc" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 10</span>
+        <h2>Character Arc - Hành Trình Thay Đổi</h2>
+      </div>
+
+      <p><strong>Character Arc</strong> là <em>hành trình thay đổi nội tâm</em> của nhân vật từ đầu đến cuối phim. Đây là phần khán giả NHỚ.</p>
+
+      <h3>10.1. Ba loại Character Arc</h3>
+
+      <div class="grid-3">
+        <div class="card-item" style="border-color: var(--success);">
+          <h4>📈 Positive Arc (Change Arc)</h4>
+          <p>Nhân vật từ <em>flaw</em> → <em>tốt hơn</em>. Phổ biến nhất.</p>
+          <p><em>Ví dụ: Luke Skywalker, Andy Sachs, Frodo, Will Hunting</em></p>
+        </div>
+        <div class="card-item" style="border-color: var(--danger);">
+          <h4>📉 Negative Arc</h4>
+          <p>Nhân vật từ <em>tốt</em> → <em>xấu hơn</em>. Bi kịch.</p>
+          <p><em>Ví dụ: Walter White, Michael Corleone, Anakin Skywalker, Joker</em></p>
+        </div>
+        <div class="card-item" style="border-color: var(--primary);">
+          <h4>➡️ Flat Arc (Steady Arc)</h4>
+          <p>Nhân vật KHÔNG đổi - thay đổi thế giới xung quanh.</p>
+          <p><em>Ví dụ: James Bond, Sherlock Holmes, Indiana Jones, John Wick</em></p>
+        </div>
+      </div>
+
+      <h3>10.2. Positive Arc - Chi tiết</h3>
+      <p>Đây là arc phổ biến nhất trong Hollywood. Cấu trúc:</p>
+
+      <div class="steps">
+        <div class="step"><h4>The Lie</h4><p>Nhân vật tin một "Lie" sai lầm về thế giới hoặc bản thân. Đây là Flaw.</p></div>
+        <div class="step"><h4>Want vs Need</h4><p>Họ theo đuổi Want (external), trốn tránh Need (internal). Want phù hợp với Lie.</p></div>
+        <div class="step"><h4>First Confrontation</h4><p>Sự kiện đầu thách thức The Lie. Họ phủ nhận.</p></div>
+        <div class="step"><h4>Stronger Resistance</h4><p>Áp lực tăng, nhưng vẫn cố giữ Lie.</p></div>
+        <div class="step"><h4>Moment of Truth</h4><p>Climax - phải chọn giữa Lie và Truth (Need).</p></div>
+        <div class="step"><h4>Embrace the Truth</h4><p>Chọn Truth, hy sinh Want. Trưởng thành.</p></div>
+        <div class="step"><h4>New Equilibrium</h4><p>Sống theo Truth. Thường đạt cả Want lẫn Need (nhưng không phải lúc nào).</p></div>
+      </div>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: The King's Speech</h4>
+        <p><strong>The Lie:</strong> "Tôi không xứng đáng là vua vì tôi nói lắp"</p>
+        <p><strong>Want:</strong> Tránh nhiệm vụ làm vua / phát biểu</p>
+        <p><strong>Need:</strong> Chấp nhận trách nhiệm + nhận ra giá trị bản thân</p>
+        <p><strong>Truth học được:</strong> "Tôi là vua dù có nói lắp - và tôi vẫn có thể lãnh đạo"</p>
+        <p><strong>Final action:</strong> Phát biểu lịch sử trên radio - không hoàn hảo nhưng thật.</p>
+      </div>
+
+      <h3>10.3. Negative Arc - Bi kịch</h3>
+      <p>Có 3 loại Negative Arc theo K.M. Weiland:</p>
+
+      <ul>
+        <li><strong>Disillusionment Arc:</strong> Nhân vật từ Lie (sai) → Truth (đúng nhưng đau). Họ thấy thật nhưng nó phá hủy họ. <em>(Donnie Darko)</em></li>
+        <li><strong>Fall Arc:</strong> Nhân vật từ Truth → Lie tệ hơn. Họ chọn cái ác. <em>(Walter White, Michael Corleone)</em></li>
+        <li><strong>Corruption Arc:</strong> Nhân vật từ Lie → Lie tệ hơn. Càng ngày càng tệ. <em>(Anakin Skywalker, Joker)</em></li>
+      </ul>
+
+      <h3>10.4. Flat Arc - Người thay đổi thế giới</h3>
+      <p>Trong Flat Arc, nhân vật đã ĐÚNG từ đầu. Họ giữ vững Truth của mình, và qua hành động, thay đổi mọi người xung quanh.</p>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: Forrest Gump</h4>
+        <p>Forrest có Truth đơn giản: "Hãy tốt với người khác, làm điều đúng, đừng bỏ cuộc".</p>
+        <p>Suốt phim, Forrest không thay đổi - nhưng anh thay đổi Lieutenant Dan, Jenny, và cả nước Mỹ.</p>
+      </div>
+
+      <p><strong>Flat Arc phù hợp:</strong> Action heroes, mentor characters, "world's against me" stories.</p>
+
+      <h3>10.5. Cách viết Arc thuyết phục</h3>
+      <ol>
+        <li><strong>Start with the END:</strong> Biết nhân vật KẾT THÚC ở đâu trước khi viết</li>
+        <li><strong>Make changes gradual:</strong> Không "epiphany scene". Thay đổi từng chút</li>
+        <li><strong>Test the change:</strong> Sau khi học, đưa thử thách - họ có còn tin Truth không?</li>
+        <li><strong>Show, don't tell:</strong> Đừng nhân vật nói "Tôi đã học được...". Cho hành động chứng minh</li>
+        <li><strong>Sacrifice:</strong> Để chứng minh thay đổi thật, nhân vật phải HY SINH thứ gì đó liên quan đến Lie</li>
+      </ol>
+
+      <h3>10.6. Phân tích Walter White - The Greatest TV Arc</h3>
+      <div class="card-item">
+        <h4>📺 Breaking Bad - 5 seasons</h4>
+        <p><strong>S1:</strong> Walter là giáo viên hóa hiền lành, bị ung thư - "I'm doing this for my family"</p>
+        <p><strong>S2:</strong> Bắt đầu thích quyền lực, kill Krazy-8</p>
+        <p><strong>S3:</strong> Mất Gus Fring's trust, không thể dừng</p>
+        <p><strong>S4:</strong> "I am the danger. I am the one who knocks."</p>
+        <p><strong>S5:</strong> Heisenberg hoàn toàn. Cuối cùng: "I did it for me. I liked it. I was good at it."</p>
+        <p><em>Đây là Fall Arc kinh điển - Walter từ "good guy doing bad for family" → "bad guy who admits he loved it".</em></p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 11: DIALOGUE -->
+    <section id="dialogue" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 11</span>
+        <h2>Dialogue - Viết Thoại</h2>
+      </div>
+
+      <p>Dialogue (thoại) là <em>nghệ thuật làm nhân vật nói chuyện</em>. 70% trang kịch bản là dialogue. Dialogue tệ giết kịch bản hay nhất.</p>
+
+      <h3>11.1. Mục đích của Dialogue</h3>
+      <p>Mỗi câu thoại phải làm <strong>ít nhất 2-3</strong> trong các việc sau:</p>
+      <ol>
+        <li><strong>Đẩy plot</strong> - tiến triển câu chuyện</li>
+        <li><strong>Lộ tính cách</strong> - voice riêng của nhân vật</li>
+        <li><strong>Tạo conflict</strong> - giữa các nhân vật</li>
+        <li><strong>Cung cấp thông tin</strong> - khán giả cần biết</li>
+        <li><strong>Tạo subtext</strong> - nói A, ý B</li>
+        <li><strong>Foreshadow</strong> - báo trước sự kiện</li>
+        <li><strong>Set tone</strong> - hài, drama, kinh dị</li>
+      </ol>
+
+      <h3>11.2. Đặc điểm của Dialogue tốt</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ Dialogue tốt</h4>
+          <ul>
+            <li>Mỗi nhân vật có <strong>voice riêng</strong></li>
+            <li>Có <strong>subtext</strong> - nói 1, ý khác</li>
+            <li><strong>Ngắn gọn</strong> - 1-2 câu là đủ</li>
+            <li><strong>Conflict</strong> - không đồng tình</li>
+            <li><strong>Specific</strong> - cụ thể, không chung chung</li>
+            <li><strong>Action-driven</strong> - đẩy nhân vật làm gì đó</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>❌ Dialogue tệ</h4>
+          <ul>
+            <li>Tất cả nhân vật nói giống nhau</li>
+            <li>"On the nose" - nói trực tiếp ý mình</li>
+            <li>Dài dòng monologue</li>
+            <li>Đồng tình mọi thứ (nice)</li>
+            <li>Generic - không có specific detail</li>
+            <li>Exposition dump</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>11.3. "On-the-nose" Dialogue - Lỗi phổ biến nhất</h3>
+      <p>"On-the-nose" = nhân vật nói TRỰC TIẾP điều họ nghĩ/cảm thấy. Tránh!</p>
+
+      <div class="card-item">
+        <h4>❌ On-the-nose</h4>
+        <div class="screenplay-block">
+<span class="character-name">JOHN</span>
+<span class="dialogue">Tôi yêu em, nhưng tôi sợ cam kết vì cha tôi đã bỏ rơi tôi khi tôi 10 tuổi, gây ra trauma. Tôi không muốn lặp lại sai lầm đó.</span>
+        </div>
+      </div>
+
+      <div class="card-item">
+        <h4>✅ Subtext &amp; specific</h4>
+        <div class="screenplay-block">
+<span class="character-name">JOHN</span>
+<span class="parenthetical">(không nhìn cô)</span>
+<span class="dialogue">Anh không... ăn tối ở đây được. Có việc gấp.</span>
+
+<span class="character-name">SARAH</span>
+<span class="dialogue">Có việc gấp. Lần thứ ba tuần này.</span>
+
+<span class="character-name">JOHN</span>
+<span class="dialogue">Anh xin lỗi.</span>
+
+<span class="character-name">SARAH</span>
+<span class="dialogue">Cha anh cũng hay xin lỗi vậy à?</span>
+        </div>
+      </div>
+      <p>Phiên bản 2: Không nói trực tiếp về cam kết, nhưng khán giả CẢM được tất cả.</p>
+
+      <h3>11.4. Character Voice - Giọng riêng nhân vật</h3>
+      <p>Mỗi nhân vật phải có <strong>cách nói riêng</strong>. Test: che tên nhân vật, vẫn biết ai đang nói.</p>
+
+      <div class="card-item">
+        <h4>🎭 Các yếu tố tạo Voice</h4>
+        <ul>
+          <li><strong>Vocabulary:</strong> Câu trí thức hay đường phố? Dùng từ phức tạp hay đơn giản?</li>
+          <li><strong>Sentence length:</strong> Câu ngắn (Tarantino) hay dài (Sorkin)?</li>
+          <li><strong>Rhythm:</strong> Nhanh, chậm, ngắt nghỉ?</li>
+          <li><strong>Cultural background:</strong> Dialect, slang, accent</li>
+          <li><strong>Catchphrases:</strong> Câu cửa miệng (như "Hasta la vista" - Terminator)</li>
+          <li><strong>Topic patterns:</strong> Nhân vật thường nói về gì?</li>
+          <li><strong>Emotional default:</strong> Mỉa mai? Tử tế? Tức giận?</li>
+        </ul>
+      </div>
+
+      <h3>11.5. Exposition - Truyền tải thông tin</h3>
+      <p><strong>Exposition</strong> = thông tin background mà khán giả cần biết. Đây là kẻ thù của writer mới.</p>
+
+      <div class="warning-box" data-title="⚠️ Quy tắc 'As you know'">
+        Khi 2 nhân vật cùng biết điều gì nhưng phải giải thích cho khán giả, bạn sẽ thấy dialogue như:<br><br>
+        <em>"As you know, John, your father was a wealthy banker who died last year..."</em><br><br>
+        Đây là sin của biên kịch! Hai người không nói cho nhau cái họ đã biết.
+      </div>
+
+      <h4>Kỹ thuật xử lý Exposition tốt</h4>
+      <ul>
+        <li><strong>Conflict:</strong> Một bên không tin, một bên phải chứng minh ("No, cha tôi KHÔNG phải banker!")</li>
+        <li><strong>Action:</strong> Show qua hành động ("Mẹ tôi vẫn giữ ảnh ông ấy trong ví")</li>
+        <li><strong>Newcomer:</strong> Một nhân vật mới đến, người khác giải thích cho họ</li>
+        <li><strong>Visual:</strong> Cảnh quan, môi trường tự kể (Mad Max - không cần nói "đây là post-apocalypse")</li>
+        <li><strong>Drop hints:</strong> Rải thông tin qua nhiều scene, không dump 1 lần</li>
+      </ul>
+
+      <h3>11.6. Beat - Khoảng lặng trong dialogue</h3>
+      <p><strong>Beat</strong> trong scene = một khoảnh khắc dừng, suy nghĩ, hoặc thay đổi cảm xúc.</p>
+
+      <div class="screenplay-block">
+<span class="character-name">SARAH</span>
+<span class="dialogue">Em đã ngủ với anh ấy.</span>
+
+<span class="action">John ngồi bất động. Đồng hồ trên tường tick từng giây.</span>
+
+<span class="character-name">JOHN</span>
+<span class="parenthetical">(cuối cùng)</span>
+<span class="dialogue">Khi nào?</span>
+      </div>
+
+      <p>Beat ở đây là <em>cảnh đồng hồ tick</em> - tạo khoảnh khắc nặng nề.</p>
+
+      <h3>11.7. Top 10 quy tắc viết Dialogue</h3>
+      <div class="tip-box" data-title="📜 10 Quy tắc">
+        <ol>
+          <li><strong>Read it aloud:</strong> Đọc to. Nếu khó nói = viết lại.</li>
+          <li><strong>Listen to real people:</strong> Ngồi cafe nghe người ta nói chuyện.</li>
+          <li><strong>Cut "hello", "how are you":</strong> Phim không có niceties.</li>
+          <li><strong>Interrupt &amp; overlap:</strong> Người thật cắt lời nhau.</li>
+          <li><strong>Avoid monologue:</strong> Trừ khi cực kỳ cần thiết (như cuối Joker).</li>
+          <li><strong>End scenes early:</strong> Vào late, leave early.</li>
+          <li><strong>Don't answer questions:</strong> Người ta thường tránh câu hỏi khó.</li>
+          <li><strong>Specificity over generality:</strong> "Tôi yêu cô ấy" → "Tôi nhớ cách cô ấy khuấy cà phê 3 lần ngược chiều kim đồng hồ."</li>
+          <li><strong>Less is more:</strong> Trang dialogue 3-4 lines, không phải 10.</li>
+          <li><strong>Subtext above all:</strong> Họ nói A, ý B. Khán giả thấy B.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 12: SCENE -->
+    <section id="scene" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 12</span>
+        <h2>Cấu Trúc Scene</h2>
+      </div>
+
+      <p>Một kịch bản gồm 40-60 scene. Mỗi scene phải <strong>"earn its place"</strong> - có lý do tồn tại. Scene yếu = cắt.</p>
+
+      <h3>12.1. Định nghĩa Scene</h3>
+      <p><strong>Scene</strong> = một đoạn diễn ra ở <em>cùng địa điểm, cùng thời gian, với cùng nhóm nhân vật</em>. Khi đổi 1 trong 3 → scene mới.</p>
+
+      <h3>12.2. Mỗi scene phải có:</h3>
+      <ol>
+        <li><strong>POV character</strong> (góc nhìn của ai trong scene?)</li>
+        <li><strong>Goal</strong> (nhân vật muốn gì trong scene?)</li>
+        <li><strong>Obstacle</strong> (gì cản trở?)</li>
+        <li><strong>Conflict</strong> (xung đột nội tại/ngoại tại)</li>
+        <li><strong>Value change</strong> (thay đổi gì? + → -, hay - → +)</li>
+        <li><strong>Cliffhanger / Hook</strong> (kết thúc thế nào để tiếp scene sau?)</li>
+      </ol>
+
+      <h3>12.3. The "Late In, Early Out" Rule</h3>
+      <div class="info-box" data-title="🎯 Quy tắc vàng">
+        <strong>Vào scene MUỘN nhất có thể, ra SỚM nhất có thể.</strong><br><br>
+        ❌ Tệ: Cảnh quay nhân vật mở cửa, ngồi xuống, lấy nước, bắt đầu cuộc trò chuyện. Cuộc trò chuyện kết thúc, đứng dậy, ra về.<br><br>
+        ✅ Tốt: Bắt đầu ngay giữa cuộc trò chuyện. Kết thúc ngay sau câu quan trọng. Cắt.
+      </div>
+
+      <h3>12.4. Cấu trúc Scene cơ bản</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Set-up (Mở scene)</h4><p>Establish: ai, ở đâu, khi nào, mood gì. 1-3 lines.</p></div>
+        <div class="step"><h4>Conflict / Question</h4><p>Đặt ra vấn đề/conflict của scene.</p></div>
+        <div class="step"><h4>Escalation</h4><p>Stakes tăng. Tension build up.</p></div>
+        <div class="step"><h4>Turning Point</h4><p>Một khoảnh khắc thay đổi value.</p></div>
+        <div class="step"><h4>Resolution / Hook</h4><p>Đáp/không đáp câu hỏi của scene. Hook cho scene tiếp.</p></div>
+      </div>
+
+      <h3>12.5. Type Scene - Các loại Scene</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎬 Action Scene</h4>
+          <p>Hành động vật lý chiếm chủ đạo. Mô tả phải dynamic, ngắn, present tense.</p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Dialogue Scene</h4>
+          <p>Hai nhân vật nói chuyện. Có conflict internal.</p>
+        </div>
+        <div class="card-item">
+          <h4>😢 Emotional Scene</h4>
+          <p>Cảm xúc lên cao. Thường thay đổi quan trọng cho character.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔍 Reveal Scene</h4>
+          <p>Thông tin quan trọng được tiết lộ - twist, secret.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚖️ Decision Scene</h4>
+          <p>Nhân vật phải quyết định khó. Often turning points.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Setup/Payoff</h4>
+          <p>Chuẩn bị cho payoff sau, hoặc payoff của setup trước.</p>
+        </div>
+      </div>
+
+      <h3>12.6. Format Scene Heading</h3>
+      <p>Mỗi scene bắt đầu với "Slug Line" / "Scene Heading":</p>
+
+      <div class="screenplay-block">
+<span class="scene-heading">INT. KITCHEN - NIGHT</span>
+
+<span class="action">SARAH (30s, đôi mắt mệt mỏi) cầm ly nước. Cô đứng cạnh tủ lạnh đang humming. Ánh sáng yếu từ đèn dưới tủ chiếu lên gương mặt cô.</span>
+
+<span class="character-name">SARAH</span>
+<span class="parenthetical">(thì thầm)</span>
+<span class="dialogue">Anh ấy sẽ không bao giờ biết.</span>
+      </div>
+
+      <p><strong>Chú thích:</strong></p>
+      <ul>
+        <li><strong>INT.</strong> = Interior (trong nhà). <strong>EXT.</strong> = Exterior (ngoài trời).</li>
+        <li><strong>KITCHEN</strong> = Location cụ thể</li>
+        <li><strong>NIGHT</strong> = Thời gian (DAY/NIGHT/DAWN/DUSK)</li>
+      </ul>
+
+      <h3>12.7. Cắt Scene - Cuts &amp; Transitions</h3>
+      <ul>
+        <li><strong>CUT TO:</strong> Cắt bình thường (mặc định, không cần ghi)</li>
+        <li><strong>FADE IN/OUT:</strong> Mở đầu/kết thúc phim</li>
+        <li><strong>DISSOLVE TO:</strong> Tan dần - thường để thể hiện time passing</li>
+        <li><strong>SMASH CUT:</strong> Cắt mạnh, đột ngột (thường khi shock)</li>
+        <li><strong>MATCH CUT:</strong> Cắt giữa 2 hình ảnh giống nhau (bone of ape → spaceship trong 2001)</li>
+        <li><strong>JUMP CUT:</strong> Cắt nhảy - same scene, time progressed</li>
+      </ul>
+
+      <div class="tip-box" data-title="💡 Pro tip">
+        Người mới hay viết "CUT TO:" sau mỗi scene. Không cần thiết - mặc định đã là cut. Chỉ viết transitions đặc biệt như SMASH CUT, DISSOLVE TO khi thực sự quan trọng.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 13: SHOW DON'T TELL -->
+    <section id="showdont" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 13</span>
+        <h2>Show Don't Tell</h2>
+      </div>
+
+      <p><strong>"Show, Don't Tell"</strong> là <em>quy tắc số 1</em> của storytelling visual. Phim là media VISUAL - phải <strong>cho thấy</strong>, không <strong>kể lại</strong>.</p>
+
+      <div class="quote-box">
+        "Don't tell me the moon is shining; show me the glint of light on broken glass."<br>
+        <em>— Anton Chekhov</em>
+      </div>
+
+      <h3>13.1. Telling vs Showing</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>❌ Telling</h4>
+          <div class="screenplay-block">
+<span class="action">John là người tham lam, ích kỷ, và không quan tâm đến người khác.</span>
+          </div>
+        </div>
+        <div class="card-item">
+          <h4>✅ Showing</h4>
+          <div class="screenplay-block">
+<span class="action">John bước qua người đàn ông vô gia cư đang co ro. Anh ta vẫn cầm ly cà phê Starbucks $7 một cách thờ ơ, không liếc nhìn dù chỉ một lần. Một đồng xu rơi khỏi túi áo anh. Anh không buồn nhặt.</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>13.2. Cảm xúc - Show qua HÀNH ĐỘNG</h3>
+      <table>
+        <thead><tr><th>Cảm xúc</th><th>❌ Tell</th><th>✅ Show</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Buồn</td>
+            <td>"Cô ấy rất buồn"</td>
+            <td>"Cô ngồi nhìn bức ảnh, không khóc. Một giọt nước rơi xuống bàn - mất 5 giây cô mới nhận ra đó là của mình."</td>
+          </tr>
+          <tr>
+            <td>Tức giận</td>
+            <td>"Anh ấy nổi điên"</td>
+            <td>"Anh đặt ly cà phê xuống. Quá chậm. Quá im lặng. Hơi thở ra mũi."</td>
+          </tr>
+          <tr>
+            <td>Sợ hãi</td>
+            <td>"Cô bé sợ"</td>
+            <td>"Cô bé nắm chặt con búp bê. Mắt không chớp. Mưa rơi xuống tóc cô, cô không buồn lau."</td>
+          </tr>
+          <tr>
+            <td>Yêu</td>
+            <td>"Anh yêu cô ấy"</td>
+            <td>"Anh thấy cô qua cửa sổ quán cafe. Bước vào, anh order... rồi quay ra. Order lại - chính xác cái cô đang uống."</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>13.3. Tính cách - Show qua CHỌN LỰA</h3>
+      <p>Cách tốt nhất show character: cho họ <strong>quyết định</strong> trong tình huống áp lực.</p>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: Indiana Jones - Raiders of the Lost Ark</h4>
+        <p>Scene mở đầu: Indy đi qua bẫy trong hang. Anh ấy cẩn thận, thông minh, dám đối mặt rắn (mặc dù sợ).</p>
+        <p>Trong 5 phút, không ai phải nói "Indy thông minh và dũng cảm" - khán giả đã thấy.</p>
+      </div>
+
+      <h3>13.4. Backstory - Show, Don't Flashback</h3>
+      <p>Flashback là <em>kẻ thù của Show</em>. Backstory tốt được show qua:</p>
+
+      <ul>
+        <li><strong>Object:</strong> Nhân vật giữ 1 vật từ quá khứ (ảnh, nhẫn, vết sẹo)</li>
+        <li><strong>Reaction:</strong> Phản ứng bất thường khi gặp trigger</li>
+        <li><strong>Avoidance:</strong> Tránh chủ đề/địa điểm cụ thể</li>
+        <li><strong>Skill:</strong> Có kỹ năng đến từ quá khứ (Bryan trong Taken biết "particular set of skills")</li>
+        <li><strong>Reference:</strong> Người khác đề cập trong dialogue</li>
+        <li><strong>Behavior pattern:</strong> Có thói quen kỳ lạ từ trauma</li>
+      </ul>
+
+      <h3>13.5. Khi nào ĐƯỢC Tell?</h3>
+      <p>"Show don't tell" không tuyệt đối. Có lúc nên TELL:</p>
+      <ul>
+        <li><strong>Voice-over:</strong> Khi Tell là <em>phong cách</em> (Goodfellas, Fight Club)</li>
+        <li><strong>Pacing:</strong> Cần đẩy nhanh để qua đoạn không quan trọng</li>
+        <li><strong>Comedy:</strong> Một số joke chỉ work khi tell trực tiếp</li>
+        <li><strong>Stylized narration:</strong> Anderson, Allen, Tarantino - phá luật một cách có chủ đích</li>
+      </ul>
+
+      <h3>13.6. Visual Storytelling - Học từ phim câm</h3>
+      <p>Bài tập kinh điển: Viết 1 cảnh KHÔNG CÓ DIALOGUE. Khán giả phải hiểu mọi thứ qua hình ảnh.</p>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: UP! - 10 phút đầu</h4>
+        <p>Pixar kể câu chuyện cả đời của Carl &amp; Ellie trong 10 phút KHÔNG MỘT LỜI thoại. Khán giả khóc.</p>
+        <p>Cách kể: visual cues (tóc bạc dần, ghế trống), object (cuốn album), pacing (chậm dần khi Ellie chết).</p>
+      </div>
+
+      <div class="info-box" data-title="📝 Bài tập">
+        Viết 1 short film 5 trang về một chủ đề (tình yêu, mất mát, hy vọng) KHÔNG được dùng dialogue. Bạn sẽ học được nhiều hơn 100 trang lý thuyết.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 14: SUBTEXT -->
+    <section id="subtext" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 14</span>
+        <h2>Subtext - Tầng Nghĩa Sâu</h2>
+      </div>
+
+      <p><strong>Subtext</strong> = <em>điều thực sự được nói</em> bên dưới những gì <em>được nói ra</em>. Đây là kỹ năng phân biệt biên kịch chuyên nghiệp với amateur.</p>
+
+      <div class="quote-box">
+        "Dialogue is what characters say. Subtext is what they mean."<br>
+        <em>— Aaron Sorkin</em>
+      </div>
+
+      <h3>14.1. Tại sao Subtext quan trọng?</h3>
+      <ul>
+        <li>Đời thực, người ta hiếm khi nói thẳng - đặc biệt khi có cảm xúc</li>
+        <li>Subtext tạo <strong>tension</strong> - khán giả biết nhiều hơn nhân vật biết</li>
+        <li>Khán giả thông minh - họ thích "decode" thay vì được spoon-fed</li>
+        <li>Cho phép <strong>diễn xuất</strong> sống động - actor có gì để work với</li>
+        <li>Đây là khác biệt giữa phim AAA và phim B</li>
+      </ul>
+
+      <h3>14.2. Ba tầng của Dialogue</h3>
+      <div class="card-item">
+        <h4>📐 Tầng nghĩa</h4>
+        <ol>
+          <li><strong>Text:</strong> Cái nhân vật NÓI (words)</li>
+          <li><strong>Subtext:</strong> Cái nhân vật NGHĨ/CẢM (real meaning)</li>
+          <li><strong>Context:</strong> Cái cảnh quan/tình huống GIÚP HIỂU subtext</li>
+        </ol>
+      </div>
+
+      <h3>14.3. Ví dụ Subtext</h3>
+
+      <div class="card-item">
+        <h4>🎬 Casablanca (1942) - kinh điển</h4>
+        <p>Ilsa quay lại tìm Rick sau nhiều năm:</p>
+        <div class="screenplay-block">
+<span class="character-name">ILSA</span>
+<span class="dialogue">Anh có nhớ những ngày ở Paris không?</span>
+
+<span class="character-name">RICK</span>
+<span class="dialogue">Tôi nhớ. Tôi nhớ mọi chi tiết. Người Đức mặc xám. Em mặc xanh.</span>
+        </div>
+        <p><strong>Text:</strong> Họ nói về quần áo Paris.</p>
+        <p><strong>Subtext:</strong> "Anh vẫn yêu em. Anh không bao giờ quên." + "Em đã rời bỏ anh và phá vỡ trái tim anh."</p>
+      </div>
+
+      <div class="card-item">
+        <h4>🎬 The Departed (2006)</h4>
+        <p>Colin (Matt Damon) gặp psychiatrist:</p>
+        <div class="screenplay-block">
+<span class="character-name">COLIN</span>
+<span class="dialogue">Em đẹp đấy, em biết không?</span>
+
+<span class="character-name">MADOLYN</span>
+<span class="dialogue">Có những ranh giới chúng ta không nên vượt qua.</span>
+
+<span class="character-name">COLIN</span>
+<span class="dialogue">Đúng, có. Đó là lý do tôi đang ở đây.</span>
+        </div>
+        <p><strong>Subtext:</strong> Colin là người không tôn trọng ranh giới - vừa với phụ nữ, vừa với luật pháp, vừa với chính identity của anh ta.</p>
+      </div>
+
+      <h3>14.4. Kỹ thuật tạo Subtext</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>1. 🎯 Đối lập Text vs Action</h4>
+          <p>Nhân vật nói X, nhưng làm Y.</p>
+          <p><em>"Tôi không quan tâm" - nhưng vẫn check điện thoại 5 lần</em></p>
+        </div>
+        <div class="card-item">
+          <h4>2. 🔄 Lệch chủ đề</h4>
+          <p>Nói về chuyện khác để tránh chuyện chính.</p>
+          <p><em>"Trời đẹp đấy" trong khi vợ chồng đang khủng hoảng hôn nhân</em></p>
+        </div>
+        <div class="card-item">
+          <h4>3. ❓ Hỏi thay vì khẳng định</h4>
+          <p>Câu hỏi gián tiếp.</p>
+          <p><em>"Anh có vui không?" thay vì "Tôi nghĩ chúng ta nên chia tay"</em></p>
+        </div>
+        <div class="card-item">
+          <h4>4. 🎨 Symbol &amp; Metaphor</h4>
+          <p>Nói về vật, ý nói về người.</p>
+          <p><em>"Cái xe này cần sửa" - nhưng đang nói về mối quan hệ</em></p>
+        </div>
+        <div class="card-item">
+          <h4>5. 😶 Im lặng &amp; Pause</h4>
+          <p>Không nói gì cả đôi khi nói nhiều nhất.</p>
+        </div>
+        <div class="card-item">
+          <h4>6. 🎭 Lời nói dối</h4>
+          <p>Nhân vật nói rõ ràng là dối - khán giả thấy sự thật qua hành động.</p>
+        </div>
+      </div>
+
+      <h3>14.5. Phá ngầm Subtext qua "Text"</h3>
+      <p>Phim hài thường <strong>break</strong> subtext để gây cười:</p>
+
+      <div class="card-item">
+        <h4>🎬 The Office (US TV)</h4>
+        <p>Mọi người trong meeting đều che giấu cảm xúc bằng "professional" speak. Michael Scott TEXT-OUT mọi thứ trực tiếp - tạo awkward humor.</p>
+      </div>
+
+      <h3>14.6. Bài tập viết Subtext</h3>
+      <div class="tip-box" data-title="📝 Bài tập 'Restaurant'">
+        Viết một cảnh: 2 người trong nhà hàng. Một người đang chuẩn bị chia tay người kia. NHƯNG họ không được phép nói trực tiếp về việc chia tay. Chỉ nói về menu, weather, kỷ niệm chung.<br><br>
+        Khán giả phải <em>cảm</em> được chuyện chia tay đang đến.<br><br>
+        Đây là bài tập kinh điển trong các trường biên kịch.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 15: CONFLICT -->
+    <section id="conflict" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 15</span>
+        <h2>Xung Đột &amp; Stakes</h2>
+      </div>
+
+      <p><strong>Conflict</strong> là <em>linh hồn của drama</em>. Không có conflict = không có story. Mọi scene phải có ít nhất 1 conflict.</p>
+
+      <div class="quote-box">
+        "Conflict is drama, and how people deal with conflict shows you who they really are."<br>
+        <em>— Stephen Moyer</em>
+      </div>
+
+      <h3>15.1. 4 Loại Conflict cổ điển</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>👤 Man vs Man</h4>
+          <p>Người vs người khác.</p>
+          <p><em>The Dark Knight (Batman vs Joker), Whiplash (Andrew vs Fletcher)</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌪️ Man vs Nature</h4>
+          <p>Người vs thiên nhiên/môi trường.</p>
+          <p><em>Cast Away, The Revenant, 127 Hours, Life of Pi</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🏛️ Man vs Society</h4>
+          <p>Người vs hệ thống/xã hội.</p>
+          <p><em>The Shawshank Redemption, Erin Brockovich, Spotlight</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🧠 Man vs Self</h4>
+          <p>Người vs chính mình - bệnh tâm thần, addiction, sợ hãi.</p>
+          <p><em>Black Swan, A Beautiful Mind, Requiem for a Dream</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🤖 Man vs Technology</h4>
+          <p>Người vs AI/công nghệ (hiện đại).</p>
+          <p><em>Ex Machina, Her, Black Mirror</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👁️ Man vs Supernatural</h4>
+          <p>Người vs ma quỷ, thần linh.</p>
+          <p><em>The Exorcist, Hereditary, The Conjuring</em></p>
+        </div>
+      </div>
+
+      <h3>15.2. Internal vs External Conflict</h3>
+      <table>
+        <thead><tr><th>External Conflict</th><th>Internal Conflict</th></tr></thead>
+        <tbody>
+          <tr><td>Đối thủ bên ngoài</td><td>Cuộc chiến bên trong</td></tr>
+          <tr><td>Liên kết với <strong>Want</strong></td><td>Liên kết với <strong>Need</strong></td></tr>
+          <tr><td>Hành động thấy được</td><td>Tâm lý, không thấy trực tiếp</td></tr>
+          <tr><td>Plot driver</td><td>Character driver</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Phim AAA</strong> luôn có CẢ HAI hoạt động song song. External = phần action. Internal = phần emotional.</p>
+
+      <div class="card-item">
+        <h4>🎬 The Dark Knight</h4>
+        <p><strong>External:</strong> Batman phải bắt Joker (action)</p>
+        <p><strong>Internal:</strong> Bruce Wayne phải đối mặt: "Mình là hero hay villain?" (psychological)</p>
+        <p>Phim mạnh vì 2 conflict song hành. Joker = ngoại cảnh của internal struggle của Batman.</p>
+      </div>
+
+      <h3>15.3. Stakes - Mất gì nếu thua?</h3>
+      <p><strong>Stakes</strong> = hậu quả nếu protagonist thua. Stakes cao = khán giả care. Stakes thấp = khán giả không quan tâm.</p>
+
+      <h4>3 cấp độ Stakes:</h4>
+      <ol>
+        <li><strong>Personal Stakes:</strong> Ảnh hưởng cá nhân nhân vật (sự nghiệp, tình yêu, gia đình)</li>
+        <li><strong>Community Stakes:</strong> Ảnh hưởng cộng đồng (làng, thành phố)</li>
+        <li><strong>Universal Stakes:</strong> Ảnh hưởng cả thế giới/vũ trụ</li>
+      </ol>
+
+      <div class="warning-box" data-title="⚠️ Lỗi 'World-ending' Stakes">
+        Phim siêu anh hùng hiện đại đều "world ending" → khán giả mất cảm giác. Sau Avengers: Endgame, mọi thứ "save the universe" trở nên nhàm.<br><br>
+        <strong>Insight:</strong> Personal stakes thường HƠN universal stakes nếu được làm tốt. <em>The Dark Knight</em> không "kết thúc thế giới" - nhưng có thể phá hoại linh hồn Batman. Đó là stakes cao.
+      </div>
+
+      <h3>15.4. Raising the Stakes - Tăng cường stakes</h3>
+      <p>Stakes phải <strong>tăng dần</strong> trong phim. Đầu phim stakes thấp, cuối phim stakes cực cao.</p>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ: Mission Impossible - Fallout</h4>
+        <ul>
+          <li><strong>Mở đầu:</strong> Lấy plutonium từ nhóm khủng bố nhỏ</li>
+          <li><strong>Giữa phim:</strong> Plutonium đã mất, có thể hủy diệt 1 thành phố</li>
+          <li><strong>Cuối phim:</strong> Hai bom hạt nhân, có thể hủy diệt 1/3 dân số thế giới + Julia (vợ cũ) gặp nguy hiểm cá nhân</li>
+        </ul>
+      </div>
+
+      <h3>15.5. The Ticking Clock</h3>
+      <p>Thêm <strong>deadline cứng</strong> để tăng tension:</p>
+      <ul>
+        <li>Bom sẽ nổ trong 60 phút (Speed)</li>
+        <li>Đám cưới sáng mai (Wedding Crashers)</li>
+        <li>Trước khi mặt trời lặn (Speed)</li>
+        <li>Trước khi vũ khí hạt nhân bắn (24)</li>
+      </ul>
+
+      <p>Ticking clock tạo <strong>urgency</strong> - khán giả nín thở.</p>
+
+      <h3>15.6. Bằng cách nào tạo Conflict ở mọi scene?</h3>
+      <div class="tip-box" data-title="🎯 Conflict checklist mỗi scene">
+        Khi viết scene, hỏi:
+        <ol>
+          <li>Nhân vật này muốn gì trong scene?</li>
+          <li>Ai/cái gì cản trở?</li>
+          <li>Họ có thể đạt được không, hay phải hy sinh gì?</li>
+          <li>Scene end với + hay - cho nhân vật?</li>
+          <li>Conflict này nâng cao plot hay character?</li>
+        </ol>
+        Nếu trả lời "không" cho câu 2 → scene yếu. Thêm conflict ngay.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 16: PACING -->
+    <section id="pacing" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 16</span>
+        <h2>Pacing &amp; Rhythm</h2>
+      </div>
+
+      <p><strong>Pacing</strong> = nhịp độ câu chuyện. Phim hay không phải đi nhanh hay chậm - mà là <em>đi đúng tốc độ ở đúng lúc</em>.</p>
+
+      <h3>16.1. Nguyên tắc Pacing cơ bản</h3>
+      <p>Pacing như nhịp tim - lúc chậm, lúc nhanh, lúc dừng. KHÔNG bao giờ flat-line.</p>
+
+      <div class="info-box" data-title="🎵 Tension Curve">
+        Một phim 2 giờ có <strong>3-5 đỉnh tension</strong>, xen kẽ với "valley" (khoảnh khắc thở). Như Mountain biểu đồ - lên, xuống, lên cao hơn, xuống, lên cực cao (climax), down (resolution).
+      </div>
+
+      <h3>16.2. Tools cho Pacing</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⏱️ Scene Length</h4>
+          <p>Scene ngắn (1-2 trang) = pacing nhanh, action.</p>
+          <p>Scene dài (5+ trang) = chậm lại, drama emotional.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Cut Frequency</h4>
+          <p>Cắt nhiều giữa các scene/location = nhanh.</p>
+          <p>Stay với 1 scene lâu = chậm, intimate.</p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Dialogue Density</h4>
+          <p>Nhiều thoại = chậm hơn.</p>
+          <p>Ít thoại, action dày = nhanh.</p>
+        </div>
+        <div class="card-item">
+          <h4>📝 Sentence Structure</h4>
+          <p>Câu ngắn trong action lines = nhanh.</p>
+          <p>Câu dài, mô tả = chậm.</p>
+        </div>
+        <div class="card-item">
+          <h4>📍 Location Changes</h4>
+          <p>Thay đổi nhiều location = phim cảm thấy nhanh.</p>
+          <p>Bottle episode (1 location) = chậm, drama.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Stakes Escalation</h4>
+          <p>Stakes tăng dần tạo cảm giác accelerating.</p>
+        </div>
+      </div>
+
+      <h3>16.3. Setup-Payoff Pacing</h3>
+      <p>Mọi setup phải có payoff. Khoảng cách giữa Setup &amp; Payoff = pacing tool quan trọng.</p>
+
+      <ul>
+        <li><strong>Short setup-payoff:</strong> Same scene/sequence - comedy, quick</li>
+        <li><strong>Medium:</strong> Across 1-2 acts - mystery, suspense</li>
+        <li><strong>Long:</strong> From Act I to Act III - epic, big reveal</li>
+      </ul>
+
+      <div class="card-item">
+        <h4>🎬 Chekhov's Gun</h4>
+        <p>"Nếu trong act 1 bạn treo súng lên tường, đến act 3 nó phải nổ. Ngược lại, đừng treo lên."</p>
+        <p>Mọi chi tiết được show phải có lý do. Không có gì là filler.</p>
+      </div>
+
+      <h3>16.4. The "Save the Cat" Pacing Map</h3>
+      <p>Snyder cho ra timing chính xác cho phim 110 trang:</p>
+      <table>
+        <thead><tr><th>Trang</th><th>Beat</th><th>Pacing</th></tr></thead>
+        <tbody>
+          <tr><td>1-10</td><td>Setup</td><td>Slow - giới thiệu thế giới</td></tr>
+          <tr><td>12</td><td>Catalyst</td><td>Sudden - thay đổi đột ngột</td></tr>
+          <tr><td>12-25</td><td>Debate</td><td>Slow - đắn đo</td></tr>
+          <tr><td>25-30</td><td>Break into Two</td><td>Fast - quyết định + lao vào</td></tr>
+          <tr><td>30-55</td><td>Fun &amp; Games</td><td>Medium - "promise of premise"</td></tr>
+          <tr><td>55</td><td>Midpoint</td><td>Sudden - twist</td></tr>
+          <tr><td>55-75</td><td>Bad Guys Close In</td><td>Accelerating - pressure builds</td></tr>
+          <tr><td>75</td><td>All is Lost</td><td>Sudden stop - shock</td></tr>
+          <tr><td>75-85</td><td>Dark Night</td><td>Very slow - reflection</td></tr>
+          <tr><td>85-110</td><td>Finale</td><td>Fast → faster → climax</td></tr>
+        </tbody>
+      </table>
+
+      <h3>16.5. Phá Pacing - Quy tắc của Tarantino</h3>
+      <p>Tarantino dùng <strong>scene dài, dialogue dài về chuyện vặt</strong> để build tension trước khi explosion.</p>
+
+      <div class="card-item">
+        <h4>🎬 Inglourious Basterds - Mở đầu</h4>
+        <p>Cảnh đầu phim 20+ phút - Hans Landa hỏi nông dân Pháp về sữa, gia đình, công việc. Khán giả KHÔNG biết Jewish gia đình trốn dưới sàn. Tension build từ từ.</p>
+        <p>Khi reveal → impact gấp 10 lần. Pacing chậm = explosion mạnh.</p>
+      </div>
+
+      <h3>16.6. Rhythm trong Scene</h3>
+      <p>Mỗi scene có nhịp riêng. Phổ biến nhất: <strong>"Yes, but..." / "No, and..."</strong></p>
+
+      <ul>
+        <li><strong>"Yes, but..."</strong> = Nhân vật đạt được mục tiêu scene, NHƯNG xuất hiện vấn đề mới (đẩy story tiếp)</li>
+        <li><strong>"No, and..."</strong> = Nhân vật không đạt được, VÀ tình hình tệ hơn (escalation)</li>
+        <li><strong>"Yes" hoặc "No"</strong> đơn lẻ = dead end. Tránh.</li>
+      </ul>
+
+      <div class="card-item">
+        <h4>🎬 Ví dụ</h4>
+        <p><strong>"Yes, but":</strong> Indy lấy được tượng vàng, NHƯNG bẫy được kích hoạt và đối thủ chờ ngoài.</p>
+        <p><strong>"No, and":</strong> John McClane định gọi 911, NHƯNG line bị cắt VÀ khủng bố nghe được vị trí.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 17: GENRE -->
+    <section id="genre" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 17</span>
+        <h2>Thể Loại Phim (Genre)</h2>
+      </div>
+
+      <p><strong>Genre</strong> là <em>"hợp đồng"</em> với khán giả. Mỗi thể loại có expectations cụ thể. Hiểu genre conventions = thỏa mãn khán giả + biết khi nào nên phá.</p>
+
+      <h3>17.1. Tại sao Genre quan trọng?</h3>
+      <ul>
+        <li><strong>Marketing:</strong> Producer biết bán cho ai</li>
+        <li><strong>Audience:</strong> Khán giả chọn xem dựa trên genre</li>
+        <li><strong>Convention:</strong> Mỗi genre có "luật" - phá có chủ ý mới tạo dấu ấn</li>
+        <li><strong>Tone consistency:</strong> Genre quyết định tone</li>
+      </ul>
+
+      <h3>17.2. Các thể loại chính &amp; Conventions</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎬 Drama</h4>
+          <p><strong>Conventions:</strong> Realistic, character-driven, emotional truth, slow pace, ambiguous ending.</p>
+          <p><strong>Beat khác biệt:</strong> Internal conflict nặng hơn external.</p>
+          <p><em>Manchester by the Sea, Marriage Story</em></p>
+        </div>
+        <div class="card-item">
+          <h4>😂 Comedy</h4>
+          <p><strong>Conventions:</strong> Setup-punchline rhythm, awkward situations, happy endings, comic relief.</p>
+          <p><strong>Subgenres:</strong> Rom-com, screwball, dark comedy, satire.</p>
+          <p><em>Superbad, Bridesmaids, Knives Out</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💥 Action</h4>
+          <p><strong>Conventions:</strong> Set-piece scenes, ticking clock, physical hero, escalating stakes.</p>
+          <p><strong>Beat khác biệt:</strong> Action sequence mỗi 10-15 phút.</p>
+          <p><em>Die Hard, Mad Max: Fury Road, John Wick</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👻 Horror</h4>
+          <p><strong>Conventions:</strong> Building dread, jump scares, "final girl", supernatural rules, isolation.</p>
+          <p><strong>Subgenres:</strong> Slasher, psychological, supernatural, body horror.</p>
+          <p><em>Hereditary, The Conjuring, Get Out</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🔍 Mystery / Thriller</h4>
+          <p><strong>Conventions:</strong> Setup-puzzle-reveal, red herrings, twist endings, paranoia.</p>
+          <p><strong>Beat khác biệt:</strong> Detective uncovers clues theo timeline cụ thể.</p>
+          <p><em>Gone Girl, Memento, Knives Out, Se7en</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💕 Romance / Rom-Com</h4>
+          <p><strong>Conventions:</strong> Meet-cute, falling in love montage, third-act breakup, grand gesture, happy ending.</p>
+          <p><strong>Beat:</strong> Boy meets girl → boy loses girl → boy gets girl.</p>
+          <p><em>When Harry Met Sally, La La Land, Notting Hill</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌌 Sci-Fi</h4>
+          <p><strong>Conventions:</strong> "What if?" premise, world-building, technology vs humanity theme, exploration.</p>
+          <p><strong>Subgenres:</strong> Hard sci-fi, dystopian, space opera, cyberpunk.</p>
+          <p><em>Blade Runner 2049, Arrival, Interstellar, Ex Machina</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🐉 Fantasy</h4>
+          <p><strong>Conventions:</strong> World rules, magic system, chosen one, quest, good vs evil.</p>
+          <p><em>LOTR, Pan's Labyrinth, Harry Potter</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🦸 Superhero</h4>
+          <p><strong>Conventions:</strong> Origin → Crisis → Climax. Costume, alter ego, worthy adversary, save the day.</p>
+          <p><em>Spider-Man, The Dark Knight, Logan</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🤠 Western</h4>
+          <p><strong>Conventions:</strong> Frontier, lawman vs outlaw, honor code, sun-baked landscape, showdown.</p>
+          <p><em>Unforgiven, No Country for Old Men, Hell or High Water</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🕴️ Noir / Neo-Noir</h4>
+          <p><strong>Conventions:</strong> Femme fatale, morally gray hero, voice-over, shadows, urban decay, cynical ending.</p>
+          <p><em>Chinatown, LA Confidential, Blade Runner</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👨‍👩‍👧 Family / Animation</h4>
+          <p><strong>Conventions:</strong> Dual-layer humor (kids + adults), emotional core, lesson learned, happy ending.</p>
+          <p><em>Toy Story, Coco, Inside Out</em></p>
+        </div>
+      </div>
+
+      <h3>17.3. Genre Conventions vs Cliché</h3>
+      <table>
+        <thead><tr><th>Convention</th><th>Cliché</th></tr></thead>
+        <tbody>
+          <tr><td>Pattern khán giả KỲ VỌNG và yêu thích</td><td>Pattern bị overuse đến nhàm chán</td></tr>
+          <tr><td>"Final girl" trong horror</td><td>"Cô gái trong áo trắng chạy ngược thay vì xuôi"</td></tr>
+          <tr><td>"Meet-cute" trong rom-com</td><td>"Đập vào nhau làm rớt đồ"</td></tr>
+          <tr><td>"Mentor chết" trong hero journey</td><td>"Mentor chết vì bị bullet ngẫu nhiên"</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Cách dùng:</strong> Hit conventions ở cách FRESH. Tránh exact cliché.</p>
+
+      <h3>17.4. Genre Mixing - Lai thể loại</h3>
+      <p>Phim hiện đại thường mix 2-3 genre:</p>
+      <ul>
+        <li><strong>Get Out:</strong> Horror + Social Thriller</li>
+        <li><strong>Parasite:</strong> Comedy + Thriller + Drama</li>
+        <li><strong>Knives Out:</strong> Mystery + Comedy</li>
+        <li><strong>The Shape of Water:</strong> Romance + Fantasy + Drama</li>
+        <li><strong>Everything Everywhere All At Once:</strong> Sci-fi + Comedy + Drama + Action</li>
+      </ul>
+
+      <div class="info-box" data-title="💡 Tone Consistency">
+        Khi mix genre, <strong>tone phải consistent</strong>. Tarantino mix violence + comedy nhưng tone không bao giờ confused. Cô đọng câu hỏi: "Khán giả nên cảm thấy thế nào trong scene này?"
+      </div>
+
+      <h3>17.5. Subverting Genre - Phá luật có chủ đích</h3>
+      <p>Một số phim được nhớ vì PHÁ conventions:</p>
+      <ul>
+        <li><strong>Psycho (1960):</strong> Giết nhân vật chính ở 1/3 phim</li>
+        <li><strong>Cabin in the Woods:</strong> Deconstruct horror tropes</li>
+        <li><strong>Scream:</strong> Self-aware về slasher rules</li>
+        <li><strong>(500) Days of Summer:</strong> "Not a love story"</li>
+        <li><strong>Whiplash:</strong> Mentor là enemy, không phải helper</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 18: FORMAT -->
+    <section id="format" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 18</span>
+        <h2>Format Chuẩn Kịch Bản</h2>
+      </div>
+
+      <p>Format kịch bản trong ngành công nghiệp <strong>cực kỳ chuẩn hóa</strong>. Format sai = producer ném đi ngay trong 5 giây.</p>
+
+      <h3>18.1. Quy tắc Format chuẩn</h3>
+      <ul>
+        <li><strong>Font:</strong> Courier hoặc Courier Prime, 12pt</li>
+        <li><strong>Margins:</strong> Left 1.5", Right 1", Top 1", Bottom 1"</li>
+        <li><strong>1 trang = 1 phút phim</strong> (quy tắc thiêng)</li>
+        <li><strong>Page count:</strong> Feature 90-120 trang, TV 30-60 trang</li>
+        <li><strong>Bold/Italic:</strong> Rất hiếm dùng (chỉ scene heading, character name)</li>
+        <li><strong>Color/font fancy:</strong> NO. Black &amp; white, Courier only.</li>
+      </ul>
+
+      <h3>18.2. Các thành phần của kịch bản</h3>
+
+      <div class="screenplay-block">
+<span class="scene-heading">EXT. CỬA HÀNG CAFE - NGÀY</span>
+
+<span class="action">Mặt trời gay gắt. SARAH (28, ăn mặc giản dị) ngồi ở bàn ngoài, gõ laptop. Cô gái nhìn đồng hồ - đã 30 phút trễ giờ.</span>
+
+<span class="action">JOHN (32, vest đen, mệt mỏi) chạy đến, thở hổn hển.</span>
+
+<span class="character-name">JOHN</span>
+<span class="parenthetical">(thở dốc)</span>
+<span class="dialogue">Xin lỗi. Tắc đường.</span>
+
+<span class="character-name">SARAH</span>
+<span class="parenthetical">(không nhìn lên)</span>
+<span class="dialogue">Lúc nào cũng tắc đường.</span>
+
+<span class="action">John ngồi xuống. Một phút im lặng. Anh nhìn cô đập điện thoại xuống bàn.</span>
+
+<span class="character-name">JOHN</span>
+<span class="dialogue">Em... em đang viết gì vậy?</span>
+
+<span class="character-name">SARAH</span>
+<span class="parenthetical">(đóng laptop)</span>
+<span class="dialogue">Đơn ly hôn.</span>
+
+<span class="transition">CUT TO:</span>
+      </div>
+
+      <h3>18.3. Giải thích chi tiết các elements</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📍 Scene Heading (Slug Line)</h4>
+          <p>UPPERCASE. Format: INT./EXT. LOCATION - TIME</p>
+          <p><em>INT. KITCHEN - NIGHT</em></p>
+          <p><em>EXT. PARKING LOT - DAY</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📝 Action Lines</h4>
+          <p>Mô tả những gì xảy ra. Hiện tại tense. Ngắn gọn.</p>
+          <p>Character name lần đầu - VIẾT HOA + tuổi.</p>
+        </div>
+        <div class="card-item">
+          <h4>👤 Character Name</h4>
+          <p>UPPERCASE, căn giữa (margin 3.7" từ trái).</p>
+          <p>Lần đầu xuất hiện trong action - UPPERCASE.</p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Dialogue</h4>
+          <p>Căn giữa (margin 2.5" trái, 2" phải).</p>
+          <p>Câu ngắn gọn. Tránh quá 3 dòng/câu thoại.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Parenthetical</h4>
+          <p>Trong ngoặc đơn (). Mô tả cách nói/hành động ngắn.</p>
+          <p><strong>Hạn chế dùng!</strong> Để actor diễn.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Transition</h4>
+          <p>UPPERCASE, căn phải.</p>
+          <p>CUT TO: / FADE TO: / DISSOLVE TO:</p>
+          <p>Hiếm dùng - chỉ khi cần thiết.</p>
+        </div>
+      </div>
+
+      <h3>18.4. Phần mềm viết kịch bản</h3>
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>💰 Final Draft</h4>
+          <p>$249. Industry standard. 99% Hollywood dùng.</p>
+        </div>
+        <div class="card-item">
+          <h4>🆓 WriterDuet</h4>
+          <p>Free / $99/năm. Online, collaborative.</p>
+        </div>
+        <div class="card-item">
+          <h4>🆓 Celtx</h4>
+          <p>Free version. Đầy đủ cho người mới.</p>
+        </div>
+        <div class="card-item">
+          <h4>🆓 Fountain</h4>
+          <p>Plain text format. Free, viết trong notepad.</p>
+        </div>
+        <div class="card-item">
+          <h4>🆓 Trelby</h4>
+          <p>Open source. Đầy đủ chức năng.</p>
+        </div>
+        <div class="card-item">
+          <h4>💵 Highland 2</h4>
+          <p>$50. Used by John August (Big Fish).</p>
+        </div>
+      </div>
+
+      <h3>18.5. Các format đặc biệt</h3>
+
+      <h4>📞 Phone Call (V.O. = Voice Over)</h4>
+      <div class="screenplay-block">
+<span class="character-name">JOHN</span>
+<span class="dialogue">Hello?</span>
+
+<span class="character-name">SARAH (V.O.)</span>
+<span class="dialogue">Anh đang ở đâu?</span>
+      </div>
+
+      <h4>🎬 Flashback</h4>
+      <div class="screenplay-block">
+<span class="scene-heading">INT. NHÀ TUỔI THƠ - NGÀY (FLASHBACK - 1995)</span>
+
+<span class="action">Cậu bé JOHN (8 tuổi) trốn dưới gầm giường. Tiếng cha mẹ cãi nhau ngoài cửa.</span>
+      </div>
+
+      <h4>📺 Montage</h4>
+      <div class="screenplay-block">
+<span class="action">MONTAGE - JOHN TẬP LUYỆN
+
+-- John chạy lên cầu thang, thở dốc.
+-- John punch bag, mồ hôi rơi.
+-- John ăn salad, nhìn đồng hồ.
+-- John tự test trên scale.
+
+END MONTAGE</span>
+      </div>
+
+      <h4>📡 Intercut (Cảnh đan xen)</h4>
+      <div class="screenplay-block">
+<span class="scene-heading">INTERCUT - PHONE CALL</span>
+
+<span class="character-name">JOHN</span>
+<span class="dialogue">Em đang ở đâu?</span>
+
+<span class="character-name">SARAH</span>
+<span class="dialogue">Đến đây cứu em!</span>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 19: OUTLINE -->
+    <section id="outline" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 19</span>
+        <h2>Outline &amp; Treatment</h2>
+      </div>
+
+      <p><strong>Không ai viết kịch bản từ trang trắng.</strong> Mọi biên kịch chuyên nghiệp đều outline trước. Đây là <em>secret weapon</em> để tránh writer's block và viết nhanh.</p>
+
+      <h3>19.1. Các bước phát triển dự án</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Idea (Ý tưởng)</h4><p>1-2 câu. Ý tưởng cốt lõi.</p></div>
+        <div class="step"><h4>Logline (1-2 câu)</h4><p>Như chương 7. Định hình.</p></div>
+        <div class="step"><h4>Synopsis (1-2 trang)</h4><p>Tóm tắt toàn bộ câu chuyện. 3-5 đoạn.</p></div>
+        <div class="step"><h4>Treatment (10-30 trang)</h4><p>Câu chuyện dạng prose. Scene-by-scene.</p></div>
+        <div class="step"><h4>Beat Sheet</h4><p>15 beats Save the Cat hoặc các milestone.</p></div>
+        <div class="step"><h4>Outline (15-30 trang)</h4><p>Liệt kê tất cả scene với 1-2 câu mô tả.</p></div>
+        <div class="step"><h4>First Draft (90-120 trang)</h4><p>Viết kịch bản đầy đủ.</p></div>
+        <div class="step"><h4>Rewrites (2nd, 3rd, ... drafts)</h4><p>Polish, fix problems.</p></div>
+      </div>
+
+      <h3>19.2. Beat Sheet - Cấu trúc xương sống</h3>
+      <p>Sau khi có logline + synopsis, viết beat sheet 15 beats Save the Cat (hoặc Hero's Journey). Mỗi beat 1-3 câu.</p>
+
+      <div class="card-item">
+        <h4>📝 Beat Sheet Template</h4>
+        <ol>
+          <li><strong>Opening Image:</strong> ___</li>
+          <li><strong>Theme Stated:</strong> ___</li>
+          <li><strong>Setup:</strong> ___</li>
+          <li><strong>Catalyst:</strong> ___</li>
+          <li><strong>Debate:</strong> ___</li>
+          <li><strong>Break into Two:</strong> ___</li>
+          <li><strong>B Story:</strong> ___</li>
+          <li><strong>Fun and Games:</strong> ___</li>
+          <li><strong>Midpoint:</strong> ___</li>
+          <li><strong>Bad Guys Close In:</strong> ___</li>
+          <li><strong>All is Lost:</strong> ___</li>
+          <li><strong>Dark Night of the Soul:</strong> ___</li>
+          <li><strong>Break into Three:</strong> ___</li>
+          <li><strong>Finale:</strong> ___</li>
+          <li><strong>Final Image:</strong> ___</li>
+        </ol>
+      </div>
+
+      <h3>19.3. Index Card Method</h3>
+      <p>Phương pháp cổ điển của Hollywood: viết mỗi scene lên 1 card 3x5".</p>
+
+      <div class="card-item">
+        <h4>🗂️ Cách làm</h4>
+        <ol>
+          <li>Mỗi card = 1 scene</li>
+          <li>Mỗi card: Scene heading + 1-2 câu mô tả</li>
+          <li>Trên bảng cork: chia theo 4 phần (Act 1, Act 2A, Act 2B, Act 3)</li>
+          <li>Sắp xếp, di chuyển, thay đổi order dễ dàng</li>
+          <li>40-60 cards cho 1 feature film</li>
+        </ol>
+        <p><strong>Tools modern:</strong> Scrivener, Trello, Miro - kỹ thuật số cho index card.</p>
+      </div>
+
+      <h3>19.4. Treatment - Mức độ chi tiết hơn</h3>
+      <p><strong>Treatment</strong> = synopsis được viết DÀI HƠN, dưới dạng prose. Bao gồm:</p>
+      <ul>
+        <li>Mở đầu hấp dẫn (như mini-pitch)</li>
+        <li>Mô tả nhân vật chính (1-2 đoạn)</li>
+        <li>Câu chuyện scene-by-scene, dạng văn xuôi</li>
+        <li>Tone, atmosphere được show qua descriptions</li>
+        <li>Một số dialogue key (chỉ những câu quan trọng)</li>
+      </ul>
+
+      <p><strong>Khi nào dùng Treatment?</strong></p>
+      <ul>
+        <li>Pitch cho producer trước khi viết full script</li>
+        <li>Submit cho contest yêu cầu treatment</li>
+        <li>Reference cho mình khi viết</li>
+      </ul>
+
+      <h3>19.5. Plotter vs Pantser</h3>
+      <p>Hai trường phái viết:</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📋 Plotter (Outline kỹ)</h4>
+          <p>Outline từng scene trước khi viết.</p>
+          <p><strong>Ưu:</strong> Cấu trúc chặt, ít rewrite</p>
+          <p><strong>Nhược:</strong> Mất spontaneity</p>
+          <p><em>Aaron Sorkin, J.K. Rowling</em></p>
+        </div>
+        <div class="card-item">
+          <h4>✍️ Pantser ("By the seat of pants")</h4>
+          <p>Bắt đầu viết, để câu chuyện dẫn.</p>
+          <p><strong>Ưu:</strong> Surprise, organic</p>
+          <p><strong>Nhược:</strong> Nhiều rewrite, có thể lạc</p>
+          <p><em>Stephen King, Charlie Kaufman</em></p>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="💡 Người mới nên chọn?">
+        <strong>Người mới NÊN PLOT.</strong> Pantsing đòi hỏi nhiều kinh nghiệm để biết khi nào câu chuyện đúng hướng. Sau 5-10 kịch bản, bạn có thể tự cảm thấy được và pants thoải mái hơn.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 20: REWRITING -->
+    <section id="rewrite" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 20</span>
+        <h2>Rewriting - Viết Lại</h2>
+      </div>
+
+      <p>"Viết là việc viết lại." Bậc thầy nói: <em>kịch bản KHÔNG BAO GIỜ hoàn thành ở draft 1</em>. Draft 1 chỉ là "vomit draft" - sau đó mới là nghệ thuật.</p>
+
+      <div class="quote-box">
+        "The first draft of anything is shit."<br>
+        <em>— Ernest Hemingway</em>
+      </div>
+
+      <h3>20.1. Quy trình Rewrite</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Draft 1: Vomit Draft</h4><p>Viết nhanh, không edit. Mục tiêu: hoàn thành toàn bộ câu chuyện.</p></div>
+        <div class="step"><h4>Cool Down (2 tuần)</h4><p>Bỏ kịch bản đi 2 tuần. Không đọc lại. Khoảng cách giúp khách quan.</p></div>
+        <div class="step"><h4>Draft 2: Story Rewrite</h4><p>Đọc lại, fix big-picture: cấu trúc, character arc, plot holes.</p></div>
+        <div class="step"><h4>Get Feedback</h4><p>Cho 5-10 người đọc. Trustees - không phải bạn bè nice.</p></div>
+        <div class="step"><h4>Draft 3: Character Pass</h4><p>Mỗi nhân vật có voice riêng không? Arc clear không? Motivations rõ?</p></div>
+        <div class="step"><h4>Draft 4: Dialogue Pass</h4><p>Đọc to mỗi câu thoại. Cut on-the-nose. Add subtext.</p></div>
+        <div class="step"><h4>Draft 5: Polish</h4><p>Action lines ngắn gọn, format chuẩn, page count đúng.</p></div>
+        <div class="step"><h4>Production Draft</h4><p>Sau khi bán/được produce. Polish cuối với đạo diễn.</p></div>
+      </div>
+
+      <h3>20.2. Các loại Rewrite</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🏗️ Structural Rewrite</h4>
+          <p>Đổi cấu trúc, plot points, big beats.</p>
+          <p>Khó nhất, đau đớn nhất.</p>
+        </div>
+        <div class="card-item">
+          <h4>👤 Character Rewrite</h4>
+          <p>Phát triển nhân vật, voice, arc.</p>
+          <p>Đảm bảo mỗi character earn screen time.</p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Dialogue Pass</h4>
+          <p>Polish thoại, voice, subtext.</p>
+        </div>
+        <div class="card-item">
+          <h4>✂️ Cut Pass</h4>
+          <p>Cắt 20-30 trang. Mọi scene phải earn.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Tone Pass</h4>
+          <p>Đảm bảo tone consistent từ đầu đến cuối.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Scene Pass</h4>
+          <p>Mỗi scene: có goal, conflict, change?</p>
+        </div>
+      </div>
+
+      <h3>20.3. Nhận Feedback đúng cách</h3>
+      <div class="warning-box" data-title="⚠️ Tâm lý quan trọng">
+        Đừng defensive khi nhận feedback! Mỗi câu "I love it!" từ bạn bè vô dụng. Bạn cần câu "Đây là vấn đề..." Mới valuable.
+      </div>
+
+      <h4>Cách hỏi feedback hữu ích:</h4>
+      <ul>
+        <li>"Ở scene nào bạn buồn ngủ?"</li>
+        <li>"Nhân vật nào bạn không tin?"</li>
+        <li>"Bạn đoán được twist không?"</li>
+        <li>"Câu hỏi nào bạn còn lại sau khi đọc?"</li>
+        <li>"Nếu bạn cắt 10 trang, bạn cắt gì?"</li>
+        <li>"Cảnh nào bạn nhớ nhất?"</li>
+      </ul>
+
+      <p><strong>Tránh:</strong> "Bạn có thích không?" - không hữu ích.</p>
+
+      <h3>20.4. The "Reader's Coverage"</h3>
+      <p>Khi submit kịch bản, "reader" sẽ viết "coverage" (1-2 trang đánh giá):</p>
+      <ul>
+        <li><strong>Logline:</strong> Tóm tắt 1 câu</li>
+        <li><strong>Synopsis:</strong> Tóm tắt câu chuyện</li>
+        <li><strong>Comments:</strong> Strengths &amp; weaknesses</li>
+        <li><strong>Rating:</strong> Pass / Consider / Recommend</li>
+      </ul>
+      <p><strong>Pass:</strong> 95% - reject. <strong>Consider:</strong> 4% - producer xem. <strong>Recommend:</strong> 1% - meeting!</p>
+
+      <h3>20.5. Kill Your Darlings</h3>
+      <div class="quote-box">
+        "Kill your darlings, kill your darlings, even when it breaks your egocentric little scribbler's heart, kill your darlings."<br>
+        <em>— Stephen King</em>
+      </div>
+      <p>"Darlings" = các cảnh/dialogue bạn YÊU nhưng KHÔNG phục vụ câu chuyện. Cắt chúng dù đau lòng.</p>
+
+      <h3>20.6. Khi nào "Done"?</h3>
+      <p>Một kịch bản không bao giờ thực sự xong. Nhưng bạn ngừng rewrite khi:</p>
+      <ul>
+        <li>3-5 readers trustworthy nói "Ready"</li>
+        <li>Bạn rewrite không còn cải thiện - chỉ thay đổi</li>
+        <li>Đã có agent/manager fight cho nó</li>
+        <li>Đã được bán hoặc optioned</li>
+      </ul>
+      <p>Phim "Casablanca" được rewrite đến tận ngày quay. Don't be afraid of rewrites.</p>
+    </section>
+
+    <!-- CHƯƠNG 21: CAREER -->
+    <section id="career" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 21</span>
+        <h2>Bán Kịch Bản &amp; Sự Nghiệp</h2>
+      </div>
+
+      <p>Viết được kịch bản là 50%. Bán được nó là 50% còn lại. Đây là cách industry hoạt động.</p>
+
+      <h3>21.1. Các con đường bán kịch bản</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎯 Spec Script (Tự viết - bán)</h4>
+          <p>Viết kịch bản trên spec (không hợp đồng trước). Bán qua agent/manager.</p>
+          <p><strong>Mức giá VN:</strong> 100-500tr<br><strong>Hollywood:</strong> $50k - 5M USD</p>
+        </div>
+        <div class="card-item">
+          <h4>📋 Assignment (Theo đơn)</h4>
+          <p>Studio thuê viết theo yêu cầu.</p>
+          <p><strong>Lợi:</strong> Đảm bảo có lương<br><strong>Hại:</strong> Ít creative control</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Option Deal</h4>
+          <p>Producer "thuê" quyền 12-18 tháng để cố làm phim. Trả tiền nhỏ trước.</p>
+          <p>Nếu phim làm được → trả full giá.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Pitch (Bán ý tưởng)</h4>
+          <p>Đến studio, pitch ý tưởng. Nếu thích → ký deal viết.</p>
+          <p>Đòi hỏi network + reputation.</p>
+        </div>
+        <div class="card-item">
+          <h4>📺 TV Writers' Room</h4>
+          <p>Tham gia team biên kịch TV series.</p>
+          <p>Lương ổn định, làm việc team.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏆 Contest &amp; Festival</h4>
+          <p>Win contest → có thể attract producer.</p>
+          <p>Top: Nicholl, Austin, Sundance Labs.</p>
+        </div>
+      </div>
+
+      <h3>21.2. Agents, Managers, Lawyers</h3>
+      <p>Tại Hollywood, bạn cần 3 người (gọi là "team"):</p>
+
+      <div class="card-item">
+        <h4>🎯 Agent</h4>
+        <p>Tìm việc cho bạn, đàm phán deal. Lấy 10%. Phải có agent để submit lên các studio lớn.</p>
+        <p><strong>Top agencies:</strong> WME, CAA, UTA, ICM</p>
+      </div>
+      <div class="card-item">
+        <h4>👔 Manager</h4>
+        <p>Phát triển career dài hạn, đọc draft, đưa career advice. Lấy 10-15%.</p>
+        <p>Khác agent: focus nuôi dưỡng, không chỉ tìm việc.</p>
+      </div>
+      <div class="card-item">
+        <h4>⚖️ Entertainment Lawyer</h4>
+        <p>Đảm bảo contract OK. Lấy 5% hoặc flat fee.</p>
+      </div>
+
+      <h3>21.3. Networking - "It's who you know"</h3>
+      <p>Industry là về relationships. Cách network:</p>
+      <ul>
+        <li><strong>Film festival:</strong> Sundance, SXSW, TIFF - meet producers</li>
+        <li><strong>Writers' groups:</strong> Tham gia writers' room online/offline</li>
+        <li><strong>Twitter/Instagram:</strong> Follow biên kịch, producer, comment thông minh</li>
+        <li><strong>Black List event:</strong> Annual list của top unsold scripts</li>
+        <li><strong>Volunteer:</strong> Tại film festival, intern</li>
+        <li><strong>Coffee meetings:</strong> Khi có cơ hội meet ai trong ngành - take it</li>
+      </ul>
+
+      <h3>21.4. Thị trường Việt Nam 2026</h3>
+      <div class="card-item">
+        <h4>🇻🇳 Đặc thù VN</h4>
+        <ul>
+          <li><strong>Producer dominant:</strong> Trấn Thành, Lý Hải, Vũ Ngọc Đãng - bao show</li>
+          <li><strong>Studios chính:</strong> Galaxy, BHD, CGV, Lotte, Studio68</li>
+          <li><strong>Genre hot:</strong> Comedy gia đình, drama tình cảm, kinh dị, học đường</li>
+          <li><strong>OTT growth:</strong> Netflix VN, Galaxy Play, FPT Play cần content gốc</li>
+          <li><strong>Budget feature film VN:</strong> 5-30 tỷ VND (so với Hollywood 50-300M USD)</li>
+          <li><strong>Network:</strong> Quan hệ rất quan trọng. "Người trong ngành"</li>
+          <li><strong>Festival:</strong> Liên hoan phim Việt Nam, BIFF, Bandai (Bangkok)</li>
+        </ul>
+      </div>
+
+      <h4>📝 Cách break in tại VN</h4>
+      <ol>
+        <li>Viết 2-3 short film, đăng festival</li>
+        <li>Tham gia khóa học (Gặp Gỡ Mùa Thu, Autumn Meeting)</li>
+        <li>Apply intern tại studio</li>
+        <li>Tham gia writers' group (Facebook groups, Discord)</li>
+        <li>Pitch ý tưởng cho producer Việt</li>
+        <li>Win contest (Cánh Diều, Bông Sen Vàng có category writing)</li>
+      </ol>
+
+      <h3>21.5. Mức lương Biên kịch Việt Nam</h3>
+      <table>
+        <thead><tr><th>Vị trí</th><th>Mức lương</th></tr></thead>
+        <tbody>
+          <tr><td>TV series staff writer</td><td>5-15 triệu/tập</td></tr>
+          <tr><td>TV series senior writer</td><td>15-30 triệu/tập</td></tr>
+          <tr><td>Short film script</td><td>5-50 triệu</td></tr>
+          <tr><td>Feature film script (debut)</td><td>50-150 triệu</td></tr>
+          <tr><td>Feature film script (experienced)</td><td>150-500 triệu+</td></tr>
+          <tr><td>Showrunner (TV)</td><td>1-5 tỷ/season</td></tr>
+          <tr><td>Webdrama / OTT script</td><td>20-100 triệu</td></tr>
+          <tr><td>Commercial / Brand content</td><td>10-50 triệu</td></tr>
+        </tbody>
+      </table>
+
+      <h3>21.6. Top contest cho biên kịch</h3>
+      <ul>
+        <li><strong>Academy Nicholl Fellowships:</strong> Top USA, $35k</li>
+        <li><strong>Austin Film Festival:</strong> Big prestige</li>
+        <li><strong>Sundance Screenwriters Lab:</strong> Mentorship valuable</li>
+        <li><strong>The Black List:</strong> $25/month upload, get rated</li>
+        <li><strong>Coverfly:</strong> Hub của nhiều contest</li>
+        <li><strong>Việt Nam: Gặp Gỡ Mùa Thu (Autumn Meeting):</strong> Top tại VN</li>
+        <li><strong>Cánh Diều Vàng:</strong> Có hạng mục Best Screenplay</li>
+      </ul>
+
+      <h3>21.7. Books không thể bỏ qua</h3>
+      <div class="info-box" data-title="📚 Reading List">
+        <ol>
+          <li>"Story" - Robert McKee (Bible)</li>
+          <li>"Save the Cat!" - Blake Snyder</li>
+          <li>"Screenplay" - Syd Field</li>
+          <li>"The Anatomy of Story" - John Truby</li>
+          <li>"The Hero with a Thousand Faces" - Joseph Campbell</li>
+          <li>"On Writing" - Stephen King</li>
+          <li>"Adventures in the Screen Trade" - William Goldman</li>
+          <li>"Story Sense" - Paul Lucey</li>
+          <li>"The Writer's Journey" - Christopher Vogler</li>
+          <li>"Writing for Emotional Impact" - Karl Iglesias</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 22: QUIZ -->
+    <section id="quiz" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 22</span>
+        <h2>Bài Kiểm Tra Cuối Khóa</h2>
+      </div>
+
+      <p>15 câu hỏi kiểm tra kiến thức biên kịch. Hãy thử trước khi xem lại các chương.</p>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 1: Quy tắc "1 trang kịch bản = ?"</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 30 giây phim</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. 1 phút phim</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. 2 phút phim</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. 5 phút phim</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 2: Cấu trúc 3 hồi cổ điển có tỷ lệ trang chuẩn là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 50% - 25% - 25%</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. 25% - 50% - 25%</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. 33% - 33% - 33%</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. 25% - 25% - 50%</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 3: "Want" và "Need" của nhân vật khác nhau ra sao?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cùng nghĩa</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Want = mục tiêu bên ngoài, Need = bài học bên trong</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Want = trẻ con, Need = người lớn</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Want = nhân vật phụ, Need = nhân vật chính</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 4: Trong Save the Cat, "Midpoint" thường xảy ra ở trang nào (kịch bản 110 trang)?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Trang 25</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Trang 55</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Trang 75</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Trang 95</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 5: Logline tốt KHÔNG nên có yếu tố nào?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Inciting incident</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Protagonist + Goal</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Stakes</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">D. Tên thật của diễn viên dự kiến</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 6: "Show Don't Tell" có nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Phim càng nhiều cảnh càng tốt</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Truyền tải qua hành động và hình ảnh, không qua giải thích trực tiếp</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Không được dùng dialogue</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Phải có voice-over</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 7: "Subtext" trong dialogue là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Phụ đề tiếng Anh</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Ý nghĩa thật sự bên dưới câu nói</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Văn bản trên màn hình</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Lời thì thầm</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 8: Theo Trey Parker, giữa các beat câu chuyện nên dùng từ gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. "Và rồi"</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. "Therefore" hoặc "But"</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. "Sau đó"</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. "Đầu tiên"</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 9: Hero's Journey của Joseph Campbell có tổng cộng bao nhiêu bước?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 5 bước</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. 8 bước</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. 12 bước (Vogler) hoặc 17 bước (Campbell)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. 20 bước</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 10: "Flat Arc" - nhân vật không thay đổi, có ý nghĩa gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Nhân vật phẳng, không hay</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Nhân vật đã đúng, họ thay đổi thế giới xung quanh</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Phim 2D không 3D</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Nhân vật chết</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 11: Quy tắc "Late In, Early Out" trong scene có nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Đến trễ, về sớm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Vào scene muộn nhất có thể, ra sớm nhất có thể</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Mở phim chậm, kết nhanh</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Đi vào chi tiết, ra khái quát</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 12: "Chekhov's Gun" có nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Phải có súng trong phim</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Mọi setup phải có payoff - không có gì là filler</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Súng phải nổ ở scene đầu</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Đạo cụ phải đẹp</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 13: Font chuẩn cho kịch bản là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Times New Roman</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Arial</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Courier / Courier Prime 12pt</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Comic Sans</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 14: Lời khuyên của Hemingway về draft đầu tiên là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Phải hoàn hảo</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. "First draft of anything is shit" - vứt đi và viết lại</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Không cần đọc lại</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Submit ngay</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 15: Trong "team" Hollywood, KHÔNG có vị trí nào?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Agent</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Manager</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Entertainment Lawyer</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">D. Personal Chef</div>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🎬 Chúc mừng hoàn thành khóa học!">
+        <p><strong>Bạn vừa hoàn thành 22 chương Sáng Tác Kịch Bản Phim toàn diện.</strong> Đây chỉ là khởi đầu của hành trình - như Robert McKee nói: <em>"Writing is rewriting"</em>.</p>
+        <p style="margin-top: 15px;"><strong>Hành động ngay sau khóa học:</strong></p>
+        <ol>
+          <li>Đọc 5 kịch bản gốc tải miễn phí (Pulp Fiction, Get Out, Parasite, The Social Network, Little Miss Sunshine)</li>
+          <li>Cài Final Draft / WriterDuet / Celtx free</li>
+          <li>Viết 1 short film 5 phút trong tuần này</li>
+          <li>Đọc "Save the Cat!" - Blake Snyder (bible)</li>
+          <li>Subscribe Lessons from the Screenplay (YouTube)</li>
+          <li>Tham gia r/Screenwriting, Black List community</li>
+          <li>Lên kế hoạch: 1 feature script trong 6 tháng tới</li>
+          <li>Tham gia Gặp Gỡ Mùa Thu (Autumn Meeting) tại VN</li>
+        </ol>
+      </div>
+
+      <div style="text-align: center; margin: 40px 0;">
+        <div style="font-size: 64px; margin-bottom: 20px;">🎬</div>
+        <p style="font-size: 22px; color: var(--primary); font-weight: 700; text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); font-style: italic;">"Write the story only you can write."</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>🎬 Khóa Học Sáng Tác Kịch Bản Phim Toàn Diện | © 2026</p>
+      <p style="margin-top: 10px; font-size: 14px;">"Stories are the way humans understand the world. Write yours."</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+  });
+
+  const sections = document.querySelectorAll('.chapter');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  let quizScore = 0;
+  let quizAnswered = new Set();
+  let totalQuizQuestions = 0;
+
+  function checkAnswer(element, isCorrect) {
+    const quizId = element.closest('.quiz').querySelector('.quiz-question').textContent;
+    if (quizAnswered.has(quizId)) return;
+    quizAnswered.add(quizId);
+
+    const options = element.parentElement.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+      element.classList.add('correct');
+      quizScore++;
+    } else {
+      element.classList.add('wrong');
+      options.forEach(opt => {
+        if (opt.getAttribute('onclick').includes('true')) opt.classList.add('correct');
+      });
+    }
+
+    if (quizAnswered.size === totalQuizQuestions) {
+      setTimeout(() => {
+        const pct = Math.round((quizScore/totalQuizQuestions)*100);
+        alert(`🎬 Bạn đạt ${quizScore}/${totalQuizQuestions} điểm (${pct}%)!\n\n${
+          pct >= 90 ? '🏆 Xuất sắc! Bạn đã có nền tảng để viết kịch bản chuyên nghiệp!' :
+          pct >= 75 ? '🎯 Tốt lắm! Bạn nắm vững các nguyên tắc cốt lõi.' :
+          pct >= 50 ? '📚 Khá ổn! Hãy đọc lại các chương khó.' :
+          '💪 Đừng nản! Hãy đọc lại khóa học và thử lại.'
+        }`);
+      }, 500);
+    }
+  }
+
+  window.addEventListener('load', () => {
+    totalQuizQuestions = document.querySelectorAll('.quiz').length;
+  });
+</script>
+
+</body>
+</html>

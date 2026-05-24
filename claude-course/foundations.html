@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nền tảng — Tư duy &amp; kỹ thuật prompt | Claude Mastery</title>
+<meta name="description" content="Module nền tảng: cách Claude hoạt động, giải phẫu prompt tốt, 7 kỹ thuật cốt lõi, quản lý ngữ cảnh.">
+<script>document.documentElement.dataset.theme=localStorage.getItem('cc-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">✦</span><span>Claude Mastery</span></a>
+    <nav class="nav" id="nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="foundations.html" aria-current="page">Nền tảng</a>
+      <a href="coding.html">Coding</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="growth-hacking.html">Growth</a>
+      <a href="data.html">Data</a>
+      <a href="content-engine.html">Content</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Đổi giao diện sáng/tối">◐</button>
+      <button class="icon-btn nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </div>
+  <div class="progress-bar" id="progressBar"></div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="kicker">Module 0 · Dùng chung</div>
+    <h1>Nền tảng — Tư duy &amp; kỹ thuật prompt</h1>
+    <p>Đây là module quan trọng nhất. Mọi module khác đều giả định bạn đã nắm phần này. Học xong, bạn sẽ giao việc cho Claude như giao cho một cộng sự giỏi — chứ không phải gõ vài từ khóa rồi hy vọng.</p>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="toc">
+    <div class="toc-title">Nội dung module</div>
+    <a href="#c1">1. Ba "cửa" vào Claude</a>
+    <a href="#c2">2. Claude "suy nghĩ" thế nào</a>
+    <a href="#c3">3. Giải phẫu một prompt tốt</a>
+    <a href="#c4">4. Bảy kỹ thuật cốt lõi</a>
+    <a href="#c5">5. Quản lý ngữ cảnh</a>
+    <a href="#c6">6. Vòng lặp tinh chỉnh</a>
+    <a href="#c7">7. Kiểm chứng &amp; chống sai</a>
+    <a href="#c8">8. Bộ khung prompt tái dùng</a>
+    <a href="#bt">★ Bài tập</a>
+  </aside>
+
+  <article class="article">
+
+    <details class="toc-mobile">
+      <summary>📑 Mục lục module</summary>
+      <nav class="toc">
+        <a href="#c1">1. Ba "cửa" vào Claude</a>
+        <a href="#c2">2. Claude "suy nghĩ" thế nào</a>
+        <a href="#c3">3. Giải phẫu một prompt tốt</a>
+        <a href="#c4">4. Bảy kỹ thuật cốt lõi</a>
+        <a href="#c5">5. Quản lý ngữ cảnh</a>
+        <a href="#c6">6. Vòng lặp tinh chỉnh</a>
+        <a href="#c7">7. Kiểm chứng &amp; chống sai</a>
+        <a href="#c8">8. Bộ khung prompt tái dùng</a>
+        <a href="#bt">★ Bài tập</a>
+      </nav>
+    </details>
+
+    <section class="section" id="c1">
+      <h2 class="h"><span class="num">01</span> Ba "cửa" vào Claude</h2>
+      <p class="section-intro">Cùng một mô hình Claude, nhưng ba cách truy cập khác nhau — và chọn sai cửa khiến bạn mất thời gian.</p>
+
+      <h3>Claude.ai — giao diện chat (web &amp; app)</h3>
+      <p>Đây là nơi bạn sẽ làm phần lớn việc Marketing, Growth và Content. Điểm mạnh không nằm ở ô chat, mà ở những công cụ quanh nó:</p>
+      <ul>
+        <li><strong>Projects</strong> — một "không gian làm việc" lưu hướng dẫn và tài liệu nền. Mọi cuộc trò chuyện trong Project đó tự động kế thừa ngữ cảnh. Đây là tính năng bị bỏ phí nhiều nhất.</li>
+        <li><strong>Tải file lên</strong> — PDF, ảnh, CSV, tài liệu. Claude đọc trực tiếp thay vì bạn phải copy-paste.</li>
+        <li><strong>Artifacts</strong> — kết quả dạng tài liệu, bảng, hoặc trang web nhỏ hiển thị ở khung riêng, sửa lại được.</li>
+      </ul>
+
+      <h3>Claude Code — cộng sự trong terminal</h3>
+      <p>Dùng cho lập trình và xử lý dữ liệu theo lô. Khác biệt cốt lõi: Claude Code <strong>đọc và sửa được file thật</strong> trong dự án của bạn, chạy được lệnh, và <strong>tự khám phá</strong> thay vì chờ bạn dán code vào. Module Coding và Data sẽ dùng tới nó.</p>
+
+      <h3>Claude API — đưa Claude vào sản phẩm</h3>
+      <p>Khi cần xử lý hàng nghìn mục hoặc nhúng AI vào ứng dụng. Cần biết lập trình. Khóa học chỉ chạm tới API ở mức ý tưởng tự động hóa.</p>
+
+      <div class="callout callout--key">
+        <span class="ic">🧭</span>
+        <div><p><strong>Quy tắc chọn cửa:</strong> Việc một lần, cần đối thoại → <em>Claude.ai</em>. Việc đụng tới file/code trong một dự án → <em>Claude Code</em>. Việc lặp lại hàng loạt, có thể lập trình → <em>API</em>.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c2">
+      <h2 class="h"><span class="num">02</span> Claude "suy nghĩ" thế nào — và vì sao điều đó đổi cách bạn prompt</h2>
+      <p class="section-intro">Bạn không cần hiểu kỹ thuật. Nhưng bốn sự thật sau sẽ giải thích 90% lý do prompt thất bại.</p>
+
+      <h3>1. Claude chỉ biết những gì có trong cuộc trò chuyện</h3>
+      <p>Claude không biết về công ty bạn, khách hàng bạn, hay file trên máy bạn — trừ khi bạn đưa vào. Nó không "nhớ" cuộc trò chuyện hôm qua (trừ khi bạn dùng Project hoặc bộ nhớ). Mỗi prompt mơ hồ là một lần Claude phải <em>đoán</em> — và nó sẽ đoán theo hướng trung bình, an toàn, nhạt.</p>
+
+      <h3>2. "Context window" — bộ nhớ làm việc có giới hạn</h3>
+      <p>Cửa sổ ngữ cảnh là toàn bộ những gì Claude "thấy" cùng lúc: lời nhắc của bạn, file đính kèm, và các lượt trao đổi trước. Nó rất lớn nhưng không vô hạn. Cuộc trò chuyện càng dài, thông tin đầu càng "loãng". Hệ quả thực tế: <strong>một việc lớn nên tách thành nhiều cuộc trò chuyện gọn</strong>, thay vì một cuộc dài lê thê.</p>
+
+      <h3>3. Claude dự đoán, không tra cứu</h3>
+      <p>Claude sinh câu trả lời bằng cách dự đoán phần tiếp theo hợp lý nhất, dựa trên những gì nó đã học. Nó không "tra Google" mỗi lần (trừ khi có bật công cụ tìm kiếm). Vì vậy nó có thể trả lời trôi chảy mà vẫn sai — gọi là <em>ảo giác (hallucination)</em>. Phần 7 sẽ xử lý vấn đề này.</p>
+
+      <h3>4. Cho Claude "không gian suy nghĩ" làm kết quả tốt hơn</h3>
+      <p>Khi bạn yêu cầu Claude trình bày lập luận từng bước trước khi kết luận, chất lượng tăng rõ rệt — đặc biệt với việc phân tích, tính toán, ra quyết định. Bắt nó "trả lời ngay" với bài toán khó thường cho kết quả ẩu hơn.</p>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Bốn sự thật này quy về một câu: <strong>chất lượng đầu ra = chất lượng bối cảnh + độ rõ của yêu cầu + không gian suy nghĩ bạn cho phép.</strong> Cả khóa học chỉ là triển khai chi tiết của câu này.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c3">
+      <h2 class="h"><span class="num">03</span> Giải phẫu một prompt tốt — 6 thành phần</h2>
+      <p class="section-intro">Không phải prompt nào cũng cần đủ 6 phần. Nhưng khi kết quả không như ý, hãy rà xem bạn thiếu phần nào.</p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Thành phần</th><th>Trả lời câu hỏi</th><th>Ví dụ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Vai trò</strong></td><td>Claude nên đứng ở góc nhìn nào?</td><td>"Bạn là một copywriter chuyên ngành SaaS B2B."</td></tr>
+            <tr><td><strong>2. Bối cảnh</strong></td><td>Claude cần biết gì về tình huống?</td><td>"Sản phẩm là app quản lý chi tiêu, khách hàng là dân văn phòng 25–35 tuổi tại VN."</td></tr>
+            <tr><td><strong>3. Nhiệm vụ</strong></td><td>Cần làm gì, cụ thể?</td><td>"Viết 5 tiêu đề quảng cáo Facebook."</td></tr>
+            <tr><td><strong>4. Ràng buộc</strong></td><td>Giới hạn nào phải tuân theo?</td><td>"Mỗi tiêu đề dưới 12 từ, không dùng từ 'tốt nhất', giọng thân thiện."</td></tr>
+            <tr><td><strong>5. Định dạng</strong></td><td>Kết quả trông như thế nào?</td><td>"Trình bày dạng bảng: tiêu đề | góc tiếp cận | cảm xúc nhắm tới."</td></tr>
+            <tr><td><strong>6. Ví dụ</strong></td><td>"Đúng" trông ra sao?</td><td>"Tham khảo phong cách: 'Hết tháng vẫn còn tiền — không phải phép màu.'"</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>So sánh: prompt yếu vs prompt mạnh</h3>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt yếu</span><button class="copy-btn">Sao chép</button></div>
+        <pre>Viết quảng cáo cho app quản lý chi tiêu.</pre>
+      </div>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt mạnh</span><button class="copy-btn">Sao chép</button></div>
+<pre>Bạn là copywriter chuyên ngành ứng dụng tài chính cá nhân.
+
+BỐI CẢNH
+- Sản phẩm: app "Sổ Thu Chi", giúp ghi chi tiêu trong 5 giây/lần.
+- Khách hàng: dân văn phòng 25–35 tuổi tại VN, hay "tiêu hết lúc nào không hay".
+- Nỗi đau lớn nhất: cuối tháng không biết tiền đi đâu.
+
+NHIỆM VỤ
+Viết 5 tiêu đề quảng cáo Facebook.
+
+RÀNG BUỘC
+- Mỗi tiêu đề dưới 12 từ.
+- Không dùng "tốt nhất", "số 1", "miễn phí".
+- Giọng: thân thiện, đồng cảm, không phán xét.
+
+ĐỊNH DẠNG
+Bảng 3 cột: Tiêu đề | Góc tiếp cận | Cảm xúc nhắm tới.</pre>
+      </div>
+      <p>Prompt thứ hai dài hơn — nhưng nó loại bỏ mọi phỏng đoán. Bạn trả "chi phí" bằng vài câu mô tả, và nhận lại kết quả dùng được ngay thay vì phải sửa 4 lượt.</p>
+    </section>
+
+    <section class="section" id="c4">
+      <h2 class="h"><span class="num">04</span> Bảy kỹ thuật cốt lõi</h2>
+      <p class="section-intro">Bảy kỹ thuật này lặp lại trong mọi module. Nắm chúng là nắm 80% khóa học.</p>
+
+      <h3>Kỹ thuật 1 — Gán vai trò</h3>
+      <p>Mở đầu bằng việc nói Claude đóng vai ai. Nó kéo câu trả lời về đúng vùng chuyên môn, từ vựng và tiêu chuẩn của vai trò đó. "Bạn là một CFO khó tính" cho phản hồi khác hẳn "Bạn là một huấn luyện viên khởi nghiệp".</p>
+
+      <h3>Kỹ thuật 2 — Cho ví dụ (few-shot)</h3>
+      <p>Thay vì mô tả phong cách bằng tính từ, hãy <em>đưa 1–3 ví dụ mẫu</em>. Claude bắt chước mẫu tốt hơn nhiều so với bắt chước lời mô tả. Đây là cách nhanh nhất để truyền "giọng" thương hiệu.</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Mẫu few-shot</span><button class="copy-btn">Sao chép</button></div>
+<pre>Viết theo đúng phong cách 2 ví dụ sau (ngắn, có nhịp, kết bằng câu hỏi):
+
+VÍ DỤ 1: "Cà phê nguội rồi. Việc thì vẫn còn nguyên. Quen không?"
+VÍ DỤ 2: "Bạn không lười. Bạn chỉ đang làm 9 việc cùng lúc. Khác nhau đấy."
+
+Giờ viết 5 câu tương tự cho [chủ đề của bạn].</pre>
+      </div>
+
+      <h3>Kỹ thuật 3 — Yêu cầu suy luận từng bước</h3>
+      <p>Với việc phân tích, tính toán hay ra quyết định, thêm câu: <em>"Hãy trình bày lập luận từng bước trước khi đưa kết luận."</em> Claude sẽ phân rã vấn đề, và bạn cũng kiểm tra được nó sai ở đâu nếu có.</p>
+
+      <h3>Kỹ thuật 4 — Chia nhỏ nhiệm vụ</h3>
+      <p>Đừng yêu cầu "viết cho tôi cả chiến dịch marketing". Hãy tách: (1) chân dung khách hàng → (2) thông điệp cốt lõi → (3) các góc nội dung → (4) bài viết cụ thể. Mỗi bước bạn kiểm tra rồi mới đi tiếp. Lỗi được bắt sớm thay vì nhân lên.</p>
+
+      <h3>Kỹ thuật 5 — Định nghĩa định dạng đầu ra</h3>
+      <p>Nói rõ bạn muốn bảng, danh sách, JSON, đoạn văn, hay tài liệu có đề mục. Nếu kết quả sẽ đi vào một hệ thống khác (sheet, code), định dạng càng phải chặt.</p>
+
+      <h3>Kỹ thuật 6 — Đặt rào chắn (ràng buộc &amp; điều cấm)</h3>
+      <p>Nói cả điều <em>không</em> được làm: độ dài tối đa, từ cấm, điều không được bịa, giọng cần tránh. Rào chắn rõ giúp Claude không "trôi" khỏi ý bạn.</p>
+
+      <h3>Kỹ thuật 7 — Lặp lại &amp; tinh chỉnh</h3>
+      <p>Lượt đầu hiếm khi hoàn hảo, và điều đó bình thường. Đừng viết lại prompt từ đầu — hãy <em>phản hồi</em> trên kết quả: "Bản 3 đúng hướng, làm nó cụ thể hơn; bỏ bản 1 và 5; thêm 2 bản nhấn vào yếu tố tốc độ." Phần 6 sẽ đào sâu.</p>
+
+      <div class="callout callout--note">
+        <span class="ic">🔁</span>
+        <div><p>Bảy kỹ thuật không tách rời. Một prompt tốt thường là: <strong>Vai trò + Ví dụ + Chia nhỏ + Định dạng + Rào chắn</strong>, rồi <strong>tinh chỉnh</strong> qua vài lượt.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c5">
+      <h2 class="h"><span class="num">05</span> Quản lý ngữ cảnh — để không phải giải thích lại mỗi lần</h2>
+      <p class="section-intro">Người dùng giỏi không gõ lại bối cảnh mỗi cuộc trò chuyện. Họ thiết lập nó một lần.</p>
+
+      <h3>Projects (trên Claude.ai)</h3>
+      <p>Tạo một Project cho mỗi mảng việc lớn — ví dụ "Marketing Sổ Thu Chi". Trong phần hướng dẫn của Project, đặt sẵn: sản phẩm là gì, khách hàng là ai, giọng thương hiệu, điều cấm. Tải lên tài liệu nền (brand guide, nghiên cứu khách hàng). Từ đó, mọi cuộc trò chuyện trong Project tự kế thừa — bạn vào thẳng việc.</p>
+
+      <h3>Custom instructions / sở thích cá nhân</h3>
+      <p>Thiết lập một lần ở cấp tài khoản những điều luôn đúng: bạn là ai, làm ngành gì, muốn câu trả lời ngắn gọn hay chi tiết, dùng ngôn ngữ nào. Áp dụng cho mọi cuộc trò chuyện.</p>
+
+      <h3>File <code>CLAUDE.md</code> (cho Claude Code)</h3>
+      <p>Trong một dự án code, file <code>CLAUDE.md</code> ở thư mục gốc là "trí nhớ" của dự án: ngôn ngữ, quy ước, lệnh build/test, những điều nên tránh. Claude Code đọc nó tự động. Module Coding sẽ hướng dẫn lập file này.</p>
+
+      <h3>Tài liệu nền tự soạn</h3>
+      <p>Ngay cả khi không dùng Project, hãy giữ một file văn bản "bối cảnh" và dán vào đầu cuộc trò chuyện khi cần. Đây là khoản đầu tư hoàn vốn nhanh nhất.</p>
+
+      <div class="callout callout--key">
+        <span class="ic">📌</span>
+        <div><p><strong>Bài tập 30 phút có lợi nhất khóa học:</strong> soạn một "hồ sơ bối cảnh" — sản phẩm/công việc của bạn, khách hàng/đối tượng, giọng điệu, mục tiêu, điều cấm. Đặt vào Project hoặc giữ làm file. Bạn sẽ tái dùng nó ở mọi module.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c6">
+      <h2 class="h"><span class="num">06</span> Vòng lặp tinh chỉnh — kỹ năng phân biệt người dùng giỏi</h2>
+      <p class="section-intro">Người mới bỏ đi khi lượt đầu không ưng. Người giỏi xem lượt đầu là bản nháp để lái.</p>
+
+      <h3>Phản hồi cụ thể, đừng làm lại từ đầu</h3>
+      <p>Khi kết quả chưa đạt, đừng xóa và viết prompt mới. Hãy nói chính xác điều cần đổi — Claude vẫn giữ toàn bộ ngữ cảnh trước đó:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Mẫu phản hồi</span><button class="copy-btn">Sao chép</button></div>
+<pre>Phản hồi cho bản vừa rồi:
+- GIỮ: cấu trúc 3 phần và câu mở đầu.
+- SỬA: đoạn 2 quá chung chung — thêm một con số hoặc ví dụ cụ thể.
+- BỎ: phần kêu gọi hành động ở cuối, nghe như quảng cáo.
+- THÊM: một câu chuyển ý giữa đoạn 2 và 3.
+Viết lại với các thay đổi trên.</pre>
+      </div>
+
+      <h3>Hỏi ngược trước khi làm</h3>
+      <p>Với việc phức tạp, thêm: <em>"Trước khi bắt đầu, hỏi tôi tối đa 5 câu để làm rõ những điểm còn mơ hồ."</em> Claude sẽ lộ ra những giả định mà bạn quên cung cấp — rẻ hơn nhiều so với sửa kết quả sai.</p>
+
+      <h3>Bắt Claude tự phê bình</h3>
+      <p>Sau khi có kết quả: <em>"Đánh giá phản biện chính bản nháp trên: 3 điểm yếu lớn nhất là gì, và sửa thế nào?"</em> Claude thường nhìn ra lỗi của chính nó khi được yêu cầu đổi vai sang người phản biện.</p>
+
+      <h3>Yêu cầu nhiều phương án</h3>
+      <p>"Cho tôi 3 hướng tiếp cận khác nhau về bản chất, không phải 3 biến thể nhỏ." Xem rộng rồi mới chọn sâu — tránh bị khóa vào ý tưởng đầu tiên.</p>
+    </section>
+
+    <section class="section" id="c7">
+      <h2 class="h"><span class="num">07</span> Kiểm chứng &amp; chống sai sót</h2>
+      <p class="section-intro">Claude rất hữu ích, nhưng không phải nguồn chân lý. Dùng nó một cách có trách nhiệm.</p>
+
+      <h3>Khi nào phải cảnh giác cao</h3>
+      <ul>
+        <li><strong>Số liệu, thống kê, ngày tháng cụ thể</strong> — có thể bị bịa một cách thuyết phục. Luôn kiểm tra với nguồn gốc.</li>
+        <li><strong>Trích dẫn, tên nghiên cứu, đường link</strong> — Claude có thể tạo ra link/nguồn không tồn tại.</li>
+        <li><strong>Sự kiện rất mới</strong> — kiến thức của mô hình có mốc cắt; chuyện vừa xảy ra nó có thể không biết.</li>
+        <li><strong>Lĩnh vực rủi ro cao</strong> — pháp lý, y tế, tài chính, thuế. Dùng Claude để hiểu và soạn nháp, nhưng để chuyên gia chốt.</li>
+      </ul>
+
+      <h3>Bốn thói quen giảm rủi ro</h3>
+      <ol>
+        <li><strong>Cung cấp nguồn thay vì bắt nhớ.</strong> Dán tài liệu, số liệu thật vào prompt rồi bảo "chỉ dựa trên thông tin tôi cung cấp".</li>
+        <li><strong>Cho phép nói "không biết".</strong> Thêm: <em>"Nếu không chắc, hãy nói rõ là không chắc — đừng đoán."</em></li>
+        <li><strong>Bắt phân tách sự thật và suy luận.</strong> "Đánh dấu rõ đâu là dữ kiện từ tài liệu, đâu là suy luận của bạn."</li>
+        <li><strong>Kiểm tra chéo việc quan trọng.</strong> Việc hệ trọng — xác minh độc lập, hoặc hỏi lại Claude ở một cuộc trò chuyện mới với cách diễn đạt khác.</li>
+      </ol>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Mẫu prompt "neo vào nguồn"</span><button class="copy-btn">Sao chép</button></div>
+<pre>Chỉ trả lời DỰA TRÊN tài liệu tôi dán bên dưới.
+- Nếu thông tin không có trong tài liệu, ghi rõ: "Không có trong tài liệu".
+- Không bổ sung kiến thức ngoài.
+- Mỗi khẳng định, dẫn lại đoạn nguồn tương ứng.
+
+TÀI LIỆU:
+"""
+[dán nội dung của bạn]
+"""
+
+CÂU HỎI: [câu hỏi của bạn]</pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p><strong>Nguyên tắc cuối:</strong> Claude là cộng sự nháp nhanh và tư duy cùng bạn — không phải người chịu trách nhiệm. Tên bạn ký dưới sản phẩm. Hãy đọc, hiểu và kiểm trước khi gửi đi.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c8">
+      <h2 class="h"><span class="num">08</span> Bộ khung prompt tái sử dụng</h2>
+      <p class="section-intro">Hãy chép khung này vào tài liệu riêng của bạn. Mọi module sau đều là biến thể của nó.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Khung prompt vạn năng</span><button class="copy-btn">Sao chép</button></div>
+<pre># VAI TRÒ
+Bạn là [chuyên môn cụ thể + cấp độ kinh nghiệm].
+
+# BỐI CẢNH
+- Về tôi/sản phẩm: [mô tả ngắn]
+- Đối tượng/người dùng: [họ là ai, quan tâm gì]
+- Tình huống hiện tại: [chuyện gì đang diễn ra]
+- Mục tiêu: [muốn đạt được gì]
+
+# NHIỆM VỤ
+[Yêu cầu một việc cụ thể, đo lường được]
+
+# RÀNG BUỘC
+- Độ dài / phạm vi: [...]
+- Giọng điệu: [...]
+- Phải tránh: [từ cấm, điều không được bịa]
+
+# ĐỊNH DẠNG ĐẦU RA
+[Bảng / danh sách / JSON / tài liệu có đề mục — mô tả rõ]
+
+# CÁCH LÀM VIỆC
+- Nếu có điểm mơ hồ, hỏi tôi trước khi bắt đầu.
+- Trình bày lập luận từng bước với phần phân tích.
+- Nếu không chắc về dữ kiện nào, nói rõ.</pre>
+      </div>
+
+      <p>Không phải lúc nào cũng cần đủ mọi mục. Nhưng khi kết quả lệch, hãy dò ngược: <em>mục nào tôi đã để Claude phải tự đoán?</em></p>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Mẹo dùng lâu dài: tạo một tài liệu "Thư viện prompt" của riêng bạn. Mỗi lần một prompt cho kết quả tốt, lưu lại kèm ngày và việc đã dùng. Sau một tháng, đây là tài sản cá nhân giá trị nhất từ khóa học.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="bt">
+      <div class="box">
+        <div class="box-title">★ Bài tập module Nền tảng</div>
+        <p>Làm xong 4 bài này trước khi sang module khác. Tốn khoảng 60–90 phút và sẽ tiết kiệm cho bạn nhiều giờ về sau.</p>
+        <ol class="steps">
+          <li><strong>Soạn "hồ sơ bối cảnh"</strong>Viết một trang mô tả công việc/sản phẩm, đối tượng, giọng điệu, mục tiêu và điều cấm. Lưu lại để tái dùng.</li>
+          <li><strong>Viết lại một prompt cũ</strong>Lấy một prompt gần đây cho kết quả tệ. Viết lại bằng khung 6 thành phần. So sánh hai kết quả.</li>
+          <li><strong>Luyện vòng lặp tinh chỉnh</strong>Chọn một việc thật. Đẩy nó qua đúng 3 lượt phản hồi bằng mẫu GIỮ / SỬA / BỎ / THÊM. Quan sát mức cải thiện.</li>
+          <li><strong>Lập một Project</strong>Tạo một Project trên Claude.ai cho mảng việc chính, dán "hồ sơ bối cảnh" vào phần hướng dẫn. Mở một cuộc trò chuyện mới và kiểm tra Claude đã "nhớ" bối cảnh chưa.</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="page-nav">
+      <a class="prev" href="index.html"><div class="dir">← Trước</div><div class="ttl">Trang chủ khóa học</div></a>
+      <a class="next" href="coding.html"><div class="dir">Tiếp →</div><div class="ttl">Module 1 · Coding với Claude</div></a>
+    </div>
+
+  </article>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>✦ <strong>Claude Mastery</strong> — Module 0: Nền tảng</span>
+    <span>Tài liệu học tập · Cập nhật <span id="year">2026</span></span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coding với Claude | Claude Mastery</title>
+<meta name="description" content="Dùng Claude và Claude Code để viết tính năng, đọc codebase, debug, refactor, viết test và review code.">
+<script>document.documentElement.dataset.theme=localStorage.getItem('cc-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">✦</span><span>Claude Mastery</span></a>
+    <nav class="nav" id="nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="foundations.html">Nền tảng</a>
+      <a href="coding.html" aria-current="page">Coding</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="growth-hacking.html">Growth</a>
+      <a href="data.html">Data</a>
+      <a href="content-engine.html">Content</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Đổi giao diện sáng/tối">◐</button>
+      <button class="icon-btn nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </div>
+  <div class="progress-bar" id="progressBar"></div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="kicker">Module 1</div>
+    <h1>Coding với Claude</h1>
+    <p>Biến Claude từ "công cụ gợi ý code" thành một kỹ sư đồng hành: hiểu cả dự án, viết tính năng theo đặc tả, debug có phương pháp, refactor an toàn và review thẳng thắn.</p>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="toc">
+    <div class="toc-title">Nội dung module</div>
+    <a href="#c1">1. Claude Code là gì</a>
+    <a href="#c2">2. Khởi động dự án</a>
+    <a href="#c3">3. Viết tính năng theo spec</a>
+    <a href="#c4">4. Hiểu codebase lạ</a>
+    <a href="#c5">5. Debug có hệ thống</a>
+    <a href="#c6">6. Refactor quy mô lớn</a>
+    <a href="#c7">7. Test &amp; review code</a>
+    <a href="#c8">8. Kỹ thuật nâng cao</a>
+    <a href="#bt">★ Bài tập</a>
+  </aside>
+
+  <article class="article">
+
+    <details class="toc-mobile">
+      <summary>📑 Mục lục module</summary>
+      <nav class="toc">
+        <a href="#c1">1. Claude Code là gì</a>
+        <a href="#c2">2. Khởi động dự án</a>
+        <a href="#c3">3. Viết tính năng theo spec</a>
+        <a href="#c4">4. Hiểu codebase lạ</a>
+        <a href="#c5">5. Debug có hệ thống</a>
+        <a href="#c6">6. Refactor quy mô lớn</a>
+        <a href="#c7">7. Test &amp; review code</a>
+        <a href="#c8">8. Kỹ thuật nâng cao</a>
+        <a href="#bt">★ Bài tập</a>
+      </nav>
+    </details>
+
+    <div class="callout callout--note">
+      <span class="ic">🧱</span>
+      <div><p>Module này giả định bạn đã học <a href="foundations.html">Nền tảng</a>. Bạn <em>không cần</em> là lập trình viên kỳ cựu — nhưng cần biết đọc code ở mức cơ bản để kiểm tra kết quả. Quy tắc vàng: <strong>không bao giờ gửi đi code bạn chưa hiểu.</strong></p></div>
+    </div>
+
+    <section class="section" id="c1">
+      <h2 class="h"><span class="num">01</span> Claude Code là gì — và khác gì ô chat</h2>
+      <p class="section-intro">Bạn vẫn có thể code bằng cách dán đoạn code vào Claude.ai. Nhưng để khai thác hết khả năng, hãy hiểu Claude Code.</p>
+
+      <p><strong>Claude Code</strong> là Claude chạy trong terminal của bạn, ngay bên trong thư mục dự án. Khác biệt cốt lõi so với việc copy-paste vào ô chat:</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Việc</th><th>Dán code vào Claude.ai</th><th>Claude Code</th></tr></thead>
+          <tbody>
+            <tr><td>Đọc file dự án</td><td>Bạn phải tự dán từng file</td><td>Tự đọc, tự tìm file liên quan</td></tr>
+            <tr><td>Sửa code</td><td>Bạn copy kết quả về dán lại</td><td>Sửa thẳng vào file</td></tr>
+            <tr><td>Chạy lệnh / test</td><td>Không</td><td>Chạy được, đọc kết quả, tự sửa</td></tr>
+            <tr><td>Hiểu cả dự án</td><td>Giới hạn ở thứ bạn dán</td><td>Khám phá toàn bộ codebase</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Nói ngắn: ô chat hợp cho một đoạn code lẻ hoặc câu hỏi khái niệm. Claude Code hợp khi bạn làm việc <em>trong một dự án thật</em> — và đó là phần lớn công việc lập trình.</p>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Claude Code có ở terminal, ứng dụng máy tính, bản web và tiện ích cho VS Code / JetBrains. Cùng một năng lực, chọn nơi bạn thấy thoải mái. Phần còn lại của module dùng được cho mọi giao diện.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c2">
+      <h2 class="h"><span class="num">02</span> Khởi động dự án đúng cách</h2>
+      <p class="section-intro">5 phút thiết lập đầu tiên quyết định chất lượng mọi tương tác sau đó.</p>
+
+      <h3>Lập file <code>CLAUDE.md</code> — trí nhớ của dự án</h3>
+      <p>Đặt một file <code>CLAUDE.md</code> ở thư mục gốc. Claude Code đọc nó tự động ở mỗi phiên làm việc. Đây là nơi ghi mọi điều bạn không muốn lặp lại:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Mẫu CLAUDE.md</span><button class="copy-btn">Sao chép</button></div>
+<pre># Dự án: [tên]
+
+## Tổng quan
+[Ứng dụng làm gì, cho ai, trong 2–3 câu]
+
+## Công nghệ
+- Ngôn ngữ / framework: [...]
+- Cơ sở dữ liệu: [...]
+- Quản lý gói: [npm / pip / ...]
+
+## Lệnh quan trọng
+- Cài đặt: `[lệnh]`
+- Chạy dev:  `[lệnh]`
+- Chạy test: `[lệnh]`
+- Build:     `[lệnh]`
+
+## Quy ước
+- Phong cách code: [vd: 2 dấu cách, dùng dấu nháy đơn]
+- Đặt tên: [quy ước của bạn]
+- Cấu trúc thư mục: [giải thích ngắn]
+
+## Điều CẦN TRÁNH
+- Không sửa thư mục /legacy.
+- Không thêm thư viện mới khi chưa hỏi.
+- Luôn viết test cho logic nghiệp vụ.</pre>
+      </div>
+
+      <p>Nếu dự án đã có sẵn, bạn có thể nhờ Claude tự soạn nháp file này:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt</span><button class="copy-btn">Sao chép</button></div>
+<pre>Khảo sát dự án này và soạn nháp file CLAUDE.md gồm: tổng quan,
+công nghệ sử dụng, các lệnh build/test/run phát hiện được, và quy ước
+code mà bạn suy ra từ chính source. Đánh dấu [?] ở chỗ bạn không chắc
+để tôi điền nốt.</pre>
+      </div>
+
+      <h3>Mở đầu phiên làm việc bằng mục tiêu, không phải mệnh lệnh</h3>
+      <p>Thay vì lao thẳng vào "sửa hàm này", hãy mô tả kết quả mong muốn và để Claude khảo sát trước. Module Nền tảng gọi đây là <em>chia nhỏ nhiệm vụ</em> — áp dụng đầu tiên ở bước hiểu vấn đề.</p>
+    </section>
+
+    <section class="section" id="c3">
+      <h2 class="h"><span class="num">03</span> Viết tính năng mới theo đặc tả</h2>
+      <p class="section-intro">Sai lầm phổ biến: yêu cầu mơ hồ → nhận code chạy được nhưng sai ý. Hãy đặc tả trước khi code.</p>
+
+      <h3>Quy trình 4 bước cho một tính năng</h3>
+      <ol class="steps">
+        <li><strong>Mô tả bằng hành vi, không bằng cách làm</strong>Nói tính năng phải <em>làm gì</em> và <em>trông ra sao</em>, để Claude tự đề xuất cách hiện thực rồi bạn duyệt.</li>
+        <li><strong>Yêu cầu kế hoạch trước khi viết code</strong>"Trước khi code, hãy mô tả kế hoạch: file nào cần sửa/tạo, các bước, rủi ro." Bạn duyệt kế hoạch — rẻ hơn duyệt 300 dòng code.</li>
+        <li><strong>Cho hiện thực theo từng phần</strong>Làm từng phần một, kiểm tra giữa chừng. Tránh "đổ" cả tính năng trong một lượt.</li>
+        <li><strong>Yêu cầu chạy thử &amp; tự kiểm</strong>"Chạy test và sửa cho tới khi xanh. Báo lại đã đổi những gì."</li>
+      </ol>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — đặc tả tính năng</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tôi muốn thêm tính năng: [tên tính năng].
+
+HÀNH VI MONG MUỐN
+- Khi người dùng [hành động], hệ thống [kết quả].
+- Trường hợp biên: [vd: dữ liệu rỗng, lỗi mạng, quyền hạn].
+- Không được phá: [chức năng hiện có cần giữ nguyên].
+
+RÀNG BUỘC
+- Theo đúng quy ước trong CLAUDE.md.
+- Không thêm thư viện mới khi chưa hỏi tôi.
+
+TRƯỚC KHI VIẾT CODE:
+1. Tìm và liệt kê các file liên quan.
+2. Trình bày kế hoạch hiện thực theo bước.
+3. Nêu điểm chưa rõ cần tôi quyết.
+Chờ tôi duyệt kế hoạch rồi mới code.</pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p>Câu "<strong>chờ tôi duyệt kế hoạch rồi mới code</strong>" là cái van an toàn quan trọng nhất. Nó giúp bạn bắt sai lệch khi sửa còn rẻ — thay vì sau khi đã có cả đống code sai hướng.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c4">
+      <h2 class="h"><span class="num">04</span> Đọc &amp; hiểu một codebase lạ</h2>
+      <p class="section-intro">Đây là nơi Claude tiết kiệm thời gian nhiều nhất — và bị dùng ít nhất. Tiếp nhận dự án mới, kế thừa code cũ, hay đọc thư viện mã nguồn mở.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — bản đồ tổng quan</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tôi mới tiếp nhận dự án này. Hãy giúp tôi định hướng:
+
+1. Ứng dụng này làm gì? (suy ra từ source)
+2. Sơ đồ kiến trúc cấp cao: các thành phần chính và cách chúng nối nhau.
+3. Một yêu cầu của người dùng đi qua hệ thống theo đường nào?
+4. 5 file quan trọng nhất nên đọc đầu tiên, và vì sao.
+5. Có chỗ nào trông như "nợ kỹ thuật" hoặc dễ gây nhầm không?
+
+Trình bày cho người mới vào dự án, dùng đường dẫn file thật.</pre>
+      </div>
+
+      <p>Sau bức tranh tổng thể, đào sâu một phần cụ thể:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — giải thích một luồng</span><button class="copy-btn">Sao chép</button></div>
+<pre>Giải thích chi tiết luồng [vd: đăng nhập / thanh toán] hoạt động ra sao.
+- Bắt đầu từ điểm nào, kết thúc ở đâu.
+- Mỗi bước, chỉ rõ file và hàm xử lý.
+- Vẽ sơ đồ tuần tự bằng văn bản.
+- Chỉ ra chỗ dễ hỏng hoặc cần thận trọng khi sửa.</pre>
+      </div>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Mẹo: bảo Claude "giải thích như cho một lập trình viên junior mới vào nhóm". Bạn nhận được lời giải thích không bỏ sót bước ngầm — đúng thứ bạn cần khi codebase còn lạ.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c5">
+      <h2 class="h"><span class="num">05</span> Debug có hệ thống</h2>
+      <p class="section-intro">Đừng dán lỗi kèm câu "sửa giúp". Hãy biến Claude thành một người gỡ lỗi có phương pháp.</p>
+
+      <h3>Cung cấp đủ "hiện trường"</h3>
+      <p>Một báo cáo lỗi tốt cho Claude gồm: hành vi mong đợi, hành vi thực tế, thông báo lỗi đầy đủ, các bước tái hiện, và những gì bạn đã thử. Thiếu phần nào, Claude phải đoán phần đó.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — debug</span><button class="copy-btn">Sao chép</button></div>
+<pre>Có một lỗi cần xử lý.
+
+MONG ĐỢI: [điều đáng lẽ phải xảy ra]
+THỰC TẾ:  [điều đang xảy ra]
+LỖI / LOG:
+"""
+[dán nguyên văn, đầy đủ]
+"""
+TÁI HIỆN: [các bước để lỗi xuất hiện]
+ĐÃ THỬ:  [những gì đã làm và kết quả]
+
+Cách làm tôi muốn:
+1. Nêu 3–4 giả thuyết về nguyên nhân, xếp theo khả năng.
+2. Với mỗi giả thuyết, chỉ cách kiểm chứng nhanh.
+3. Tìm nguyên nhân gốc — ĐỪNG vá triệu chứng.
+4. Đề xuất bản sửa nhỏ gọn nhất, giải thích vì sao nó đúng.</pre>
+      </div>
+
+      <h3>Khi lỗi "ngoan cố"</h3>
+      <p>Nếu sửa vài lần vẫn chưa xong, đừng vá tiếp lên vết vá. Hãy lùi lại:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — lùi lại một bước</span><button class="copy-btn">Sao chép</button></div>
+<pre>Ta đã thử vài cách mà lỗi vẫn còn. Dừng việc sửa lại.
+Hãy chèn log ở các điểm nghi ngờ để xác nhận giả định nào sai.
+Liệt kê các log cần thêm và dữ liệu cần quan sát ở mỗi điểm.
+Tôi sẽ chạy và đưa kết quả lại cho bạn.</pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p>Cảnh giác với "bản sửa làm test xanh mà không hiểu vì sao". Nếu Claude sửa được nhưng không giải thích nổi nguyên nhân gốc, hãy bắt nó giải thích lại. Lỗi không hiểu sẽ quay về.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c6">
+      <h2 class="h"><span class="num">06</span> Refactor quy mô lớn</h2>
+      <p class="section-intro">Đổi tên xuyên dự án, tách module, nâng cấp thư viện, dọn nợ kỹ thuật — việc tẻ nhạt và dễ sai, đúng kiểu việc nên giao cho Claude.</p>
+
+      <h3>Nguyên tắc: refactor không đổi hành vi</h3>
+      <p>Refactor là cải thiện <em>cấu trúc</em> mà <em>giữ nguyên hành vi</em>. Vì vậy, luôn đảm bảo có lưới an toàn trước khi bắt đầu:</p>
+      <ol class="steps">
+        <li><strong>Chốt lưới an toàn</strong>Phải có test, hoặc một cách kiểm tra hành vi trước/sau. Chưa có test? Bảo Claude viết test cho hành vi hiện tại trước.</li>
+        <li><strong>Yêu cầu kế hoạch &amp; phạm vi</strong>"Liệt kê mọi file bị ảnh hưởng, chia thành các bước nhỏ độc lập." Duyệt phạm vi trước.</li>
+        <li><strong>Làm từng bước, kiểm sau mỗi bước</strong>Mỗi bước xong là chạy test. Lỗi xuất hiện ở đâu thì biết do bước nào.</li>
+        <li><strong>So sánh hành vi cuối cùng</strong>"Xác nhận hành vi sau refactor giống hệt trước. Nếu có khác biệt, nêu rõ."</li>
+      </ol>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — refactor an toàn</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tôi muốn refactor: [mô tả, vd: tách UserService thành các phần nhỏ].
+
+MỤC TIÊU: [vì sao — dễ test hơn / dễ đọc hơn / ...]
+BẤT BIẾN: hành vi quan sát được từ bên ngoài KHÔNG đổi.
+
+Cách làm:
+1. Trước tiên, kiểm tra mức độ phủ test của vùng này. Nếu mỏng, đề xuất
+   test cần bổ sung trước khi đụng vào.
+2. Lập kế hoạch refactor theo các bước nhỏ, mỗi bước tự đứng vững và
+   test vẫn xanh sau mỗi bước.
+3. Chờ tôi duyệt. Sau đó làm từng bước, dừng lại sau mỗi bước báo cáo.</pre>
+      </div>
+    </section>
+
+    <section class="section" id="c7">
+      <h2 class="h"><span class="num">07</span> Viết test &amp; review code</h2>
+      <p class="section-intro">Hai việc lập trình viên hay né — và Claude làm rất tốt nếu được hướng đúng.</p>
+
+      <h3>Viết test có ý nghĩa, không phải test cho có</h3>
+      <p>Bảo "viết test" thì Claude dễ ra những test tầm thường. Hãy yêu cầu nó nhắm vào nơi lỗi thật sự ẩn náu:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — viết test</span><button class="copy-btn">Sao chép</button></div>
+<pre>Viết test cho [hàm/module].
+
+Ưu tiên các nhóm sau, không chỉ trường hợp thuận lợi:
+- Trường hợp biên: rỗng, null, 0, số âm, chuỗi rất dài.
+- Trường hợp lỗi: đầu vào sai, phụ thuộc bên ngoài thất bại.
+- Quy tắc nghiệp vụ: mọi nhánh điều kiện đều có test riêng.
+
+Mỗi test đặt tên mô tả rõ tình huống. Theo đúng phong cách test
+sẵn có trong dự án. Cuối cùng, chỉ ra trường hợp nào BẠN cho rằng
+vẫn chưa được phủ.</pre>
+      </div>
+
+      <h3>Dùng Claude làm người review code</h3>
+      <p>Trước khi mở pull request, cho Claude review trước. Nó không thay người review, nhưng bắt được phần lớn lỗi vặt và điểm cần bàn:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — review code</span><button class="copy-btn">Sao chép</button></div>
+<pre>Review phần thay đổi tôi sắp commit. Đóng vai một senior khó tính
+nhưng xây dựng. Phân loại nhận xét theo mức độ:
+
+[CHẶN]    Lỗi, lỗ hổng bảo mật, dữ liệu hỏng — phải sửa.
+[NÊN]     Vấn đề thiết kế, trường hợp biên bị bỏ sót.
+[GÓP Ý]   Dễ đọc hơn, đặt tên, phong cách.
+
+Với mỗi điểm: nêu vị trí (file:dòng), vì sao quan trọng, và cách sửa
+gợi ý. Nếu code đã ổn ở mảng nào, nói rõ — đừng bịa vấn đề.</pre>
+      </div>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Việc phân loại CHẶN / NÊN / GÓP Ý giúp bạn không bị ngợp: sửa ngay nhóm CHẶN, cân nhắc nhóm NÊN, để dành nhóm GÓP Ý. Cùng cách phân loại này dùng được khi review bài của người khác.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c8">
+      <h2 class="h"><span class="num">08</span> Kỹ thuật nâng cao</h2>
+      <p class="section-intro">Khi đã quen, bốn năng lực sau nâng Claude Code lên một tầm khác.</p>
+
+      <h3>Chế độ lập kế hoạch (Plan mode)</h3>
+      <p>Một chế độ mà Claude chỉ <em>khảo sát và lập kế hoạch</em>, không sửa file. Dùng cho việc lớn hoặc rủi ro cao: bạn duyệt kế hoạch hoàn chỉnh rồi mới cho phép thực thi. Đây là "yêu cầu kế hoạch trước" được chuẩn hóa thành một chế độ.</p>
+
+      <h3>Subagent — chia việc cho các trợ lý phụ</h3>
+      <p>Với việc lớn nhiều nhánh, Claude Code có thể giao việc con cho các "subagent" chạy song song — ví dụ một agent dò toàn bộ codebase trong khi agent chính tiếp tục. Bạn không phải cấu hình gì phức tạp; chỉ cần biết với nhiệm vụ lớn, có thể yêu cầu Claude "khảo sát rộng" và nó tự phân bổ.</p>
+
+      <h3>MCP — nối Claude với công cụ bên ngoài</h3>
+      <p><strong>MCP (Model Context Protocol)</strong> cho phép Claude Code kết nối tới hệ thống ngoài: cơ sở dữ liệu, hệ thống quản lý lỗi, tài liệu nội bộ, dịch vụ đám mây. Khi đã nối, bạn có thể nhờ Claude "đọc vé lỗi này và sửa", hay "truy vấn database staging để kiểm tra giả thuyết". Bắt đầu từ một kết nối bạn dùng nhiều nhất.</p>
+
+      <h3>Tự động hóa &amp; việc lặp lại</h3>
+      <p>Việc kỹ thuật lặp đi lặp lại — phân loại lỗi mới, cập nhật phụ thuộc, sinh báo cáo — có thể được Claude Code thực hiện theo lịch hoặc theo sự kiện. Khi một quy trình thủ công đã ổn định, hãy nghĩ tới việc biến nó thành tác vụ tự động.</p>
+
+      <div class="callout callout--key">
+        <span class="ic">🎯</span>
+        <div><p>Đừng vội dùng hết tính năng nâng cao. Thành thạo vòng lặp cốt lõi trước: <strong>mô tả → kế hoạch → duyệt → thực thi từng phần → kiểm</strong>. Tính năng nâng cao chỉ làm vòng lặp đó nhanh hơn, không thay thế nó.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="bt">
+      <div class="box">
+        <div class="box-title">★ Bài tập module Coding</div>
+        <ol class="steps">
+          <li><strong>Lập <code>CLAUDE.md</code></strong>Cho một dự án thật của bạn, tạo file <code>CLAUDE.md</code>. Mở phiên mới và kiểm Claude đã nắm đúng bối cảnh chưa.</li>
+          <li><strong>Lập bản đồ codebase</strong>Chọn một dự án bạn chưa rành (của bạn hoặc mã nguồn mở). Dùng prompt "bản đồ tổng quan" và đối chiếu với hiểu biết của bạn.</li>
+          <li><strong>Một tính năng theo quy trình 4 bước</strong>Chọn một tính năng nhỏ. Bắt buộc đi qua: đặc tả → kế hoạch → duyệt → thực thi từng phần. Không bỏ bước duyệt.</li>
+          <li><strong>Một phiên debug có phương pháp</strong>Lần lỗi tới, dùng prompt debug đầy đủ "hiện trường". So với cách bạn thường làm.</li>
+          <li><strong>Review trước khi commit</strong>Lần thay đổi tới, cho Claude review bằng thang CHẶN / NÊN / GÓP Ý trước khi mở PR.</li>
+        </ol>
+      </div>
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p><strong>Lỗi thường gặp cần tránh:</strong> chấp nhận code mà không đọc · bỏ bước duyệt kế hoạch để "cho nhanh" · để Claude thêm thư viện tùy ý · refactor khi chưa có lưới test · tin "test đã xanh" mà không hiểu bản sửa.</p></div>
+      </div>
+    </section>
+
+    <div class="page-nav">
+      <a class="prev" href="foundations.html"><div class="dir">← Trước</div><div class="ttl">Module 0 · Nền tảng</div></a>
+      <a class="next" href="marketing.html"><div class="dir">Tiếp →</div><div class="ttl">Module 2 · Marketing</div></a>
+    </div>
+
+  </article>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>✦ <strong>Claude Mastery</strong> — Module 1: Coding</span>
+    <span>Tài liệu học tập · Cập nhật <span id="year">2026</span></span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

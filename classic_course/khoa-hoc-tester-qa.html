@@ -1,0 +1,4375 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Tester / QA - Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #3b82f6;
+    --primary-glow: #60a5fa;
+    --secondary: #10b981;
+    --accent: #f59e0b;
+    --pass: #22c55e;
+    --fail: #ef4444;
+    --warning: #f59e0b;
+    --info: #06b6d4;
+    --dark: #0f172a;
+    --darker: #020617;
+    --light: #f1f5f9;
+    --gray: #94a3b8;
+    --card: #1e293b;
+    --border: #334155;
+    --terminal: #0a0e1a;
+    --code-green: #22c55e;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.7;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 320px;
+    background: linear-gradient(180deg, var(--dark) 0%, #0a1325 100%);
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid var(--primary);
+    z-index: 100;
+    transition: transform 0.3s;
+    box-shadow: 4px 0 30px rgba(59, 130, 246, 0.15);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo {
+    text-align: center;
+    padding: 0 20px 30px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .logo h1 {
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .logo p { font-size: 12px; color: var(--gray); margin-top: 8px; letter-spacing: 1px; }
+  .nav-menu { list-style: none; padding: 0 15px; }
+  .nav-menu li { margin-bottom: 5px; }
+  .nav-menu a {
+    display: block;
+    padding: 11px 15px;
+    color: var(--gray);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+  }
+  .nav-menu a:hover, .nav-menu a.active {
+    background: rgba(59, 130, 246, 0.12);
+    color: var(--primary-glow);
+    border-left-color: var(--primary);
+    transform: translateX(5px);
+  }
+  .nav-menu .chapter-num {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 24px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+  .main-content {
+    margin-left: 320px;
+    flex: 1;
+    padding: 40px 60px;
+    max-width: calc(100% - 320px);
+  }
+  .hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #064e3b 50%, #1e3a8a 100%);
+    padding: 80px 40px;
+    border-radius: 12px;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 60px rgba(59, 130, 246, 0.2);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(90deg, rgba(59, 130, 246, 0.08) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(16, 185, 129, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridShift 30s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(40px, 40px); }
+  }
+  .hero h1 {
+    font-size: 44px;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+    font-weight: 900;
+    color: var(--light);
+    text-shadow: 0 0 40px rgba(96, 165, 250, 0.5);
+    letter-spacing: 2px;
+  }
+  .hero .subtitle {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 5px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+  }
+  .hero p { font-size: 19px; position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    padding: 20px 28px;
+    border-radius: 8px;
+    min-width: 140px;
+    border: 1px solid var(--primary);
+  }
+  .stat-num { font-size: 32px; font-weight: 900; display: block; color: var(--secondary); text-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
+  .stat-label { font-size: 12px; opacity: 0.9; letter-spacing: 1px; }
+  .chapter {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    scroll-margin-top: 20px;
+    position: relative;
+  }
+  .chapter::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+    border-radius: 12px 12px 0 0;
+  }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-badge {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  }
+  .chapter h2 { font-size: 30px; color: var(--primary-glow); flex: 1; }
+  .chapter h3 {
+    font-size: 22px;
+    color: var(--secondary);
+    margin: 30px 0 15px;
+    padding-left: 15px;
+    border-left: 4px solid var(--secondary);
+  }
+  .chapter h4 { font-size: 18px; color: var(--accent); margin: 20px 0 10px; }
+  .chapter p { margin-bottom: 15px; color: #cbd5e1; }
+  .chapter ul, .chapter ol { margin: 15px 0 20px 25px; color: #cbd5e1; }
+  .chapter li { margin-bottom: 8px; }
+  .chapter strong { color: var(--primary-glow); }
+  .info-box, .warning-box, .tip-box, .danger-box, .pass-box, .fail-box {
+    padding: 20px 25px;
+    border-radius: 6px;
+    margin: 20px 0;
+    border-left: 5px solid;
+  }
+  .info-box { background: rgba(6, 182, 212, 0.08); border-color: var(--info); }
+  .warning-box { background: rgba(245, 158, 11, 0.08); border-color: var(--warning); }
+  .tip-box { background: rgba(16, 185, 129, 0.08); border-color: var(--secondary); }
+  .danger-box { background: rgba(239, 68, 68, 0.08); border-color: var(--fail); }
+  .pass-box { background: rgba(34, 197, 94, 0.08); border-color: var(--pass); }
+  .fail-box { background: rgba(239, 68, 68, 0.08); border-color: var(--fail); }
+  .info-box::before, .warning-box::before, .tip-box::before, .danger-box::before, .pass-box::before, .fail-box::before {
+    content: attr(data-title);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .info-box::before { color: var(--info); }
+  .warning-box::before { color: var(--warning); }
+  .tip-box::before { color: var(--secondary); }
+  .danger-box::before { color: var(--fail); }
+  .pass-box::before { color: var(--pass); }
+  .fail-box::before { color: var(--fail); }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+  .card-item {
+    background: var(--dark);
+    padding: 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .card-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+  }
+  .card-item h4 { color: var(--primary-glow); margin-bottom: 10px; }
+  .card-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: var(--dark);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+  }
+  tr:hover { background: rgba(59, 130, 246, 0.05); }
+  .terminal {
+    background: var(--terminal);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 22px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    margin: 18px 0;
+    overflow-x: auto;
+    color: var(--code-green);
+    white-space: pre-wrap;
+    line-height: 1.7;
+    position: relative;
+  }
+  .terminal::before {
+    content: '● ● ●';
+    position: absolute;
+    top: 6px;
+    right: 12px;
+    font-size: 10px;
+    color: var(--fail);
+    letter-spacing: 3px;
+  }
+  .code-block {
+    background: #06010f;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    margin: 15px 0;
+    overflow-x: auto;
+    color: var(--primary-glow);
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+  .steps { counter-reset: step; margin: 20px 0; }
+  .step {
+    counter-increment: step;
+    padding: 20px 20px 20px 70px;
+    background: var(--dark);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 4px solid var(--primary);
+  }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+  }
+  .step h4 { color: var(--primary-glow); margin-bottom: 5px; }
+  .progress-section {
+    position: fixed;
+    top: 0;
+    left: 320px;
+    right: 0;
+    height: 4px;
+    background: var(--dark);
+    z-index: 99;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--primary);
+  }
+  .quiz {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.08));
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+  .quiz-question { font-size: 17px; font-weight: 700; margin-bottom: 15px; color: var(--primary-glow); }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    padding: 12px 18px;
+    background: var(--dark);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-option:hover { border-color: var(--primary); transform: translateX(5px); }
+  .quiz-option.correct { background: rgba(34, 197, 94, 0.2); border-color: var(--pass); color: var(--pass); }
+  .quiz-option.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--fail); color: var(--fail); }
+  .menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 4px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+  }
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 280px; }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; padding: 70px 20px 20px; }
+    .menu-toggle { display: block; }
+    .progress-section { left: 0; }
+    .hero h1 { font-size: 28px; letter-spacing: 0; }
+    .hero p { font-size: 16px; }
+    .chapter { padding: 25px 20px; }
+    .chapter h2 { font-size: 22px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 15px; }
+    .stat { padding: 15px 20px; min-width: 120px; }
+  }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+  }
+  .bug-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: search 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.5));
+  }
+  @keyframes search {
+    0%, 100% { transform: translateX(0) rotate(0deg); }
+    25% { transform: translateX(-10px) rotate(-10deg); }
+    75% { transform: translateX(10px) rotate(10deg); }
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-pass { background: rgba(34, 197, 94, 0.2); color: var(--pass); }
+  .badge-fail { background: rgba(239, 68, 68, 0.2); color: var(--fail); }
+  .badge-skip { background: rgba(148, 163, 184, 0.2); color: var(--gray); }
+  .badge-block { background: rgba(245, 158, 11, 0.2); color: var(--accent); }
+  .badge-low { background: rgba(34, 197, 94, 0.2); color: var(--pass); }
+  .badge-med { background: rgba(245, 158, 11, 0.2); color: var(--accent); }
+  .badge-high { background: rgba(239, 68, 68, 0.2); color: var(--fail); }
+  .badge-critical { background: rgba(190, 18, 60, 0.4); color: #fda4af; }
+  .test-case-box {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px;
+    margin: 18px 0;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+  }
+  .test-case-box .tc-header {
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .test-case-box .tc-row {
+    display: flex;
+    gap: 15px;
+    padding: 6px 0;
+    border-bottom: 1px dotted var(--border);
+  }
+  .test-case-box .tc-row:last-child { border: 0; }
+  .test-case-box .tc-label {
+    color: var(--secondary);
+    font-weight: 700;
+    min-width: 150px;
+  }
+  .test-case-box .tc-value { color: var(--light); flex: 1; }
+  .bug-report {
+    background: var(--dark);
+    border-left: 4px solid var(--fail);
+    border-radius: 6px;
+    padding: 20px;
+    margin: 18px 0;
+  }
+  .bug-report h4 { color: var(--fail); margin-bottom: 12px; }
+  .bug-report .field {
+    display: flex;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 14px;
+  }
+  .bug-report .field strong { min-width: 120px; color: var(--accent); }
+  .pyramid {
+    background: var(--dark);
+    padding: 25px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 1px solid var(--border);
+  }
+  .pyramid-level {
+    margin: 0 auto 5px;
+    padding: 15px;
+    text-align: center;
+    color: white;
+    font-weight: 700;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+  .pyramid-level:hover { transform: scale(1.02); }
+  .pyramid-level.l1 { width: 30%; background: linear-gradient(135deg, var(--fail), #dc2626); }
+  .pyramid-level.l2 { width: 55%; background: linear-gradient(135deg, var(--accent), #d97706); }
+  .pyramid-level.l3 { width: 80%; background: linear-gradient(135deg, var(--info), #0891b2); }
+  .pyramid-level.l4 { width: 100%; background: linear-gradient(135deg, var(--pass), #16a34a); }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<div class="progress-section">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <h1>🐛 QA TESTER</h1>
+      <p>Khóa Học Toàn Diện</p>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#intro" class="active"><span class="chapter-num">1</span>Giới thiệu QA Tester</a></li>
+      <li><a href="#fundamentals"><span class="chapter-num">2</span>Software Testing Fundamentals</a></li>
+      <li><a href="#sdlc"><span class="chapter-num">3</span>SDLC &amp; STLC</a></li>
+      <li><a href="#levels"><span class="chapter-num">4</span>Test Levels</a></li>
+      <li><a href="#types"><span class="chapter-num">5</span>Test Types</a></li>
+      <li><a href="#box"><span class="chapter-num">6</span>Black/White/Gray Box</a></li>
+      <li><a href="#manual"><span class="chapter-num">7</span>Manual Testing</a></li>
+      <li><a href="#testcase"><span class="chapter-num">8</span>Test Case Design</a></li>
+      <li><a href="#techniques"><span class="chapter-num">9</span>Test Design Techniques</a></li>
+      <li><a href="#docs"><span class="chapter-num">10</span>Test Documentation</a></li>
+      <li><a href="#bug"><span class="chapter-num">11</span>Bug Reporting</a></li>
+      <li><a href="#tools"><span class="chapter-num">12</span>Test Management Tools</a></li>
+      <li><a href="#agile"><span class="chapter-num">13</span>Agile &amp; Scrum Testing</a></li>
+      <li><a href="#automation"><span class="chapter-num">14</span>Automation Testing</a></li>
+      <li><a href="#selenium"><span class="chapter-num">15</span>Selenium WebDriver</a></li>
+      <li><a href="#api"><span class="chapter-num">16</span>API Testing</a></li>
+      <li><a href="#performance"><span class="chapter-num">17</span>Performance Testing</a></li>
+      <li><a href="#security"><span class="chapter-num">18</span>Security Testing</a></li>
+      <li><a href="#mobile"><span class="chapter-num">19</span>Mobile Testing</a></li>
+      <li><a href="#cicd"><span class="chapter-num">20</span>CI/CD &amp; DevOps</a></li>
+      <li><a href="#ai"><span class="chapter-num">21</span>AI in Testing</a></li>
+      <li><a href="#istqb"><span class="chapter-num">22</span>ISTQB Certification</a></li>
+      <li><a href="#career"><span class="chapter-num">23</span>Career &amp; Salary</a></li>
+      <li><a href="#quiz"><span class="chapter-num">24</span>Bài kiểm tra</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <section class="hero">
+      <span class="bug-icon">🐛</span>
+      <div class="subtitle">★ Quality Assurance Master Class ★</div>
+      <h1>KHÓA HỌC QA TESTER</h1>
+      <p>Từ Manual Tester mới vào nghề đến Automation Engineer &amp; QA Lead - 24 chương đầy đủ phủ Manual, Automation (Selenium), API (Postman), Performance (JMeter), Security, Mobile, AI testing &amp; ISTQB</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">24</span><span class="stat-label">CHAPTERS</span></div>
+        <div class="stat"><span class="stat-num">100+</span><span class="stat-label">CONCEPTS</span></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">REAL EXAMPLES</span></div>
+        <div class="stat"><span class="stat-num">0</span><span class="stat-label">BUGS LEFT</span></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 1: GIỚI THIỆU -->
+    <section id="intro" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 1</span>
+        <h2>Giới Thiệu QA Tester</h2>
+      </div>
+
+      <h3>1.1. Software Testing là gì?</h3>
+      <p><strong>Software Testing</strong> là quá trình <em>đánh giá chất lượng</em> của phần mềm bằng cách tìm ra <strong>lỗi (bugs)</strong>, đảm bảo sản phẩm đáp ứng <strong>yêu cầu</strong> và mang lại trải nghiệm tốt cho người dùng.</p>
+
+      <div class="info-box" data-title="🎯 Định nghĩa ISTQB">
+        Testing là một quá trình bao gồm tất cả các hoạt động <strong>lifecycle</strong>, cả tĩnh và động, liên quan đến lập kế hoạch, chuẩn bị và đánh giá phần mềm để xác định nó đáp ứng yêu cầu và phù hợp với mục đích sử dụng.
+      </div>
+
+      <h3>1.2. QA vs QC vs Tester - Khác biệt</h3>
+      <table>
+        <thead><tr><th>Vai trò</th><th>Định nghĩa</th><th>Hoạt động</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>QA (Quality Assurance)</strong></td>
+            <td>Đảm bảo <em>quy trình</em> tạo ra chất lượng</td>
+            <td>Process-oriented, prevent bugs (proactive)</td>
+          </tr>
+          <tr>
+            <td><strong>QC (Quality Control)</strong></td>
+            <td>Kiểm soát <em>sản phẩm</em> đầu ra</td>
+            <td>Product-oriented, find bugs (reactive)</td>
+          </tr>
+          <tr>
+            <td><strong>Tester</strong></td>
+            <td>Người thực hiện kiểm thử cụ thể</td>
+            <td>Execute test cases, log bugs</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>Trong thực tế tại VN</strong>: 3 khái niệm thường dùng lẫn lộn. Mọi người nói "QA" nhưng làm việc của Tester. Đừng quá lăn tăn.</p>
+
+      <h3>1.3. Vì Sao Cần Testing?</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <span class="card-icon">💰</span>
+          <h4>Tiết kiệm chi phí</h4>
+          <p>Bug phát hiện ở Production tốn gấp <strong>100 lần</strong> ở giai đoạn dev. (IBM Systems Sciences Institute)</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🛡️</span>
+          <h4>Bảo vệ uy tín</h4>
+          <p>1 bug nghiêm trọng có thể phá hủy thương hiệu (như Boeing 737 MAX, NASA Mars Climate Orbiter).</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">😊</span>
+          <h4>User Experience</h4>
+          <p>App có bug = user uninstall trong 24h. 88% users abandon app sau 1 bug nghiêm trọng.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">⚖️</span>
+          <h4>Tuân thủ pháp lý</h4>
+          <p>Một số ngành (banking, healthcare) bắt buộc kiểm thử theo tiêu chuẩn.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🚀</span>
+          <h4>Performance</h4>
+          <p>App chậm 1 giây → Amazon mất 1.6 tỷ USD/năm. Performance test crucial.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🔒</span>
+          <h4>Security</h4>
+          <p>Data breach trung bình tốn 4.45 triệu USD (IBM 2023). Security test bắt buộc.</p>
+        </div>
+      </div>
+
+      <h3>1.4. Các thảm họa kinh điển do thiếu Testing</h3>
+
+      <div class="fail-box" data-title="💥 NASA Mars Climate Orbiter (1999)">
+        <p>NASA mất tàu vũ trụ trị giá <strong>$327 triệu USD</strong>. Lý do: Lockheed Martin dùng đơn vị Imperial (pound-seconds), NASA dùng metric (newton-seconds). Bug đơn vị đo lường không được test → tàu đâm vào Mars.</p>
+      </div>
+
+      <div class="fail-box" data-title="💥 Knight Capital (2012)">
+        <p>Công ty trading mất <strong>$440 triệu USD trong 45 phút</strong>. Lý do: Deploy code mới, nhưng quên xóa code cũ trên 1 server. Không có regression test → bot trading điên loạn.</p>
+      </div>
+
+      <div class="fail-box" data-title="💥 Therac-25 (1985-1987)">
+        <p>Máy xạ trị y tế. Race condition bug khiến bệnh nhân nhận liều xạ <strong>100 lần</strong> liều bình thường. <strong>6 người chết</strong>. Đây là case study #1 về importance of testing.</p>
+      </div>
+
+      <div class="fail-box" data-title="💥 CrowdStrike (2024)">
+        <p>Update của CrowdStrike crash 8.5 triệu máy Windows toàn cầu. Hãng hàng không, ngân hàng, bệnh viện dừng hoạt động. Thiệt hại ước tính <strong>$5+ tỷ USD</strong>. Lý do: thiếu staged rollout testing.</p>
+      </div>
+
+      <h3>1.5. 7 Nguyên Tắc Cơ Bản (ISTQB)</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Testing chỉ ra Defect, không chứng minh hoàn hảo</h4>
+          <p>Test thành công = tìm thấy bug, không phải "không bug". Không thể test hết mọi trường hợp.</p>
+        </div>
+        <div class="step">
+          <h4>Exhaustive testing là bất khả thi</h4>
+          <p>Test mọi combination = vô hạn. Phải prioritize, dùng techniques.</p>
+        </div>
+        <div class="step">
+          <h4>Test sớm</h4>
+          <p>Bug phát hiện sớm = rẻ. Test từ giai đoạn requirement, không chờ code xong.</p>
+        </div>
+        <div class="step">
+          <h4>Defect Clustering (Pareto 80/20)</h4>
+          <p>80% bugs nằm trong 20% modules. Focus vào module "rủi ro cao".</p>
+        </div>
+        <div class="step">
+          <h4>Pesticide Paradox</h4>
+          <p>Lặp lại cùng test case → không tìm thêm bug. Phải đa dạng hóa.</p>
+        </div>
+        <div class="step">
+          <h4>Testing phụ thuộc Context</h4>
+          <p>Test app banking khác app game. Không có "one-size-fits-all".</p>
+        </div>
+        <div class="step">
+          <h4>"Absence-of-errors" là Fallacy</h4>
+          <p>Không có bug ≠ software hữu ích. Phải đáp ứng đúng yêu cầu user.</p>
+        </div>
+      </div>
+
+      <h3>1.6. Thị Trường QA tại Việt Nam 2026</h3>
+      <ul>
+        <li><strong>Demand cao:</strong> Mỗi project software đều cần QA. Việt Nam có 200,000+ tester</li>
+        <li><strong>Outsourcing hub:</strong> VN là top destination cho QA outsourcing (FPT, KMS, Saigon Technology, Axon Active)</li>
+        <li><strong>Entry barrier thấp:</strong> Manual tester có thể vào nghề từ non-IT background</li>
+        <li><strong>Lương cạnh tranh:</strong>
+          <ul>
+            <li>Junior Manual: 8-15 triệu/tháng</li>
+            <li>Mid Manual: 15-25 triệu/tháng</li>
+            <li>Junior Automation: 15-25 triệu/tháng</li>
+            <li>Senior Automation: 30-50 triệu/tháng</li>
+            <li>QA Lead/Manager: 40-80 triệu/tháng</li>
+            <li>Remote (US/EU): $30-80/hour</li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="tip-box" data-title="🎓 Lộ trình học cho người mới">
+        <ol>
+          <li><strong>Tháng 1-2:</strong> Học fundamentals (SDLC, STLC, test types, techniques)</li>
+          <li><strong>Tháng 3-4:</strong> Manual testing thực hành (test case, bug report)</li>
+          <li><strong>Tháng 5-6:</strong> Tools (JIRA, TestRail, Postman cơ bản)</li>
+          <li><strong>Tháng 7-9:</strong> Apply Junior Manual Tester</li>
+          <li><strong>Tháng 10-12:</strong> Học automation (Selenium + Java/Python)</li>
+          <li><strong>Năm 2:</strong> API testing, CI/CD, ISTQB Foundation</li>
+          <li><strong>Năm 3+:</strong> Specialize - Performance/Security/Mobile/AI</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 2: FUNDAMENTALS -->
+    <section id="fundamentals" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 2</span>
+        <h2>Software Testing Fundamentals</h2>
+      </div>
+
+      <h3>2.1. Error - Defect - Failure - Khác biệt</h3>
+      <p>Đây là 3 khái niệm CỰC KỲ quan trọng, hay được hỏi interview.</p>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>👨‍💻 Error / Mistake</h4>
+          <p>Lỗi của <strong>con người</strong>. Developer hiểu sai requirement, code sai.</p>
+          <p><em>Ví dụ: Dev viết <code>if (a &lt; b)</code> thay vì <code>if (a &gt; b)</code></em></p>
+        </div>
+        <div class="card-item">
+          <h4>🐛 Defect / Bug</h4>
+          <p>Lỗi xuất hiện trong <strong>code</strong>. Hậu quả của Error.</p>
+          <p><em>Logic sai trong source code (chưa run)</em></p>
+        </div>
+        <div class="card-item">
+          <h4>❌ Failure</h4>
+          <p>Khi software <strong>chạy</strong> và behavior khác expected.</p>
+          <p><em>User nhập 2 số, app tính sai → user thấy</em></p>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🔄 Mối quan hệ">
+        <strong>Error → Defect → Failure</strong><br><br>
+        Developer mắc Error → tạo Defect (Bug) trong code → khi run thì gây Failure.<br><br>
+        Note: Không phải mọi Defect đều gây Failure (có thể không bao giờ chạy đến đoạn code đó).
+      </div>
+
+      <h3>2.2. Verification vs Validation</h3>
+      <table>
+        <thead><tr><th>Verification</th><th>Validation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>"Are we building the product <strong>RIGHT</strong>?"</td>
+            <td>"Are we building the <strong>RIGHT</strong> product?"</td>
+          </tr>
+          <tr>
+            <td>Kiểm tra theo specification</td>
+            <td>Kiểm tra theo user needs</td>
+          </tr>
+          <tr>
+            <td>Static testing (review, walkthrough)</td>
+            <td>Dynamic testing (execute software)</td>
+          </tr>
+          <tr>
+            <td>Trước khi code xong</td>
+            <td>Sau khi code xong</td>
+          </tr>
+          <tr>
+            <td>Code review, requirement review</td>
+            <td>Unit test, system test, UAT</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2.3. Static Testing vs Dynamic Testing</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📄 Static Testing</h4>
+          <p><strong>KHÔNG chạy code.</strong> Review documents, code.</p>
+          <ul>
+            <li>Requirement review</li>
+            <li>Design review</li>
+            <li>Code review (peer review)</li>
+            <li>Walkthrough</li>
+            <li>Inspection (formal)</li>
+            <li>Static analysis tools (SonarQube, ESLint)</li>
+          </ul>
+          <p><strong>Ưu:</strong> Phát hiện sớm, rẻ.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚡ Dynamic Testing</h4>
+          <p><strong>CHẠY code, software</strong>. Quan sát behavior.</p>
+          <ul>
+            <li>Unit testing</li>
+            <li>Integration testing</li>
+            <li>System testing</li>
+            <li>UAT (User Acceptance Test)</li>
+          </ul>
+          <p><strong>Ưu:</strong> Phát hiện runtime bug.</p>
+        </div>
+      </div>
+
+      <h3>2.4. Severity vs Priority - Phân loại Bug</h3>
+
+      <table>
+        <thead><tr><th>Severity (Mức nghiêm trọng)</th><th>Priority (Mức ưu tiên)</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Đánh giá <strong>impact</strong> của bug lên hệ thống</td>
+            <td>Đánh giá <strong>thứ tự</strong> cần fix</td>
+          </tr>
+          <tr>
+            <td>Quyết định bởi <strong>Tester</strong></td>
+            <td>Quyết định bởi <strong>PM/PO</strong></td>
+          </tr>
+          <tr>
+            <td>Mang tính kỹ thuật</td>
+            <td>Mang tính business</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>4 cấp độ Severity:</h4>
+      <ul>
+        <li><span class="badge badge-critical">CRITICAL</span> System crash, data loss, không thể tiếp tục</li>
+        <li><span class="badge badge-high">HIGH</span> Major function không hoạt động, có workaround</li>
+        <li><span class="badge badge-med">MEDIUM</span> Minor function lỗi, không quan trọng</li>
+        <li><span class="badge badge-low">LOW</span> Cosmetic (UI), typo, alignment</li>
+      </ul>
+
+      <h4>4 cấp độ Priority:</h4>
+      <ul>
+        <li><span class="badge badge-critical">P1 - Urgent</span> Fix ngay (block release)</li>
+        <li><span class="badge badge-high">P2 - High</span> Fix trong sprint hiện tại</li>
+        <li><span class="badge badge-med">P3 - Medium</span> Fix trong sprint tiếp</li>
+        <li><span class="badge badge-low">P4 - Low</span> Fix sau, hoặc backlog</li>
+      </ul>
+
+      <h4>Ma trận Severity vs Priority - Ví dụ thực tế:</h4>
+      <table>
+        <thead><tr><th>Tình huống</th><th>Severity</th><th>Priority</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Tên CEO bị viết sai trên homepage</td>
+            <td>Low (chỉ cosmetic)</td>
+            <td>P1 (sếp giận!)</td>
+          </tr>
+          <tr>
+            <td>Crash khi user click nút ít dùng</td>
+            <td>Critical (crash)</td>
+            <td>P3 (ít người dùng)</td>
+          </tr>
+          <tr>
+            <td>Login không hoạt động</td>
+            <td>Critical</td>
+            <td>P1</td>
+          </tr>
+          <tr>
+            <td>Font hơi lệch ở email confirmation</td>
+            <td>Low</td>
+            <td>P4</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2.5. Quality Attributes (ISO 25010)</h3>
+      <p>Phần mềm tốt phải đạt 8 thuộc tính:</p>
+
+      <div class="grid-4">
+        <div class="card-item">
+          <h4>✅ Functional Suitability</h4>
+          <p>Đáp ứng requirement đúng</p>
+        </div>
+        <div class="card-item">
+          <h4>⚡ Performance Efficiency</h4>
+          <p>Tốc độ, tài nguyên</p>
+        </div>
+        <div class="card-item">
+          <h4>🤝 Compatibility</h4>
+          <p>Hoạt động với hệ thống khác</p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Usability</h4>
+          <p>Dễ sử dụng</p>
+        </div>
+        <div class="card-item">
+          <h4>🛡️ Reliability</h4>
+          <p>Ổn định, không crash</p>
+        </div>
+        <div class="card-item">
+          <h4>🔒 Security</h4>
+          <p>Bảo mật dữ liệu</p>
+        </div>
+        <div class="card-item">
+          <h4>🔧 Maintainability</h4>
+          <p>Dễ sửa, mở rộng</p>
+        </div>
+        <div class="card-item">
+          <h4>📦 Portability</h4>
+          <p>Chuyển qua môi trường khác</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 3: SDLC & STLC -->
+    <section id="sdlc" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 3</span>
+        <h2>SDLC &amp; STLC - Vòng Đời Phần Mềm</h2>
+      </div>
+
+      <h3>3.1. SDLC - Software Development Life Cycle</h3>
+      <p><strong>SDLC</strong> = chu trình phát triển phần mềm. Tester phải hiểu mọi giai đoạn để biết mình ở đâu.</p>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Requirement Analysis</h4>
+          <p>Thu thập, phân tích yêu cầu từ khách hàng. Output: SRS (Software Requirement Specification).</p>
+          <p><strong>Tester làm gì:</strong> Review SRS, đặt câu hỏi clarify, identify testable requirements.</p>
+        </div>
+        <div class="step">
+          <h4>Planning</h4>
+          <p>Lên kế hoạch: timeline, resource, budget.</p>
+          <p><strong>Tester làm gì:</strong> Test planning, estimate test effort.</p>
+        </div>
+        <div class="step">
+          <h4>Design</h4>
+          <p>Thiết kế architecture, database, UI/UX.</p>
+          <p><strong>Tester làm gì:</strong> Review design docs, prepare test cases.</p>
+        </div>
+        <div class="step">
+          <h4>Development / Coding</h4>
+          <p>Developers code.</p>
+          <p><strong>Tester làm gì:</strong> Setup test environment, prepare test data, write test scripts.</p>
+        </div>
+        <div class="step">
+          <h4>Testing</h4>
+          <p>Execute test cases, log bugs, retest.</p>
+          <p><strong>Tester làm gì:</strong> CORE PHASE - test execution.</p>
+        </div>
+        <div class="step">
+          <h4>Deployment</h4>
+          <p>Release to production.</p>
+          <p><strong>Tester làm gì:</strong> Smoke test on production, sanity check.</p>
+        </div>
+        <div class="step">
+          <h4>Maintenance</h4>
+          <p>Hỗ trợ sau release, fix bug production.</p>
+          <p><strong>Tester làm gì:</strong> Test patches, regression test.</p>
+        </div>
+      </div>
+
+      <h3>3.2. SDLC Models</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌊 Waterfall</h4>
+          <p>Tuần tự, từng giai đoạn xong mới qua bước tiếp.</p>
+          <p><strong>Pros:</strong> Đơn giản, doc đầy đủ.</p>
+          <p><strong>Cons:</strong> Không linh hoạt, test cuối cùng.</p>
+          <p><strong>Phù hợp:</strong> Requirement rõ ràng, không đổi (banking core, government).</p>
+        </div>
+        <div class="card-item">
+          <h4>🌀 Agile / Scrum</h4>
+          <p>Iterative, sprint 2-4 tuần. Test continuously.</p>
+          <p><strong>Pros:</strong> Adapt nhanh, customer feedback liên tục.</p>
+          <p><strong>Cons:</strong> Doc ít, khó plan dài hạn.</p>
+          <p><strong>Phù hợp:</strong> Hầu hết software hiện nay (90%+).</p>
+        </div>
+        <div class="card-item">
+          <h4>🔁 V-Model</h4>
+          <p>Mỗi giai đoạn dev có giai đoạn test tương ứng.</p>
+          <p><strong>Pros:</strong> Test sớm, defect tìm sớm.</p>
+          <p><strong>Cons:</strong> Vẫn rigid như Waterfall.</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 DevOps / Continuous</h4>
+          <p>Continuous Integration / Delivery. Test tự động liên tục.</p>
+          <p><strong>Phù hợp:</strong> Web app, microservices, SaaS.</p>
+        </div>
+      </div>
+
+      <h3>3.3. STLC - Software Testing Life Cycle</h3>
+      <p>STLC là quy trình chi tiết của việc testing. Có 6 giai đoạn:</p>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Requirement Analysis</h4>
+          <p>Đọc, hiểu requirement. Identify testable items.</p>
+          <p><strong>Deliverable:</strong> RTM (Requirement Traceability Matrix)</p>
+        </div>
+        <div class="step">
+          <h4>Test Planning</h4>
+          <p>Strategy, scope, resources, schedule, risks.</p>
+          <p><strong>Deliverable:</strong> Test Plan document, Test Strategy</p>
+        </div>
+        <div class="step">
+          <h4>Test Case Development</h4>
+          <p>Viết test cases, test scripts, test data.</p>
+          <p><strong>Deliverable:</strong> Test Cases, Test Scripts, Test Data</p>
+        </div>
+        <div class="step">
+          <h4>Test Environment Setup</h4>
+          <p>Setup hardware, software, network để test.</p>
+          <p><strong>Deliverable:</strong> Test environment ready, smoke test pass</p>
+        </div>
+        <div class="step">
+          <h4>Test Execution</h4>
+          <p>Run test cases, log results, report bugs.</p>
+          <p><strong>Deliverable:</strong> Test execution report, Bug reports</p>
+        </div>
+        <div class="step">
+          <h4>Test Closure</h4>
+          <p>Tổng kết, retrospective, lessons learned.</p>
+          <p><strong>Deliverable:</strong> Test Closure Report, metrics</p>
+        </div>
+      </div>
+
+      <h3>3.4. Entry &amp; Exit Criteria</h3>
+
+      <p>Mỗi STLC phase có điều kiện vào (Entry) và ra (Exit).</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🚪 Entry Criteria (Test Execution)</h4>
+          <ul>
+            <li>Code đã được unit test pass</li>
+            <li>Test cases đã review &amp; approved</li>
+            <li>Test environment ready</li>
+            <li>Test data prepared</li>
+            <li>Smoke test passed</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🏁 Exit Criteria (Test Execution)</h4>
+          <ul>
+            <li>100% test cases executed</li>
+            <li>≥ 95% test cases passed</li>
+            <li>No Critical/High bugs open</li>
+            <li>All bugs documented</li>
+            <li>Test execution report signed</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>3.5. RTM - Requirement Traceability Matrix</h3>
+      <p><strong>RTM</strong> là bảng map giữa Requirements và Test Cases. Đảm bảo:</p>
+      <ul>
+        <li>Mọi requirement đều có test case cover</li>
+        <li>Mọi test case đều trace về requirement</li>
+        <li>Identify gap, redundancy</li>
+      </ul>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Req ID</th>
+            <th>Description</th>
+            <th>Test Case IDs</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>REQ-001</td><td>User login với email/password</td><td>TC-001, TC-002, TC-003</td><td>Pass</td></tr>
+          <tr><td>REQ-002</td><td>Reset password qua email</td><td>TC-004, TC-005</td><td>Pass</td></tr>
+          <tr><td>REQ-003</td><td>2FA authentication</td><td>TC-006, TC-007, TC-008</td><td>Fail</td></tr>
+          <tr><td>REQ-004</td><td>Logout</td><td>TC-009</td><td>Pass</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 4: TEST LEVELS -->
+    <section id="levels" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 4</span>
+        <h2>Test Levels - Các Cấp Độ Kiểm Thử</h2>
+      </div>
+
+      <p>Có 4 cấp độ testing theo thứ tự từ nhỏ đến lớn. Mỗi cấp test một phần khác nhau của hệ thống.</p>
+
+      <h3>4.1. Testing Pyramid - Kim tự tháp Testing</h3>
+
+      <div class="pyramid">
+        <div class="pyramid-level l1">🎨 UI / E2E Tests (10%) - Slow, Expensive</div>
+        <div class="pyramid-level l2">🔗 Integration Tests (20%)</div>
+        <div class="pyramid-level l3">🧩 Component Tests (30%)</div>
+        <div class="pyramid-level l4">⚙️ Unit Tests (40%+) - Fast, Cheap</div>
+      </div>
+
+      <p><strong>Nguyên tắc:</strong> Càng xuống dưới càng nhiều test (fast, cheap). Càng lên trên càng ít test (slow, expensive). Anti-pattern: "Ice Cream Cone" - nhiều UI test, ít unit test → maintenance hell.</p>
+
+      <h3>4.2. Unit Testing</h3>
+      <p>Test <strong>đơn vị nhỏ nhất</strong> của code - thường là 1 function/method.</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎯 Đặc điểm</h4>
+          <ul>
+            <li>Do <strong>Developer</strong> viết &amp; chạy</li>
+            <li>Cô lập, không có dependencies (mock)</li>
+            <li>Chạy NHANH (millisecond)</li>
+            <li>White box - thấy code</li>
+            <li>Frameworks: JUnit, NUnit, pytest, Jest</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📝 Ví dụ</h4>
+          <div class="code-block">// JavaScript Jest
+function add(a, b) {
+  return a + b;
+}
+
+test('adds 1 + 2 = 3', () =&gt; {
+  expect(add(1, 2)).toBe(3);
+});
+
+test('add 0', () =&gt; {
+  expect(add(0, 5)).toBe(5);
+});</div>
+        </div>
+      </div>
+
+      <h3>4.3. Integration Testing</h3>
+      <p>Test khi <strong>kết hợp</strong> nhiều unit/module. Kiểm tra interaction.</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎯 Đặc điểm</h4>
+          <ul>
+            <li>Test interaction giữa modules</li>
+            <li>Database integration</li>
+            <li>API integration</li>
+            <li>Có thể có dependencies thật</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📊 Approaches</h4>
+          <ul>
+            <li><strong>Big Bang:</strong> Test tất cả cùng lúc. Khó debug.</li>
+            <li><strong>Top-Down:</strong> Test module cao trước, stub cho module thấp.</li>
+            <li><strong>Bottom-Up:</strong> Test module thấp trước, dùng driver.</li>
+            <li><strong>Sandwich:</strong> Combine top-down + bottom-up.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🤔 Stub vs Driver?">
+        <strong>Stub:</strong> Module giả để thay thế module CHƯA xong (caller gọi nó).<br>
+        <strong>Driver:</strong> Module giả để gọi module cần test (caller).<br><br>
+        Ví dụ: Test module A gọi B (chưa xong) → tạo Stub B. Test module B nhưng A chưa xong → tạo Driver A.
+      </div>
+
+      <h3>4.4. System Testing</h3>
+      <p>Test <strong>toàn bộ hệ thống</strong> đã tích hợp xong. End-to-end.</p>
+
+      <div class="card-item">
+        <h4>🌐 Bao gồm</h4>
+        <ul>
+          <li><strong>Functional:</strong> Mọi feature hoạt động đúng</li>
+          <li><strong>Non-functional:</strong> Performance, security, usability</li>
+          <li><strong>End-to-End:</strong> User flow từ đầu đến cuối</li>
+          <li><strong>Regression:</strong> Đảm bảo feature cũ không hỏng</li>
+        </ul>
+        <p>Black box - không cần biết code bên trong.</p>
+      </div>
+
+      <h3>4.5. Acceptance Testing</h3>
+      <p>Test cuối cùng trước khi go-live. <strong>Khách hàng / User</strong> test.</p>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>👤 UAT (User Acceptance)</h4>
+          <p>End user test. Đảm bảo software meet business need.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏢 BAT (Business Acceptance)</h4>
+          <p>Business owner test. Có ROI không?</p>
+        </div>
+        <div class="card-item">
+          <h4>📜 Contract Acceptance</h4>
+          <p>Test theo hợp đồng.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏛️ Regulation Acceptance</h4>
+          <p>Tuân thủ luật pháp (banking, healthcare).</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Alpha Testing</h4>
+          <p>Test bên trong công ty trước khi release.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Beta Testing</h4>
+          <p>Test với người dùng thật ngoài (limited).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 5: TEST TYPES -->
+    <section id="types" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 5</span>
+        <h2>Test Types - Các Loại Kiểm Thử</h2>
+      </div>
+
+      <p>Có 2 nhóm chính: <strong>Functional</strong> (chức năng) và <strong>Non-Functional</strong> (phi chức năng).</p>
+
+      <h3>5.1. Functional Testing</h3>
+      <p>Test <em>"WHAT does the system do"</em> - có làm đúng chức năng không?</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🚬 Smoke Testing</h4>
+          <p>Test nhanh các chức năng chính. "Build có run không?"</p>
+          <p><em>Ví dụ: Login work, homepage load, search work.</em></p>
+          <p><strong>Khi nào:</strong> Build mới deploy.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧪 Sanity Testing</h4>
+          <p>Test nhanh sau bug fix. "Fix đã work chưa, có break gì không?"</p>
+          <p><em>Subset của regression.</em></p>
+          <p><strong>Khi nào:</strong> Sau khi fix bug.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔄 Regression Testing</h4>
+          <p>Test lại feature cũ sau khi có thay đổi.</p>
+          <p><strong>Mục tiêu:</strong> Đảm bảo code mới không break code cũ.</p>
+          <p><strong>Tốt cho automation.</strong></p>
+        </div>
+        <div class="card-item">
+          <h4>🔁 Re-testing</h4>
+          <p>Test lại bug đã fix.</p>
+          <p><strong>Khác Regression:</strong> Retest cùng test case, Regression test rộng hơn.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Exploratory Testing</h4>
+          <p>Test không có script - tester explore app, học, find bug bằng intuition.</p>
+          <p><strong>Pros:</strong> Tìm bug bất ngờ.</p>
+          <p><strong>Cons:</strong> Khó reproduce, khó measure.</p>
+        </div>
+        <div class="card-item">
+          <h4>🐒 Monkey Testing</h4>
+          <p>Random input, không có pattern. "Bấm linh tinh".</p>
+          <p><em>Phù hợp tìm crash, edge cases.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🦍 Gorilla Testing</h4>
+          <p>Test một module/feature ĐẾN CHẾT. Test mọi possible input.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Ad-hoc Testing</h4>
+          <p>Test ngẫu nhiên, không kế hoạch, không doc.</p>
+          <p><em>Khác Exploratory: ad-hoc completely random.</em></p>
+        </div>
+      </div>
+
+      <h3>5.2. Non-Functional Testing</h3>
+      <p>Test <em>"HOW WELL does the system work"</em> - hoạt động tốt thế nào?</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⚡ Performance Testing</h4>
+          <p>Test tốc độ, response time, throughput.</p>
+          <p><strong>Tools:</strong> JMeter, LoadRunner, K6, Gatling.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 Load Testing</h4>
+          <p>Test với số user EXPECTED (1000 user concurrent).</p>
+          <p>"Hệ thống chịu được load bình thường không?"</p>
+        </div>
+        <div class="card-item">
+          <h4>💥 Stress Testing</h4>
+          <p>Test với load CAO HƠN bình thường, đến khi BREAK.</p>
+          <p>"Đến đâu thì hệ thống sụp?"</p>
+        </div>
+        <div class="card-item">
+          <h4>📈 Scalability Testing</h4>
+          <p>Test khả năng mở rộng (thêm server, user).</p>
+        </div>
+        <div class="card-item">
+          <h4>⏱️ Endurance / Soak Testing</h4>
+          <p>Test thời gian dài (24h, 1 tuần). Tìm memory leak.</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 Spike Testing</h4>
+          <p>Test đột ngột tăng load (Black Friday traffic).</p>
+        </div>
+        <div class="card-item">
+          <h4>🔒 Security Testing</h4>
+          <p>Test vulnerabilities: SQL injection, XSS, CSRF.</p>
+          <p><strong>Tools:</strong> OWASP ZAP, Burp Suite.</p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Usability Testing</h4>
+          <p>UI/UX có thân thiện không? User có hoàn thành task không?</p>
+        </div>
+        <div class="card-item">
+          <h4>♿ Accessibility Testing</h4>
+          <p>Test cho người khuyết tật (screen reader, keyboard navigation).</p>
+          <p>WCAG 2.1 standard.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Compatibility Testing</h4>
+          <p>Test trên nhiều browsers, OS, devices, screen sizes.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔧 Maintainability</h4>
+          <p>Dễ sửa, mở rộng không?</p>
+        </div>
+        <div class="card-item">
+          <h4>📦 Portability</h4>
+          <p>Chuyển sang env khác có dễ không?</p>
+        </div>
+      </div>
+
+      <h3>5.3. Specialized Testing Types</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌍 Localization (L10N)</h4>
+          <p>Test phiên bản cho ngôn ngữ/quốc gia cụ thể: VN, JP, KR.</p>
+          <p>Test: ngôn ngữ, format ngày tháng, tiền tệ, văn hóa.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌎 Internationalization (I18N)</h4>
+          <p>Test app có sẵn sàng cho mọi ngôn ngữ không?</p>
+          <p>Test: Unicode, RTL languages, encoding.</p>
+        </div>
+        <div class="card-item">
+          <h4>🤝 Compatibility Testing</h4>
+          <p>Cross-browser (Chrome, Firefox, Safari), Cross-OS (Win, Mac, Linux), Cross-device.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔧 Installation Testing</h4>
+          <p>Test quá trình cài đặt, uninstall, upgrade.</p>
+        </div>
+        <div class="card-item">
+          <h4>♻️ Recovery Testing</h4>
+          <p>Test khả năng recover sau crash, network loss.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 A/B Testing</h4>
+          <p>Test 2 version cùng lúc, so sánh metric.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 6: BOX TESTING -->
+    <section id="box" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 6</span>
+        <h2>Black Box vs White Box vs Gray Box</h2>
+      </div>
+
+      <p>3 phương pháp tiếp cận testing dựa trên <strong>mức độ thông tin về code</strong>.</p>
+
+      <h3>6.1. Black Box Testing</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⬛ Black Box - "Không thấy bên trong"</h4>
+          <p>Tester KHÔNG cần biết code. Chỉ quan tâm Input → Output.</p>
+          <p><strong>Ai làm:</strong> Manual Tester, QA Engineer</p>
+          <p><strong>Cần biết:</strong> Requirements, expected behavior</p>
+          <p><strong>Cấp độ:</strong> System, Acceptance Testing</p>
+        </div>
+        <div class="card-item">
+          <h4>Techniques chính</h4>
+          <ul>
+            <li>Equivalence Partitioning</li>
+            <li>Boundary Value Analysis</li>
+            <li>Decision Table</li>
+            <li>State Transition</li>
+            <li>Use Case Testing</li>
+            <li>Pairwise Testing</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>6.2. White Box Testing</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⬜ White Box - "Thấy hết code"</h4>
+          <p>Tester biết code, test internal structure, logic.</p>
+          <p><strong>Ai làm:</strong> Developer, SDET (Software Dev in Test)</p>
+          <p><strong>Cần biết:</strong> Programming, code structure</p>
+          <p><strong>Cấp độ:</strong> Unit, Integration</p>
+        </div>
+        <div class="card-item">
+          <h4>Techniques chính</h4>
+          <ul>
+            <li>Statement Coverage</li>
+            <li>Branch Coverage</li>
+            <li>Path Coverage</li>
+            <li>Condition Coverage</li>
+            <li>Loop Testing</li>
+            <li>Mutation Testing</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>6.3. Code Coverage Metrics</h3>
+
+      <table>
+        <thead><tr><th>Metric</th><th>Định nghĩa</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Statement Coverage</td>
+            <td>% statement đã execute</td>
+            <td>10/15 line = 67%</td>
+          </tr>
+          <tr>
+            <td>Branch Coverage</td>
+            <td>% nhánh (if/else, switch) đã test</td>
+            <td>3/4 branch = 75%</td>
+          </tr>
+          <tr>
+            <td>Path Coverage</td>
+            <td>% path đã test (mọi combination)</td>
+            <td>4/8 path = 50%</td>
+          </tr>
+          <tr>
+            <td>Condition Coverage</td>
+            <td>% điều kiện boolean đã test true &amp; false</td>
+            <td>5/6 condition = 83%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">// Code example
+function checkAge(age) {
+  if (age &gt;= 18) {              // Branch 1
+    if (age &gt;= 65) {            // Branch 2
+      return "Senior";
+    }
+    return "Adult";
+  }
+  return "Minor";                // Branch 3
+}
+
+// Statement coverage 100%: cần test cases cho mọi line
+// Branch coverage 100%: cần test 3 case (Minor, Adult, Senior)
+// Path coverage 100%: cần test mọi đường (3 paths trong này)</div>
+
+      <h3>6.4. Gray Box Testing</h3>
+
+      <div class="card-item">
+        <h4>🌫️ Gray Box - "Thấy một phần"</h4>
+        <p>Combination của Black + White. Tester biết một phần code, system architecture.</p>
+        <ul>
+          <li><strong>Ai làm:</strong> Mid-Senior QA, SDET</li>
+          <li><strong>Cần biết:</strong> Database schema, API specs, system flow</li>
+          <li><strong>Phù hợp:</strong> Integration testing, API testing, Security testing</li>
+        </ul>
+        <p><strong>Ví dụ:</strong> Test API - biết endpoint, request/response structure (white-ish), nhưng không quan tâm code implementation (black-ish).</p>
+      </div>
+
+      <h3>6.5. Bảng so sánh</h3>
+
+      <table>
+        <thead><tr><th></th><th>Black Box</th><th>White Box</th><th>Gray Box</th></tr></thead>
+        <tbody>
+          <tr><td>Code knowledge</td><td>Không</td><td>Đầy đủ</td><td>Một phần</td></tr>
+          <tr><td>Người làm</td><td>QA Tester</td><td>Developer</td><td>QA Senior, SDET</td></tr>
+          <tr><td>Level</td><td>System, UAT</td><td>Unit, Integration</td><td>Integration, API</td></tr>
+          <tr><td>Time</td><td>Nhanh</td><td>Chậm</td><td>Trung bình</td></tr>
+          <tr><td>Cost</td><td>Thấp</td><td>Cao</td><td>Trung bình</td></tr>
+          <tr><td>Coverage</td><td>Functional</td><td>Logic, Code</td><td>Cả 2 partial</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 7: MANUAL TESTING -->
+    <section id="manual" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 7</span>
+        <h2>Manual Testing - Kiểm Thử Thủ Công</h2>
+      </div>
+
+      <p>90% người mới vào nghề bắt đầu từ <strong>Manual Testing</strong>. Đây là foundation. Hiểu Manual giỏi rồi mới nên qua Automation.</p>
+
+      <h3>7.1. Manual Testing là gì?</h3>
+      <p>Tester thực hiện test cases <strong>bằng tay</strong>, không dùng automation. Click, gõ, observe, ghi kết quả.</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ Khi nào DÙNG Manual</h4>
+          <ul>
+            <li>Exploratory testing</li>
+            <li>UI/UX testing (cần con mắt người)</li>
+            <li>Usability testing</li>
+            <li>Ad-hoc testing</li>
+            <li>Test mới (feature mới, chưa stable)</li>
+            <li>Short-term project (không đáng automate)</li>
+            <li>Visual testing nhiều</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>❌ Khi nào KHÔNG nên Manual</h4>
+          <ul>
+            <li>Regression testing (lặp lại liên tục)</li>
+            <li>Load/Performance testing</li>
+            <li>Test với big data</li>
+            <li>Test repetitive (1000 input)</li>
+            <li>CI/CD pipeline</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>7.2. Skills của Manual Tester</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🔍 Attention to Detail</h4>
+          <p>Phát hiện 1 pixel sai, 1 ký tự thiếu.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧠 Critical Thinking</h4>
+          <p>"Điều gì có thể sai?". Think like a hacker, like a stupid user.</p>
+        </div>
+        <div class="card-item">
+          <h4>📝 Documentation</h4>
+          <p>Viết bug report rõ ràng, reproducible.</p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Communication</h4>
+          <p>Trao đổi với dev, BA, PM.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Domain Knowledge</h4>
+          <p>Hiểu business: banking, healthcare, e-commerce.</p>
+        </div>
+        <div class="card-item">
+          <h4>🤔 Curiosity</h4>
+          <p>"What if...?". Thử mọi thứ unusual.</p>
+        </div>
+      </div>
+
+      <h3>7.3. Mindset của Tester giỏi</h3>
+
+      <div class="quote-box" style="background: rgba(245, 158, 11, 0.06); border-color: var(--accent); border-left: 5px solid var(--accent); padding: 20px 25px; border-radius: 6px; margin: 20px 0;">
+        <p style="font-style: italic; font-size: 16px;">"A developer thinks of 5 ways to make something work. A good tester thinks of 50 ways to break it."</p>
+      </div>
+
+      <ul>
+        <li><strong>Destructive mindset:</strong> Cố gắng PHÁ phần mềm</li>
+        <li><strong>User empathy:</strong> Nghĩ như user thực, không phải dev</li>
+        <li><strong>Skepticism:</strong> Đừng tin "It works on my machine"</li>
+        <li><strong>Patience:</strong> Repeat 100 lần để confirm bug</li>
+        <li><strong>Persistence:</strong> Đào sâu, không bỏ cuộc dễ dàng</li>
+      </ul>
+
+      <h3>7.4. Một ngày của Manual Tester</h3>
+
+      <div class="terminal">
+09:00 - Daily standup (15 min)
+        Update task tuần trước, plan hôm nay
+09:30 - Check email, JIRA tickets new
+        Mới có bug Critical từ Prod cần check
+10:00 - Smoke test build mới release
+        ✓ Login pass
+        ✓ Home page pass
+        ✗ Checkout broken - log bug ngay!
+11:00 - Test feature mới (Sprint backlog)
+        Execute 15 test cases - 12 pass, 3 fail
+13:00 - Lunch break
+14:00 - Retest 3 bug đã fix
+        2 pass, 1 still failing
+15:00 - Meeting với BA về feature mới
+        Clarify edge cases
+16:00 - Write test cases cho feature next sprint
+17:30 - Update test execution report
+        Send daily summary
+18:00 - Hết ca</div>
+
+      <h3>7.5. Common Mistakes của Manual Tester mới</h3>
+
+      <div class="danger-box" data-title="❌ Tránh">
+        <ul>
+          <li><strong>Test theo happy path only:</strong> Chỉ test "đúng cách dùng", quên edge cases</li>
+          <li><strong>Không document:</strong> Tìm bug nhưng quên ghi lại</li>
+          <li><strong>Bug report quá ít info:</strong> "Login broken" - dev đoán mò</li>
+          <li><strong>Không reproduce:</strong> Tìm bug 1 lần, không thử lại</li>
+          <li><strong>Quá tin dev:</strong> "Dev nói fix rồi", không retest</li>
+          <li><strong>Skip regression:</strong> "Feature này không liên quan", thực ra liên quan</li>
+          <li><strong>Không hỏi:</strong> Requirement không rõ → đoán → test sai</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 8: TEST CASE -->
+    <section id="testcase" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 8</span>
+        <h2>Test Case Design - Thiết Kế Test Case</h2>
+      </div>
+
+      <p><strong>Test Case</strong> là tài liệu mô tả <em>cách test một feature cụ thể</em>. Đây là sản phẩm chính của tester.</p>
+
+      <h3>8.1. Cấu trúc Test Case chuẩn</h3>
+
+      <div class="test-case-box">
+        <div class="tc-header">TC-001: User Login với valid credentials</div>
+        <div class="tc-row"><div class="tc-label">Test Case ID</div><div class="tc-value">TC-001</div></div>
+        <div class="tc-row"><div class="tc-label">Module</div><div class="tc-value">Authentication</div></div>
+        <div class="tc-row"><div class="tc-label">Title</div><div class="tc-value">Login thành công với email/password đúng</div></div>
+        <div class="tc-row"><div class="tc-label">Priority</div><div class="tc-value">High</div></div>
+        <div class="tc-row"><div class="tc-label">Test Type</div><div class="tc-value">Functional, Smoke</div></div>
+        <div class="tc-row"><div class="tc-label">Pre-conditions</div><div class="tc-value">
+          1. User account đã tồn tại<br>
+          2. App đang chạy<br>
+          3. User chưa login
+        </div></div>
+        <div class="tc-row"><div class="tc-label">Test Steps</div><div class="tc-value">
+          1. Navigate to /login<br>
+          2. Enter email: user@test.com<br>
+          3. Enter password: Pass@123<br>
+          4. Click Login button
+        </div></div>
+        <div class="tc-row"><div class="tc-label">Test Data</div><div class="tc-value">
+          Email: user@test.com<br>
+          Password: Pass@123
+        </div></div>
+        <div class="tc-row"><div class="tc-label">Expected Result</div><div class="tc-value">
+          1. Login successful<br>
+          2. Redirect to /dashboard<br>
+          3. Username displayed at top-right<br>
+          4. Welcome message shown
+        </div></div>
+        <div class="tc-row"><div class="tc-label">Actual Result</div><div class="tc-value">[Fill during execution]</div></div>
+        <div class="tc-row"><div class="tc-label">Status</div><div class="tc-value">[Pass/Fail/Blocked]</div></div>
+        <div class="tc-row"><div class="tc-label">Bug ID</div><div class="tc-value">[If failed, link bug]</div></div>
+        <div class="tc-row"><div class="tc-label">Tested By</div><div class="tc-value">Nguyen Van A</div></div>
+        <div class="tc-row"><div class="tc-label">Date</div><div class="tc-value">2026-05-15</div></div>
+      </div>
+
+      <h3>8.2. Đặc điểm Test Case tốt</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ Test case tốt</h4>
+          <ul>
+            <li><strong>Clear:</strong> Anyone có thể đọc và execute</li>
+            <li><strong>Concise:</strong> Ngắn gọn, đến điểm</li>
+            <li><strong>Specific:</strong> Cụ thể, không mơ hồ</li>
+            <li><strong>Repeatable:</strong> Cùng input → cùng output</li>
+            <li><strong>Independent:</strong> Không phụ thuộc TC khác</li>
+            <li><strong>Traceable:</strong> Link đến requirement</li>
+            <li><strong>Maintainable:</strong> Dễ update</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>❌ Test case tệ</h4>
+          <ul>
+            <li>"Test login" - quá chung chung</li>
+            <li>Steps mơ hồ: "Try various inputs"</li>
+            <li>Expected result không rõ</li>
+            <li>Phụ thuộc nhiều TC khác</li>
+            <li>Không có precondition</li>
+            <li>Quá dài (50+ steps)</li>
+            <li>Test 5 thứ trong 1 TC</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>8.3. Các loại Test Cases theo Scenario</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>😊 Positive Test Cases</h4>
+          <p>Test với valid input. Expected: hệ thống work.</p>
+          <p><em>Ví dụ: Login với đúng email/password → success</em></p>
+        </div>
+        <div class="card-item">
+          <h4>😟 Negative Test Cases</h4>
+          <p>Test với invalid input. Expected: hệ thống handle gracefully.</p>
+          <p><em>Ví dụ: Login với password sai → error message</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Edge Cases</h4>
+          <p>Test boundary, extreme values.</p>
+          <p><em>Ví dụ: Password 1 char, 1000 char, empty</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌀 Corner Cases</h4>
+          <p>Multiple edge cases cùng lúc.</p>
+          <p><em>Ví dụ: Max length email + min length password + đặc biệt chars</em></p>
+        </div>
+      </div>
+
+      <h3>8.4. Ví dụ Test Cases cho Login feature</h3>
+
+      <p>Một feature đơn giản như Login cần <strong>20-50 test cases</strong>:</p>
+
+      <div class="card-item">
+        <h4>📋 Positive Cases (5-10)</h4>
+        <ul>
+          <li>TC-001: Login valid email + valid password</li>
+          <li>TC-002: Login với "Remember me" checked</li>
+          <li>TC-003: Login from "Forgot password" flow</li>
+          <li>TC-004: Login sau khi register</li>
+          <li>TC-005: Login từ social (Google, Facebook)</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>📋 Negative Cases (15-20)</h4>
+        <ul>
+          <li>TC-006: Empty email + empty password</li>
+          <li>TC-007: Empty email + valid password</li>
+          <li>TC-008: Valid email + empty password</li>
+          <li>TC-009: Invalid email format (no @)</li>
+          <li>TC-010: Email không tồn tại trong DB</li>
+          <li>TC-011: Wrong password</li>
+          <li>TC-012: Password case-sensitive (Pass vs pass)</li>
+          <li>TC-013: SQL injection attempt: ' OR 1=1 --</li>
+          <li>TC-014: XSS attempt: &lt;script&gt;alert('x')&lt;/script&gt;</li>
+          <li>TC-015: Account đã bị lock</li>
+          <li>TC-016: Account chưa verify email</li>
+          <li>TC-017: 5 lần sai password → lockout</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>📋 Edge Cases (10-15)</h4>
+        <ul>
+          <li>TC-018: Email 256 ký tự (max length)</li>
+          <li>TC-019: Email 1 ký tự</li>
+          <li>TC-020: Password 1 ký tự, 1000 ký tự</li>
+          <li>TC-021: Email với leading/trailing spaces</li>
+          <li>TC-022: Email Unicode: 用户@example.com</li>
+          <li>TC-023: Password đặc biệt: <code>!@#$%^&amp;*</code></li>
+          <li>TC-024: Login concurrent (2 device cùng lúc)</li>
+          <li>TC-025: Session timeout</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>📋 UI/UX Cases (5-10)</h4>
+        <ul>
+          <li>TC-026: Password masked với asterisk</li>
+          <li>TC-027: Show/hide password toggle work</li>
+          <li>TC-028: Tab order Email → Password → Login</li>
+          <li>TC-029: Enter key submit form</li>
+          <li>TC-030: Loading spinner show khi submit</li>
+          <li>TC-031: Error message clear khi user gõ lại</li>
+        </ul>
+      </div>
+
+      <h3>8.5. Test Case Review Process</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Self-review</h4><p>Tester re-read test case trước khi submit.</p></div>
+        <div class="step"><h4>Peer Review</h4><p>Tester khác review.</p></div>
+        <div class="step"><h4>BA / Lead Review</h4><p>BA check business logic. Lead check structure.</p></div>
+        <div class="step"><h4>Dev Review (optional)</h4><p>Dev có thể spot missing edge cases.</p></div>
+        <div class="step"><h4>Approval</h4><p>Sign off, ready to execute.</p></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 9: TECHNIQUES -->
+    <section id="techniques" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 9</span>
+        <h2>Test Design Techniques</h2>
+      </div>
+
+      <p>Không thể test mọi combination. Đây là <strong>techniques chuẩn ISTQB</strong> để chọn test cases hiệu quả.</p>
+
+      <h3>9.1. Equivalence Partitioning (EP)</h3>
+      <p>Chia input thành các <strong>nhóm tương đương</strong> - mỗi nhóm chỉ cần test 1 đại diện.</p>
+
+      <div class="card-item">
+        <h4>🎯 Ví dụ: Test tuổi từ 0-120</h4>
+        <p>Nếu test mọi tuổi → 121 test cases. Dùng EP:</p>
+        <ul>
+          <li><strong>Partition 1 (Invalid):</strong> &lt; 0 → Test với -1</li>
+          <li><strong>Partition 2 (Child):</strong> 0-17 → Test với 10</li>
+          <li><strong>Partition 3 (Adult):</strong> 18-64 → Test với 30</li>
+          <li><strong>Partition 4 (Senior):</strong> 65-120 → Test với 80</li>
+          <li><strong>Partition 5 (Invalid):</strong> &gt; 120 → Test với 121</li>
+        </ul>
+        <p>5 test cases thay vì 121. Coverage tương đương.</p>
+      </div>
+
+      <h3>9.2. Boundary Value Analysis (BVA)</h3>
+      <p>Bug thường ở <strong>biên giới</strong>. Test min, max, min-1, max+1, min+1, max-1.</p>
+
+      <div class="card-item">
+        <h4>🎯 Ví dụ: Password 8-20 ký tự</h4>
+        <table>
+          <thead><tr><th>Test</th><th>Length</th><th>Expected</th></tr></thead>
+          <tbody>
+            <tr><td>Below min</td><td>7 chars</td><td>Reject</td></tr>
+            <tr><td>Min</td><td>8 chars</td><td>Accept</td></tr>
+            <tr><td>Min+1</td><td>9 chars</td><td>Accept</td></tr>
+            <tr><td>Max-1</td><td>19 chars</td><td>Accept</td></tr>
+            <tr><td>Max</td><td>20 chars</td><td>Accept</td></tr>
+            <tr><td>Above max</td><td>21 chars</td><td>Reject</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="info-box" data-title="💡 EP + BVA kết hợp">
+        EP và BVA luôn được dùng cùng nhau. EP chọn nhóm, BVA test biên của mỗi nhóm. Đây là 2 technique cơ bản nhất - phải master.
+      </div>
+
+      <h3>9.3. Decision Table Testing</h3>
+      <p>Khi có nhiều condition combine, dùng <strong>Decision Table</strong> để cover mọi case.</p>
+
+      <div class="card-item">
+        <h4>🎯 Ví dụ: Bảo hiểm xe theo tuổi &amp; có lái xe an toàn</h4>
+        <table>
+          <thead><tr><th>Conditions</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th></tr></thead>
+          <tbody>
+            <tr><td>Age ≥ 25</td><td>T</td><td>T</td><td>F</td><td>F</td></tr>
+            <tr><td>Clean record</td><td>T</td><td>F</td><td>T</td><td>F</td></tr>
+            <tr><td><strong>Actions:</strong></td><td></td><td></td><td></td><td></td></tr>
+            <tr><td>Discount</td><td>20%</td><td>10%</td><td>5%</td><td>0%</td></tr>
+            <tr><td>Approval</td><td>Auto</td><td>Auto</td><td>Manual</td><td>Reject</td></tr>
+          </tbody>
+        </table>
+        <p>4 rules → 4 test cases. Mọi combination được cover.</p>
+      </div>
+
+      <h3>9.4. State Transition Testing</h3>
+      <p>Test khi hệ thống có <strong>states</strong> (trạng thái) và transitions giữa chúng.</p>
+
+      <div class="card-item">
+        <h4>🎯 Ví dụ: Login với 3 lần sai password</h4>
+        <p>States:</p>
+        <ul>
+          <li>S1: Initial (chưa login attempt)</li>
+          <li>S2: After 1st wrong</li>
+          <li>S3: After 2nd wrong</li>
+          <li>S4: Locked (sau 3 lần sai)</li>
+          <li>S5: Logged in</li>
+        </ul>
+        <p>Transitions test:</p>
+        <ul>
+          <li>S1 → S5 (login đúng ngay)</li>
+          <li>S1 → S2 → S3 → S4 (sai 3 lần)</li>
+          <li>S2 → S5 (đúng sau 1 lần sai)</li>
+          <li>S4 → S4 (login khi đã lock)</li>
+        </ul>
+      </div>
+
+      <h3>9.5. Use Case Testing</h3>
+      <p>Test theo <strong>user scenario</strong> end-to-end thực tế.</p>
+
+      <div class="card-item">
+        <h4>🎯 Use Case: User mua hàng online</h4>
+        <ol>
+          <li>Browse products</li>
+          <li>Add to cart</li>
+          <li>Update quantity</li>
+          <li>Apply coupon</li>
+          <li>Checkout</li>
+          <li>Enter shipping info</li>
+          <li>Choose payment</li>
+          <li>Confirm order</li>
+          <li>Receive email confirmation</li>
+        </ol>
+        <p>Mỗi step có alternative flows (coupon invalid, payment fail, address invalid...). Test main flow + alternative flows.</p>
+      </div>
+
+      <h3>9.6. Pairwise Testing (All-Pairs)</h3>
+      <p>Khi có nhiều variables, mỗi variable có nhiều values, test mọi PAIR thay vì mọi combination.</p>
+
+      <div class="card-item">
+        <h4>🎯 Ví dụ: Test 3 browsers × 3 OS × 3 screen sizes</h4>
+        <p><strong>Full combination:</strong> 3 × 3 × 3 = 27 test cases</p>
+        <p><strong>Pairwise:</strong> Cover mọi pair → chỉ cần 9 test cases</p>
+        <p><strong>Coverage:</strong> Phát hiện 65-85% bugs với 1/3 effort.</p>
+        <p><strong>Tools:</strong> PICT (Microsoft), AllPairs.</p>
+      </div>
+
+      <h3>9.7. Error Guessing</h3>
+      <p>Dựa trên <strong>kinh nghiệm</strong>, đoán bugs có thể có.</p>
+
+      <ul>
+        <li>Empty inputs (NULL, "", undefined)</li>
+        <li>Số 0, số âm</li>
+        <li>Maximum/minimum values</li>
+        <li>Special characters: <code>'</code>, <code>"</code>, <code>&lt;</code>, <code>&gt;</code></li>
+        <li>SQL injection, XSS</li>
+        <li>Network slow/lost</li>
+        <li>Browser back button</li>
+        <li>Refresh during operation</li>
+        <li>Double-click</li>
+        <li>Timezone differences</li>
+      </ul>
+
+      <h3>9.8. Tổng kết Techniques</h3>
+
+      <table>
+        <thead><tr><th>Technique</th><th>Khi nào dùng</th></tr></thead>
+        <tbody>
+          <tr><td>Equivalence Partitioning</td><td>Input range, categories</td></tr>
+          <tr><td>Boundary Value Analysis</td><td>Min/max boundary</td></tr>
+          <tr><td>Decision Table</td><td>Multiple conditions combine</td></tr>
+          <tr><td>State Transition</td><td>Hệ thống có states</td></tr>
+          <tr><td>Use Case</td><td>End-to-end scenarios</td></tr>
+          <tr><td>Pairwise</td><td>Combinatorial explosion</td></tr>
+          <tr><td>Error Guessing</td><td>Bổ sung experience-based</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 10: DOCUMENTATION -->
+    <section id="docs" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 10</span>
+        <h2>Test Documentation</h2>
+      </div>
+
+      <p>Tester chuyên nghiệp <strong>document everything</strong>. Đây là deliverables chính của QA.</p>
+
+      <h3>10.1. Các loại Test Documents</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📋 Test Strategy</h4>
+          <p>High-level approach cho toàn project. Long-term.</p>
+          <p>Viết bởi: QA Manager / Lead</p>
+          <p>Update: Hiếm</p>
+        </div>
+        <div class="card-item">
+          <h4>📝 Test Plan</h4>
+          <p>Detailed plan cho 1 release/sprint.</p>
+          <p>Viết bởi: Test Lead</p>
+          <p>Update: Mỗi release</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 RTM</h4>
+          <p>Mapping requirement ↔ test case.</p>
+        </div>
+        <div class="card-item">
+          <h4>✅ Test Cases</h4>
+          <p>Detail steps test.</p>
+        </div>
+        <div class="card-item">
+          <h4>🐛 Bug Report</h4>
+          <p>Document defects.</p>
+        </div>
+        <div class="card-item">
+          <h4>📈 Test Execution Report</h4>
+          <p>Status execution daily/weekly.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏁 Test Closure Report</h4>
+          <p>Summary cuối release.</p>
+        </div>
+        <div class="card-item">
+          <h4>📚 Test Metrics</h4>
+          <p>Numbers: pass rate, bug rate, coverage.</p>
+        </div>
+      </div>
+
+      <h3>10.2. Test Plan Template</h3>
+
+      <div class="card-item">
+        <h4>📄 IEEE 829 Test Plan Structure</h4>
+        <ol>
+          <li><strong>Test Plan Identifier:</strong> Unique ID</li>
+          <li><strong>Introduction:</strong> Brief overview</li>
+          <li><strong>Test Items:</strong> What to test (modules, features)</li>
+          <li><strong>Features to be Tested:</strong> List in-scope</li>
+          <li><strong>Features NOT to be Tested:</strong> List out-of-scope</li>
+          <li><strong>Approach:</strong> Strategy (manual/auto, levels, types)</li>
+          <li><strong>Pass/Fail Criteria:</strong> When test passes/fails</li>
+          <li><strong>Suspension/Resumption Criteria:</strong> When to stop, when to continue</li>
+          <li><strong>Test Deliverables:</strong> Documents output</li>
+          <li><strong>Test Tasks:</strong> Activities &amp; timeline</li>
+          <li><strong>Environmental Needs:</strong> Hardware, software, network</li>
+          <li><strong>Responsibilities:</strong> Who does what</li>
+          <li><strong>Staffing &amp; Training:</strong> Resources</li>
+          <li><strong>Schedule:</strong> Timeline với milestones</li>
+          <li><strong>Risks &amp; Contingencies:</strong> Rủi ro + mitigation</li>
+          <li><strong>Approvals:</strong> Sign-off</li>
+        </ol>
+      </div>
+
+      <h3>10.3. Test Strategy vs Test Plan</h3>
+
+      <table>
+        <thead><tr><th></th><th>Test Strategy</th><th>Test Plan</th></tr></thead>
+        <tbody>
+          <tr><td>Scope</td><td>Organization-wide</td><td>Project/release-specific</td></tr>
+          <tr><td>Level</td><td>High-level</td><td>Detailed</td></tr>
+          <tr><td>Frequency</td><td>1 lần/năm</td><td>Mỗi release/sprint</td></tr>
+          <tr><td>Author</td><td>QA Director, CTO</td><td>Test Lead</td></tr>
+          <tr><td>Length</td><td>Short (5-10 pages)</td><td>Detailed (20-50 pages)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>10.4. Test Metrics quan trọng</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📊 Test Coverage</h4>
+          <p>% requirement có test case</p>
+          <div class="terminal">Coverage = (# TC executed / # TC total) × 100%</div>
+        </div>
+        <div class="card-item">
+          <h4>✅ Pass Rate</h4>
+          <p>% TC pass</p>
+          <div class="terminal">Pass Rate = (# Pass / # Executed) × 100%
+Target: ≥ 95%</div>
+        </div>
+        <div class="card-item">
+          <h4>🐛 Defect Density</h4>
+          <p>Số bug / KLOC (1000 lines of code)</p>
+          <p>Industry: 1-25 defects/KLOC</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Defect Removal Efficiency (DRE)</h4>
+          <p>% bug tìm trước khi release</p>
+          <div class="terminal">DRE = (Bugs in test / Total bugs) × 100%
+Target: ≥ 85%</div>
+        </div>
+        <div class="card-item">
+          <h4>⏱️ Mean Time Between Failures (MTBF)</h4>
+          <p>Thời gian trung bình giữa 2 lỗi production</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 Mean Time To Detect (MTTD)</h4>
+          <p>Thời gian phát hiện bug</p>
+        </div>
+      </div>
+
+      <h3>10.5. Test Summary Report</h3>
+
+      <div class="terminal">================================
+TEST EXECUTION REPORT - Sprint 24
+Release: v2.5.0  |  Date: 2026-05-15
+================================
+
+TOTAL TEST CASES: 247
+EXECUTED: 245 (99.2%)
+
+Status:
+  ✓ PASS:    223  (90.6%)
+  ✗ FAIL:     18  (7.3%)
+  ⏭ SKIPPED:   2  (0.8%)
+  🚫 BLOCKED:   4  (1.6%)
+
+BUGS FOUND: 18
+  Critical: 1
+  High:     3
+  Medium:   8
+  Low:      6
+
+BUGS FIXED: 14
+BUGS OPEN:  4 (re-test pending)
+
+ENVIRONMENT: Staging
+BROWSERS: Chrome 120, Firefox 121, Edge 119
+
+NOTES:
+- All Critical bugs fixed before release
+- 4 Open bugs are Low priority (UI cosmetic)
+- Performance test: avg response 1.2s (target &lt; 2s) ✓
+================================</div>
+    </section>
+
+    <!-- CHƯƠNG 11: BUG REPORTING -->
+    <section id="bug" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 11</span>
+        <h2>Bug Reporting</h2>
+      </div>
+
+      <p><strong>Bug Report</strong> là sản phẩm quan trọng nhất của tester. Bug report tốt = developer fix nhanh. Bug report tệ = wasted time, ping-pong.</p>
+
+      <h3>11.1. Anatomy of a Good Bug Report</h3>
+
+      <div class="bug-report">
+        <h4>🐛 BUG-2024-1234: Login button không hoạt động trên Safari iOS</h4>
+        <div class="field"><strong>Reporter:</strong> Nguyen Van A (QA)</div>
+        <div class="field"><strong>Assignee:</strong> Tran Van B (Dev)</div>
+        <div class="field"><strong>Date:</strong> 2026-05-15 10:30</div>
+        <div class="field"><strong>Severity:</strong> <span class="badge badge-high">High</span></div>
+        <div class="field"><strong>Priority:</strong> <span class="badge badge-critical">P1</span></div>
+        <div class="field"><strong>Status:</strong> Open</div>
+        <div class="field"><strong>Environment:</strong> iPhone 14 Pro, iOS 17.2, Safari 17, App v2.5.0</div>
+        <div class="field"><strong>Build:</strong> staging-2024.05.15-rc1</div>
+
+        <p style="margin-top: 15px;"><strong>📝 Description:</strong></p>
+        <p>Login button không respond khi tap trên Safari iOS. User không thể đăng nhập từ mobile Safari.</p>
+
+        <p><strong>🔁 Steps to Reproduce:</strong></p>
+        <ol>
+          <li>Mở Safari trên iPhone</li>
+          <li>Navigate to https://staging.example.com/login</li>
+          <li>Enter valid email: test@example.com</li>
+          <li>Enter valid password: Pass@123</li>
+          <li>Tap "Login" button</li>
+        </ol>
+
+        <p><strong>✅ Expected Result:</strong></p>
+        <p>Login thành công, redirect to /dashboard.</p>
+
+        <p><strong>❌ Actual Result:</strong></p>
+        <p>Button không respond. Không có loading. Không có error. User stuck on login page.</p>
+
+        <p><strong>📷 Attachments:</strong></p>
+        <ul>
+          <li>screenshot_login_page.png</li>
+          <li>screen_recording.mp4 (15s)</li>
+          <li>safari_console_log.txt</li>
+        </ul>
+
+        <p><strong>💡 Additional Info:</strong></p>
+        <ul>
+          <li>Reproducible: 10/10 lần</li>
+          <li>Test trên Chrome iOS: PASS</li>
+          <li>Test trên Safari macOS: PASS</li>
+          <li>Issue chỉ xuất hiện trên Safari iOS</li>
+          <li>Console error: <code>Uncaught TypeError: undefined is not an object (evaluating 'navigator.userAgentData.brands')</code></li>
+        </ul>
+
+        <p><strong>🎯 Suspected Cause:</strong></p>
+        <p>Code dùng <code>navigator.userAgentData</code> - Safari iOS chưa support.</p>
+      </div>
+
+      <h3>11.2. 7 Yếu tố BẮT BUỘC của Bug Report</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Clear &amp; Concise Title</h4><p>Một câu mô tả ngắn bug. Ai đọc cũng hiểu ngay.<br>❌ "Bug login" / ✅ "Login button không respond trên Safari iOS"</p></div>
+        <div class="step"><h4>Steps to Reproduce</h4><p>Liệt kê chi tiết, người khác có thể làm theo và GẶP CÙNG bug.</p></div>
+        <div class="step"><h4>Expected vs Actual Result</h4><p>Phải có CẢ 2. So sánh rõ ràng.</p></div>
+        <div class="step"><h4>Environment</h4><p>OS, browser, device, app version, network.</p></div>
+        <div class="step"><h4>Severity &amp; Priority</h4><p>Đánh giá ban đầu.</p></div>
+        <div class="step"><h4>Attachments</h4><p>Screenshot, video, logs - càng nhiều càng tốt.</p></div>
+        <div class="step"><h4>Reproducibility</h4><p>3/3, 5/10, 1/100? Dev cần biết.</p></div>
+      </div>
+
+      <h3>11.3. Bug Life Cycle</h3>
+
+      <div class="terminal">    [NEW] (vừa report)
+        ↓
+   [ASSIGNED] (assign cho dev)
+        ↓
+     [OPEN] (dev đang fix)
+        ↓
+   [FIXED] (dev báo đã fix)
+        ↓
+   [RETEST] (tester verify)
+        ↓
+        ├─→ [CLOSED] (verified, fix ok)
+        ├─→ [REOPENED] (vẫn còn bug)
+        └─→ [DEFERRED] (fix sau)
+
+Other statuses:
+  [DUPLICATE] - đã có bug tương tự
+  [REJECTED] - không phải bug
+  [CANNOT REPRODUCE] - dev không tái hiện được
+  [BY DESIGN] - feature, không phải bug</div>
+
+      <h3>11.4. Common Mistakes trong Bug Reporting</h3>
+
+      <div class="danger-box" data-title="❌ Tránh">
+        <ul>
+          <li><strong>Title quá chung:</strong> "Doesn't work" - dev không hiểu</li>
+          <li><strong>Thiếu Steps:</strong> Dev phải đoán cách reproduce</li>
+          <li><strong>Thiếu Environment:</strong> Bug đặc thù browser/device không được note</li>
+          <li><strong>Cảm xúc trong report:</strong> "This is stupid, fix it!" - unprofessional</li>
+          <li><strong>Multiple bugs trong 1 report:</strong> Khó track, khó assign</li>
+          <li><strong>Không attach screenshot:</strong> "Bug visual nhưng không có hình"</li>
+          <li><strong>Đoán nguyên nhân quá nhiều:</strong> Đoán có thể, nhưng đừng claim. "Suspected" instead of "It's because..."</li>
+        </ul>
+      </div>
+
+      <h3>11.5. Tips viết Bug Report Pro</h3>
+
+      <div class="tip-box" data-title="💡 Pro tips">
+        <ul>
+          <li><strong>Screenshot có markup:</strong> Vẽ đỏ vào chỗ bug. Dùng Lightshot, Snagit.</li>
+          <li><strong>Video screen recording:</strong> Hơn 1000 chữ. Dùng Loom, OBS.</li>
+          <li><strong>HAR file:</strong> Chrome DevTools → Network → Save HAR. Dev xem được full request/response.</li>
+          <li><strong>Console logs:</strong> Copy console error.</li>
+          <li><strong>Reproduce trên 2 environment:</strong> Confirm không phải fluke.</li>
+          <li><strong>Bisect issue:</strong> Tìm build/commit mà bug xuất hiện đầu tiên.</li>
+          <li><strong>Tag stakeholders:</strong> @PM @TechLead cho Critical bugs.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 12: TOOLS -->
+    <section id="tools" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 12</span>
+        <h2>Test Management Tools</h2>
+      </div>
+
+      <h3>12.1. Bug Tracking Tools</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎯 JIRA (Atlassian)</h4>
+          <p>Industry standard. 90% công ty dùng.</p>
+          <ul>
+            <li>Workflow customizable</li>
+            <li>Integration với mọi tool</li>
+            <li>Roadmap, sprint planning</li>
+            <li>Reports đa dạng</li>
+          </ul>
+          <p><strong>Cost:</strong> $7-12/user/month</p>
+        </div>
+        <div class="card-item">
+          <h4>🦅 Bugzilla</h4>
+          <p>Open source, free. Mozilla phát triển.</p>
+          <p>UI cũ nhưng functional. Dùng nhiều ở enterprise.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌟 Azure DevOps</h4>
+          <p>Microsoft. Tích hợp với Azure cloud.</p>
+          <p>Mạnh cho .NET projects.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦁 Redmine</h4>
+          <p>Open source. Phổ biến tại VN.</p>
+          <p>Plugin phong phú.</p>
+        </div>
+        <div class="card-item">
+          <h4>💎 ClickUp</h4>
+          <p>All-in-one project management.</p>
+          <p>Hot trong startups.</p>
+        </div>
+        <div class="card-item">
+          <h4>📋 Linear</h4>
+          <p>Modern, fast. Hot 2024-2026.</p>
+          <p>Trending trong tech companies.</p>
+        </div>
+      </div>
+
+      <h3>12.2. Test Case Management</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🚂 TestRail</h4>
+          <p>Industry standard cho test case management.</p>
+          <p>Integration với JIRA tốt.</p>
+          <p><strong>Cost:</strong> $34/user/month</p>
+        </div>
+        <div class="card-item">
+          <h4>🐱 qTest</h4>
+          <p>Tricentis. Mạnh cho enterprise.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦊 Zephyr</h4>
+          <p>JIRA plugin. Test cases trong JIRA.</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 Xray</h4>
+          <p>JIRA plugin. Competitor của Zephyr.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 TestLink</h4>
+          <p>Open source. Free.</p>
+        </div>
+        <div class="card-item">
+          <h4>📝 Excel / Google Sheets</h4>
+          <p>Vẫn dùng cho project nhỏ. Đừng coi thường.</p>
+        </div>
+      </div>
+
+      <h3>12.3. Browser DevTools - Must Know</h3>
+
+      <p>Mọi tester WEB phải master Chrome DevTools (F12):</p>
+
+      <div class="card-item">
+        <h4>🛠️ Chrome DevTools Tabs</h4>
+        <ul>
+          <li><strong>Elements:</strong> Inspect HTML, CSS. Tìm element selector cho automation.</li>
+          <li><strong>Console:</strong> Xem JavaScript errors, run commands.</li>
+          <li><strong>Network:</strong> Xem API calls, response time, status code. Save HAR.</li>
+          <li><strong>Performance:</strong> Profile load time.</li>
+          <li><strong>Application:</strong> Cookies, localStorage, sessionStorage.</li>
+          <li><strong>Lighthouse:</strong> Audit performance, accessibility, SEO.</li>
+          <li><strong>Device Mode:</strong> Test responsive, mobile view.</li>
+          <li><strong>Sources:</strong> Debug JS với breakpoints.</li>
+        </ul>
+      </div>
+
+      <h3>12.4. API Testing Tools</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📮 Postman</h4>
+          <p>Industry standard. Free + paid.</p>
+          <p>GUI, easy to learn. Collection sharing.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌪️ Bruno</h4>
+          <p>Open source. Local-first.</p>
+          <p>Trending 2024-2026.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦋 Insomnia</h4>
+          <p>Postman alternative. Cleaner UI.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 cURL</h4>
+          <p>Command line. Power user tool.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚡ REST Assured</h4>
+          <p>Java library cho API automation.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 SoapUI</h4>
+          <p>Cho SOAP/REST API.</p>
+        </div>
+      </div>
+
+      <h3>12.5. Other Essential Tools</h3>
+
+      <ul>
+        <li><strong>Screenshot:</strong> Lightshot, Snagit, ShareX, Greenshot</li>
+        <li><strong>Screen recording:</strong> Loom, OBS, ScreenRec</li>
+        <li><strong>Annotation:</strong> Markup Hero, Skitch</li>
+        <li><strong>Mind mapping:</strong> XMind, Miro, MindMeister (cho test planning)</li>
+        <li><strong>Wiki/Doc:</strong> Confluence, Notion</li>
+        <li><strong>Communication:</strong> Slack, Microsoft Teams</li>
+        <li><strong>Version control:</strong> Git (mandatory cho automation)</li>
+        <li><strong>SQL clients:</strong> DBeaver, HeidiSQL, MySQL Workbench (cho database testing)</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 13: AGILE -->
+    <section id="agile" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 13</span>
+        <h2>Agile &amp; Scrum Testing</h2>
+      </div>
+
+      <p>90%+ project hiện đại theo Agile. Tester PHẢI hiểu Agile/Scrum để làm việc hiệu quả.</p>
+
+      <h3>13.1. Agile Manifesto (2001)</h3>
+
+      <div class="quote-box" style="background: rgba(59, 130, 246, 0.06); border-color: var(--primary); padding: 20px 25px; border-radius: 6px; margin: 20px 0; border-left: 5px solid var(--primary);">
+        <p style="font-style: italic;">
+        "We are uncovering better ways of developing software by doing it and helping others do it.<br><br>
+        Through this work we have come to value:<br>
+        <strong>Individuals and interactions</strong> over processes and tools<br>
+        <strong>Working software</strong> over comprehensive documentation<br>
+        <strong>Customer collaboration</strong> over contract negotiation<br>
+        <strong>Responding to change</strong> over following a plan"
+        </p>
+      </div>
+
+      <h3>13.2. Scrum Framework</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>👥 Roles</h4>
+          <ul>
+            <li><strong>Product Owner:</strong> Quyết định WHAT</li>
+            <li><strong>Scrum Master:</strong> Facilitator, remove blockers</li>
+            <li><strong>Development Team:</strong> Devs + Testers + Designers</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📦 Artifacts</h4>
+          <ul>
+            <li><strong>Product Backlog:</strong> Master list features</li>
+            <li><strong>Sprint Backlog:</strong> Features cho sprint hiện tại</li>
+            <li><strong>Increment:</strong> Software working sau sprint</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📅 Events</h4>
+          <ul>
+            <li><strong>Sprint Planning:</strong> Plan sprint mới</li>
+            <li><strong>Daily Standup:</strong> 15 min daily sync</li>
+            <li><strong>Sprint Review:</strong> Demo cuối sprint</li>
+            <li><strong>Retrospective:</strong> Lessons learned</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>13.3. Sprint Lifecycle (2 tuần)</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Day 1: Sprint Planning</h4><p>Team commit user stories cho sprint. Tester estimate test effort.</p></div>
+        <div class="step"><h4>Day 1-3: Story Refinement</h4><p>Tester làm rõ acceptance criteria, viết draft test cases.</p></div>
+        <div class="step"><h4>Day 4-9: Dev + Test Parallel</h4><p>Dev code, Tester viết detailed test cases, test sub-task.</p></div>
+        <div class="step"><h4>Day 8-10: Integration Test</h4><p>Test integration features.</p></div>
+        <div class="step"><h4>Day 10-13: Full Sprint Testing</h4><p>System test, regression, exploratory.</p></div>
+        <div class="step"><h4>Day 14: Sprint Review + Retro</h4><p>Demo to PO, feedback. Retrospective.</p></div>
+      </div>
+
+      <h3>13.4. User Story Format</h3>
+
+      <div class="card-item">
+        <h4>📜 Story Format</h4>
+        <div class="terminal">As a [type of user]
+I want [some goal]
+So that [some reason]
+
+EXAMPLE:
+As a registered user
+I want to reset my password via email
+So that I can regain access when I forget it
+
+ACCEPTANCE CRITERIA:
+✓ Click "Forgot password" link on login page
+✓ Enter email, click Submit
+✓ Receive email with reset link within 1 minute
+✓ Reset link expires after 24 hours
+✓ Reset link is single-use
+✓ New password follows password policy
+✓ Old sessions logged out after reset</div>
+      </div>
+
+      <h3>13.5. Definition of Done (DoD)</h3>
+
+      <p><strong>DoD</strong> = checklist khi nào 1 story được coi là "DONE". Mọi team có DoD riêng.</p>
+
+      <div class="pass-box" data-title="✅ Sample Definition of Done">
+        <ul>
+          <li>Code reviewed (peer review pass)</li>
+          <li>Unit tests written &amp; passing</li>
+          <li>Code merged to develop branch</li>
+          <li>Acceptance criteria met</li>
+          <li>Manual test cases executed - all pass</li>
+          <li>Regression test pass</li>
+          <li>No critical/high bugs open</li>
+          <li>Documentation updated</li>
+          <li>Demo to PO completed</li>
+          <li>PO approval received</li>
+        </ul>
+      </div>
+
+      <h3>13.6. QA Role trong Scrum</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📝 Planning Phase</h4>
+          <ul>
+            <li>Story estimation (effort + risk)</li>
+            <li>Identify test scenarios</li>
+            <li>Question acceptance criteria</li>
+            <li>Define edge cases</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>⚙️ Development Phase</h4>
+          <ul>
+            <li>Pair with dev for testability</li>
+            <li>Write detailed test cases</li>
+            <li>Prepare test data</li>
+            <li>Setup test environment</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🧪 Testing Phase</h4>
+          <ul>
+            <li>Execute test cases</li>
+            <li>Log bugs</li>
+            <li>Retest fixes</li>
+            <li>Exploratory testing</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📊 Closure Phase</h4>
+          <ul>
+            <li>Sign-off feature</li>
+            <li>Update RTM</li>
+            <li>Sprint demo participation</li>
+            <li>Retrospective input</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>13.7. Test in Shift-Left Approach</h3>
+
+      <div class="info-box" data-title="🎯 Shift-Left Testing">
+        Concept: <strong>Test SỚM trong SDLC</strong>, không chờ cuối. QA tham gia từ requirement phase.<br><br>
+        <strong>Benefits:</strong>
+        <ul>
+          <li>Phát hiện bug sớm → fix rẻ hơn 100x</li>
+          <li>QA hiểu requirement sâu hơn</li>
+          <li>Avoid surprises cuối sprint</li>
+          <li>Better collaboration</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 14: AUTOMATION -->
+    <section id="automation" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 14</span>
+        <h2>Automation Testing - Giới Thiệu</h2>
+      </div>
+
+      <p>Automation = lương cao hơn 2x. Manual tester chuyển sang Automation là <strong>career path phổ biến nhất</strong>.</p>
+
+      <h3>14.1. Manual vs Automation</h3>
+
+      <table>
+        <thead><tr><th></th><th>Manual</th><th>Automation</th></tr></thead>
+        <tbody>
+          <tr><td>Initial cost</td><td>Thấp</td><td>Cao (setup framework)</td></tr>
+          <tr><td>Long-term cost</td><td>Cao (lặp lại)</td><td>Thấp (chạy nhiều lần)</td></tr>
+          <tr><td>Speed</td><td>Chậm (giờ)</td><td>Nhanh (phút)</td></tr>
+          <tr><td>Accuracy</td><td>Human error</td><td>Consistent</td></tr>
+          <tr><td>Coverage</td><td>Limited</td><td>Có thể rất rộng</td></tr>
+          <tr><td>UI/UX</td><td>Tốt (mắt người)</td><td>Kém</td></tr>
+          <tr><td>Exploratory</td><td>Tốt</td><td>Không phù hợp</td></tr>
+          <tr><td>Regression</td><td>Tệ (lặp lại)</td><td>Lý tưởng</td></tr>
+          <tr><td>Skills</td><td>Domain knowledge</td><td>Programming</td></tr>
+        </tbody>
+      </table>
+
+      <h3>14.2. Khi nào nên Automate?</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ NÊN automate</h4>
+          <ul>
+            <li>Regression test (lặp lại nhiều)</li>
+            <li>Smoke test (mỗi build)</li>
+            <li>Performance test</li>
+            <li>API test</li>
+            <li>Test với big data</li>
+            <li>Cross-browser testing</li>
+            <li>Repetitive test (1000 inputs)</li>
+            <li>Long-term project (2+ năm)</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>❌ KHÔNG nên automate</h4>
+          <ul>
+            <li>Exploratory testing</li>
+            <li>UI/UX testing</li>
+            <li>Usability testing</li>
+            <li>One-off tests</li>
+            <li>Volatile features (đang thay đổi nhiều)</li>
+            <li>Tests cần human judgment</li>
+            <li>Short-term project (&lt; 6 tháng)</li>
+            <li>Visual testing complex</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>14.3. ROI của Automation</h3>
+
+      <div class="card-item">
+        <h4>📊 Tính ROI</h4>
+        <p><strong>Automation worth it khi:</strong></p>
+        <ul>
+          <li>Test cases run ≥ 5 lần</li>
+          <li>Feature stable (không đổi nhiều)</li>
+          <li>Long-term project</li>
+        </ul>
+        <p><strong>Ví dụ:</strong></p>
+        <ul>
+          <li>Manual: 1 test case = 5 phút × 20 lần/năm = 100 phút/năm</li>
+          <li>Automation: 30 phút setup + 1 phút/lần × 20 lần = 50 phút/năm</li>
+          <li>Saving: 50 phút/năm/test case</li>
+          <li>500 test cases → 25,000 phút = ~52 ngày saved/năm</li>
+        </ul>
+      </div>
+
+      <h3>14.4. Automation Pyramid Strategy</h3>
+
+      <div class="pyramid">
+        <div class="pyramid-level l1">🎨 UI E2E (10%) - Selenium, Cypress, Playwright</div>
+        <div class="pyramid-level l2">🔗 Integration (20%) - Component tests</div>
+        <div class="pyramid-level l3">🌐 API (30%) - REST Assured, Postman, Pytest</div>
+        <div class="pyramid-level l4">⚙️ Unit (40%+) - JUnit, NUnit, Jest, pytest</div>
+      </div>
+
+      <h3>14.5. Programming Languages cho Automation</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>☕ Java</h4>
+          <p><strong>Pros:</strong> Mạnh, ecosystem khổng lồ (Selenium, REST Assured, TestNG).</p>
+          <p><strong>Cons:</strong> Verbose, learning curve.</p>
+          <p><strong>Phổ biến VN:</strong> #1</p>
+        </div>
+        <div class="card-item">
+          <h4>🐍 Python</h4>
+          <p><strong>Pros:</strong> Dễ học, syntax clean, pytest amazing.</p>
+          <p><strong>Cons:</strong> Slower runtime.</p>
+          <p><strong>Phổ biến VN:</strong> #2, growing fast.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 JavaScript</h4>
+          <p><strong>Pros:</strong> Frontend dev hiểu ngay, Cypress + Playwright.</p>
+          <p><strong>Cons:</strong> Async confusing for beginners.</p>
+          <p><strong>Phổ biến:</strong> Web testing modern.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔷 C#</h4>
+          <p><strong>Pros:</strong> .NET ecosystem, Microsoft tools.</p>
+          <p><strong>Khi nào:</strong> Project .NET</p>
+        </div>
+        <div class="card-item">
+          <h4>💎 Ruby</h4>
+          <p><strong>Pros:</strong> Cucumber BDD nguyên thủy.</p>
+          <p><strong>Cons:</strong> Đang giảm popularity.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦀 Rust / Go</h4>
+          <p>Hiếm dùng cho testing.</p>
+        </div>
+      </div>
+
+      <h3>14.6. Test Automation Framework Types</h3>
+
+      <ul>
+        <li><strong>Linear Framework:</strong> Record &amp; Playback. Đơn giản, không scalable.</li>
+        <li><strong>Modular Framework:</strong> Code chia modules. Reusable.</li>
+        <li><strong>Data-Driven:</strong> Test cases tách khỏi data. Excel/CSV input.</li>
+        <li><strong>Keyword-Driven:</strong> Tester viết keywords (no code). Manager-friendly.</li>
+        <li><strong>Hybrid:</strong> Kết hợp các loại trên. Phổ biến nhất.</li>
+        <li><strong>BDD (Behavior-Driven):</strong> Cucumber/SpecFlow. Given-When-Then format.</li>
+        <li><strong>Page Object Model (POM):</strong> Best practice cho UI automation.</li>
+      </ul>
+
+      <h3>14.7. BDD - Behavior Driven Development</h3>
+
+      <div class="card-item">
+        <h4>🎯 Gherkin Syntax (Cucumber)</h4>
+        <div class="code-block">Feature: User Login
+
+  Scenario: Successful login with valid credentials
+    Given I am on the login page
+    When I enter "user@test.com" as email
+    And I enter "Pass@123" as password
+    And I click the Login button
+    Then I should be redirected to dashboard
+    And I should see "Welcome, John"
+
+  Scenario Outline: Login with invalid credentials
+    Given I am on the login page
+    When I enter "&lt;email&gt;" as email
+    And I enter "&lt;password&gt;" as password
+    And I click the Login button
+    Then I should see error "&lt;message&gt;"
+
+    Examples:
+      | email           | password    | message              |
+      | wrong@test.com  | Pass@123    | User not found       |
+      | user@test.com   | wrong       | Invalid password     |
+      |                 | Pass@123    | Email is required    |
+      | user@test.com   |             | Password is required |</div>
+        <p>Business stakeholders đọc hiểu. Bridge giữa BA và Dev/QA.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 15: SELENIUM -->
+    <section id="selenium" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 15</span>
+        <h2>Selenium WebDriver</h2>
+      </div>
+
+      <p><strong>Selenium</strong> là tool automation web phổ biến nhất thế giới. 80%+ web automation dùng Selenium hoặc inspired by it.</p>
+
+      <h3>15.1. Selenium Ecosystem</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🚗 Selenium WebDriver</h4>
+          <p>Core. Điều khiển browser thật.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Selenium Grid</h4>
+          <p>Chạy test song song trên nhiều máy.</p>
+        </div>
+        <div class="card-item">
+          <h4>📹 Selenium IDE</h4>
+          <p>Record &amp; playback (cho người mới).</p>
+        </div>
+      </div>
+
+      <h3>15.2. Modern Alternatives (2026)</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🎭 Playwright (Microsoft)</h4>
+          <p>HOT 2024-2026. Faster, better than Selenium.</p>
+          <p>Auto-wait, multiple browsers, network mocking.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌲 Cypress</h4>
+          <p>Frontend dev love. JS only. Excellent DX.</p>
+          <p>Time-travel debugging.</p>
+        </div>
+        <div class="card-item">
+          <h4>🥚 WebdriverIO</h4>
+          <p>Node.js wrapper for Selenium.</p>
+        </div>
+        <div class="card-item">
+          <h4>🐶 Puppeteer (Google)</h4>
+          <p>Chrome only. Web scraping mạnh.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌪️ TestCafe</h4>
+          <p>No WebDriver needed. JS/TS.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦄 Katalon Studio</h4>
+          <p>Low-code. Cho non-programmers.</p>
+        </div>
+      </div>
+
+      <h3>15.3. Selenium WebDriver - Code Example</h3>
+
+      <div class="code-block">// Java + Selenium + TestNG example
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
+import org.testng.annotations.*;
+import java.time.Duration;
+
+public class LoginTest {
+
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    @BeforeMethod
+    public void setUp() {
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().window().maximize();
+    }
+
+    @Test
+    public void testSuccessfulLogin() {
+        // Navigate
+        driver.get("https://example.com/login");
+
+        // Find elements &amp; interact
+        WebElement emailField = driver.findElement(By.id("email"));
+        WebElement passwordField = driver.findElement(By.id("password"));
+        WebElement loginButton = driver.findElement(By.cssSelector("button[type='submit']"));
+
+        emailField.sendKeys("user@test.com");
+        passwordField.sendKeys("Pass@123");
+        loginButton.click();
+
+        // Wait &amp; assert
+        wait.until(ExpectedConditions.urlContains("/dashboard"));
+        WebElement welcome = driver.findElement(By.className("welcome-msg"));
+
+        Assert.assertEquals(driver.getCurrentUrl(), "https://example.com/dashboard");
+        Assert.assertTrue(welcome.isDisplayed());
+        Assert.assertEquals(welcome.getText(), "Welcome, John");
+    }
+
+    @AfterMethod
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}</div>
+
+      <h3>15.4. Selenium Locator Strategies</h3>
+
+      <table>
+        <thead><tr><th>Locator</th><th>Speed</th><th>Stability</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>ID</td><td>⚡⚡⚡</td><td>★★★</td><td><code>By.id("login-btn")</code></td></tr>
+          <tr><td>Name</td><td>⚡⚡⚡</td><td>★★★</td><td><code>By.name("username")</code></td></tr>
+          <tr><td>Class Name</td><td>⚡⚡</td><td>★★</td><td><code>By.className("btn-primary")</code></td></tr>
+          <tr><td>CSS Selector</td><td>⚡⚡⚡</td><td>★★★</td><td><code>By.cssSelector("#login-form input[type='text']")</code></td></tr>
+          <tr><td>XPath</td><td>⚡</td><td>★★</td><td><code>By.xpath("//button[contains(text(), 'Login')]")</code></td></tr>
+          <tr><td>Link Text</td><td>⚡⚡</td><td>★★</td><td><code>By.linkText("Forgot password?")</code></td></tr>
+          <tr><td>Tag Name</td><td>⚡⚡</td><td>★</td><td><code>By.tagName("input")</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="tip-box" data-title="🎯 Best Practice">
+        Priority: <strong>ID &gt; Name &gt; CSS Selector &gt; XPath</strong>. ID nhanh nhất, stable nhất. XPath slow + brittle - dùng khi không có cách khác.
+      </div>
+
+      <h3>15.5. Page Object Model (POM)</h3>
+
+      <p><strong>POM</strong> = best practice. Tách locators &amp; actions vào class riêng cho mỗi page.</p>
+
+      <div class="code-block">// LoginPage.java
+public class LoginPage {
+    private WebDriver driver;
+
+    // Locators
+    private By emailField = By.id("email");
+    private By passwordField = By.id("password");
+    private By loginButton = By.cssSelector("button[type='submit']");
+    private By errorMessage = By.className("error-msg");
+
+    public LoginPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    // Actions
+    public void enterEmail(String email) {
+        driver.findElement(emailField).sendKeys(email);
+    }
+
+    public void enterPassword(String password) {
+        driver.findElement(passwordField).sendKeys(password);
+    }
+
+    public DashboardPage clickLogin() {
+        driver.findElement(loginButton).click();
+        return new DashboardPage(driver);
+    }
+
+    public String getErrorMessage() {
+        return driver.findElement(errorMessage).getText();
+    }
+
+    public DashboardPage login(String email, String password) {
+        enterEmail(email);
+        enterPassword(password);
+        return clickLogin();
+    }
+}
+
+// Test class - much cleaner!
+@Test
+public void testLogin() {
+    LoginPage loginPage = new LoginPage(driver);
+    DashboardPage dashboard = loginPage.login("user@test.com", "Pass@123");
+    Assert.assertTrue(dashboard.isDisplayed());
+}</div>
+
+      <h3>15.6. Common Selenium Pitfalls</h3>
+
+      <div class="danger-box" data-title="❌ Tránh">
+        <ul>
+          <li><strong>Thread.sleep():</strong> Hard wait. Tệ nhất. Dùng WebDriverWait instead.</li>
+          <li><strong>Locator hard-coded trong test:</strong> Dùng POM.</li>
+          <li><strong>Không cleanup driver:</strong> Browser zombie.</li>
+          <li><strong>Test phụ thuộc nhau:</strong> Mỗi test phải độc lập.</li>
+          <li><strong>Selenium IDE for big project:</strong> Record không scalable.</li>
+          <li><strong>StaleElementException:</strong> Element bị refresh, cần re-locate.</li>
+          <li><strong>Test data hard-coded:</strong> Dùng external file.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 16: API TESTING -->
+    <section id="api" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 16</span>
+        <h2>API Testing</h2>
+      </div>
+
+      <p>API testing là <strong>kỹ năng must-have</strong>. Modern app = frontend + backend qua API. API test fast, stable hơn UI test.</p>
+
+      <h3>16.1. API là gì?</h3>
+      <p><strong>API (Application Programming Interface)</strong> = cách 2 hệ thống "nói chuyện" với nhau. RESTful API là phổ biến nhất.</p>
+
+      <h3>16.2. HTTP Methods</h3>
+
+      <table>
+        <thead><tr><th>Method</th><th>Mục đích</th><th>Idempotent</th><th>Safe</th></tr></thead>
+        <tbody>
+          <tr><td>GET</td><td>Đọc data</td><td>✓</td><td>✓</td></tr>
+          <tr><td>POST</td><td>Tạo mới</td><td>✗</td><td>✗</td></tr>
+          <tr><td>PUT</td><td>Update full</td><td>✓</td><td>✗</td></tr>
+          <tr><td>PATCH</td><td>Update partial</td><td>✗</td><td>✗</td></tr>
+          <tr><td>DELETE</td><td>Xóa</td><td>✓</td><td>✗</td></tr>
+        </tbody>
+      </table>
+
+      <h3>16.3. HTTP Status Codes - Must Know</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ 2xx Success</h4>
+          <ul>
+            <li><strong>200 OK</strong> - GET success</li>
+            <li><strong>201 Created</strong> - POST success</li>
+            <li><strong>204 No Content</strong> - DELETE success</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>↪️ 3xx Redirect</h4>
+          <ul>
+            <li><strong>301 Moved Permanently</strong></li>
+            <li><strong>302 Found (Temporary)</strong></li>
+            <li><strong>304 Not Modified</strong> - cached</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>❌ 4xx Client Error</h4>
+          <ul>
+            <li><strong>400 Bad Request</strong> - invalid input</li>
+            <li><strong>401 Unauthorized</strong> - chưa login</li>
+            <li><strong>403 Forbidden</strong> - login but no permission</li>
+            <li><strong>404 Not Found</strong></li>
+            <li><strong>409 Conflict</strong> - duplicate</li>
+            <li><strong>422 Unprocessable Entity</strong> - validation fail</li>
+            <li><strong>429 Too Many Requests</strong> - rate limit</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>💥 5xx Server Error</h4>
+          <ul>
+            <li><strong>500 Internal Server Error</strong></li>
+            <li><strong>502 Bad Gateway</strong></li>
+            <li><strong>503 Service Unavailable</strong></li>
+            <li><strong>504 Gateway Timeout</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>16.4. API Request/Response</h3>
+
+      <div class="code-block">// REQUEST
+POST /api/v1/users
+Host: api.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+Content-Type: application/json
+
+{
+  "email": "user@test.com",
+  "password": "Pass@123",
+  "name": "John Doe",
+  "age": 25
+}
+
+// RESPONSE
+HTTP/1.1 201 Created
+Content-Type: application/json
+Date: Thu, 15 May 2026 10:30:00 GMT
+
+{
+  "id": "usr_abc123",
+  "email": "user@test.com",
+  "name": "John Doe",
+  "age": 25,
+  "createdAt": "2026-05-15T10:30:00Z"
+}</div>
+
+      <h3>16.5. Postman - Tool số 1</h3>
+
+      <h4>What to test cho mỗi API endpoint:</h4>
+
+      <div class="card-item">
+        <h4>📋 Checklist API Testing</h4>
+        <ul>
+          <li><strong>Status code:</strong> Đúng 200/201/etc?</li>
+          <li><strong>Response body:</strong> Schema đúng? Data đúng?</li>
+          <li><strong>Response headers:</strong> Content-Type, etc.</li>
+          <li><strong>Response time:</strong> &lt; 2 giây?</li>
+          <li><strong>Authentication:</strong> Token required? Expired token?</li>
+          <li><strong>Authorization:</strong> Permission level?</li>
+          <li><strong>Validation:</strong> Required fields, format, length?</li>
+          <li><strong>Edge cases:</strong> Null, empty, max value, special chars?</li>
+          <li><strong>Error handling:</strong> Error messages clear?</li>
+          <li><strong>Rate limiting:</strong> 429 sau quá nhiều request?</li>
+          <li><strong>Idempotency:</strong> GET/PUT/DELETE gọi nhiều lần OK?</li>
+          <li><strong>Pagination:</strong> Limit, offset, page work?</li>
+        </ul>
+      </div>
+
+      <h3>16.6. Postman Test Script</h3>
+
+      <div class="code-block">// Postman Tests tab - JavaScript
+
+// 1. Status code
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+// 2. Response time
+pm.test("Response time below 2000ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(2000);
+});
+
+// 3. Schema validation
+pm.test("Response has required fields", function () {
+    const json = pm.response.json();
+    pm.expect(json).to.have.property("id");
+    pm.expect(json).to.have.property("email");
+    pm.expect(json).to.have.property("name");
+});
+
+// 4. Value validation
+pm.test("Email is correct", function () {
+    const json = pm.response.json();
+    pm.expect(json.email).to.eql("user@test.com");
+});
+
+// 5. Header check
+pm.test("Content-Type is JSON", function () {
+    pm.response.to.have.header("Content-Type", "application/json; charset=utf-8");
+});
+
+// 6. Save to variable for next request
+pm.test("Save user ID", function () {
+    const json = pm.response.json();
+    pm.environment.set("user_id", json.id);
+});</div>
+
+      <h3>16.7. API Test Automation - REST Assured (Java)</h3>
+
+      <div class="code-block">// REST Assured - Java
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import org.testng.annotations.Test;
+import static io.restassured.RestAssured.*;
+import static org.hamcrest.Matchers.*;
+
+public class UserApiTest {
+
+    @Test
+    public void testCreateUser() {
+        String requestBody = "{"
+            + "\"email\":\"user@test.com\","
+            + "\"password\":\"Pass@123\","
+            + "\"name\":\"John Doe\""
+            + "}";
+
+        given()
+            .baseUri("https://api.example.com")
+            .header("Authorization", "Bearer " + getToken())
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+        .when()
+            .post("/api/v1/users")
+        .then()
+            .statusCode(201)
+            .time(lessThan(2000L))
+            .body("id", notNullValue())
+            .body("email", equalTo("user@test.com"))
+            .body("name", equalTo("John Doe"));
+    }
+
+    @Test
+    public void testGetUser() {
+        given()
+            .baseUri("https://api.example.com")
+            .header("Authorization", "Bearer " + getToken())
+            .pathParam("userId", "usr_abc123")
+        .when()
+            .get("/api/v1/users/{userId}")
+        .then()
+            .statusCode(200)
+            .body("id", equalTo("usr_abc123"));
+    }
+}</div>
+
+      <h3>16.8. API Testing Best Practices</h3>
+
+      <ul>
+        <li><strong>Test API trước UI:</strong> API test nhanh hơn 10x</li>
+        <li><strong>Independent tests:</strong> Mỗi test setup data riêng, không share state</li>
+        <li><strong>Use environments:</strong> Dev, staging, prod - khác config</li>
+        <li><strong>Mock external APIs:</strong> Không phụ thuộc 3rd party</li>
+        <li><strong>Contract testing:</strong> Pact, OpenAPI/Swagger validation</li>
+        <li><strong>Performance test API:</strong> JMeter, K6</li>
+        <li><strong>Security:</strong> Test SQL injection, XSS qua API</li>
+        <li><strong>Document collections:</strong> Share Postman collection với team</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 17: PERFORMANCE -->
+    <section id="performance" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 17</span>
+        <h2>Performance Testing</h2>
+      </div>
+
+      <p>Performance test = đảm bảo app <strong>NHANH, ỔN ĐỊNH, SCALABLE</strong>. Đây là specialized field - lương cao.</p>
+
+      <h3>17.1. Loại Performance Test</h3>
+
+      <table>
+        <thead><tr><th>Loại</th><th>Mục đích</th><th>Khi nào</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Load Test</strong></td><td>Test với expected load</td><td>Trước release</td></tr>
+          <tr><td><strong>Stress Test</strong></td><td>Test đến break point</td><td>Capacity planning</td></tr>
+          <tr><td><strong>Spike Test</strong></td><td>Test sudden traffic surge</td><td>Sale events, Black Friday</td></tr>
+          <tr><td><strong>Endurance/Soak</strong></td><td>Test thời gian dài (24h+)</td><td>Memory leak detection</td></tr>
+          <tr><td><strong>Volume Test</strong></td><td>Test với big data</td><td>Database scale</td></tr>
+          <tr><td><strong>Scalability</strong></td><td>Test khả năng mở rộng</td><td>Cloud scaling</td></tr>
+        </tbody>
+      </table>
+
+      <h3>17.2. Metrics quan trọng</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⏱️ Response Time</h4>
+          <p>Thời gian từ request → response.</p>
+          <ul>
+            <li><strong>Average:</strong> Trung bình</li>
+            <li><strong>P50 (median):</strong> 50% requests dưới</li>
+            <li><strong>P95:</strong> 95% requests dưới</li>
+            <li><strong>P99:</strong> 99% requests dưới (worst case)</li>
+          </ul>
+          <p>Target: P95 &lt; 2s</p>
+        </div>
+        <div class="card-item">
+          <h4>🔄 Throughput</h4>
+          <p>Số requests/giây (RPS) hoặc transactions/giây (TPS).</p>
+          <p>Cao = tốt.</p>
+        </div>
+        <div class="card-item">
+          <h4>❌ Error Rate</h4>
+          <p>% requests fail (5xx, timeout).</p>
+          <p>Target: &lt; 0.1%</p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Concurrent Users</h4>
+          <p>Số user simultaneous app handle được.</p>
+        </div>
+        <div class="card-item">
+          <h4>💻 CPU Usage</h4>
+          <p>% CPU server.</p>
+          <p>Healthy: &lt; 70%</p>
+        </div>
+        <div class="card-item">
+          <h4>💾 Memory Usage</h4>
+          <p>RAM usage.</p>
+          <p>Watch for memory leak.</p>
+        </div>
+      </div>
+
+      <h3>17.3. Apache JMeter - Tool phổ biến nhất</h3>
+
+      <div class="card-item">
+        <h4>🚀 JMeter Setup Test</h4>
+        <ol>
+          <li><strong>Thread Group:</strong> Define users (10 users, ramp up 10s, loop 100 times)</li>
+          <li><strong>HTTP Request:</strong> Define URL, method, params</li>
+          <li><strong>Listeners:</strong> View Results Tree, Aggregate Report, Graph</li>
+          <li><strong>Assertions:</strong> Check response (status code, content)</li>
+          <li><strong>Timers:</strong> Add delay between requests</li>
+          <li><strong>Run:</strong> Execute test, analyze results</li>
+        </ol>
+      </div>
+
+      <h3>17.4. K6 - Modern Performance Tool</h3>
+
+      <div class="code-block">// K6 - JavaScript based
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  stages: [
+    { duration: '30s', target: 100 },  // Ramp up to 100 users
+    { duration: '1m', target: 100 },   // Stay at 100 users
+    { duration: '30s', target: 0 },    // Ramp down to 0
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)&lt;2000'], // 95% under 2s
+    http_req_failed: ['rate&lt;0.01'],    // Error rate &lt; 1%
+  },
+};
+
+export default function () {
+  const res = http.get('https://api.example.com/users');
+
+  check(res, {
+    'status is 200': (r) =&gt; r.status === 200,
+    'response time &lt; 1s': (r) =&gt; r.timings.duration &lt; 1000,
+  });
+
+  sleep(1);
+}</div>
+
+      <h3>17.5. Bottleneck Identification</h3>
+
+      <ul>
+        <li><strong>Database:</strong> Slow queries, missing indexes</li>
+        <li><strong>Network:</strong> Bandwidth, latency, geo-distance</li>
+        <li><strong>CPU:</strong> Insufficient compute</li>
+        <li><strong>Memory:</strong> Leak, garbage collection</li>
+        <li><strong>I/O:</strong> Disk read/write slow</li>
+        <li><strong>Code:</strong> N+1 queries, inefficient algorithms</li>
+        <li><strong>Caching:</strong> Not enough cache hits</li>
+      </ul>
+
+      <h3>17.6. Real World Performance Numbers</h3>
+
+      <div class="info-box" data-title="⚡ Industry Benchmarks">
+        <ul>
+          <li><strong>Google search:</strong> Avg response 0.2s</li>
+          <li><strong>Amazon:</strong> Every 100ms delay = -1% sales = $1.6B/year</li>
+          <li><strong>User patience:</strong> 53% bỏ trang nếu &gt; 3s loading</li>
+          <li><strong>Mobile:</strong> &lt; 2s ideal, &lt; 4s acceptable</li>
+          <li><strong>API:</strong> &lt; 500ms ideal, &lt; 1s acceptable</li>
+          <li><strong>Database query:</strong> &lt; 100ms typical</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 18: SECURITY -->
+    <section id="security" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 18</span>
+        <h2>Security Testing</h2>
+      </div>
+
+      <p>Security testing là <strong>specialized career path</strong> với mức lương cao nhất ngành QA.</p>
+
+      <h3>18.1. OWASP Top 10 (2021) - Phải biết</h3>
+
+      <ol>
+        <li><strong>Broken Access Control:</strong> User truy cập data không được phép</li>
+        <li><strong>Cryptographic Failures:</strong> Data nhạy cảm không encrypt</li>
+        <li><strong>Injection:</strong> SQL, NoSQL, OS command injection</li>
+        <li><strong>Insecure Design:</strong> Flaw trong thiết kế</li>
+        <li><strong>Security Misconfiguration:</strong> Default password, debug mode on prod</li>
+        <li><strong>Vulnerable Components:</strong> Library cũ với CVE</li>
+        <li><strong>Authentication Failures:</strong> Weak password, session hijack</li>
+        <li><strong>Data Integrity Failures:</strong> Insecure deserialization</li>
+        <li><strong>Logging Failures:</strong> Không log security events</li>
+        <li><strong>Server-Side Request Forgery (SSRF)</strong></li>
+      </ol>
+
+      <h3>18.2. Common Attacks &amp; Cách Test</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>💉 SQL Injection</h4>
+          <p>Inject SQL qua input.</p>
+          <div class="code-block">// Payload examples:
+' OR '1'='1
+admin' --
+'; DROP TABLE users; --
+' UNION SELECT * FROM users--</div>
+          <p>Test mọi input field.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 XSS (Cross-Site Scripting)</h4>
+          <p>Inject JavaScript qua input.</p>
+          <div class="code-block">// Payloads:
+&lt;script&gt;alert('XSS')&lt;/script&gt;
+&lt;img src=x onerror=alert('XSS')&gt;
+javascript:alert(1)
+"&gt;&lt;script&gt;alert(1)&lt;/script&gt;</div>
+        </div>
+        <div class="card-item">
+          <h4>🔓 CSRF</h4>
+          <p>Force user execute unwanted action.</p>
+          <p>Test CSRF token mỗi form quan trọng.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Session Hijacking</h4>
+          <p>Steal session cookie.</p>
+          <p>Test: HttpOnly, Secure, SameSite flags.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔑 Brute Force</h4>
+          <p>Try passwords liên tục.</p>
+          <p>Test: rate limit, account lockout.</p>
+        </div>
+        <div class="card-item">
+          <h4>📁 IDOR (Insecure Direct Object Reference)</h4>
+          <p>Đổi URL param truy cập data khác.</p>
+          <p>Test: /user/123 → /user/124 (không phải mình)</p>
+        </div>
+      </div>
+
+      <h3>18.3. Security Testing Checklist</h3>
+
+      <div class="card-item">
+        <h4>🔒 Authentication</h4>
+        <ul>
+          <li>Password complexity enforced</li>
+          <li>Password hashed (bcrypt, không MD5)</li>
+          <li>Account lockout sau X attempts</li>
+          <li>Session timeout</li>
+          <li>Logout invalidate session server-side</li>
+          <li>2FA available cho sensitive accounts</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>🛡️ Authorization</h4>
+        <ul>
+          <li>Role-based access control (RBAC)</li>
+          <li>User A không truy cập data của User B</li>
+          <li>Admin endpoints protected</li>
+          <li>JWT validation server-side</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>🔐 Data Protection</h4>
+        <ul>
+          <li>HTTPS (TLS 1.2+) cho mọi page</li>
+          <li>Sensitive data encrypted at rest</li>
+          <li>PII không leaked trong logs</li>
+          <li>API responses không expose internal IDs unnecessarily</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>📝 Input Validation</h4>
+        <ul>
+          <li>Server-side validation (không chỉ client)</li>
+          <li>Whitelist tốt hơn blacklist</li>
+          <li>File upload: check type, size, content</li>
+          <li>Parameterized queries (chống SQL injection)</li>
+        </ul>
+      </div>
+
+      <h3>18.4. Security Testing Tools</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🦁 OWASP ZAP</h4>
+          <p>Free. Scan vulnerabilities web app.</p>
+        </div>
+        <div class="card-item">
+          <h4>🐂 Burp Suite</h4>
+          <p>Industry standard. Free + Pro $399/year.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦊 Metasploit</h4>
+          <p>Penetration testing framework.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔍 Nmap</h4>
+          <p>Network scanner.</p>
+        </div>
+        <div class="card-item">
+          <h4>🐍 SQLMap</h4>
+          <p>Automated SQL injection.</p>
+        </div>
+        <div class="card-item">
+          <h4>🛡️ Snyk / Dependabot</h4>
+          <p>Scan dependencies for CVE.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 19: MOBILE -->
+    <section id="mobile" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 19</span>
+        <h2>Mobile Testing</h2>
+      </div>
+
+      <p>Mobile testing có đặc thù riêng - phải hiểu cả iOS lẫn Android, network conditions, device diversity.</p>
+
+      <h3>19.1. Native vs Hybrid vs Web App</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>📱 Native App</h4>
+          <p>Built cho specific platform (iOS Swift, Android Kotlin).</p>
+          <p><strong>Pros:</strong> Performance, full features.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔀 Hybrid App</h4>
+          <p>Web tech wrapped (React Native, Flutter, Ionic).</p>
+          <p><strong>Pros:</strong> Cross-platform.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Mobile Web</h4>
+          <p>Website chạy trên mobile browser.</p>
+          <p><strong>Pros:</strong> No install.</p>
+        </div>
+      </div>
+
+      <h3>19.2. Mobile-Specific Testing Areas</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📱 Device Diversity</h4>
+          <ul>
+            <li>iOS: iPhone SE → iPhone 15 Pro Max</li>
+            <li>Android: 24,000+ device models</li>
+            <li>Screen sizes: 4" → 12.9"</li>
+            <li>OS versions: iOS 14+, Android 9+</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📶 Network Conditions</h4>
+          <ul>
+            <li>WiFi (fast)</li>
+            <li>4G/5G</li>
+            <li>3G (slow)</li>
+            <li>2G/Edge (very slow)</li>
+            <li>Offline mode</li>
+            <li>Switching networks</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🔋 Battery &amp; Performance</h4>
+          <ul>
+            <li>Battery drain rate</li>
+            <li>App startup time</li>
+            <li>Memory usage (low RAM device)</li>
+            <li>CPU usage</li>
+            <li>Heat generation</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📲 Interruptions</h4>
+          <ul>
+            <li>Phone calls during app</li>
+            <li>SMS notification</li>
+            <li>Battery low alert</li>
+            <li>Push notification</li>
+            <li>App switched to background</li>
+            <li>Screen rotation</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📍 Permissions</h4>
+          <ul>
+            <li>Location</li>
+            <li>Camera</li>
+            <li>Microphone</li>
+            <li>Contacts</li>
+            <li>Push notifications</li>
+            <li>Permission denied scenarios</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>👆 Gestures &amp; Touch</h4>
+          <ul>
+            <li>Tap, double tap</li>
+            <li>Long press</li>
+            <li>Swipe, pinch, zoom</li>
+            <li>Multi-touch</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>19.3. Mobile Testing Tools</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🤖 Appium</h4>
+          <p>Cross-platform automation. iOS + Android.</p>
+          <p>Industry standard mobile automation.</p>
+        </div>
+        <div class="card-item">
+          <h4>🐉 Espresso</h4>
+          <p>Native Android testing.</p>
+        </div>
+        <div class="card-item">
+          <h4>🍎 XCUITest</h4>
+          <p>Native iOS testing.</p>
+        </div>
+        <div class="card-item">
+          <h4>☁️ BrowserStack / Sauce Labs</h4>
+          <p>Cloud device farms. Real devices.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 Firebase Test Lab</h4>
+          <p>Google cloud testing.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧪 TestFlight (iOS) / Internal Track (Android)</h4>
+          <p>Beta testing distribution.</p>
+        </div>
+      </div>
+
+      <h3>19.4. Mobile Test Strategy</h3>
+
+      <ul>
+        <li><strong>Real device + Emulator/Simulator combo:</strong> Real cho final, emulator cho speed</li>
+        <li><strong>Device coverage:</strong> Top 5-10 devices của target market</li>
+        <li><strong>OS coverage:</strong> Latest + 2 versions trước</li>
+        <li><strong>Field testing:</strong> Test trong real environment (đi xe bus, thang máy)</li>
+        <li><strong>Crash analytics:</strong> Firebase Crashlytics, Sentry</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 20: CI/CD -->
+    <section id="cicd" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 20</span>
+        <h2>CI/CD &amp; DevOps Cho Tester</h2>
+      </div>
+
+      <p>Modern QA phải hiểu CI/CD. Automation test integrate vào pipeline = giá trị thực sự.</p>
+
+      <h3>20.1. CI vs CD vs CD</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🔄 Continuous Integration</h4>
+          <p>Developers merge code thường xuyên. Auto build + test.</p>
+        </div>
+        <div class="card-item">
+          <h4>🚚 Continuous Delivery</h4>
+          <p>Code luôn ready to deploy. Manual trigger.</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 Continuous Deployment</h4>
+          <p>Auto deploy sau khi test pass. No human.</p>
+        </div>
+      </div>
+
+      <h3>20.2. CI/CD Pipeline Stages</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Source</h4><p>Code push to Git (GitHub, GitLab, Bitbucket).</p></div>
+        <div class="step"><h4>Build</h4><p>Compile code, install dependencies.</p></div>
+        <div class="step"><h4>Unit Test</h4><p>Run unit tests. Fast feedback.</p></div>
+        <div class="step"><h4>Code Quality</h4><p>SonarQube, ESLint, security scan.</p></div>
+        <div class="step"><h4>Integration Test</h4><p>Test components integration.</p></div>
+        <div class="step"><h4>Deploy to Staging</h4><p>Auto deploy to staging environment.</p></div>
+        <div class="step"><h4>E2E Test</h4><p>Run Selenium/Cypress tests.</p></div>
+        <div class="step"><h4>Performance Test</h4><p>Run load tests (smoke level).</p></div>
+        <div class="step"><h4>Security Scan</h4><p>OWASP ZAP, dependency check.</p></div>
+        <div class="step"><h4>Deploy to Production</h4><p>Manual approve or auto.</p></div>
+        <div class="step"><h4>Smoke Test Prod</h4><p>Validate production.</p></div>
+      </div>
+
+      <h3>20.3. CI/CD Tools</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🐙 GitHub Actions</h4>
+          <p>Free for public repos. Trending.</p>
+        </div>
+        <div class="card-item">
+          <h4>🦊 GitLab CI</h4>
+          <p>Integrated with GitLab.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏗️ Jenkins</h4>
+          <p>Oldie but goldie. Most popular.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚪ CircleCI</h4>
+          <p>Cloud CI/CD.</p>
+        </div>
+        <div class="card-item">
+          <h4>🟢 Travis CI</h4>
+          <p>Popular for open source.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔵 Azure DevOps</h4>
+          <p>Microsoft ecosystem.</p>
+        </div>
+      </div>
+
+      <h3>20.4. GitHub Actions Example</h3>
+
+      <div class="code-block"># .github/workflows/test.yml
+name: Test Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build
+        run: mvn clean install -DskipTests
+
+      - name: Run Unit Tests
+        run: mvn test
+
+      - name: Run Selenium Tests
+        run: mvn verify -Pselenium
+
+      - name: Upload Test Reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: target/surefire-reports/
+
+      - name: SonarCloud Scan
+        run: mvn sonar:sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}</div>
+
+      <h3>20.5. Containerization với Docker</h3>
+
+      <p>Modern QA biết Docker để chạy test trong containers.</p>
+
+      <div class="code-block"># Dockerfile cho test environment
+FROM selenium/standalone-chrome:latest
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "test"]</div>
+
+      <h3>20.6. DevOps Skills cho QA</h3>
+
+      <ul>
+        <li><strong>Git:</strong> Branch, merge, pull request</li>
+        <li><strong>Docker:</strong> Containerize tests</li>
+        <li><strong>Cloud:</strong> AWS, GCP, Azure basics</li>
+        <li><strong>Linux:</strong> Bash, SSH</li>
+        <li><strong>Monitoring:</strong> Grafana, Datadog, New Relic</li>
+        <li><strong>Logging:</strong> ELK stack, Splunk</li>
+        <li><strong>Infrastructure as Code:</strong> Terraform basics</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 21: AI -->
+    <section id="ai" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 21</span>
+        <h2>AI Trong Testing - Tương Lai 2026+</h2>
+      </div>
+
+      <p>AI đang thay đổi ngành QA. Tester KHÔNG biết AI sẽ bị thay thế trong 5 năm.</p>
+
+      <h3>21.1. Cách AI giúp Tester</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📝 Generate Test Cases</h4>
+          <p>ChatGPT/Claude tạo test cases từ requirement.</p>
+          <p>Tiết kiệm 50-70% time.</p>
+        </div>
+        <div class="card-item">
+          <h4>🤖 Auto Bug Triage</h4>
+          <p>AI phân loại bugs, suggest priority/severity.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔍 Visual Testing</h4>
+          <p>Applitools, Percy - AI compare screenshots.</p>
+        </div>
+        <div class="card-item">
+          <h4>🛡️ Self-Healing Tests</h4>
+          <p>AI fix broken locators tự động (testim, Mabl).</p>
+        </div>
+        <div class="card-item">
+          <h4>💡 Code Review</h4>
+          <p>GitHub Copilot review test code.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 Predictive Analysis</h4>
+          <p>Predict bug locations dựa trên code changes.</p>
+        </div>
+      </div>
+
+      <h3>21.2. AI-Powered Testing Tools</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🤖 Testim</h4>
+          <p>AI-powered E2E. Self-healing locators.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Mabl</h4>
+          <p>Auto-heal, ML-based.</p>
+        </div>
+        <div class="card-item">
+          <h4>👁️ Applitools</h4>
+          <p>Visual AI testing.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔥 Functionize</h4>
+          <p>Natural language tests.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌊 Tricentis Tosca</h4>
+          <p>Model-based AI testing.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚡ Katalon Platform</h4>
+          <p>AI features integrated.</p>
+        </div>
+      </div>
+
+      <h3>21.3. Sử dụng ChatGPT / Claude cho Testing</h3>
+
+      <div class="card-item">
+        <h4>💬 Prompts hữu ích</h4>
+        <ul>
+          <li><strong>Generate test cases:</strong> "Generate test cases for login feature with email and password fields. Include positive, negative, edge, and security cases."</li>
+          <li><strong>Boundary analysis:</strong> "What are the boundary values to test for an age field accepting 18-120?"</li>
+          <li><strong>Convert manual to automation:</strong> "Convert this manual test case to Selenium Java code: [paste test case]"</li>
+          <li><strong>Review test code:</strong> "Review this Selenium code for best practices and bugs: [code]"</li>
+          <li><strong>Bug analysis:</strong> "Given this error log, what could be the root cause? [paste log]"</li>
+          <li><strong>Test data generation:</strong> "Generate 20 realistic Vietnamese names and addresses for testing."</li>
+        </ul>
+      </div>
+
+      <h3>21.4. Tester có bị AI replace không?</h3>
+
+      <div class="info-box" data-title="🤔 Sự thật">
+        <strong>AI sẽ KHÔNG thay thế tester, nhưng tester DÙNG AI sẽ thay thế tester KHÔNG DÙNG AI.</strong><br><br>
+        <strong>AI làm tốt:</strong> Repetitive tasks, generate test cases, regression automation.<br>
+        <strong>AI làm kém:</strong> Critical thinking, exploratory testing, UX judgment, business context, stakeholder communication.<br><br>
+        <strong>Future tester:</strong> Strategic, AI-powered, focus on quality engineering, không phải click button.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 22: ISTQB -->
+    <section id="istqb" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 22</span>
+        <h2>ISTQB Certification</h2>
+      </div>
+
+      <p><strong>ISTQB (International Software Testing Qualifications Board)</strong> = chứng chỉ testing được công nhận quốc tế. Nhiều công ty yêu cầu, đặc biệt outsourcing.</p>
+
+      <h3>22.1. ISTQB Roadmap</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Foundation Level (CTFL)</h4>
+          <p>Entry level. Tất cả tester nên có. 40 câu, 60 phút, pass 65%.</p>
+          <p>Chi phí: ~$200-300 USD</p>
+        </div>
+        <div class="step">
+          <h4>Agile Tester Extension</h4>
+          <p>Cho Agile environment. Phổ biến.</p>
+        </div>
+        <div class="step">
+          <h4>Advanced Level</h4>
+          <p>3 sub-certs: Test Manager, Test Analyst, Technical Test Analyst.</p>
+        </div>
+        <div class="step">
+          <h4>Specialist Level</h4>
+          <p>Performance, Security, Mobile, Usability, AI Testing.</p>
+        </div>
+        <div class="step">
+          <h4>Expert Level</h4>
+          <p>Top tier. Test Management, Improving Test Process.</p>
+        </div>
+      </div>
+
+      <h3>22.2. ISTQB Foundation Syllabus</h3>
+
+      <p>Foundation Level cover 6 chapters:</p>
+
+      <ol>
+        <li><strong>Fundamentals of Testing</strong> (chapter 1-2 trong khóa này)</li>
+        <li><strong>Testing Throughout the Software Lifecycle</strong> (SDLC, STLC)</li>
+        <li><strong>Static Testing</strong> (review, static analysis)</li>
+        <li><strong>Test Techniques</strong> (EP, BVA, Decision Table...)</li>
+        <li><strong>Test Management</strong> (planning, monitoring, control)</li>
+        <li><strong>Tool Support for Testing</strong></li>
+      </ol>
+
+      <h3>22.3. Cách Học &amp; Thi</h3>
+
+      <div class="card-item">
+        <h4>📚 Resources</h4>
+        <ul>
+          <li><strong>Official Syllabus (free):</strong> istqb.org</li>
+          <li><strong>Sample exam questions:</strong> Free download</li>
+          <li><strong>Book:</strong> "Foundations of Software Testing" - Dorothy Graham</li>
+          <li><strong>Online courses:</strong> Udemy, LinkedIn Learning</li>
+          <li><strong>Vietnam training:</strong> VNPro, Saigon CTT</li>
+        </ul>
+      </div>
+
+      <h3>22.4. Có Đáng Học ISTQB?</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>✅ Pros</h4>
+          <ul>
+            <li>Standard vocabulary</li>
+            <li>Pass HR filter</li>
+            <li>Cần cho outsourcing project</li>
+            <li>Lương cao hơn ~10-20%</li>
+            <li>Cấu trúc học systematic</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>❌ Cons</h4>
+          <ul>
+            <li>Lý thuyết &gt; thực hành</li>
+            <li>Một số kiến thức outdated</li>
+            <li>Đắt ($200+)</li>
+            <li>Không dạy automation/programming</li>
+          </ul>
+        </div>
+      </div>
+
+      <p><strong>Khuyến nghị:</strong> Foundation đáng học (entry level). Advanced chỉ khi đã có 3+ năm kinh nghiệm.</p>
+
+      <h3>22.5. Other Certifications</h3>
+
+      <ul>
+        <li><strong>Certified Agile Tester (CAT):</strong> Cho Agile</li>
+        <li><strong>Certified Selenium Tester:</strong> Specific tool</li>
+        <li><strong>CSM (Certified Scrum Master):</strong> Cho QA lead</li>
+        <li><strong>AWS/Azure cert:</strong> Cho cloud testing</li>
+        <li><strong>CEH (Certified Ethical Hacker):</strong> Security testing</li>
+        <li><strong>OSCP:</strong> Advanced security</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 23: CAREER -->
+    <section id="career" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 23</span>
+        <h2>Career &amp; Salary</h2>
+      </div>
+
+      <h3>23.1. QA Career Path</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌱 Junior Manual Tester (0-2 năm)</h4>
+          <ul>
+            <li>Execute test cases</li>
+            <li>Log bugs</li>
+            <li>Retest fixes</li>
+          </ul>
+          <p><strong>VN:</strong> 8-15tr | <strong>US:</strong> $50-70k</p>
+        </div>
+        <div class="card-item">
+          <h4>🌿 Mid-level Tester (2-5 năm)</h4>
+          <ul>
+            <li>Design test cases</li>
+            <li>Mentor juniors</li>
+            <li>Có thể automate basic</li>
+            <li>Cross-functional collaboration</li>
+          </ul>
+          <p><strong>VN:</strong> 15-25tr | <strong>US:</strong> $70-95k</p>
+        </div>
+        <div class="card-item">
+          <h4>🌳 Senior QA / Automation Engineer (5-8 năm)</h4>
+          <ul>
+            <li>Lead test efforts</li>
+            <li>Design test framework</li>
+            <li>CI/CD integration</li>
+            <li>API + UI automation</li>
+          </ul>
+          <p><strong>VN:</strong> 25-50tr | <strong>US:</strong> $95-140k</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 QA Lead / Manager (8+ năm)</h4>
+          <ul>
+            <li>Manage team</li>
+            <li>Strategy, planning</li>
+            <li>Hiring</li>
+            <li>Stakeholder communication</li>
+          </ul>
+          <p><strong>VN:</strong> 50-100tr | <strong>US:</strong> $140-200k+</p>
+        </div>
+        <div class="card-item">
+          <h4>🏆 Director of QA / VP Quality (10+ năm)</h4>
+          <ul>
+            <li>Company-wide quality strategy</li>
+            <li>Process improvement</li>
+            <li>Multiple teams</li>
+          </ul>
+          <p><strong>VN:</strong> 80-200tr | <strong>US:</strong> $200-350k+</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 SDET (Software Dev in Test)</h4>
+          <ul>
+            <li>Build test infrastructure</li>
+            <li>Code-heavy role</li>
+            <li>Half dev, half QA</li>
+          </ul>
+          <p><strong>VN:</strong> 30-70tr | <strong>US:</strong> $120-180k</p>
+        </div>
+      </div>
+
+      <h3>23.2. Specialized Career Paths</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⚡ Performance Tester</h4>
+          <p>JMeter, K6, Gatling expert.</p>
+          <p>Cao hơn average ~20%.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔒 Security Tester / Pen Tester</h4>
+          <p>OWASP, Burp Suite, Metasploit.</p>
+          <p>Lương cao nhất ngành QA.</p>
+        </div>
+        <div class="card-item">
+          <h4>📱 Mobile QA</h4>
+          <p>iOS/Android, Appium.</p>
+        </div>
+        <div class="card-item">
+          <h4>🤖 AI/ML Test Engineer</h4>
+          <p>Test ML models, data quality.</p>
+          <p>Hot trend 2024-2026.</p>
+        </div>
+        <div class="card-item">
+          <h4>☁️ Cloud Test Engineer</h4>
+          <p>AWS, Azure, GCP testing.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 Test Data Engineer</h4>
+          <p>Data quality, ETL testing.</p>
+        </div>
+      </div>
+
+      <h3>23.3. Lộ trình từ Junior → Senior trong 5 năm</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Năm 1: Foundation</h4>
+          <p>Master manual testing. ISTQB Foundation. JIRA, Postman.</p>
+        </div>
+        <div class="step">
+          <h4>Năm 2: Automation Basics</h4>
+          <p>Learn Java/Python. Selenium WebDriver. POM. Git.</p>
+        </div>
+        <div class="step">
+          <h4>Năm 3: Specialization</h4>
+          <p>Pick: API automation, Performance, Security, hoặc Mobile. Deep dive.</p>
+        </div>
+        <div class="step">
+          <h4>Năm 4: CI/CD &amp; DevOps</h4>
+          <p>Jenkins/GitHub Actions. Docker. Cloud basics.</p>
+        </div>
+        <div class="step">
+          <h4>Năm 5: Leadership / Senior</h4>
+          <p>Mentor others. Architecture test framework. Strategic thinking.</p>
+        </div>
+      </div>
+
+      <h3>23.4. Tìm Việc QA tại Việt Nam</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🇻🇳 Top Companies VN</h4>
+          <ul>
+            <li>FPT Software</li>
+            <li>KMS Technology</li>
+            <li>Saigon Technology</li>
+            <li>NashTech</li>
+            <li>Axon Active</li>
+            <li>TMA Solutions</li>
+            <li>VNG, Tiki, Shopee VN</li>
+            <li>Grab, Lazada</li>
+            <li>VNPay, MoMo</li>
+            <li>Garena</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Job Sites</h4>
+          <ul>
+            <li>TopCV, VietnamWorks</li>
+            <li>ITviec.com (IT-specific)</li>
+            <li>LinkedIn</li>
+            <li>JobStreet</li>
+            <li>Glassdoor</li>
+            <li>Facebook groups: "QA/Tester Việt Nam"</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>23.5. Interview Questions Phổ Biến</h3>
+
+      <div class="card-item">
+        <h4>❓ Junior Level</h4>
+        <ul>
+          <li>SDLC vs STLC?</li>
+          <li>Severity vs Priority?</li>
+          <li>Black/White/Gray box?</li>
+          <li>Smoke vs Sanity?</li>
+          <li>Test case mẫu cho login feature?</li>
+          <li>Bug life cycle?</li>
+          <li>Tốt nhất bug report cần gì?</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❓ Mid Level</h4>
+        <ul>
+          <li>Test techniques khi nào dùng cái nào?</li>
+          <li>Khi nào automate khi nào không?</li>
+          <li>Page Object Model là gì?</li>
+          <li>Wait strategies trong Selenium?</li>
+          <li>Test API với Postman/REST Assured?</li>
+          <li>How handle flaky tests?</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❓ Senior Level</h4>
+        <ul>
+          <li>Design test framework from scratch?</li>
+          <li>Test strategy cho microservices?</li>
+          <li>CI/CD test integration?</li>
+          <li>Test pyramid cho mobile app?</li>
+          <li>How measure test effectiveness?</li>
+          <li>Performance test strategy?</li>
+          <li>Lead a team có conflict?</li>
+        </ul>
+      </div>
+
+      <h3>23.6. 10 Tips Thành Công</h3>
+
+      <div class="tip-box" data-title="🏆 Success Mantras">
+        <ol>
+          <li><strong>Master Manual trước, rồi mới Automation.</strong> Đừng vội học code.</li>
+          <li><strong>Học programming sớm.</strong> Python or Java - 6 tháng đủ basic.</li>
+          <li><strong>Build portfolio:</strong> GitHub với automation projects.</li>
+          <li><strong>Contribute open source:</strong> Selenium, Cypress test repos.</li>
+          <li><strong>Networking:</strong> LinkedIn, conferences, meetups.</li>
+          <li><strong>Learn domain:</strong> Banking, e-commerce, healthcare - chuyên 1 lĩnh vực.</li>
+          <li><strong>Communication skills:</strong> Quan trọng hơn technical đôi khi.</li>
+          <li><strong>Stay current:</strong> Theo dõi Ministry of Testing, dev.to, blogs.</li>
+          <li><strong>Get certified:</strong> ISTQB Foundation minimum.</li>
+          <li><strong>Mindset:</strong> Quality champion, không chỉ "bug finder".</li>
+        </ol>
+      </div>
+
+      <h3>23.7. Resources không thể bỏ qua</h3>
+
+      <div class="info-box" data-title="📚 Reading list">
+        <h4>📖 Books</h4>
+        <ul>
+          <li>"Lessons Learned in Software Testing" - Cem Kaner</li>
+          <li>"The Art of Software Testing" - Glenford Myers</li>
+          <li>"Agile Testing" - Lisa Crispin &amp; Janet Gregory</li>
+          <li>"Foundations of Software Testing" - Dorothy Graham</li>
+          <li>"How Google Tests Software" - James Whittaker</li>
+        </ul>
+
+        <h4>🌐 Websites</h4>
+        <ul>
+          <li>Ministry of Testing (ministryoftesting.com)</li>
+          <li>Software Testing Help (softwaretestinghelp.com)</li>
+          <li>Guru99</li>
+          <li>Test Bash conferences</li>
+          <li>dev.to / Medium - QA tags</li>
+        </ul>
+
+        <h4>📺 YouTube Channels</h4>
+        <ul>
+          <li>Automation Step by Step</li>
+          <li>SDET-QA Automation Techie</li>
+          <li>Naveen AutomationLabs</li>
+          <li>Software Testing Academy</li>
+          <li>Joe Colantonio (TestGuild)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 24: QUIZ -->
+    <section id="quiz" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 24</span>
+        <h2>Bài Kiểm Tra Cuối Khóa</h2>
+      </div>
+
+      <p>15 câu hỏi kiểm tra kiến thức QA Tester.</p>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 1: Sự khác biệt giữa Error, Defect, Failure?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cùng nghĩa</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Error = mistake của người; Defect = lỗi trong code; Failure = lỗi khi chạy</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Error nhỏ hơn Defect, Defect nhỏ hơn Failure</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Error trong test, Defect trong dev, Failure trong prod</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 2: Severity vs Priority - khác biệt chính?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cùng nghĩa</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Severity = impact lên hệ thống; Priority = thứ tự cần fix</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Severity quyết định bởi dev, Priority bởi tester</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Severity về UI, Priority về backend</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 3: Smoke testing là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Test cách app xử lý khói</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Test nhanh các chức năng chính - kiểm tra build có chạy không</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Test khả năng chống khói</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Test trong môi trường lửa khói</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 4: Boundary Value Analysis test giá trị nào?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Giữa khoảng (giữa min và max)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Min, Max, Min-1, Max+1 và các giá trị biên</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Random values</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Tất cả giá trị</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 5: HTTP Status code 401 có ý nghĩa gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Server error</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Unauthorized - chưa authenticate</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Not Found</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Bad Request</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 6: Test Pyramid - test nào nên có NHIỀU NHẤT?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. UI/E2E Test</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Integration Test</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Unit Test</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Manual Test</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 7: Trong Agile, Definition of Done là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Khi developer code xong</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Checklist các điều kiện để 1 story coi là "DONE"</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Khi tester finish test</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Cuối sprint</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 8: Page Object Model (POM) là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cách design website</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Pattern tách locators và actions vào class riêng cho mỗi page</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Loại object trong JavaScript</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Cấu trúc database</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 9: Regression vs Re-testing khác nhau?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cùng nghĩa</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Re-testing = test lại bug đã fix; Regression = test rộng hơn đảm bảo không break feature cũ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Regression chỉ manual, Re-testing chỉ automation</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Re-testing rộng hơn Regression</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 10: Selenium locator nào FASTEST và STABLEST?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. XPath</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. ID</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Class Name</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Tag Name</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 11: Load Testing vs Stress Testing?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cùng nghĩa</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Load = expected load; Stress = vượt expected đến break point</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Load test code, Stress test database</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Load test web, Stress test mobile</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 12: SQL Injection là loại tấn công gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Tấn công bằng DDoS</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Inject SQL code qua input fields để access/modify database</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Inject JavaScript</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Tấn công vào server vật lý</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 13: 7 nguyên tắc của ISTQB - đâu là NGUYÊN TẮC?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Testing đảm bảo phần mềm không có bug</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Testing chỉ ra defect, không chứng minh hoàn hảo</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Exhaustive testing là khả thi</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Testing chỉ làm khi code xong</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 14: Trong CI/CD pipeline, khi nào chạy Unit Test?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cuối cùng</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Sớm nhất - ngay sau build</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Trước deploy</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Chỉ chạy weekly</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 15: Career path lý tưởng cho QA mới?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Học automation ngay từ đầu</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Master Manual trước, sau đó học programming + automation</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Chỉ học theory, không cần practice</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Tập trung vào ISTQB advanced ngay</div>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🎓 Chúc mừng hoàn thành khóa học!">
+        <p><strong>Bạn vừa hoàn thành 24 chương QA Testing toàn diện.</strong></p>
+        <p style="margin-top: 15px;"><strong>Action items sau khóa học:</strong></p>
+        <ol>
+          <li>Tải Postman, làm 10 bài API test thực hành</li>
+          <li>Apply ISTQB Foundation cert (chuẩn bị 1-2 tháng)</li>
+          <li>Tạo GitHub portfolio với 1 Selenium project</li>
+          <li>Học Java/Python basics (3-6 tháng)</li>
+          <li>Tham gia Ministry of Testing community</li>
+          <li>Apply Junior QA position</li>
+          <li>Track bugs found trong daily work</li>
+          <li>Theo dõi YouTube: Automation Step by Step, Naveen Automation</li>
+        </ol>
+      </div>
+
+      <div style="text-align: center; margin: 40px 0;">
+        <div style="font-size: 64px; margin-bottom: 20px;">🐛</div>
+        <p style="font-size: 22px; color: var(--primary-glow); font-weight: 700; text-shadow: 0 0 20px rgba(96, 165, 250, 0.5); font-style: italic;">"Quality is everyone's responsibility,<br>but it's the tester's job to remind them."</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>🐛 Khóa Học QA Tester Toàn Diện | © 2026</p>
+      <p style="margin-top: 10px; font-size: 14px;">"A test that passes 100% might be hiding bugs you haven't found yet."</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+  });
+
+  const sections = document.querySelectorAll('.chapter');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  let quizScore = 0;
+  let quizAnswered = new Set();
+  let totalQuizQuestions = 0;
+
+  function checkAnswer(element, isCorrect) {
+    const quizId = element.closest('.quiz').querySelector('.quiz-question').textContent;
+    if (quizAnswered.has(quizId)) return;
+    quizAnswered.add(quizId);
+
+    const options = element.parentElement.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+      element.classList.add('correct');
+      quizScore++;
+    } else {
+      element.classList.add('wrong');
+      options.forEach(opt => {
+        if (opt.getAttribute('onclick').includes('true')) opt.classList.add('correct');
+      });
+    }
+
+    if (quizAnswered.size === totalQuizQuestions) {
+      setTimeout(() => {
+        const pct = Math.round((quizScore/totalQuizQuestions)*100);
+        alert(`🐛 Bạn đạt ${quizScore}/${totalQuizQuestions} điểm (${pct}%)!\n\n${
+          pct >= 90 ? '🏆 Xuất sắc! Bạn sẵn sàng làm Senior QA Engineer!' :
+          pct >= 75 ? '🎯 Tốt! Bạn nắm vững fundamentals.' :
+          pct >= 50 ? '📚 Khá ổn! Đọc lại các chương khó.' :
+          '💪 Đừng nản! Đọc lại khóa học và thử lại.'
+        }`);
+      }, 500);
+    }
+  }
+
+  window.addEventListener('load', () => {
+    totalQuizQuestions = document.querySelectorAll('.quiz').length;
+  });
+</script>
+
+</body>
+</html>

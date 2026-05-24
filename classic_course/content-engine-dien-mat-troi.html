@@ -1,0 +1,2673 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Engine - Marketing Điện Mặt Trời</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #fbbf24;
+    --primary-dark: #d97706;
+    --secondary: #f97316;
+    --accent: #06b6d4;
+    --dark: #1e293b;
+    --darker: #0f172a;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --card: #1e293b;
+    --border: #334155;
+    --hover: #334155;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    padding: 25px 40px;
+    color: var(--darker);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  .logo-area { display: flex; align-items: center; gap: 15px; }
+  .logo-area h1 { font-size: 24px; font-weight: 900; }
+  .logo-area p { font-size: 13px; opacity: 0.8; }
+  .header-stats {
+    display: flex;
+    gap: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .header-stat {
+    background: rgba(0,0,0,0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: var(--light);
+  }
+  .header-stat strong { color: var(--primary); font-size: 16px; }
+  /* TABS */
+  .tabs {
+    background: var(--dark);
+    padding: 0 40px;
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    border-bottom: 2px solid var(--border);
+    position: sticky;
+    top: 88px;
+    z-index: 99;
+  }
+  .tabs::-webkit-scrollbar { height: 4px; }
+  .tabs::-webkit-scrollbar-thumb { background: var(--primary); }
+  .tab {
+    padding: 16px 22px;
+    cursor: pointer;
+    color: var(--gray);
+    font-weight: 600;
+    font-size: 14px;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--primary); background: rgba(251, 191, 36, 0.05); }
+  .tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: rgba(251, 191, 36, 0.08);
+  }
+  .tab-icon { margin-right: 6px; }
+  /* CONTAINER */
+  .container { max-width: 1400px; margin: 0 auto; padding: 30px 40px; }
+  .panel { display: none; animation: fadeIn 0.3s; }
+  .panel.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  h2.panel-title {
+    font-size: 26px;
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-weight: 800;
+  }
+  .panel-desc { color: var(--gray); margin-bottom: 25px; font-size: 14px; }
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.2s;
+  }
+  .card:hover { border-color: var(--primary); }
+  /* CONTROLS */
+  .controls {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .control-group { display: flex; flex-direction: column; gap: 5px; }
+  .control-group label { font-size: 12px; color: var(--gray); font-weight: 600; }
+  select, input, textarea {
+    background: var(--darker);
+    border: 1px solid var(--border);
+    color: var(--light);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+  }
+  textarea { resize: vertical; min-height: 100px; }
+  /* BUTTONS */
+  .btn {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--darker);
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(251, 191, 36, 0.3); }
+  .btn:active { transform: translateY(0); }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-secondary {
+    background: var(--dark);
+    color: var(--light);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: var(--hover); border-color: var(--primary); }
+  .btn-danger { background: var(--danger); color: white; }
+  .btn-success { background: var(--success); color: white; }
+  /* OUTPUT AREA */
+  .output {
+    background: var(--card);
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+    position: relative;
+  }
+  .output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .output-title { color: var(--primary); font-weight: 700; font-size: 16px; }
+  .output-actions { display: flex; gap: 8px; }
+  .output-content {
+    white-space: pre-wrap;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--light);
+  }
+  /* GRIDS */
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+  /* TAGS / BADGES */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 5px;
+    margin-top: 5px;
+  }
+  .tag-platform { background: rgba(6, 182, 212, 0.2); color: var(--accent); }
+  .tag-funnel-tofu { background: rgba(251, 191, 36, 0.2); color: var(--primary); }
+  .tag-funnel-mofu { background: rgba(249, 115, 22, 0.2); color: var(--secondary); }
+  .tag-funnel-bofu { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+  .tag-type { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .tag-audience { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+  /* IDEA CARD */
+  .idea-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .idea-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  }
+  .idea-card h4 {
+    font-size: 14px;
+    color: var(--light);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .save-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .save-btn:hover { background: var(--primary); color: var(--darker); border-color: var(--primary); }
+  .save-btn.saved { background: var(--primary); color: var(--darker); border-color: var(--primary); }
+  /* HASHTAG */
+  .hashtag-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+  }
+  .hashtag-group h4 { color: var(--primary); margin-bottom: 10px; font-size: 14px; }
+  .hashtag-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hashtag-pill {
+    background: var(--darker);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Consolas', monospace;
+  }
+  .hashtag-pill:hover { background: var(--primary); color: var(--darker); border-color: var(--primary); }
+  .hashtag-pill.selected { background: var(--primary); color: var(--darker); border-color: var(--primary); }
+  /* CALENDAR */
+  .calendar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .calendar-day-header {
+    text-align: center;
+    padding: 8px;
+    font-weight: 700;
+    color: var(--gray);
+    font-size: 12px;
+  }
+  .calendar-day {
+    background: var(--darker);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    min-height: 80px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .calendar-day:hover { border-color: var(--primary); }
+  .calendar-day.today { border-color: var(--primary); background: rgba(251, 191, 36, 0.1); }
+  .calendar-day.empty { opacity: 0.3; cursor: default; }
+  .calendar-day-num { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .calendar-event {
+    background: var(--secondary);
+    color: var(--darker);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+  }
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal h3 { color: var(--primary); margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+  /* SCRIPT STRUCTURE */
+  .script-scene {
+    background: var(--darker);
+    border-left: 4px solid var(--primary);
+    padding: 15px 18px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+  }
+  .script-scene .scene-label {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .script-scene .scene-action {
+    color: var(--accent);
+    font-size: 13px;
+    margin-bottom: 5px;
+    font-style: italic;
+  }
+  .script-scene .scene-dialog {
+    color: var(--light);
+    font-size: 14px;
+  }
+  /* STATS DASHBOARD */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  .stat-card {
+    background: linear-gradient(135deg, var(--card), var(--dark));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-card .icon { font-size: 32px; margin-bottom: 10px; }
+  .stat-card .num { font-size: 32px; font-weight: 900; color: var(--primary); }
+  .stat-card .label { color: var(--gray); font-size: 13px; margin-top: 5px; }
+  /* QUICK ACTIONS */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+  .quick-action {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .quick-action:hover {
+    border-color: var(--primary);
+    background: rgba(251, 191, 36, 0.05);
+    transform: translateY(-3px);
+  }
+  .quick-action .icon { font-size: 28px; margin-bottom: 8px; }
+  .quick-action h4 { color: var(--primary); font-size: 14px; }
+  .quick-action p { color: var(--gray); font-size: 12px; margin-top: 4px; }
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--success);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 300;
+    transform: translateX(400px);
+    transition: transform 0.3s;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(0); }
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .container { padding: 20px 15px; }
+    .tabs { padding: 0 15px; top: 100px; }
+    .tab { padding: 12px 16px; font-size: 13px; }
+    header { padding: 15px 20px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .controls { flex-direction: column; align-items: stretch; }
+    .control-group { width: 100%; }
+    select, input { width: 100%; }
+    .header-stats { width: 100%; justify-content: center; }
+    .calendar-day { min-height: 50px; }
+  }
+  /* FILL-IN INPUT */
+  .fill-input {
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px dashed var(--primary);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin: 0 3px;
+    font-family: inherit;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+  }
+  .preview-box {
+    background: var(--darker);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  /* COMBINED HASHTAG OUTPUT */
+  .combined-hashtags {
+    background: var(--darker);
+    border: 2px dashed var(--primary);
+    padding: 15px;
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    word-break: break-all;
+    line-height: 1.8;
+    min-height: 60px;
+  }
+  /* AB TESTING RESULT */
+  .ab-result {
+    background: var(--darker);
+    border-left: 4px solid var(--success);
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ab-result:hover { border-left-color: var(--primary); }
+  .ab-result-label {
+    color: var(--success);
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  /* PERSONA SELECTOR */
+  .persona-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .persona-option {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .persona-option:hover { border-color: var(--primary); }
+  .persona-option.selected {
+    border-color: var(--primary);
+    background: rgba(251, 191, 36, 0.1);
+  }
+  .persona-option .icon { font-size: 28px; margin-bottom: 6px; }
+  .persona-option .name { color: var(--primary); font-weight: 700; font-size: 13px; }
+  .persona-option .desc { color: var(--gray); font-size: 11px; margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-content">
+    <div class="logo-area">
+      <div style="font-size: 36px;">☀️</div>
+      <div>
+        <h1>SOLAR CONTENT ENGINE</h1>
+        <p>Hệ thống tạo content marketing chuyên ngành Điện Mặt Trời</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="header-stat">💡 <strong id="totalIdeas">200+</strong> ý tưởng</div>
+      <div class="header-stat">📝 <strong id="totalTemplates">50+</strong> mẫu</div>
+      <div class="header-stat">⭐ <strong id="savedCount">0</strong> đã lưu</div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="tab active" data-tab="dashboard"><span class="tab-icon">🏠</span>Dashboard</div>
+  <div class="tab" data-tab="ideas"><span class="tab-icon">💡</span>Idea Generator</div>
+  <div class="tab" data-tab="hooks"><span class="tab-icon">🎯</span>Hook Generator</div>
+  <div class="tab" data-tab="posts"><span class="tab-icon">📝</span>Post Templates</div>
+  <div class="tab" data-tab="scripts"><span class="tab-icon">🎬</span>Video Scripts</div>
+  <div class="tab" data-tab="emails"><span class="tab-icon">📧</span>Email Templates</div>
+  <div class="tab" data-tab="ads"><span class="tab-icon">📣</span>Ad Copy</div>
+  <div class="tab" data-tab="headlines"><span class="tab-icon">🔤</span>Headline A/B</div>
+  <div class="tab" data-tab="hashtags"><span class="tab-icon">#️⃣</span>Hashtags</div>
+  <div class="tab" data-tab="cta"><span class="tab-icon">👉</span>CTA Library</div>
+  <div class="tab" data-tab="calendar"><span class="tab-icon">📅</span>Calendar</div>
+  <div class="tab" data-tab="saved"><span class="tab-icon">⭐</span>Saved</div>
+</nav>
+
+<div class="container">
+
+  <!-- DASHBOARD -->
+  <div class="panel active" id="panel-dashboard">
+    <h2 class="panel-title">🏠 Dashboard</h2>
+    <p class="panel-desc">Trung tâm điều khiển content marketing của bạn. Bắt đầu nhanh với các công cụ phổ biến nhất.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon">💡</div>
+        <div class="num" id="dashIdeas">200+</div>
+        <div class="label">Ý tưởng content</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">🎯</div>
+        <div class="num" id="dashHooks">60+</div>
+        <div class="label">Hook templates</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">📝</div>
+        <div class="num" id="dashPosts">40+</div>
+        <div class="label">Post templates</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">📧</div>
+        <div class="num" id="dashEmails">15+</div>
+        <div class="label">Email mẫu</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">⭐</div>
+        <div class="num" id="dashSaved">0</div>
+        <div class="label">Content đã lưu</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon">📅</div>
+        <div class="num" id="dashScheduled">0</div>
+        <div class="label">Lịch đăng tháng này</div>
+      </div>
+    </div>
+
+    <h3 style="color: var(--primary); margin: 20px 0 15px;">⚡ Quick Actions - Bắt đầu nhanh</h3>
+    <div class="quick-actions">
+      <div class="quick-action" onclick="switchTab('ideas')">
+        <div class="icon">🎲</div>
+        <h4>Random ý tưởng</h4>
+        <p>Random 1 ý tưởng content ngay</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('hooks')">
+        <div class="icon">🎯</div>
+        <h4>Tạo Hook</h4>
+        <p>Hook 3 giây cho video</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('posts')">
+        <div class="icon">📱</div>
+        <h4>Bài đăng Facebook</h4>
+        <p>Template điền sẵn</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('scripts')">
+        <div class="icon">🎬</div>
+        <h4>Kịch bản TikTok</h4>
+        <p>Script 30-60s</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('ads')">
+        <div class="icon">📣</div>
+        <h4>Quảng cáo</h4>
+        <p>Ad copy FB/Google</p>
+      </div>
+      <div class="quick-action" onclick="switchTab('calendar')">
+        <div class="icon">📅</div>
+        <h4>Lên lịch</h4>
+        <p>Calendar nội dung</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="color: var(--primary); margin-bottom: 12px;">📚 Quy trình sử dụng đề xuất</h3>
+      <ol style="padding-left: 20px; color: #cbd5e1;">
+        <li style="margin-bottom: 8px;"><strong style="color: var(--primary);">Bước 1:</strong> Vào <strong>Idea Generator</strong> chọn 7-15 ý tưởng cho tuần</li>
+        <li style="margin-bottom: 8px;"><strong style="color: var(--primary);">Bước 2:</strong> Lên <strong>Calendar</strong> sắp xếp ngày đăng</li>
+        <li style="margin-bottom: 8px;"><strong style="color: var(--primary);">Bước 3:</strong> Với mỗi ý tưởng, dùng <strong>Hook Generator</strong> tạo mở đầu thu hút</li>
+        <li style="margin-bottom: 8px;"><strong style="color: var(--primary);">Bước 4:</strong> Sang <strong>Post Templates</strong> hoặc <strong>Video Scripts</strong> để hoàn thiện</li>
+        <li style="margin-bottom: 8px;"><strong style="color: var(--primary);">Bước 5:</strong> Thêm <strong>Hashtags</strong> và <strong>CTA</strong> phù hợp</li>
+        <li><strong style="color: var(--primary);">Bước 6:</strong> Test 2-3 phiên bản headline với <strong>A/B Tester</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- IDEA GENERATOR -->
+  <div class="panel" id="panel-ideas">
+    <h2 class="panel-title">💡 Idea Generator</h2>
+    <p class="panel-desc">200+ ý tưởng content cho mọi giai đoạn phễu và đối tượng. Lọc theo nhu cầu.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Funnel Stage</label>
+        <select id="ideaFunnel">
+          <option value="">Tất cả</option>
+          <option value="TOFU">TOFU - Nhận thức</option>
+          <option value="MOFU">MOFU - Cân nhắc</option>
+          <option value="BOFU">BOFU - Quyết định</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Loại content</label>
+        <select id="ideaType">
+          <option value="">Tất cả</option>
+          <option value="educational">Giáo dục</option>
+          <option value="case">Case study</option>
+          <option value="entertainment">Giải trí</option>
+          <option value="news">Tin tức</option>
+          <option value="bts">Behind-the-scene</option>
+          <option value="testimonial">Testimonial</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Đối tượng</label>
+        <select id="ideaAudience">
+          <option value="">Tất cả</option>
+          <option value="family">Hộ gia đình</option>
+          <option value="sme">SME / Xưởng</option>
+          <option value="industrial">Công nghiệp lớn</option>
+          <option value="farm">Trang trại</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Platform</label>
+        <select id="ideaPlatform">
+          <option value="">Tất cả</option>
+          <option value="Facebook">Facebook</option>
+          <option value="TikTok">TikTok</option>
+          <option value="YouTube">YouTube</option>
+          <option value="LinkedIn">LinkedIn</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: flex-end;">
+        <button class="btn" onclick="filterIdeas()">🔍 Lọc</button>
+        <button class="btn btn-secondary" onclick="randomIdea()">🎲 Random 1</button>
+        <button class="btn btn-secondary" onclick="randomWeek()">📅 Random 7 ngày</button>
+      </div>
+    </div>
+
+    <div id="ideasList" class="grid-3"></div>
+  </div>
+
+  <!-- HOOK GENERATOR -->
+  <div class="panel" id="panel-hooks">
+    <h2 class="panel-title">🎯 Hook Generator</h2>
+    <p class="panel-desc">3 giây đầu quyết định 90% người xem có ở lại hay lướt. 60+ hook templates đã được test.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Loại Hook</label>
+        <select id="hookType" onchange="renderHooks()">
+          <option value="all">Tất cả</option>
+          <option value="curiosity">Tò mò</option>
+          <option value="shock">Sốc</option>
+          <option value="painpoint">Pain Point</option>
+          <option value="number">Con số</option>
+          <option value="question">Câu hỏi</option>
+          <option value="story">Kể chuyện</option>
+          <option value="controversy">Tranh cãi</option>
+          <option value="howto">How-to</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Platform</label>
+        <select id="hookPlatform" onchange="renderHooks()">
+          <option value="all">Tất cả</option>
+          <option value="video">Video (TikTok/Reels)</option>
+          <option value="post">Bài đăng FB</option>
+          <option value="ad">Quảng cáo</option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: flex-end;">
+        <button class="btn" onclick="randomHook()">🎲 Random 1 Hook</button>
+        <button class="btn btn-secondary" onclick="renderHooks()">🔄 Hiện tất cả</button>
+      </div>
+    </div>
+
+    <div id="hooksList"></div>
+  </div>
+
+  <!-- POST TEMPLATES -->
+  <div class="panel" id="panel-posts">
+    <h2 class="panel-title">📝 Post Templates - Bài đăng MXH</h2>
+    <p class="panel-desc">Chọn template, điền thông tin, copy ngay. Tối ưu cho từng platform.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Platform</label>
+        <select id="postPlatform" onchange="renderPostTemplates()">
+          <option value="all">Tất cả</option>
+          <option value="Facebook">Facebook</option>
+          <option value="TikTok">TikTok caption</option>
+          <option value="Instagram">Instagram</option>
+          <option value="LinkedIn">LinkedIn</option>
+          <option value="Zalo">Zalo OA</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Mục đích</label>
+        <select id="postGoal" onchange="renderPostTemplates()">
+          <option value="all">Tất cả</option>
+          <option value="awareness">Nhận thức</option>
+          <option value="engagement">Tương tác</option>
+          <option value="lead">Thu lead</option>
+          <option value="conversion">Chốt sale</option>
+          <option value="trust">Xây niềm tin</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="postTemplatesList"></div>
+  </div>
+
+  <!-- VIDEO SCRIPTS -->
+  <div class="panel" id="panel-scripts">
+    <h2 class="panel-title">🎬 Video Script Generator</h2>
+    <p class="panel-desc">Kịch bản TikTok/Reels 15-60s với từng cảnh chi tiết. Sẵn sàng để quay.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Độ dài video</label>
+        <select id="scriptLength" onchange="renderScripts()">
+          <option value="all">Tất cả</option>
+          <option value="15s">15 giây</option>
+          <option value="30s">30 giây</option>
+          <option value="60s">60 giây</option>
+          <option value="long">Long form (3-5 phút)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Phong cách</label>
+        <select id="scriptStyle" onchange="renderScripts()">
+          <option value="all">Tất cả</option>
+          <option value="timelapse">Timelapse lắp đặt</option>
+          <option value="testimonial">Khách hàng kể</option>
+          <option value="educational">Giáo dục</option>
+          <option value="comparison">So sánh</option>
+          <option value="viral">Viral / Trend</option>
+          <option value="dayinlife">Day-in-life</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="scriptsList"></div>
+  </div>
+
+  <!-- EMAIL TEMPLATES -->
+  <div class="panel" id="panel-emails">
+    <h2 class="panel-title">📧 Email Templates</h2>
+    <p class="panel-desc">Email nurturing, follow-up, broadcast cho chiến dịch ĐMT.</p>
+    <div id="emailsList"></div>
+  </div>
+
+  <!-- AD COPY -->
+  <div class="panel" id="panel-ads">
+    <h2 class="panel-title">📣 Ad Copy Generator</h2>
+    <p class="panel-desc">Quảng cáo Facebook/Google đã được test - tỷ lệ chuyển đổi cao.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Platform</label>
+        <select id="adPlatform" onchange="renderAds()">
+          <option value="all">Tất cả</option>
+          <option value="Facebook">Facebook Ads</option>
+          <option value="Google">Google Ads</option>
+          <option value="TikTok">TikTok Ads</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Đối tượng</label>
+        <select id="adAudience" onchange="renderAds()">
+          <option value="all">Tất cả</option>
+          <option value="family">Hộ gia đình</option>
+          <option value="sme">SME</option>
+          <option value="industrial">Công nghiệp</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="adsList"></div>
+  </div>
+
+  <!-- HEADLINE A/B -->
+  <div class="panel" id="panel-headlines">
+    <h2 class="panel-title">🔤 Headline A/B Tester</h2>
+    <p class="panel-desc">Nhập headline gốc, AI engine tạo 8-12 phiên bản để test.</p>
+
+    <div class="card">
+      <label style="display: block; margin-bottom: 8px; color: var(--gray); font-size: 12px; font-weight: 600;">Headline gốc của bạn:</label>
+      <input type="text" id="headlineInput" placeholder="Vd: Tiết kiệm 70% tiền điện với hệ thống ĐMT" style="width: 100%; margin-bottom: 12px;">
+
+      <label style="display: block; margin-bottom: 8px; color: var(--gray); font-size: 12px; font-weight: 600;">Chủ thể (thay vào headline):</label>
+      <input type="text" id="headlineSubject" placeholder="Vd: hệ thống ĐMT / dịch vụ lắp đặt" style="width: 100%; margin-bottom: 12px;">
+
+      <label style="display: block; margin-bottom: 8px; color: var(--gray); font-size: 12px; font-weight: 600;">Benefit chính:</label>
+      <input type="text" id="headlineBenefit" placeholder="Vd: tiết kiệm 70% tiền điện" style="width: 100%; margin-bottom: 12px;">
+
+      <button class="btn" onclick="generateHeadlines()">🚀 Tạo 12 phiên bản</button>
+    </div>
+
+    <div id="headlinesList"></div>
+  </div>
+
+  <!-- HASHTAGS -->
+  <div class="panel" id="panel-hashtags">
+    <h2 class="panel-title">#️⃣ Hashtag Library</h2>
+    <p class="panel-desc">300+ hashtag đã được phân loại. Click để chọn, tự động ghép thành cụm.</p>
+
+    <div class="card">
+      <h3 style="color: var(--primary); margin-bottom: 12px;">Hashtag đã chọn (<span id="hashtagCount">0</span>)</h3>
+      <div class="combined-hashtags" id="combinedHashtags">Click vào hashtag bên dưới để chọn...</div>
+      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="btn btn-sm" onclick="copyHashtags()">📋 Copy</button>
+        <button class="btn btn-sm btn-secondary" onclick="clearHashtags()">🗑️ Xóa hết</button>
+        <button class="btn btn-sm btn-secondary" onclick="randomHashtagSet()">🎲 Random 15</button>
+      </div>
+    </div>
+
+    <div id="hashtagGroups" style="margin-top: 20px;"></div>
+  </div>
+
+  <!-- CTA LIBRARY -->
+  <div class="panel" id="panel-cta">
+    <h2 class="panel-title">👉 CTA Library</h2>
+    <p class="panel-desc">Call-to-Action mạnh cho mọi giai đoạn. Click để copy.</p>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Mục đích</label>
+        <select id="ctaGoal" onchange="renderCTAs()">
+          <option value="all">Tất cả</option>
+          <option value="lead">Thu Lead</option>
+          <option value="call">Gọi điện</option>
+          <option value="visit">Đến showroom</option>
+          <option value="comment">Comment / Tương tác</option>
+          <option value="urgency">Tạo cấp bách</option>
+          <option value="soft">Soft CTA (nhẹ nhàng)</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="ctasList" class="grid-2"></div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="panel" id="panel-calendar">
+    <h2 class="panel-title">📅 Content Calendar</h2>
+    <p class="panel-desc">Lên lịch đăng content. Click vào ngày để thêm.</p>
+
+    <div class="calendar">
+      <div class="calendar-header">
+        <button class="btn btn-secondary btn-sm" onclick="prevMonth()">◀ Trước</button>
+        <h3 id="calendarTitle" style="color: var(--primary);"></h3>
+        <button class="btn btn-secondary btn-sm" onclick="nextMonth()">Sau ▶</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h3 style="color: var(--primary); margin-bottom: 12px;">📋 Lịch đăng tháng này</h3>
+      <div id="scheduledList"></div>
+    </div>
+  </div>
+
+  <!-- SAVED -->
+  <div class="panel" id="panel-saved">
+    <h2 class="panel-title">⭐ Đã Lưu</h2>
+    <p class="panel-desc">Content bạn đã đánh dấu yêu thích. Dùng dần.</p>
+
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="exportSaved()">📥 Export tất cả (JSON)</button>
+      <button class="btn btn-secondary" onclick="exportSavedTXT()">📄 Export (TXT)</button>
+      <button class="btn btn-danger" onclick="clearSaved()">🗑️ Xóa hết</button>
+    </div>
+
+    <div id="savedList" style="margin-top: 20px;"></div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Đã copy!</div>
+
+<script>
+/* ========== DATA: CONTENT IDEAS ========== */
+const IDEAS = [
+  // TOFU - Awareness (Giáo dục)
+  { title: "Top 10 sai lầm khi mua điện mặt trời tại VN năm 2026", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Pin Mono vs Poly: Sự khác biệt 99% người Việt không biết", funnel: "TOFU", type: "educational", audience: "family", platform: "TikTok" },
+  { title: "Bão số 9 đi qua: Hệ thống ĐMT có chịu được không?", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Cách tính sản lượng điện mặt trời trong 30 giây", funnel: "TOFU", type: "educational", audience: "family", platform: "TikTok" },
+  { title: "Vì sao giá pin mặt trời giảm 90% trong 10 năm?", funnel: "TOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Hệ on-grid, hybrid, off-grid - chọn loại nào cho gia đình?", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Tuổi thọ thực tế của pin mặt trời sau 25 năm", funnel: "TOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Hiệu suất pin giảm bao nhiêu % mỗi năm? Sự thật bất ngờ", funnel: "TOFU", type: "educational", audience: "family", platform: "TikTok" },
+  { title: "TOPCon vs HJT: Công nghệ pin nào tốt nhất 2026?", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Hướng mái nhà nào lý tưởng cho ĐMT?", funnel: "TOFU", type: "educational", audience: "family", platform: "TikTok" },
+
+  // TOFU - News
+  { title: "EVN tăng giá điện lần thứ 3 trong 2 năm - người dân chịu ảnh hưởng thế nào?", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Nghị định 135/2024: Khuyến khích ĐMT mái nhà - điểm mới quan trọng", funnel: "TOFU", type: "news", audience: "family", platform: "LinkedIn" },
+  { title: "Cơ chế DPPA mua bán điện trực tiếp - bước ngoặt cho doanh nghiệp", funnel: "TOFU", type: "news", audience: "industrial", platform: "LinkedIn" },
+  { title: "Công nghệ pin Perovskite hứa hẹn thay đổi cuộc chơi", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Tin sốc: California vừa đạt 100% điện mặt trời trong 1 ngày", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Apple yêu cầu tất cả nhà cung cấp dùng 100% năng lượng tái tạo", funnel: "TOFU", type: "news", audience: "industrial", platform: "LinkedIn" },
+
+  // TOFU - Entertainment
+  { title: "Khi bạn thấy hóa đơn điện 5 triệu mùa hè - reaction memes", funnel: "TOFU", type: "entertainment", audience: "family", platform: "TikTok" },
+  { title: "Test pin mặt trời: Thử rơi từ độ cao 5m!", funnel: "TOFU", type: "entertainment", audience: "family", platform: "TikTok" },
+  { title: "Thử nấu trứng trên tấm pin mặt trời giữa trưa", funnel: "TOFU", type: "entertainment", audience: "family", platform: "TikTok" },
+  { title: "Phỏng vấn trẻ em: 'Pin lấy điện từ đâu?'", funnel: "TOFU", type: "entertainment", audience: "family", platform: "TikTok" },
+  { title: "POV: Bạn là tấm pin mặt trời gặp ngày mưa", funnel: "TOFU", type: "entertainment", audience: "family", platform: "TikTok" },
+  { title: "Thí nghiệm: Bao nhiêu tấm pin để sạc 1 chiếc Tesla?", funnel: "TOFU", type: "entertainment", audience: "family", platform: "YouTube" },
+
+  // MOFU - Consideration (Case study)
+  { title: "Anh Long (Q7, TP.HCM) tiết kiệm 5.2tr/tháng nhờ hệ 10kWp", funnel: "MOFU", type: "case", audience: "family", platform: "Facebook" },
+  { title: "Case Study: Xưởng cơ khí 80 công nhân hoàn vốn ĐMT trong 26 tháng", funnel: "MOFU", type: "case", audience: "sme", platform: "Facebook" },
+  { title: "Trang trại tôm 5ha tại Cà Mau lắp 500kWp - tiết kiệm 2.5 tỷ/năm", funnel: "MOFU", type: "case", audience: "farm", platform: "Facebook" },
+  { title: "Biệt thự 250m2 với hệ Hybrid 15kWp - sau 1 năm sử dụng", funnel: "MOFU", type: "case", audience: "family", platform: "YouTube" },
+  { title: "Nhà máy may FDI 1.2MW - đạt chứng chỉ I-REC sau 6 tháng", funnel: "MOFU", type: "case", audience: "industrial", platform: "LinkedIn" },
+  { title: "Hộ kinh doanh mì cay tại Cần Thơ - giảm 80% chi phí điện", funnel: "MOFU", type: "case", audience: "sme", platform: "Facebook" },
+  { title: "Showroom xe hơi Mercedes - đầu tư 800tr, hoàn vốn 3 năm", funnel: "MOFU", type: "case", audience: "sme", platform: "Facebook" },
+  { title: "Resort Phú Quốc 50 phòng - hệ thống Off-grid tự chủ năng lượng", funnel: "MOFU", type: "case", audience: "sme", platform: "Facebook" },
+
+  // MOFU - Behind the scene
+  { title: "1 ngày của kỹ sư ĐMT: 6h sáng đến 8h tối", funnel: "MOFU", type: "bts", audience: "family", platform: "TikTok" },
+  { title: "Quá trình kiểm tra chất lượng pin trước khi giao khách", funnel: "MOFU", type: "bts", audience: "family", platform: "Facebook" },
+  { title: "Team đi khảo sát 5 nhà trong 1 ngày - hậu trường thực tế", funnel: "MOFU", type: "bts", audience: "family", platform: "TikTok" },
+  { title: "Mở hộp đơn hàng pin Jinko 10kWp cho khách mới", funnel: "MOFU", type: "bts", audience: "family", platform: "TikTok" },
+  { title: "Bí mật quy trình thi công 1 ngày hoàn thành 5kWp", funnel: "MOFU", type: "bts", audience: "family", platform: "Facebook" },
+  { title: "Tour xưởng kho - hàng nghìn tấm pin chờ giao", funnel: "MOFU", type: "bts", audience: "family", platform: "YouTube" },
+
+  // MOFU - Testimonial
+  { title: "Phỏng vấn anh Tâm sau 2 năm sử dụng - cảm nhận thật", funnel: "MOFU", type: "testimonial", audience: "family", platform: "Facebook" },
+  { title: "Chị Hồng (Đà Nẵng) đã giới thiệu 8 người mua ĐMT - vì sao?", funnel: "MOFU", type: "testimonial", audience: "family", platform: "Facebook" },
+  { title: "Anh kỹ sư xây dựng tin tưởng và lắp cho 3 căn nhà mình", funnel: "MOFU", type: "testimonial", audience: "family", platform: "Facebook" },
+  { title: "Lời chứng thực từ chủ resort: Tự tin với năng lượng độc lập", funnel: "MOFU", type: "testimonial", audience: "sme", platform: "Facebook" },
+
+  // BOFU - Decision
+  { title: "[KHUYẾN MÃI] Giảm 5 triệu cho 10 khách đầu tiên trong tháng 6", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Trả góp 0% lãi suất 12 tháng - chỉ 4.5tr/tháng có ngay hệ 5kWp", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Tặng pin lưu trữ 5kWh trị giá 30tr khi lắp gói Hybrid", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Cuối tháng giá pin tăng 8% - lý do tại sao bạn nên quyết định ngay", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Đăng ký khảo sát miễn phí tận nơi - chỉ 5 suất tuần này", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "So sánh báo giá 3 bên: Bạn cần kiểm tra 7 điểm này", funnel: "BOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Cam kết bảo hành tận tâm 25 năm - đây là cách bên em thực hiện", funnel: "BOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // MOFU - Educational (Tài chính)
+  { title: "ROI ĐMT vs Gửi NH vs BĐS - đầu tư nào lãi nhất 25 năm?", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Cách tính hoàn vốn ĐMT chính xác trong 5 phút", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "5 cách tài chính khi mua ĐMT - không phải ai cũng biết", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Vay xanh ngân hàng BIDV cho ĐMT: Lãi suất 8%/năm", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Hợp đồng PPA - giải pháp 0 đồng đầu tư cho doanh nghiệp", funnel: "MOFU", type: "educational", audience: "industrial", platform: "LinkedIn" },
+
+  // Comparison
+  { title: "Jinko vs Longi vs JA Solar: Pin nào tốt nhất cho VN?", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Huawei vs Sungrow vs Goodwe: Đâu là inverter đáng tiền?", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "String vs Micro Inverter: Khi nào nên chọn cái nào?", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Pin LFP vs NMC: Loại pin lưu trữ nào an toàn hơn?", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Industrial / B2B
+  { title: "ESG: Tại sao FDI yêu cầu nhà máy chuyển sang ĐMT?", funnel: "TOFU", type: "educational", audience: "industrial", platform: "LinkedIn" },
+  { title: "Chứng chỉ I-REC và lợi ích cho xuất khẩu", funnel: "MOFU", type: "educational", audience: "industrial", platform: "LinkedIn" },
+  { title: "RE100: Mục tiêu 100% năng lượng tái tạo của Apple, Samsung", funnel: "TOFU", type: "educational", audience: "industrial", platform: "LinkedIn" },
+  { title: "Carbon Credit từ ĐMT - nguồn thu mới cho doanh nghiệp", funnel: "MOFU", type: "educational", audience: "industrial", platform: "LinkedIn" },
+  { title: "Cách giảm CBAM (Carbon Border Adjustment) khi xuất khẩu EU", funnel: "MOFU", type: "educational", audience: "industrial", platform: "LinkedIn" },
+
+  // Farm
+  { title: "Trang trại tôm: Bơm sục khí 24/7 - tiết kiệm 70% điện", funnel: "MOFU", type: "educational", audience: "farm", platform: "Facebook" },
+  { title: "Trang trại gà công nghiệp: Đèn LED + ĐMT - mô hình lý tưởng", funnel: "MOFU", type: "educational", audience: "farm", platform: "Facebook" },
+  { title: "Agri-PV: Vừa trồng trọt vừa phát điện - tương lai nông nghiệp", funnel: "TOFU", type: "educational", audience: "farm", platform: "YouTube" },
+
+  // How-to
+  { title: "Cách vệ sinh pin mặt trời tại nhà - 5 bước đơn giản", funnel: "MOFU", type: "educational", audience: "family", platform: "TikTok" },
+  { title: "Hướng dẫn đọc app theo dõi sản lượng cho người mới", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Quy trình xin phép EVN: 5 bước - hồ sơ - thời gian", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Cách phát hiện 3 sự cố hệ thống ĐMT thường gặp", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Day in life
+  { title: "Một ngày ở công ty ĐMT: Văn phòng, kỹ thuật, khách hàng", funnel: "MOFU", type: "bts", audience: "family", platform: "TikTok" },
+  { title: "Tour văn phòng & showroom công ty - chào mừng đến tham quan", funnel: "MOFU", type: "bts", audience: "family", platform: "Facebook" },
+
+  // Controversy / Myth busting
+  { title: "ĐMT có thực sự 'xanh'? Sự thật về vòng đời pin", funnel: "TOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "EVN có thực sự muốn cản trở ĐMT? Sự thật ít người biết", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Pin Trung Quốc có an toàn không? Phân tích thẳng thắn", funnel: "TOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Tại sao 1 số người không nên lắp ĐMT - sự thật khó nghe", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Holiday / Seasonal
+  { title: "Tết này biến nhà thành 'nhà xanh' - quà ý nghĩa cho gia đình", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Mùa hè đến rồi - chuẩn bị cho hóa đơn điện tăng 50% như nào?", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Black Friday ĐMT: Giảm sốc 15% - chỉ 3 ngày duy nhất", funnel: "BOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Ngày Trái Đất 22/4: Mỗi nhà 1 hệ ĐMT - giảm 2 tấn CO2/năm", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Numbers / Facts
+  { title: "7,300 kWh/năm - con số kỳ diệu của hệ 5kWp tại TP.HCM", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "1 tấm pin = 1,000 ly cà phê = sản lượng/năm/tấm", funnel: "TOFU", type: "educational", audience: "family", platform: "TikTok" },
+  { title: "25 năm bảo hành nghĩa là gì? 9,125 ngày phục vụ bạn", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Questions / Engagement
+  { title: "Đố vui: Hệ 10kWp tốn bao nhiêu m2 mái?", funnel: "TOFU", type: "entertainment", audience: "family", platform: "Facebook" },
+  { title: "Bình chọn: Bạn quan tâm điều gì nhất khi mua ĐMT?", funnel: "TOFU", type: "entertainment", audience: "family", platform: "Facebook" },
+  { title: "Hỏi đáp 100 câu thường gặp - phần 1: Kỹ thuật", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Bạn đang phân vân điều gì? Comment - chuyên gia trả lời", funnel: "MOFU", type: "entertainment", audience: "family", platform: "Facebook" },
+
+  // Visual / Trend
+  { title: "Trước vs Sau: Hóa đơn điện 4tr → 200k", funnel: "MOFU", type: "case", audience: "family", platform: "Facebook" },
+  { title: "Đồ thị 25 năm: 55tr đầu tư → 1.1 tỷ tiết kiệm", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Bản đồ bức xạ VN: Khu vực nào lắp ĐMT lợi nhất?", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Lifestyle
+  { title: "Nhà 'xanh' của KTS nổi tiếng tại quận 2 - tour đầy đủ", funnel: "MOFU", type: "case", audience: "family", platform: "YouTube" },
+  { title: "Sống không lo tiền điện - cảm giác sau 5 năm có ĐMT", funnel: "MOFU", type: "testimonial", audience: "family", platform: "Facebook" },
+
+  // Tips
+  { title: "5 mẹo tăng sản lượng ĐMT trong mùa mưa", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "3 dấu hiệu cảnh báo hệ thống ĐMT của bạn cần kiểm tra", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Mẹo chọn nhà thầu ĐMT uy tín: 10 câu hỏi nhất định phải hỏi", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Stories
+  { title: "Chuyện chú Hai bán bún bò, từ nghèo đến chủ chuỗi nhờ ĐMT", funnel: "MOFU", type: "case", audience: "sme", platform: "Facebook" },
+  { title: "Hành trình 10 năm trong ngành ĐMT của founder", funnel: "MOFU", type: "bts", audience: "family", platform: "Facebook" },
+  { title: "Khách hàng đầu tiên của tôi - kỷ niệm 5 năm", funnel: "MOFU", type: "bts", audience: "family", platform: "Facebook" },
+
+  // Education advanced
+  { title: "Bifacial là gì? Tăng sản lượng 15% có đáng đầu tư?", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Tracking system: Pin xoay theo mặt trời - đáng đầu tư?", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "MPPT là gì? Tại sao nó quan trọng trong inverter?", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Hiểu về Power Optimizer trong 3 phút", funnel: "MOFU", type: "educational", audience: "family", platform: "YouTube" },
+
+  // Safety
+  { title: "Pin mặt trời có cháy không? Sự thật và cách phòng tránh", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Chống sét cho hệ thống ĐMT: Đừng quên 3 thiết bị này", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "An toàn điện khi vệ sinh pin - DO và DON'T", funnel: "MOFU", type: "educational", audience: "family", platform: "Facebook" },
+
+  // Environment
+  { title: "1 hệ 5kWp = trồng 50 cây xanh/năm = giảm 4 tấn CO2", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Tái chế pin mặt trời sau 25 năm - giải pháp tương lai", funnel: "TOFU", type: "educational", audience: "family", platform: "YouTube" },
+
+  // Special use cases
+  { title: "ĐMT cho nhà thuê: Có nên đầu tư?", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "Cộng đồng cư dân chung cư lắp ĐMT chung - mô hình mới", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "ĐMT cho xe điện: Trạm sạc tại nhà - tự túc 100%", funnel: "TOFU", type: "educational", audience: "family", platform: "Facebook" },
+  { title: "ĐMT cho thuyền bè - giải pháp cho ngư dân ven biển", funnel: "TOFU", type: "educational", audience: "farm", platform: "Facebook" },
+
+  // Industry insights
+  { title: "Báo cáo: Top 5 công ty ĐMT lớn nhất VN 2026", funnel: "TOFU", type: "news", audience: "industrial", platform: "LinkedIn" },
+  { title: "Dự báo giá pin năm 2026-2027 - đầu tư khi nào?", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "VN xuất khẩu pin mặt trời đứng top 5 thế giới - cơ hội nào?", funnel: "TOFU", type: "news", audience: "industrial", platform: "LinkedIn" },
+
+  // Local
+  { title: "Bản đồ ĐMT TP.HCM: Khu vực nào lắp nhiều nhất?", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+  { title: "Người Đà Nẵng và ĐMT: Vì sao cứ 10 nhà có 3 nhà lắp?", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+
+  // Future
+  { title: "Pin mặt trời trong suốt - cửa kính của tương lai", funnel: "TOFU", type: "news", audience: "family", platform: "YouTube" },
+  { title: "Sạc xe điện bằng ĐMT - tương lai 5 năm tới", funnel: "TOFU", type: "news", audience: "family", platform: "Facebook" },
+
+  // Children/Family
+  { title: "Dạy con về năng lượng xanh - 5 thí nghiệm tại nhà", funnel: "TOFU", type: "educational", audience: "family", platform: "YouTube" },
+  { title: "Trẻ em hỏi: 'Sao mặt trời sinh ra điện?' - giải đáp đơn giản", funnel: "TOFU", type: "entertainment", audience: "family", platform: "TikTok" }
+];
+
+/* ========== HOOKS ========== */
+const HOOKS = [
+  // Curiosity
+  { type: "curiosity", platform: "video", text: "99% người Việt KHÔNG biết điều này về hóa đơn điện..." },
+  { type: "curiosity", platform: "video", text: "Bí mật mà ngành điện không muốn bạn biết..." },
+  { type: "curiosity", platform: "video", text: "Đây là lý do tại sao nhà giàu lắp đầu tiên..." },
+  { type: "curiosity", platform: "video", text: "Tôi không thể tin điều này lại có thật cho đến khi tự kiểm chứng..." },
+  { type: "curiosity", platform: "post", text: "Có 3 thứ mà bạn lắp ĐMT xong sẽ ước biết sớm hơn..." },
+  { type: "curiosity", platform: "video", text: "Cái này không phải ai cũng biết - và đó là vấn đề..." },
+  { type: "curiosity", platform: "video", text: "Mất 5 năm trong ngành để hiểu điều này..." },
+  { type: "curiosity", platform: "ad", text: "Bí mật đơn giản giúp 300+ gia đình ở [TP] tiết kiệm 2-5tr/tháng" },
+
+  // Shock
+  { type: "shock", platform: "video", text: "Hóa đơn điện tháng này nhà tôi 0 đồng. Bí mật ở đây..." },
+  { type: "shock", platform: "video", text: "Tôi sốc khi thấy hóa đơn điện sau 1 năm lắp ĐMT..." },
+  { type: "shock", platform: "video", text: "Bỏ ra 55 triệu, sau 25 năm tôi nhận lại 1.1 TỶ" },
+  { type: "shock", platform: "post", text: "Chị Lan đã từ chối mua ĐMT 3 lần. Đây là lý do chị đổi ý..." },
+  { type: "shock", platform: "video", text: "Anh chủ xưởng nghĩ ĐMT là 'lừa đảo' - rồi anh ấy tự kiểm chứng" },
+  { type: "shock", platform: "ad", text: "Khoản đầu tư duy nhất trả lại bạn GẤP 20 LẦN trong đời" },
+  { type: "shock", platform: "video", text: "Cảnh báo: Đừng lắp ĐMT nếu chưa đọc cái này" },
+
+  // Pain Point
+  { type: "painpoint", platform: "video", text: "Mệt mỏi vì hóa đơn điện 4-5 triệu/tháng? Coi cái này đi..." },
+  { type: "painpoint", platform: "post", text: "Bạn có mệt mỏi vì EVN tăng giá điện 3 lần trong 2 năm?" },
+  { type: "painpoint", platform: "video", text: "Mùa hè nóng đến nỗi tôi sợ bật máy lạnh... cho đến khi..." },
+  { type: "painpoint", platform: "ad", text: "Nhà bạn tốn 50+ triệu tiền điện mỗi năm? Giải pháp cuối cùng đây" },
+  { type: "painpoint", platform: "video", text: "Mất điện 4 tiếng làm tủ lạnh hỏng hết đồ ăn... 1 lần là quá đủ" },
+  { type: "painpoint", platform: "post", text: "3 nỗi lo lớn nhất của chủ xưởng SME mùa hè - và cách giải quyết" },
+  { type: "painpoint", platform: "video", text: "Bạn đang trả TIỀN THUÊ điện hay đầu tư cho TÀI SẢN?" },
+
+  // Number
+  { type: "number", platform: "video", text: "5 triệu thành 0 đồng - hành trình 1 năm của gia đình tôi" },
+  { type: "number", platform: "video", text: "Top 7 sai lầm khiến bạn LỖ khi mua ĐMT" },
+  { type: "number", platform: "post", text: "10 lý do tại sao 2026 là năm vàng để lắp ĐMT" },
+  { type: "number", platform: "video", text: "300+ gia đình tại [TP] đã chọn giải pháp này..." },
+  { type: "number", platform: "ad", text: "55tr → 1.1 TỶ trong 25 năm. Đây là toán học, không phải lý thuyết" },
+  { type: "number", platform: "video", text: "3 dấu hiệu cho biết NHÀ BẠN cần lắp ĐMT NGAY" },
+  { type: "number", platform: "post", text: "5 điều tôi ước biết trước khi lắp ĐMT" },
+  { type: "number", platform: "video", text: "1 tấm pin sản xuất bao nhiêu? Câu trả lời gây sốc" },
+
+  // Question
+  { type: "question", platform: "video", text: "Bạn có biết hóa đơn điện 25 năm tới của nhà mình là bao nhiêu không?" },
+  { type: "question", platform: "video", text: "Tại sao 1 số nhà có ĐMT, 1 số thì không?" },
+  { type: "question", platform: "post", text: "Bạn đã từng tự hỏi: 'Có nên đầu tư ĐMT bây giờ không?'" },
+  { type: "question", platform: "video", text: "Có thật là ĐMT chỉ phù hợp với nhà giàu?" },
+  { type: "question", platform: "video", text: "Bạn nghĩ pin mặt trời chịu được mưa bão không?" },
+  { type: "question", platform: "ad", text: "Hóa đơn điện nhà bạn bao nhiêu? Tính xem tiết kiệm được bao nhiêu" },
+  { type: "question", platform: "video", text: "Tại sao Apple bắt nhà cung cấp phải dùng ĐMT?" },
+
+  // Story
+  { type: "story", platform: "video", text: "Tháng trước anh Tâm gặp tôi với vẻ mặt rất căng thẳng..." },
+  { type: "story", platform: "post", text: "Cách đây 3 năm, tôi là người không tin vào ĐMT..." },
+  { type: "story", platform: "video", text: "Đây là câu chuyện của một gia đình đã thay đổi hoàn toàn..." },
+  { type: "story", platform: "video", text: "Tôi nhớ mãi ngày khách hàng đầu tiên gọi điện báo: 'Cám ơn em'..." },
+  { type: "story", platform: "post", text: "Có 1 người khách mà tôi không bao giờ quên..." },
+
+  // Controversy
+  { type: "controversy", platform: "video", text: "Tại sao EVN không thích bạn lắp ĐMT?" },
+  { type: "controversy", platform: "video", text: "Sự thật cay đắng về 'pin giá rẻ' đang tràn lan thị trường" },
+  { type: "controversy", platform: "post", text: "Bên em nói thẳng: ĐMT KHÔNG dành cho 1 số người" },
+  { type: "controversy", platform: "video", text: "10 nhà thầu ĐMT - 7 nhà lừa đảo. Đây là cách phân biệt" },
+  { type: "controversy", platform: "video", text: "Tôi sẽ kể bạn nghe điều mà các sale ĐMT không bao giờ nói..." },
+
+  // How-to
+  { type: "howto", platform: "video", text: "Cách tính chính xác bao nhiêu kWp đủ cho nhà bạn - 3 bước" },
+  { type: "howto", platform: "video", text: "Hướng dẫn nhận ra báo giá nào là 'bẫy' trong 30 giây" },
+  { type: "howto", platform: "post", text: "Làm thế nào để chọn nhà thầu ĐMT uy tín? 7 tiêu chí vàng" },
+  { type: "howto", platform: "video", text: "Cách giảm hóa đơn điện 70% chỉ trong 2 tuần" },
+  { type: "howto", platform: "video", text: "3 phút để hiểu hệ thống ĐMT từ A đến Z" },
+
+  // Mix urgency
+  { type: "shock", platform: "ad", text: "[CẢNH BÁO] Giá pin tăng 8% từ tuần sau. Lý do bạn cần biết..." },
+  { type: "painpoint", platform: "ad", text: "Mùa hè đến rồi - hóa đơn điện sẽ tăng 50%. Giải pháp đây..." },
+  { type: "number", platform: "ad", text: "Chỉ còn 5 suất khảo sát miễn phí tuần này tại [Khu vực]" },
+  { type: "curiosity", platform: "ad", text: "Lý do 47 gia đình trong tháng 4 đã chọn bên em..." }
+];
+
+/* ========== POST TEMPLATES ========== */
+const POST_TEMPLATES = [
+  {
+    platform: "Facebook",
+    goal: "lead",
+    title: "Pain Point + Solution + CTA",
+    template: `🔥 [PAIN POINT]
+Hóa đơn điện [HOA_DON_DIEN]/tháng mà vẫn cảm thấy nóng vì sợ bật máy lạnh?
+
+✅ [SOLUTION]
+[CONG_TY] đã giúp hơn [SO_KHACH]+ gia đình tại [KHU_VUC] giảm tới 70% hóa đơn điện chỉ trong 1 năm.
+
+💡 ĐIỀU ĐẶC BIỆT:
+✔ Hệ thống chính hãng [HANG_PIN] - bảo hành [BAO_HANH] năm
+✔ Trả góp 0% lãi suất [SO_THANG] tháng
+✔ Khảo sát MIỄN PHÍ tận nơi
+✔ Bảo hành chống dột mái 5 năm
+
+🎁 ƯU ĐÃI CHỈ TRONG [THOI_GIAN]:
+Giảm thêm [GIAM_GIA] khi đăng ký trước [HAN_CUOI]
+
+📞 Đăng ký ngay: [SO_DT]
+👉 Hoặc comment "TƯ VẤN" - em sẽ inbox ngay`
+  },
+  {
+    platform: "Facebook",
+    goal: "trust",
+    title: "Case Study + Testimonial",
+    template: `📸 [TIEU_DE_NGAN]
+
+Anh/Chị [TEN_KHACH] - chủ [LOAI_HINH] tại [KHU_VUC] đã chọn [CONG_TY] để lắp hệ [CONG_SUAT]kWp vào tháng [THANG].
+
+📊 KẾT QUẢ SAU [SO_THANG] THÁNG:
+✔ Hóa đơn điện: [TRUOC] → [SAU] (giảm [PHAN_TRAM]%)
+✔ Sản lượng tháng cao nhất: [SAN_LUONG] kWh
+✔ Tiết kiệm trung bình: [TIET_KIEM]/tháng
+✔ Dự kiến hoàn vốn: [HOAN_VON] năm
+
+💬 Anh/Chị [TEN_KHACH] chia sẻ:
+"[LOI_KHACH_NOI]"
+
+🎯 BẠN CŨNG MUỐN HỆ THỐNG TỐI ƯU NHƯ VẬY?
+Comment "TƯ VẤN" hoặc nhắn tin để em báo giá MIỄN PHÍ cho mái nhà mình.`
+  },
+  {
+    platform: "Facebook",
+    goal: "awareness",
+    title: "Education - Listicle",
+    template: `🌟 [TIEU_DE] - [SO] ĐIỀU BẠN CHƯA BIẾT
+
+[Mở đầu hấp dẫn 1-2 câu liên quan đến chủ đề]
+
+📌 1. [ĐIỂM 1]
+[Giải thích ngắn 1-2 câu]
+
+📌 2. [ĐIỂM 2]
+[Giải thích ngắn]
+
+📌 3. [ĐIỂM 3]
+[Giải thích ngắn]
+
+📌 4. [ĐIỂM 4]
+[Giải thích ngắn]
+
+📌 5. [ĐIỂM 5]
+[Giải thích ngắn]
+
+💬 Bạn đã biết bao nhiêu điều trong số này? Comment con số bên dưới nhé!
+
+❤️ Like fanpage để không bỏ lỡ kiến thức mới về điện mặt trời`
+  },
+  {
+    platform: "Facebook",
+    goal: "engagement",
+    title: "Question Post",
+    template: `🤔 CÂU HỎI HÔM NAY:
+
+[CÂU HỎI HẤP DẪN]
+
+Ví dụ: Nếu cho bạn 100 triệu để đầu tư, bạn sẽ chọn:
+A. Gửi tiết kiệm ngân hàng (lãi 6%/năm)
+B. Mua chứng khoán (rủi ro nhưng cao)
+C. Bất động sản (cần vốn lớn hơn)
+D. Lắp điện mặt trời (lãi 15-20%/năm + bảo vệ môi trường)
+
+👇 Comment lựa chọn của bạn và LÝ DO bên dưới!
+
+Người có câu trả lời thú vị nhất sẽ được TẶNG QUÀ từ [CONG_TY] 🎁`
+  },
+  {
+    platform: "Facebook",
+    goal: "conversion",
+    title: "Urgency + Offer",
+    template: `⚡ [KHUYẾN MÃI GIỚI HẠN] - CHỈ CÒN [SO_NGAY] NGÀY ⚡
+
+🎁 ƯU ĐÃI THÁNG [THANG]:
+✔ Giảm [GIAM_GIA] cho [SO_KHACH] khách đầu tiên
+✔ Tặng [QUA_TANG] trị giá [GIA_TRI]
+✔ Miễn phí khảo sát + thiết kế 3D
+✔ Trả góp 0% lãi suất 12 tháng
+
+⏰ KHUYẾN MÃI KẾT THÚC: [NGAY_KET_THUC]
+
+📞 Hành động NGAY:
+👉 Inbox để giữ suất
+👉 Gọi [SO_DT]
+👉 Hoặc comment "ƯU ĐÃI" - em xác nhận trong 5 phút
+
+🚨 LƯU Ý: Mỗi tháng [CONG_TY] chỉ nhận [SO_DON_TOI_DA] đơn để đảm bảo chất lượng dịch vụ. Đừng để bỏ lỡ!`
+  },
+  {
+    platform: "TikTok",
+    goal: "awareness",
+    title: "Hook + Story + Lesson",
+    template: `[HOOK 3 GIÂY ĐẦU]
+
+[Tell story 15-20s - kể chuyện thực tế ngắn]
+
+[Bài học rút ra 5-7s]
+
+[CTA: Follow để xem thêm/Comment câu hỏi]
+
+#dienmattroi #tietkiem #songxanh`
+  },
+  {
+    platform: "Instagram",
+    goal: "trust",
+    title: "Carousel - Before & After",
+    template: `Slide 1: HÓA ĐƠN ĐIỆN CỦA [TEN_KHACH] - TRƯỚC vs SAU 🔥
+
+Slide 2: TRƯỚC: [SO_TIEN_TRUOC]/tháng 😱
+
+Slide 3: SAU 1 NĂM: [SO_TIEN_SAU]/tháng ✨
+
+Slide 4: Hệ thống [CONG_SUAT] kWp với pin [HANG_PIN]
+
+Slide 5: Tiết kiệm: [SO_TIEN_TIET_KIEM]/năm 🎉
+
+Slide 6: HOÀN VỐN: [SO_NAM] năm | Lãi: 25 năm 💰
+
+Slide 7: BẠN CŨNG MUỐN? → DM hoặc bấm link bio
+
+Caption:
+[CONG_TY] xin chia sẻ thành quả của khách hàng [TEN_KHACH]. Hành trình từ hóa đơn điện 💸 sang TIẾT KIỆM 💰
+
+#dienmattroi #tietkiemdien #greenenergy #songxanh #vietnam`
+  },
+  {
+    platform: "LinkedIn",
+    goal: "awareness",
+    title: "B2B Thought Leadership",
+    template: `[TIEU_DE - SỐ LIỆU/INSIGHT GÂY CHÚ Ý]
+
+Trong [NGANH], áp lực từ [PRESSURE] đang khiến các CEO phải nhìn nhận lại chiến lược năng lượng.
+
+⚡ THỰC TẾ:
+• [SỐ LIỆU 1]
+• [SỐ LIỆU 2]
+• [SỐ LIỆU 3]
+
+💡 GIẢI PHÁP TỪ [CONG_TY]:
+Chúng tôi đã triển khai [SỐ DỰ ÁN]+ dự án ĐMT cho các doanh nghiệp FDI tại VN, đạt:
+✓ Giảm 30-50% chi phí năng lượng
+✓ Đáp ứng tiêu chuẩn RE100 / ESG
+✓ Hỗ trợ đạt chứng chỉ I-REC
+
+📊 CASE STUDY GẦN ĐÂY:
+[Mô tả ngắn 2-3 câu về 1 dự án nổi bật]
+
+🤝 CONNECT để trao đổi về chiến lược năng lượng cho doanh nghiệp của bạn.
+
+#renewableenergy #ESG #netzero #solarpower #vietnam`
+  },
+  {
+    platform: "Zalo",
+    goal: "engagement",
+    title: "Zalo OA Broadcast",
+    template: `☀️ [TIEU_DE]
+
+Chào anh/chị [TEN_KHACH],
+
+[CONG_TY] xin gửi đến anh/chị thông tin hữu ích:
+
+📌 [NỘI DUNG CHÍNH 2-3 CÂU]
+
+🎁 ƯU ĐÃI ĐẶC BIỆT (chỉ dành cho khách Zalo):
+[ƯU ĐÃI]
+
+👉 Đăng ký nhận tư vấn: [LINK / BUTTON]
+
+Cảm ơn anh/chị đã quan tâm.
+
+[CONG_TY] - Đồng hành cùng tương lai xanh.`
+  },
+  {
+    platform: "Facebook",
+    goal: "engagement",
+    title: "Behind the Scenes",
+    template: `📸 HẬU TRƯỜNG MỘT NGÀY LẮP ĐẶT TẠI [DIA_DIEM]
+
+5h30 sáng: Team chuẩn bị hàng hóa, kiểm tra dụng cụ
+7h00: Có mặt tại nhà khách
+8h00: Bắt đầu lắp khung giàn
+12h00: Đặt pin & đấu nối
+14h00: Lắp inverter, tủ điện
+16h00: Test hệ thống, đóng điện
+17h30: Bàn giao - anh/chị [TEN] cười rạng rỡ! 😊
+
+✨ Đây là ngày làm việc thứ [SO]+ của team trong tháng. Cảm ơn các anh em kỹ thuật đã không ngại nắng mưa!
+
+❤️ Like nếu bạn cũng yêu mến những người làm việc thầm lặng này
+🏠 Inbox nếu bạn muốn nhà mình là "công trình" tiếp theo của chúng tôi`
+  },
+  {
+    platform: "Facebook",
+    goal: "trust",
+    title: "Myth Busting",
+    template: `❌ HIỂU LẦM PHỔ BIẾN VỀ ĐIỆN MẶT TRỜI
+
+[CONG_TY] xin "đính chính" những hiểu lầm sau:
+
+❌ HIỂU LẦM 1: "ĐMT chỉ dùng được 10 năm"
+✅ SỰ THẬT: Pin Tier 1 được bảo hành hiệu suất 25-30 NĂM
+
+❌ HIỂU LẦM 2: "Mất điện thì ĐMT không dùng được"
+✅ SỰ THẬT: Hệ Hybrid có pin lưu trữ vẫn hoạt động khi mất điện
+
+❌ HIỂU LẦM 3: "Lắp ĐMT là làm hỏng mái nhà"
+✅ SỰ THẬT: Phương pháp L-foot KHÔNG khoan vào mái, cam kết chống dột 5 năm
+
+❌ HIỂU LẦM 4: "Mưa to thì pin hỏng"
+✅ SỰ THẬT: Pin chuẩn IP68 - chịu được nước, bão cấp 11
+
+❌ HIỂU LẦM 5: "Sản lượng giảm nhanh sau vài năm"
+✅ SỰ THẬT: Suy giảm chỉ 0.5%/năm - sau 25 năm vẫn còn 87% hiệu suất
+
+💬 Bạn còn hiểu lầm nào? Comment để [CONG_TY] giải đáp!`
+  }
+];
+
+/* ========== VIDEO SCRIPTS ========== */
+const SCRIPTS = [
+  {
+    length: "30s",
+    style: "timelapse",
+    title: "Timelapse lắp đặt 30s - viral",
+    scenes: [
+      { time: "0-3s", action: "Hook - cận cảnh hóa đơn EVN 0 đồng", dialog: "Hóa đơn điện tháng này nhà tôi 0 đồng." },
+      { time: "3-8s", action: "Cảnh người vợ ngạc nhiên cầm hóa đơn", dialog: "Bí mật ở đây..." },
+      { time: "8-18s", action: "Timelapse lắp đặt pin trên mái 8 giờ -> 10 giây", dialog: "(Nhạc nền upbeat, không thoại)" },
+      { time: "18-25s", action: "Mở app điện thoại, hiển thị sản lượng realtime", dialog: "5 kWh đã tạo ra hôm nay. Nhà tôi chỉ dùng 4 kWh." },
+      { time: "25-30s", action: "Text bự + giọng tự tin", dialog: "55 triệu đầu tư - 25 năm điện miễn phí. Comment 'CÓ' nếu bạn muốn." }
+    ]
+  },
+  {
+    length: "60s",
+    style: "testimonial",
+    title: "Khách hàng kể chuyện 60s",
+    scenes: [
+      { time: "0-3s", action: "Cận cảnh mặt khách, ánh sáng đẹp", dialog: "'Trước đây tôi nghĩ điện mặt trời là chuyện viển vông...'" },
+      { time: "3-15s", action: "Khách kể về vấn đề trước khi lắp", dialog: "'Hóa đơn điện 4-5 triệu mỗi tháng, mùa hè còn cao hơn. Tôi cứ phải nhắc gia đình tiết kiệm.'" },
+      { time: "15-25s", action: "Cut sang cảnh team đến khảo sát, lắp đặt", dialog: "'Một người bạn giới thiệu công ty này. Đội kỹ thuật chuyên nghiệp, làm sạch sẽ.'" },
+      { time: "25-40s", action: "Khách show hóa đơn trước/sau, hệ thống đã chạy", dialog: "'Sau 1 năm, hóa đơn giảm 80%. Tôi vẫn không tin được. Tiền tiết kiệm tôi đầu tư cho con học thêm.'" },
+      { time: "40-50s", action: "Cảnh gia đình hạnh phúc bên nhau", dialog: "'Giờ mùa hè tôi thoải mái bật điều hòa cả ngày mà không lo gì cả.'" },
+      { time: "50-60s", action: "Đề xuất + CTA", dialog: "'Nếu bạn cũng đang băn khoăn - hãy thử như tôi đã thử. Bạn sẽ không hối hận đâu.'" }
+    ]
+  },
+  {
+    length: "15s",
+    style: "viral",
+    title: "Trend POV - 15s",
+    scenes: [
+      { time: "0-3s", action: "Text overlay 'POV: Hóa đơn điện hàng xóm'", dialog: "Hàng xóm: '4 triệu rưỡi tháng này...'" },
+      { time: "3-9s", action: "Cut sang text 'POV: Hóa đơn của bạn (có ĐMT)'", dialog: "Bạn (calm): '0 đồng. Vẫn bật máy lạnh 24/7.'" },
+      { time: "9-13s", action: "Cảnh thực hệ thống pin trên mái", dialog: "Cảm giác khi đầu tư 1 lần dùng 25 năm..." },
+      { time: "13-15s", action: "Logo + CTA", dialog: "Comment 'BAO NHIÊU' để biết giá cho nhà bạn." }
+    ]
+  },
+  {
+    length: "30s",
+    style: "educational",
+    title: "Giáo dục - So sánh đầu tư",
+    scenes: [
+      { time: "0-3s", action: "Hook - text bự '100 triệu - đầu tư vào đâu?'", dialog: "Có 100 triệu, bạn đầu tư vào đâu?" },
+      { time: "3-10s", action: "Đồ họa 4 lựa chọn: NH/CK/BĐS/ĐMT", dialog: "Gửi NH: 6%/năm. Chứng khoán: rủi ro. BĐS: cần vốn lớn." },
+      { time: "10-20s", action: "Zoom vào ĐMT, hiện ra biểu đồ tăng trưởng", dialog: "ĐMT: ROI 15-20%/năm. Bảo hành 25 năm. Không lo mất giá." },
+      { time: "20-27s", action: "So sánh số liệu 25 năm", dialog: "100tr → 1.8 tỷ sau 25 năm. Không có khoản đầu tư nào sinh lời ổn định như vậy." },
+      { time: "27-30s", action: "CTA mạnh", dialog: "Đầu tư thông minh không cần phức tạp. Nhắn tin 'TƯ VẤN' ngay." }
+    ]
+  },
+  {
+    length: "60s",
+    style: "comparison",
+    title: "So sánh pin Mono vs TOPCon - 60s",
+    scenes: [
+      { time: "0-5s", action: "Hook gây tò mò", dialog: "99% người Việt mua nhầm pin mặt trời và họ không biết!" },
+      { time: "5-15s", action: "Trình bày pin Mono PERC", dialog: "Đây là pin Mono PERC - phổ biến nhất, hiệu suất 20-21%, công nghệ từ 2015. Giá rẻ." },
+      { time: "15-30s", action: "Trình bày pin TOPCon mới", dialog: "Còn đây là TOPCon - công nghệ 2022, hiệu suất 22-23%, suy giảm chỉ 0.4%/năm so với 0.55% của Mono." },
+      { time: "30-45s", action: "So sánh số liệu thực tế", dialog: "Sau 25 năm: TOPCon còn 88% hiệu suất - Mono PERC chỉ còn 84%. Nghĩa là TOPCon SX nhiều hơn 5% điện trong suốt vòng đời." },
+      { time: "45-55s", action: "Tính toán tài chính", dialog: "Đắt hơn 8-10% giá ban đầu nhưng tạo ra 5% điện hơn. ROI tốt hơn 15-20% so với Mono." },
+      { time: "55-60s", action: "Kết luận + CTA", dialog: "Đừng chỉ nhìn giá. Hãy nhìn tổng giá trị 25 năm. Inbox để tư vấn chi tiết." }
+    ]
+  },
+  {
+    length: "long",
+    style: "educational",
+    title: "Hướng dẫn toàn tập - YouTube 5 phút",
+    scenes: [
+      { time: "0-15s", action: "Intro với highlights", dialog: "Trong 5 phút tiếp theo, bạn sẽ hiểu MỌI THỨ về điện mặt trời: cấu tạo, chi phí, tính toán, lắp đặt. Hãy theo dõi đến cuối để nhận file Excel tính ROI MIỄN PHÍ." },
+      { time: "15s-1m", action: "Phần 1: Cấu tạo hệ thống", dialog: "Một hệ thống ĐMT cơ bản gồm 6 bộ phận: pin, inverter, khung giàn, tủ điện, hệ thống giám sát, và bộ chống sét..." },
+      { time: "1m-2m", action: "Phần 2: Cách tính công suất", dialog: "Để biết nhà bạn cần bao nhiêu kWp, hãy nhìn vào hóa đơn điện. Mỗi tháng 100 kWh = cần ~1 kWp..." },
+      { time: "2m-3m", action: "Phần 3: Chi phí thực tế 2026", dialog: "Giá hiện tại khoảng 10-13 triệu/kWp cho hệ on-grid, 18-22 triệu/kWp cho hybrid có pin..." },
+      { time: "3m-4m", action: "Phần 4: ROI và hoàn vốn", dialog: "Hệ 5kWp tại TP.HCM tạo ra ~7,300 kWh/năm = 22 triệu tiết kiệm/năm. Hoàn vốn 2.5-3 năm..." },
+      { time: "4m-4m30s", action: "Phần 5: Quy trình thi công", dialog: "Từ tư vấn đến đóng điện chỉ mất 2-4 tuần. Quy trình 5 bước..." },
+      { time: "4m30s-5m", action: "CTA + Quà tặng", dialog: "Comment 'EXCEL' để nhận file tính ROI. Subscribe để xem thêm video về năng lượng xanh!" }
+    ]
+  },
+  {
+    length: "15s",
+    style: "dayinlife",
+    title: "Day in life - 15s",
+    scenes: [
+      { time: "0-3s", action: "5h45 sáng - dậy chuẩn bị", dialog: "5h45 sáng. Ngày làm việc của kỹ sư ĐMT bắt đầu..." },
+      { time: "3-7s", action: "Cảnh đường đi - mặt trời mọc", dialog: "100km tới Long An..." },
+      { time: "7-11s", action: "Lắp đặt giữa trưa nắng", dialog: "Trời 38 độ. Vẫn cười." },
+      { time: "11-15s", action: "Cuối ngày - bàn giao - khách vui", dialog: "Vì niềm vui của khách là động lực của em." }
+    ]
+  },
+  {
+    length: "30s",
+    style: "viral",
+    title: "Hài hước - Reaction tăng giá điện",
+    scenes: [
+      { time: "0-3s", action: "Cảnh nhận thông báo EVN tăng giá", dialog: "Tin nhắn: 'EVN thông báo tăng giá điện 5%'" },
+      { time: "3-8s", action: "Reaction người tiêu dùng - drama", dialog: "Tôi: 'KHÔNG! Lại tăng nữa?!'" },
+      { time: "8-15s", action: "Cảnh quay hoá đơn ngày càng cao", dialog: "Hoá đơn năm 2023: 3tr. 2024: 3.5tr. 2025: 4tr. 2026: 4.5tr." },
+      { time: "15-22s", action: "Người hàng xóm calm, có ĐMT", dialog: "Hàng xóm: 'À không sao, mình có ĐMT mà.' Đẩy kính ngầu." },
+      { time: "22-30s", action: "CTA", dialog: "Đừng để EVN quyết định ví tiền của bạn. Inbox 'TƯ VẤN' ngay!" }
+    ]
+  }
+];
+
+/* ========== EMAIL TEMPLATES ========== */
+const EMAILS = [
+  {
+    title: "Email 1: Welcome - Khách vừa để lại SĐT",
+    subject: "[TEN_CONG_TY] - Cảm ơn anh/chị đã quan tâm điện mặt trời 🌞",
+    body: `Kính gửi anh/chị [TEN],
+
+Em là [TEN_SALE] từ [CONG_TY]. Cảm ơn anh/chị đã quan tâm dịch vụ lắp đặt điện mặt trời của chúng em!
+
+Để giúp anh/chị có quyết định đúng đắn, em xin gửi tặng:
+
+🎁 EBOOK MIỄN PHÍ: "10 Sai Lầm Khi Mua Điện Mặt Trời - Người Việt Nhất Định Phải Tránh"
+→ Tải về: [LINK]
+
+🎁 BẢNG TÍNH ROI EXCEL: Tính chính xác hoàn vốn cho nhà mình
+→ Tải về: [LINK]
+
+📞 Trong [SO_GIO] giờ tới, em sẽ gọi anh/chị để xác nhận thông tin và đặt lịch khảo sát MIỄN PHÍ.
+
+Nếu cần hỗ trợ ngay, anh/chị có thể:
+- Gọi hotline: [SDT]
+- Zalo: [ZALO]
+- Email: [EMAIL]
+
+Chúc anh/chị một ngày tốt lành!
+
+[TEN_SALE]
+[CHUC_VU] - [CONG_TY]`
+  },
+  {
+    title: "Email 2: Sau khảo sát - Gửi báo giá",
+    subject: "[TEN_CONG_TY] - Báo giá hệ thống ĐMT [CONG_SUAT]kWp cho [DIA_CHI]",
+    body: `Kính gửi anh/chị [TEN],
+
+Cảm ơn anh/chị đã dành thời gian để chúng em khảo sát hôm [NGAY]. Như đã trao đổi, em xin gửi đề xuất chi tiết:
+
+📋 GÓI ĐỀ XUẤT - [CONG_SUAT] kWp:
+
+1️⃣ THIẾT BỊ
+• Pin: [HANG_PIN] [CONG_SUAT_PIN]W × [SO_TAM] tấm
+• Inverter: [HANG_INVERTER] [MA_INVERTER]
+• Khung giàn: Nhôm anodized chống ăn mòn
+• Tủ điện: Chống sét, ngắn mạch chuẩn IEC
+
+2️⃣ DỰ KIẾN SẢN LƯỢNG
+• Tháng cao điểm: ~[SAN_LUONG_MAX] kWh
+• Trung bình năm: ~[SAN_LUONG_TB] kWh
+• Tiết kiệm/tháng: ~[TIET_KIEM]
+
+3️⃣ ĐẦU TƯ
+• Tổng chi phí: [TONG_TIEN] VND (đã VAT)
+• Hoàn vốn dự kiến: [HOAN_VON] năm
+• Tiết kiệm 25 năm: ~[TIET_KIEM_25_NAM] VND
+
+4️⃣ BẢO HÀNH
+• Pin: 25 năm hiệu suất
+• Inverter: 10 năm
+• Thi công: 5 năm
+• Chống dột: 5 năm
+
+5️⃣ THANH TOÁN
+• 30% khi ký HĐ
+• 60% khi hoàn thành lắp đặt
+• 10% sau nghiệm thu
+• Hoặc trả góp 0% lãi suất 12 tháng
+
+📎 File báo giá chi tiết đính kèm.
+
+⏰ ƯU ĐÃI ĐẶC BIỆT: Nếu anh/chị ký HĐ trước [HAN_CUOI], bên em tặng:
+• Giảm trực tiếp [GIAM_GIA] VND
+• Tặng [QUA_TANG]
+
+Em sẵn sàng tư vấn thêm bất cứ lúc nào.
+
+[TEN_SALE]
+[SDT] - [EMAIL]`
+  },
+  {
+    title: "Email 3: Follow-up sau 3 ngày chưa phản hồi",
+    subject: "Anh/chị [TEN] - Còn cần em hỗ trợ gì không ạ?",
+    body: `Chào anh/chị [TEN],
+
+Em là [TEN_SALE]. Em đã gửi báo giá ngày [NGAY], không biết anh/chị đã có thời gian xem chưa?
+
+Em xin gửi lại để anh/chị tiện theo dõi:
+📎 [TEN_FILE_BAO_GIA]
+
+Em hiểu đây là quyết định đầu tư lớn cần cân nhắc. Nếu anh/chị có bất kỳ thắc mắc nào, em sẵn sàng:
+
+❓ Giải đáp về kỹ thuật
+❓ Tư vấn về tài chính (trả góp, vay NH)
+❓ Cho xem dự án thực tế của khách hàng khu vực [KHU_VUC]
+❓ Điều chỉnh phương án theo nhu cầu
+
+Em đề xuất: Anh/chị cho em [SO_PHUT] phút gọi điện vào [THOI_GIAN_DE_XUAT] để trao đổi không?
+
+Hoặc anh/chị có thể trả lời email này với 1 câu ngắn về điều đang băn khoăn - em sẽ phản hồi trong 1 giờ.
+
+Em mong tin từ anh/chị!
+
+[TEN_SALE]`
+  },
+  {
+    title: "Email 4: Sau 1 tuần - Case study + Urgency",
+    subject: "Anh [TEN] - Hàng xóm cùng khu vực vừa tiết kiệm 5tr/tháng 🔥",
+    body: `Chào anh/chị [TEN],
+
+Em vừa hoàn thành 1 dự án ở [KHU_VUC] - cách nhà mình chỉ [KHOANG_CACH]:
+
+📸 ANH/CHỊ [TEN_KHACH] - chủ [LOAI_NHA]:
+• Trước: Hóa đơn điện 4.8tr/tháng
+• Sau lắp [CONG_SUAT]kWp: chỉ còn 800k/tháng
+• Tiết kiệm: 4tr/tháng = 48tr/năm
+• Hoàn vốn: 2.3 năm
+
+Anh/chị có thể xem thực tế dự án này. Em rất vui được sắp xếp.
+
+⚠️ TIN QUAN TRỌNG:
+Tháng sau, [HANG_PIN] tăng giá 5-7% do tỷ giá USD. Báo giá hiện tại của em sẽ chỉ có giá trị đến [HAN_CUOI].
+
+Nếu anh/chị có ý định, hãy chốt trong tuần này để được giá tốt nhất.
+
+Em chờ tin từ anh/chị!
+
+[TEN_SALE]`
+  },
+  {
+    title: "Email 5: Nurturing - Thông tin giá trị",
+    subject: "5 thay đổi quan trọng về chính sách ĐMT năm 2026",
+    body: `Chào anh/chị [TEN],
+
+Em là [TEN_SALE] từ [CONG_TY]. Trong năm 2026 có 5 thay đổi quan trọng về chính sách ĐMT mà em muốn cập nhật cho anh/chị:
+
+1️⃣ NGHỊ ĐỊNH 135/2024 - Tự sản tự tiêu được khuyến khích
+[Mô tả 2-3 câu]
+
+2️⃣ CƠ CHẾ DPPA - Mua bán điện trực tiếp với doanh nghiệp
+[Mô tả]
+
+3️⃣ EVN tăng giá điện lần thứ 4
+[Mô tả + tác động]
+
+4️⃣ Công nghệ pin TOPCon trở thành tiêu chuẩn
+[Mô tả lợi ích]
+
+5️⃣ Gói vay xanh BIDV/HDBank cho gia đình
+[Lãi suất ưu đãi]
+
+📎 BÁO CÁO ĐẦY ĐỦ: Tải tại [LINK]
+
+Anh/chị có câu hỏi gì? Reply email này em sẵn sàng giải đáp.
+
+Trân trọng,
+[TEN_SALE]`
+  },
+  {
+    title: "Email 6: Re-engagement - Khách 'ngủ đông' 3 tháng",
+    subject: "Anh/chị [TEN] - Còn nhớ em không? 😊",
+    body: `Chào anh/chị [TEN],
+
+Đã 3 tháng từ lần cuối chúng ta trao đổi. Không biết anh/chị thế nào rồi?
+
+Em không spam đâu - chỉ muốn chia sẻ vài điều có thể có ích:
+
+📊 GIÁ ĐIỆN EVN đã tăng thêm 5% trong 3 tháng qua. Nếu lúc đó anh/chị quyết định, đã tiết kiệm được [SO_TIEN] rồi.
+
+🎁 ƯU ĐÃI TRỞ LẠI: Để cảm ơn các khách hàng đã quan tâm bên em, tháng này em có gói ưu đãi đặc biệt:
+• Giảm [GIAM_GIA] cho 5 khách cũ
+• Tặng pin lưu trữ 5kWh trị giá 30tr
+
+Nếu anh/chị còn quan tâm, hãy cho em biết. Nếu không, em sẽ không làm phiền nữa.
+
+Chúc anh/chị nhiều sức khỏe!
+
+[TEN_SALE]`
+  },
+  {
+    title: "Email 7: B2B Cold Email - SME/Industrial",
+    subject: "[CONG_TY_KHACH] - Giảm 30% chi phí điện hàng tháng, có thật không?",
+    body: `Kính gửi anh/chị [TEN] - [CHUC_VU] [CONG_TY_KHACH],
+
+Em là [TEN_SALE] từ [CONG_TY_MINH].
+
+Em được giới thiệu rằng [CONG_TY_KHACH] đang vận hành tại [DIA_DIEM] và có thể quan tâm đến giải pháp giảm chi phí năng lượng.
+
+Bên em vừa hoàn thành 1 dự án [CONG_SUAT]kWp cho [CONG_TY_THAM_KHAO] - cũng trong ngành [NGANH]:
+✓ Giảm 35% chi phí điện hàng tháng
+✓ Hoàn vốn 2.5 năm
+✓ Đáp ứng yêu cầu RE100 của khách hàng FDI
+✓ Không cần đầu tư ban đầu (PPA model)
+
+📊 CHÚNG TÔI XIN ĐỀ XUẤT:
+Một buổi gặp 30 phút (online hoặc tại văn phòng của quý công ty) để:
+• Phân tích sơ bộ tiềm năng ĐMT cho [CONG_TY_KHACH]
+• Ước tính tiết kiệm cụ thể
+• Trình bày các phương án tài chính (CAPEX, PPA, Lease)
+
+Em có thể sắp xếp [3 KHUNG GIO DE XUAT]. Anh/chị thuận tiện thời gian nào?
+
+Trân trọng,
+[TEN_SALE]
+[CHUC_VU]
+[CONG_TY] | [SDT] | [EMAIL]
+www.[website].com`
+  }
+];
+
+/* ========== AD COPY ========== */
+const ADS = [
+  {
+    platform: "Facebook",
+    audience: "family",
+    headline: "Hóa đơn điện 5tr/tháng - giải pháp đây",
+    primaryText: `🔥 NHÀ BẠN TỐN BAO NHIÊU TIỀN ĐIỆN MỖI THÁNG?
+
+Hơn 300 gia đình tại [TP] đã giảm 70% hóa đơn nhờ điện mặt trời.
+
+💰 ĐẦU TƯ 1 LẦN - DÙNG 25 NĂM
+✓ Hệ chính hãng Jinko / JA Solar
+✓ Bảo hành 25 năm hiệu suất
+✓ Trả góp 0% lãi suất 12 tháng
+✓ Hoàn vốn chỉ 2.5-3 năm
+
+🎁 ƯU ĐÃI CHỈ TRONG TUẦN:
+Giảm 5tr cho 10 khách đầu tiên + Khảo sát MIỄN PHÍ
+
+👉 Comment "TƯ VẤN" hoặc bấm "Tìm hiểu thêm"`,
+    cta: "Tìm hiểu thêm",
+    note: "Best cho hộ gia đình thu nhập 30-80tr/tháng"
+  },
+  {
+    platform: "Facebook",
+    audience: "family",
+    headline: "Hàng xóm đã làm điều này - bạn thì sao?",
+    primaryText: `Anh Tâm (Q12) đã tiết kiệm 4.2 TRIỆU mỗi tháng. Chị Lan (Tân Phú) đã tự chủ năng lượng. Anh Hùng (Bình Tân) đã lắp 10kWp hoàn vốn 2.7 năm.
+
+Còn bạn thì sao? 🤔
+
+Đầu tư 1 lần - dùng 25 năm:
+💡 Tiết kiệm 70-80% tiền điện
+💡 Bảo hành chính hãng 25 năm
+💡 Hoàn vốn 2.5-3 năm
+💡 Tăng giá trị nhà 3-5%
+
+📞 Đăng ký khảo sát MIỄN PHÍ ngay hôm nay.
+
+Bên em chỉ nhận 10 đơn/tháng để đảm bảo chất lượng.`,
+    cta: "Đặt lịch",
+    note: "Social proof - hiệu quả cao với người do dự"
+  },
+  {
+    platform: "Facebook",
+    audience: "family",
+    headline: "Mùa hè đến rồi - chuẩn bị 5tr tiền điện chưa?",
+    primaryText: `☀️ Tháng 5 - Tháng 8: HÓA ĐƠN ĐIỆN TĂNG 50%!
+
+Bạn đã chuẩn bị tài chính chưa?
+
+Một giải pháp DUY NHẤT giúp bạn:
+✅ Không lo tiền điện mùa hè
+✅ Tự do bật máy lạnh cả ngày
+✅ Sản lượng đỉnh điểm vào mùa nóng
+
+➡️ ĐIỆN MẶT TRỜI ⬅️
+
+🎯 Với 55 triệu đầu tư, bạn nhận lại:
+• 1.1 TỶ tiết kiệm trong 25 năm
+• Không lo bão giá điện EVN
+• Tăng giá trị nhà
+• Góp phần bảo vệ môi trường
+
+📞 [SDT] - Tư vấn 24/7
+👉 Comment "MÙA HÈ" - em gửi báo giá ngay!`,
+    cta: "Gọi ngay",
+    note: "Seasonal - chạy tháng 3-5"
+  },
+  {
+    platform: "Facebook",
+    audience: "sme",
+    headline: "Chủ xưởng tiết kiệm 130tr/tháng - đây là cách",
+    primaryText: `🏭 ANH/CHỊ LÀ CHỦ XƯỞNG / DOANH NGHIỆP?
+
+Hóa đơn điện 100-200 triệu/tháng đang ăn vào lợi nhuận?
+
+[CONG_TY] đã giúp xưởng cơ khí của anh Tâm (Bình Dương):
+✓ Giảm 130tr/tháng tiền điện
+✓ Hoàn vốn 26 tháng
+✓ Thi công ban đêm - KHÔNG gián đoạn sản xuất
+✓ Đạt chuẩn ESG cho khách FDI
+
+💼 GIẢI PHÁP CHO DOANH NGHIỆP:
+• Vốn đầu tư từ 0đ (mô hình PPA)
+• Vay xanh BIDV lãi suất 8%/năm
+• Khấu hao thuế 10-15 năm
+• Tăng năng lực cạnh tranh
+
+📞 Đặt lịch khảo sát kỹ thuật: [SDT]
+📧 Email: [EMAIL]`,
+    cta: "Liên hệ",
+    note: "Target chủ xưởng, owner"
+  },
+  {
+    platform: "Google",
+    audience: "family",
+    headline: "Điện Mặt Trời Gia Đình | Báo Giá 5 Phút",
+    description1: "Hệ Jinko/JA Solar | Bảo hành 25 năm | Trả góp 0% lãi suất",
+    description2: "Khảo sát MIỄN PHÍ tận nơi. 300+ khách hài lòng. Hoàn vốn 2.5 năm.",
+    sitelinks: ["Bảng giá 2026", "Trả góp", "Khách đã lắp", "Liên hệ"],
+    note: "Google Search - intent cao"
+  },
+  {
+    platform: "Google",
+    audience: "industrial",
+    headline: "Điện Mặt Trời Cho Doanh Nghiệp",
+    description1: "PPA - không cần đầu tư | Giảm 30-50% chi phí điện | Đạt ESG/RE100",
+    description2: "300+ dự án MWp đã triển khai. Hỗ trợ chứng chỉ I-REC.",
+    sitelinks: ["Dự án đã làm", "Mô hình PPA", "ESG Solution", "Báo giá B2B"],
+    note: "B2B keywords"
+  },
+  {
+    platform: "TikTok",
+    audience: "family",
+    headline: "Video Ad: Hóa đơn điện 0đ",
+    primaryText: `🎬 Video 30s:
+
+[0-3s] Cận cảnh hóa đơn EVN 0 đồng
+[3-8s] "Tôi không tin được vào mắt mình..."
+[8-18s] Timelapse lắp đặt
+[18-25s] App điện thoại realtime sản lượng
+[25-30s] "55 triệu = 25 năm điện free. Comment 'CÓ' để biết giá"
+
+📌 CAPTION:
+Bạn nghĩ chuyện này là viễn tưởng?
+
+Đây là câu chuyện thật của anh Long ở quận 7. Sau 1 năm lắp ĐMT, hóa đơn điện về 0.
+
+Còn bạn vẫn đang trả tiền cho EVN? 🤔
+
+Comment "CÓ" để em báo giá cho nhà bạn.
+
+#dienmattroi #tietkiemdien #hoadon0dong`,
+    cta: "Tin nhắn",
+    note: "TikTok - viral potential cao"
+  },
+  {
+    platform: "Facebook",
+    audience: "family",
+    headline: "Đầu tư 55tr - lấy lại 1.1 tỷ - bạn tin không?",
+    primaryText: `Bạn không nghe nhầm đâu! 💰
+
+📊 BẢNG TÍNH ROI THỰC TẾ:
+
+Đầu tư ban đầu: 55,000,000 đ
+Tiết kiệm năm 1: 22,000,000 đ
+Tiết kiệm 25 năm: 1,100,000,000 đ
+↳ Lợi nhuận ròng: 1,045,000,000 đ
+↳ IRR: 38%/năm
+
+So sánh:
+🏦 Gửi NH: 6%/năm
+📈 Chứng khoán: 8-15%/năm (rủi ro)
+🏠 BĐS: 10-15%/năm (vốn lớn)
+☀️ ĐMT: 38%/năm (an toàn 25 năm)
+
+Tại sao chưa đầu tư?
+
+👉 Nhận BẢNG TÍNH ROI cho NHÀ BẠN MIỄN PHÍ
+👉 Comment "ROI" - em gửi ngay`,
+    cta: "Tin nhắn",
+    note: "Targeting người quan tâm tài chính, đầu tư"
+  }
+];
+
+/* ========== HASHTAGS ========== */
+const HASHTAGS = {
+  "Chung - ĐMT VN": ["#dienmattroi", "#solarpower", "#nangluongmattroi", "#solarpanel", "#solarsystem", "#nangluongtaitao", "#renewableenergy", "#solarvietnam", "#dienmattroivietnam", "#dienmattroigiadinh"],
+  "Tiết kiệm điện": ["#tietkiemdien", "#tietkiemnangluong", "#hoadondien", "#giamhoadon", "#nhatietkiem", "#savemoney", "#tietkiemchiphi"],
+  "Lối sống xanh": ["#songxanh", "#greenliving", "#sustainable", "#ecofriendly", "#netzero", "#carbonzero", "#tuonglaixanh", "#greenenergy", "#greenhome"],
+  "Đầu tư & Tài chính": ["#dautuxanh", "#dautuhieuqua", "#dautulauham", "#roi", "#tailoichinh", "#daututhongminh", "#sinhloi"],
+  "Công nghệ": ["#cleantech", "#solartech", "#cleanenergy", "#congnghexanh", "#energytransition", "#smartenergy"],
+  "Theo địa phương HCM": ["#dienmattroitphcm", "#solarhcm", "#dmthcm", "#tphcm", "#saigon"],
+  "Theo địa phương HN": ["#dienmattroihanoi", "#solarhanoi", "#hanoi", "#dmthanoi"],
+  "Theo địa phương khác": ["#dienmattroibinhduong", "#dienmattroidongnai", "#dienmattroidanang", "#dienmattroinhatrang", "#dienmattroicantho"],
+  "B2B / Doanh nghiệp": ["#solarforbusiness", "#esg", "#re100", "#corporatesolar", "#industrialsolar", "#commercialsolar", "#sustainability"],
+  "Sản phẩm cụ thể": ["#jinkosolar", "#jasolar", "#longi", "#trinasolar", "#huawei", "#sungrow", "#goodwe", "#deye", "#topcon", "#hjt", "#bifacial"],
+  "Trends viral": ["#fyp", "#xuhuong", "#trending", "#viral", "#xuhuongtiktok", "#viralvideo", "#review", "#meomeo", "#chuachuyen"],
+  "Mùa & Sự kiện": ["#muahedien", "#tetay", "#namoi", "#earthday", "#worldenvironmentday", "#blackfriday"],
+  "Pain points": ["#mongdongthang", "#evntanggia", "#hoadoncao", "#matdien", "#nguoixanh"],
+  "Lifestyle": ["#nhamohinh", "#nhadep", "#smarthome", "#nhalietsi", "#nhamotrang", "#vietnamdep"]
+};
+
+/* ========== CTA LIBRARY ========== */
+const CTAS = [
+  // Lead
+  { text: "👉 Inbox 'BÁO GIÁ' - em gửi ngay trong 5 phút", goal: "lead" },
+  { text: "📞 Để lại SĐT - em gọi tư vấn FREE trong 2 giờ", goal: "lead" },
+  { text: "🎁 Comment 'CÓ' - nhận EBOOK miễn phí về ĐMT", goal: "lead" },
+  { text: "💬 Inbox 'TƯ VẤN' - em sẵn sàng 24/7", goal: "lead" },
+  { text: "📝 Điền form 30 giây - nhận báo giá chi tiết", goal: "lead" },
+  { text: "🆓 Click 'Đăng ký' - khảo sát MIỄN PHÍ tận nơi", goal: "lead" },
+
+  // Call
+  { text: "📞 Gọi ngay [SDT] để được tư vấn 1-1", goal: "call" },
+  { text: "☎️ Hotline 24/7: [SDT]", goal: "call" },
+  { text: "📱 Zalo/SMS: [SDT] - phản hồi trong 5 phút", goal: "call" },
+  { text: "📞 Bấm để gọi - tư vấn không tính phí", goal: "call" },
+
+  // Visit
+  { text: "🏢 Đến showroom xem trực tiếp hệ thống - tặng cafe", goal: "visit" },
+  { text: "🚗 Hẹn em đến nhà khảo sát - không bắt buộc gì cả", goal: "visit" },
+  { text: "📍 Showroom: [DIA_CHI] - mở cửa 8h-20h hằng ngày", goal: "visit" },
+  { text: "🎯 Đến tham quan dự án thực tế của khách hàng - free", goal: "visit" },
+
+  // Comment / Engagement
+  { text: "💬 Comment hoá đơn điện nhà bạn - em tính tiết kiệm cho bạn", goal: "comment" },
+  { text: "🤔 Bạn nghĩ sao? Comment ý kiến bên dưới!", goal: "comment" },
+  { text: "👇 Bạn đang phân vân điều gì? Comment - em giải đáp", goal: "comment" },
+  { text: "📊 Vote A hay B - người chọn đúng được tặng quà", goal: "comment" },
+  { text: "🏷️ Tag 1 người bạn nghĩ cần biết điều này!", goal: "comment" },
+  { text: "❤️ Share nếu bạn thấy hữu ích!", goal: "comment" },
+
+  // Urgency
+  { text: "⏰ CÒN [X] NGÀY - hết hạn ưu đãi giảm 5 triệu", goal: "urgency" },
+  { text: "🔥 CHỈ [X] SUẤT CUỐI tuần này - bạn nhanh tay!", goal: "urgency" },
+  { text: "🚨 Tuần sau giá tăng [X]% - quyết định ngay hôm nay!", goal: "urgency" },
+  { text: "⚡ Khuyến mãi LỚN nhất năm - chỉ trong [X] giờ", goal: "urgency" },
+  { text: "🎁 30 KHÁCH ĐẦU TIÊN tặng pin lưu trữ 5kWh!", goal: "urgency" },
+  { text: "⏳ Đăng ký trước 23h59 hôm nay - giảm thêm 2tr", goal: "urgency" },
+
+  // Soft
+  { text: "📖 Đọc thêm tại blog của bên em - link bio", goal: "soft" },
+  { text: "🔔 Follow fanpage để cập nhật kiến thức ĐMT mỗi tuần", goal: "soft" },
+  { text: "💌 Đăng ký nhận tin để không bỏ lỡ ưu đãi", goal: "soft" },
+  { text: "🌟 Bookmark bài này để dành đọc khi cần", goal: "soft" },
+  { text: "📚 Tìm hiểu thêm về dịch vụ của bên em tại website", goal: "soft" },
+  { text: "👥 Tham gia cộng đồng người dùng ĐMT VN (Group FB)", goal: "soft" }
+];
+
+/* ========== HEADLINE PATTERNS ========== */
+const HEADLINE_PATTERNS = [
+  (s, b) => `Cách ${b} bằng ${s} - bí mật người Việt chưa biết`,
+  (s, b) => `${b} với ${s} - 5 phút mỗi ngày`,
+  (s, b) => `Tại sao 300+ gia đình chọn ${s} để ${b}?`,
+  (s, b) => `Đừng mua ${s} cho đến khi bạn đọc 7 sự thật này`,
+  (s, b) => `7 lý do ${s} là khoản đầu tư tốt nhất 2026`,
+  (s, b) => `${b}: Sự thật mà ngành điện không muốn bạn biết`,
+  (s, b) => `Từ hóa đơn 5tr xuống 0đ - hành trình với ${s}`,
+  (s, b) => `${s} cho người mới: Hướng dẫn toàn tập trong 5 phút`,
+  (s, b) => `So sánh thật: ${s} vs Gửi NH vs BĐS - đâu là vua đầu tư?`,
+  (s, b) => `Bí quyết ${b} mà chỉ chuyên gia mới biết`,
+  (s, b) => `${b} chỉ trong 1 năm - thật hay đùa?`,
+  (s, b) => `Cảnh báo: 10 sai lầm khi mua ${s} (tránh ngay!)`,
+  (s, b) => `Câu chuyện anh Tâm và ${s} - bạn sẽ ngạc nhiên`,
+  (s, b) => `${s}: Tất cả những gì bạn cần biết 2026`,
+  (s, b) => `Hãy hành động ngay nếu bạn muốn ${b}`,
+  (s, b) => `[SỐC] ${b} - không phải lừa đảo, đây là cách`,
+  (s, b) => `99% người Việt sai lầm khi mua ${s}. Bạn thì sao?`,
+  (s, b) => `Bạn có biết ${s} có thể giúp ${b}?`,
+  (s, b) => `${s}: Đầu tư 1 lần - hưởng lợi 25 năm`,
+  (s, b) => `Mẹo ${b} bằng ${s} chỉ trong 2 tuần`
+];
+
+/* ========== STATE ========== */
+let saved = JSON.parse(localStorage.getItem('solarSaved') || '[]');
+let scheduled = JSON.parse(localStorage.getItem('solarScheduled') || '[]');
+let selectedHashtags = [];
+let currentMonth = new Date();
+
+/* ========== UTILS ========== */
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || 'var(--success)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('✅ Đã copy!');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ Đã copy!');
+  });
+}
+
+function escapeHtml(text) {
+  return text.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ========== TABS ========== */
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Lazy render
+  if (name === 'ideas' && !document.getElementById('ideasList').children.length) filterIdeas();
+  if (name === 'hooks' && !document.getElementById('hooksList').children.length) renderHooks();
+  if (name === 'posts' && !document.getElementById('postTemplatesList').children.length) renderPostTemplates();
+  if (name === 'scripts' && !document.getElementById('scriptsList').children.length) renderScripts();
+  if (name === 'emails' && !document.getElementById('emailsList').children.length) renderEmails();
+  if (name === 'ads' && !document.getElementById('adsList').children.length) renderAds();
+  if (name === 'hashtags' && !document.getElementById('hashtagGroups').children.length) renderHashtags();
+  if (name === 'cta' && !document.getElementById('ctasList').children.length) renderCTAs();
+  if (name === 'calendar') renderCalendar();
+  if (name === 'saved') renderSaved();
+}
+
+/* ========== SAVE SYSTEM ========== */
+function saveItem(type, data) {
+  const item = { id: Date.now() + Math.random(), type, data, savedAt: new Date().toISOString() };
+  saved.unshift(item);
+  localStorage.setItem('solarSaved', JSON.stringify(saved));
+  updateSavedCount();
+  showToast('⭐ Đã lưu!');
+}
+
+function unsaveItem(id) {
+  saved = saved.filter(s => s.id != id);
+  localStorage.setItem('solarSaved', JSON.stringify(saved));
+  updateSavedCount();
+  renderSaved();
+  showToast('🗑️ Đã xóa');
+}
+
+function isSaved(type, identifier) {
+  return saved.some(s => s.type === type && JSON.stringify(s.data) === JSON.stringify(identifier));
+}
+
+function updateSavedCount() {
+  document.getElementById('savedCount').textContent = saved.length;
+  document.getElementById('dashSaved').textContent = saved.length;
+}
+
+/* ========== IDEAS ========== */
+function filterIdeas() {
+  const funnel = document.getElementById('ideaFunnel').value;
+  const type = document.getElementById('ideaType').value;
+  const audience = document.getElementById('ideaAudience').value;
+  const platform = document.getElementById('ideaPlatform').value;
+
+  const filtered = IDEAS.filter(i =>
+    (!funnel || i.funnel === funnel) &&
+    (!type || i.type === type) &&
+    (!audience || i.audience === audience) &&
+    (!platform || i.platform === platform)
+  );
+
+  renderIdeas(filtered);
+}
+
+function randomIdea() {
+  const idea = IDEAS[Math.floor(Math.random() * IDEAS.length)];
+  renderIdeas([idea]);
+}
+
+function randomWeek() {
+  const shuffled = [...IDEAS].sort(() => Math.random() - 0.5).slice(0, 7);
+  renderIdeas(shuffled);
+}
+
+function renderIdeas(list) {
+  const container = document.getElementById('ideasList');
+  if (!list.length) {
+    container.innerHTML = '<div class="card" style="grid-column: 1/-1; text-align:center;">❌ Không tìm thấy ý tưởng phù hợp. Thử lọc khác.</div>';
+    return;
+  }
+  container.innerHTML = list.map((idea, i) => {
+    const funnelClass = `tag-funnel-${idea.funnel.toLowerCase()}`;
+    const saved = isSaved('idea', idea);
+    return `
+      <div class="idea-card">
+        <button class="save-btn ${saved ? 'saved' : ''}" onclick="saveItem('idea', ${JSON.stringify(idea).replace(/"/g, '&quot;')}); this.classList.add('saved')">⭐</button>
+        <h4>${escapeHtml(idea.title)}</h4>
+        <div>
+          <span class="tag ${funnelClass}">${idea.funnel}</span>
+          <span class="tag tag-type">${idea.type}</span>
+          <span class="tag tag-audience">${idea.audience}</span>
+          <span class="tag tag-platform">${idea.platform}</span>
+        </div>
+        <button class="btn btn-sm btn-secondary" style="margin-top:10px;" onclick="copyToClipboard('${idea.title.replace(/'/g, "\\'")}')">📋 Copy</button>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ========== HOOKS ========== */
+function renderHooks() {
+  const type = document.getElementById('hookType').value;
+  const platform = document.getElementById('hookPlatform').value;
+  const filtered = HOOKS.filter(h =>
+    (type === 'all' || h.type === type) &&
+    (platform === 'all' || h.platform === platform)
+  );
+
+  const container = document.getElementById('hooksList');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="card">❌ Không có hook phù hợp.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(h => `
+    <div class="card" style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
+      <div style="flex: 1;">
+        <div style="margin-bottom: 8px;">
+          <span class="tag tag-type">${h.type}</span>
+          <span class="tag tag-platform">${h.platform}</span>
+        </div>
+        <div style="font-size: 16px; color: var(--light); font-weight: 500;">"${escapeHtml(h.text)}"</div>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-sm" onclick="copyToClipboard('${h.text.replace(/'/g, "\\'")}')">📋</button>
+        <button class="btn btn-sm btn-secondary" onclick='saveItem("hook", ${JSON.stringify(h)})'>⭐</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function randomHook() {
+  const h = HOOKS[Math.floor(Math.random() * HOOKS.length)];
+  const container = document.getElementById('hooksList');
+  container.innerHTML = `
+    <div class="output">
+      <div class="output-header">
+        <div class="output-title">🎲 Hook Random</div>
+        <div class="output-actions">
+          <button class="btn btn-sm" onclick="copyToClipboard('${h.text.replace(/'/g, "\\'")}')">📋 Copy</button>
+          <button class="btn btn-sm btn-secondary" onclick='saveItem("hook", ${JSON.stringify(h)})'>⭐ Lưu</button>
+          <button class="btn btn-sm btn-secondary" onclick="randomHook()">🎲 Random nữa</button>
+        </div>
+      </div>
+      <div style="margin-bottom: 10px;">
+        <span class="tag tag-type">${h.type}</span>
+        <span class="tag tag-platform">${h.platform}</span>
+      </div>
+      <div class="output-content" style="font-size: 22px; font-weight: 600; color: var(--primary); text-align: center; padding: 30px 20px;">"${escapeHtml(h.text)}"</div>
+    </div>
+  `;
+}
+
+/* ========== POST TEMPLATES ========== */
+function renderPostTemplates() {
+  const platform = document.getElementById('postPlatform').value;
+  const goal = document.getElementById('postGoal').value;
+  const filtered = POST_TEMPLATES.filter(t =>
+    (platform === 'all' || t.platform === platform) &&
+    (goal === 'all' || t.goal === goal)
+  );
+
+  const container = document.getElementById('postTemplatesList');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="card">❌ Không có template phù hợp.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map((t, i) => `
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 style="color: var(--primary);">${escapeHtml(t.title)}</h3>
+        <div>
+          <span class="tag tag-platform">${t.platform}</span>
+          <span class="tag tag-type">${t.goal}</span>
+        </div>
+      </div>
+      <div class="preview-box">${escapeHtml(t.template)}</div>
+      <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button class="btn btn-sm" onclick="copyToClipboard(\`${t.template.replace(/`/g, '\\`')}\`)">📋 Copy template</button>
+        <button class="btn btn-sm btn-secondary" onclick='saveItem("post", ${JSON.stringify(t)})'>⭐ Lưu</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ========== SCRIPTS ========== */
+function renderScripts() {
+  const length = document.getElementById('scriptLength').value;
+  const style = document.getElementById('scriptStyle').value;
+  const filtered = SCRIPTS.filter(s =>
+    (length === 'all' || s.length === length) &&
+    (style === 'all' || s.style === style)
+  );
+
+  const container = document.getElementById('scriptsList');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="card">❌ Không có kịch bản phù hợp.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(s => `
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="color: var(--primary);">🎬 ${escapeHtml(s.title)}</h3>
+        <div>
+          <span class="tag tag-platform">${s.length}</span>
+          <span class="tag tag-type">${s.style}</span>
+        </div>
+      </div>
+      ${s.scenes.map(sc => `
+        <div class="script-scene">
+          <div class="scene-label">⏱️ ${sc.time}</div>
+          <div class="scene-action">🎥 ${escapeHtml(sc.action)}</div>
+          <div class="scene-dialog">💬 ${escapeHtml(sc.dialog)}</div>
+        </div>
+      `).join('')}
+      <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button class="btn btn-sm" onclick="copyScript(${JSON.stringify(s).replace(/"/g, '&quot;')})">📋 Copy kịch bản</button>
+        <button class="btn btn-sm btn-secondary" onclick='saveItem("script", ${JSON.stringify(s)})'>⭐ Lưu</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function copyScript(s) {
+  const text = `🎬 ${s.title}\nĐộ dài: ${s.length} | Phong cách: ${s.style}\n\n` +
+    s.scenes.map(sc => `[${sc.time}]\n🎥 ${sc.action}\n💬 ${sc.dialog}`).join('\n\n');
+  copyToClipboard(text);
+}
+
+/* ========== EMAILS ========== */
+function renderEmails() {
+  const container = document.getElementById('emailsList');
+  container.innerHTML = EMAILS.map((e, i) => `
+    <div class="card">
+      <h3 style="color: var(--primary); margin-bottom: 8px;">📧 ${escapeHtml(e.title)}</h3>
+      <div style="background: var(--darker); padding: 12px; border-radius: 6px; margin-bottom: 10px;">
+        <div style="color: var(--gray); font-size: 12px; margin-bottom: 4px;">SUBJECT:</div>
+        <div style="color: var(--primary); font-weight: 600;">${escapeHtml(e.subject)}</div>
+      </div>
+      <div class="preview-box">${escapeHtml(e.body)}</div>
+      <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button class="btn btn-sm" onclick="copyToClipboard(\`Subject: ${e.subject}\\n\\n${e.body.replace(/`/g, '\\`').replace(/\n/g, '\\n')}\`)">📋 Copy</button>
+        <button class="btn btn-sm btn-secondary" onclick='saveItem("email", ${JSON.stringify(e)})'>⭐ Lưu</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ========== ADS ========== */
+function renderAds() {
+  const platform = document.getElementById('adPlatform').value;
+  const audience = document.getElementById('adAudience').value;
+  const filtered = ADS.filter(a =>
+    (platform === 'all' || a.platform === platform) &&
+    (audience === 'all' || a.audience === audience)
+  );
+
+  const container = document.getElementById('adsList');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="card">❌ Không có ad copy phù hợp.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(a => {
+    let content = '';
+    if (a.platform === 'Google') {
+      content = `
+        <div style="background: var(--darker); padding: 15px; border-radius: 8px;">
+          <div style="color: #4285F4; font-size: 18px; font-weight: 500; margin-bottom: 5px;">${escapeHtml(a.headline)}</div>
+          <div style="color: #34A853; font-size: 13px; margin-bottom: 8px;">www.tencongty.vn</div>
+          <div style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">${escapeHtml(a.description1)}</div>
+          <div style="color: #cbd5e1; font-size: 13px; line-height: 1.5;">${escapeHtml(a.description2)}</div>
+          <div style="margin-top: 10px;">${a.sitelinks.map(s => `<span style="color: #4285F4; font-size: 12px; margin-right: 12px;">${escapeHtml(s)}</span>`).join('')}</div>
+        </div>
+      `;
+    } else {
+      content = `
+        <div style="background: var(--darker); padding: 15px; border-radius: 8px;">
+          <div style="font-weight: 700; color: var(--primary); margin-bottom: 8px;">${escapeHtml(a.headline)}</div>
+          <div class="preview-box" style="margin-top: 0;">${escapeHtml(a.primaryText)}</div>
+          <div style="margin-top: 10px; padding: 8px 12px; background: var(--primary); color: var(--darker); border-radius: 4px; display: inline-block; font-weight: 700;">${a.cta}</div>
+        </div>
+      `;
+    }
+    return `
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div>
+            <span class="tag tag-platform">${a.platform}</span>
+            <span class="tag tag-audience">${a.audience}</span>
+          </div>
+          <div style="font-size: 12px; color: var(--gray); font-style: italic;">${escapeHtml(a.note || '')}</div>
+        </div>
+        ${content}
+        <div style="margin-top: 12px; display: flex; gap: 8px;">
+          <button class="btn btn-sm" onclick='copyAd(${JSON.stringify(a)})'>📋 Copy</button>
+          <button class="btn btn-sm btn-secondary" onclick='saveItem("ad", ${JSON.stringify(a)})'>⭐ Lưu</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function copyAd(a) {
+  let text = '';
+  if (a.platform === 'Google') {
+    text = `Headline: ${a.headline}\nDesc 1: ${a.description1}\nDesc 2: ${a.description2}\nSitelinks: ${a.sitelinks.join(' | ')}`;
+  } else {
+    text = `${a.headline}\n\n${a.primaryText}\n\nCTA: ${a.cta}`;
+  }
+  copyToClipboard(text);
+}
+
+/* ========== HEADLINES ========== */
+function generateHeadlines() {
+  const subject = document.getElementById('headlineSubject').value.trim() || 'hệ thống ĐMT';
+  const benefit = document.getElementById('headlineBenefit').value.trim() || 'tiết kiệm 70% tiền điện';
+
+  const headlines = HEADLINE_PATTERNS.map(fn => fn(subject, benefit));
+
+  const container = document.getElementById('headlinesList');
+  container.innerHTML = `
+    <div class="card">
+      <h3 style="color: var(--primary); margin-bottom: 12px;">🚀 ${headlines.length} phiên bản headline</h3>
+      ${headlines.map((h, i) => `
+        <div class="ab-result" onclick="copyToClipboard('${h.replace(/'/g, "\\'")}')">
+          <div class="ab-result-label">Phiên bản ${i+1}</div>
+          <div style="font-size: 15px; color: var(--light);">${escapeHtml(h)}</div>
+        </div>
+      `).join('')}
+      <div style="margin-top: 12px; padding: 15px; background: rgba(251,191,36,0.1); border-radius: 8px; color: #fef3c7; font-size: 14px;">
+        💡 <strong>Mẹo A/B test:</strong> Chạy 3-5 headline song song với cùng creative + cùng audience. Sau 2-3 ngày, dừng phiên bản kém nhất, scale phiên bản tốt nhất.
+      </div>
+    </div>
+  `;
+}
+
+/* ========== HASHTAGS ========== */
+function renderHashtags() {
+  const container = document.getElementById('hashtagGroups');
+  container.innerHTML = Object.entries(HASHTAGS).map(([group, tags]) => `
+    <div class="hashtag-group">
+      <h4>${escapeHtml(group)} <span style="font-size: 11px; color: var(--gray); font-weight: 400;">(${tags.length} tags)</span></h4>
+      <div class="hashtag-pills">
+        ${tags.map(t => `<div class="hashtag-pill ${selectedHashtags.includes(t) ? 'selected' : ''}" onclick="toggleHashtag('${t}')">${t}</div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+  updateCombinedHashtags();
+}
+
+function toggleHashtag(tag) {
+  const i = selectedHashtags.indexOf(tag);
+  if (i > -1) selectedHashtags.splice(i, 1);
+  else selectedHashtags.push(tag);
+  renderHashtags();
+}
+
+function updateCombinedHashtags() {
+  const el = document.getElementById('combinedHashtags');
+  document.getElementById('hashtagCount').textContent = selectedHashtags.length;
+  if (!selectedHashtags.length) {
+    el.textContent = 'Click vào hashtag bên dưới để chọn...';
+    el.style.color = 'var(--gray)';
+  } else {
+    el.textContent = selectedHashtags.join(' ');
+    el.style.color = 'var(--accent)';
+  }
+}
+
+function copyHashtags() {
+  if (!selectedHashtags.length) { showToast('❌ Chưa chọn hashtag nào!', 'var(--danger)'); return; }
+  copyToClipboard(selectedHashtags.join(' '));
+}
+
+function clearHashtags() {
+  selectedHashtags = [];
+  renderHashtags();
+}
+
+function randomHashtagSet() {
+  const allTags = Object.values(HASHTAGS).flat();
+  selectedHashtags = [...allTags].sort(() => Math.random() - 0.5).slice(0, 15);
+  renderHashtags();
+}
+
+/* ========== CTA ========== */
+function renderCTAs() {
+  const goal = document.getElementById('ctaGoal').value;
+  const filtered = CTAS.filter(c => goal === 'all' || c.goal === goal);
+  const container = document.getElementById('ctasList');
+  container.innerHTML = filtered.map(c => `
+    <div class="idea-card" onclick="copyToClipboard('${c.text.replace(/'/g, "\\'")}')">
+      <div style="margin-bottom: 8px;"><span class="tag tag-type">${c.goal}</span></div>
+      <h4 style="line-height: 1.5;">${escapeHtml(c.text)}</h4>
+      <div style="margin-top: 10px; color: var(--gray); font-size: 12px;">👆 Click để copy</div>
+    </div>
+  `).join('');
+}
+
+/* ========== CALENDAR ========== */
+function renderCalendar() {
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+  document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const today = new Date();
+
+  let html = '<div class="calendar-day-header">CN</div><div class="calendar-day-header">T2</div><div class="calendar-day-header">T3</div><div class="calendar-day-header">T4</div><div class="calendar-day-header">T5</div><div class="calendar-day-header">T6</div><div class="calendar-day-header">T7</div>';
+
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="calendar-day empty"></div>';
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = year === today.getFullYear() && month === today.getMonth() && d === today.getDate();
+    const events = scheduled.filter(s => s.date === dateStr);
+    html += `
+      <div class="calendar-day ${isToday ? 'today' : ''}" onclick="openScheduleModal('${dateStr}')">
+        <div class="calendar-day-num">${d}</div>
+        ${events.slice(0, 3).map(e => `<div class="calendar-event" title="${escapeHtml(e.title)}">${escapeHtml(e.title.substring(0, 20))}${e.title.length > 20 ? '...' : ''}</div>`).join('')}
+        ${events.length > 3 ? `<div style="font-size: 10px; color: var(--gray);">+${events.length - 3} nữa</div>` : ''}
+      </div>
+    `;
+  }
+
+  document.getElementById('calendarGrid').innerHTML = html;
+
+  // Scheduled list
+  const monthScheduled = scheduled.filter(s => s.date.startsWith(`${year}-${String(month+1).padStart(2,'0')}`)).sort((a,b) => a.date.localeCompare(b.date));
+  const listEl = document.getElementById('scheduledList');
+  if (!monthScheduled.length) {
+    listEl.innerHTML = '<div style="color: var(--gray); text-align: center; padding: 20px;">Chưa có lịch đăng trong tháng này. Click vào ngày trong lịch để thêm.</div>';
+  } else {
+    listEl.innerHTML = monthScheduled.map(s => `
+      <div style="padding: 10px 12px; background: var(--darker); border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <strong style="color: var(--primary);">${s.date}</strong> - ${escapeHtml(s.title)}
+          ${s.platform ? `<span class="tag tag-platform" style="margin-left: 8px;">${s.platform}</span>` : ''}
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="removeSchedule('${s.id}')">🗑️</button>
+      </div>
+    `).join('');
+  }
+  document.getElementById('dashScheduled').textContent = monthScheduled.length;
+}
+
+function prevMonth() {
+  currentMonth.setMonth(currentMonth.getMonth() - 1);
+  renderCalendar();
+}
+
+function nextMonth() {
+  currentMonth.setMonth(currentMonth.getMonth() + 1);
+  renderCalendar();
+}
+
+function openScheduleModal(date) {
+  const modal = document.getElementById('modalContent');
+  const overlay = document.getElementById('modalOverlay');
+  modal.innerHTML = `
+    <h3>📅 Lên lịch đăng - ${date}</h3>
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px; color: var(--gray); font-size: 12px;">Tiêu đề content:</label>
+      <input type="text" id="scheduleTitle" placeholder="Vd: Case study anh Tâm tiết kiệm 5tr/tháng" style="width: 100%;">
+    </div>
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px; color: var(--gray); font-size: 12px;">Platform:</label>
+      <select id="schedulePlatform" style="width: 100%;">
+        <option value="Facebook">Facebook</option>
+        <option value="TikTok">TikTok</option>
+        <option value="Instagram">Instagram</option>
+        <option value="YouTube">YouTube</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Zalo">Zalo OA</option>
+      </select>
+    </div>
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; margin-bottom: 5px; color: var(--gray); font-size: 12px;">Ghi chú (tùy chọn):</label>
+      <textarea id="scheduleNote" placeholder="Nội dung, hashtag, ý tưởng..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Hủy</button>
+      <button class="btn" onclick="saveSchedule('${date}')">💾 Lưu</button>
+    </div>
+  `;
+  overlay.classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function saveSchedule(date) {
+  const title = document.getElementById('scheduleTitle').value.trim();
+  if (!title) { showToast('❌ Hãy nhập tiêu đề!', 'var(--danger)'); return; }
+  const platform = document.getElementById('schedulePlatform').value;
+  const note = document.getElementById('scheduleNote').value.trim();
+  scheduled.push({
+    id: Date.now() + Math.random(),
+    date, title, platform, note
+  });
+  localStorage.setItem('solarScheduled', JSON.stringify(scheduled));
+  closeModal();
+  renderCalendar();
+  showToast('📅 Đã thêm vào lịch!');
+}
+
+function removeSchedule(id) {
+  scheduled = scheduled.filter(s => s.id != id);
+  localStorage.setItem('solarScheduled', JSON.stringify(scheduled));
+  renderCalendar();
+  showToast('🗑️ Đã xóa');
+}
+
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'modalOverlay') closeModal();
+});
+
+/* ========== SAVED ========== */
+function renderSaved() {
+  const container = document.getElementById('savedList');
+  if (!saved.length) {
+    container.innerHTML = '<div class="card" style="text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 15px;">📂</div><div style="color: var(--gray);">Chưa lưu content nào. Click ⭐ ở các content để lưu.</div></div>';
+    return;
+  }
+
+  container.innerHTML = saved.map(item => {
+    let content = '';
+    const typeLabels = { idea: '💡 Ý tưởng', hook: '🎯 Hook', post: '📝 Post template', script: '🎬 Script', email: '📧 Email', ad: '📣 Ad' };
+    const typeLabel = typeLabels[item.type] || item.type;
+
+    if (item.type === 'idea') content = `<h4 style="color: var(--light);">${escapeHtml(item.data.title)}</h4>`;
+    else if (item.type === 'hook') content = `<div style="font-size: 16px; color: var(--primary);">"${escapeHtml(item.data.text)}"</div>`;
+    else if (item.type === 'post') content = `<h4 style="color: var(--primary);">${escapeHtml(item.data.title)}</h4><div class="preview-box" style="margin-top: 8px; max-height: 150px; overflow: hidden;">${escapeHtml(item.data.template.substring(0, 200))}...</div>`;
+    else if (item.type === 'script') content = `<h4 style="color: var(--primary);">${escapeHtml(item.data.title)} (${item.data.length})</h4>`;
+    else if (item.type === 'email') content = `<h4 style="color: var(--primary);">${escapeHtml(item.data.title)}</h4><div style="color: var(--gray); font-size: 13px;">Subject: ${escapeHtml(item.data.subject)}</div>`;
+    else if (item.type === 'ad') content = `<h4 style="color: var(--primary);">${escapeHtml(item.data.headline || 'Ad copy')}</h4>`;
+
+    return `
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+          <div style="flex: 1;">
+            <div style="margin-bottom: 8px;"><span class="tag tag-type">${typeLabel}</span><span class="tag" style="background: rgba(148, 163, 184, 0.2); color: var(--gray);">${new Date(item.savedAt).toLocaleDateString('vi')}</span></div>
+            ${content}
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="unsaveItem('${item.id}')">🗑️</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function exportSaved() {
+  const blob = new Blob([JSON.stringify(saved, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `solar-content-saved-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📥 Đã tải file JSON');
+}
+
+function exportSavedTXT() {
+  let text = `SOLAR CONTENT - SAVED ITEMS\nExported: ${new Date().toLocaleString('vi')}\nTotal: ${saved.length}\n\n========\n\n`;
+  saved.forEach((item, i) => {
+    text += `[${i+1}] [${item.type.toUpperCase()}] saved ${new Date(item.savedAt).toLocaleDateString('vi')}\n`;
+    if (item.type === 'idea') text += item.data.title + '\n';
+    else if (item.type === 'hook') text += '"' + item.data.text + '"\n';
+    else if (item.type === 'post') text += item.data.title + '\n\n' + item.data.template + '\n';
+    else if (item.type === 'script') text += item.data.title + '\n' + item.data.scenes.map(s => `[${s.time}] ${s.action} | ${s.dialog}`).join('\n') + '\n';
+    else if (item.type === 'email') text += 'Subject: ' + item.data.subject + '\n\n' + item.data.body + '\n';
+    else if (item.type === 'ad') text += (item.data.headline || '') + '\n' + (item.data.primaryText || item.data.description1 + '\n' + item.data.description2) + '\n';
+    text += '\n----\n\n';
+  });
+  const blob = new Blob([text], { type: 'text/plain; charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `solar-content-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📄 Đã tải file TXT');
+}
+
+function clearSaved() {
+  if (!confirm('Xóa TOÀN BỘ content đã lưu? Không thể hoàn tác!')) return;
+  saved = [];
+  localStorage.setItem('solarSaved', '[]');
+  updateSavedCount();
+  renderSaved();
+  showToast('🗑️ Đã xóa hết');
+}
+
+/* ========== INIT ========== */
+function init() {
+  document.getElementById('totalIdeas').textContent = IDEAS.length;
+  document.getElementById('totalTemplates').textContent = POST_TEMPLATES.length + SCRIPTS.length + EMAILS.length + ADS.length;
+  document.getElementById('dashIdeas').textContent = IDEAS.length;
+  document.getElementById('dashHooks').textContent = HOOKS.length;
+  document.getElementById('dashPosts').textContent = POST_TEMPLATES.length;
+  document.getElementById('dashEmails').textContent = EMAILS.length;
+  updateSavedCount();
+  // Pre-render dashboard scheduled count
+  const today = new Date();
+  const monthKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+  document.getElementById('dashScheduled').textContent = scheduled.filter(s => s.date.startsWith(monthKey)).length;
+}
+
+init();
+filterIdeas(); // Pre-load ideas
+</script>
+
+</body>
+</html>

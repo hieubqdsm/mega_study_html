@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xử lý Data với Claude | Claude Mastery</title>
+<meta name="description" content="Dùng Claude để làm sạch dữ liệu, phân tích CSV/Excel, viết SQL, dùng pandas, trích xuất dữ liệu và làm báo cáo.">
+<script>document.documentElement.dataset.theme=localStorage.getItem('cc-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">✦</span><span>Claude Mastery</span></a>
+    <nav class="nav" id="nav">
+      <a href="index.html">Trang chủ</a>
+      <a href="foundations.html">Nền tảng</a>
+      <a href="coding.html">Coding</a>
+      <a href="marketing.html">Marketing</a>
+      <a href="growth-hacking.html">Growth</a>
+      <a href="data.html" aria-current="page">Data</a>
+      <a href="content-engine.html">Content</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Đổi giao diện sáng/tối">◐</button>
+      <button class="icon-btn nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+    </div>
+  </div>
+  <div class="progress-bar" id="progressBar"></div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <div class="kicker">Module 4</div>
+    <h1>Xử lý Data với Claude</h1>
+    <p>Bạn không cần là data analyst để rút ra điều giá trị từ dữ liệu. Module này biến Claude thành cộng sự phân tích: làm sạch dữ liệu lộn xộn, trả lời câu hỏi từ bảng tính, viết SQL bằng lời, và biến số liệu thô thành quyết định.</p>
+  </div>
+</div>
+
+<div class="layout">
+
+  <aside class="toc">
+    <div class="toc-title">Nội dung module</div>
+    <a href="#c1">1. Hai chế độ làm data</a>
+    <a href="#c2">2. Làm sạch dữ liệu</a>
+    <a href="#c3">3. Phân tích CSV/Excel</a>
+    <a href="#c4">4. SQL bằng ngôn ngữ tự nhiên</a>
+    <a href="#c5">5. Quy trình Python/pandas</a>
+    <a href="#c6">6. Trích xuất dữ liệu từ text</a>
+    <a href="#c7">7. Trực quan hóa &amp; dashboard</a>
+    <a href="#c8">8. Báo cáo tự động</a>
+    <a href="#bt">★ Bài tập</a>
+  </aside>
+
+  <article class="article">
+
+    <details class="toc-mobile">
+      <summary>📑 Mục lục module</summary>
+      <nav class="toc">
+        <a href="#c1">1. Hai chế độ làm data</a>
+        <a href="#c2">2. Làm sạch dữ liệu</a>
+        <a href="#c3">3. Phân tích CSV/Excel</a>
+        <a href="#c4">4. SQL bằng ngôn ngữ tự nhiên</a>
+        <a href="#c5">5. Quy trình Python/pandas</a>
+        <a href="#c6">6. Trích xuất dữ liệu từ text</a>
+        <a href="#c7">7. Trực quan hóa &amp; dashboard</a>
+        <a href="#c8">8. Báo cáo tự động</a>
+        <a href="#bt">★ Bài tập</a>
+      </nav>
+    </details>
+
+    <section class="section" id="c1">
+      <h2 class="h"><span class="num">01</span> Hai chế độ làm việc với dữ liệu</h2>
+      <p class="section-intro">Trước khi làm gì, hãy hiểu sự khác biệt — nó quyết định độ tin cậy của kết quả.</p>
+
+      <div class="split">
+        <div class="box">
+          <div class="box-title">📊 Chế độ A — Claude tự "đọc" dữ liệu</div>
+          <p>Bạn dán bảng hoặc tải file lên, Claude đọc và trả lời trực tiếp. Nhanh, hợp dữ liệu nhỏ. Nhưng với phép tính trên nhiều dòng, nó <em>ước lượng</em> — có thể lệch.</p>
+        </div>
+        <div class="box">
+          <div class="box-title">⚙️ Chế độ B — Claude viết code xử lý</div>
+          <p>Claude viết đoạn code (Python/SQL) rồi <em>chạy</em> để tính. Con số là kết quả tính toán thật, lặp lại được, kiểm tra được. Hợp dữ liệu lớn và mọi việc cần độ chính xác.</p>
+        </div>
+      </div>
+
+      <div class="callout callout--key">
+        <span class="ic">🎯</span>
+        <div><p><strong>Quy tắc vàng của module này:</strong> với bất kỳ con số quan trọng nào, hãy để Claude <em>viết code và chạy</em> — đừng để nó "nhẩm". Trên Claude.ai dùng tính năng phân tích/chạy code; trong Claude Code thì nó chạy script trực tiếp. "Tổng doanh thu là bao nhiêu" phải đến từ một phép tính, không phải một phỏng đoán.</p></div>
+      </div>
+
+      <p>Phần còn lại của module nói rõ khi nào dùng chế độ nào. Mặc định: dữ liệu nhỏ + câu hỏi định tính → chế độ A; mọi thứ cần con số đúng → chế độ B.</p>
+    </section>
+
+    <section class="section" id="c2">
+      <h2 class="h"><span class="num">02</span> Làm sạch &amp; chuẩn hóa dữ liệu</h2>
+      <p class="section-intro">Dữ liệu thực tế luôn lộn xộn. Đây là việc tẻ nhạt nhất — và Claude xử lý rất tốt.</p>
+
+      <h3>Khảo sát trước khi sửa</h3>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — chẩn đoán dữ liệu</span><button class="copy-btn">Sao chép</button></div>
+<pre>Đây là dữ liệu của tôi [đính kèm file / dán mẫu vài chục dòng].
+
+Hãy viết code khảo sát và cho tôi báo cáo chất lượng dữ liệu:
+- Mỗi cột: kiểu dữ liệu, số giá trị thiếu, số giá trị duy nhất.
+- Vấn đề về định dạng: ngày tháng không nhất quán, số bị lưu dạng
+  chữ, khoảng trắng thừa, hoa/thường lẫn lộn.
+- Dòng trùng lặp.
+- Giá trị bất thường đáng ngờ.
+- Đánh giá: dữ liệu này có thể tin tới mức nào?
+
+Chỉ báo cáo — CHƯA sửa gì. Tôi sẽ quyết cách xử lý từng vấn đề.</pre>
+      </div>
+
+      <h3>Làm sạch theo từng quyết định</h3>
+      <p>Đừng nói "làm sạch giúp tôi" — làm sạch là một chuỗi <em>quyết định</em>. Dòng thiếu giá trị: xóa, hay điền? Điền bằng gì? Hãy quyết, rồi để Claude thực thi:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — làm sạch dữ liệu</span><button class="copy-btn">Sao chép</button></div>
+<pre>Làm sạch dữ liệu theo đúng các quyết định sau:
+- Cột ngày: chuẩn hóa hết về YYYY-MM-DD.
+- Email thiếu: giữ dòng, đánh dấu cột là "chưa có".
+- Dòng trùng: gộp, giữ bản ghi mới nhất.
+- Cột [tên]: bỏ khoảng trắng thừa, đưa hết về chữ thường.
+
+Viết code làm sạch. Sau khi chạy:
+- Báo từng bước đã đổi bao nhiêu dòng.
+- Xuất file mới, GIỮ NGUYÊN file gốc.
+- Liệt kê những gì bạn KHÔNG chắc và đã bỏ qua.</pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p>Luôn yêu cầu giữ nguyên file gốc và xuất ra file mới. Làm sạch dữ liệu có thể sai; bạn cần đường lùi. Và luôn bắt Claude <em>báo cáo</em> đã thay đổi gì — "im lặng làm sạch" che mất lỗi.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c3">
+      <h2 class="h"><span class="num">03</span> Phân tích CSV / Excel</h2>
+      <p class="section-intro">Trả lời câu hỏi kinh doanh từ một bảng tính — mà không cần biết viết công thức.</p>
+
+      <h3>Hỏi bằng ngôn ngữ thường, nhận lại con số có kiểm chứng</h3>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — phân tích bảng tính</span><button class="copy-btn">Sao chép</button></div>
+<pre>Đính kèm: [file dữ liệu của bạn].
+
+Trả lời các câu hỏi sau bằng cách VIẾT CODE và CHẠY — không ước lượng:
+1. [câu hỏi 1 — vd: doanh thu mỗi tháng năm nay]
+2. [câu hỏi 2 — vd: 10 khách hàng đóng góp doanh thu lớn nhất]
+3. [câu hỏi 3 — vd: nhóm sản phẩm nào đang tăng/giảm]
+
+Với mỗi câu: nêu kết quả, cho xem đoạn code đã dùng, và nói rõ
+mọi giả định (vd: cách định nghĩa "khách hàng đang hoạt động").</pre>
+      </div>
+
+      <h3>Để Claude tự tìm điều đáng chú ý</h3>
+      <p>Đôi khi bạn chưa biết nên hỏi gì. Hãy mở rộng — nhưng vẫn neo vào dữ liệu thật:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — khám phá dữ liệu</span><button class="copy-btn">Sao chép</button></div>
+<pre>Đây là dữ liệu [mô tả: nó là gì, mỗi dòng đại diện cho cái gì].
+
+Bối cảnh: tôi quan tâm tới [mục tiêu kinh doanh].
+
+Hãy khám phá dữ liệu (viết code, chạy thật) và cho tôi 5 phát hiện
+đáng chú ý nhất liên quan tới mục tiêu trên. Mỗi phát hiện:
+- Nói rõ nó là gì, kèm con số.
+- Vì sao nó đáng quan tâm.
+- Một câu hỏi nên đào tiếp.
+Chỉ kết luận từ dữ liệu có thật. Nếu một mẫu hình có thể chỉ là
+ngẫu nhiên, hãy nói rõ.</pre>
+      </div>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Luôn yêu cầu Claude <strong>nêu rõ giả định</strong>. Phần lớn phân tích sai không phải vì tính sai, mà vì định nghĩa khác nhau — "doanh thu" tính trước hay sau hoàn tiền? "Người dùng hoạt động" trong 7 hay 30 ngày? Lộ giả định ra là bắt được lỗi.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c4">
+      <h2 class="h"><span class="num">04</span> Viết SQL bằng ngôn ngữ tự nhiên</h2>
+      <p class="section-intro">Nếu dữ liệu của bạn nằm trong cơ sở dữ liệu, Claude là cầu nối giữa câu hỏi và truy vấn.</p>
+
+      <h3>Cho Claude biết cấu trúc bảng trước</h3>
+      <p>Claude viết SQL tốt tới đâu phụ thuộc nó hiểu lược đồ (schema) tới đâu. Luôn đưa cấu trúc bảng trước:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — sinh truy vấn SQL</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tôi cần một truy vấn SQL ([loại CSDL: PostgreSQL / MySQL / ...]).
+
+LƯỢC ĐỒ:
+"""
+[dán câu lệnh tạo bảng, hoặc mô tả: tên bảng, các cột, kiểu, khóa,
+quan hệ giữa các bảng]
+"""
+
+CÂU HỎI: [diễn đạt bằng lời điều bạn muốn lấy ra]
+
+Yêu cầu:
+- Viết truy vấn, kèm chú thích từng phần làm gì.
+- Nêu mọi giả định về ý nghĩa dữ liệu.
+- Cảnh báo nếu truy vấn có thể chậm trên dữ liệu lớn, và cách tối ưu.
+- Nếu câu hỏi của tôi mơ hồ, hỏi lại trước khi viết.</pre>
+      </div>
+
+      <h3>Hiểu &amp; sửa truy vấn có sẵn</h3>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — giải thích SQL</span><button class="copy-btn">Sao chép</button></div>
+<pre>Giải thích truy vấn SQL này từng bước, như cho người mới học SQL:
+"""
+[dán truy vấn]
+"""
+- Nó trả về gì?
+- Có lỗi tiềm ẩn hoặc trường hợp biên nào không (vd: NULL,
+  nhân đôi dòng do JOIN)?
+- Viết lại cho dễ đọc hơn mà kết quả không đổi.</pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p>Luôn kiểm tra truy vấn trên dữ liệu thử trước khi chạy thật. Đặc biệt cẩn trọng với lệnh <code>UPDATE</code> / <code>DELETE</code> — yêu cầu Claude viết kèm câu <code>SELECT</code> tương ứng để bạn xem trước những dòng sẽ bị ảnh hưởng.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c5">
+      <h2 class="h"><span class="num">05</span> Quy trình Python / pandas</h2>
+      <p class="section-intro">Cho việc lặp lại hoặc dữ liệu lớn: để Claude viết script tái dùng được, thay vì làm thủ công mỗi lần.</p>
+
+      <p>Khi cùng một loại file đến đều đặn — báo cáo bán hàng hàng tháng, xuất dữ liệu hàng tuần — hãy nhờ Claude (qua Claude Code) dựng một script:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — script xử lý tái dùng</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tôi cần một script Python xử lý lặp lại được.
+
+ĐẦU VÀO: file [định dạng] có cấu trúc: [mô tả các cột].
+XỬ LÝ:
+1. [bước — vd: làm sạch theo các quy tắc...]
+2. [bước — vd: gộp nhóm theo... và tính...]
+3. [bước — vd: đối chiếu với file tháng trước]
+ĐẦU RA: [mô tả — vd: file Excel có các sheet...]
+
+Yêu cầu:
+- Code rõ ràng, có chú thích, người không rành Python vẫn theo được.
+- Báo lỗi rõ ràng nếu file đầu vào sai cấu trúc.
+- In ra tóm tắt mỗi lần chạy (đã xử lý bao nhiêu dòng, v.v.).
+- Hướng dẫn cách chạy script ở cuối.</pre>
+      </div>
+
+      <div class="callout callout--tip">
+        <span class="ic">💡</span>
+        <div><p>Một việc thủ công lặp lại hàng tháng, mất vài giờ — biến thành script một lần, sau đó chạy trong vài giây. Đây là khoản đầu tư hoàn vốn rõ nhất ở module Data. Đừng quên nhờ Claude xử lý cả trường hợp file đầu vào bị lỗi.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c6">
+      <h2 class="h"><span class="num">06</span> Trích xuất dữ liệu có cấu trúc từ text lộn xộn</h2>
+      <p class="section-intro">Đây là một trong những việc Claude làm tốt nhất: biến văn bản tự do thành bảng dùng được.</p>
+
+      <p>Hóa đơn, email, ghi chú phỏng vấn, bài đăng, mô tả sản phẩm — Claude đọc văn bản phi cấu trúc và rút ra trường dữ liệu:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — trích xuất có cấu trúc</span><button class="copy-btn">Sao chép</button></div>
+<pre>Trích xuất thông tin có cấu trúc từ các văn bản dưới đây.
+
+CẦN LẤY các trường: [liệt kê — vd: tên, công ty, ngày, số tiền,
+loại yêu cầu, mức ưu tiên].
+
+QUY TẮC
+- Nếu một trường không có trong văn bản, ghi "không có" — KHÔNG đoán.
+- [Trường X] phải thuộc một trong: [danh sách giá trị hợp lệ].
+- Ngày đưa về dạng YYYY-MM-DD.
+
+ĐỊNH DẠNG ĐẦU RA: bảng (hoặc JSON), mỗi văn bản một dòng.
+
+VĂN BẢN:
+"""
+[dán các văn bản]
+"""</pre>
+      </div>
+
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p>Câu "<strong>nếu không có thì ghi 'không có', không đoán</strong>" rất quan trọng. Không có nó, Claude có thể "điền vào chỗ trống" bằng suy đoán hợp lý nhưng sai. Với lô lớn, hãy kiểm tay một mẫu ngẫu nhiên để ước lượng độ chính xác trước khi tin cả lô.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c7">
+      <h2 class="h"><span class="num">07</span> Trực quan hóa &amp; dashboard</h2>
+      <p class="section-intro">Một biểu đồ đúng nói nhiều hơn một bảng số. Claude giúp bạn chọn đúng dạng và dựng nó.</p>
+
+      <h3>Chọn đúng loại biểu đồ</h3>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — tư vấn trực quan hóa</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tôi muốn trình bày dữ liệu này: [mô tả dữ liệu].
+Thông điệp tôi muốn người xem nhận ra: [insight chính].
+Người xem là: [vd: ban lãnh đạo / khách hàng / nhóm kỹ thuật].
+
+1. Đề xuất loại biểu đồ phù hợp nhất, giải thích vì sao.
+2. Nêu loại biểu đồ NÊN TRÁNH cho dữ liệu này, vì sao.
+3. Góp ý về nhãn, chú thích, cách làm nổi điểm chính.</pre>
+      </div>
+
+      <h3>Dựng dashboard tương tác</h3>
+      <p>Claude có thể tạo thẳng một dashboard HTML — biểu đồ tương tác, bộ lọc — xem được trên trình duyệt, không cần cài gì:</p>
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — dashboard HTML</span><button class="copy-btn">Sao chép</button></div>
+<pre>Tạo một dashboard HTML một-file từ dữ liệu đính kèm.
+
+CẦN HIỂN THỊ
+- Các chỉ số chính ở trên cùng: [liệt kê].
+- Biểu đồ: [mô tả từng biểu đồ và mục đích].
+- Bộ lọc: [vd: theo khoảng thời gian, theo nhóm].
+
+YÊU CẦU
+- Một file HTML duy nhất, mở trực tiếp bằng trình duyệt.
+- Gọn gàng, dễ đọc, hoạt động tốt trên cả điện thoại.
+- Nhúng sẵn dữ liệu vào file để không cần kết nối ngoài.</pre>
+      </div>
+      <div class="callout callout--note">
+        <span class="ic">🔗</span>
+        <div><p>Cần dashboard đẹp và có cấu trúc hơn? Kỹ thuật xây giao diện HTML nằm ở <a href="coding.html">module Coding</a> — kết hợp hai module để có công cụ nội bộ thật sự dùng được.</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="c8">
+      <h2 class="h"><span class="num">08</span> Báo cáo phân tích tự động</h2>
+      <p class="section-intro">Đỉnh cao của module: đi thẳng từ dữ liệu thô tới một bản tóm tắt mà người ra quyết định đọc được.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span class="prompt-label">Prompt — báo cáo phân tích</span><button class="copy-btn">Sao chép</button></div>
+<pre>Từ dữ liệu đính kèm, soạn một báo cáo phân tích cho [người đọc].
+
+QUY TRÌNH
+1. Viết code, chạy thật để tính mọi con số — không ước lượng.
+2. Sau đó viết báo cáo gồm:
+   - Tóm tắt điều hành: 3–5 ý chính, mỗi ý có số liệu chống lưng.
+   - Phát hiện chi tiết, từng cái kèm dữ kiện.
+   - Điều dữ liệu KHÔNG nói được, hoặc cảnh báo về độ tin cậy.
+   - Đề xuất hành động, gắn với từng phát hiện.
+
+NGUYÊN TẮC
+- Mỗi khẳng định phải truy được về một con số đã tính.
+- Tách rõ "dữ liệu cho thấy" và "tôi suy luận rằng".
+- Viết cho người không chuyên về dữ liệu: ưu tiên rõ ràng.</pre>
+      </div>
+
+      <p>Khi báo cáo này lặp lại định kỳ, hãy đưa nó thành một quy trình cố định — như mục tự động hóa ở các module trước: cùng một cấu trúc prompt, chỉ thay dữ liệu của kỳ mới.</p>
+
+      <div class="callout callout--key">
+        <span class="ic">🎯</span>
+        <div><p>Giá trị thật của module Data không phải là "biết phân tích" — mà là rút ngắn quãng đường <strong>từ dữ liệu thô tới quyết định</strong>. Một báo cáo dù tinh xảo mà không đổi được hành động thì vẫn vô ích. Luôn kết bằng phần "nên làm gì".</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="bt">
+      <div class="box">
+        <div class="box-title">★ Bài tập module Data</div>
+        <ol class="steps">
+          <li><strong>Chẩn đoán một bộ dữ liệu</strong>Lấy một file dữ liệu thật, chạy prompt chẩn đoán, đọc báo cáo chất lượng.</li>
+          <li><strong>Trả lời 3 câu hỏi bằng code</strong>Đặt 3 câu hỏi kinh doanh cho dữ liệu đó, bắt Claude viết code và chạy — đọc kỹ phần giả định.</li>
+          <li><strong>Trích xuất có cấu trúc</strong>Lấy một loạt văn bản lộn xộn, biến thành bảng. Kiểm tay một mẫu để đánh giá độ chính xác.</li>
+          <li><strong>Một script tái dùng</strong>Chọn một việc xử lý dữ liệu bạn làm lặp lại. Nhờ Claude viết script. Chạy lại tháng sau.</li>
+          <li><strong>Một báo cáo hoàn chỉnh</strong>Đi từ dữ liệu thô tới báo cáo có tóm tắt điều hành và đề xuất hành động.</li>
+        </ol>
+      </div>
+      <div class="callout callout--warn">
+        <span class="ic">⚠️</span>
+        <div><p><strong>Lỗi thường gặp cần tránh:</strong> để Claude "nhẩm" con số quan trọng thay vì chạy code · không hỏi rõ giả định · ghi đè file gốc · tin kết quả trích xuất cả lô mà chưa kiểm mẫu · làm báo cáo đẹp nhưng quên phần "nên làm gì".</p></div>
+      </div>
+    </section>
+
+    <div class="page-nav">
+      <a class="prev" href="growth-hacking.html"><div class="dir">← Trước</div><div class="ttl">Module 3 · Growth Hacking</div></a>
+      <a class="next" href="content-engine.html"><div class="dir">Tiếp →</div><div class="ttl">Module 5 · Content Engine</div></a>
+    </div>
+
+  </article>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>✦ <strong>Claude Mastery</strong> — Module 4: Xử lý Data</span>
+    <span>Tài liệu học tập · Cập nhật <span id="year">2026</span></span>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

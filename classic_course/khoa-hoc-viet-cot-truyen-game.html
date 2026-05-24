@@ -1,0 +1,3922 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Viết Cốt Truyện Cho Game - Game Narrative Design</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #14b8a6;
+    --primary-glow: #5eead4;
+    --secondary: #f59e0b;
+    --accent: #ec4899;
+    --neon-blue: #38bdf8;
+    --gold: #fbbf24;
+    --dark: #0f172a;
+    --darker: #020617;
+    --light: #f1f5f9;
+    --gray: #94a3b8;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --card: #1e293b;
+    --border: #334155;
+    --parchment: #fef3c7;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.7;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(20, 184, 166, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.03) 0%, transparent 70%);
+    background-attachment: fixed;
+  }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 340px;
+    background: linear-gradient(180deg, var(--dark) 0%, #0a0f1f 100%);
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid var(--primary);
+    z-index: 100;
+    transition: transform 0.3s;
+    box-shadow: 4px 0 30px rgba(20, 184, 166, 0.15);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo {
+    text-align: center;
+    padding: 0 20px 30px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .logo h1 {
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+  .logo p { font-size: 12px; color: var(--gray); margin-top: 8px; font-style: italic; }
+  .nav-menu { list-style: none; padding: 0 15px; }
+  .nav-menu li { margin-bottom: 5px; }
+  .nav-menu a {
+    display: block;
+    padding: 11px 15px;
+    color: var(--gray);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+  }
+  .nav-menu a:hover, .nav-menu a.active {
+    background: rgba(20, 184, 166, 0.12);
+    color: var(--primary-glow);
+    border-left-color: var(--primary);
+    transform: translateX(5px);
+    text-shadow: 0 0 10px rgba(94, 234, 212, 0.4);
+  }
+  .nav-menu .chapter-num {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 24px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+  }
+  .main-content {
+    margin-left: 340px;
+    flex: 1;
+    padding: 40px 60px;
+    max-width: calc(100% - 340px);
+  }
+  .hero {
+    background: linear-gradient(135deg, #0c4a6e 0%, #134e4a 50%, #4c0519 100%);
+    padding: 80px 40px;
+    border-radius: 16px;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 60px rgba(20, 184, 166, 0.2);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(90deg, rgba(20, 184, 166, 0.08) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(236, 72, 153, 0.06) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridShift 30s linear infinite;
+  }
+  @keyframes gridShift {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(50px, 50px); }
+  }
+  .hero h1 {
+    font-size: 44px;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary-glow), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 40px rgba(94, 234, 212, 0.5);
+    letter-spacing: 2px;
+  }
+  .hero .subtitle {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 5px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+  }
+  .hero p { font-size: 19px; position: relative; z-index: 1; max-width: 800px; margin: 0 auto; color: var(--light); }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    padding: 20px 28px;
+    border-radius: 10px;
+    min-width: 140px;
+    border: 1px solid var(--primary);
+  }
+  .stat-num { font-size: 30px; font-weight: 900; display: block; color: var(--gold); text-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+  .stat-label { font-size: 12px; opacity: 0.9; letter-spacing: 1px; }
+  .chapter {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    scroll-margin-top: 20px;
+    position: relative;
+  }
+  .chapter::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--primary), var(--accent), var(--gold), transparent);
+    border-radius: 12px 12px 0 0;
+  }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-badge {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
+  }
+  .chapter h2 { font-size: 30px; color: var(--primary-glow); flex: 1; }
+  .chapter h3 {
+    font-size: 22px;
+    color: var(--gold);
+    margin: 30px 0 15px;
+    padding-left: 15px;
+    border-left: 4px solid var(--gold);
+  }
+  .chapter h4 { font-size: 18px; color: var(--accent); margin: 20px 0 10px; }
+  .chapter p { margin-bottom: 15px; color: #cbd5e1; }
+  .chapter ul, .chapter ol { margin: 15px 0 20px 25px; color: #cbd5e1; }
+  .chapter li { margin-bottom: 8px; }
+  .chapter strong { color: var(--primary-glow); }
+  .info-box, .warning-box, .tip-box, .danger-box, .quote-box {
+    padding: 20px 25px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 5px solid;
+  }
+  .info-box { background: rgba(20, 184, 166, 0.08); border-color: var(--primary); }
+  .warning-box { background: rgba(245, 158, 11, 0.08); border-color: var(--warning); }
+  .tip-box { background: rgba(34, 197, 94, 0.08); border-color: var(--success); }
+  .danger-box { background: rgba(239, 68, 68, 0.08); border-color: var(--danger); }
+  .quote-box {
+    background: rgba(236, 72, 153, 0.06);
+    border-color: var(--accent);
+    font-style: italic;
+    position: relative;
+    padding: 25px 25px 25px 60px;
+  }
+  .quote-box::after {
+    content: '"';
+    position: absolute;
+    top: 5px;
+    left: 15px;
+    font-size: 50px;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .info-box::before, .warning-box::before, .tip-box::before, .danger-box::before {
+    content: attr(data-title);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .info-box::before { color: var(--primary); }
+  .warning-box::before { color: var(--warning); }
+  .tip-box::before { color: var(--success); }
+  .danger-box::before { color: var(--danger); }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+  .card-item {
+    background: var(--dark);
+    padding: 22px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .card-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(20, 184, 166, 0.2);
+  }
+  .card-item h4 { color: var(--primary-glow); margin-bottom: 10px; }
+  .card-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: var(--dark);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+  }
+  tr:hover { background: rgba(20, 184, 166, 0.05); }
+  .example-box {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.05), rgba(20, 184, 166, 0.05));
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 20px 25px;
+    margin: 18px 0;
+    position: relative;
+  }
+  .example-box::before {
+    content: '🎮 VÍ DỤ';
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background: var(--gold);
+    color: var(--darker);
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .example-box .game-title {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+    margin-top: 5px;
+  }
+  .example-box p { color: #e2e8f0; margin-bottom: 10px; }
+  .example-box p:last-child { margin-bottom: 0; }
+  .code-block {
+    background: #06010f;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    margin: 15px 0;
+    overflow-x: auto;
+    color: var(--primary-glow);
+    white-space: pre-wrap;
+    line-height: 1.7;
+  }
+  .steps { counter-reset: step; margin: 20px 0; }
+  .step {
+    counter-increment: step;
+    padding: 20px 20px 20px 70px;
+    background: var(--dark);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 4px solid var(--primary);
+  }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 16px;
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
+  }
+  .step h4 { color: var(--primary-glow); margin-bottom: 5px; }
+  .progress-section {
+    position: fixed;
+    top: 0;
+    left: 340px;
+    right: 0;
+    height: 4px;
+    background: var(--dark);
+    z-index: 99;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--gold));
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--primary);
+  }
+  .quiz {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.08), rgba(236, 72, 153, 0.08));
+    border: 2px solid var(--primary);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+  .quiz-question { font-size: 17px; font-weight: 700; margin-bottom: 15px; color: var(--primary-glow); }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    padding: 12px 18px;
+    background: var(--dark);
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-option:hover { border-color: var(--primary); transform: translateX(5px); }
+  .quiz-option.correct { background: rgba(34, 197, 94, 0.2); border-color: var(--success); color: var(--success); }
+  .quiz-option.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: var(--danger); }
+  .menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 6px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.5);
+  }
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 290px; }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; padding: 70px 20px 20px; }
+    .menu-toggle { display: block; }
+    .progress-section { left: 0; }
+    .hero h1 { font-size: 30px; letter-spacing: 0; }
+    .hero p { font-size: 16px; }
+    .chapter { padding: 25px 20px; }
+    .chapter h2 { font-size: 22px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 15px; }
+    .stat { padding: 15px 20px; min-width: 120px; }
+  }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+    font-style: italic;
+  }
+  .controller-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 25px rgba(94, 234, 212, 0.5));
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-basic { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+  .badge-inter { background: rgba(251, 191, 36, 0.2); color: var(--gold); }
+  .badge-advanced { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+  .badge-pro { background: rgba(236, 72, 153, 0.2); color: var(--accent); }
+  .vs-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 15px;
+    align-items: stretch;
+    margin: 20px 0;
+  }
+  .vs-side {
+    background: var(--dark);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .vs-side.left { border-left: 4px solid var(--accent); }
+  .vs-side.right { border-left: 4px solid var(--primary); }
+  .vs-side h4 { margin-bottom: 10px; }
+  .vs-side.left h4 { color: var(--accent); }
+  .vs-side.right h4 { color: var(--primary-glow); }
+  .vs-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--gold);
+    font-weight: 900;
+  }
+  @media (max-width: 768px) {
+    .vs-grid { grid-template-columns: 1fr; }
+    .vs-divider { padding: 10px; }
+  }
+  .branch-tree {
+    background: var(--dark);
+    border: 1px solid var(--primary);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Consolas', monospace;
+    font-size: 13px;
+    line-height: 2;
+    color: var(--primary-glow);
+    white-space: pre;
+    overflow-x: auto;
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<div class="progress-section">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <h1>🎮 GAME NARRATIVE</h1>
+      <p>Khóa Học Viết Cốt Truyện Game</p>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#intro" class="active"><span class="chapter-num">1</span>Giới thiệu</a></li>
+      <li><a href="#vs-film"><span class="chapter-num">2</span>Game vs Phim</a></li>
+      <li><a href="#history"><span class="chapter-num">3</span>Lịch sử &amp; Game kinh điển</a></li>
+      <li><a href="#types"><span class="chapter-num">4</span>4 loại Narrative</a></li>
+      <li><a href="#agency"><span class="chapter-num">5</span>Player Agency</a></li>
+      <li><a href="#dissonance"><span class="chapter-num">6</span>Ludonarrative Dissonance</a></li>
+      <li><a href="#structure"><span class="chapter-num">7</span>Cấu trúc câu chuyện game</a></li>
+      <li><a href="#world"><span class="chapter-num">8</span>Worldbuilding</a></li>
+      <li><a href="#lore"><span class="chapter-num">9</span>Lore vs Story</a></li>
+      <li><a href="#character"><span class="chapter-num">10</span>Character trong game</a></li>
+      <li><a href="#protagonist"><span class="chapter-num">11</span>Player Character</a></li>
+      <li><a href="#companion"><span class="chapter-num">12</span>Companion &amp; NPC</a></li>
+      <li><a href="#branching"><span class="chapter-num">13</span>Branching Narrative</a></li>
+      <li><a href="#choice"><span class="chapter-num">14</span>Meaningful Choices</a></li>
+      <li><a href="#environmental"><span class="chapter-num">15</span>Environmental Storytelling</a></li>
+      <li><a href="#emergent"><span class="chapter-num">16</span>Emergent Narrative</a></li>
+      <li><a href="#dialogue"><span class="chapter-num">17</span>Dialogue Systems</a></li>
+      <li><a href="#quest"><span class="chapter-num">18</span>Quest Design</a></li>
+      <li><a href="#pacing"><span class="chapter-num">19</span>Pacing trong game</a></li>
+      <li><a href="#cutscene"><span class="chapter-num">20</span>Cutscene vs Gameplay</a></li>
+      <li><a href="#liveservice"><span class="chapter-num">21</span>Live Service &amp; Multiplayer</a></li>
+      <li><a href="#tools"><span class="chapter-num">22</span>Tools &amp; Workflow</a></li>
+      <li><a href="#career"><span class="chapter-num">23</span>Sự nghiệp Narrative Designer</a></li>
+      <li><a href="#quiz"><span class="chapter-num">24</span>Bài kiểm tra</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <section class="hero">
+      <span class="controller-icon">🎮</span>
+      <div class="subtitle">★ Master Class ★</div>
+      <h1>VIẾT CỐT TRUYỆN CHO GAME</h1>
+      <p>Hành trình từ biên kịch phim → Game Narrative Designer chuyên nghiệp. 24 chương với 200+ ví dụ thực tế từ Disco Elysium, The Last of Us, Dark Souls, Hades, Witcher 3, đến Undertale &amp; indie</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">24</span><span class="stat-label">CHAPTERS</span></div>
+        <div class="stat"><span class="stat-num">200+</span><span class="stat-label">EXAMPLES</span></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">GAMES ANALYZED</span></div>
+        <div class="stat"><span class="stat-num">∞</span><span class="stat-label">STORIES POSSIBLE</span></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 1: GIỚI THIỆU -->
+    <section id="intro" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 1</span>
+        <h2>Giới Thiệu Game Narrative</h2>
+      </div>
+
+      <h3>1.1. Game Narrative Designer là ai?</h3>
+      <p><strong>Game Narrative Designer</strong> = người thiết kế <em>cách câu chuyện được KỂ qua gameplay</em>, không chỉ viết câu chuyện.</p>
+
+      <div class="quote-box">
+        "A game writer writes words. A narrative designer designs how those words are experienced."<br>
+        <em>— Cara Ellison (Narrative Designer, Dishonored 2)</em>
+      </div>
+
+      <h3>1.2. Game Writer vs Narrative Designer</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>📝 Game Writer</h4>
+          <p>Viết:</p>
+          <ul>
+            <li>Dialogue (thoại)</li>
+            <li>Cutscene scripts</li>
+            <li>Quest descriptions</li>
+            <li>Lore documents</li>
+            <li>Codex entries</li>
+            <li>UI text, item descriptions</li>
+          </ul>
+          <p><strong>Skill:</strong> Viết hay</p>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="vs-side right">
+          <h4>🎯 Narrative Designer</h4>
+          <p>Thiết kế:</p>
+          <ul>
+            <li>Cách story tương tác gameplay</li>
+            <li>Branching structures</li>
+            <li>Quest flow / pacing</li>
+            <li>Dialogue systems</li>
+            <li>Environmental storytelling layout</li>
+            <li>Player agency &amp; choice consequence</li>
+          </ul>
+          <p><strong>Skill:</strong> Tư duy hệ thống + viết</p>
+        </div>
+      </div>
+
+      <p>Studio nhỏ: 1 người làm cả 2. Studio lớn (Naughty Dog, CD Projekt Red): phân chia rõ ràng.</p>
+
+      <h3>1.3. Tại sao Narrative quan trọng cho Game?</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>💰 Bán game</h4>
+          <p>Game có story tốt bán hơn. The Last of Us bán 37M copies. Red Dead Redemption 2 bán 55M.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏆 Award &amp; Critic</h4>
+          <p>The Game Awards 2024: hầu hết Game of the Year đều có narrative xuất sắc.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Cảm xúc sâu</h4>
+          <p>Game có thể tạo cảm xúc mà phim không thể - vì player TRỰC TIẾP làm.</p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Cộng đồng</h4>
+          <p>Story tốt = fanbase mạnh. Skyrim vẫn được mod 13 năm sau release.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔁 Replayability</h4>
+          <p>Story có branching → player chơi lại để xem ending khác.</p>
+        </div>
+        <div class="card-item">
+          <h4>📈 Brand</h4>
+          <p>Game story tốt → IP value. Mass Effect, Witcher trở thành franchise.</p>
+        </div>
+      </div>
+
+      <h3>1.4. 3 sự thật phũ phàng về viết story cho game</h3>
+
+      <div class="danger-box" data-title="⚠️ Đối mặt với sự thật">
+        <strong>1. Player có thể bỏ qua story.</strong> 30-50% player skip cutscene. Story phải work với cả 2 nhóm: người đọc kỹ và người skip.<br><br>
+        <strong>2. Story KHÔNG được cản gameplay.</strong> Nếu story đòi nhân vật ngồi 30 phút nói chuyện trong game action - cắt ngay.<br><br>
+        <strong>3. Player phá story của bạn.</strong> Bạn viết drama xúc động, player chạy nhảy múa làm vỡ tone. Phải accept.
+      </div>
+
+      <h3>1.5. Khoá học này cho ai?</h3>
+      <ul>
+        <li><strong>Biên kịch phim:</strong> Muốn chuyển sang game</li>
+        <li><strong>Game designer:</strong> Muốn thiết kế story tốt hơn</li>
+        <li><strong>Writer:</strong> Yêu game, muốn viết nghề nghiệp</li>
+        <li><strong>Indie dev:</strong> 1 mình làm tất cả</li>
+        <li><strong>Fan của Disco Elysium / Dark Souls:</strong> Muốn hiểu HOW chúng được thiết kế</li>
+      </ul>
+
+      <div class="tip-box" data-title="🎓 Lộ trình học">
+        <ol>
+          <li><strong>Tháng 1-2:</strong> Chơi 10 game với story xuất sắc (xem chapter 3)</li>
+          <li><strong>Tháng 3-4:</strong> Phân tích chúng - viết "narrative breakdown" mỗi game</li>
+          <li><strong>Tháng 5-6:</strong> Học engine cơ bản (Twine cho narrative, Ink, Yarn)</li>
+          <li><strong>Tháng 7-9:</strong> Làm 1 narrative game ngắn (text adventure hoặc visual novel)</li>
+          <li><strong>Tháng 10-12:</strong> Portfolio + apply intern</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 2: GAME VS FILM -->
+    <section id="vs-film" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 2</span>
+        <h2>Game vs Phim - 7 Khác Biệt Cốt Lõi</h2>
+      </div>
+
+      <p>Nhiều biên kịch phim chuyển sang game thất bại vì áp dụng tư duy phim. Đây là 7 khác biệt CỐT LÕI bạn phải hiểu trước.</p>
+
+      <h3>2.1. Interactivity - Tương tác</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>🎬 Phim</h4>
+          <p>Khán giả XEM. Linear. 100% control của biên kịch.</p>
+        </div>
+        <div class="vs-divider">≠</div>
+        <div class="vs-side right">
+          <h4>🎮 Game</h4>
+          <p>Player LÀ nhân vật. Họ làm chủ tốc độ, quyết định, action.</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us Part II</div>
+        <p>Cùng một moment - Joel chết - nếu là phim: khán giả khóc. Trong game: player phải CHẾT VAI ANH ẤY. Player đập button cố gắng phản kháng nhưng không thể. Cảm xúc gấp 10 lần.</p>
+      </div>
+
+      <h3>2.2. Pacing Control</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>🎬 Phim</h4>
+          <p>Biên kịch + đạo diễn quyết định mỗi giây. Cảnh 30s là 30s.</p>
+        </div>
+        <div class="vs-divider">≠</div>
+        <div class="vs-side right">
+          <h4>🎮 Game</h4>
+          <p>Player có thể: đứng ngắm 10 phút, lướt qua 30s, hoặc bỏ về nấu cơm. Bạn không control timing.</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Red Dead Redemption 2</div>
+        <p>Rockstar thiết kế camp scenes với pacing TỰ NHIÊN - cho player tự khám phá khi nào nói chuyện với ai. Không force. Kết quả: player cảm như sống thật trong gang.</p>
+      </div>
+
+      <h3>2.3. Identification - Đồng cảm vs Trở thành</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>🎬 Phim: Empathy</h4>
+          <p>"Tôi HIỂU nhân vật". Đứng ngoài quan sát.</p>
+        </div>
+        <div class="vs-divider">≠</div>
+        <div class="vs-side right">
+          <h4>🎮 Game: Identity</h4>
+          <p>"Tôi LÀ nhân vật". Khi nhân vật chết - "Tôi chết".</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Aerith chết - Final Fantasy VII (1997)</div>
+        <p>Moment iconic gaming. Một phim sẽ là "tôi buồn vì cô ấy chết". Game: "TÔI đã đầu tư 30 giờ level up cô ấy, mua materia cho cô ấy, đặt cô ấy trong party. CÔ ẤY là một phần của TÔI." Mất mát personal.</p>
+      </div>
+
+      <h3>2.4. Failure States - Có "Game Over"</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>🎬 Phim</h4>
+          <p>Không có "game over". Nhân vật không thể chết giữa Act 2 rồi reset.</p>
+        </div>
+        <div class="vs-divider">≠</div>
+        <div class="vs-side right">
+          <h4>🎮 Game</h4>
+          <p>Player CHẾT liên tục. Story phải accommodate.</p>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Hades (Supergiant Games)</div>
+        <p>BIẾN failure thành story. Zagreus chết → trở về Underworld → nói chuyện với cha → thử lại. Mỗi lần chết = một phần của narrative. Cha của ông KÌ VỌNG ông chết. Đây là genius design.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Returnal</div>
+        <p>Selene chết → wake up → "Have I been here before?". Câu chuyện về time loop chính LÀ gameplay loop.</p>
+      </div>
+
+      <h3>2.5. Length - Độ dài</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>🎬 Phim</h4>
+          <p>90-180 phút. TV series 8-50 giờ.</p>
+        </div>
+        <div class="vs-divider">≠</div>
+        <div class="vs-side right">
+          <h4>🎮 Game</h4>
+          <p>Short: 2-5 giờ. AAA: 30-80 giờ. MMO: 1000+ giờ. Open world: 100-200 giờ.</p>
+        </div>
+      </div>
+
+      <p>Implication: Game story phải maintain interest 50+ giờ. Pacing rất khác.</p>
+
+      <h3>2.6. Narrative Delivery Channels</h3>
+      <p>Phim chỉ có 2 kênh: dialogue + visual. Game có 10+:</p>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>💬 Dialogue / Cutscene</h4>
+          <p>Như phim. Tốt cho moment lớn.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌍 Environmental</h4>
+          <p>Đồ vật, set design kể chuyện.</p>
+        </div>
+        <div class="card-item">
+          <h4>📜 Lore Documents</h4>
+          <p>Sách, journal, audio log.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎵 Audio Cues</h4>
+          <p>Music thay đổi theo story state.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Item Descriptions</h4>
+          <p>Dark Souls master technique.</p>
+        </div>
+        <div class="card-item">
+          <h4>🗣️ NPC Barks</h4>
+          <p>Câu nói ngắn khi player đi qua.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎮 Gameplay Mechanic</h4>
+          <p>Mechanic kể story (Spec Ops: The Line).</p>
+        </div>
+        <div class="card-item">
+          <h4>🏆 Achievement Names</h4>
+          <p>Tên achievement có thể kể chuyện.</p>
+        </div>
+        <div class="card-item">
+          <h4>💀 Death Screen</h4>
+          <p>Dark Souls "YOU DIED" là statement.</p>
+        </div>
+      </div>
+
+      <h3>2.7. Audience Behavior - Cách khán giả tiêu thụ</h3>
+      <table>
+        <thead><tr><th>Khía cạnh</th><th>Phim</th><th>Game</th></tr></thead>
+        <tbody>
+          <tr><td>Skip content</td><td>Không (phải xem hết)</td><td>Có (skip cutscene, ignore dialog)</td></tr>
+          <tr><td>Replay</td><td>Đôi khi (1-2 lần)</td><td>Thường xuyên (Disco Elysium 5+ playthroughs)</td></tr>
+          <tr><td>Pause</td><td>Toàn bộ phim dừng</td><td>Game pause, player nấu cơm xong quay lại</td></tr>
+          <tr><td>Order</td><td>Linear strict</td><td>Có thể đi side quest 50 giờ rồi quay main</td></tr>
+          <tr><td>Repeat</td><td>Không</td><td>Player có thể chết và làm lại scene 50 lần</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box" data-title="💡 Tóm lại">
+        Phim: bạn KỂ story. Game: bạn XÂY DỰNG không gian cho player tự tạo story. Đây là paradigm shift căn bản.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 3: HISTORY -->
+    <section id="history" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 3</span>
+        <h2>Lịch Sử &amp; 20 Game Kinh Điển Phải Chơi</h2>
+      </div>
+
+      <p>Trước khi viết, phải <strong>chơi nhiều</strong>. Đây là 20 game ESSENTIAL với phân tích narrative.</p>
+
+      <h3>3.1. Lịch sử Game Narrative</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📖 1976: Adventure (Atari)</h4>
+          <p>Game đầu tiên có "story" - tìm Holy Grail. Text-based. Đặt nền móng.</p>
+        </div>
+        <div class="card-item">
+          <h4>📚 1980: Zork</h4>
+          <p>Interactive fiction. 100% text. Tổ tiên của text adventure modern.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚔️ 1986: The Legend of Zelda</h4>
+          <p>Quest-driven. Save princess. Lập khuôn cho RPG/adventure.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 1987: Final Fantasy</h4>
+          <p>JRPG với drama-heavy storyline.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔮 1997: Final Fantasy VII</h4>
+          <p>Aerith chết - moment thay đổi nhận thức về game story.</p>
+        </div>
+        <div class="card-item">
+          <h4>💎 1998: Metal Gear Solid</h4>
+          <p>Kojima đưa cinematic vào game. 4 giờ cutscene.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌌 1999: Planescape: Torment</h4>
+          <p>"What can change the nature of a man?" - philosophical RPG. 800,000 từ.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎮 2007: Portal</h4>
+          <p>GLaDOS - voice character iconic. Minimal but masterful narrative.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌃 2007: BioShock</h4>
+          <p>"Would you kindly..." - twist meta về player agency.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚔️ 2011: Dark Souls</h4>
+          <p>Environmental storytelling đỉnh cao. Lore qua item description.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧟 2013: The Last of Us</h4>
+          <p>Naughty Dog đưa cinematic game lên tầm Pixar.</p>
+        </div>
+        <div class="card-item">
+          <h4>💔 2015: Undertale</h4>
+          <p>Toby Fox - 1 người. Phá vỡ định kiến về JRPG. Genocide route.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌌 2017: NieR: Automata</h4>
+          <p>Yoko Taro - 5 endings (A-E). Mỗi route đổi perspective.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔫 2019: Disco Elysium</h4>
+          <p>ZA/UM. 1 triệu từ. "Skill check" là dialogue. Greatest writing ever in game.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌊 2020: Outer Wilds</h4>
+          <p>Time loop game. Knowledge = progression. Best mystery narrative.</p>
+        </div>
+        <div class="card-item">
+          <h4>👹 2020: Hades</h4>
+          <p>Roguelike + narrative. Mỗi death = story progress.</p>
+        </div>
+      </div>
+
+      <h3>3.2. 20 Game ESSENTIAL phải chơi (theo thứ tự)</h3>
+
+      <div class="card-item">
+        <h4>🥇 Top 10 - PHẢI chơi</h4>
+        <ol>
+          <li><strong>Disco Elysium</strong> - Best narrative game ever (2019)</li>
+          <li><strong>The Last of Us Part I &amp; II</strong> - Cinematic storytelling</li>
+          <li><strong>Red Dead Redemption 2</strong> - Open world narrative</li>
+          <li><strong>The Witcher 3: Wild Hunt</strong> - Side quest done right</li>
+          <li><strong>Dark Souls (Series)</strong> - Environmental storytelling</li>
+          <li><strong>Undertale</strong> - Subversive narrative</li>
+          <li><strong>Outer Wilds</strong> - Knowledge-based progression</li>
+          <li><strong>Portal 1 &amp; 2</strong> - Minimal but masterful</li>
+          <li><strong>Hades</strong> - Roguelike narrative</li>
+          <li><strong>Mass Effect Trilogy</strong> - Choice + consequence</li>
+        </ol>
+      </div>
+
+      <div class="card-item">
+        <h4>🥈 Top 10 - Nên chơi nếu có thời gian</h4>
+        <ol start="11">
+          <li><strong>BioShock</strong> - Player agency twist</li>
+          <li><strong>Spec Ops: The Line</strong> - Subverts military shooter genre</li>
+          <li><strong>NieR: Automata</strong> - Multiple endings done right</li>
+          <li><strong>Detroit: Become Human</strong> - Branching narrative</li>
+          <li><strong>Life is Strange</strong> - Time rewind mechanic + story</li>
+          <li><strong>Firewatch</strong> - Walking sim done well</li>
+          <li><strong>What Remains of Edith Finch</strong> - Mechanic = story</li>
+          <li><strong>Return of the Obra Dinn</strong> - Mystery deduction</li>
+          <li><strong>Persona 5 Royal</strong> - JRPG modern</li>
+          <li><strong>Planescape: Torment</strong> - Classic RPG philosophical</li>
+        </ol>
+      </div>
+
+      <h3>3.3. Bài tập "Narrative Breakdown"</h3>
+      <p>Với mỗi game bạn chơi, viết breakdown gồm:</p>
+      <ol>
+        <li><strong>Loại narrative:</strong> Linear, branching, emergent?</li>
+        <li><strong>Core narrative tension:</strong> Câu hỏi chính khán giả muốn biết?</li>
+        <li><strong>Player agency level:</strong> 0% (cutscene only) → 100% (open ended)?</li>
+        <li><strong>Delivery channels:</strong> Cutscene, environmental, item desc, dialogue?</li>
+        <li><strong>Pacing tools:</strong> Cách họ kiểm soát rhythm?</li>
+        <li><strong>Memorable moment:</strong> 1 cảnh nhớ mãi - WHY?</li>
+        <li><strong>What works:</strong> 3 thứ làm tốt</li>
+        <li><strong>What doesn't:</strong> 3 thứ làm tệ</li>
+        <li><strong>Lesson for me:</strong> Bạn rút được gì?</li>
+      </ol>
+
+      <div class="tip-box" data-title="📚 Reading list">
+        <ul>
+          <li>"The Art of Game Design" - Jesse Schell</li>
+          <li>"Storytelling in the Modern Board Game" - Marco Arnaudo</li>
+          <li>"Hamlet on the Holodeck" - Janet Murray</li>
+          <li>"Slay the Dragon: Writing Great Video Games" - Robert Denton Bryant</li>
+          <li>"Interactive Storytelling for Video Games" - Josiah Lebowitz</li>
+          <li>"The Game Narrative Toolbox" - Tobias Heussner</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 4: 4 LOẠI NARRATIVE -->
+    <section id="types" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 4</span>
+        <h2>4 Loại Narrative Trong Game</h2>
+      </div>
+
+      <p>Trước khi viết, phải biết bạn đang viết loại narrative nào. Mỗi loại có quy tắc riêng.</p>
+
+      <h3>4.1. Embedded Narrative - Câu chuyện cài đặt sẵn</h3>
+      <p>Câu chuyện được tác giả KỂ trực tiếp - giống phim. Cutscene, dialogue, scripted events.</p>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us Part II</div>
+        <p>Mọi beat đều được Naughty Dog viết kỹ. Player không thay đổi được Joel chết. Ellie sẽ luôn đi LA. Cutscene chiếm 5-6 giờ trong 25 giờ gameplay.</p>
+        <p><strong>Pros:</strong> Cảm xúc mạnh, kiểm soát được narrative quality.</p>
+        <p><strong>Cons:</strong> Ít replayability, không có player agency.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Uncharted Series</div>
+        <p>Naughty Dog dùng "ride" approach - player như đang trong rollercoaster phim hành động. Story 95% scripted.</p>
+      </div>
+
+      <h3>4.2. Emergent Narrative - Câu chuyện tự phát sinh</h3>
+      <p>Câu chuyện <strong>SINH RA</strong> từ tương tác giữa các hệ thống gameplay. Mỗi player có "câu chuyện riêng".</p>
+
+      <div class="example-box">
+        <div class="game-title">Dwarf Fortress</div>
+        <p>Game text-based, ASCII art. Nhưng tạo ra "câu chuyện" như: "Urist McDwarf chôn mẹ vợ trong hang ngầm. 3 năm sau bị ma ám. Anh ấy phát điên và phá đập nước, ngập cả pháo đài." - Không ai viết câu chuyện này. Hệ thống tự sinh ra.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">RimWorld</div>
+        <p>"Storyteller AI" tự tạo events. Một player kể: "Tôi nuôi 1 con muffalo, đặt tên Mufford. Mufford chết khi raider tấn công. Tôi xây tượng đài cho Mufford. Cuối game, đặt tên tàu rời planet là 'For Mufford'." - Không ai script.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Minecraft</div>
+        <p>Không có story do dev viết. Nhưng mọi player có "câu chuyện của tôi" - về creeper hủy nhà, về cấu trúc đầu tiên xây.</p>
+      </div>
+
+      <h3>4.3. Environmental Narrative - Câu chuyện qua bối cảnh</h3>
+      <p>Câu chuyện kể qua <strong>không gian, đồ vật, set design</strong>, KHÔNG qua dialogue.</p>
+
+      <div class="example-box">
+        <div class="game-title">Dark Souls (FromSoftware)</div>
+        <p>FromSoft master technique. Một ví dụ:<br>
+        - Bạn vào căn phòng có 5 xác chết quây quanh bàn ăn<br>
+        - 1 con dao trong tay xác chính giữa<br>
+        - Cửa khoá từ TRONG ra<br>
+        - Trên bàn có thư: "Chúng ta đói. Nếu tôi không trở lại, hãy bốc thăm."<br>
+        → Player tự ráp câu chuyện. Không cutscene. Không dialogue. Nhưng horror story hoàn chỉnh.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">BioShock - Rapture</div>
+        <p>Bạn xuống thành phố dưới nước Rapture. Mọi thứ đổ nát. Bích chương cũ "Welcome to Paradise". Băng ghi âm rải rác. Bạn ghép từng mảnh để hiểu thành phố utopia đã collapsed thế nào.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Half-Life 2 - Ravenholm</div>
+        <p>Cha Grigori - "We don't go to Ravenholm". Khi player đến, thấy zombie + bẫy tự chế khắp nơi. Cha Grigori đã setup mọi thứ để diệt zombie SAU KHI cả thành phố chết. Không ai giải thích. Player tự hiểu.</p>
+      </div>
+
+      <h3>4.4. Interactive Narrative - Câu chuyện tương tác</h3>
+      <p>Câu chuyện <strong>thay đổi theo lựa chọn</strong> của player. Branching paths.</p>
+
+      <div class="example-box">
+        <div class="game-title">Detroit: Become Human (Quantic Dream)</div>
+        <p>Mỗi scene có 5-15 decision points. Một flowchart show cho player tất cả nhánh sau khi chơi xong. Có 99 ending possible. Mỗi character có thể chết bất cứ lúc nào.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 3</div>
+        <p>3 ending chính + 36 sub-ending. Bloody Baron quest line - bạn có thể save vợ ông, save con gái, hoặc cả hai chết. Mỗi outcome impact rộng rãi sau đó.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Disco Elysium</div>
+        <p>Mỗi dialogue có 5-20 lựa chọn. Skill checks dùng XP từ 24 skill khác nhau. Có thể GIẢI quest hoặc PHÁ quest. Có thể đóng vai communist, fascist, moralist, ultraliberal. Endgame phụ thuộc personality.</p>
+      </div>
+
+      <h3>4.5. Bảng so sánh 4 loại</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Control</th><th>Replayability</th><th>Dev Cost</th><th>Player Agency</th></tr></thead>
+        <tbody>
+          <tr><td>Embedded</td><td>100% author</td><td>Low</td><td>High (scripted)</td><td>Low</td></tr>
+          <tr><td>Emergent</td><td>0% author</td><td>Very high</td><td>Low (system)</td><td>High</td></tr>
+          <tr><td>Environmental</td><td>50/50</td><td>Medium</td><td>Medium</td><td>Medium</td></tr>
+          <tr><td>Interactive</td><td>50/50</td><td>High</td><td>VERY high</td><td>High</td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.6. Hybrid - Game hiện đại mix tất cả</h3>
+      <div class="example-box">
+        <div class="game-title">The Witcher 3 dùng cả 4 loại</div>
+        <ul>
+          <li><strong>Embedded:</strong> Cutscene Geralt vs Eredin</li>
+          <li><strong>Emergent:</strong> Monster combat tạo memorable moment</li>
+          <li><strong>Environmental:</strong> Battlefield Velen kể về war</li>
+          <li><strong>Interactive:</strong> Choice ảnh hưởng ending</li>
+        </ul>
+        <p>Đây là cách AAA modern thiết kế. Narrative Designer phải biết khi nào dùng cái nào.</p>
+      </div>
+
+      <div class="tip-box" data-title="🎯 Bài học">
+        Đừng force tất cả vào 1 loại. <strong>Embedded</strong> cho big emotional moments. <strong>Environmental</strong> cho exploration. <strong>Interactive</strong> cho important choices. <strong>Emergent</strong> cho replayability.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 5: PLAYER AGENCY -->
+    <section id="agency" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 5</span>
+        <h2>Player Agency - Quyền Lực Của Người Chơi</h2>
+      </div>
+
+      <p><strong>Player Agency</strong> = cảm giác <em>"hành động của tôi quan trọng"</em>. Đây là core của game narrative - thứ phim không có.</p>
+
+      <div class="quote-box">
+        "The illusion of agency is what makes games feel different from movies."<br>
+        <em>— Hideo Kojima</em>
+      </div>
+
+      <h3>5.1. 3 cấp độ Agency</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🔒 Low Agency</h4>
+          <p>Player chỉ điều khiển nhân vật trong cảnh đã viết.</p>
+          <p><strong>Ví dụ:</strong> Uncharted, Detroit: Become Human</p>
+          <p>Choice limited (yes/no, A/B/C).</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Medium Agency</h4>
+          <p>Player chọn approach, order, đôi khi outcome.</p>
+          <p><strong>Ví dụ:</strong> Mass Effect, Witcher 3</p>
+          <p>Main story cố định, side story flexible.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌌 High Agency</h4>
+          <p>Player có thể phá story, làm anything.</p>
+          <p><strong>Ví dụ:</strong> Disco Elysium, BG3, Minecraft</p>
+          <p>Có thể giết NPC quan trọng, fail quest, làm villain.</p>
+        </div>
+      </div>
+
+      <h3>5.2. Illusion of Choice - Ảo giác lựa chọn</h3>
+      <p>Real agency tốn budget khổng lồ. Hầu hết game dùng <strong>"illusion of choice"</strong> - player cảm thấy có choice nhưng kết quả tương tự.</p>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect Trilogy</div>
+        <p>Player có Paragon/Renegade choices liên tục. Cảm thấy mỗi quyết định quan trọng.</p>
+        <p><strong>Thực tế:</strong> 90% choices chỉ thay đổi dialogue, không thay đổi outcome chính. Cuối ME3, 3 endings differ bởi MÀU của explosion (red/blue/green). Fan rage. Nhưng phần lớn trải nghiệm cảm thấy agency thật.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">The Walking Dead (Telltale)</div>
+        <p>"Clementine will remember that" - text này xuất hiện sau mỗi choice. Player FREAK OUT vì cảm thấy stakes cao.</p>
+        <p>Thực tế: Phần lớn không impact long-term. Nhưng EMOTIONAL IMPACT là REAL.</p>
+      </div>
+
+      <div class="info-box" data-title="💡 Lesson">
+        Agency là về <strong>FEELING</strong>, không phải mechanical reality. Player cảm thấy có agency = bạn thành công, dù backend là linear.
+      </div>
+
+      <h3>5.3. Real Agency - Khi cần thiết</h3>
+
+      <div class="example-box">
+        <div class="game-title">Baldur's Gate 3</div>
+        <p>Larian Studios spent 6 năm + 400M USD. Game có:</p>
+        <ul>
+          <li>17,000 endings possible (combination)</li>
+          <li>Bất kỳ NPC nào có thể bị giết - including main story NPC</li>
+          <li>Một số quest không thể complete nếu bạn giết NPC sai</li>
+          <li>3 đường class chính (cleric, rogue, fighter) thay đổi 20% game</li>
+        </ul>
+        <p>Real agency = expensive nhưng cách mạng.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Disco Elysium</div>
+        <p>Bạn có thể HOÀN TOÀN FAIL game. Phá body lưu trữ, lose case, bị fire. Game vẫn có "ending" - bạn chết trong vô danh. Đây là real agency.</p>
+      </div>
+
+      <h3>5.4. Failure như Agency</h3>
+      <p>Cho phép player FAIL = empowering. Không cho phép = patronizing.</p>
+
+      <div class="example-box">
+        <div class="game-title">Kingdom Come: Deliverance</div>
+        <p>Bạn có thể đến NPC quan trọng nhưng họ ngủ. Phải đợi đến ngày mai. Quest có thể fail nếu quá thời gian. Game không hold hand.</p>
+      </div>
+
+      <h3>5.5. The "Spotlight Effect"</h3>
+      <p>Khi player làm gì đó "ngầu", game phải REACT. NPCs comment, world acknowledge.</p>
+
+      <div class="example-box">
+        <div class="game-title">Red Dead Redemption 2</div>
+        <p>Bạn cứu 1 stranger random ở giữa ngày 1 của game. 30 giờ chơi sau, gặp lại stranger đó - họ nhớ bạn, tặng quà. Đây là "spotlight effect" - game NHỚ player.</p>
+      </div>
+
+      <h3>5.6. Tools để tạo Agency</h3>
+      <ul>
+        <li><strong>Multiple solutions:</strong> Mỗi quest có 2-5 cách giải</li>
+        <li><strong>Consequence persistence:</strong> Choice cũ ảnh hưởng future</li>
+        <li><strong>NPC reactivity:</strong> World comment on player action</li>
+        <li><strong>Optional content:</strong> Cho player skip phần họ không thích</li>
+        <li><strong>Customization:</strong> Build/appearance/playstyle</li>
+        <li><strong>Failure paths:</strong> Player có thể fail có ý nghĩa</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 6: LUDONARRATIVE DISSONANCE -->
+    <section id="dissonance" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 6</span>
+        <h2>Ludonarrative Dissonance</h2>
+      </div>
+
+      <p><strong>Ludonarrative Dissonance</strong> = mâu thuẫn giữa <em>câu chuyện</em> và <em>gameplay</em>. Đây là vấn đề ĐẶC THÙ của game - phim không có.</p>
+
+      <p>Khái niệm do <strong>Clint Hocking</strong> (Designer BioShock) đặt ra năm 2007.</p>
+
+      <h3>6.1. Ví dụ kinh điển</h3>
+
+      <div class="example-box">
+        <div class="game-title">Uncharted Series</div>
+        <p><strong>Story:</strong> Nathan Drake là người tử tế, charming, witty. Cha của con. Yêu vợ.</p>
+        <p><strong>Gameplay:</strong> Nathan giết 1,200+ người trong mỗi game. Headshot, neckbreak, đánh đập.</p>
+        <p><strong>Dissonance:</strong> Cutscene thấy Nate hối hận khi giết 1 người. Gameplay sau đó giết 50 người không chớp mắt.</p>
+        <p>Đây là dissonance nổi tiếng nhất ngành.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Tomb Raider Reboot (2013)</div>
+        <p><strong>Story cutscene:</strong> Lara khóc khi phải giết kẻ tấn công lần đầu. Trauma. "I'm not a killer."</p>
+        <p><strong>5 phút sau:</strong> Lara stealth headshot 20 enemy bằng cung. Cảm thấy badass.</p>
+        <p><strong>Dissonance:</strong> Story tone vs gameplay tone không match.</p>
+      </div>
+
+      <h3>6.2. Games solving Dissonance</h3>
+
+      <div class="example-box">
+        <div class="game-title">Spec Ops: The Line (2012)</div>
+        <p>Genius example. Bạn vào game expect military shooter. Story DẦN DẦN khám phá rằng tất cả những hành động "ngầu" của bạn = war crimes. Game chế giễu chính shooter genre.</p>
+        <p><strong>Iconic moment:</strong> Player dùng white phosphorus trên enemy. Sau đó game show: bạn vừa thiêu sống civilian, bao gồm 1 bà mẹ ôm con.</p>
+        <p>Đây là cách HACK ludonarrative dissonance - biến nó thành theme.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us Part II</div>
+        <p>Naughty Dog cố tình LÀM dissonance không thoải mái. Bạn chơi Ellie rồi sau đó BUỘC chơi Abby - kẻ thù. Combat vẫn vui nhưng bạn cảm thấy guilty.</p>
+        <p>Mỗi enemy đều có tên, bạn bè khóc khi họ chết. Chó của họ rên ư ử.</p>
+        <p><strong>Mục đích:</strong> Force player nhận ra violence is bad - dù game cho phép violence.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Undertale</div>
+        <p>Toby Fox giải quyết dissonance theo cách khác: cho player CHOICE giết hay tha. Mỗi enemy có personality. Genocide route giúp game CHEAT player - "you really did this?"</p>
+      </div>
+
+      <h3>6.3. Cách tránh Ludonarrative Dissonance</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Match Tone</h4><p>Combat style phải match character. Nathan Drake nên KHÔNG headshot 1000 người. Or là, story phải acknowledge.</p></div>
+        <div class="step"><h4>Story phải accommodate gameplay realities</h4><p>Nếu gameplay là FPS killing, story phải có lý do hợp lý (chiến tranh, sinh tồn, fantasy enemies).</p></div>
+        <div class="step"><h4>Don't ignore deaths</h4><p>Nếu nhân vật giết người, story phải react. Cảm xúc, hối hận, hoặc explicit không quan tâm.</p></div>
+        <div class="step"><h4>Mechanic SHOULD support theme</h4><p>Theme "nhân ái" nhưng gameplay là combat = dissonance. Theme nên reflect trong mechanic.</p></div>
+        <div class="step"><h4>Acknowledge limitations</h4><p>Game không simulate everything. Đôi khi accept dissonance vì gameplay > realism.</p></div>
+      </div>
+
+      <h3>6.4. Mechanic = Theme</h3>
+      <p><strong>Best practice:</strong> Mechanic IS the message. Gameplay loop SHOULD reinforce theme.</p>
+
+      <div class="example-box">
+        <div class="game-title">Papers, Please</div>
+        <p>Theme: "Khi quyền lực vô đạo đức, bạn chọn gì?" Gameplay: kiểm tra giấy tờ immigrant. Mỗi shift bạn phải chọn: cho qua người tị nạn (mất việc/gia đình đói) hay từ chối (theo luật, nhưng họ chết)?</p>
+        <p>Mechanic IS the theme. Không cần cutscene giải thích.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Hellblade: Senua's Sacrifice</div>
+        <p>Theme: tâm thần phân liệt, schizophrenia. Mechanic: tiếng nói trong đầu (binaural audio) liên tục comment. Player CHỊU ĐỰNG cảm giác giống Senua.</p>
+        <p>Đây là dùng mechanic để KỂ trải nghiệm psychological.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Brothers: A Tale of Two Sons</div>
+        <p>Theme: mất mát anh em. Mechanic: điều khiển 2 anh em với 2 cần điều khiển (1 tay = 1 nhân vật).</p>
+        <p><strong>Cuối game (SPOILER):</strong> Anh chết. Bạn phải dùng tiếp - chỉ 1 cần. Một số action cần CẢ 2 anh em phối hợp - nhưng giờ chỉ còn 1. Player CẢM được mất mát.</p>
+        <p>Đây là dùng mechanic tạo cảm xúc phim không thể.</p>
+      </div>
+
+      <div class="tip-box" data-title="🎯 Test ludonarrative">
+        Khi viết story, hỏi: "Nếu player làm điều này 100 lần (vì gameplay yêu cầu), story còn make sense không?" Nếu không = dissonance. Sửa story hoặc sửa gameplay.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 7: STRUCTURE -->
+    <section id="structure" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 7</span>
+        <h2>Cấu Trúc Câu Chuyện Game</h2>
+      </div>
+
+      <p>Phim dùng 3-act. Game dùng nhiều structure khác nhau tuỳ scope &amp; genre.</p>
+
+      <h3>7.1. Linear Structure - Một đường thẳng</h3>
+      <p>Story đi từ A → B → C. Như phim. Phổ biến trong AAA cinematic.</p>
+
+      <div class="branch-tree">A → B → C → D → E → Ending</div>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us Part I</div>
+        <p>Linear hoàn toàn. Joel + Ellie đi từ Boston → Pittsburgh → Wyoming → Salt Lake. Player không thay đổi destination.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">God of War (2018)</div>
+        <p>Linear journey from Kratos's house → đỉnh núi cao nhất 9 realms. Có open exploration nhưng main story linear.</p>
+      </div>
+
+      <p><strong>Pros:</strong> Cinematic quality cao, pacing kiểm soát được, budget hợp lý.<br>
+      <strong>Cons:</strong> Ít replayability, low agency.</p>
+
+      <h3>7.2. Branching Structure - Phân nhánh</h3>
+      <p>Story rẽ nhánh based on choice. Mỗi path có ending khác.</p>
+
+      <div class="branch-tree">      A
+     /|\
+    B C D
+   / \   \
+  E   F   G
+  |   |   |
+End1 End2 End3</div>
+
+      <div class="example-box">
+        <div class="game-title">Detroit: Become Human</div>
+        <p>99 endings. Mỗi scene có flowchart show paths. Một character có thể chết bất cứ lúc nào.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Until Dawn</div>
+        <p>8 nhân vật. Mỗi người có thể sống hoặc chết. 256 combination ending possible.</p>
+      </div>
+
+      <p><strong>Pros:</strong> High replayability, high agency.<br>
+      <strong>Cons:</strong> Cost rất cao (content per branch chỉ 1 player xem).</p>
+
+      <h3>7.3. Hub-and-Spoke Structure</h3>
+      <p>Một "hub" trung tâm, player đi ra "spoke" làm quest rồi quay về hub.</p>
+
+      <div class="branch-tree">       Quest A
+          |
+Quest D - HUB - Quest B
+          |
+       Quest C</div>
+
+      <div class="example-box">
+        <div class="game-title">Persona 5</div>
+        <p>Hub = Tokyo (school, café, friends). Spoke = các "Palace" (dungeon). Player tự chọn order, balance social + dungeon time.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Hades</div>
+        <p>Hub = Underworld house. Spoke = mỗi run lên surface. Mỗi lần quay về hub, NPC mới có dialogue mới.</p>
+      </div>
+
+      <h3>7.4. Open World / Sandbox Structure</h3>
+      <p>Player tự do hoàn toàn. Main quest có thể được làm bất cứ lúc nào hoặc bỏ qua.</p>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 3</div>
+        <p>Main quest: tìm Ciri. Nhưng player có thể bỏ 100 giờ làm side quest trước khi continue main. Side quest có quality như main.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Breath of the Wild</div>
+        <p>Player có thể đi GIẾT Ganon ngay từ phút đầu tiên. Skip 90% game. Có ending riêng.</p>
+      </div>
+
+      <h3>7.5. Loop Structure - Vòng lặp</h3>
+      <p>Player lặp lại 1 ngày/run, mỗi lần học thêm.</p>
+
+      <div class="example-box">
+        <div class="game-title">Outer Wilds</div>
+        <p>22-minute time loop. Player chết hoặc sun nổ → quay lại đầu. Mỗi loop học thêm về universe. Progression = KNOWLEDGE, không phải items.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Returnal</div>
+        <p>Roguelike + time loop narrative. Selene crash on planet, chết → wake up cùng vị trí. Memories accumulate.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Deathloop</div>
+        <p>Cole bị stuck trong "perfect day". Phải giết 8 Visionaries trong cùng 1 ngày. Mỗi loop khám phá thêm clue.</p>
+      </div>
+
+      <h3>7.6. Anthology Structure - Tuyển tập</h3>
+      <p>Nhiều câu chuyện ngắn, không liên quan trực tiếp. Có thể chia sẻ theme hoặc world.</p>
+
+      <div class="example-box">
+        <div class="game-title">What Remains of Edith Finch</div>
+        <p>Edith khám phá nhà gia đình. Mỗi phòng = câu chuyện về một thành viên đã chết. 9 câu chuyện ngắn, mỗi câu có gameplay mechanic khác hoàn toàn.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Stories Untold</div>
+        <p>4 câu chuyện ngắn, 4 genre khác (horror, sci-fi, mystery), liên kết qua twist cuối.</p>
+      </div>
+
+      <h3>7.7. So sánh structures</h3>
+      <table>
+        <thead><tr><th>Structure</th><th>Dev Cost</th><th>Player Agency</th><th>Replayability</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr><td>Linear</td><td>Medium</td><td>Low</td><td>Low</td><td>Cinematic AAA</td></tr>
+          <tr><td>Branching</td><td>Very High</td><td>Very High</td><td>Very High</td><td>Choice-driven</td></tr>
+          <tr><td>Hub-and-Spoke</td><td>Medium</td><td>Medium</td><td>High</td><td>JRPG, lifestyle</td></tr>
+          <tr><td>Open World</td><td>High</td><td>High</td><td>High</td><td>Exploration RPG</td></tr>
+          <tr><td>Loop</td><td>Medium</td><td>Medium-High</td><td>Very High</td><td>Mystery, roguelike</td></tr>
+          <tr><td>Anthology</td><td>Medium</td><td>Low-Medium</td><td>Medium</td><td>Theme exploration</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.8. Quy tắc Pacing trong Game Structure</h3>
+      <ul>
+        <li><strong>Opening Hook (0-2 giờ):</strong> Phải hook player ngay - có thể mất 80% audience nếu open chậm</li>
+        <li><strong>First reveal (5-10 giờ):</strong> Big revelation hoặc twist để keep going</li>
+        <li><strong>Mid-game slump:</strong> Risk cao - nhiều player drop. Đảm bảo có content mới mỗi 3-5 giờ</li>
+        <li><strong>Climax build-up:</strong> Last 5-10 giờ pacing tăng dần</li>
+        <li><strong>Ending payoff:</strong> Phải worth the 30-60 giờ investment</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 8: WORLDBUILDING -->
+    <section id="world" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 8</span>
+        <h2>Worldbuilding Cho Game</h2>
+      </div>
+
+      <p>Worldbuilding game khác sách: player <strong>SỐNG TRONG</strong> world, không chỉ đọc về nó. Mọi inch của world phải work.</p>
+
+      <h3>8.1. Iceberg Principle - Nguyên tắc tảng băng</h3>
+      <p>10% của world hiện ra trong game. 90% lore chìm dưới - nhưng phải EXIST trong tâm trí designer.</p>
+
+      <div class="example-box">
+        <div class="game-title">The Elder Scrolls (Tamriel)</div>
+        <p>Bethesda có "Pocket Guide to the Empire" - lore document 200+ trang về lịch sử, địa lý, văn hóa. Player chỉ thấy 20% trong Skyrim. Nhưng vì 100% được nghĩ ra, world feels REAL.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Dark Souls Universe</div>
+        <p>FromSoft có bible lore khổng lồ về cycles of fire and dark. Player thấy vài fragment qua item description. YouTuber như VaatiVidya làm video 30 phút explain. 90% lore là chìm.</p>
+      </div>
+
+      <h3>8.2. 6 Pillars of Worldbuilding</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🗺️ Geography</h4>
+          <p>Climate, biomes, distance, natural features.</p>
+          <p><em>Tamriel có 9 provinces với geography khác nhau.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📜 History</h4>
+          <p>Lịch sử timeline. Wars, dynasties, events.</p>
+          <p><em>Cyberpunk 2077 có timeline từ 1990 - 2077.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🏛️ Politics</h4>
+          <p>Factions, governments, conflicts.</p>
+          <p><em>Game of Thrones-esque trong Crusader Kings.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>⛪ Religion / Magic</h4>
+          <p>Belief systems, magic rules.</p>
+          <p><em>Mistborn-style hard magic vs Tolkien soft magic.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Cultures</h4>
+          <p>Customs, languages, food, art.</p>
+          <p><em>Witcher 3 - Velen vs Skellige vs Novigrad.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💼 Economy</h4>
+          <p>Trade, currency, resources.</p>
+          <p><em>EVE Online - real player economy.</em></p>
+        </div>
+      </div>
+
+      <h3>8.3. Internal Consistency</h3>
+      <p><strong>Quy tắc số 1:</strong> Một khi đặt luật, KHÔNG được phá. Player thông minh sẽ nhận ra.</p>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect - Element Zero</div>
+        <p>BioWare đặt: tất cả công nghệ FTL travel dùng "element zero" (eezo). Khi player thấy ship có FTL → biết có eezo. Internal consistent qua 3 game.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Half-Life - The Combine</div>
+        <p>Valve quyết định KHÔNG explain Combine quá kỹ. Player thấy họ chiếm Earth, oppress humans. Mystery PHỤC VỤ horror tone. Internal consistent - không bao giờ over-explain.</p>
+      </div>
+
+      <h3>8.4. Magic System - Hard vs Soft</h3>
+      <p>Brandon Sanderson - 3 luật của magic system:</p>
+
+      <ol>
+        <li><strong>Hard Magic:</strong> Rules rõ ràng, có cost. Player có thể predict outcome. <em>(Mistborn, Avatar)</em></li>
+        <li><strong>Soft Magic:</strong> Mystery, không explain. Tạo wonder. <em>(LOTR Gandalf, Studio Ghibli)</em></li>
+        <li><strong>Limitation &gt; Powers:</strong> Power có CỐP NỘI giới hạn quan trọng hơn khả năng.</li>
+      </ol>
+
+      <div class="example-box">
+        <div class="game-title">Dishonored - Powers</div>
+        <p>Arkane Studios dùng <strong>hard magic</strong>: mỗi power có cost (mana), cooldown, limitation. Blink only 3m. Possession only short time. Player có thể plan.</p>
+      </div>
+
+      <h3>8.5. Worldbuilding through gameplay</h3>
+      <p><strong>Show world qua mechanics</strong>, không qua lore dumps.</p>
+
+      <div class="example-box">
+        <div class="game-title">Subnautica</div>
+        <p>Bạn crash trên hành tinh nước. Không exposition dump. Bạn phải:</p>
+        <ul>
+          <li>Scan creature → unlock data (mechanic)</li>
+          <li>Đọc PDA từ survivor khác</li>
+          <li>Khám phá biome theo độ sâu</li>
+          <li>Tìm wreckage of ships</li>
+        </ul>
+        <p>World được kể qua HÀNH ĐỘNG, không cutscene.</p>
+      </div>
+
+      <h3>8.6. Cultural Authenticity</h3>
+      <div class="warning-box" data-title="⚠️ Cẩn thận">
+        Khi viết culture không phải của mình, cần research kỹ + hire consultants. Phim/Game đã nhiều lần bị criticize vì stereotype.
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Ghost of Tsushima</div>
+        <p>Sucker Punch (Mỹ) làm game về samurai Nhật Bản. Họ hire:</p>
+        <ul>
+          <li>Japanese consultants cho dialogue, customs</li>
+          <li>Historian cho period accuracy</li>
+          <li>Voice actors Nhật cho Japanese version</li>
+          <li>Trip đến Tsushima Island for reference</li>
+        </ul>
+        <p>Kết quả: Nhật bản thân yêu game, awarded "Distinguished Friend of Tsushima City".</p>
+      </div>
+
+      <h3>8.7. World Bible - Document quan trọng</h3>
+      <div class="card-item">
+        <h4>📚 Template World Bible</h4>
+        <ol>
+          <li><strong>One-Pager:</strong> World pitch trong 1 trang</li>
+          <li><strong>Setting:</strong> Time period, technology level, magic level</li>
+          <li><strong>Geography:</strong> Map + locations</li>
+          <li><strong>History:</strong> Timeline major events</li>
+          <li><strong>Factions:</strong> 5-10 nhóm chính + relations</li>
+          <li><strong>Cultures:</strong> Custom, food, language</li>
+          <li><strong>Religion/Magic:</strong> Rules, deities, taboos</li>
+          <li><strong>Economy:</strong> Currency, trade, resources</li>
+          <li><strong>Tone &amp; Theme:</strong> Cảm xúc world cần evoke</li>
+          <li><strong>Glossary:</strong> Special terms, names</li>
+          <li><strong>Inspiration:</strong> Reference materials</li>
+          <li><strong>Style guide:</strong> Tone of in-world writing</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 9: LORE VS STORY -->
+    <section id="lore" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 9</span>
+        <h2>Lore vs Story - Đừng Nhầm Lẫn</h2>
+      </div>
+
+      <p>Đây là một trong những confusion lớn nhất của writer mới. Lore ≠ Story.</p>
+
+      <h3>9.1. Định nghĩa</h3>
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>📖 LORE</h4>
+          <p>Background information về world. KHÔNG có time pressure, không có protagonist hành động.</p>
+          <ul>
+            <li>Lịch sử thế giới</li>
+            <li>Mô tả culture, faction</li>
+            <li>Magic system rules</li>
+            <li>Geography facts</li>
+          </ul>
+        </div>
+        <div class="vs-divider">≠</div>
+        <div class="vs-side right">
+          <h4>📚 STORY</h4>
+          <p>Câu chuyện có character với goal, theo timeline.</p>
+          <ul>
+            <li>Có protagonist</li>
+            <li>Có goal/conflict</li>
+            <li>Có timeline (now)</li>
+            <li>Có change</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>9.2. Ví dụ rõ ràng</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 3 - Lore vs Story</div>
+        <p><strong>LORE:</strong> "Nilfgaard đã invade Northern Kingdoms 3 lần trong 30 năm qua. Họ có công nghệ vượt trội, đặc biệt là crossbows quân đội."</p>
+        <p><strong>STORY:</strong> "Geralt phải tìm Ciri trước khi Wild Hunt bắt cô ấy. Một bên là Nilfgaard cũng muốn cô."</p>
+        <p>Lore là <em>background</em>. Story là <em>now</em>.</p>
+      </div>
+
+      <h3>9.3. Lỗi thường gặp - Lore Dump</h3>
+      <div class="danger-box" data-title="⚠️ Lore Dump Trap">
+        Writer mới thường lao vào explain lore. Mở game = 5 phút monologue về 10,000 năm lịch sử. Player skip ngay.<br><br>
+        <strong>Quy tắc:</strong> Player chỉ care lore khi nó AFFECT current story. Until then, hide it.
+      </div>
+
+      <h3>9.4. Cách "Drip-feed" Lore</h3>
+      <p>Không dump. Rải lore từ từ qua story moments.</p>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect - Codex System</div>
+        <p>BioWare có Codex - bách khoa toàn thư lore. Nhưng Codex chỉ unlock khi player ENCOUNTER concept trong story. Lần đầu gặp Asari → Asari codex unlock. Player tự read nếu muốn.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Hollow Knight</div>
+        <p>Team Cherry rải lore qua:</p>
+        <ul>
+          <li>NPC dialogue (mỗi NPC hint 1 phần)</li>
+          <li>Environment (relics, statues)</li>
+          <li>Item descriptions (đầy lore)</li>
+          <li>"Cornifer's maps" với marginalia</li>
+          <li>Boss encounter (Hornet's dialogues)</li>
+        </ul>
+        <p>Player ráp lore qua 30+ giờ. Không cutscene exposition.</p>
+      </div>
+
+      <h3>9.5. Item Description Storytelling</h3>
+      <p>Đây là kỹ thuật FromSoftware đại chúng hóa. Một câu ngắn trên item kể nguyên 1 câu chuyện.</p>
+
+      <div class="example-box">
+        <div class="game-title">Dark Souls - "Crestfallen Knight's Helmet"</div>
+        <p><em>"Helmet of a Crestfallen Knight. A man who lost his way, his courage, and his sword. He came to the city to find purpose, but found only despair."</em></p>
+        <p>1 câu = entire arc của 1 character bạn không gặp.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Hollow Knight - "Pale Ore"</div>
+        <p><em>"A precious ore of unknown origin. Said to come from the Pale King himself. Used by the smith of the great kingdom long ago."</em></p>
+        <p>Item description hint về Pale King = central mystery của game.</p>
+      </div>
+
+      <h3>9.6. Audio Logs - Modern Lore Delivery</h3>
+
+      <div class="example-box">
+        <div class="game-title">BioShock - Audio Diaries</div>
+        <p>129 audio diaries scattered around Rapture. Mỗi cái 30-60 giây. Player listen while walking - không stop gameplay. Lore unfolds organically.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Halo - Terminal Logs</div>
+        <p>Hidden terminals around levels. Optional. Hardcore fan tìm tất cả → unlock deep lore about Forerunners.</p>
+      </div>
+
+      <h3>9.7. Lore qua NPC Behavior</h3>
+
+      <div class="example-box">
+        <div class="game-title">Red Dead Redemption 2 - NPC behavior</div>
+        <p>Bạn thấy:</p>
+        <ul>
+          <li>NPC chinese miner bị bullied bởi white cowboy</li>
+          <li>Indigenous tribes bị đẩy khỏi land</li>
+          <li>Black NPCs khó tìm việc</li>
+          <li>Women's suffrage demonstration</li>
+        </ul>
+        <p>Không cutscene giải thích "đây là 1899 America". Lore historical được show qua NPC behavior.</p>
+      </div>
+
+      <h3>9.8. Khi nào Lore TRỞ THÀNH Story?</h3>
+      <p>Lore CÓ THỂ thành story khi:</p>
+      <ul>
+        <li>Một historical event ảnh hưởng nhân vật hiện tại</li>
+        <li>Player điều tra mystery liên quan đến quá khứ</li>
+        <li>Player time travel vào lore moment</li>
+        <li>Một character từ lore comeback</li>
+      </ul>
+
+      <div class="example-box">
+        <div class="game-title">God of War (2018) - Kratos's past</div>
+        <p>Lore: Kratos đã giết God of War, các Olympians. (Backstory từ trilogy cũ).</p>
+        <p>Story: Khi past quay lại haunt Kratos - Baldur, Atreus học về Greek past.</p>
+        <p>Lore TRỞ THÀNH story khi nó affect NOW.</p>
+      </div>
+
+      <div class="tip-box" data-title="🎯 Best Practice">
+        <strong>Lore phục vụ Story.</strong> Đừng viết lore vì cool. Viết lore để support story moments. Nếu lore không affect player experience, hide it (hoặc cut it).
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 10: CHARACTER -->
+    <section id="character" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 10</span>
+        <h2>Character Trong Game - Đặc Thù</h2>
+      </div>
+
+      <p>Character trong game không giống phim. Player <strong>SỐNG VỚI</strong> họ 30-100 giờ, không phải xem 2 giờ.</p>
+
+      <h3>10.1. 3 loại Character chính</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🎮 Player Character (PC)</h4>
+          <p>Người player điều khiển.</p>
+          <p>2 dạng: Defined (Geralt, Joel) hoặc Blank Slate (Skyrim Dragonborn).</p>
+        </div>
+        <div class="card-item">
+          <h4>🤝 Companion</h4>
+          <p>NPC đi cùng player thời gian dài.</p>
+          <p>Ellie, Atreus, Trico - relationship trọng tâm.</p>
+        </div>
+        <div class="card-item">
+          <h4>🗣️ NPC</h4>
+          <p>Non-Player Character - background world.</p>
+          <p>Major NPCs (story) + Minor NPCs (flavor).</p>
+        </div>
+      </div>
+
+      <h3>10.2. Memorability - Làm sao Character nhớ mãi?</h3>
+
+      <p>Player nhớ KHÔNG vì plot. Nhớ vì <strong>MOMENT</strong> với character.</p>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us - Giraffe moment</div>
+        <p>Joel + Ellie thấy giraffe trên đỉnh tòa nhà bỏ hoang. Họ pet nó. Không dialogue lớn. Không action. Chỉ 1 phút "wonder" trong game horror.</p>
+        <p>10 năm sau, player vẫn nhớ moment đó hơn cả climax.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Red Dead Redemption 2 - Arthur's cabin</div>
+        <p>Late game, Arthur bị TB (lao). Quá yếu cho action. Game có sequence: Arthur ngồi 1 mình trong cabin, đọc sách, smoke pipe, vẽ tranh trong journal.</p>
+        <p>Đây là <em>quiet character moment</em> tạo cảm xúc gấp 100 lần shootout.</p>
+      </div>
+
+      <h3>10.3. Voice Acting &amp; Character</h3>
+      <p>Voice acting AAA chiếm 30-40% character impact. Không đầu tư = lãng phí writing.</p>
+
+      <div class="example-box">
+        <div class="game-title">Disco Elysium - Voice acting 2nd Edition</div>
+        <p>Game đầu tiên không có voice acting. Vẫn được vote "Best Writing" Game Awards. 2 năm sau, ZA/UM add full voice acting. Character impact gấp đôi. Nick Hoffmann (voice của thoughts) trở thành iconic.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Persona 5 - Joker silent</div>
+        <p>Joker (Player Character) hầu như không nói. Dialogue choice là silent. Nhưng câu silence + body language do voice acting đoàn diễn xuất qua reactions tạo impression strong.</p>
+      </div>
+
+      <h3>10.4. Character Backstory - Drip Feed</h3>
+      <p>Đừng dump backstory. Rải qua game.</p>
+
+      <div class="example-box">
+        <div class="game-title">God of War - Kratos's past</div>
+        <p>Game 1 trilogy explained everything. Game 2018 reboot dùng strategy:</p>
+        <ul>
+          <li><strong>Hour 1-5:</strong> Player KHÔNG biết Kratos là God of War cũ</li>
+          <li><strong>Hour 5-15:</strong> Hint qua tattoos, scars, reactions</li>
+          <li><strong>Hour 15-20:</strong> Atreus và player cùng learn về Greek past</li>
+          <li><strong>Hour 20+:</strong> Big reveal - Kratos hesitates about telling Atreus</li>
+        </ul>
+        <p>Drip feed = đầu tư cảm xúc bigger payoff.</p>
+      </div>
+
+      <h3>10.5. Companion Character - Trọng tâm modern game</h3>
+
+      <p>Companion làm game từ 1-player thành 2-player narratively. Studio Naughty Dog master kỹ thuật này.</p>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us - Joel + Ellie</div>
+        <p>Mỗi giờ gameplay, Ellie:</p>
+        <ul>
+          <li>Comment về environment</li>
+          <li>Joke với Joel</li>
+          <li>Hỏi câu hỏi naive</li>
+          <li>React to violence Joel thực hiện</li>
+          <li>Help in combat (throw bricks, distract)</li>
+        </ul>
+        <p>Sau 15 giờ, player CẢM được love của Joel cho Ellie như con đẻ. Không cần exposition.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Trico - The Last Guardian</div>
+        <p>Trico là creature khổng lồ, không nói được. Player phải:</p>
+        <ul>
+          <li>Hiểu mood qua tai, đuôi (animation)</li>
+          <li>Feed Trico khi đói</li>
+          <li>Pet Trico sau scary moments</li>
+          <li>Trico save player nhiều lần</li>
+        </ul>
+        <p>15 giờ chơi sau, player BAWLS khi Trico hurt. Không 1 lời thoại từ Trico.</p>
+      </div>
+
+      <h3>10.6. NPC làm thế nào để Memorable?</h3>
+
+      <p>Studio AAA tốn budget cho mỗi major NPC. Tiêu chí:</p>
+
+      <ul>
+        <li><strong>Strong silhouette:</strong> Recognizable instantly</li>
+        <li><strong>Unique voice:</strong> Actor + writing style</li>
+        <li><strong>Signature mannerism:</strong> Gesture đặc biệt</li>
+        <li><strong>Personal stake in story:</strong> Họ care về gì?</li>
+        <li><strong>One memorable scene:</strong> Moment definition</li>
+        <li><strong>Flaw or quirk:</strong> Không hoàn hảo</li>
+      </ul>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 3 - Bloody Baron</div>
+        <p>Side quest NPC. Bloody Baron:</p>
+        <ul>
+          <li><strong>Visual:</strong> Fat, drunk, dirty noble</li>
+          <li><strong>Voice:</strong> Gruff Scottish accent, slurred</li>
+          <li><strong>Stake:</strong> Mất vợ và con gái</li>
+          <li><strong>Moment:</strong> Ông ấy nói "I beat my wife" - không apologize. Player phải decide.</li>
+          <li><strong>Flaw:</strong> Alcoholic, abusive - nhưng love family</li>
+        </ul>
+        <p>Side quest này được vote "Best Quest in Gaming". Vì NPC complexity, không vì plot.</p>
+      </div>
+
+      <h3>10.7. Antagonist Design</h3>
+      <p>Villain hay = mirror của protagonist. Đừng làm "evil for evil's sake".</p>
+
+      <div class="example-box">
+        <div class="game-title">Joel vs Marlene (TLOU)</div>
+        <p>Joel: save Ellie vì love.</p>
+        <p>Marlene: kill Ellie vì save humanity.</p>
+        <p>CẢ HAI đều right theo perspective. Cả hai đều wrong theo cái khác. Đây là antagonism complex.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Handsome Jack - Borderlands 2</div>
+        <p>Villain nhưng player ĐÔI KHI agree với hắn. Funny, charming, calls player "bandit" (đúng theo perspective). Voice acting amazing.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 11: PLAYER CHARACTER -->
+    <section id="protagonist" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 11</span>
+        <h2>Player Character - Defined vs Blank Slate</h2>
+      </div>
+
+      <p>Designer phải chọn: PC là <strong>character cụ thể</strong> hay <strong>blank slate</strong> cho player project vào?</p>
+
+      <h3>11.1. Defined Character</h3>
+      <p>PC có tên, history, personality, voice riêng. Player ĐÓNG VAI character.</p>
+
+      <div class="example-box">
+        <div class="game-title">Geralt of Rivia (The Witcher 3)</div>
+        <p>Geralt là witcher, voice trầm, sarcastic, có ex-loves, có daughter (Ciri). Player không thể đổi name, gender, personality.</p>
+        <p><strong>Pros:</strong> Cinematic, memorable, có arc thực sự.</p>
+        <p><strong>Cons:</strong> Player không "trở thành" character.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Arthur Morgan (RDR2)</div>
+        <p>Outlaw cowboy, voice gruff, complex morality. Player có ít choice nhưng Arthur có arc đậm đặc. End game: Arthur die.</p>
+      </div>
+
+      <h3>11.2. Blank Slate Character</h3>
+      <p>PC ít/không có personality. Player project mình vào.</p>
+
+      <div class="example-box">
+        <div class="game-title">Dragonborn (Skyrim)</div>
+        <p>Bethesda style: PC không nói (no voice). Player tự tạo:</p>
+        <ul>
+          <li>Race (Khajiit, Argonian, Nord...)</li>
+          <li>Gender, appearance</li>
+          <li>Class playstyle</li>
+          <li>Moral compass (Imperial vs Stormcloak)</li>
+        </ul>
+        <p><strong>Pros:</strong> Maximum player identity. Player kể "câu chuyện của tôi".</p>
+        <p><strong>Cons:</strong> Khó tạo cinematic story.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">V (Cyberpunk 2077)</div>
+        <p>Hybrid: V có voice (gendered V male/female), backstory chọn được (3 origins), nhưng player chọn personality (smart/violent/charming).</p>
+      </div>
+
+      <h3>11.3. Silent Protagonist</h3>
+      <p>PC KHÔNG nói. Player project voice.</p>
+
+      <div class="example-box">
+        <div class="game-title">Gordon Freeman (Half-Life)</div>
+        <p>Valve quyết định Gordon không bao giờ nói. Player "trở thành" Gordon. NPCs nói chuyện với "you" (player).</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Link (Zelda)</div>
+        <p>Link silent qua 35 năm games. Nintendo cố tình - Link = "the player". Tên Link literally nghĩa là "link" giữa player và world.</p>
+      </div>
+
+      <h3>11.4. Customizable Defined</h3>
+      <p>Modern compromise: defined story nhưng customizable appearance/details.</p>
+
+      <div class="example-box">
+        <div class="game-title">Shepard (Mass Effect)</div>
+        <p>Shepard là Commander cụ thể. Có story arc. Voice acting (Mark Meer cho male, Jennifer Hale cho female).</p>
+        <p>Customize: gender, name, appearance, military background, class.</p>
+        <p>Đây là "sweet spot" - đủ defined cho cinematic, đủ customize cho identity.</p>
+      </div>
+
+      <h3>11.5. Bảng chọn loại PC</h3>
+      <table>
+        <thead><tr><th>Type</th><th>Best for genre</th><th>Examples</th></tr></thead>
+        <tbody>
+          <tr><td>Defined</td><td>Cinematic AAA, Linear story</td><td>Geralt, Joel, Kratos</td></tr>
+          <tr><td>Blank Slate</td><td>Open world RPG, Sandbox</td><td>Skyrim PC, Fallout PC</td></tr>
+          <tr><td>Silent</td><td>Action adventure, FPS</td><td>Gordon Freeman, Link, Chell</td></tr>
+          <tr><td>Customizable Defined</td><td>Modern RPG hybrid</td><td>Shepard, V, Baldur's Gate 3 PC</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 12: COMPANION & NPC -->
+    <section id="companion" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 12</span>
+        <h2>Companion &amp; NPC Design</h2>
+      </div>
+
+      <p>Companion = NPC đi cùng player lâu. NPC = background. Cả hai define world feel.</p>
+
+      <h3>12.1. Companion Design Principles</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🤝 Useful</h4>
+          <p>Phải có ích trong gameplay - combat help, puzzle support, info source.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Distinct</h4>
+          <p>Personality không overshadow player.</p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Reactive</h4>
+          <p>React to player action, environment.</p>
+        </div>
+        <div class="card-item">
+          <h4>📈 Evolving</h4>
+          <p>Relationship grow over time.</p>
+        </div>
+        <div class="card-item">
+          <h4>🛡️ Not Annoying</h4>
+          <p>Không chặn đường, không over-talk.</p>
+        </div>
+        <div class="card-item">
+          <h4>💀 Mortal (sometimes)</h4>
+          <p>Stakes - companion có thể chết.</p>
+        </div>
+      </div>
+
+      <h3>12.2. Companion Failure Mode - Tránh Annoying</h3>
+
+      <div class="example-box">
+        <div class="game-title">Navi (Zelda Ocarina of Time) - Lesson</div>
+        <p>Navi (fairy companion) liên tục "HEY! LISTEN!" để hint puzzle. Sau 5 lần thành annoying. 25 năm sau, Navi vẫn meme.</p>
+        <p><strong>Lesson:</strong> Companion phải có MUTE option. Repeat dialogue sau X giờ. Không spam.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Atreus (God of War) - Cách làm đúng</div>
+        <p>Atreus comment, hint, nhưng:</p>
+        <ul>
+          <li>Comment KHÁC NHAU mỗi area</li>
+          <li>React to story progression</li>
+          <li>Hint chỉ khi player stuck thời gian dài</li>
+          <li>Có "shut up" option (slight)</li>
+        </ul>
+        <p>Atreus được vote "Best Companion in Gaming".</p>
+      </div>
+
+      <h3>12.3. AI Companion - Combat Support</h3>
+
+      <div class="example-box">
+        <div class="game-title">Elizabeth (BioShock Infinite)</div>
+        <p>Irrational Games spent 2 năm design Elizabeth AI:</p>
+        <ul>
+          <li>KHÔNG block player path</li>
+          <li>Throw ammo/health/coin to Booker khi cần</li>
+          <li>Open "tears" (portal) to bring objects</li>
+          <li>Never need babysitting (no escort mission feel)</li>
+          <li>Comments environment</li>
+        </ul>
+        <p>Elizabeth là gold standard cho AI companion.</p>
+      </div>
+
+      <h3>12.4. NPC - 3 Tiers</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🌟 Tier 1: Major NPCs</h4>
+          <p>Plot-relevant. Full voice acting, unique animation, signature design.</p>
+          <p>5-20 per game.</p>
+        </div>
+        <div class="card-item">
+          <h4>⭐ Tier 2: Quest NPCs</h4>
+          <p>Give quests. Voiced. Memorable.</p>
+          <p>30-100 per AAA game.</p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Tier 3: Ambient NPCs</h4>
+          <p>Crowd. Generic dialogue. No story role.</p>
+          <p>Hundreds/thousands.</p>
+        </div>
+      </div>
+
+      <h3>12.5. Ambient NPCs &amp; Barks</h3>
+      <p>"Bark" = short line NPC nói khi player walk by. Đắt cốc cho world feel.</p>
+
+      <div class="example-box">
+        <div class="game-title">Red Dead Redemption 2 - NPC barks</div>
+        <p>Rockstar recorded 500,000+ unique lines for NPCs. Examples:</p>
+        <ul>
+          <li>"Beautiful day, isn't it?" (sunny weather)</li>
+          <li>"Stay away from me, you smell of horse!" (Arthur dirty)</li>
+          <li>"Ain't you that outlaw from the paper?" (high wanted)</li>
+          <li>"Saw you tip the bartender. Decent fellow." (good karma)</li>
+        </ul>
+        <p>Mỗi bark match: weather, time of day, Arthur's appearance, reputation. World feels ALIVE.</p>
+      </div>
+
+      <h3>12.6. NPC Routine - Schedule</h3>
+
+      <div class="example-box">
+        <div class="game-title">Stardew Valley - NPC schedules</div>
+        <p>30+ NPC, mỗi NPC có schedule:</p>
+        <ul>
+          <li>6 AM: Wake up</li>
+          <li>9 AM: Đi làm/đến shop yêu thích</li>
+          <li>12 PM: Lunch</li>
+          <li>3 PM: Hobby/visit friend</li>
+          <li>10 PM: Sleep</li>
+        </ul>
+        <p>Schedule thay đổi theo: weather, season, festival, relationship với player. NPCs cảm giác có life RIÊNG.</p>
+      </div>
+
+      <h3>12.7. Romance &amp; Relationship Systems</h3>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect - Romance options</div>
+        <p>BioWare made romance trở thành mainstream gameplay. Mỗi game có 5-12 romance options. Tăng dần intimacy qua dialogue choices. Climactic scene before final mission.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Baldur's Gate 3 - Companion approval</div>
+        <p>Mỗi companion (8+ characters) có approval system. Player action affect:</p>
+        <ul>
+          <li>+5 approval: làm điều companion thích</li>
+          <li>-10 approval: làm điều ghét</li>
+          <li>Đủ approval → unlock romance scene</li>
+          <li>Bad approval → companion leave team</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 13: BRANCHING NARRATIVE -->
+    <section id="branching" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 13</span>
+        <h2>Branching Narrative - Câu Chuyện Phân Nhánh</h2>
+      </div>
+
+      <p>Đây là điểm độc đáo của game: story rẽ nhánh based on player choice. Tốn cực kỳ tiền nhưng tạo replayability.</p>
+
+      <h3>13.1. Các loại Branching Structure</h3>
+
+      <h4>🌲 True Branching (Hardest)</h4>
+      <p>Mỗi choice tạo nhánh hoàn toàn khác.</p>
+      <div class="branch-tree">       Start
+        /\
+       /  \
+      A    B
+     /\    /\
+    C  D  E  F
+    |  |  |  |
+   End1 End2 End3 End4</div>
+      <p><strong>Cost:</strong> Cực cao - mỗi player thấy 25% content.</p>
+      <p><strong>Examples:</strong> Detroit: Become Human, Until Dawn, The Quarry</p>
+
+      <h4>🌳 Tree-then-Merge (Hybrid)</h4>
+      <p>Rẽ nhánh tạm thời, sau đó hợp về main path.</p>
+      <div class="branch-tree">       Start
+        /\
+       A  B
+        \/
+       Common
+        /\
+       C  D
+        \/
+       Ending</div>
+      <p><strong>Examples:</strong> Most Telltale games, Mass Effect (mostly)</p>
+
+      <h4>🎯 Hub-and-Spoke</h4>
+      <p>Main path linear, side quest optional có thể branch.</p>
+      <p><strong>Examples:</strong> The Witcher 3, Cyberpunk 2077</p>
+
+      <h4>🔀 Multiple Endings (Same path, different ending)</h4>
+      <p>Mostly linear, but ending changes based on cumulative choices.</p>
+      <p><strong>Examples:</strong> Mass Effect 3 (3 endings), NieR: Automata (5 endings)</p>
+
+      <h3>13.2. Real-world Cost</h3>
+      <p>Branching đắt khủng. Số liệu thực tế:</p>
+
+      <div class="example-box">
+        <div class="game-title">Detroit: Become Human - Production</div>
+        <p>Quantic Dream cost:</p>
+        <ul>
+          <li>5+ năm development</li>
+          <li>$30M+ budget</li>
+          <li>2,000 pages script</li>
+          <li>10 hours per playthrough nhưng 35 endings</li>
+          <li>Trung bình player chỉ thấy 30% content</li>
+        </ul>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Disco Elysium - 1 triệu từ</div>
+        <p>ZA/UM (10 người) viết 1,000,000 từ dialogue. Tương đương 10 cuốn tiểu thuyết.</p>
+        <p>Mỗi playthrough player chỉ thấy ~150,000 từ (15%).</p>
+      </div>
+
+      <h3>13.3. Faking Branching - Illusion</h3>
+      <p>True branching expensive. Hầu hết game FAKE branching:</p>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect - Big Reveal</div>
+        <p>Hầu hết Paragon/Renegade choices KHÔNG affect plot. Chỉ thay đổi:</p>
+        <ul>
+          <li>Dialogue tone</li>
+          <li>Character animation</li>
+          <li>Side character reaction</li>
+          <li>Achievement/karma counter</li>
+        </ul>
+        <p>Player CẢM thấy choice quan trọng (90% players miss this).</p>
+      </div>
+
+      <h3>13.4. The Witcher 3 - Side quest branching done right</h3>
+
+      <div class="example-box">
+        <div class="game-title">Bloody Baron Quest</div>
+        <p>Quest dài 4-6 giờ. Player choice affect:</p>
+        <ul>
+          <li>Baron's wife live or die</li>
+          <li>Daughter Tamara go to Novigrad or stay</li>
+          <li>Baron stay drunk or hang himself</li>
+          <li>Village curse lifted or stays</li>
+          <li>Baron family reunited or shattered</li>
+        </ul>
+        <p>4 different combination outcome. Major spending for SIDE quest.</p>
+      </div>
+
+      <h3>13.5. The Stanley Parable - Meta Branching</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Stanley Parable (2013, 2022 Ultra Deluxe)</div>
+        <p>Game về branching itself. Narrator nói player nên làm gì. Player có thể follow hoặc chống lại. 20+ endings.</p>
+        <p>Một số nhánh:</p>
+        <ul>
+          <li><strong>Follow narrator perfectly:</strong> Stanley escape, find peace</li>
+          <li><strong>Disobey:</strong> Narrator angry, story collapse</li>
+          <li><strong>Stay in starting room:</strong> Narrator panic</li>
+          <li><strong>Suicidal route:</strong> Confusion ending</li>
+          <li><strong>Museum ending:</strong> Reveal Stanley is in game</li>
+        </ul>
+        <p>Meta narrative master class.</p>
+      </div>
+
+      <h3>13.6. Choice State Tracking</h3>
+
+      <div class="code-block">// Pseudo-code cho branching system
+
+let game_state = {
+  killed_npc_x: false,
+  helped_faction_a: 0,
+  betrayed_companion: false,
+  relationship_ellie: 0
+}
+
+// Mỗi choice update state
+function makeChoice(choice_id) {
+  switch(choice_id) {
+    case "save_x":
+      game_state.killed_npc_x = false
+      game_state.relationship_ellie += 5
+      break
+    case "kill_x":
+      game_state.killed_npc_x = true
+      game_state.helped_faction_a += 10
+      break
+  }
+}
+
+// Later scene check state
+if (game_state.killed_npc_x) {
+  playScene("npc_funeral")
+  unlockDialogue("companion_judges_you")
+}</div>
+
+      <h3>13.7. Common Branching Mistakes</h3>
+
+      <div class="danger-box" data-title="❌ Tránh">
+        <ul>
+          <li><strong>Fake branches dead-end:</strong> Branch nhỏ rồi quay về same path nhưng player tưởng có agency. Sau khi player nhận ra → mất trust.</li>
+          <li><strong>Choices không meaningful:</strong> Đỏ-Xanh nhưng outcome giống nhau.</li>
+          <li><strong>Time pressure too short:</strong> 3 giây để chọn → player ấn random.</li>
+          <li><strong>No information:</strong> "Save A or save B" nhưng player không biết hậu quả.</li>
+          <li><strong>Save scumming friendly:</strong> Player save trước choice, thử cả 2, chọn cái thích → choice mất meaning.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 14: MEANINGFUL CHOICES -->
+    <section id="choice" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 14</span>
+        <h2>Meaningful Choices - Lựa Chọn Có Ý Nghĩa</h2>
+      </div>
+
+      <p>Không phải mọi choice đều meaningful. Designer phải thiết kế để player <strong>CẢM</strong> được weight của decision.</p>
+
+      <h3>14.1. Tiêu chí Choice tốt</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⚖️ No Clear Right Answer</h4>
+          <p>Cả 2 option đều có trade-off. Không có "obvious good choice".</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 Informed Decision</h4>
+          <p>Player có đủ info để decide, nhưng không biết hết outcome.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔥 Stakes Visible</h4>
+          <p>Player hiểu mất gì khi chọn.</p>
+        </div>
+        <div class="card-item">
+          <h4>⏰ Time to Think</h4>
+          <p>Đủ thời gian suy nghĩ (trừ khi urgency là design).</p>
+        </div>
+        <div class="card-item">
+          <h4>💭 Reflects Player Values</h4>
+          <p>Choice connect đến player's morals.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Persistent Consequence</h4>
+          <p>Choice ảnh hưởng future, không quên ngay.</p>
+        </div>
+      </div>
+
+      <h3>14.2. Classic Choice Examples</h3>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect 1 - Save Kaidan or Ashley</div>
+        <p>Late game: 2 squadmates ở 2 location khác nhau. Bom sắp nổ. Chỉ cứu được 1.</p>
+        <ul>
+          <li><strong>Information:</strong> Player biết 2 character cả 2 games. Đã đầu tư time.</li>
+          <li><strong>Stakes:</strong> Người chết VĨNH VIỄN. Không respawn.</li>
+          <li><strong>No clear winner:</strong> Cả 2 đều người tốt.</li>
+          <li><strong>Persistent:</strong> 2 games sau, người chết vẫn chết.</li>
+        </ul>
+        <p>Đây là gold standard meaningful choice.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 2 - Letho's fate</div>
+        <p>Cuối Witcher 2, Geralt đối đầu Letho (kẻ giết kings). Player có thể:</p>
+        <ul>
+          <li><strong>Giết Letho:</strong> Trả thù. Đơn giản.</li>
+          <li><strong>Để Letho sống:</strong> Hiểu motive. Letho cũng là witcher đói khát.</li>
+        </ul>
+        <p>2 games sau (Witcher 3), nếu Letho sống → ông xuất hiện help Geralt. Một character được "tha thứ" có meaning, không phải checkbox.</p>
+      </div>
+
+      <h3>14.3. Trolley Problem - Classic Moral Dilemma</h3>
+
+      <div class="example-box">
+        <div class="game-title">Until Dawn - Sister choice</div>
+        <p>Player phải chọn: bắn em gái (đang giữ con dao đe doạ Ashley) hay bắn Ashley. Một trong hai chết.</p>
+        <p>Đây là pure trolley problem. Không có right answer.</p>
+      </div>
+
+      <h3>14.4. Dialogue Choice Design</h3>
+
+      <div class="card-item">
+        <h4>📝 Best Practice: Hiển thị Intent, không Verbatim</h4>
+        <p>❌ TỆ: Hiện toàn câu thoại sẽ nói<br>
+        Ví dụ: "Em không hiểu, anh đã làm gì với cha em? Tại sao? Trả lời em ngay!"</p>
+        <p>✅ TỐT: Hiện intent ngắn gọn<br>
+        Ví dụ: "[Demand answer]" hoặc "[Angry: confront him]"</p>
+        <p>Lý do: Player cần đọc nhanh. Verbatim làm chậm flow.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Mass Effect Dialogue Wheel</div>
+        <p>BioWare invented dialogue wheel. 6 directions:</p>
+        <ul>
+          <li>Top-left: Heroic / friendly</li>
+          <li>Bottom-left: Pragmatic / neutral</li>
+          <li>Top-right: Charm / persuade</li>
+          <li>Right: Investigate</li>
+          <li>Bottom-right: Threat / intimidate</li>
+        </ul>
+        <p>Player chọn TONE, không câu cụ thể. Faster, more intuitive.</p>
+      </div>
+
+      <h3>14.5. The "Save Scumming" Problem</h3>
+      <div class="danger-box" data-title="⚠️ Vấn đề lớn">
+        Save scumming = player save trước choice, thử option A, không thích → load save, thử option B. Choice mất meaning.<br><br>
+        <strong>Solutions:</strong>
+        <ul>
+          <li><strong>Auto-save</strong> sau choice (Detroit: Become Human)</li>
+          <li><strong>Iron mode:</strong> 1 save slot, force commit</li>
+          <li><strong>Time pressure</strong> short</li>
+          <li><strong>Hidden information:</strong> Player không biết outcome trước</li>
+          <li><strong>Multiple cascading choices:</strong> Khó save scumming khi mọi choice connected</li>
+        </ul>
+      </div>
+
+      <h3>14.6. Quiet Choices - Choice không announce</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us Part II</div>
+        <p>Naughty Dog có "quiet choices" - không text "make a choice", chỉ button prompt nhỏ.</p>
+        <p>Ví dụ: Ellie có thể PET con chó của Abby (Tag along) hoặc skip. Không reward, không achievement. Chỉ small moment of humanity.</p>
+        <p>Quiet choices = trusted players. Award those who care.</p>
+      </div>
+
+      <h3>14.7. Choices via Action - Không cần dialogue</h3>
+
+      <div class="example-box">
+        <div class="game-title">Undertale - Combat choices</div>
+        <p>Mỗi combat: player chọn FIGHT or MERCY. Không dialogue. Chỉ menu choice.</p>
+        <p>Nhưng đây là deepest moral choice trong gaming:</p>
+        <ul>
+          <li><strong>Pacifist run:</strong> Không giết ai → True ending. Cảm xúc cực mạnh.</li>
+          <li><strong>Neutral run:</strong> Random combat → 1 trong 12 endings.</li>
+          <li><strong>Genocide run:</strong> Giết MỌI THỨ → game gets disturbing. Sans boss fight. Endings khó nhất.</li>
+        </ul>
+        <p>Toby Fox dùng game mechanic làm moral statement.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Dishonored - Chaos system</div>
+        <p>Player có thể:</p>
+        <ul>
+          <li>Stealth (kill noone)</li>
+          <li>Stealth + lethal (kill targets only)</li>
+          <li>Full assault (kill everything)</li>
+        </ul>
+        <p>Chaos level thay đổi:</p>
+        <ul>
+          <li>City visual (more bodies, rats, plague)</li>
+          <li>NPC dialogue (scared vs neutral)</li>
+          <li>Ending (dark vs hopeful)</li>
+        </ul>
+        <p>Choice via GAMEPLAY, không cần dialogue tree.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 15: ENVIRONMENTAL STORYTELLING -->
+    <section id="environmental" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 15</span>
+        <h2>Environmental Storytelling</h2>
+      </div>
+
+      <p>Đây là <strong>kỹ thuật unique nhất</strong> của game medium. Kể chuyện qua space, không qua words.</p>
+
+      <h3>15.1. Định nghĩa</h3>
+      <p><strong>Environmental Storytelling</strong> = câu chuyện được kể qua <em>set design, props, lighting, audio</em> trong space player explore. Không có narrator, không cutscene.</p>
+
+      <div class="quote-box">
+        "Show, don't tell. In games: don't even show. Let them discover."<br>
+        <em>— Designer philosophy</em>
+      </div>
+
+      <h3>15.2. The Master: Dark Souls</h3>
+
+      <div class="example-box">
+        <div class="game-title">Dark Souls - Anor Londo</div>
+        <p>Bạn arrive city gold của thần. Beautiful Cathedral. Sun shining bright. NPCs (Gwynevere, Gwyndolin) tell bạn there's hope.</p>
+        <p>BUT nếu bạn lookup: 1 Gwyndolin NPC trên throne. Kill anh ấy = SUN TẮT. Beautiful city = giant ILLUSION.</p>
+        <p>Story: Gwyn (king cũ) đã đốt mình thành Flame để keep Age of Fire alive. Family lying. World dying.</p>
+        <p>Player chỉ hiểu sau khi explore, kill Gwyndolin, đọc item descriptions. NO cutscene explained.</p>
+      </div>
+
+      <h3>15.3. The Master: Half-Life series</h3>
+
+      <div class="example-box">
+        <div class="game-title">Half-Life 2 - Combine occupation</div>
+        <p>Bạn arrive City 17. Show don't tell:</p>
+        <ul>
+          <li>Stalin-era architecture (oppressive)</li>
+          <li>Combine guards beating civilians</li>
+          <li>Loudspeakers playing propaganda</li>
+          <li>Suppressors keep growing on buildings (no kids born)</li>
+          <li>"Apply for Relocation" posters</li>
+          <li>Refugees in train station</li>
+        </ul>
+        <p>30 giây walking = understand 20 năm of dystopia history.</p>
+      </div>
+
+      <h3>15.4. 5 Kỹ thuật Environmental Storytelling</h3>
+
+      <div class="card-item">
+        <h4>1. 💀 The Death Scene</h4>
+        <p>Cảnh chết được "freeze" - player giải mã chuyện gì xảy ra.</p>
+        <p><strong>Ví dụ:</strong> Dark Souls - 5 skeletons quanh bàn ăn. 1 dao. Cửa khóa từ trong. Letter "đói".</p>
+        <p>Player ráp: cannibalism out of starvation.</p>
+      </div>
+
+      <div class="card-item">
+        <h4>2. 📰 Document Trail</h4>
+        <p>Letters, journals, newspapers tell history.</p>
+        <p><strong>Ví dụ:</strong> Fallout - terminal logs trong Vault tell stories về Vault experiments. Vault 11 - residents phải vote 1 người chết mỗi năm. Logs show drama, betrayal, suicide.</p>
+      </div>
+
+      <div class="card-item">
+        <h4>3. 🎨 Visual Composition</h4>
+        <p>Set design tells character/event.</p>
+        <p><strong>Ví dụ:</strong> Gone Home - player explore empty house. Find sister's letters, mom's documents. Understand family drama qua belongings.</p>
+      </div>
+
+      <div class="card-item">
+        <h4>4. 📍 Place as Character</h4>
+        <p>Location TỰ là character có "voice".</p>
+        <p><strong>Ví dụ:</strong> Yharnam (Bloodborne) - thành phố Victorian gothic, blood healing trở thành cult, citizens transformed thành beasts. Yharnam là protagonist của horror.</p>
+      </div>
+
+      <div class="card-item">
+        <h4>5. 🌀 Layered Reveal</h4>
+        <p>Quay lại same place sau khi học thêm → see different meaning.</p>
+        <p><strong>Ví dụ:</strong> Outer Wilds - bạn đi qua statue. Sau khi học lore, hiểu đây là statue của extinct civilization who tried save universe.</p>
+      </div>
+
+      <h3>15.5. Audio Environmental Storytelling</h3>
+
+      <div class="example-box">
+        <div class="game-title">Bioshock - Music tells story</div>
+        <p>Rapture (1960s dystopia) plays "Rock and Roll" era music. Nhưng đã decay - records skip, distorted. Music tốt + setting horrifying = uncanny valley feeling.</p>
+        <p>"Beyond the Sea" của Bobby Darin play trong haunted lighthouse = chilling.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Inside (Playdead)</div>
+        <p>Game 2D không có dialogue. Audio kể chuyện:</p>
+        <ul>
+          <li>Dogs barking distant (chase)</li>
+          <li>Heartbeat sounds (player nervousness)</li>
+          <li>Wet squelches (body horror)</li>
+          <li>Heavy machinery (industrial dystopia)</li>
+        </ul>
+      </div>
+
+      <h3>15.6. Lighting as Storytelling</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us - Lighting language</div>
+        <ul>
+          <li><strong>Warm yellow:</strong> Safety, hope</li>
+          <li><strong>Cool blue:</strong> Sadness, isolation</li>
+          <li><strong>Green:</strong> Sickness, infection</li>
+          <li><strong>Red:</strong> Danger, blood</li>
+          <li><strong>White:</strong> Cleanliness, hospital, false safety</li>
+        </ul>
+        <p>Naughty Dog uses palette ALWAYS support emotional beat.</p>
+      </div>
+
+      <h3>15.7. Bài tập Environmental Storytelling</h3>
+
+      <div class="tip-box" data-title="📝 Exercise">
+        Thiết kế 1 room (text-only). Kể câu chuyện về một couple chia tay qua các đồ vật trong room. Không dùng dialogue, không note. Chỉ describe objects.<br><br>
+        <strong>Ví dụ:</strong><br>
+        - 2 mugs trên bàn, 1 mug có vết son môi<br>
+        - 1 nửa giường gấp gọn, 1 nửa lộn xộn<br>
+        - Frame ảnh úp xuống<br>
+        - Tủ quần áo: 50% trống<br>
+        - Trên fridge: ghi chú "Đừng quên chìa khóa khi về"<br>
+        - Trong sink: 1 đĩa duy nhất<br><br>
+        Player tự ráp story. Đây là master skill.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 16: EMERGENT NARRATIVE -->
+    <section id="emergent" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 16</span>
+        <h2>Emergent Narrative - Câu Chuyện Tự Sinh</h2>
+      </div>
+
+      <p>Loại narrative này CHỈ tồn tại trong games. Không phim, không sách. Story <strong>SINH RA</strong> từ tương tác hệ thống.</p>
+
+      <h3>16.1. Định nghĩa</h3>
+      <p><strong>Emergent Narrative</strong> = câu chuyện xuất hiện <em>không do designer viết</em>, mà do tương tác giữa các hệ thống tạo ra. Mỗi player có "câu chuyện của tôi".</p>
+
+      <h3>16.2. The King: Dwarf Fortress</h3>
+
+      <div class="example-box">
+        <div class="game-title">Dwarf Fortress</div>
+        <p>Game ASCII, no graphics. Nhưng tạo ra <strong>câu chuyện huyền thoại</strong> cộng đồng share suốt 20 năm.</p>
+        <p><strong>"Boatmurdered"</strong> - một fort được community DnD chơi turn-by-turn. 7 leaders. Mỗi leader chết theo cách điên rồ. Hậu duệ ăn xác. Magma flood. Eventually bị elephants tiêu diệt.</p>
+        <p>Toàn bộ "story" sinh ra từ AI behavior + player decisions. Không 1 ai write.</p>
+      </div>
+
+      <h3>16.3. RimWorld - Storyteller AI</h3>
+
+      <div class="example-box">
+        <div class="game-title">RimWorld</div>
+        <p>Tynan Sylvester thiết kế "Storyteller AI" - thay vì random events, AI sinh events dựa trên:</p>
+        <ul>
+          <li>Hiện tại player đang strong → AI tạo crisis</li>
+          <li>Player có baby mới sinh → AI có thể tạo raid</li>
+          <li>Player có pet yêu quý → AI có thể infect pet</li>
+        </ul>
+        <p>3 Storytellers:</p>
+        <ul>
+          <li><strong>Cassandra Classic:</strong> Rising tension over time</li>
+          <li><strong>Phoebe Chillax:</strong> Peaceful, ít events</li>
+          <li><strong>Randy Random:</strong> Chaos pure</li>
+        </ul>
+        <p>Mỗi storyteller = different narrative experience.</p>
+      </div>
+
+      <h3>16.4. Crusader Kings - Drama Engine</h3>
+
+      <div class="example-box">
+        <div class="game-title">Crusader Kings III</div>
+        <p>Game grand strategy. Nhưng player remember:</p>
+        <ul>
+          <li>King ám sát em trai cướp ngai</li>
+          <li>Vợ ngoại tình với knight, con thừa kế là bastard</li>
+          <li>Pope excommunicate vì incest với cousin</li>
+          <li>Daughter inheritance war suốt 30 năm</li>
+        </ul>
+        <p>Drama như Game of Thrones - không scripted, do system AI generates.</p>
+      </div>
+
+      <h3>16.5. Hệ thống tạo Emergent Narrative</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🧬 Procedural Personalities</h4>
+          <p>Mỗi NPC có random traits, làm họ behave khác nhau.</p>
+          <p><em>RimWorld: pyromaniac, kind, brawler, ascetic...</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💭 Memory System</h4>
+          <p>NPC nhớ events, thay đổi relationship.</p>
+          <p><em>The Sims - "Embarrassed by you 3 days ago"</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Relationship Networks</h4>
+          <p>NPCs có relations với nhau, conflict propagates.</p>
+          <p><em>CK3 - vassal of vassal có thể declare war.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎲 Random Events</h4>
+          <p>Events sinh ngẫu nhiên, nhưng context-aware.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌍 Persistent World</h4>
+          <p>Actions có hậu quả lâu dài.</p>
+        </div>
+        <div class="card-item">
+          <h4>🤖 Smart AI</h4>
+          <p>AI react to player, không scripted.</p>
+        </div>
+      </div>
+
+      <h3>16.6. Nemesis System - Game changer</h3>
+
+      <div class="example-box">
+        <div class="game-title">Middle-earth: Shadow of Mordor (Monolith)</div>
+        <p>Nemesis System patented 2014:</p>
+        <ul>
+          <li>Orc captains có personality, name, appearance</li>
+          <li>Nếu họ kill player → họ promote, brag</li>
+          <li>Nếu player kill họ → họ remember (return as zombie)</li>
+          <li>Captain compete với nhau cho promotion</li>
+          <li>Mỗi player có UNIQUE rival sinh ra trong game</li>
+        </ul>
+        <p>Player kể: "Tôi đã chết với Krimp the Cruel 7 lần. Cuối cùng đốt anh ấy. Then anh ấy quay lại as half-burnt zombie..."</p>
+        <p>Story này không một dev viết. System tạo ra cho mỗi player riêng.</p>
+      </div>
+
+      <h3>16.7. The Sims - Sandbox Narrative</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Sims</div>
+        <p>Maxis tạo simulation life. Players tạo:</p>
+        <ul>
+          <li>Drama families (love triangles)</li>
+          <li>Horror experiences (lock sims in basement)</li>
+          <li>Generational sagas (100 baby challenge)</li>
+          <li>Reality TV (Big Brother style)</li>
+        </ul>
+        <p>YouTube có hàng nghìn "Sims stories" players make. EA chưa write 1 cốt truyện.</p>
+      </div>
+
+      <h3>16.8. Balancing Authored + Emergent</h3>
+
+      <div class="example-box">
+        <div class="game-title">Red Dead Redemption 2 - Hybrid</div>
+        <p>RDR2 có MAIN story scripted hoàn chỉnh. Nhưng emergent moments thường được remember more:</p>
+        <ul>
+          <li>Random stranger encounter</li>
+          <li>Wildlife behavior (bear ambush)</li>
+          <li>NPC reactions to your wanted level</li>
+          <li>Honor system affecting world</li>
+        </ul>
+        <p>Best of both: authored emotional core + emergent flavor.</p>
+      </div>
+
+      <h3>16.9. Emergent Narrative Design Principles</h3>
+      <ol>
+        <li><strong>Many interacting systems:</strong> 2-3 systems = predictable. 5+ = emergent.</li>
+        <li><strong>Persistence:</strong> Action affect future world state.</li>
+        <li><strong>Memorable randomness:</strong> Random events có texture, không generic.</li>
+        <li><strong>Player names &amp; relates:</strong> NPCs có name, faces - dễ form attachment.</li>
+        <li><strong>Documentation:</strong> Game ghi history (Civilization timeline, Crusader Kings family tree).</li>
+        <li><strong>Sharing tools:</strong> Player có thể share story (screenshot, replay, photo mode).</li>
+      </ol>
+
+      <div class="tip-box" data-title="🎯 Key Insight">
+        Emergent narrative không phải "no story". Đó là <strong>"story without author"</strong>. Designer tạo possibility space, player tạo story. Đây là medium specific to games.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 17: DIALOGUE SYSTEMS -->
+    <section id="dialogue" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 17</span>
+        <h2>Dialogue Systems</h2>
+      </div>
+
+      <p>Dialogue trong game khác phim. Phải account cho: player skip, dynamic context, branching, voice budget.</p>
+
+      <h3>17.1. Các loại Dialogue System</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📜 Linear Dialogue</h4>
+          <p>Như phim - player nghe, không có choice.</p>
+          <p><em>Cutscene Uncharted, God of War.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌲 Branching Dialogue</h4>
+          <p>Player chọn câu trả lời.</p>
+          <p><em>Mass Effect, Witcher 3.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Skill-Based Dialogue</h4>
+          <p>Options unlock by stats/skills.</p>
+          <p><em>Disco Elysium, Fallout, BG3.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>⏰ Real-Time Dialogue</h4>
+          <p>Player có timer chọn.</p>
+          <p><em>Telltale, Detroit, Until Dawn.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Tone-Based Dialogue</h4>
+          <p>Chọn TONE thay vì câu cụ thể.</p>
+          <p><em>Mass Effect wheel, Cyberpunk.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Dynamic Dialogue</h4>
+          <p>Sentence ghép từ chunks based on context.</p>
+          <p><em>Skyrim NPC greetings, RDR2 NPCs.</em></p>
+        </div>
+      </div>
+
+      <h3>17.2. Skill-based Dialogue - Master Class</h3>
+
+      <div class="example-box">
+        <div class="game-title">Disco Elysium - 24 Skills as Voices</div>
+        <p>ZA/UM revolutionary: 24 skills không phải stats, là VOICES trong đầu protagonist.</p>
+        <ul>
+          <li><strong>Logic:</strong> Phân tích lạnh lùng</li>
+          <li><strong>Empathy:</strong> Cảm xúc người khác</li>
+          <li><strong>Drama:</strong> Phát hiện ai đang lying</li>
+          <li><strong>Inland Empire:</strong> Mysticism, talk to objects</li>
+          <li><strong>Authority:</strong> Demand respect</li>
+          <li><strong>Endurance:</strong> Physical resilience</li>
+          <li><strong>Half Light:</strong> Survival instinct (panic mode)</li>
+        </ul>
+        <p>Mỗi dialogue, skills HIGH có thể "speak up": "Logic: Their alibi doesn't add up. Check Tuesday again."</p>
+        <p>Player với DIFFERENT BUILDS thấy DIFFERENT dialogue. Replay value khổng lồ.</p>
+      </div>
+
+      <h3>17.3. Dynamic Dialogue System</h3>
+
+      <div class="example-box">
+        <div class="game-title">Skyrim NPC Barks</div>
+        <p>Bethesda dùng template:</p>
+        <div class="code-block">[GREETING] + [PLAYER_REPUTATION] + [CITY] + [TIME_OF_DAY]
+
+Examples:
+- "Hello, citizen." (neutral)
+- "Hail to the Dragonborn!" (high rep)
+- "Looking forward to dawn." (night)
+- "I used to be an adventurer like you. Then I took an arrow in the knee." (random)</div>
+        <p>System ghép chunks. Tạo cảm giác personalized với chi phí thấp.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Shadow of Mordor - Nemesis Dialogue</div>
+        <p>Orc captains nói:</p>
+        <ul>
+          <li>Brag về cách họ killed player</li>
+          <li>Reference fight cụ thể: "Last time I burned you alive, ranger!"</li>
+          <li>Insult based on appearance (đốt cháy = "Crispy")</li>
+          <li>Promotion announcements</li>
+        </ul>
+        <p>Dialogue generated based on history - cảm giác personal.</p>
+      </div>
+
+      <h3>17.4. Voice Budget - Reality</h3>
+
+      <div class="info-box" data-title="💰 Voice Acting Cost">
+        <ul>
+          <li><strong>1 line voice acting:</strong> $50-200 USD (depending on actor)</li>
+          <li><strong>AAA game:</strong> 30,000-100,000+ lines</li>
+          <li><strong>Total voice cost:</strong> $1M - $10M</li>
+          <li><strong>Witcher 3:</strong> 36,000 lines + dubbing 7 languages</li>
+          <li><strong>Baldur's Gate 3:</strong> 174 hours voice acting</li>
+          <li><strong>Star Wars: KOTOR 2:</strong> Mass Effect competition mất tiền</li>
+        </ul>
+      </div>
+
+      <p>Implication: Branching dialogue đắt khủng khiếp. 90% game compromise.</p>
+
+      <h3>17.5. Dialogue Trees vs Wheels vs Lists</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🌲 Tree</h4>
+          <p>Hierarchical. Multiple sub-topics.</p>
+          <p><em>Old RPG - Baldur's Gate 1-2.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Wheel</h4>
+          <p>4-6 directions, fast.</p>
+          <p><em>Mass Effect, Dragon Age.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📋 List</h4>
+          <p>Vertical list of options.</p>
+          <p><em>Disco Elysium, BG3.</em></p>
+        </div>
+      </div>
+
+      <h3>17.6. Conditional Dialogue - The Magic</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 3 - Yennefer + Triss</div>
+        <p>Late game, Yennefer và Triss gặp nhau. Dialogue conditional:</p>
+        <ul>
+          <li>Nếu Geralt slept với Triss: tension awkward</li>
+          <li>Nếu Geralt slept với cả 2: BIG drama scene (Witcher 3 famous "threesome" trap scene)</li>
+          <li>Nếu loyal Yennefer: Triss cool, less tense</li>
+        </ul>
+        <p>30+ dialogue variations dựa trên 3 choices. CD Projekt invested heavy.</p>
+      </div>
+
+      <h3>17.7. Subtext trong Game Dialogue</h3>
+
+      <div class="example-box">
+        <div class="game-title">Disco Elysium - Subtext qua Skills</div>
+        <p>Player nói: "I'm doing fine, officer."</p>
+        <p>Skill "Visual Calculus" (high skill) nội bộ comment: "Your fingers are trembling. Your pupils dilated. You're absolutely NOT fine."</p>
+        <p>Đây là subtext made explicit qua skill system. Genius.</p>
+      </div>
+
+      <h3>17.8. Tools cho Dialogue Writer</h3>
+      <ul>
+        <li><strong>Twine:</strong> Free, browser-based, perfect cho prototype</li>
+        <li><strong>Ink (Inkle):</strong> Scripting language. Dùng trong 80 Days, Heaven's Vault</li>
+        <li><strong>Yarn Spinner:</strong> Unity integration, dùng trong Night in the Woods</li>
+        <li><strong>articy:draft:</strong> Pro tool</li>
+        <li><strong>Dialogue System for Unity:</strong> Asset Store</li>
+        <li><strong>ChoiceScript:</strong> Choice of Games platform</li>
+      </ul>
+
+      <div class="code-block">// Ví dụ Ink syntax
+=== forest ===
+You stand in a dark forest.
+* [Go north] -&gt; cave
+* [Go south] -&gt; village
+* {has_torch} [Light torch] -&gt; lit_forest
+
+=== cave ===
+You enter the cave. A bear growls.
+* [Attack] -&gt; fight_bear
+* [Run away] -&gt; forest
+* {strength &gt; 5} [Wrestle bear] -&gt; bear_friendship</div>
+    </section>
+
+    <!-- CHƯƠNG 18: QUEST DESIGN -->
+    <section id="quest" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 18</span>
+        <h2>Quest Design - Thiết Kế Nhiệm Vụ</h2>
+      </div>
+
+      <p>Quest là <strong>đơn vị câu chuyện cơ bản</strong> trong RPG/open world. Quest design tốt = câu chuyện hay. Quest tệ = fetch quest nhàm.</p>
+
+      <h3>18.1. Loại Quest</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>📖 Main Quest</h4>
+          <p>Story chính, mandatory.</p>
+        </div>
+        <div class="card-item">
+          <h4>📜 Side Quest</h4>
+          <p>Optional, mở rộng world/character.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Contract Quest</h4>
+          <p>Job-based, không liên quan story.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏛️ Faction Quest</h4>
+          <p>Cho 1 faction, mở rộng story arc.</p>
+        </div>
+        <div class="card-item">
+          <h4>📍 Location Quest</h4>
+          <p>Tied to địa điểm cụ thể.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎲 Random/Dynamic</h4>
+          <p>Generated procedurally.</p>
+        </div>
+        <div class="card-item">
+          <h4>⏰ Time-Limited</h4>
+          <p>Available only certain time.</p>
+        </div>
+        <div class="card-item">
+          <h4>💎 Hidden Quest</h4>
+          <p>Player phải tìm trigger.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌌 Epic Quest</h4>
+          <p>Multi-stage, hours long.</p>
+        </div>
+      </div>
+
+      <h3>18.2. Anatomy of a Good Quest</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Hook</h4>
+          <p>Lý do player care. NPC trông desperate, mystery intriguing, reward hấp dẫn.</p>
+        </div>
+        <div class="step">
+          <h4>Investigation / Setup</h4>
+          <p>Player gather info, learn stakes.</p>
+        </div>
+        <div class="step">
+          <h4>Action / Challenge</h4>
+          <p>Combat, puzzle, exploration - main gameplay.</p>
+        </div>
+        <div class="step">
+          <h4>Twist / Reveal</h4>
+          <p>Thông tin mới changes everything.</p>
+        </div>
+        <div class="step">
+          <h4>Climax</h4>
+          <p>Final decision, big fight, choice với consequence.</p>
+        </div>
+        <div class="step">
+          <h4>Resolution</h4>
+          <p>Outcome. World reacts. Reward.</p>
+        </div>
+        <div class="step">
+          <h4>Aftermath</h4>
+          <p>Long-term consequence visible in world.</p>
+        </div>
+      </div>
+
+      <h3>18.3. Case Study: Bloody Baron (Witcher 3)</h3>
+
+      <div class="example-box">
+        <div class="game-title">"Family Matters" - The Bloody Baron Quest</div>
+        <p><strong>Hook:</strong> Geralt cần tìm Ciri. Baron có info, nhưng demand bạn find vợ con ông trước.</p>
+        <p><strong>Investigation:</strong> Bạn talk to Baron. Ông drunk, abuse vợ. Bạn không thích ông. Sister-in-law witches help.</p>
+        <p><strong>Action:</strong> Tracking signs, find Spirit in tree (vợ chết-cải tử). Hauntings, ghosts.</p>
+        <p><strong>Twist 1:</strong> Vợ KHÔNG bị bắt cóc - bỏ trốn vì Baron. Đứa con MISCARRIAGE vì Baron đánh khi say.</p>
+        <p><strong>Twist 2:</strong> Sister-in-law witches là Crones - evil. Vợ giúp Crones save daughter.</p>
+        <p><strong>Climax:</strong> Player choose - help Crones (vợ live) hay free spirit (vợ free + curse). Choice impact village.</p>
+        <p><strong>Resolution:</strong>
+        <ul>
+          <li>Help Crones: Vợ sống, returns to Baron, Baron suicidal, kills himself</li>
+          <li>Free Spirit: Curse lifted, village save, but Baron's wife mentally broken</li>
+        </ul>
+        <p><strong>Aftermath:</strong> Baron's daughter Tamara has different fate based on choice. Affect future quests.</p>
+        <p>Đây là Best Quest in Gaming theo critics. Vì sao? Không clear good/evil. Sympathetic villain. Choice impact long-term. Theme: domestic abuse, complex morality.</p>
+      </div>
+
+      <h3>18.4. Fetch Quest - Tránh!</h3>
+
+      <div class="danger-box" data-title="⚠️ Fetch Quest = Death">
+        Quest tệ nhất: "Go get 10 wolf pelts." Không story, không character, không choice.<br><br>
+        <strong>Cách FIX:</strong>
+        <ul>
+          <li><strong>Add character:</strong> NPC sad story why need pelts</li>
+          <li><strong>Add complication:</strong> Wolves đang protect cubs, đạo đức choice</li>
+          <li><strong>Add twist:</strong> Wolves vô tội, NPC dùng pelts để frame ai</li>
+          <li><strong>Add discovery:</strong> Path đến wolves reveal hidden lore</li>
+          <li><strong>Add choice:</strong> Give pelts hay sell elsewhere</li>
+        </ul>
+      </div>
+
+      <h3>18.5. Quest Markers - Friend or Foe?</h3>
+
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>📍 With Quest Markers</h4>
+          <p>(Most modern games)</p>
+          <ul>
+            <li>+Easy follow</li>
+            <li>+Casual friendly</li>
+            <li>-Reduce exploration</li>
+            <li>-Player ignore world</li>
+          </ul>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div class="vs-side right">
+          <h4>🗺️ No Quest Markers</h4>
+          <p>(Morrowind, Outer Wilds)</p>
+          <ul>
+            <li>+True exploration</li>
+            <li>+Player engage with directions</li>
+            <li>-Frustrating sometimes</li>
+            <li>-Niche audience</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Outer Wilds - No marker philosophy</div>
+        <p>Mobius Digital removed quest markers entirely. Player must READ environment, ROCKET LOG, NPC dialogue. Game trust player.</p>
+        <p>Result: Player feel like archaeologist solving real mystery. Game-changing experience.</p>
+      </div>
+
+      <h3>18.6. Side Quest as Main Story Standard</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Witcher 3 - Side quest quality</div>
+        <p>CD Projekt Red rule: "Every side quest must have story like main quest."</p>
+        <p>Examples of side quests memorable:</p>
+        <ul>
+          <li>"A Towerful of Mice" - ghost story tragic</li>
+          <li>"The Last Wish" - Geralt + Yennefer relationship core</li>
+          <li>"Carnal Sins" - serial killer mystery</li>
+          <li>"Wandering in the Dark" - Keira Metz lore</li>
+        </ul>
+        <p>Some side quests have BETTER writing than main quests in other games.</p>
+      </div>
+
+      <h3>18.7. Quest Variety</h3>
+      <p>Đừng repeat. AAA game phải có quest variety:</p>
+      <ul>
+        <li><strong>Combat-focus:</strong> Boss fight, ambush</li>
+        <li><strong>Mystery/Investigation:</strong> Tìm clues, deduction</li>
+        <li><strong>Stealth:</strong> Sneak, avoid detection</li>
+        <li><strong>Social:</strong> Persuade, intimidate, gather info</li>
+        <li><strong>Puzzle:</strong> Brain-teaser, environmental</li>
+        <li><strong>Escort:</strong> (Usually hated, can be done well)</li>
+        <li><strong>Race:</strong> Time pressure</li>
+        <li><strong>Survival:</strong> Resource management</li>
+        <li><strong>Romance:</strong> Build relationship</li>
+        <li><strong>Heist:</strong> Plan + execute</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 19: PACING -->
+    <section id="pacing" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 19</span>
+        <h2>Pacing Trong Game</h2>
+      </div>
+
+      <p>Pacing game khác phim. Player kiểm soát timing - bạn chỉ guide. Đây là challenge unique.</p>
+
+      <h3>19.1. Mountain Curve - Pacing chuẩn</h3>
+      <p>Game 30+ giờ vẫn theo curve tổng quát:</p>
+
+      <div class="code-block">    Climax (Hour 28)
+        /\
+       /  \
+      /    \  Tension
+     /      \
+Mid /        \   Final
+peak\        /\  resolve
+    \      /  \
+   ^      ^    ^
+Hook (1) Mid (15) End (30)</div>
+
+      <h3>19.2. Loop trong Loop - Game pacing nested</h3>
+      <p>Game có pacing nhiều cấp:</p>
+
+      <ol>
+        <li><strong>Macro (entire game):</strong> 30-50 giờ arc</li>
+        <li><strong>Mezzo (act/chapter):</strong> 5-10 giờ</li>
+        <li><strong>Mini (quest):</strong> 30-90 phút</li>
+        <li><strong>Micro (encounter):</strong> 1-5 phút</li>
+        <li><strong>Nano (combat exchange):</strong> 5-30 seconds</li>
+      </ol>
+
+      <p>Mỗi cấp phải có rhythm riêng. Player must feel progress at EVERY level.</p>
+
+      <h3>19.3. Pacing Tools cho Game</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⚔️ Combat → Exploration → Story</h4>
+          <p>Alternate intense và calm.</p>
+          <p><em>God of War: combat → puzzle area → dialogue with Atreus.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌅 Day/Night cycles</h4>
+          <p>Day = action, night = quiet.</p>
+          <p><em>Persona 5: school (day) → palace (afternoon) → free time (evening).</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🏠 Hub returns</h4>
+          <p>Quay về safe space giữa missions.</p>
+          <p><em>Hades: house, talk NPCs, then next run.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📈 Difficulty curve</h4>
+          <p>Easy → Hard → Easy → Harder.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Tone shifts</h4>
+          <p>Comedy → Drama → Horror.</p>
+        </div>
+        <div class="card-item">
+          <h4>👤 POV switches</h4>
+          <p>Đổi character control để refresh.</p>
+          <p><em>TLOU2: Ellie chapters → Abby chapters.</em></p>
+        </div>
+      </div>
+
+      <h3>19.4. The "First 90 Minutes" Rule</h3>
+      <div class="danger-box" data-title="⚠️ Critical">
+        Player decide có chơi tiếp game trong <strong>90 phút đầu</strong>. Pacing opening cực kỳ quan trọng.<br><br>
+        Steam: 30% players refund game trong 2 giờ đầu. Opening pacing tệ = doanh thu thất bại.
+      </div>
+
+      <h4>Opening 90 phút phải có:</h4>
+      <ol>
+        <li>Hook trong 1 phút đầu</li>
+        <li>Core gameplay loop trong 5 phút</li>
+        <li>First "wow" moment trong 15 phút</li>
+        <li>Setup chính trong 30 phút</li>
+        <li>First big set piece trong 60 phút</li>
+        <li>Lý do tiếp tục trong 90 phút</li>
+      </ol>
+
+      <div class="example-box">
+        <div class="game-title">God of War (2018) - Opening</div>
+        <ul>
+          <li><strong>Minute 0-1:</strong> Quiet, Kratos chopping tree</li>
+          <li><strong>Minute 1-2:</strong> Atreus introduced</li>
+          <li><strong>Minute 2-5:</strong> Funeral (mother's death) - emotional hook</li>
+          <li><strong>Minute 5-15:</strong> First combat tutorial in forest</li>
+          <li><strong>Minute 15-25:</strong> Stranger arrives (Baldur) - first big fight</li>
+          <li><strong>Minute 25-60:</strong> Crazy fight với god</li>
+          <li><strong>Minute 60-90:</strong> Setup journey to mountain</li>
+        </ul>
+        <p>Perfect pacing - emotional + action + setup.</p>
+      </div>
+
+      <h3>19.5. Mid-Game Slump</h3>
+      <p>Vấn đề lớn trong game 30+ giờ. Player có thể "burn out" giữa game.</p>
+
+      <div class="tip-box" data-title="🎯 Avoid Slump">
+        <ul>
+          <li><strong>New mechanic every 5-10 hours:</strong> Keeps fresh</li>
+          <li><strong>New area unlocked:</strong> Visual variety</li>
+          <li><strong>Major plot twist mid-game:</strong> Re-engage interest</li>
+          <li><strong>Character reveal:</strong> New companion, character growth</li>
+          <li><strong>Skill tree milestone:</strong> Player feel powerful</li>
+          <li><strong>Boss fight memorable:</strong> Highlight moment</li>
+        </ul>
+      </div>
+
+      <h3>19.6. Pacing trong Open World</h3>
+      <p>Open world challenge: player có thể skip pacing intentions. Solutions:</p>
+
+      <div class="example-box">
+        <div class="game-title">Breath of the Wild - Player paced</div>
+        <p>Nintendo embrace player pacing. Game design cho phép:</p>
+        <ul>
+          <li>Đi straight to final boss in 60 phút</li>
+          <li>Explore 200 hours</li>
+          <li>Skip 90% main quest</li>
+        </ul>
+        <p>Game work for ALL pacing styles. Sandbox philosophy.</p>
+      </div>
+
+      <h3>19.7. Save Points &amp; Pacing</h3>
+      <p>Save system affect pacing:</p>
+
+      <ul>
+        <li><strong>Autosave everywhere:</strong> Casual, fast pacing</li>
+        <li><strong>Checkpoint:</strong> Forced moments of risk</li>
+        <li><strong>Bonfire (Dark Souls):</strong> Save = also commit (enemies respawn)</li>
+        <li><strong>Limited saves:</strong> Resource Evil, tension</li>
+        <li><strong>Manual only:</strong> Old RPG, encourage commitment</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 20: CUTSCENE -->
+    <section id="cutscene" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 20</span>
+        <h2>Cutscene vs Gameplay Storytelling</h2>
+      </div>
+
+      <p>Đây là <strong>tension nguyên thủy</strong> của game design. Bao nhiêu story kể qua cutscene (passive)? Bao nhiêu qua gameplay (active)?</p>
+
+      <h3>20.1. The Cutscene Spectrum</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🎬 Pre-rendered Cutscene</h4>
+          <p>Movie-quality. Player passively watches.</p>
+          <p><em>FFVII Remake intro, classic JRPG.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎮 In-Engine Cutscene</h4>
+          <p>Same engine as game. Player still passive.</p>
+          <p><em>Uncharted, God of War.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👁️ Interactive Cutscene</h4>
+          <p>QTE (quick time event), player input small.</p>
+          <p><em>Heavy Rain, RDR2.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🏃 Gameplay Cutscene</h4>
+          <p>Story xảy ra trong gameplay - player still control.</p>
+          <p><em>Half-Life, Bioshock.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💬 Dialogue Scene</h4>
+          <p>Conversation với UI choices.</p>
+          <p><em>Mass Effect, Witcher 3.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌍 Ambient Scene</h4>
+          <p>Story unfolds while player free roam.</p>
+          <p><em>RDR2 camp scenes.</em></p>
+        </div>
+      </div>
+
+      <h3>20.2. Half-Life Philosophy - Never Take Control Away</h3>
+
+      <div class="example-box">
+        <div class="game-title">Half-Life Series - Valve principle</div>
+        <p>Valve quy tắc: <strong>Không bao giờ pause control của player</strong>. No cutscene. Mọi story moment xảy ra IN-GAME.</p>
+        <p>Ví dụ: Major plot moments - players walk into scene, NPCs talk, events happen. Player still control Gordon. Có thể nhảy vu vơ, look away, ignore.</p>
+        <p>Result: Player ALWAYS feels in control. Story feels organic.</p>
+      </div>
+
+      <h3>20.3. Naughty Dog Approach - Cinematic Mix</h3>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us - Hybrid storytelling</div>
+        <p>Naughty Dog uses 3 layers:</p>
+        <ul>
+          <li><strong>Major beats:</strong> Cutscene (10-30% of time)</li>
+          <li><strong>Travel moments:</strong> Walking + ambient dialogue (Joel + Ellie talking)</li>
+          <li><strong>Action:</strong> Pure gameplay</li>
+        </ul>
+        <p>Smooth transitions - hard to tell when cutscene starts/ends. "Cinematic gameplay" pioneered.</p>
+      </div>
+
+      <h3>20.4. QTE - Quick Time Event</h3>
+
+      <p>Player press button đúng lúc trong cutscene. Controversial design.</p>
+
+      <div class="vs-grid">
+        <div class="vs-side left">
+          <h4>👍 Tốt khi:</h4>
+          <ul>
+            <li>Increase tension</li>
+            <li>Maintain engagement during cutscene</li>
+            <li>Choice with stakes (Heavy Rain)</li>
+          </ul>
+        </div>
+        <div class="vs-divider">vs</div>
+        <div class="vs-side right">
+          <h4>👎 Tệ khi:</h4>
+          <ul>
+            <li>Random, no warning</li>
+            <li>Fail = game over (frustrating)</li>
+            <li>Replace gameplay completely</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">God of War (2018) - QTE done right</div>
+        <p>QTE chỉ trong epic boss moments. Visually integrated. Fail = combat continue (not game over). Make boss fights cinematic.</p>
+      </div>
+
+      <h3>20.5. "Walking Sections" - Modern controversy</h3>
+
+      <p>AAA games có nhiều "walking sections" - player chỉ đi và nghe dialogue. Một số players ghét.</p>
+
+      <div class="example-box">
+        <div class="game-title">The Last of Us Part II - Long walks</div>
+        <p>Nhiều moment Ellie/Abby chỉ đi qua city, talk với companion. Slow pace - intentional. Some players: "too much walking". Others: "best storytelling moments".</p>
+      </div>
+
+      <div class="info-box" data-title="💡 Design Insight">
+        Walking section = "interactive cutscene". Player still feel agency (walk slow/fast, look around), but designer control story flow.<br><br>
+        Best when: dialogue worth listening to, environment beautiful, character bonding moments.
+      </div>
+
+      <h3>20.6. Skip Button - Must Have</h3>
+      <p>Modern players expect skip cutscene option. Reasons:</p>
+      <ul>
+        <li>Replay player (đã xem rồi)</li>
+        <li>Speedrunner</li>
+        <li>Player chỉ care gameplay</li>
+      </ul>
+      <p>Game without skip button = Steam reviews complain.</p>
+
+      <h3>20.7. Show Don't Tell - Game Way</h3>
+      <p>Phim: show don't tell.<br>
+      Game: SHOW DON'T TELL DON'T WATCH - LET THEM DO.</p>
+
+      <div class="example-box">
+        <div class="game-title">God of War - Father-Son bonding</div>
+        <p><strong>Bad way:</strong> Cutscene Kratos teach Atreus archery.</p>
+        <p><strong>Game way:</strong> Player actually TEACH Atreus - press button to instruct. Atreus miss, frustrated. Player practice with him. After 10 attempts, Atreus succeed - tiny smile.</p>
+        <p>Cảm xúc gấp 10 lần. Player INVESTED in teaching.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Brothers: A Tale of Two Sons - Mechanic = Story</div>
+        <p><strong>Throughout game:</strong> Control 2 brothers, 1 stick each.</p>
+        <p><strong>Climax:</strong> Older brother dies. Game tells you press R-stick to make brother swim. But R-stick does nothing - he's gone.</p>
+        <p>Later: river crossing requires BOTH brothers (in past). Now alone. Game asks: "Press L-stick" (older brother's button). It WORKS - because younger brother gained older brother's strength symbolically.</p>
+        <p>Mechanic IS the story. Phim không làm được điều này.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 21: LIVE SERVICE -->
+    <section id="liveservice" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 21</span>
+        <h2>Live Service &amp; Multiplayer Narrative</h2>
+      </div>
+
+      <p>Game-as-a-service (GaaS) là tương lai. Story trong live service hoàn toàn KHÁC single-player.</p>
+
+      <h3>21.1. Challenges của Live Service Narrative</h3>
+
+      <div class="warning-box" data-title="⚠️ Difficulty">
+        <ul>
+          <li><strong>Story phải continue mãi mãi</strong> (không có ending)</li>
+          <li><strong>Players join mid-story</strong> - không biết history</li>
+          <li><strong>Player base thay đổi</strong> - một số leave, một số mới</li>
+          <li><strong>FOMO content:</strong> Story qua rồi - mất forever</li>
+          <li><strong>Multiplayer:</strong> Personal story khó (mọi player cùng experience)</li>
+        </ul>
+      </div>
+
+      <h3>21.2. Episodic/Seasonal Storytelling</h3>
+
+      <div class="example-box">
+        <div class="game-title">Destiny 2 - Seasons</div>
+        <p>Bungie chia story thành Seasons (3 tháng each). Mỗi season:</p>
+        <ul>
+          <li>New questline</li>
+          <li>New enemies/locations</li>
+          <li>Story progress (small)</li>
+          <li>Cliffhanger end</li>
+        </ul>
+        <p>Player FOMO - story content có thể vault away. Controversial decision.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Fortnite - World-changing events</div>
+        <p>Epic Games đẩy storytelling vào multiplayer game qua "events" - all players cùng experience real-time:</p>
+        <ul>
+          <li><strong>The Cube:</strong> Cube xuất hiện, di chuyển map</li>
+          <li><strong>Black Hole:</strong> Map nuốt, game offline 2 ngày, return as Chapter 2</li>
+          <li><strong>Devourer of Worlds:</strong> Galactus appear, player fight</li>
+          <li><strong>Concert events:</strong> Travis Scott, Marshmello inside game</li>
+        </ul>
+        <p>10+ million players cùng tham gia "ending" của Chapter 1. Shared experience.</p>
+      </div>
+
+      <h3>21.3. Personal Story trong Multiplayer</h3>
+
+      <div class="example-box">
+        <div class="game-title">Destiny 2 - Guardian Voice</div>
+        <p>Each player IS a Guardian. NPCs address "you, Guardian" - generic. But weapons có lore, missions có story. Player feel both unique AND part of community.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">EVE Online - Player-driven narrative</div>
+        <p>MMO 20+ năm. Almost no scripted story. But players create EPIC narratives:</p>
+        <ul>
+          <li><strong>The Bloodbath of B-R5RB (2014):</strong> 7,500 players fight 21 hours. $300,000+ value destroyed.</li>
+          <li><strong>"The Mittani":</strong> Player who led alliance for years</li>
+          <li><strong>Player betrayals:</strong> Companies disbanded by infiltrators</li>
+        </ul>
+        <p>News outlets reported on EVE wars. Player-generated narrative.</p>
+      </div>
+
+      <h3>21.4. Co-op Narrative</h3>
+
+      <div class="example-box">
+        <div class="game-title">It Takes Two - Couples mandatory</div>
+        <p>Hazelight Studios. Game ONLY playable couch co-op. Story about divorcing couple needing to work together.</p>
+        <p>Mechanic = Theme:</p>
+        <ul>
+          <li>Mỗi puzzle CẦN cả 2 player</li>
+          <li>Cooperative succeed = relationship healing</li>
+          <li>Frustration của player mirror nhân vật</li>
+        </ul>
+        <p>Won Game of the Year 2021.</p>
+      </div>
+
+      <div class="example-box">
+        <div class="game-title">Helldivers 2 - Galactic war</div>
+        <p>All players contribute to galactic war effort. Liberate planets cooperatively. Story progress based on PLAYER ACTIONS globally.</p>
+        <p>Real example: Players failed defend planet → story changed. Devs reacting in real-time.</p>
+      </div>
+
+      <h3>21.5. Live Service Story Design</h3>
+
+      <div class="tip-box" data-title="🎯 Best Practices">
+        <ul>
+          <li><strong>Modular content:</strong> Mỗi season standalone but build overall</li>
+          <li><strong>Easy onboarding:</strong> Catch-up cutscene/summary cho new players</li>
+          <li><strong>Persistent world changes:</strong> Player action affect map permanently</li>
+          <li><strong>Community events:</strong> All players cùng tham gia</li>
+          <li><strong>Player-driven:</strong> Cho player tạo content (UGC)</li>
+          <li><strong>NPC reactivity:</strong> NPCs react to community choices</li>
+        </ul>
+      </div>
+
+      <h3>21.6. The Death of Live Service Story</h3>
+
+      <div class="danger-box" data-title="💀 Lost Content Problem">
+        Khi game shut down, story bị MẤT vĩnh viễn.<br><br>
+        <strong>Examples:</strong>
+        <ul>
+          <li>Anthem (BioWare): Story content gone</li>
+          <li>Marvel's Avengers: Story DLC removed</li>
+          <li>Hyper Scape: Game offline, lore gone</li>
+          <li>Battleborn: Lore lost forever</li>
+        </ul>
+        <p>Ethical question: Game preservation. Story belongs to who?</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 22: TOOLS -->
+    <section id="tools" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 22</span>
+        <h2>Tools &amp; Workflow</h2>
+      </div>
+
+      <p>Narrative designer dùng tools đặc thù. Đây là toolkit phổ biến trong industry.</p>
+
+      <h3>22.1. Writing Tools</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📝 Twine</h4>
+          <p>Free. Browser-based. Visual flowchart. Perfect cho prototype narrative.</p>
+          <p><strong>Best for:</strong> Beginners, prototypes, text adventures.</p>
+        </div>
+        <div class="card-item">
+          <h4>📜 Ink (Inkle)</h4>
+          <p>Free scripting language. Dùng trong 80 Days, Heaven's Vault, Sorcery!</p>
+          <p><strong>Best for:</strong> Complex branching narrative.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧶 Yarn Spinner</h4>
+          <p>Free. Unity integration. Dùng trong Night in the Woods.</p>
+          <p><strong>Best for:</strong> Unity developers.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 articy:draft</h4>
+          <p>Paid pro tool. Industry standard for branching narrative.</p>
+          <p><strong>Best for:</strong> AAA productions.</p>
+        </div>
+        <div class="card-item">
+          <h4>📋 ChoiceScript</h4>
+          <p>Free. Choice of Games platform.</p>
+          <p><strong>Best for:</strong> Text-based interactive fiction.</p>
+        </div>
+        <div class="card-item">
+          <h4>📕 Scrivener / Final Draft</h4>
+          <p>Like film. For cutscene scripts.</p>
+        </div>
+      </div>
+
+      <h3>22.2. Project Management</h3>
+      <ul>
+        <li><strong>Notion:</strong> Wiki/database. Most modern studios use.</li>
+        <li><strong>Confluence:</strong> Atlassian. Big studios.</li>
+        <li><strong>Miro / Mural:</strong> Visual flowcharts, branching.</li>
+        <li><strong>Jira:</strong> Task tracking. Industry standard.</li>
+        <li><strong>Trello:</strong> Simple kanban.</li>
+        <li><strong>Google Docs:</strong> Collaboration. Always useful.</li>
+      </ul>
+
+      <h3>22.3. Narrative Designer Workflow</h3>
+
+      <div class="steps">
+        <div class="step"><h4>Concept Phase</h4><p>One-pager. High-level pitch. Genre, tone, theme, hook.</p></div>
+        <div class="step"><h4>World Bible</h4><p>Setting, factions, lore. 20-50 pages.</p></div>
+        <div class="step"><h4>Story Outline</h4><p>3-act structure. Key beats. 5-10 pages.</p></div>
+        <div class="step"><h4>Character Bibles</h4><p>Major characters. Want/Need/Flaw/Arc.</p></div>
+        <div class="step"><h4>Quest Design Docs</h4><p>Each quest broken down. Steps, branches, rewards.</p></div>
+        <div class="step"><h4>Dialogue Trees</h4><p>In Twine/Ink/articy:draft.</p></div>
+        <div class="step"><h4>Implementation</h4><p>Work with engineers to put in engine.</p></div>
+        <div class="step"><h4>Playtesting &amp; Iteration</h4><p>Test, gather feedback, revise.</p></div>
+        <div class="step"><h4>Voice Recording</h4><p>Direction sessions with VO actors.</p></div>
+        <div class="step"><h4>Localization</h4><p>Translate/adapt for different markets.</p></div>
+      </div>
+
+      <h3>22.4. Working with Engineers</h3>
+
+      <div class="info-box" data-title="🤝 Bridge between Writer and Coder">
+        Narrative Designer phải:
+        <ul>
+          <li>Understand data structures</li>
+          <li>Write specs engineers can implement</li>
+          <li>Test in engine (not just paper)</li>
+          <li>Communicate with team</li>
+        </ul>
+        Senior narrative designers thường biết scripting basic.
+      </div>
+
+      <h3>22.5. Voice Acting Direction</h3>
+
+      <p>Narrative designer thường direct VO sessions:</p>
+      <ul>
+        <li>Provide context per line ("Joel is exhausted, just lost Tess")</li>
+        <li>Multiple takes - safety net + emotional version</li>
+        <li>Reference (other characters, films)</li>
+        <li>Pickups - re-record sau khi voice changes</li>
+        <li>Pace - actors only book limited hours</li>
+      </ul>
+
+      <div class="example-box">
+        <div class="game-title">Best Practice - The Last of Us</div>
+        <p>Naughty Dog uses "motion capture" sessions - actors perform scenes together, physical performance + voice cùng lúc. Result: more authentic performance.</p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 23: CAREER -->
+    <section id="career" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 23</span>
+        <h2>Sự Nghiệp Narrative Designer</h2>
+      </div>
+
+      <h3>23.1. Career Path</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌱 Junior Writer / Designer (0-2 năm)</h4>
+          <ul>
+            <li>Implement dialogue đã viết</li>
+            <li>Side quest writing</li>
+            <li>NPC barks</li>
+            <li>Item descriptions</li>
+            <li>QA support</li>
+          </ul>
+          <p><strong>VN salary:</strong> 10-20tr<br><strong>US salary:</strong> $50-75k</p>
+        </div>
+        <div class="card-item">
+          <h4>🌿 Mid-level (2-5 năm)</h4>
+          <ul>
+            <li>Own main quest lines</li>
+            <li>Character writing</li>
+            <li>Cutscene scripts</li>
+            <li>Working with VOs</li>
+          </ul>
+          <p><strong>VN salary:</strong> 20-40tr<br><strong>US salary:</strong> $75-110k</p>
+        </div>
+        <div class="card-item">
+          <h4>🌳 Senior (5-10 năm)</h4>
+          <ul>
+            <li>Major story arcs</li>
+            <li>Mentor juniors</li>
+            <li>Cross-discipline communication</li>
+          </ul>
+          <p><strong>VN salary:</strong> 40-80tr<br><strong>US salary:</strong> $110-160k</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Lead / Director (10+ năm)</h4>
+          <ul>
+            <li>Vision của game story</li>
+            <li>Manage narrative team</li>
+            <li>Stakeholder communication</li>
+          </ul>
+          <p><strong>VN salary:</strong> 80tr-200tr+<br><strong>US salary:</strong> $160-300k+</p>
+        </div>
+      </div>
+
+      <h3>23.2. Portfolio cho Narrative Designer</h3>
+
+      <div class="card-item">
+        <h4>📋 Phải có trong Portfolio:</h4>
+        <ol>
+          <li><strong>1 playable game</strong> - dù nhỏ. Twine game ok.</li>
+          <li><strong>2-3 sample scripts</strong> - cutscene + dialogue</li>
+          <li><strong>1 quest design doc</strong> - full breakdown</li>
+          <li><strong>1 world bible</strong> - or excerpt</li>
+          <li><strong>2-3 character bibles</strong></li>
+          <li><strong>Branching narrative sample</strong> - Twine link</li>
+          <li><strong>Game analyses</strong> - 3-5 game critiques</li>
+          <li><strong>Writing samples</strong> - even non-game (short story, screenplay)</li>
+        </ol>
+      </div>
+
+      <h3>23.3. Where to Apply</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🇻🇳 Vietnam Studios</h4>
+          <ul>
+            <li>VNG (Mobile RPG)</li>
+            <li>Sky Mavis (Axie Infinity)</li>
+            <li>Amanotes (Music game - less narrative)</li>
+            <li>Wolffun (Tank Royale)</li>
+            <li>Hiker Games</li>
+            <li>Sparx* (outsourcing AAA - bonus)</li>
+            <li>Gameloft VN</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Remote / International</h4>
+          <ul>
+            <li>Hitmarker.net</li>
+            <li>Work With Indies</li>
+            <li>Gamasutra Jobs</li>
+            <li>LinkedIn (Remote Narrative Designer)</li>
+            <li>Twitter #gamedevjobs</li>
+            <li>Studios Discord servers</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>23.4. Top Studios for Narrative</h3>
+      <ul>
+        <li><strong>Naughty Dog:</strong> The Last of Us, Uncharted</li>
+        <li><strong>BioWare:</strong> Mass Effect, Dragon Age</li>
+        <li><strong>CD Projekt Red:</strong> Witcher, Cyberpunk</li>
+        <li><strong>Larian Studios:</strong> Baldur's Gate 3</li>
+        <li><strong>FromSoftware:</strong> Dark Souls, Elden Ring</li>
+        <li><strong>Supergiant Games:</strong> Hades, Transistor</li>
+        <li><strong>Obsidian:</strong> Fallout New Vegas, Pillars</li>
+        <li><strong>Quantic Dream:</strong> Detroit, Heavy Rain</li>
+        <li><strong>ZA/UM:</strong> Disco Elysium</li>
+        <li><strong>Inkle:</strong> 80 Days, Heaven's Vault</li>
+      </ul>
+
+      <h3>23.5. Interview Questions Thường Gặp</h3>
+      <ul>
+        <li>"What's your favorite game story and why?"</li>
+        <li>"Pitch a game story in 5 minutes" (whiteboard exercise)</li>
+        <li>"How would you fix [X game]'s story?"</li>
+        <li>"Design a branching quest in 30 minutes"</li>
+        <li>"How do you handle disagreement with designer/engineer?"</li>
+        <li>"How do you write dialogue for a character very different from you?"</li>
+        <li>"What's your process for breaking story?"</li>
+        <li>"Critique this game's narrative" (cho 1 game cụ thể)</li>
+      </ul>
+
+      <h3>23.6. Resources</h3>
+
+      <div class="info-box" data-title="📚 Essential Resources">
+        <h4>Books:</h4>
+        <ul>
+          <li>"The Game Narrative Toolbox" - Tobias Heussner</li>
+          <li>"Interactive Storytelling for Video Games" - Josiah Lebowitz</li>
+          <li>"Hamlet on the Holodeck" - Janet Murray</li>
+          <li>"Slay the Dragon" - Robert Denton Bryant</li>
+          <li>"The Anatomy of Story" - John Truby</li>
+          <li>"Save the Cat!" - Blake Snyder (still useful)</li>
+        </ul>
+
+        <h4>YouTube Channels:</h4>
+        <ul>
+          <li>Game Maker's Toolkit</li>
+          <li>Extra Credits</li>
+          <li>Writing on Games</li>
+          <li>Hbomberguy</li>
+          <li>VaatiVidya (Dark Souls lore analyses)</li>
+          <li>Joseph Anderson</li>
+        </ul>
+
+        <h4>Conferences:</h4>
+        <ul>
+          <li>GDC Narrative Summit</li>
+          <li>IGDA Game Writers SIG</li>
+          <li>Narrascope (academic)</li>
+        </ul>
+
+        <h4>Community:</h4>
+        <ul>
+          <li>r/gamewriting subreddit</li>
+          <li>IGDA Game Writers</li>
+          <li>Studio Discord servers</li>
+          <li>Twitter narrative designer community</li>
+        </ul>
+      </div>
+
+      <h3>23.7. Bí Quyết Thành Công</h3>
+      <div class="tip-box" data-title="🏆 Mantras">
+        <ol>
+          <li><strong>Play widely:</strong> Hardcore + casual + indie + AAA. Each teaches.</li>
+          <li><strong>Ship something:</strong> Even tiny Twine game. Better than 0.</li>
+          <li><strong>Analyze, don't just play:</strong> Why does this work? Note it.</li>
+          <li><strong>Write daily:</strong> Even 200 words. Build muscle.</li>
+          <li><strong>Collaborate:</strong> Game is team art. Solo writers struggle.</li>
+          <li><strong>Be humble:</strong> Your draft 1 always sucks. Iterate.</li>
+          <li><strong>Network:</strong> Industry small. Reputation everything.</li>
+          <li><strong>Stay current:</strong> What's new in narrative? Keep learning.</li>
+          <li><strong>Develop voice:</strong> What makes YOUR writing unique?</li>
+          <li><strong>Patience:</strong> Senior narrative roles take 10+ năm.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 24: QUIZ -->
+    <section id="quiz" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">Chương 24</span>
+        <h2>Bài Kiểm Tra Cuối Khóa</h2>
+      </div>
+
+      <p>15 câu hỏi kiểm tra. Hãy thử và xem bạn đã nắm được bao nhiêu.</p>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 1: "Ludonarrative Dissonance" có nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Game lag khi cutscene</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Mâu thuẫn giữa story và gameplay</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Âm thanh khó nghe trong game</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Story phá vỡ ngữ pháp</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 2: Loại narrative nào "sinh ra từ tương tác hệ thống, không do designer viết"?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Embedded narrative</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Emergent narrative</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Environmental narrative</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Linear narrative</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 3: Game nào nổi tiếng vì environmental storytelling qua item description?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Call of Duty</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Dark Souls</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. FIFA</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Mario</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 4: Disco Elysium có bao nhiêu từ trong script?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 100,000 từ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. 500,000 từ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. 1 triệu từ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. 5 triệu từ</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 5: "Iceberg Principle" trong worldbuilding nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. World phải lạnh giá</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. 10% lore hiện ra, 90% chìm dưới</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Tất cả lore phải được show</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. World phải 3D</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 6: Quy tắc "First 90 Minutes" trong game design có ý nghĩa gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Game phải dài 90 phút</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Player decide có chơi tiếp game trong 90 phút đầu</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Cutscene phải dưới 90 phút</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Tutorial dài 90 phút</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 7: "Nemesis System" được patent bởi game nào?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Skyrim</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Mass Effect</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Middle-earth: Shadow of Mordor</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. The Witcher 3</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 8: Trong Mass Effect, Paragon/Renegade chủ yếu thay đổi gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Toàn bộ plot</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Dialogue tone, ít affect plot chính (illusion of choice)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Combat stats</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Map size</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 9: "Blank Slate Character" KHÔNG phù hợp cho?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Open world RPG</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Sandbox game</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Cinematic linear story game</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. MMO</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 10: "Save Scumming" là vấn đề gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Save file bị hỏng</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Player save trước choice, thử nhiều option → choice mất meaning</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Save quá nhiều file</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Không save được</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 11: Game nào có "Storyteller AI" tự sinh events?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. The Last of Us</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. RimWorld</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Uncharted</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. God of War</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 12: Valve's Half-Life philosophy về story là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cutscene dài làm cinematic</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Không bao giờ pause control - story xảy ra in gameplay</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Nhiều dialogue trees</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Story chỉ qua text</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 13: "Brothers: A Tale of Two Sons" sử dụng kỹ thuật gì nổi tiếng?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 3D graphics</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Mechanic = Story - dùng controller buttons để kể chuyện</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Voice acting đỉnh cao</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Branching narrative</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 14: Tool nào tốt nhất cho prototype branching narrative đơn giản?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Final Draft</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Twine (free, browser-based)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Photoshop</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Excel</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 15: Khác biệt LỚN NHẤT giữa viết game vs viết phim là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Game ngắn hơn</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Phim không có dialogue</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Game có player agency - người xem TRỞ THÀNH nhân vật, không chỉ quan sát</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Game không có cốt truyện</div>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🎮 Chúc mừng hoàn thành khóa học!">
+        <p><strong>Bạn vừa hoàn thành 24 chương Game Narrative Design.</strong></p>
+        <p style="margin-top: 15px;"><strong>Hành động ngay sau khóa học:</strong></p>
+        <ol>
+          <li>Chơi (hoặc xem playthrough) 5 game trong "Top 10 essential" - Disco Elysium, TLOU, Witcher 3, Hades, Undertale</li>
+          <li>Tải Twine miễn phí, làm 1 narrative game ngắn (30 phút - 2 giờ)</li>
+          <li>Viết "Narrative Breakdown" cho 3 game yêu thích</li>
+          <li>Đọc "The Game Narrative Toolbox" - Tobias Heussner</li>
+          <li>Subscribe YouTube: Game Maker's Toolkit, Writing on Games</li>
+          <li>Tham gia r/gamewriting, IGDA Game Writers Discord</li>
+          <li>Trong 6 tháng: hoàn thành 1 playable narrative project</li>
+          <li>Apply intern/junior tại studio (kèm portfolio)</li>
+        </ol>
+      </div>
+
+      <div style="text-align: center; margin: 40px 0;">
+        <div style="font-size: 64px; margin-bottom: 20px;">🎮</div>
+        <p style="font-size: 22px; color: var(--primary-glow); font-weight: 700; text-shadow: 0 0 20px rgba(94, 234, 212, 0.5); font-style: italic;">"In film, you tell the story.<br>In games, you build the space where players create theirs."</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>🎮 Khóa Học Viết Cốt Truyện Cho Game | © 2026</p>
+      <p style="margin-top: 10px; font-size: 14px;">"Games are the only medium where the audience is also the protagonist."</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+  });
+
+  const sections = document.querySelectorAll('.chapter');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  let quizScore = 0;
+  let quizAnswered = new Set();
+  let totalQuizQuestions = 0;
+
+  function checkAnswer(element, isCorrect) {
+    const quizId = element.closest('.quiz').querySelector('.quiz-question').textContent;
+    if (quizAnswered.has(quizId)) return;
+    quizAnswered.add(quizId);
+
+    const options = element.parentElement.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+      element.classList.add('correct');
+      quizScore++;
+    } else {
+      element.classList.add('wrong');
+      options.forEach(opt => {
+        if (opt.getAttribute('onclick').includes('true')) opt.classList.add('correct');
+      });
+    }
+
+    if (quizAnswered.size === totalQuizQuestions) {
+      setTimeout(() => {
+        const pct = Math.round((quizScore/totalQuizQuestions)*100);
+        alert(`🎮 Bạn đạt ${quizScore}/${totalQuizQuestions} điểm (${pct}%)!\n\n${
+          pct >= 90 ? '🏆 Xuất sắc! Bạn sẵn sàng làm Senior Narrative Designer!' :
+          pct >= 75 ? '🎯 Tốt! Bạn đã nắm vững nền tảng.' :
+          pct >= 50 ? '📚 Khá ổn! Hãy đọc lại các chương khó.' :
+          '💪 Đừng nản! Đọc lại khóa học và thử lại.'
+        }`);
+      }, 500);
+    }
+  }
+
+  window.addEventListener('load', () => {
+    totalQuizQuestions = document.querySelectorAll('.quiz').length;
+  });
+</script>
+
+</body>
+</html>

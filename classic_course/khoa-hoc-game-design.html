@@ -1,0 +1,3147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Game Design Toàn Diện - Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #a855f7;
+    --primary-glow: #c084fc;
+    --secondary: #06b6d4;
+    --accent: #f472b6;
+    --neon-green: #4ade80;
+    --neon-yellow: #fde047;
+    --dark: #1a0b2e;
+    --darker: #0a0414;
+    --light: #f8fafc;
+    --gray: #94a3b8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --card: #1e1138;
+    --border: #3b1f6e;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.7;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 320px;
+    background: linear-gradient(180deg, var(--dark) 0%, #0d0521 100%);
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid var(--border);
+    z-index: 100;
+    transition: transform 0.3s;
+    box-shadow: 4px 0 20px rgba(168, 85, 247, 0.15);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo {
+    text-align: center;
+    padding: 0 20px 30px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .logo h1 {
+    font-size: 22px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+  }
+  .logo p { font-size: 12px; color: var(--gray); margin-top: 5px; }
+  .nav-menu { list-style: none; padding: 0 15px; }
+  .nav-menu li { margin-bottom: 5px; }
+  .nav-menu a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--gray);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+  }
+  .nav-menu a:hover, .nav-menu a.active {
+    background: rgba(168, 85, 247, 0.15);
+    color: var(--primary-glow);
+    border-left-color: var(--primary);
+    transform: translateX(5px);
+    text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+  }
+  .nav-menu .chapter-num {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid var(--border);
+  }
+  .main-content {
+    margin-left: 320px;
+    flex: 1;
+    padding: 40px 60px;
+    max-width: calc(100% - 320px);
+  }
+  .hero {
+    background: linear-gradient(135deg, #4c1d95 0%, #0e7490 50%, #be185d 100%);
+    padding: 80px 40px;
+    border-radius: 20px;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+  }
+  @keyframes gridMove {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(40px, 40px); }
+  }
+  .hero h1 {
+    font-size: 46px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    font-weight: 900;
+    text-shadow: 0 0 30px rgba(192, 132, 252, 0.8), 0 0 60px rgba(6, 182, 212, 0.5);
+    letter-spacing: 2px;
+  }
+  .hero p { font-size: 19px; position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    padding: 20px 30px;
+    border-radius: 12px;
+    min-width: 140px;
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  }
+  .stat-num { font-size: 32px; font-weight: 900; display: block; color: var(--neon-yellow); text-shadow: 0 0 15px rgba(253, 224, 71, 0.6); }
+  .stat-label { font-size: 13px; opacity: 0.9; color: var(--light); }
+  .chapter {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(168, 85, 247, 0.1);
+    scroll-margin-top: 20px;
+    position: relative;
+  }
+  .chapter::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+    border-radius: 16px 16px 0 0;
+  }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-badge {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+  }
+  .chapter h2 {
+    font-size: 30px;
+    color: var(--primary-glow);
+    flex: 1;
+    text-shadow: 0 0 20px rgba(192, 132, 252, 0.4);
+  }
+  .chapter h3 {
+    font-size: 22px;
+    color: var(--secondary);
+    margin: 30px 0 15px;
+    padding-left: 15px;
+    border-left: 4px solid var(--secondary);
+  }
+  .chapter h4 { font-size: 18px; color: var(--accent); margin: 20px 0 10px; }
+  .chapter p { margin-bottom: 15px; color: #cbd5e1; }
+  .chapter ul, .chapter ol { margin: 15px 0 20px 25px; color: #cbd5e1; }
+  .chapter li { margin-bottom: 8px; }
+  .chapter strong { color: var(--primary-glow); }
+  .info-box, .warning-box, .tip-box, .danger-box, .quote-box {
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 5px solid;
+  }
+  .info-box { background: rgba(6, 182, 212, 0.1); border-color: var(--secondary); }
+  .warning-box { background: rgba(245, 158, 11, 0.1); border-color: var(--warning); }
+  .tip-box { background: rgba(74, 222, 128, 0.08); border-color: var(--neon-green); }
+  .danger-box { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
+  .quote-box { background: rgba(168, 85, 247, 0.08); border-color: var(--primary); font-style: italic; }
+  .info-box::before, .warning-box::before, .tip-box::before, .danger-box::before, .quote-box::before {
+    content: attr(data-title);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .info-box::before { color: var(--secondary); }
+  .warning-box::before { color: var(--warning); }
+  .tip-box::before { color: var(--neon-green); }
+  .danger-box::before { color: var(--danger); }
+  .quote-box::before { color: var(--primary-glow); font-style: normal; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 20px 0; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+  .card-item {
+    background: var(--dark);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .card-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 25px rgba(168, 85, 247, 0.25);
+  }
+  .card-item h4 { color: var(--primary-glow); margin-bottom: 10px; }
+  .card-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: var(--dark);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    font-weight: 700;
+  }
+  tr:hover { background: rgba(168, 85, 247, 0.06); }
+  .code-block {
+    background: #06010f;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px;
+    margin: 15px 0;
+    overflow-x: auto;
+    color: var(--neon-green);
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+  .steps { counter-reset: step; margin: 20px 0; }
+  .step {
+    counter-increment: step;
+    padding: 20px 20px 20px 70px;
+    background: var(--dark);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 4px solid var(--primary);
+  }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+  }
+  .step h4 { color: var(--primary-glow); margin-bottom: 5px; }
+  .progress-section {
+    position: fixed;
+    top: 0;
+    left: 320px;
+    right: 0;
+    height: 4px;
+    background: var(--dark);
+    z-index: 99;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    width: 0%;
+    transition: width 0.1s;
+    box-shadow: 0 0 10px var(--primary);
+  }
+  .quiz {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(6, 182, 212, 0.1));
+    border: 2px solid var(--primary);
+    border-radius: 16px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+  .quiz-question { font-size: 17px; font-weight: 700; margin-bottom: 15px; color: var(--primary-glow); }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    padding: 12px 18px;
+    background: var(--dark);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-option:hover { border-color: var(--primary); transform: translateX(5px); }
+  .quiz-option.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); color: var(--success); }
+  .quiz-option.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); color: var(--danger); }
+  .menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+  }
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 280px; }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; padding: 70px 20px 20px; }
+    .menu-toggle { display: block; }
+    .progress-section { left: 0; }
+    .hero h1 { font-size: 30px; }
+    .hero p { font-size: 16px; }
+    .chapter { padding: 25px 20px; }
+    .chapter h2 { font-size: 22px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 15px; }
+    .stat { padding: 15px 20px; min-width: 120px; }
+  }
+  .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  .footer { text-align: center; padding: 40px; color: var(--gray); border-top: 1px solid var(--border); margin-top: 50px; }
+  .controller-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.6));
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 5px;
+  }
+  .badge-beginner { background: rgba(74, 222, 128, 0.2); color: var(--neon-green); }
+  .badge-intermediate { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+  .badge-advanced { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+  .badge-pro { background: rgba(168, 85, 247, 0.2); color: var(--primary-glow); }
+  .formula-box {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(6, 182, 212, 0.1));
+    border: 2px dashed var(--primary);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+    font-family: 'Consolas', monospace;
+    color: var(--primary-glow);
+    font-size: 16px;
+    line-height: 2;
+  }
+  .pixel-divider {
+    height: 4px;
+    background-image: repeating-linear-gradient(90deg, var(--primary) 0, var(--primary) 8px, transparent 8px, transparent 16px);
+    margin: 30px 0;
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<div class="progress-section">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <h1>🎮 GAME DESIGN</h1>
+      <p>Khóa Học Toàn Diện 2026</p>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#intro" class="active"><span class="chapter-num">1</span>Giới thiệu Game Design</a></li>
+      <li><a href="#history"><span class="chapter-num">2</span>Lịch sử Game</a></li>
+      <li><a href="#genres"><span class="chapter-num">3</span>Các thể loại Game</a></li>
+      <li><a href="#mda"><span class="chapter-num">4</span>Framework MDA</a></li>
+      <li><a href="#coreloop"><span class="chapter-num">5</span>Core Loop & Mechanics</a></li>
+      <li><a href="#gamefeel"><span class="chapter-num">6</span>Game Feel & Juiciness</a></li>
+      <li><a href="#level"><span class="chapter-num">7</span>Level Design</a></li>
+      <li><a href="#character"><span class="chapter-num">8</span>Character Design</a></li>
+      <li><a href="#narrative"><span class="chapter-num">9</span>Narrative & Storytelling</a></li>
+      <li><a href="#uiux"><span class="chapter-num">10</span>UI/UX cho Game</a></li>
+      <li><a href="#balance"><span class="chapter-num">11</span>Game Balancing</a></li>
+      <li><a href="#psychology"><span class="chapter-num">12</span>Player Psychology</a></li>
+      <li><a href="#progression"><span class="chapter-num">13</span>Progression Systems</a></li>
+      <li><a href="#economy"><span class="chapter-num">14</span>Economy & Monetization</a></li>
+      <li><a href="#multiplayer"><span class="chapter-num">15</span>Multiplayer & Social</a></li>
+      <li><a href="#prototype"><span class="chapter-num">16</span>Prototyping</a></li>
+      <li><a href="#tools"><span class="chapter-num">17</span>Tools & Engines</a></li>
+      <li><a href="#playtest"><span class="chapter-num">18</span>Playtesting</a></li>
+      <li><a href="#gdd"><span class="chapter-num">19</span>Game Design Document</a></li>
+      <li><a href="#career"><span class="chapter-num">20</span>Portfolio & Career</a></li>
+      <li><a href="#quiz"><span class="chapter-num">21</span>Bài kiểm tra</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <section class="hero">
+      <span class="controller-icon">🎮</span>
+      <h1>GAME DESIGN MASTERY</h1>
+      <p>Hành trình từ người chơi đến nhà thiết kế game chuyên nghiệp - 21 chương đầy đủ từ lý thuyết cơ bản đến kỹ thuật pro trong ngành công nghiệp $300 tỷ USD</p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">21</span><span class="stat-label">Chương học</span></div>
+        <div class="stat"><span class="stat-num">200+</span><span class="stat-label">Khái niệm</span></div>
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Case study</span></div>
+        <div class="stat"><span class="stat-num">$300B</span><span class="stat-label">Thị trường 2026</span></div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 1: GIỚI THIỆU -->
+    <section id="intro" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 1</span>
+        <h2>Giới Thiệu Về Game Design</h2>
+      </div>
+
+      <h3>1.1. Game Design là gì?</h3>
+      <p><strong>Game Design</strong> là nghệ thuật và khoa học của việc tạo ra <strong>các quy tắc, hệ thống, và trải nghiệm</strong> cho một trò chơi. Đây KHÔNG phải là lập trình, KHÔNG phải là vẽ - mà là <strong>thiết kế trải nghiệm chơi</strong>.</p>
+
+      <div class="quote-box" data-title="💬 Câu nói nổi tiếng">
+        "A game is a series of interesting choices."<br>
+        <em>— Sid Meier (cha đẻ Civilization)</em>
+      </div>
+
+      <h3>1.2. Game Designer làm gì?</h3>
+      <p>Game Designer là <strong>"kiến trúc sư"</strong> của trò chơi. Họ quyết định:</p>
+      <ul>
+        <li><strong>Game sẽ chơi như thế nào?</strong> (Mechanics - Cơ chế)</li>
+        <li><strong>Người chơi sẽ làm gì?</strong> (Actions - Hành động)</li>
+        <li><strong>Mục tiêu là gì?</strong> (Objectives - Mục tiêu)</li>
+        <li><strong>Luật chơi ra sao?</strong> (Rules - Luật)</li>
+        <li><strong>Người chơi sẽ cảm thấy gì?</strong> (Aesthetics - Cảm xúc)</li>
+        <li><strong>Tiến trình phát triển thế nào?</strong> (Progression - Tiến trình)</li>
+      </ul>
+
+      <h3>1.3. Game Design vs Game Development</h3>
+      <table>
+        <thead>
+          <tr><th>Game Design</th><th>Game Development</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Thiết kế <strong>WHAT</strong> (cái gì)</td>
+            <td>Thực hiện <strong>HOW</strong> (làm thế nào)</td>
+          </tr>
+          <tr>
+            <td>Quyết định cơ chế, luật, balance</td>
+            <td>Lập trình, vẽ, làm âm thanh</td>
+          </tr>
+          <tr>
+            <td>GDD, prototype giấy, blockout</td>
+            <td>Code, art, audio, build</td>
+          </tr>
+          <tr>
+            <td>Người: Designer, Director</td>
+            <td>Người: Programmer, Artist, Sound Designer</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>1.4. Các vị trí trong Game Design</h3>
+      <div class="grid-3">
+        <div class="card-item">
+          <span class="card-icon">🎯</span>
+          <h4>Game Designer (Tổng quát)</h4>
+          <p>Định hướng tổng thể: cơ chế, gameplay, hệ thống. Lương: 15-50tr/tháng tại VN.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🗺️</span>
+          <h4>Level Designer</h4>
+          <p>Thiết kế màn chơi, pacing, encounters. Cần spatial thinking tốt.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">⚖️</span>
+          <h4>System Designer</h4>
+          <p>Thiết kế hệ thống combat, kinh tế, progression. Cần toán giỏi, Excel pro.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">📖</span>
+          <h4>Narrative Designer</h4>
+          <p>Cốt truyện, dialogue, world-building. Cần kỹ năng viết.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🎮</span>
+          <h4>Combat Designer</h4>
+          <p>Hệ thống chiến đấu: weapons, skills, balance. Quan trọng trong RPG/FPS.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">💰</span>
+          <h4>Monetization Designer</h4>
+          <p>Hệ thống IAP, gacha, battle pass. Hot trong mobile game.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🧪</span>
+          <h4>Technical Designer</h4>
+          <p>Cầu nối giữa Design và Programming. Biết code cơ bản.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">📊</span>
+          <h4>Game Director</h4>
+          <p>Lead toàn bộ team design. Vision của game. 5-10+ năm kinh nghiệm.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🎨</span>
+          <h4>UX Designer</h4>
+          <p>Trải nghiệm người dùng, UI flow, accessibility.</p>
+        </div>
+      </div>
+
+      <h3>1.5. Kỹ năng cần thiết của Game Designer</h3>
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🧠 Hard Skills</h4>
+          <ul>
+            <li>Excel/Google Sheets nâng cao (balance)</li>
+            <li>Tư duy hệ thống (Systems thinking)</li>
+            <li>Toán & xác suất (cho balance)</li>
+            <li>Tâm lý học người chơi</li>
+            <li>Game engines (Unity, Unreal, Godot)</li>
+            <li>Scripting cơ bản (C#, Lua, Python)</li>
+            <li>Tools: Miro, Figma, Notion, Confluence</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>💪 Soft Skills</h4>
+          <ul>
+            <li>Communication - viết GDD rõ ràng</li>
+            <li>Empathy - hiểu người chơi</li>
+            <li>Critical thinking - phân tích game</li>
+            <li>Creativity - ý tưởng mới mẻ</li>
+            <li>Iteration mindset - chấp nhận sửa</li>
+            <li>Teamwork - làm việc với art, code, sound</li>
+            <li>Presentation - pitch ý tưởng</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>1.6. Thị trường Game tại Việt Nam</h3>
+      <ul>
+        <li><strong>Doanh thu:</strong> ~600 triệu USD/năm (2025), tăng 12-15%/năm</li>
+        <li><strong>Số người chơi:</strong> 50+ triệu (top 10 thế giới về mobile gamers)</li>
+        <li><strong>Mobile chiếm 70%</strong> tổng doanh thu</li>
+        <li><strong>Top studio:</strong> VNG, Garena, Sky Mavis (Axie Infinity), Amanotes, Wolffun (Tank Royale)</li>
+        <li><strong>Thu nhập Game Designer:</strong>
+          <ul>
+            <li>Junior: 12-20 triệu/tháng</li>
+            <li>Senior: 25-50 triệu/tháng</li>
+            <li>Lead: 50-100+ triệu/tháng</li>
+            <li>Director: 80-250+ triệu/tháng</li>
+            <li>Remote (US/EU): 3,000-15,000 USD/tháng</li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="tip-box" data-title="🎓 Lộ trình học cho người mới">
+        <ol>
+          <li><strong>Tháng 1-2:</strong> Đọc lý thuyết (sách "The Art of Game Design" - Jesse Schell)</li>
+          <li><strong>Tháng 3-4:</strong> Phân tích 10 game yêu thích - làm "Game Analysis Document"</li>
+          <li><strong>Tháng 5-6:</strong> Làm 3 prototype giấy (board game / card game)</li>
+          <li><strong>Tháng 7-9:</strong> Học Unity / Godot, làm clone Flappy Bird, Pong, Tetris</li>
+          <li><strong>Tháng 10-12:</strong> Làm game gốc đầu tiên + Game Jam (Ludum Dare, GMTK)</li>
+          <li><strong>Năm 2:</strong> Portfolio 3-5 game + apply intern/junior</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 2: LỊCH SỬ -->
+    <section id="history" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 2</span>
+        <h2>Lịch Sử Phát Triển Game</h2>
+      </div>
+
+      <p>Hiểu lịch sử giúp bạn nắm vững <strong>WHY</strong> - tại sao game hiện đại được thiết kế như vậy. Mỗi thế hệ đều giải quyết vấn đề mà thế hệ trước để lại.</p>
+
+      <h3>2.1. Các kỷ nguyên Game</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🕹️ Kỷ nguyên Arcade (1971-1983)</h4>
+          <p><strong>Game tiêu biểu:</strong> Pong, Space Invaders, Pac-Man, Donkey Kong</p>
+          <p><strong>Bài học design:</strong> Học cách thiết kế gameplay đơn giản nhưng gây nghiện. Mỗi xu phải đáng giá - tạo "1 more try" feeling.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎮 Kỷ nguyên Home Console (1983-1995)</h4>
+          <p><strong>Game tiêu biểu:</strong> Super Mario Bros, Zelda, Final Fantasy</p>
+          <p><strong>Bài học design:</strong> Game dài hơn, có save/load. Bắt đầu narrative. Mario - chuẩn mực platformer đến nay.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Kỷ nguyên 3D & Internet (1995-2005)</h4>
+          <p><strong>Game tiêu biểu:</strong> Doom, Quake, GTA III, Half-Life, World of Warcraft</p>
+          <p><strong>Bài học design:</strong> Không gian 3D, FPS, MMO. Half-Life - chuẩn mực storytelling không cutscene.</p>
+        </div>
+        <div class="card-item">
+          <h4>📱 Kỷ nguyên Mobile & F2P (2007-2015)</h4>
+          <p><strong>Game tiêu biểu:</strong> Angry Birds, Clash of Clans, Candy Crush, Pokemon Go</p>
+          <p><strong>Bài học design:</strong> Free-to-play, microtransaction, daily login. Thiết kế cho phiên chơi 5-15 phút.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Kỷ nguyên Cinematic & Open World (2015-2020)</h4>
+          <p><strong>Game tiêu biểu:</strong> Witcher 3, Red Dead Redemption 2, Breath of the Wild</p>
+          <p><strong>Bài học design:</strong> Open world emergent, narrative điện ảnh, AAA budget &gt;100tr USD.</p>
+        </div>
+        <div class="card-item">
+          <h4>🚀 Kỷ nguyên Live Service & UGC (2020-nay)</h4>
+          <p><strong>Game tiêu biểu:</strong> Fortnite, Roblox, Genshin Impact, Helldivers 2, Palworld</p>
+          <p><strong>Bài học design:</strong> Game-as-a-service, content liên tục, cộng đồng tạo nội dung (UGC).</p>
+        </div>
+      </div>
+
+      <h3>2.2. Các sự kiện then chốt thay đổi ngành</h3>
+      <ul>
+        <li><strong>1983 - "Video Game Crash":</strong> Thị trường Mỹ sụp đổ vì quá nhiều game kém chất lượng. Bài học: <em>Quality control quan trọng.</em></li>
+        <li><strong>1985 - Super Mario Bros:</strong> Nintendo cứu ngành. Chuẩn mực level 1-1 dạy player without tutorial.</li>
+        <li><strong>1996 - Tomb Raider:</strong> 3D thật sự bùng nổ. Female protagonist trở thành mainstream.</li>
+        <li><strong>1998 - StarCraft:</strong> eSports khai sinh. Hàn Quốc trở thành cường quốc game.</li>
+        <li><strong>2004 - World of Warcraft:</strong> MMO định nghĩa lại "game suốt đời".</li>
+        <li><strong>2007 - iPhone ra đời:</strong> Mobile gaming sinh ra.</li>
+        <li><strong>2009 - Angry Birds + Farmville:</strong> Casual gaming + microtransaction.</li>
+        <li><strong>2012 - League of Legends bùng nổ:</strong> F2P + eSports = công thức vàng.</li>
+        <li><strong>2017 - PUBG + Battle Royale:</strong> Một thể loại mới chiếm lĩnh.</li>
+        <li><strong>2020 - Fall Guys + Among Us:</strong> Indie có thể đánh bại AAA với ý tưởng đột phá.</li>
+        <li><strong>2023 - Generative AI:</strong> AI tạo art, code, narrative - thay đổi quy trình.</li>
+      </ul>
+
+      <div class="info-box" data-title="📚 Game Designers huyền thoại nên biết">
+        <ul>
+          <li><strong>Shigeru Miyamoto:</strong> Mario, Zelda, Donkey Kong - Nintendo</li>
+          <li><strong>Hideo Kojima:</strong> Metal Gear, Death Stranding - bậc thầy narrative</li>
+          <li><strong>Sid Meier:</strong> Civilization - "interesting choices"</li>
+          <li><strong>Will Wright:</strong> The Sims, SimCity - emergent gameplay</li>
+          <li><strong>Hidetaka Miyazaki:</strong> Dark Souls, Elden Ring - difficult design</li>
+          <li><strong>Jonathan Blow:</strong> Braid, The Witness - puzzle design</li>
+          <li><strong>Toby Fox:</strong> Undertale - solo developer thay đổi narrative game</li>
+          <li><strong>Nguyễn Hà Đông:</strong> Flappy Bird - solo VN, viral toàn cầu</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 3: GENRES -->
+    <section id="genres" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 3</span>
+        <h2>Các Thể Loại Game</h2>
+      </div>
+
+      <p>Hiểu rõ thể loại giúp bạn xác định <strong>khuôn mẫu thiết kế</strong>, kỳ vọng người chơi và tiêu chuẩn ngành.</p>
+
+      <h3>3.1. Phân loại theo Gameplay Mechanics</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🏃 Action</h4>
+          <p>Phản xạ, combat real-time.</p>
+          <p><strong>Sub-genres:</strong> Platformer (Mario), Hack &amp; Slash (Devil May Cry), Beat 'em up (Streets of Rage)</p>
+          <p><strong>Design focus:</strong> Game feel, responsiveness, satisfying feedback.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Shooter</h4>
+          <p>Bắn súng - FPS hoặc TPS.</p>
+          <p><strong>Sub-genres:</strong> FPS (Call of Duty), TPS (Gears of War), Battle Royale (PUBG), Hero Shooter (Overwatch), Tactical (Valorant)</p>
+          <p><strong>Design focus:</strong> Gunfeel, time-to-kill (TTK), map design.</p>
+        </div>
+        <div class="card-item">
+          <h4>🗡️ RPG (Role-Playing Game)</h4>
+          <p>Nhập vai, phát triển nhân vật.</p>
+          <p><strong>Sub-genres:</strong> JRPG (Final Fantasy), WRPG (Skyrim), Action RPG (Witcher), MMORPG (WoW), CRPG (Baldur's Gate)</p>
+          <p><strong>Design focus:</strong> Stats, progression, narrative, character builds.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧩 Puzzle</h4>
+          <p>Giải đố, logic.</p>
+          <p><strong>Sub-genres:</strong> Match-3 (Candy Crush), Physics (Portal), Logic (Sudoku), Hidden Object</p>
+          <p><strong>Design focus:</strong> Difficulty curve, "aha moments", elegant solutions.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏗️ Strategy</h4>
+          <p>Tư duy chiến lược, quản lý.</p>
+          <p><strong>Sub-genres:</strong> RTS (StarCraft), Turn-based (Civilization), 4X (Stellaris), Tower Defense, Auto-battler</p>
+          <p><strong>Design focus:</strong> Decision depth, faction balance, snowball control.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚽ Sports & Racing</h4>
+          <p>Mô phỏng thể thao, đua xe.</p>
+          <p><strong>Sub-genres:</strong> FIFA, NBA 2K, Forza, Gran Turismo, Rocket League (hybrid)</p>
+          <p><strong>Design focus:</strong> Physics realism, controls, online multiplayer.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏘️ Simulation</h4>
+          <p>Mô phỏng đời sống/hệ thống.</p>
+          <p><strong>Sub-genres:</strong> Life sim (The Sims), City builder (Cities: Skylines), Farming (Stardew Valley), Tycoon (RollerCoaster)</p>
+          <p><strong>Design focus:</strong> Emergent systems, sandbox freedom.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎴 Card & Board</h4>
+          <p>Bài, board game digital.</p>
+          <p><strong>Sub-genres:</strong> Collectible Card Game/CCG (Hearthstone), Deck-builder (Slay the Spire), Auto-chess</p>
+          <p><strong>Design focus:</strong> Card balance, deck variety, meta evolution.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 MMO</h4>
+          <p>Multiplayer khổng lồ.</p>
+          <p><strong>Sub-genres:</strong> MMORPG (FFXIV), MMO Shooter (Destiny 2), Social MMO (Roblox)</p>
+          <p><strong>Design focus:</strong> Endgame, social loops, economy.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎭 Adventure</h4>
+          <p>Khám phá, story-driven.</p>
+          <p><strong>Sub-genres:</strong> Point &amp; click, Visual Novel, Walking Sim (Firewatch), Interactive Drama (Detroit)</p>
+          <p><strong>Design focus:</strong> Story, pacing, exploration rewards.</p>
+        </div>
+        <div class="card-item">
+          <h4>👻 Horror</h4>
+          <p>Tâm lý kinh dị, sinh tồn.</p>
+          <p><strong>Sub-genres:</strong> Survival Horror (Resident Evil), Psychological (Silent Hill), Jumpscare (FNAF)</p>
+          <p><strong>Design focus:</strong> Tension pacing, atmosphere, resource scarcity.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏆 Fighting</h4>
+          <p>Đối kháng 1v1.</p>
+          <p><strong>Sub-genres:</strong> 2D fighter (Street Fighter), 3D fighter (Tekken), Platform fighter (Smash Bros)</p>
+          <p><strong>Design focus:</strong> Frame data, character balance, combos.</p>
+        </div>
+      </div>
+
+      <h3>3.2. Hybrid Genres - Xu hướng 2026</h3>
+      <p>Game hiện đại thường lai 2-3 thể loại để tạo trải nghiệm độc đáo:</p>
+      <ul>
+        <li><strong>Roguelike Deck-builder:</strong> Slay the Spire = Roguelike + Card</li>
+        <li><strong>Survivors-like:</strong> Vampire Survivors = Action + Auto-shooter + Roguelite</li>
+        <li><strong>Extraction Shooter:</strong> Escape from Tarkov = FPS + Survival + Loot</li>
+        <li><strong>Souls-like:</strong> Elden Ring = Action RPG + Open World + Punishing difficulty</li>
+        <li><strong>Cozy Sim:</strong> Stardew Valley = Farming + RPG + Life sim</li>
+        <li><strong>Boomer Shooter:</strong> DUSK = Classic FPS + Modern QoL</li>
+      </ul>
+
+      <h3>3.3. Phân loại theo Player Count</h3>
+      <table>
+        <thead>
+          <tr><th>Player Count</th><th>Đặc điểm thiết kế</th><th>Ví dụ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Singleplayer</strong></td><td>Story trọng tâm, AI làm đối thủ, pacing tự do</td><td>Witcher, Hollow Knight</td></tr>
+          <tr><td><strong>Co-op (2-4)</strong></td><td>Đồng đội, không có competition, social fun</td><td>It Takes Two, Helldivers 2</td></tr>
+          <tr><td><strong>PvP (1v1, 2v2)</strong></td><td>Balance cực kỳ quan trọng, ranked system</td><td>Street Fighter, StarCraft</td></tr>
+          <tr><td><strong>Team PvP (5v5)</strong></td><td>Role-based, team coordination, meta</td><td>League of Legends, Valorant</td></tr>
+          <tr><td><strong>Battle Royale (60-100)</strong></td><td>Map shrinking, last man standing, RNG loot</td><td>PUBG, Fortnite</td></tr>
+          <tr><td><strong>MMO (1000+)</strong></td><td>Shared persistent world, social, economy</td><td>WoW, Final Fantasy XIV</td></tr>
+        </tbody>
+      </table>
+
+      <h3>3.4. Phân loại theo Phiên chơi</h3>
+      <ul>
+        <li><strong>Hyper-casual (1-3 phút):</strong> Subway Surfers, Helix Jump - phù hợp khi rảnh 30 giây</li>
+        <li><strong>Casual (5-15 phút):</strong> Candy Crush, Clash Royale - giờ giải lao</li>
+        <li><strong>Mid-core (30-60 phút):</strong> League of Legends, Genshin daily - hardcore mobile</li>
+        <li><strong>Hardcore (2-4+ giờ):</strong> RPG, Strategy - cần ngồi PC/Console</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 4: MDA -->
+    <section id="mda" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 4</span>
+        <h2>Framework MDA - Nền Tảng Lý Thuyết</h2>
+      </div>
+
+      <p><strong>MDA</strong> là framework lý thuyết quan trọng nhất trong Game Design - do <em>Robin Hunicke, Marc LeBlanc và Robert Zubek</em> phát triển năm 2004. Mọi game designer chuyên nghiệp đều phải hiểu MDA.</p>
+
+      <h3>4.1. Ba thành phần MDA</h3>
+
+      <div class="grid-3">
+        <div class="card-item" style="border-color: var(--neon-green);">
+          <h4>🔧 M - Mechanics (Cơ chế)</h4>
+          <p><strong>Designer tạo ra</strong></p>
+          <p>Các quy tắc, hệ thống, hành động cơ bản trong game.</p>
+          <p><strong>Ví dụ:</strong> Mario nhảy cao 4 ô, tốc độ 5 unit/s, mất 1 mạng khi chạm enemy.</p>
+        </div>
+        <div class="card-item" style="border-color: var(--secondary);">
+          <h4>⚡ D - Dynamics (Động lực)</h4>
+          <p><strong>Phát sinh khi chơi</strong></p>
+          <p>Hành vi, chiến thuật, tương tác xuất hiện khi cơ chế chạy.</p>
+          <p><strong>Ví dụ:</strong> Player học cách "long jump" combo, tránh enemy bằng cách nhảy chéo.</p>
+        </div>
+        <div class="card-item" style="border-color: var(--accent);">
+          <h4>🎨 A - Aesthetics (Cảm xúc)</h4>
+          <p><strong>Player cảm nhận</strong></p>
+          <p>Trải nghiệm cảm xúc cuối cùng mà player nhận được.</p>
+          <p><strong>Ví dụ:</strong> Niềm vui, sự hồi hộp, cảm giác thành tựu khi vượt qua thử thách.</p>
+        </div>
+      </div>
+
+      <h3>4.2. Hai góc nhìn quan trọng</h3>
+      <div class="formula-box">
+        DESIGNER: Mechanics → Dynamics → Aesthetics<br>
+        PLAYER: Aesthetics ← Dynamics ← Mechanics
+      </div>
+
+      <p>Designer thiết kế từ trái sang phải. Player trải nghiệm từ phải sang trái. <strong>Bài học:</strong> Bắt đầu thiết kế bằng <em>cảm xúc muốn tạo</em>, rồi mới chọn cơ chế phù hợp.</p>
+
+      <h3>4.3. 8 loại Aesthetics (Cảm xúc)</h3>
+      <p>MDA xác định 8 loại cảm xúc cốt lõi mà game có thể tạo ra. Hầu hết game tốt có 2-4 cảm xúc chủ đạo.</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>1. 💫 Sensation - Cảm giác</h4>
+          <p>Cảm giác thị giác/âm thanh/xúc giác. <em>Game tập trung graphics, sound đẹp.</em></p>
+          <p><strong>Ví dụ:</strong> Crysis (đồ họa), Beat Saber (cảm giác đánh)</p>
+        </div>
+        <div class="card-item">
+          <h4>2. 🎬 Fantasy - Tưởng tượng</h4>
+          <p>Trở thành điều mà đời thực không thể. <em>Roleplay, escapism.</em></p>
+          <p><strong>Ví dụ:</strong> Skyrim, GTA, Final Fantasy</p>
+        </div>
+        <div class="card-item">
+          <h4>3. 📖 Narrative - Kể chuyện</h4>
+          <p>Drama, câu chuyện diễn ra. <em>Trải nghiệm cảm xúc cốt truyện.</em></p>
+          <p><strong>Ví dụ:</strong> The Last of Us, Disco Elysium</p>
+        </div>
+        <div class="card-item">
+          <h4>4. 🧠 Challenge - Thử thách</h4>
+          <p>Vượt qua khó khăn. <em>Test kỹ năng, kiên trì.</em></p>
+          <p><strong>Ví dụ:</strong> Dark Souls, Cuphead, Super Meat Boy</p>
+        </div>
+        <div class="card-item">
+          <h4>5. 🤝 Fellowship - Đồng đội</h4>
+          <p>Kết nối xã hội, cảm giác cộng đồng. <em>Multiplayer co-op.</em></p>
+          <p><strong>Ví dụ:</strong> WoW, It Takes Two, Among Us</p>
+        </div>
+        <div class="card-item">
+          <h4>6. 🔍 Discovery - Khám phá</h4>
+          <p>Tìm ra cái mới. <em>Open world, exploration.</em></p>
+          <p><strong>Ví dụ:</strong> Breath of the Wild, No Man's Sky, Subnautica</p>
+        </div>
+        <div class="card-item">
+          <h4>7. 🎭 Expression - Thể hiện bản thân</h4>
+          <p>Sáng tạo, customization. <em>"Đây là tôi".</em></p>
+          <p><strong>Ví dụ:</strong> Minecraft, The Sims, Roblox</p>
+        </div>
+        <div class="card-item">
+          <h4>8. 🎪 Submission - Giải trí thuần</h4>
+          <p>Thư giãn, "tắt não". <em>Casual entertainment.</em></p>
+          <p><strong>Ví dụ:</strong> Candy Crush, Animal Crossing, idle games</p>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="💡 Áp dụng thực tế">
+        Khi pitch ý tưởng game, hãy nói: <em>"Game này tạo aesthetics chính là Discovery + Challenge"</em> thay vì <em>"Game này có map to và combat khó"</em>. Cảm xúc bán game, không phải tính năng.
+      </div>
+
+      <h3>4.4. Ví dụ phân tích MDA - Tetris</h3>
+      <table>
+        <thead><tr><th>Tầng</th><th>Tetris</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mechanics</strong></td><td>Khối tetromino rơi xuống, xoay được, hàng đầy tự xóa, tăng tốc theo level</td></tr>
+          <tr><td><strong>Dynamics</strong></td><td>Player học chừa chỗ cho thanh I, push limit khi tốc độ tăng, panic khi gần đỉnh</td></tr>
+          <tr><td><strong>Aesthetics</strong></td><td>Challenge (kỹ năng) + Sensation (line clear satisfying) + Submission (chơi liên tục)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 5: CORE LOOP -->
+    <section id="coreloop" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 5</span>
+        <h2>Core Loop & Game Mechanics</h2>
+      </div>
+
+      <p><strong>Core Loop</strong> (Vòng lặp cốt lõi) là <em>trái tim của mọi game</em>. Nếu Core Loop không vui, game không vui. Đây là khái niệm <strong>QUAN TRỌNG NHẤT</strong> trong game design.</p>
+
+      <h3>5.1. Core Loop là gì?</h3>
+      <p>Là chuỗi hành động <strong>lặp đi lặp lại</strong> mà player thực hiện <strong>liên tục</strong> trong suốt phiên chơi. Mỗi vòng lặp phải:</p>
+      <ul>
+        <li><strong>Hành động (Action):</strong> Player làm gì đó</li>
+        <li><strong>Phần thưởng (Reward):</strong> Nhận lại điều gì đó</li>
+        <li><strong>Tiến bộ (Progress):</strong> Player tiến bộ hoặc học được điều mới</li>
+      </ul>
+
+      <h3>5.2. Ví dụ Core Loop nổi tiếng</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🍬 Candy Crush</h4>
+          <div class="formula-box" style="font-size: 14px;">
+            Swap kẹo<br>↓<br>Match 3+<br>↓<br>Combo / Special<br>↓<br>Đạt mục tiêu<br>↓<br>Sao + Reward
+          </div>
+        </div>
+        <div class="card-item">
+          <h4>🔫 Call of Duty</h4>
+          <div class="formula-box" style="font-size: 14px;">
+            Spawn<br>↓<br>Tìm enemy<br>↓<br>Engage / Kill<br>↓<br>XP + Score<br>↓<br>Level up weapon
+          </div>
+        </div>
+        <div class="card-item">
+          <h4>🗡️ Diablo (ARPG)</h4>
+          <div class="formula-box" style="font-size: 14px;">
+            Kill monsters<br>↓<br>Loot items<br>↓<br>Equip better gear<br>↓<br>Kill stronger monsters<br>↓<br>Repeat at higher difficulty
+          </div>
+        </div>
+        <div class="card-item">
+          <h4>🚜 Stardew Valley</h4>
+          <div class="formula-box" style="font-size: 14px;">
+            Plant crops<br>↓<br>Wait / Water<br>↓<br>Harvest<br>↓<br>Sell + Buy seeds<br>↓<br>Upgrade tools
+          </div>
+        </div>
+      </div>
+
+      <h3>5.3. Core Loop nhiều tầng</h3>
+      <p>Game phức tạp có nhiều loop lồng nhau:</p>
+
+      <div class="card-item">
+        <h4>Ví dụ: League of Legends</h4>
+        <p><strong>Micro Loop (3-5 giây):</strong> Last hit minion → nhận gold</p>
+        <p><strong>Mid Loop (1-2 phút):</strong> Push lane → kill enemy → win trade</p>
+        <p><strong>Macro Loop (5-10 phút):</strong> Take objective (Dragon, Baron) → snowball</p>
+        <p><strong>Match Loop (30-40 phút):</strong> Win match → climb rank</p>
+        <p><strong>Meta Loop (mùa):</strong> Rank up → unlock skin/reward → next season</p>
+      </div>
+
+      <h3>5.4. Mechanics - Cơ chế cụ thể</h3>
+
+      <p>Mechanics là <strong>các hành động cụ thể</strong> player có thể thực hiện. Phân loại:</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎮 Core Mechanics</h4>
+          <p>Cơ chế chính, dùng &gt; 80% thời gian.</p>
+          <p><strong>Ví dụ:</strong> Mario - chạy &amp; nhảy. FPS - di chuyển &amp; bắn. RTS - build &amp; command.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Secondary Mechanics</h4>
+          <p>Cơ chế phụ, bổ sung depth.</p>
+          <p><strong>Ví dụ:</strong> Mario - đập gạch, gom đồng xu. FPS - reload, grenade, melee.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚡ Special Mechanics</h4>
+          <p>Cơ chế đặc biệt, ít dùng nhưng quan trọng.</p>
+          <p><strong>Ví dụ:</strong> Power-ups, ultimate abilities, vehicle sections.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎪 Meta Mechanics</h4>
+          <p>Ngoài gameplay - progression, customization.</p>
+          <p><strong>Ví dụ:</strong> Skill tree, inventory, crafting.</p>
+        </div>
+      </div>
+
+      <h3>5.5. Đánh giá Core Loop tốt</h3>
+      <div class="tip-box" data-title="✅ Checklist Core Loop tốt">
+        <ul>
+          <li><strong>Đơn giản:</strong> Giải thích trong 1 câu</li>
+          <li><strong>Có depth:</strong> Player giỏi hơn theo thời gian</li>
+          <li><strong>Phần thưởng tức thời + dài hạn:</strong> Vừa cảm giác mỗi vòng, vừa progress lớn</li>
+          <li><strong>Có variety:</strong> Không nhàm chán sau 100 lần</li>
+          <li><strong>Tự lựa chọn:</strong> Player có thể tiếp cận theo nhiều cách</li>
+          <li><strong>Tốc độ phù hợp:</strong> Loop không quá ngắn (nhàm) hay quá dài (mệt)</li>
+        </ul>
+      </div>
+
+      <h3>5.6. The "Core Pillars" - Trụ cột thiết kế</h3>
+      <p>Mỗi game nên có <strong>3-5 Core Pillars</strong> - các giá trị thiết kế then chốt mà mọi quyết định phải phù hợp.</p>
+
+      <div class="card-item">
+        <h4>Ví dụ Core Pillars của Dark Souls:</h4>
+        <ol>
+          <li><strong>Methodical Combat:</strong> Mỗi đòn đánh có trọng lượng, cần tính toán</li>
+          <li><strong>Punishing but Fair:</strong> Player chết nhiều, nhưng luôn vì lỗi của họ</li>
+          <li><strong>Interconnected World:</strong> Map liên kết, không cần fast travel</li>
+          <li><strong>Storytelling via Environment:</strong> Lore qua đồ vật, không cutscene</li>
+        </ol>
+        <p><em>Mọi tính năng mới đều phải pass qua 4 pillar này. Easy mode? KHÔNG vì vi phạm "Punishing".</em></p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 6: GAME FEEL -->
+    <section id="gamefeel" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 6</span>
+        <h2>Game Feel & Juiciness</h2>
+      </div>
+
+      <p><strong>Game Feel</strong> (hay "Juice") là sự khác biệt giữa game "ok" và game "wow!". Đó là <em>cảm giác vật lý</em> khi tương tác với game - thứ khó định nghĩa nhưng dễ nhận biết.</p>
+
+      <div class="quote-box" data-title="💬 Câu nói nổi tiếng">
+        "The juiciness is the icing on the cake. But you cannot have cake without icing."<br>
+        <em>— Jan Willem Nijman (Vlambeer - Nuclear Throne)</em>
+      </div>
+
+      <h3>6.1. Game Feel gồm những gì?</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>👆 Input Response</h4>
+          <p>Player nhấn nút → game phản hồi <strong>NGAY LẬP TỨC</strong>. Độ trễ &gt; 50ms = cảm giác "lag".</p>
+          <ul>
+            <li>Input buffering (lưu input cho frame tiếp)</li>
+            <li>Coyote time (cho phép nhảy sau khi rời edge 0.1s)</li>
+            <li>Jump cancelling</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>📷 Camera Movement</h4>
+          <p>Camera "kể chuyện" về hành động.</p>
+          <ul>
+            <li>Screen shake khi explosion</li>
+            <li>Zoom in khi finishing move</li>
+            <li>Camera follow with smoothing</li>
+            <li>Tilt camera khi nhân vật chạy nhanh</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>💥 Visual Effects</h4>
+          <p>Phản hồi thị giác.</p>
+          <ul>
+            <li>Particle effects (bụi, lửa, ma thuật)</li>
+            <li>Hit flash (nháy trắng khi trúng đòn)</li>
+            <li>Screen flash khi quan trọng</li>
+            <li>Trail effect cho weapon swings</li>
+            <li>Damage numbers bay lên</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🔊 Sound Design</h4>
+          <p>Âm thanh = 50% game feel.</p>
+          <ul>
+            <li>Sound khác nhau cho từng surface</li>
+            <li>Layered sound (footstep + cloth + weapon)</li>
+            <li>Pitch variation cho mỗi action</li>
+            <li>Spatial 3D audio</li>
+            <li>Reactive music</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>⏸️ Hit Pause / Hit Stop</h4>
+          <p>Tạm dừng game 50-200ms khi va chạm mạnh → cảm giác "weight" và impact.</p>
+          <p><em>Game không có: cảm giác như đập vào không khí. Có: cảm giác như đập vào tường.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📳 Controller Haptics</h4>
+          <p>Rung phản hồi tinh tế.</p>
+          <ul>
+            <li>Rung mạnh khi explosion</li>
+            <li>Rung nhẹ khi walk vs heavy khi sprint</li>
+            <li>Adaptive triggers (PS5)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>6.2. Case study: Vampire Survivors</h3>
+      <p>Game indie bán 5+ triệu copy với art tệ. Bí mật? <strong>Game Feel cực tốt:</strong></p>
+      <ul>
+        <li>Hàng trăm số damage bay lên cùng lúc - dopamine rush</li>
+        <li>Screen shake nhẹ liên tục - cảm giác "powerful"</li>
+        <li>Sound của weapon ngắn, snappy, layered nhiều</li>
+        <li>Mỗi level up có animation pause + flash + sound</li>
+        <li>Pickup XP gem có tiếng "ting" satisfying</li>
+      </ul>
+
+      <h3>6.3. The "Juice it or lose it" Principle</h3>
+      <p>Pong cơ bản: 2 thanh + 1 bóng. Khô khan? Thêm juice sẽ thay đổi:</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>❌ Pong "khô"</h4>
+          <ul>
+            <li>Bóng đập vào tường - không gì xảy ra</li>
+            <li>Player ghi điểm - chỉ số thay đổi</li>
+            <li>Im lặng hoàn toàn</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>✅ Pong "juicy"</h4>
+          <ul>
+            <li>Bóng đập tường: screen shake, particle bay ra, tường nhấp nháy</li>
+            <li>Player ghi điểm: zoom in, slow motion, fireworks, fanfare music</li>
+            <li>Mỗi hit có pitch tăng dần</li>
+            <li>Bóng kéo trail màu cầu vồng khi tốc độ cao</li>
+            <li>Background phản ứng theo nhịp</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>6.4. 14 Kỹ thuật Game Feel cụ thể</h3>
+      <ol>
+        <li><strong>Squash &amp; Stretch:</strong> Object biến dạng khi va chạm</li>
+        <li><strong>Anticipation:</strong> Animation chuẩn bị trước action</li>
+        <li><strong>Follow-through:</strong> Animation kéo dài sau action</li>
+        <li><strong>Easing:</strong> Movement không tuyến tính (ease-in/out)</li>
+        <li><strong>Hit Stop:</strong> Pause khi va chạm</li>
+        <li><strong>Screen Shake:</strong> Camera rung</li>
+        <li><strong>Chromatic Aberration:</strong> Tách màu khi mạnh</li>
+        <li><strong>Particle Burst:</strong> Hạt bụi/lửa</li>
+        <li><strong>Damage Numbers:</strong> Số bay lên</li>
+        <li><strong>Sound Pitch Variation:</strong> Tránh lặp</li>
+        <li><strong>Speed Lines:</strong> Đường tốc độ</li>
+        <li><strong>Zoom Punch:</strong> Camera giật về phía action</li>
+        <li><strong>Slow Motion:</strong> Khoảnh khắc đặc biệt</li>
+        <li><strong>Knockback:</strong> Đối tượng bị đẩy lùi</li>
+      </ol>
+
+      <div class="tip-box" data-title="🎓 Bài tập thực hành">
+        Mở Unity/Godot, làm 1 game đơn giản (clone Asteroids). Chia làm 2 version: <strong>không juice</strong> và <strong>juiced</strong>. Cho 10 người chơi thử - 100% sẽ chọn version juiced. Đây là bài học khắc cốt ghi tâm.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 7: LEVEL DESIGN -->
+    <section id="level" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 7</span>
+        <h2>Level Design - Thiết Kế Màn Chơi</h2>
+      </div>
+
+      <p>Level Design là <strong>nghệ thuật xây dựng không gian chơi</strong> để dẫn dắt cảm xúc và quyết định của player. Đây là vị trí có nhu cầu cao thứ 2 trong ngành (sau System Designer).</p>
+
+      <h3>7.1. Mục tiêu của Level Design</h3>
+      <ul>
+        <li><strong>Dẫn dắt</strong> player qua trải nghiệm</li>
+        <li><strong>Dạy</strong> mechanics mới</li>
+        <li><strong>Thử thách</strong> kỹ năng đã học</li>
+        <li><strong>Pacing</strong> cảm xúc (căng - thư giãn - căng)</li>
+        <li><strong>Tạo memory moments</strong></li>
+        <li><strong>Reward</strong> exploration</li>
+      </ul>
+
+      <h3>7.2. Quy tắc vàng: World 1-1 của Super Mario</h3>
+      <p>Đây là 30 giây thiết kế hoàn hảo nhất lịch sử game. Phân tích kỹ:</p>
+
+      <div class="card-item">
+        <h4>🍄 Phân tích từng giây của Mario 1-1</h4>
+        <ol>
+          <li><strong>0-3s:</strong> Mario đứng giữa màn hình, không gian trống. Player tự thử nút - học di chuyển.</li>
+          <li><strong>3-5s:</strong> Goomba (enemy đầu tiên) xuất hiện từ phải. Player tự nhiên muốn tránh.</li>
+          <li><strong>5-7s:</strong> Block ? phía trên buộc player nhảy → tìm thấy mushroom.</li>
+          <li><strong>7-10s:</strong> Mushroom bay về phía Mario - 80% sẽ chạm phải → học "powerup is good".</li>
+          <li><strong>10-15s:</strong> Pit (hố) đầu tiên - dạy timing nhảy.</li>
+          <li><strong>15-20s:</strong> Goombas thành đàn - apply kỹ năng đã học.</li>
+          <li><strong>20-25s:</strong> Pipe + Goomba trên đầu pipe - thêm depth.</li>
+        </ol>
+        <p><strong>Bài học:</strong> Mario 1-1 dạy 100% mechanics của game KHÔNG cần text. Đây là "show don't tell" hoàn hảo.</p>
+      </div>
+
+      <h3>7.3. Các nguyên tắc Level Design</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🎯 Affordance</h4>
+          <p>Object trông như chức năng của nó.</p>
+          <p><strong>Ví dụ:</strong> Cửa có nắm = mở được. Mép vàng = leo được. Crate trông gỗ = đập được.</p>
+        </div>
+        <div class="card-item">
+          <h4>🧭 Wayfinding</h4>
+          <p>Dẫn đường mà không cần GPS.</p>
+          <p><strong>Kỹ thuật:</strong> Ánh sáng dẫn đường, màu sắc tương phản, landmark cao, camera hint.</p>
+        </div>
+        <div class="card-item">
+          <h4>🍞 Breadcrumbing</h4>
+          <p>Thưởng nhỏ liên tục để player muốn đi tiếp.</p>
+          <p><strong>Ví dụ:</strong> Đồng xu rải đường, ammo trước boss, dialogue trigger khi đi qua.</p>
+        </div>
+        <div class="card-item">
+          <h4>📏 The 30-30-30 Rule</h4>
+          <p>30% mới (mechanic mới) + 30% thử thách (mechanic cũ ở độ khó cao) + 30% nghỉ (let player breathe). 10% surprise.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌊 Pacing &amp; Rhythm</h4>
+          <p>Đan xen căng thẳng và thư giãn.</p>
+          <p>Combat → Puzzle → Story → Combat → Boss → Cutscene → Quiet exploration → Combat.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔁 Loop &amp; Vista</h4>
+          <p>Tạo những "khoảnh khắc dừng" để player ngắm cảnh, hít thở, ghi nhớ.</p>
+          <p><strong>Ví dụ:</strong> Mỗi đỉnh núi trong Breath of the Wild có vista đẹp.</p>
+        </div>
+      </div>
+
+      <h3>7.4. Các kỹ thuật Level Design nâng cao</h3>
+
+      <h4>Three-Lane Combat Design (Halo)</h4>
+      <p>Combat space có 3 đường tiếp cận - player luôn có 3 lựa chọn chiến thuật:</p>
+      <ul>
+        <li>Đường thẳng (rush)</li>
+        <li>Đường flank trái (sneaky)</li>
+        <li>Đường cao (sniper position)</li>
+      </ul>
+
+      <h4>Conker's Loop (Backtracking thông minh)</h4>
+      <p>Map thiết kế hình tròn → player kết thúc gần điểm xuất phát mà không feel lặp lại. Tốt cho Metroidvania.</p>
+
+      <h4>Funnel Design</h4>
+      <p>Hành lang rộng → hẹp → mở rộng. Tạo cảm giác lo lắng (hẹp) → relief (rộng).</p>
+
+      <h4>Foreshadowing</h4>
+      <p>Cho player thấy area sau qua window/skybox trước khi đến. Tạo anticipation.</p>
+
+      <h4>Risk vs Reward</h4>
+      <p>Path ngắn an toàn ít loot. Path xa nguy hiểm nhiều loot. Player tự chọn.</p>
+
+      <h3>7.5. Quy trình Level Design</h3>
+      <div class="steps">
+        <div class="step"><h4>Concept &amp; Story Beat</h4><p>Định nghĩa: Level này dạy/test cái gì? Cảm xúc chủ đạo?</p></div>
+        <div class="step"><h4>Bubble Diagram</h4><p>Vẽ các "khu vực" như bong bóng, nối với nhau bằng đường. Chưa lo hình dạng cụ thể.</p></div>
+        <div class="step"><h4>2D Top-down Sketch</h4><p>Vẽ map 2D với mũi tên đi, ký hiệu enemy/pickup/checkpoint.</p></div>
+        <div class="step"><h4>Greybox / Blockout</h4><p>Dựng level trong engine bằng khối hộp xám đơn giản. KHÔNG art. Focus gameplay.</p></div>
+        <div class="step"><h4>Playtest Greybox</h4><p>Cho 5-10 người chơi. Quan sát kỹ. Ghi notes mỗi giây.</p></div>
+        <div class="step"><h4>Iterate</h4><p>Sửa, thử, sửa. 80% thời gian là iterate.</p></div>
+        <div class="step"><h4>Art Pass</h4><p>Khi gameplay đã ổn, mới đến Environment Artist làm đẹp.</p></div>
+        <div class="step"><h4>Polish &amp; Optimization</h4><p>VFX, audio, performance.</p></div>
+      </div>
+
+      <div class="warning-box" data-title="⚠️ Lỗi phổ biến của người mới">
+        <strong>Đừng làm art trước gameplay!</strong> 90% người mới sai lầm này. Greybox phải vui đã, art chỉ là cherry on top. Một level greybox vui sẽ vui hơn 100 lần khi có art. Một level đẹp nhưng gameplay tệ vẫn tệ.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 8: CHARACTER DESIGN -->
+    <section id="character" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 8</span>
+        <h2>Character Design</h2>
+      </div>
+
+      <p>Character Design (góc nhìn Game Designer) không chỉ là <em>vẽ đẹp</em> - mà là thiết kế <strong>identity</strong>, <strong>moveset</strong>, và <strong>role</strong> sao cho player gắn bó và nhớ mãi.</p>
+
+      <h3>8.1. Visual Character Design Principles</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>👁️ Readability</h4>
+          <p>Player nhận ra character ngay từ silhouette. Test: che color, xem có còn nhận ra không?</p>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Color Hierarchy</h4>
+          <p>Màu mạnh ở phần quan trọng nhất (mặt, vũ khí). Tránh đều màu khắp body.</p>
+        </div>
+        <div class="card-item">
+          <h4>📐 Shape Language</h4>
+          <p>Hình tròn = thân thiện. Vuông = vững chắc. Tam giác = nguy hiểm/quyết đoán.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 Proportions</h4>
+          <p>Cường điệu giúp dễ nhớ. Mario đầu to. Goku tóc dựng đứng. Master Chief mũ to.</p>
+        </div>
+        <div class="card-item">
+          <h4>🏷️ Personality at a glance</h4>
+          <p>Mỗi character cần "1 thuộc tính nổi bật" - posture, costume detail, signature item.</p>
+        </div>
+        <div class="card-item">
+          <h4>♿ Accessibility</h4>
+          <p>Color blind friendly. Phân biệt character bằng SHAPE + COLOR (không chỉ color).</p>
+        </div>
+      </div>
+
+      <h3>8.2. Functional Character Design (Game Design view)</h3>
+
+      <div class="card-item">
+        <h4>📋 Character Design Sheet (Designer)</h4>
+        <p><strong>Identity:</strong></p>
+        <ul>
+          <li>Name, age, background</li>
+          <li>Personality (1-2 traits chính)</li>
+          <li>Motivation (Want vs Need)</li>
+          <li>Voice &amp; speaking style</li>
+        </ul>
+        <p><strong>Gameplay Role:</strong></p>
+        <ul>
+          <li>Class / Role (Tank, DPS, Support)</li>
+          <li>Playstyle (Aggressive, Defensive, Tricky)</li>
+          <li>Skill ceiling (Low/Med/High)</li>
+          <li>Counter &amp; Synergy với các character khác</li>
+        </ul>
+        <p><strong>Moveset:</strong></p>
+        <ul>
+          <li>Basic attack</li>
+          <li>3-5 skills/abilities với cooldown</li>
+          <li>Ultimate / Special</li>
+          <li>Passive trait</li>
+        </ul>
+        <p><strong>Stats Baseline:</strong></p>
+        <ul>
+          <li>HP, ATK, DEF, SPD</li>
+          <li>Damage type (physical/magical/true)</li>
+          <li>Range (melee/mid/long)</li>
+        </ul>
+      </div>
+
+      <h3>8.3. Archetypes - Mẫu nhân vật phổ biến</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>🛡️ Tank</h4>
+          <p>HP cao, DEF cao, DMG thấp. Chặn cho team.</p>
+          <p><em>Ví dụ: Reinhardt (OW), Garen (LoL), Doomslayer</em></p>
+        </div>
+        <div class="card-item">
+          <h4>⚔️ DPS Melee</h4>
+          <p>Cận chiến, damage cao, fragile.</p>
+          <p><em>Ví dụ: Yasuo, Genji, Bayonetta</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🏹 DPS Ranged</h4>
+          <p>Xa, kite, positioning.</p>
+          <p><em>Ví dụ: Jhin, Hanzo, Sniper Elite</em></p>
+        </div>
+        <div class="card-item">
+          <h4>💚 Healer / Support</h4>
+          <p>Hồi máu, buff đồng đội.</p>
+          <p><em>Ví dụ: Mercy, Soraka, Aerith</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌀 Mage / Caster</h4>
+          <p>Phép, AoE, control.</p>
+          <p><em>Ví dụ: Lux, Zhongli, Gandalf</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🥷 Assassin</h4>
+          <p>Burst damage, mobility, squishy.</p>
+          <p><em>Ví dụ: Zed, Reaper, Ezio</em></p>
+        </div>
+      </div>
+
+      <h3>8.4. Character Progression Design</h3>
+      <p>Character không thể đứng yên. Phải có progression:</p>
+      <ul>
+        <li><strong>Linear leveling:</strong> Level 1 → 100, stats tăng theo công thức</li>
+        <li><strong>Skill tree:</strong> Player chọn build (Path of Exile - 2000+ nodes)</li>
+        <li><strong>Class change:</strong> FFV, FF Tactics - chuyển job</li>
+        <li><strong>Gear-based:</strong> Diablo - character mạnh nhờ items</li>
+        <li><strong>Constellation/Ascension:</strong> Genshin Impact - dupes mở khóa power</li>
+      </ul>
+
+      <h3>8.5. Companion Characters &amp; NPCs</h3>
+      <p>NPC tốt = world cảm thấy sống. Yếu tố quan trọng:</p>
+      <ul>
+        <li><strong>Memorable design:</strong> Mỗi NPC quan trọng phải có 1 hook visual</li>
+        <li><strong>Voice acting / typing style:</strong> Mỗi character có "giọng" riêng</li>
+        <li><strong>Routine/Schedule:</strong> NPC làm việc khác nhau theo giờ (Stardew Valley)</li>
+        <li><strong>Relationship system:</strong> Player có thể build mối quan hệ (Persona, Stardew)</li>
+        <li><strong>Reactive dialogue:</strong> NPC phản ứng với hành động player (Witcher, Disco Elysium)</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 9: NARRATIVE -->
+    <section id="narrative" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 9</span>
+        <h2>Narrative & Storytelling</h2>
+      </div>
+
+      <p>Kể chuyện trong game KHÁC kể chuyện trong phim/sách. Game có <strong>tương tác</strong> - và đây vừa là sức mạnh, vừa là thử thách lớn nhất.</p>
+
+      <h3>9.1. Ba cách kể chuyện trong game</h3>
+
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>📖 Explicit Narrative</h4>
+          <p>Kể trực tiếp qua cutscene, dialogue, text.</p>
+          <p><strong>Ưu:</strong> Kiểm soát hoàn toàn, dễ truyền cảm xúc.</p>
+          <p><strong>Nhược:</strong> Cắt rời gameplay, "ludonarrative dissonance".</p>
+          <p><em>Ví dụ: Final Fantasy, Metal Gear</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌍 Environmental Storytelling</h4>
+          <p>Kể qua bối cảnh, đồ vật, props.</p>
+          <p><strong>Ưu:</strong> Không cắt rời, sâu hơn.</p>
+          <p><strong>Nhược:</strong> Khó với người không quan sát.</p>
+          <p><em>Ví dụ: Dark Souls, BioShock, Half-Life</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎮 Emergent Narrative</h4>
+          <p>Câu chuyện sinh ra từ gameplay.</p>
+          <p><strong>Ưu:</strong> Mỗi player có "câu chuyện riêng".</p>
+          <p><strong>Nhược:</strong> Khó thiết kế, không đảm bảo.</p>
+          <p><em>Ví dụ: Minecraft, Dwarf Fortress, RimWorld</em></p>
+        </div>
+      </div>
+
+      <h3>9.2. Ludonarrative Dissonance</h3>
+      <div class="warning-box" data-title="⚠️ Khái niệm quan trọng">
+        <strong>Ludonarrative Dissonance</strong> là khi <em>cốt truyện và gameplay mâu thuẫn nhau</em>.<br><br>
+        <strong>Ví dụ điển hình:</strong> Uncharted - Nathan Drake là người tử tế trong cutscene, nhưng trong gameplay giết hàng trăm người không chớp mắt.<br><br>
+        <strong>Cách tránh:</strong> Đồng bộ tone gameplay với narrative. Nếu nhân vật là pacifist, đừng cho gameplay là mass murderer.
+      </div>
+
+      <h3>9.3. Hero's Journey trong Game</h3>
+      <p>Cấu trúc Hero's Journey của Joseph Campbell áp dụng cho 80% game:</p>
+
+      <ol>
+        <li><strong>Ordinary World:</strong> Hyrule yên bình - làng Mario</li>
+        <li><strong>Call to Adventure:</strong> Princess bị bắt cóc</li>
+        <li><strong>Refusal of Call:</strong> Player có thể từ chối (rarely)</li>
+        <li><strong>Meeting Mentor:</strong> Old man dạy basics (Zelda)</li>
+        <li><strong>Crossing Threshold:</strong> Rời nhà, vào dungeon đầu</li>
+        <li><strong>Tests, Allies, Enemies:</strong> Toàn bộ middle game</li>
+        <li><strong>Approach Inmost Cave:</strong> Cuối game, chuẩn bị</li>
+        <li><strong>Ordeal:</strong> Boss khó nhất, mất 1 thứ quan trọng</li>
+        <li><strong>Reward:</strong> Lấy được sword/key cuối</li>
+        <li><strong>Road Back:</strong> Phải về home với power mới</li>
+        <li><strong>Resurrection:</strong> Final boss</li>
+        <li><strong>Return with Elixir:</strong> Win, save world</li>
+      </ol>
+
+      <h3>9.4. Branching Narrative - Câu chuyện phân nhánh</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌳 True Branching</h4>
+          <p>Player chọn → câu chuyện thật sự rẽ khác.</p>
+          <p><strong>Khó khăn:</strong> Tốn budget cực lớn (mỗi nhánh phải làm content). Thường có 3-5 endings.</p>
+          <p><em>Ví dụ: Detroit Become Human, Until Dawn, Disco Elysium</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🍃 Illusion of Choice</h4>
+          <p>Player tưởng có choice, nhưng kết quả tương tự.</p>
+          <p><strong>Ưu:</strong> Budget hợp lý, player vẫn cảm thấy agency.</p>
+          <p><em>Ví dụ: Mass Effect (95% cảm xúc, 5% kết quả thực)</em></p>
+        </div>
+      </div>
+
+      <h3>9.5. Worldbuilding</h3>
+      <p>Thế giới game cần có <strong>"iceberg principle"</strong> - 10% hiện ra, 90% chìm dưới (lore sâu).</p>
+
+      <ul>
+        <li><strong>Lịch sử:</strong> Đã có gì xảy ra trước khi game bắt đầu? Tại sao thế giới như hiện tại?</li>
+        <li><strong>Địa lý:</strong> Map có hợp lý? Climate, biome khác nhau?</li>
+        <li><strong>Văn hóa:</strong> Các phe phái, tôn giáo, ngôn ngữ</li>
+        <li><strong>Kinh tế:</strong> Tiền là gì? Trade routes? Tài nguyên?</li>
+        <li><strong>Magic/Tech system:</strong> Luật chơi (Sanderson's laws: hard magic vs soft magic)</li>
+        <li><strong>Đời thường:</strong> Người dân làm gì? Ăn gì? Vui chơi gì?</li>
+      </ul>
+
+      <h3>9.6. Show Don't Tell - The Game Way</h3>
+      <p>Game tốt KỂ qua hành động, không qua exposition:</p>
+
+      <div class="card-item">
+        <h4>Ví dụ: God of War (2018)</h4>
+        <p><strong>❌ Cách tệ:</strong> "Kratos đã giết vợ con mình trong cơn điên, giờ anh ấy hối hận"</p>
+        <p><strong>✅ Cách hay:</strong> Player thấy Kratos cố kiềm chế khi Atreus tức giận. Mỗi lần Atreus đề cập mẹ, Kratos im lặng nhìn xa xăm. Khi Atreus hỏi về quá khứ, Kratos đổi chủ đề.</p>
+      </div>
+
+      <h3>9.7. Tools cho Narrative Designer</h3>
+      <ul>
+        <li><strong>Twine:</strong> Free, viết branching narrative nhanh</li>
+        <li><strong>Ink (Inkle):</strong> Scripting language cho dialogue (dùng trong 80 Days, Heaven's Vault)</li>
+        <li><strong>Yarn Spinner:</strong> Tích hợp Unity, dùng trong Night in the Woods</li>
+        <li><strong>articy:draft:</strong> Pro tool, có price tag</li>
+        <li><strong>Celtx / Final Draft:</strong> Viết script truyền thống</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 10: UI/UX -->
+    <section id="uiux" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 10</span>
+        <h2>UI/UX Cho Game</h2>
+      </div>
+
+      <p>UI tệ có thể phá hỏng game hay. UI tốt vô hình - player không nhận ra nhưng cảm thấy mọi thứ "natural". Đây là 1 art form riêng.</p>
+
+      <h3>10.1. 4 Loại UI trong Game</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>1. Non-Diegetic UI</h4>
+          <p>UI tách rời world, chỉ player thấy.</p>
+          <p><strong>Ví dụ:</strong> Health bar trên cùng màn hình, mini-map góc, score</p>
+          <p><strong>Ưu:</strong> Rõ ràng, dễ đọc.</p>
+          <p><strong>Nhược:</strong> Phá vỡ immersion.</p>
+        </div>
+        <div class="card-item">
+          <h4>2. Diegetic UI</h4>
+          <p>UI tồn tại trong world, nhân vật cũng thấy.</p>
+          <p><strong>Ví dụ:</strong> Health trên áo Dead Space, đồng hồ trên cổ tay nhân vật.</p>
+          <p><strong>Ưu:</strong> Immersive cực đỉnh.</p>
+          <p><strong>Nhược:</strong> Khó thiết kế, đôi khi khó đọc.</p>
+        </div>
+        <div class="card-item">
+          <h4>3. Spatial UI</h4>
+          <p>UI trong 3D space nhưng không phải vật thực.</p>
+          <p><strong>Ví dụ:</strong> Nameplate trên đầu enemy, marker quest 3D, damage numbers</p>
+        </div>
+        <div class="card-item">
+          <h4>4. Meta UI</h4>
+          <p>UI thể hiện trạng thái nhân vật.</p>
+          <p><strong>Ví dụ:</strong> Màn hình đỏ khi máu thấp (Call of Duty), blur khi say.</p>
+        </div>
+      </div>
+
+      <h3>10.2. Nguyên tắc UX trong Game</h3>
+      <div class="tip-box" data-title="💡 10 Nguyên tắc vàng">
+        <ol>
+          <li><strong>Information Hierarchy:</strong> Quan trọng nhất to nhất, ở vị trí mắt nhìn đầu tiên</li>
+          <li><strong>Consistency:</strong> Cùng action = cùng button. Cùng concept = cùng icon.</li>
+          <li><strong>Feedback:</strong> Mọi action phải có phản hồi (visual + audio + haptic)</li>
+          <li><strong>Affordance:</strong> Button trông như button (có border, shadow). Clickable thấy được.</li>
+          <li><strong>Discoverability:</strong> Tính năng quan trọng dễ tìm. Không giấu trong menu sâu.</li>
+          <li><strong>Forgiveness:</strong> Cho undo. Confirm trước action không thể hoàn tác.</li>
+          <li><strong>Accessibility:</strong> Color blind mode, subtitle, font size, control remap</li>
+          <li><strong>Performance:</strong> UI mượt 60fps. Lag UI = game cảm thấy lag.</li>
+          <li><strong>Onboarding:</strong> Dạy từ từ. Đừng dump 20 tooltips trong 1 phút.</li>
+          <li><strong>Goal-driven:</strong> UI luôn cho player biết "Tôi nên làm gì tiếp theo?"</li>
+        </ol>
+      </div>
+
+      <h3>10.3. HUD Design (Heads-Up Display)</h3>
+      <p>HUD = info hiển thị suốt gameplay. Phải:</p>
+      <ul>
+        <li><strong>Tối thiểu cần thiết:</strong> Hiển thị TỐI THIỂU cần thiết. Hide khi không cần.</li>
+        <li><strong>Vùng an toàn:</strong> Đặt UI ở corner (safe zone) - không che gameplay</li>
+        <li><strong>Đối xứng/cân bằng:</strong> 4 corners thường được dùng cho 4 loại info</li>
+        <li><strong>Context-sensitive:</strong> Reload prompt chỉ hiện khi cần</li>
+        <li><strong>Color coding:</strong> Đỏ = nguy hiểm, xanh = an toàn, vàng = warning</li>
+      </ul>
+
+      <h3>10.4. Menu Design</h3>
+      <p>Menu game thường gồm:</p>
+      <ol>
+        <li><strong>Main Menu:</strong> Play, Continue, Settings, Quit. Càng ít option càng tốt.</li>
+        <li><strong>Pause Menu:</strong> Resume ở vị trí dễ nhấn (default focus). Tránh khoá player.</li>
+        <li><strong>Inventory:</strong> Grid layout, drag-drop, sort/filter, tooltip kỹ.</li>
+        <li><strong>Map:</strong> Zoom, fast travel, marker, fog of war.</li>
+        <li><strong>Skill tree:</strong> Visual hierarchy, preview effect, requirements clear.</li>
+        <li><strong>Shop:</strong> Compare with current gear, total cost visible, confirm purchase.</li>
+      </ol>
+
+      <h3>10.5. Mobile UI - Đặc thù</h3>
+      <ul>
+        <li><strong>Thumb zones:</strong> Đặt button quan trọng trong vùng ngón cái chạm dễ (corner dưới)</li>
+        <li><strong>Touch target ≥ 44px:</strong> Đủ to để chạm chính xác</li>
+        <li><strong>Avoid double-tap:</strong> Tap hold đôi khi nhầm với scroll</li>
+        <li><strong>Portrait vs Landscape:</strong> Một số game support cả 2 - UI phải responsive</li>
+        <li><strong>Limited screen real estate:</strong> Mobile screen nhỏ - giảm UI tối đa</li>
+      </ul>
+
+      <h3>10.6. Onboarding - Dạy player chơi</h3>
+      <div class="card-item">
+        <h4>Quy tắc Onboarding hiện đại</h4>
+        <ul>
+          <li><strong>Just-in-time tutorial:</strong> Dạy khi cần, không trước</li>
+          <li><strong>Contextual hint:</strong> Hint xuất hiện khi player gặp đúng tình huống</li>
+          <li><strong>Show don't tell:</strong> Cho thấy bằng animation, không text dài</li>
+          <li><strong>Safe sandbox:</strong> Đầu game cho player thử mà không penalty</li>
+          <li><strong>Optional skip:</strong> Veteran player có thể skip tutorial</li>
+          <li><strong>Layered complexity:</strong> Mỗi 30 phút mới giới thiệu 1 mechanic mới</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 11: BALANCE -->
+    <section id="balance" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 11</span>
+        <h2>Game Balancing - Cân Bằng Game</h2>
+      </div>
+
+      <p>Balance là <strong>khoa học và nghệ thuật</strong> của game design. Đây là kỹ năng phân biệt Senior Designer với Junior. Cần toán giỏi, Excel pro, và rất nhiều iteration.</p>
+
+      <h3>11.1. Các loại Balance</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>⚖️ Symmetric Balance</h4>
+          <p>2 phe có units/abilities y hệt nhau. Khác biệt chỉ ở kỹ năng player.</p>
+          <p><strong>Ví dụ:</strong> Chess, Pong, hầu hết Fighting games</p>
+        </div>
+        <div class="card-item">
+          <h4>⚖️ Asymmetric Balance</h4>
+          <p>Mỗi phe có units/abilities khác nhau nhưng "equal in power".</p>
+          <p><strong>Ví dụ:</strong> StarCraft (Terran vs Zerg vs Protoss), Dead by Daylight</p>
+          <p><em>Khó hơn nhưng thú vị hơn nhiều.</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📈 Progressive Balance</h4>
+          <p>Difficulty tăng theo skill player (Dynamic Difficulty Adjustment).</p>
+          <p><strong>Ví dụ:</strong> Resident Evil 4, Left 4 Dead (AI Director)</p>
+        </div>
+        <div class="card-item">
+          <h4>🎲 Stochastic Balance</h4>
+          <p>Cân bằng qua xác suất - RNG làm equalizer.</p>
+          <p><strong>Ví dụ:</strong> Mario Kart (item phụ thuộc rank), Card games</p>
+        </div>
+      </div>
+
+      <h3>11.2. Counter Triangle (Rock-Paper-Scissors)</h3>
+      <p>Mọi unit/character nên có:</p>
+      <ul>
+        <li><strong>1 thứ nó counter (mạnh hơn)</strong></li>
+        <li><strong>1 thứ counter nó (yếu hơn)</strong></li>
+        <li><strong>Vài thứ neutral</strong></li>
+      </ul>
+
+      <div class="card-item">
+        <h4>Ví dụ: StarCraft</h4>
+        <ul>
+          <li><strong>Marine</strong> (ranged) → Counter <strong>Zerglings</strong> (melee)</li>
+          <li><strong>Zerglings</strong> → Counter <strong>Workers/Tanks</strong></li>
+          <li><strong>Siege Tank</strong> → Counter <strong>Marines</strong></li>
+        </ul>
+      </div>
+
+      <h3>11.3. Toán học cho Game Designer</h3>
+
+      <h4>Damage Formula cơ bản</h4>
+      <div class="code-block">// Simple
+damage = attack - defense
+
+// Multiplicative (tốt hơn cho scaling)
+damage = attack * (100 / (100 + defense))
+
+// Pokemon-style (phức tạp hơn)
+damage = ((2 * level / 5 + 2) * power * attack / defense) / 50 + 2
+       * STAB * type_effectiveness * critical * random(0.85-1.0)</div>
+
+      <h4>HP &amp; TTK (Time To Kill)</h4>
+      <div class="formula-box">
+        TTK = HP / DPS<br>
+        DPS = (damage_per_shot × shots_per_second) × accuracy
+      </div>
+      <p>Designer phải quyết: TTK của game là bao nhiêu?</p>
+      <ul>
+        <li><strong>CS:GO:</strong> TTK rất ngắn (~0.5s) - hardcore, 1-shot headshot</li>
+        <li><strong>Apex Legends:</strong> TTK trung bình (~2-3s) - chiến đấu kéo dài</li>
+        <li><strong>Overwatch:</strong> TTK ngắn (~1.5s) - team play</li>
+        <li><strong>WoW PvP:</strong> TTK dài (~10-30s) - rotation, skill</li>
+      </ul>
+
+      <h4>Cost Curves &amp; Progression</h4>
+      <div class="code-block">// Linear (không tốt cho progression)
+cost(level) = base * level
+
+// Exponential (phổ biến nhất)
+cost(level) = base * (multiplier ^ level)
+ví dụ: cost = 100 * (1.5 ^ level)
+
+// Polynomial
+cost(level) = base * (level ^ exponent)
+ví dụ: cost = 50 * (level ^ 2.2)
+
+// Common multipliers:
+// 1.07-1.15: gentle (Cookie Clicker)
+// 1.5-2.0: steep (Clash of Clans)
+// 2.5+: aggressive (gacha)</div>
+
+      <h3>11.4. Excel - Vũ khí chính của System Designer</h3>
+      <p>System Designer pro dành 80% thời gian trong Excel/Google Sheets:</p>
+
+      <ul>
+        <li><strong>Stat tables:</strong> HP/ATK/DEF của từng unit theo level</li>
+        <li><strong>Cost tables:</strong> Giá upgrade, time đợi</li>
+        <li><strong>Drop rate tables:</strong> Xác suất loot</li>
+        <li><strong>Damage simulators:</strong> Tính DPS theo build</li>
+        <li><strong>Win rate predictions:</strong> Monte Carlo simulation</li>
+        <li><strong>Curve generators:</strong> Tự sinh XP curve, level curve</li>
+      </ul>
+
+      <h3>11.5. Power Creep - Lạm phát sức mạnh</h3>
+      <div class="danger-box" data-title="⚠️ Power Creep - Kẻ thù của Live Game">
+        Live game thường ra unit/character mới. Để bán được, content mới phải <strong>mạnh hơn cũ</strong> (creep). Sau 1 năm, các unit cũ trở nên vô dụng.<br><br>
+        <strong>Cách giải quyết:</strong>
+        <ul>
+          <li>Buff lại unit cũ định kỳ (rebalance)</li>
+          <li>Roster cycling (Heroes of the Storm)</li>
+          <li>Power sideway thay vì up (cùng power, tính cách khác)</li>
+          <li>Honest reset (Hearthstone Standard format)</li>
+        </ul>
+      </div>
+
+      <h3>11.6. Patch Notes - Cách balance Live Game</h3>
+      <p>Mỗi patch là cơ hội balance. Quy tắc:</p>
+      <ul>
+        <li><strong>Buff trước, Nerf sau:</strong> Buff làm player vui, Nerf làm player giận. Ưu tiên buff.</li>
+        <li><strong>Small changes:</strong> Đổi 5-10% thôi. Big changes phá meta.</li>
+        <li><strong>Transparent reasoning:</strong> Giải thích TẠI SAO đổi. Player thông minh sẽ accept.</li>
+        <li><strong>Data-driven:</strong> Dùng telemetry, không phải cảm giác. Tracking win rate, pick rate, ban rate.</li>
+        <li><strong>Meta diversity:</strong> Tốt = 60-80% character/build playable. Tệ = chỉ 5-10 picks dominant.</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 12: PSYCHOLOGY -->
+    <section id="psychology" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 12</span>
+        <h2>Player Psychology - Tâm Lý Người Chơi</h2>
+      </div>
+
+      <p>Hiểu psychology = hiểu player. Đây là <strong>secret sauce</strong> của các designer xuất sắc.</p>
+
+      <h3>12.1. Flow State - Trạng thái dòng chảy</h3>
+      <p>Khái niệm của <strong>Mihaly Csikszentmihalyi</strong> - trạng thái "in the zone" khi:</p>
+      <ul>
+        <li>Mất khái niệm thời gian</li>
+        <li>Tập trung tuyệt đối</li>
+        <li>Cảm giác kiểm soát hoàn toàn</li>
+        <li>Vui sướng tự thân</li>
+      </ul>
+
+      <div class="formula-box">
+        FLOW = khi (Challenge ≈ Skill)<br><br>
+        Challenge &gt;&gt; Skill → ANXIETY (lo lắng, bỏ cuộc)<br>
+        Challenge &lt;&lt; Skill → BOREDOM (chán)<br>
+        Challenge ≈ Skill → FLOW (mê đắm)
+      </div>
+
+      <p><strong>Designer phải:</strong> Tăng difficulty đúng tốc độ player tăng skill. Cho player feel "tôi vừa đủ giỏi để làm được điều này, nhưng phải cố gắng".</p>
+
+      <h3>12.2. Bartle's Taxonomy - 4 loại player</h3>
+      <p>Richard Bartle phân tích MMO và phát hiện 4 mô-típ player:</p>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🏆 Achievers (40%)</h4>
+          <p>Muốn <strong>đạt được</strong>: clear 100%, level cap, all achievements.</p>
+          <p><strong>Thiết kế cho họ:</strong> Achievement system, leaderboard, completion bar</p>
+        </div>
+        <div class="card-item">
+          <h4>🔍 Explorers (10%)</h4>
+          <p>Muốn <strong>khám phá</strong>: hidden secrets, lore, edge cases.</p>
+          <p><strong>Thiết kế cho họ:</strong> Easter eggs, hidden areas, deep lore, optional content</p>
+        </div>
+        <div class="card-item">
+          <h4>🤝 Socializers (80%)</h4>
+          <p>Muốn <strong>tương tác</strong>: chat, guild, drama. Đông nhất.</p>
+          <p><strong>Thiết kế cho họ:</strong> Chat system, guilds, social features, gifts</p>
+        </div>
+        <div class="card-item">
+          <h4>⚔️ Killers (10%)</h4>
+          <p>Muốn <strong>thắng người khác</strong>: PvP, rank, dominate.</p>
+          <p><strong>Thiết kế cho họ:</strong> PvP modes, ranking, kill feeds, victory celebrations</p>
+        </div>
+      </div>
+
+      <p><em>(% chồng lấp, total &gt; 100% vì 1 người có thể thuộc nhiều loại)</em></p>
+
+      <h3>12.3. Variable Reward Schedule</h3>
+      <p>Khái niệm từ <strong>B.F. Skinner</strong> (hộp Skinner). Đây là <strong>vũ khí gây nghiện nhất</strong> trong game design - cũng là vấn đề đạo đức.</p>
+
+      <table>
+        <thead><tr><th>Schedule</th><th>Hành vi</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td>Fixed Ratio</td><td>Predictable, chán nhanh</td><td>Cứ kill 10 mob được 1 loot</td></tr>
+          <tr><td>Fixed Interval</td><td>Rush vào lúc cuối</td><td>Daily reward, daily quest</td></tr>
+          <tr><td><strong>Variable Ratio</strong></td><td><strong>Gây nghiện nhất</strong></td><td>Drop rate ngẫu nhiên, gacha, loot box</td></tr>
+          <tr><td>Variable Interval</td><td>Check thường xuyên</td><td>Pokemon Go spawn ngẫu nhiên</td></tr>
+        </tbody>
+      </table>
+
+      <div class="warning-box" data-title="⚠️ Đạo đức trong Design">
+        Variable Ratio cùng với "near miss" và "sunk cost" được dùng trong gacha/lootbox và bị cấm/giới hạn ở Bỉ, Hà Lan, Trung Quốc. Designer cần cân nhắc đạo đức - chỉ vì có thể làm KHÔNG có nghĩa là NÊN làm.
+      </div>
+
+      <h3>12.4. Cognitive Biases trong Game</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>💎 Loss Aversion</h4>
+          <p>Người ta sợ mất 100đ hơn vui khi được 100đ.</p>
+          <p><strong>Áp dụng:</strong> Streak bonus (mất khi nghỉ 1 ngày), wager system trong card games.</p>
+        </div>
+        <div class="card-item">
+          <h4>🪙 Sunk Cost Fallacy</h4>
+          <p>Đã invest nhiều → cảm thấy phải tiếp tục.</p>
+          <p><strong>Áp dụng:</strong> Battle pass, character upgrade requiring more after each level.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Goal Gradient</h4>
+          <p>Càng gần goal càng motivated.</p>
+          <p><strong>Áp dụng:</strong> XP bar gần đầy, "1 more chest", boss máu sắp 0.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌟 Endowment Effect</h4>
+          <p>Người ta đánh giá đồ của mình cao hơn.</p>
+          <p><strong>Áp dụng:</strong> Cho free trial character/skin. Khi muốn lấy lại, player sẽ trả tiền.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎲 Near Miss Effect</h4>
+          <p>"Suýt thắng" tạo cảm giác phải thử lại.</p>
+          <p><strong>Áp dụng:</strong> Slot machines, gacha có hint "gần 5★ rồi".</p>
+        </div>
+        <div class="card-item">
+          <h4>👑 Social Proof</h4>
+          <p>Người khác làm = đáng làm.</p>
+          <p><strong>Áp dụng:</strong> "10,000 player đã claim reward này", leaderboard, friend activity.</p>
+        </div>
+      </div>
+
+      <h3>12.5. Self-Determination Theory (SDT)</h3>
+      <p>Theo Deci &amp; Ryan, 3 nhu cầu cơ bản của con người:</p>
+
+      <ol>
+        <li><strong>Autonomy (Tự chủ):</strong> "Tôi có lựa chọn". Designer cho meaningful choices.</li>
+        <li><strong>Competence (Năng lực):</strong> "Tôi giỏi". Designer cho progression có thể nhìn thấy.</li>
+        <li><strong>Relatedness (Kết nối):</strong> "Tôi không cô đơn". Designer cho social features.</li>
+      </ol>
+
+      <p><strong>Game tốt thỏa mãn cả 3.</strong> Witcher 3, Stardew Valley, Animal Crossing - đều hit hard cả 3.</p>
+
+      <h3>12.6. The Dopamine Loop</h3>
+      <div class="card-item">
+        <h4>Cách game "hack" não bộ:</h4>
+        <ol>
+          <li><strong>Cue (Trigger):</strong> Push notification, daily reset, friend online</li>
+          <li><strong>Craving:</strong> Player muốn vào game</li>
+          <li><strong>Response:</strong> Player chơi</li>
+          <li><strong>Reward:</strong> XP, loot, social interaction</li>
+          <li><strong>Loop:</strong> Quay lại bước 1, mạnh hơn</li>
+        </ol>
+        <p><em>Quá trình này tương tự cờ bạc và social media. Power lớn = responsibility lớn.</em></p>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 13: PROGRESSION -->
+    <section id="progression" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 13</span>
+        <h2>Progression Systems</h2>
+      </div>
+
+      <p>Progression = <strong>cảm giác tiến bộ theo thời gian</strong>. Đây là động cơ chính khiến player quay lại game ngày này qua ngày khác.</p>
+
+      <h3>13.1. Các loại Progression</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📈 Power Progression</h4>
+          <p>Player mạnh hơn: stats tăng, skill mới, gear tốt hơn.</p>
+          <p><em>Ví dụ: RPG levelling, gear upgrade</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🧠 Skill Progression</h4>
+          <p>Player <strong>thực sự</strong> giỏi hơn. Không phải số tăng.</p>
+          <p><em>Ví dụ: Souls-like, fighting games, esports</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🗺️ World Progression</h4>
+          <p>Mở khóa khu vực, story mới.</p>
+          <p><em>Ví dụ: Metroidvania, open world unlock</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Cosmetic Progression</h4>
+          <p>Skin, title, frame - không ảnh hưởng power.</p>
+          <p><em>Ví dụ: League of Legends, Fortnite</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📚 Knowledge Progression</h4>
+          <p>Player biết nhiều hơn về game.</p>
+          <p><em>Ví dụ: Outer Wilds, Return of the Obra Dinn</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🤝 Social Progression</h4>
+          <p>Rank, ranking, guild rep.</p>
+          <p><em>Ví dụ: Competitive games, MMOs</em></p>
+        </div>
+      </div>
+
+      <h3>13.2. XP Curve Design</h3>
+      <p>Curve tăng XP cần thiết để lên level là trái tim của RPG.</p>
+
+      <div class="code-block">// Linear (không tốt)
+XP_needed(L) = 100 * L
+→ Level 100 cần 10,000 XP. Cảm thấy nhàm.
+
+// Exponential (phổ biến)
+XP_needed(L) = 50 * (L ^ 2)
+→ Level 1 cần 50, Level 100 cần 500,000
+
+// Logarithmic (cho early game nhanh, late slow)
+XP_needed(L) = 1000 * log(L + 1)
+
+// Hybrid (best - phổ biến trong MMO)
+- Early (Lv 1-30): nhanh để hook player
+- Mid (Lv 30-60): vừa phải
+- Late (Lv 60+): chậm để cảm giác achievement</div>
+
+      <h3>13.3. The "Power Fantasy"</h3>
+      <p>Diablo, Vampire Survivors, idle games - đều cho player cảm giác <strong>"tôi siêu mạnh"</strong>.</p>
+
+      <div class="card-item">
+        <h4>Cách tạo Power Fantasy:</h4>
+        <ul>
+          <li><strong>Start weak:</strong> Để player cảm thấy growth</li>
+          <li><strong>Numbers go up:</strong> Damage 100 → 1,000 → 100,000 → 1M</li>
+          <li><strong>Visual escalation:</strong> Spell ban đầu nhỏ → fill cả màn hình</li>
+          <li><strong>Bigger enemies:</strong> Goblin → Dragon → God</li>
+          <li><strong>Time compression:</strong> Boss khó tuần trước giờ 1-shot</li>
+        </ul>
+      </div>
+
+      <h3>13.4. Endgame Design</h3>
+      <p>Cái mà player làm sau khi "hết game" - đặc biệt quan trọng cho live service.</p>
+
+      <ul>
+        <li><strong>Daily/Weekly Quests:</strong> Lý do log-in mỗi ngày (Genshin daily commission)</li>
+        <li><strong>Battle Pass:</strong> Mua 1 lần, grind 90 ngày</li>
+        <li><strong>Raid:</strong> Co-op khó cần 4-40 người (WoW, Destiny)</li>
+        <li><strong>Ranked PvP:</strong> Climb rank vĩnh viễn</li>
+        <li><strong>Crafting/Trading:</strong> Player economy</li>
+        <li><strong>Roguelite runs:</strong> Replay với perma upgrades</li>
+        <li><strong>Achievement hunting:</strong> Cho completionists</li>
+        <li><strong>UGC (User Generated Content):</strong> Roblox, Fortnite Creative</li>
+      </ul>
+
+      <h3>13.5. Pacing Progression</h3>
+      <div class="formula-box">
+        Quá nhanh → Player overwhelmed, không enjoy<br>
+        Quá chậm → Player bored, quit<br>
+        Chuẩn → Reward mỗi 5-15 phút (mobile), 30-60 phút (PC/console)
+      </div>
+
+      <h3>13.6. Treadmill Design - "Bánh xe chuột hamster"</h3>
+      <div class="warning-box" data-title="⚠️ Vấn đề đạo đức">
+        Một số game thiết kế progression bất tận - không bao giờ thấy "đỉnh". Player chạy mãi không bao giờ tới.<br>
+        <strong>Ví dụ:</strong> Mobile RPG với gear power level vô tận, MMO grind 1000+ hours.<br><br>
+        Designer cần cân nhắc: <em>Game có phải là "thời gian được trân trọng" hay "thời gian bị đánh cắp"?</em>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 14: ECONOMY -->
+    <section id="economy" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 14</span>
+        <h2>Economy & Monetization</h2>
+      </div>
+
+      <p>In-game economy là <strong>khoa học</strong>, monetization là <strong>nghệ thuật</strong>. Hiểu sai = game chết. Hiểu đúng = $1B+ doanh thu.</p>
+
+      <h3>14.1. Game Economy 101</h3>
+
+      <h4>Sources &amp; Sinks (Nguồn &amp; Cống)</h4>
+      <p>Mọi nền kinh tế cần 2 loại:</p>
+      <ul>
+        <li><strong>Sources:</strong> Nơi tiền/resource xuất hiện. (Quest reward, monster drop)</li>
+        <li><strong>Sinks:</strong> Nơi tiền/resource biến mất. (Repair cost, upgrade cost, marketplace fee)</li>
+      </ul>
+      <div class="formula-box">
+        Sources &gt; Sinks → Inflation (lạm phát, tiền vô giá)<br>
+        Sources &lt; Sinks → Grinding tedious<br>
+        Sources ≈ Sinks → Healthy economy
+      </div>
+
+      <h3>14.2. Các loại Currency</h3>
+      <table>
+        <thead><tr><th>Loại</th><th>Đặc điểm</th><th>Ví dụ</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Soft Currency</strong></td><td>Kiếm dễ, dùng nhiều, không mua được</td><td>Gold trong WoW</td></tr>
+          <tr><td><strong>Hard Currency</strong></td><td>Hiếm, ít kiếm, mua bằng tiền thật</td><td>Genesis Crystal (Genshin), VP (Valorant)</td></tr>
+          <tr><td><strong>Premium Currency</strong></td><td>Chỉ mua bằng tiền thật</td><td>Robux, V-Bucks</td></tr>
+          <tr><td><strong>Event Currency</strong></td><td>Có thời hạn, đổi item event</td><td>Trick or Treat tokens</td></tr>
+          <tr><td><strong>Reputation</strong></td><td>Build với 1 phe, đổi unique item</td><td>WoW factions, GTA V reputation</td></tr>
+        </tbody>
+      </table>
+
+      <h3>14.3. Monetization Models</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>💵 Premium (Buy-to-Play)</h4>
+          <p>Mua 1 lần, chơi hết.</p>
+          <p><strong>Ưu:</strong> Đơn giản, fair, không pay-to-win.</p>
+          <p><strong>Nhược:</strong> Cap doanh thu = (price × số copies).</p>
+          <p><em>Ví dụ: Elden Ring, Hollow Knight</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🆓 Free-to-Play (F2P)</h4>
+          <p>Miễn phí, kiếm tiền qua IAP/Ads.</p>
+          <p><strong>Ưu:</strong> Tệp player khổng lồ, doanh thu vô hạn.</p>
+          <p><strong>Nhược:</strong> Phụ thuộc whale, dễ pay-to-win.</p>
+          <p><em>Ví dụ: Fortnite, Genshin, LoL</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📅 Subscription</h4>
+          <p>Trả $X/tháng.</p>
+          <p><strong>Ưu:</strong> Doanh thu ổn định.</p>
+          <p><strong>Nhược:</strong> Khó duy trì content liên tục.</p>
+          <p><em>Ví dụ: WoW, FFXIV, Xbox Game Pass</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎫 Battle Pass</h4>
+          <p>Mua pass, grind 60-90 ngày unlock reward.</p>
+          <p><strong>Ưu:</strong> Doanh thu định kỳ, không pay-to-win (nếu cosmetic).</p>
+          <p><strong>Nhược:</strong> FOMO, áp lực chơi.</p>
+          <p><em>Ví dụ: Fortnite, Apex, COD</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎰 Gacha / Loot Box</h4>
+          <p>Spin để có RNG reward.</p>
+          <p><strong>Ưu:</strong> Doanh thu cực cao (whale).</p>
+          <p><strong>Nhược:</strong> Đạo đức, bị regulate ở nhiều nước.</p>
+          <p><em>Ví dụ: Genshin Impact, FGO, Hearthstone</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📺 Ads</h4>
+          <p>Xem ad để nhận reward / không có ad.</p>
+          <p><strong>Ưu:</strong> Không cần player trả tiền.</p>
+          <p><strong>Nhược:</strong> Doanh thu thấp/user, có thể gây khó chịu.</p>
+          <p><em>Ví dụ: Hyper-casual games</em></p>
+        </div>
+      </div>
+
+      <h3>14.4. Whale, Dolphin, Minnow</h3>
+      <div class="card-item">
+        <h4>Cấu trúc spending trong F2P:</h4>
+        <ul>
+          <li><strong>Whales (1-2%):</strong> Chi $500-50,000+/tháng. Tạo 50-70% doanh thu.</li>
+          <li><strong>Dolphins (5-10%):</strong> Chi $20-200/tháng. Tạo 20-30% doanh thu.</li>
+          <li><strong>Minnows (10-20%):</strong> Chi $1-20/tháng. Tạo 5-10% doanh thu.</li>
+          <li><strong>F2P (70-85%):</strong> Không chi. Tạo content/community cho whale flex.</li>
+        </ul>
+      </div>
+
+      <h3>14.5. The "Whale Hunting" Ethics Problem</h3>
+      <div class="danger-box" data-title="⚠️ Cẩn thận">
+        Một số game design "săn whale" - target người có vấn đề (compulsive spending, gambling addiction). Đã có case lawsuit, vụ tự tử liên quan đến gacha.<br><br>
+        <strong>Best practice:</strong> Set spending limit, transparency về drop rate, pity system, không target trẻ em.
+      </div>
+
+      <h3>14.6. The "Player-friendly" Monetization</h3>
+      <p>Có những game thành công cực lớn mà không hack tâm lý:</p>
+      <ul>
+        <li><strong>Path of Exile:</strong> Hoàn toàn F2P, chỉ bán cosmetic + storage. Doanh thu vẫn cao.</li>
+        <li><strong>Warframe:</strong> Mọi thứ farm được, premium chỉ là time skip.</li>
+        <li><strong>Deep Rock Galactic:</strong> Premium nhưng có DLC cosmetic optional.</li>
+        <li><strong>Helldivers 2:</strong> Battle pass không hết hạn, nhân từ.</li>
+      </ul>
+
+      <h3>14.7. KPIs Kinh tế quan trọng</h3>
+      <table>
+        <thead><tr><th>KPI</th><th>Định nghĩa</th><th>Mục tiêu chuẩn (mobile)</th></tr></thead>
+        <tbody>
+          <tr><td>ARPU</td><td>Avg Revenue Per User</td><td>$1-5/tháng</td></tr>
+          <tr><td>ARPPU</td><td>Avg Revenue Per <strong>Paying</strong> User</td><td>$30-100/tháng</td></tr>
+          <tr><td>Conversion Rate</td><td>% F2P → Pay</td><td>3-8%</td></tr>
+          <tr><td>D1/D7/D30 Retention</td><td>% quay lại sau 1/7/30 ngày</td><td>40%/20%/10% là tốt</td></tr>
+          <tr><td>LTV</td><td>Lifetime Value (tổng chi/player)</td><td>Cao hơn CPI</td></tr>
+          <tr><td>CPI</td><td>Cost Per Install (chi phí marketing/install)</td><td>$0.5-5</td></tr>
+          <tr><td>K-factor</td><td>Viral coefficient (mỗi player kéo thêm bn)</td><td>&gt;1 = viral</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 15: MULTIPLAYER -->
+    <section id="multiplayer" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 15</span>
+        <h2>Multiplayer & Social Design</h2>
+      </div>
+
+      <p>Game đông người chơi mở ra trải nghiệm mà single-player không bao giờ có. Cũng kèm theo cực kỳ nhiều thử thách thiết kế.</p>
+
+      <h3>15.1. Các kiểu Multiplayer</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🛋️ Local Co-op (Couch)</h4>
+          <p>2-4 người cùng máy. Đang revival.</p>
+          <p><em>Ví dụ: It Takes Two, Mario Party</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Online Co-op</h4>
+          <p>Cùng team, vs AI hoặc environment.</p>
+          <p><em>Ví dụ: Deep Rock Galactic, Helldivers 2</em></p>
+        </div>
+        <div class="card-item">
+          <h4>⚔️ PvP Symmetric</h4>
+          <p>2 phe giống nhau, kỹ năng quyết định.</p>
+          <p><em>Ví dụ: Chess, Counter-Strike</em></p>
+        </div>
+        <div class="card-item">
+          <h4>⚔️ PvP Asymmetric</h4>
+          <p>2 phe khác nhau, role khác.</p>
+          <p><em>Ví dụ: Dead by Daylight (1v4), Evolve</em></p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Team vs Team</h4>
+          <p>Phổ biến nhất trong eSports.</p>
+          <p><em>Ví dụ: LoL 5v5, Overwatch 6v6</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Free-for-All / Battle Royale</h4>
+          <p>Tất cả vs tất cả, ai sống cuối thắng.</p>
+          <p><em>Ví dụ: PUBG, Fortnite, Fall Guys</em></p>
+        </div>
+        <div class="card-item">
+          <h4>🌍 MMO</h4>
+          <p>Hàng nghìn player trong 1 thế giới.</p>
+          <p><em>Ví dụ: WoW, FFXIV, EVE Online</em></p>
+        </div>
+        <div class="card-item">
+          <h4>📱 Async Multiplayer</h4>
+          <p>Player tương tác không cần online cùng lúc.</p>
+          <p><em>Ví dụ: Clash of Clans (raid base offline), Words with Friends</em></p>
+        </div>
+      </div>
+
+      <h3>15.2. Skill-based Matchmaking (SBMM)</h3>
+      <p>Hệ thống ghép player với người cùng skill.</p>
+
+      <h4>Elo / MMR System</h4>
+      <div class="code-block">// Đơn giản hóa Elo
+expected_score_A = 1 / (1 + 10^((rating_B - rating_A) / 400))
+
+new_rating_A = rating_A + K * (actual - expected)
+
+K = 32 (cao = volatile, thấp = stable)</div>
+
+      <p>Kết quả: Win player rank thấp → ít point. Lose player rank cao → ít point mất. Win = match đúng skill → ~25 point.</p>
+
+      <h3>15.3. Toxicity Management</h3>
+      <p>Multiplayer đông = drama. Designer phải plan trước:</p>
+      <ul>
+        <li><strong>Report system:</strong> Player dễ report, xử nhanh</li>
+        <li><strong>Mute/Block:</strong> Mute chat dễ dàng</li>
+        <li><strong>Behavioral score:</strong> LoL Honor system, Overwatch Endorsement</li>
+        <li><strong>Communication wheel:</strong> Hạn chế text chat, dùng pre-set messages (Valorant, R6)</li>
+        <li><strong>Surrender vote:</strong> Cho thoát match thua sớm</li>
+        <li><strong>AFK detection:</strong> Phát hiện và phạt</li>
+        <li><strong>Cheat detection:</strong> Anti-cheat (Vanguard, Vac, EAC)</li>
+      </ul>
+
+      <h3>15.4. Social Features</h3>
+      <ul>
+        <li><strong>Friend list, party, voice chat:</strong> Cơ bản</li>
+        <li><strong>Guild/Clan:</strong> Long-term social group</li>
+        <li><strong>Gifting:</strong> Tặng item/skin/currency</li>
+        <li><strong>Spectator:</strong> Xem friend chơi</li>
+        <li><strong>Tournament/Custom games:</strong> Tổ chức event riêng</li>
+        <li><strong>Profile customization:</strong> Thể hiện bản thân</li>
+        <li><strong>Trading/Auction:</strong> Player economy</li>
+        <li><strong>Marriage/Pet/Companion system:</strong> Đặc thù MMO</li>
+      </ul>
+
+      <h3>15.5. Technical Multiplayer Challenges</h3>
+      <div class="info-box" data-title="📡 Net Code 101">
+        <strong>Latency (Ping):</strong> Thời gian round-trip giữa player và server. &lt;50ms = excellent, &gt;100ms = noticeable, &gt;200ms = bad.<br><br>
+        <strong>Tick Rate:</strong> Server cập nhật bao nhiêu lần/giây. CS:GO chính thức 64Hz, FACEIT 128Hz.<br><br>
+        <strong>Client-side prediction:</strong> Game đoán trước action local, sync với server sau.<br><br>
+        <strong>Rollback netcode:</strong> Tốt nhất cho fighting game (GGPO).<br><br>
+        <strong>Lag compensation:</strong> Server tính "shooter saw" khi player nhấn shoot, để fair với high-ping player.
+      </div>
+
+      <h3>15.6. Designing for Communities</h3>
+      <p>Game thành công có cộng đồng mạnh. Cách build:</p>
+      <ul>
+        <li><strong>Memorable moments:</strong> Mỗi match phải có 1 khoảnh khắc đáng share</li>
+        <li><strong>Streamer-friendly:</strong> Game đẹp khi xem, twitch chat tương tác</li>
+        <li><strong>Modding support:</strong> Skyrim, Minecraft - mod community giữ game alive 10+ năm</li>
+        <li><strong>Community tools:</strong> Replay, screenshot mode, photo mode</li>
+        <li><strong>Developer presence:</strong> Dev comment Reddit, AMA, transparent</li>
+        <li><strong>Esports support:</strong> Tournament tool, observer mode, prize pool</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 16: PROTOTYPING -->
+    <section id="prototype" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 16</span>
+        <h2>Prototyping - Tạo Mẫu</h2>
+      </div>
+
+      <p>Prototype = <strong>chứng minh ý tưởng vui</strong>. Nguyên tắc số 1 của game design: <em>"Fail fast, fail cheap"</em>. Đừng đầu tư 6 tháng vào idea trước khi biết nó có vui không.</p>
+
+      <h3>16.1. Các loại Prototype</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📝 Paper Prototype</h4>
+          <p>Card, giấy, dice. 30 phút làm xong.</p>
+          <p><strong>Phù hợp:</strong> Test core mechanic, balance, decision space.</p>
+          <p><strong>Ví dụ:</strong> Civilization được prototype trên paper trước.</p>
+        </div>
+        <div class="card-item">
+          <h4>💻 Digital Prototype</h4>
+          <p>Trong engine (Unity/Godot). 1-2 tuần.</p>
+          <p><strong>Phù hợp:</strong> Test feel, timing, real-time mechanics.</p>
+          <p><strong>Style:</strong> Greybox - không art.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎬 Vertical Slice</h4>
+          <p>Mini section của game thực, có art &amp; sound.</p>
+          <p><strong>Phù hợp:</strong> Pitch cho publisher, gauge production cost.</p>
+          <p><strong>Thời gian:</strong> 1-3 tháng.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎮 MVP (Minimum Viable Product)</h4>
+          <p>Phiên bản nhỏ nhất nhưng playable từ đầu đến cuối.</p>
+          <p><strong>Phù hợp:</strong> Soft launch, early access.</p>
+          <p><strong>Thời gian:</strong> 6-12 tháng.</p>
+        </div>
+      </div>
+
+      <h3>16.2. The Prototype Mindset</h3>
+      <div class="tip-box" data-title="🎯 Quy tắc Prototype">
+        <ul>
+          <li><strong>"Ugly is OK":</strong> Đừng làm đẹp. Dùng asset miễn phí, hình hộp xám.</li>
+          <li><strong>"Throwaway code":</strong> Code có thể vứt - đừng try to perfect.</li>
+          <li><strong>"One question at a time":</strong> Mỗi prototype trả lời 1 câu hỏi.</li>
+          <li><strong>"Time-box":</strong> Đặt deadline cứng. 1 tuần là 1 tuần.</li>
+          <li><strong>"Fail loud":</strong> Phát hiện không vui sớm = thành công.</li>
+          <li><strong>"Test with humans":</strong> Cho người khác chơi NGAY, không chỉ self-test.</li>
+        </ul>
+      </div>
+
+      <h3>16.3. Câu hỏi mỗi Prototype trả lời</h3>
+      <ol>
+        <li><strong>Core loop có vui không?</strong> Người chơi muốn lặp lại không?</li>
+        <li><strong>Game feel có ổn không?</strong> Tương tác có satisfying?</li>
+        <li><strong>Cơ chế có depth không?</strong> Master được không?</li>
+        <li><strong>Player có hiểu không?</strong> Tutorial cần gì?</li>
+        <li><strong>Có scale được không?</strong> Còn vui sau 1 giờ chơi?</li>
+        <li><strong>Multiplayer có hoạt động?</strong> Có balance được?</li>
+      </ol>
+
+      <h3>16.4. Quy trình Prototype 1 tuần</h3>
+      <div class="steps">
+        <div class="step"><h4>Ngày 1: Idea &amp; Scope</h4><p>Viết 1 câu pitch. Liệt kê 3 core mechanics. Xác định "vertical slice" sẽ làm.</p></div>
+        <div class="step"><h4>Ngày 2-3: Build Core Loop</h4><p>Implement chỉ core loop. Player có thể chơi 1 vòng từ đầu đến cuối.</p></div>
+        <div class="step"><h4>Ngày 4: Add 1 Variation</h4><p>Thêm 1 thứ tạo variety (enemy mới, biome mới, power-up).</p></div>
+        <div class="step"><h4>Ngày 5: Polish &amp; Juice</h4><p>Thêm screen shake, particle, sound. Đầu tư vào feel.</p></div>
+        <div class="step"><h4>Ngày 6: Playtest</h4><p>5 người chơi, quan sát kỹ. Take notes.</p></div>
+        <div class="step"><h4>Ngày 7: Decision</h4><p>Iterate hay scrap? Nếu iterate, làm tiếp 1 tuần. Nếu scrap, rút bài học.</p></div>
+      </div>
+
+      <h3>16.5. Game Jam - Cách học Prototyping nhanh</h3>
+      <p>Game Jam = sự kiện làm game trong 48 giờ với 1 theme. Đây là <strong>cách tốt nhất</strong> để học game design.</p>
+
+      <ul>
+        <li><strong>Ludum Dare:</strong> Cũ nhất, 48-72h, 4 lần/năm</li>
+        <li><strong>Global Game Jam:</strong> Lớn nhất, tháng 1 hàng năm</li>
+        <li><strong>GMTK Game Jam:</strong> Mark Brown, 48h, theme thú vị</li>
+        <li><strong>Brackeys Game Jam:</strong> Indie friendly</li>
+        <li><strong>Itch.io Jams:</strong> Hàng trăm jam mỗi tháng, mọi chủ đề</li>
+      </ul>
+
+      <p><strong>Bài học từ Game Jam:</strong></p>
+      <ul>
+        <li>Scope cực nhỏ - đôi khi 1 mechanic là đủ</li>
+        <li>Hoàn thành quan trọng hơn perfect</li>
+        <li>Học làm việc với team dưới áp lực</li>
+        <li>Portfolio xây nhanh</li>
+        <li>Một số game viral đã từ game jam (Goat Simulator, Surgeon Simulator, Superhot)</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 17: TOOLS -->
+    <section id="tools" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 17</span>
+        <h2>Tools & Game Engines</h2>
+      </div>
+
+      <p>Game Designer không cần code giỏi, nhưng phải biết engine cơ bản để prototype, scripting hệ thống, và communicate với programmer.</p>
+
+      <h3>17.1. Top Game Engines 2026</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🟢 Unity</h4>
+          <p><span class="badge badge-beginner">DỄ HỌC</span></p>
+          <ul>
+            <li>Phổ biến nhất, 50%+ mobile game</li>
+            <li>Ngôn ngữ: C#</li>
+            <li>2D &amp; 3D đều mạnh</li>
+            <li>Asset Store khổng lồ</li>
+            <li>Free cho dự án &lt; $200k revenue</li>
+          </ul>
+          <p><strong>Phù hợp:</strong> Mobile, indie, prototype, AR/VR</p>
+        </div>
+        <div class="card-item">
+          <h4>🟦 Unreal Engine 5</h4>
+          <p><span class="badge badge-intermediate">TRUNG BÌNH</span></p>
+          <ul>
+            <li>AAA standard - đồ họa khủng</li>
+            <li>Blueprint visual scripting</li>
+            <li>C++ cho performance</li>
+            <li>Free, 5% royalty &gt; $1M</li>
+            <li>Nanite + Lumen revolutionary</li>
+          </ul>
+          <p><strong>Phù hợp:</strong> AAA, FPS, photorealistic, large team</p>
+        </div>
+        <div class="card-item">
+          <h4>🟧 Godot</h4>
+          <p><span class="badge badge-beginner">DỄ HỌC</span></p>
+          <ul>
+            <li>Open source 100%, free forever</li>
+            <li>GDScript (Python-like)</li>
+            <li>Lightweight, mở nhanh</li>
+            <li>Growing rapidly</li>
+            <li>Tuyệt cho 2D</li>
+          </ul>
+          <p><strong>Phù hợp:</strong> Indie, 2D, learners, open source</p>
+        </div>
+        <div class="card-item">
+          <h4>🎲 GameMaker</h4>
+          <p><span class="badge badge-beginner">RẤT DỄ</span></p>
+          <ul>
+            <li>2D specialist</li>
+            <li>GML (custom) hoặc drag-drop</li>
+            <li>Made: Undertale, Hyper Light Drifter</li>
+          </ul>
+          <p><strong>Phù hợp:</strong> 2D indie, beginner</p>
+        </div>
+        <div class="card-item">
+          <h4>🏗️ Roblox Studio</h4>
+          <p><span class="badge badge-beginner">DỄ</span></p>
+          <ul>
+            <li>Lua scripting</li>
+            <li>200M+ daily active player</li>
+            <li>Built-in monetization</li>
+            <li>Easy publish</li>
+          </ul>
+          <p><strong>Phù hợp:</strong> Trẻ em, UGC, fast monetization</p>
+        </div>
+        <div class="card-item">
+          <h4>🧊 Bevy / Custom Engines</h4>
+          <p><span class="badge badge-pro">PRO</span></p>
+          <ul>
+            <li>Rust-based modern engine</li>
+            <li>ECS architecture</li>
+            <li>Lập trình viên hardcore</li>
+          </ul>
+          <p><strong>Phù hợp:</strong> Tech demo, learning, niche</p>
+        </div>
+      </div>
+
+      <h3>17.2. Design Tools - Không phải engine</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>📊 Excel / Google Sheets</h4>
+          <p>Số 1 tool của Game Designer. Balance, economy, drop rate.</p>
+        </div>
+        <div class="card-item">
+          <h4>📝 Notion / Confluence</h4>
+          <p>Viết GDD, wiki, knowledge base team.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Figma / Miro</h4>
+          <p>UI mockup, flow diagram, brainstorm visual.</p>
+        </div>
+        <div class="card-item">
+          <h4>🗺️ Tiled / LDtk</h4>
+          <p>Level editor 2D độc lập, export sang engine.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌳 Twine / Ink / Yarn</h4>
+          <p>Narrative scripting cho dialogue branching.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎵 FMOD / Wwise</h4>
+          <p>Audio middleware - thiết kế sound system phức tạp.</p>
+        </div>
+        <div class="card-item">
+          <h4>📐 Blockbench / MagicaVoxel</h4>
+          <p>3D model nhanh cho prototype.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎲 Jira / Trello / ClickUp</h4>
+          <p>Project management, task tracking.</p>
+        </div>
+      </div>
+
+      <h3>17.3. Lập trình cho Game Designer</h3>
+      <p>Bạn KHÔNG cần là programmer, nhưng nên hiểu:</p>
+
+      <ul>
+        <li><strong>Visual scripting:</strong> Unreal Blueprint, Unity Bolt - prototype không cần code</li>
+        <li><strong>Scripting languages:</strong> Lua, Python - dễ học, đủ cho hầu hết game logic</li>
+        <li><strong>Basic concepts:</strong> Variable, function, loop, if/else, array</li>
+        <li><strong>Game patterns:</strong> Update loop, state machine, event system, observer</li>
+        <li><strong>Math:</strong> Vector, trigonometry, basic linear algebra</li>
+      </ul>
+
+      <div class="tip-box" data-title="📚 Lộ trình học code">
+        <ol>
+          <li><strong>Tháng 1:</strong> Brackeys YouTube Unity tutorials</li>
+          <li><strong>Tháng 2:</strong> Catlike Coding tutorials (Unity sâu hơn)</li>
+          <li><strong>Tháng 3:</strong> Làm clone Tetris, Snake, Breakout</li>
+          <li><strong>Tháng 4:</strong> Sebastian Lague YouTube (algorithms)</li>
+          <li><strong>Tháng 5-6:</strong> Game riêng, đăng itch.io</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 18: PLAYTESTING -->
+    <section id="playtest" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 18</span>
+        <h2>Playtesting</h2>
+      </div>
+
+      <p>Playtest là <strong>kỹ năng quan trọng nhất</strong> mà không trường nào dạy. Game tốt được làm bằng 20% inspiration + 80% playtest iteration.</p>
+
+      <div class="quote-box" data-title="💬 Câu nói nổi tiếng">
+        "Your first idea is always wrong. Your fifth idea is usually good. Your fiftieth is great."<br>
+        <em>— Industry wisdom</em>
+      </div>
+
+      <h3>18.1. Các loại Playtest</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🤝 Internal Playtest</h4>
+          <p>Team chơi với nhau. Hàng ngày.</p>
+          <p><strong>Vấn đề:</strong> Team biết game quá rõ, bias.</p>
+        </div>
+        <div class="card-item">
+          <h4>👥 Friends &amp; Family</h4>
+          <p>Người ngoài team, nhưng quen.</p>
+          <p><strong>Vấn đề:</strong> Họ "lịch sự" - không nói thẳng.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Targeted Playtest</h4>
+          <p>Tìm đúng target demographic.</p>
+          <p><strong>Ưu:</strong> Insight chính xác từ user thực.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Public Playtest (Open Beta)</h4>
+          <p>1000-100,000 player online.</p>
+          <p><strong>Ưu:</strong> Telemetry data lớn.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔬 Focus Group</h4>
+          <p>6-12 người ngồi bàn, có moderator.</p>
+          <p><strong>Ưu:</strong> Discussion sâu.</p>
+        </div>
+        <div class="card-item">
+          <h4>📊 A/B Test</h4>
+          <p>Live game, chia player ra 2 nhóm, so sánh.</p>
+          <p><strong>Ưu:</strong> Quantitative, scientific.</p>
+        </div>
+      </div>
+
+      <h3>18.2. Cách Playtest đúng cách</h3>
+      <div class="steps">
+        <div class="step">
+          <h4>Define câu hỏi cụ thể</h4>
+          <p>Đừng "playtest game". Hỏi: "Tutorial có hiểu không?" / "Boss có quá khó không?" / "Combat có vui không sau 30 phút?"</p>
+        </div>
+        <div class="step">
+          <h4>Tìm đúng người</h4>
+          <p>Target audience. Trẻ em test game trẻ em. Hardcore gamer test hardcore game.</p>
+        </div>
+        <div class="step">
+          <h4>Chuẩn bị môi trường</h4>
+          <p>PC/console hoạt động, save có sẵn, có ghi chú. Bí mật giữ playtest cho team.</p>
+        </div>
+        <div class="step">
+          <h4>Đừng giúp</h4>
+          <p>QUY TẮC VÀNG: KHÔNG giải thích, KHÔNG hint. Khi player kẹt = vấn đề thiết kế.</p>
+        </div>
+        <div class="step">
+          <h4>Quan sát thầm</h4>
+          <p>Ghi: chỗ nào im lặng (chán), cười (vui), chửi thề (frustrated), nhíu mày (confused).</p>
+        </div>
+        <div class="step">
+          <h4>Phỏng vấn sau</h4>
+          <p>"Cảm xúc của bạn?" "Phần nào nhớ nhất?" "Phần nào tệ nhất?" KHÔNG hỏi "Bạn có thích game?" - quá chung chung.</p>
+        </div>
+        <div class="step">
+          <h4>Analyze &amp; Iterate</h4>
+          <p>1 player feedback = anecdote. 5 player cùng feedback = pattern. Sửa.</p>
+        </div>
+      </div>
+
+      <h3>18.3. Lắng nghe HÀNH ĐỘNG, không phải LỜI NÓI</h3>
+      <div class="warning-box" data-title="⚠️ Quy tắc của Shigeru Miyamoto">
+        Player nói thường KHÔNG đúng những gì họ cần.<br><br>
+        <strong>Ví dụ thật:</strong> Player nói "Tôi muốn dễ hơn". Designer giảm difficulty → player chán. Thực ra player muốn "thử thách phù hợp với skill của tôi".<br><br>
+        Quan sát body language, facial expression, time spent stuck quan trọng hơn lời nói.
+      </div>
+
+      <h3>18.4. Telemetry &amp; Analytics</h3>
+      <p>Khi có game live, tracking data:</p>
+      <ul>
+        <li><strong>Funnel:</strong> % player vượt qua mỗi level</li>
+        <li><strong>Drop-off point:</strong> Player quit ở đâu?</li>
+        <li><strong>Retention:</strong> D1, D7, D30</li>
+        <li><strong>Session length:</strong> Trung bình bao lâu/session</li>
+        <li><strong>Heatmap:</strong> Player chết ở đâu trong map</li>
+        <li><strong>Win rate per character:</strong> Imbalance detection</li>
+        <li><strong>Economy flow:</strong> Currency vào/ra</li>
+        <li><strong>Crash rate:</strong> Bug priority</li>
+      </ul>
+
+      <p><strong>Tools:</strong> Unity Analytics, GameAnalytics, AppsFlyer, Adjust, Amplitude.</p>
+
+      <h3>18.5. Common Playtest Pitfalls</h3>
+      <ul>
+        <li><strong>Test với người đã chơi:</strong> Họ biết quá nhiều</li>
+        <li><strong>Hỏi yes/no:</strong> Phải hỏi mở</li>
+        <li><strong>Defensive:</strong> Không argue với feedback</li>
+        <li><strong>Listen to vocal minority:</strong> 1 người gáy to ≠ majority view</li>
+        <li><strong>Skip the data:</strong> Always look at both qualitative + quantitative</li>
+        <li><strong>Test too late:</strong> Phải test SỚM trong development</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 19: GDD -->
+    <section id="gdd" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 19</span>
+        <h2>Game Design Document (GDD)</h2>
+      </div>
+
+      <p>GDD là <strong>văn bản</strong> mô tả game cho cả team. Khả năng viết GDD rõ ràng = kỹ năng phân biệt Designer chuyên nghiệp với amateur.</p>
+
+      <h3>19.1. Modern GDD - Không phải sách 500 trang</h3>
+      <div class="info-box" data-title="📚 GDD thời nay">
+        Quá khứ: GDD = 1 file Word 500 trang, "the bible". Vấn đề: Nobody reads it, outdated nhanh.<br><br>
+        Hiện đại: GDD = <strong>living wiki</strong> trên Notion/Confluence với:
+        <ul>
+          <li>One-pager pitch</li>
+          <li>10-pager design overview</li>
+          <li>Nhiều "feature spec" riêng cho từng tính năng</li>
+          <li>Update theo iteration</li>
+        </ul>
+      </div>
+
+      <h3>19.2. Structure của GDD hiệu quả</h3>
+
+      <h4>📄 1-Pager (Pitch Document)</h4>
+      <div class="card-item">
+        <ul>
+          <li><strong>Title:</strong> Tên game</li>
+          <li><strong>Tagline:</strong> 1 câu mô tả</li>
+          <li><strong>Genre:</strong> Thể loại</li>
+          <li><strong>Platform:</strong> PC, Console, Mobile?</li>
+          <li><strong>Target audience:</strong> Tuổi, gender, interest</li>
+          <li><strong>USP (Unique Selling Points):</strong> 3 điểm khác biệt</li>
+          <li><strong>Inspiration:</strong> "Like X meets Y"</li>
+          <li><strong>Visual style:</strong> Mood board, 3-5 reference images</li>
+          <li><strong>Scope &amp; Budget:</strong> Estimated</li>
+        </ul>
+      </div>
+
+      <h4>📚 Design Overview (5-10 pages)</h4>
+      <ol>
+        <li><strong>Vision &amp; Pillars:</strong> Tại sao game này tồn tại? 3-5 core pillars</li>
+        <li><strong>Core Loop:</strong> Diagram + giải thích</li>
+        <li><strong>Player Experience:</strong> First 10 phút, first 1 giờ, first 10 giờ</li>
+        <li><strong>Key Mechanics:</strong> Top 5 mechanics chính</li>
+        <li><strong>Progression:</strong> Player làm gì trong 1, 10, 100 giờ?</li>
+        <li><strong>Narrative:</strong> High-level story (nếu có)</li>
+        <li><strong>Art Direction:</strong> Style guide</li>
+        <li><strong>Audio Direction:</strong> Mood, references</li>
+        <li><strong>Monetization:</strong> Business model</li>
+        <li><strong>Comparison:</strong> So với competitors</li>
+      </ol>
+
+      <h4>🔧 Feature Spec (mỗi feature 1 doc)</h4>
+      <div class="card-item">
+        <p><strong>Cấu trúc 1 Feature Spec:</strong></p>
+        <ol>
+          <li><strong>Goal:</strong> Mục tiêu của feature này</li>
+          <li><strong>User Story:</strong> "As a player, I want to ... so that ..."</li>
+          <li><strong>Wireframe / Mockup:</strong> Visual</li>
+          <li><strong>Flow Diagram:</strong> Step-by-step user flow</li>
+          <li><strong>Edge Cases:</strong> Tình huống đặc biệt</li>
+          <li><strong>Dependencies:</strong> Feature này cần gì</li>
+          <li><strong>Acceptance Criteria:</strong> Khi nào coi là "done"</li>
+          <li><strong>Open Questions:</strong> Chưa rõ</li>
+        </ol>
+      </div>
+
+      <h3>19.3. Tips viết GDD pro</h3>
+      <ul>
+        <li><strong>Concrete &gt; Abstract:</strong> "Player can double-jump để vượt over 3-tile gaps" thay vì "Player có khả năng vận động cao"</li>
+        <li><strong>Numbers everywhere:</strong> Damage 50, cooldown 3s, range 500 units</li>
+        <li><strong>Reference existing games:</strong> "Combat như Hades, exploration như Hollow Knight"</li>
+        <li><strong>Visual heavy:</strong> Diagram, screenshot, mockup nhiều hơn text</li>
+        <li><strong>Active voice:</strong> "Player jumps" thay vì "Jumping is performed"</li>
+        <li><strong>Define jargon:</strong> Mỗi thuật ngữ mới phải có định nghĩa</li>
+        <li><strong>Version &amp; date:</strong> Mỗi doc có version + last updated</li>
+        <li><strong>TBD is fine:</strong> "TBD" tốt hơn placeholder fake info</li>
+      </ul>
+
+      <h3>19.4. Example Pitch - Hades</h3>
+      <div class="card-item">
+        <h4>🔥 Hades - 1 Pager Sample</h4>
+        <p><strong>Title:</strong> Hades</p>
+        <p><strong>Tagline:</strong> "Defy the god of the dead as you hack and slash out of the Underworld"</p>
+        <p><strong>Genre:</strong> Roguelike action RPG</p>
+        <p><strong>Platform:</strong> PC, Switch, then PS, Xbox</p>
+        <p><strong>USP:</strong></p>
+        <ul>
+          <li>Story integrated với roguelike - mỗi death tiến triển narrative</li>
+          <li>Fast, fluid combat từ studio Bastion/Transistor/Pyre</li>
+          <li>Greek mythology với art direction độc đáo</li>
+        </ul>
+        <p><strong>Inspiration:</strong> Dead Cells (combat) meets Slay the Spire (progression) meets Greek tragedy.</p>
+      </div>
+
+      <h3>19.5. Anti-patterns trong GDD</h3>
+      <div class="danger-box" data-title="❌ Tránh xa">
+        <ul>
+          <li><strong>"Bible mentality":</strong> 500 trang viết 1 năm, không ai đọc</li>
+          <li><strong>Marketing language:</strong> "Stunning graphics", "amazing gameplay" - vô nghĩa</li>
+          <li><strong>"It's like X but better":</strong> Lười suy nghĩ</li>
+          <li><strong>Too vague:</strong> "Game sẽ vui" không phải design</li>
+          <li><strong>Too specific too early:</strong> "Đạn rocket damage 47.3" trước khi test</li>
+          <li><strong>No iteration tracking:</strong> Không biết version nào mới</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 20: CAREER -->
+    <section id="career" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 20</span>
+        <h2>Portfolio & Career</h2>
+      </div>
+
+      <p>Game industry là ngành <strong>portfolio-driven</strong>. Bằng cấp ít quan trọng. Cái bạn ĐÃ LÀM mới là tiền tệ.</p>
+
+      <h3>20.1. Portfolio cho Game Designer</h3>
+
+      <div class="card-item">
+        <h4>📋 Nội dung Portfolio nên có:</h4>
+        <ol>
+          <li><strong>3-5 game đã làm</strong> (đăng itch.io / Steam)</li>
+          <li><strong>1 game riêng solo</strong> chứng minh end-to-end skill</li>
+          <li><strong>1-2 game làm team</strong> chứng minh teamwork</li>
+          <li><strong>Game Jam entries</strong> chứng minh nhanh nhạy</li>
+          <li><strong>Design analysis</strong> của 5+ game thương mại</li>
+          <li><strong>Sample GDD</strong> hoặc feature spec</li>
+          <li><strong>Mod / community work</strong> nếu có</li>
+        </ol>
+      </div>
+
+      <h3>20.2. Cách build Portfolio</h3>
+      <div class="steps">
+        <div class="step">
+          <h4>Bắt đầu nhỏ</h4>
+          <p>Clone Pong, Snake, Tetris. Mục tiêu: hoàn thành, học engine.</p>
+        </div>
+        <div class="step">
+          <h4>Game Jam x 3-5</h4>
+          <p>Mỗi jam = 1 game small. Portfolio nhanh có 3-5 entry.</p>
+        </div>
+        <div class="step">
+          <h4>1 Solo Project hoàn chỉnh</h4>
+          <p>Game 1-3 tháng. Có start menu, gameplay, end screen. Đăng itch.io.</p>
+        </div>
+        <div class="step">
+          <h4>Team project</h4>
+          <p>Tham gia team indie / mod community. Chứng minh teamwork.</p>
+        </div>
+        <div class="step">
+          <h4>Design Documentation</h4>
+          <p>Viết Medium/Substack/Blog phân tích game. Pin GDD samples.</p>
+        </div>
+        <div class="step">
+          <h4>Website Portfolio</h4>
+          <p>Notion, Webflow, hay HTML đơn giản. Có: About, Projects, Blog, Contact.</p>
+        </div>
+      </div>
+
+      <h3>20.3. Lộ trình Career</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌱 Junior Designer (0-2 năm)</h4>
+          <ul>
+            <li>Implement design đã sẵn</li>
+            <li>Documentation tasks</li>
+            <li>Balance tweaking</li>
+            <li>Support senior</li>
+            <li><strong>Lương:</strong> 12-22tr VN, $50-80k US</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🌿 Mid-level (2-5 năm)</h4>
+          <ul>
+            <li>Own feature từ A-Z</li>
+            <li>Lead small team</li>
+            <li>Cross-discipline communication</li>
+            <li><strong>Lương:</strong> 25-45tr VN, $80-130k US</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🌳 Senior (5-10 năm)</h4>
+          <ul>
+            <li>Lead major systems</li>
+            <li>Mentor junior</li>
+            <li>Strategic decisions</li>
+            <li><strong>Lương:</strong> 45-80tr VN, $130-200k US</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🎯 Lead / Director (10+ năm)</h4>
+          <ul>
+            <li>Vision của game</li>
+            <li>Lead team 5-50+</li>
+            <li>Stakeholder communication</li>
+            <li><strong>Lương:</strong> 80tr-250tr+ VN, $200-500k+ US</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>20.4. Phỏng vấn Game Designer</h3>
+
+      <h4>Câu hỏi thường gặp:</h4>
+      <ul>
+        <li>"Tell me about your favorite game and what design lessons you learn"</li>
+        <li>"How would you improve [popular game]?"</li>
+        <li>"Design a game in 5 minutes" (whiteboard)</li>
+        <li>"Walk through your design process"</li>
+        <li>"How do you handle disagreement with engineer/artist?"</li>
+        <li>"What would you do if your design isn't fun in playtest?"</li>
+        <li>"Critique this game" (cho 1 game cụ thể)</li>
+      </ul>
+
+      <h4>Design Test (Take-home)</h4>
+      <p>Studio sẽ gửi 1 design challenge - viết spec hoặc làm prototype trong 1-7 ngày.</p>
+      <ul>
+        <li>Đừng over-engineer</li>
+        <li>Trình bày clear, có hình minh họa</li>
+        <li>Show iteration ("V1 tôi nghĩ X, sau khi xem xét, V2 là Y vì Z")</li>
+        <li>Acknowledge limitations</li>
+      </ul>
+
+      <h3>20.5. Studios &amp; Networks tại VN</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🏢 Top Studios VN</h4>
+          <ul>
+            <li><strong>VNG:</strong> Mobile games, casino-style</li>
+            <li><strong>Garena (Sea):</strong> Publish, không phát triển nhiều</li>
+            <li><strong>Sky Mavis:</strong> Axie Infinity, Web3</li>
+            <li><strong>Amanotes:</strong> Music game (Magic Tiles 3)</li>
+            <li><strong>Wolffun:</strong> Tank Royale, blockchain</li>
+            <li><strong>Gameloft VN:</strong> Outsourcing cho parent</li>
+            <li><strong>Hiker Games:</strong> 7554, dò mìn</li>
+            <li><strong>Sparx*:</strong> Outsource AAA (cho Naughty Dog, Crystal Dynamics)</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🌐 Remote &amp; International</h4>
+          <ul>
+            <li>LinkedIn jobs ("Remote Game Designer")</li>
+            <li>Hitmarker.net (gaming jobs)</li>
+            <li>Work With Indies</li>
+            <li>Gamasutra Jobs</li>
+            <li>Twitter/X #gamedevjobs</li>
+            <li>Game developer subreddits</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>20.6. Học liệu &amp; Cộng đồng</h3>
+      <div class="info-box" data-title="📚 Resources không thể bỏ qua">
+        <h4>📖 Sách must-read:</h4>
+        <ul>
+          <li>"The Art of Game Design" - Jesse Schell (Bible)</li>
+          <li>"A Theory of Fun for Game Design" - Raph Koster</li>
+          <li>"Rules of Play" - Salen &amp; Zimmerman</li>
+          <li>"Game Feel" - Steve Swink</li>
+          <li>"Designing Games" - Tynan Sylvester</li>
+          <li>"Level Up!" - Scott Rogers</li>
+          <li>"Hooked" - Nir Eyal (psychology, controversial)</li>
+        </ul>
+        <h4>🎥 YouTube channels:</h4>
+        <ul>
+          <li>Game Maker's Toolkit (Mark Brown)</li>
+          <li>Extra Credits</li>
+          <li>Architect of Games</li>
+          <li>Adam Millard - The Architect of Games</li>
+          <li>Snoman Gaming</li>
+          <li>Masahiro Sakurai on Creating Games</li>
+        </ul>
+        <h4>🌐 Web:</h4>
+        <ul>
+          <li>Gamasutra / Game Developer (articles)</li>
+          <li>GDC Vault (talks miễn phí)</li>
+          <li>r/gamedesign subreddit</li>
+          <li>itch.io devlog</li>
+          <li>Lost Garden blog (Daniel Cook)</li>
+        </ul>
+      </div>
+
+      <h3>20.7. Bí quyết success</h3>
+      <div class="tip-box" data-title="🏆 Mantra của Industry">
+        <ol>
+          <li><strong>Ship games:</strong> Hoàn thành quan trọng hơn perfect. 1 game finished &gt; 10 game half-done.</li>
+          <li><strong>Play widely:</strong> Chơi nhiều thể loại. Bad game cũng dạy bạn nhiều.</li>
+          <li><strong>Analyze, don't just play:</strong> Mỗi game hỏi "Tại sao họ làm vậy?"</li>
+          <li><strong>Be a communicator:</strong> Designer giỏi nhất giỏi GIẢI THÍCH hơn THIẾT KẾ.</li>
+          <li><strong>Network:</strong> Game industry nhỏ. Reputation là tất cả.</li>
+          <li><strong>Stay humble:</strong> Game của bạn không vui = vấn đề của bạn, không phải player.</li>
+          <li><strong>Iterate:</strong> First idea always wrong. Second usually wrong. Tenth often right.</li>
+          <li><strong>Take care of yourself:</strong> Burn-out là epidemic trong ngành. Pace yourself.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 21: QUIZ -->
+    <section id="quiz" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 21</span>
+        <h2>Bài Kiểm Tra Cuối Khóa</h2>
+      </div>
+
+      <p>15 câu hỏi kiểm tra kiến thức Game Design. Click vào đáp án để biết kết quả ngay.</p>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 1: MDA framework gồm những thành phần nào?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Mechanics, Design, Art</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Mechanics, Dynamics, Aesthetics</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Money, Design, Audience</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Method, Data, Analytics</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 2: "Core Loop" trong game design là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Vòng lặp chính của code</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Chuỗi hành động lặp lại mà player thực hiện liên tục</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Hệ thống save/load</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Vòng đời nhân vật</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 3: "Flow state" xảy ra khi:</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Challenge thấp hơn skill</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Challenge cao hơn skill</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Challenge tương đương với skill</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Player chơi 10+ giờ liên tục</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 4: "Ludonarrative dissonance" là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Game lag</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Âm thanh trong game</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Mâu thuẫn giữa gameplay và narrative</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Player rage quit</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 5: Theo Bartle Taxonomy, ai chiếm tỉ lệ cao nhất?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Achievers</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Explorers</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Socializers</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Killers</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 6: "Greybox" trong level design có nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Level chỉ có 1 màu xám</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Level dựng bằng khối hộp xám, focus gameplay trước art</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Level bị bug</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Level cuối game</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 7: Trong F2P, "Whales" là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Player chơi nhiều giờ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Player chi nhiều tiền (chiếm 1-2% nhưng 50-70% doanh thu)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Boss trong game</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Game thể loại sinh tồn</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 8: Variable Ratio reward schedule gây nghiện nhất là khái niệm của ai?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Jesse Schell</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Sid Meier</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. B.F. Skinner</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Shigeru Miyamoto</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 9: "TTK" trong shooter có nghĩa là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Total Trigger Kicks</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Time To Kill</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Top Tier Kill</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Target Tracking Key</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 10: Loại UI nào "tồn tại trong world của nhân vật"?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Non-diegetic</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Diegetic</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Spatial</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Meta</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 11: Trong playtest, nguyên tắc vàng là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Giải thích cho player chơi đúng</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Hỏi player có thích game không</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Không can thiệp, quan sát hành động</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Cho player chơi với cheat</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 12: "Power Creep" là vấn đề khi:</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Game chạy chậm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Unit mới luôn mạnh hơn unit cũ, khiến cũ vô dụng</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Player level lên quá nhanh</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Boss quá khó</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 13: Engine nào phù hợp nhất cho người mới học game design?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Custom C++ engine</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Unreal Engine 5</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Unity hoặc Godot</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. CryEngine</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 14: "Hit Stop" hay "Hit Pause" có mục đích gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cho game đỡ lag</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Tạo cảm giác trọng lượng và impact khi va chạm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Cho player nghỉ ngơi</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Hiển thị quảng cáo</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 15: Cách build portfolio tốt nhất cho Game Designer mới là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Học 5 năm đại học game design</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Đọc 100 cuốn sách lý thuyết</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Ship nhiều game nhỏ + tham gia Game Jam</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Mua portfolio template đẹp</div>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🎓 Chúc mừng hoàn thành khóa học!">
+        <p><strong>Bạn vừa hoàn thành 21 chương Game Design toàn diện.</strong> Đây mới là <em>khởi đầu</em> - game design là hành trình học suốt đời.</p>
+        <p style="margin-top: 15px;"><strong>Hành động ngay sau khóa học:</strong></p>
+        <ol>
+          <li>Chọn 1 engine (Unity/Godot) và làm theo 5 tutorial cơ bản</li>
+          <li>Tham gia 1 Game Jam (Ludum Dare, GMTK) trong 90 ngày tới</li>
+          <li>Phân tích 5 game yêu thích - viết Game Analysis trên Medium</li>
+          <li>Đọc "The Art of Game Design" - Jesse Schell (sách bible)</li>
+          <li>Subscribe Game Maker's Toolkit, Extra Credits trên YouTube</li>
+          <li>Tham gia r/gamedesign, server Discord cộng đồng VN/quốc tế</li>
+          <li>Bắt đầu blog/devlog cá nhân - document hành trình của bạn</li>
+          <li>Apply intern ở 1 studio sau 6-12 tháng practice</li>
+        </ol>
+      </div>
+
+      <div style="text-align: center; margin: 40px 0;">
+        <div style="font-size: 64px; margin-bottom: 20px;">🎮</div>
+        <p style="font-size: 20px; color: var(--primary-glow); font-weight: 700; text-shadow: 0 0 20px rgba(192, 132, 252, 0.5);">"Every great game started as a small idea. What's yours?"</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>🎮 Khóa Học Game Design Toàn Diện | © 2026</p>
+      <p style="margin-top: 10px; font-size: 14px;">"Players don't remember features. They remember moments."</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+  });
+
+  const sections = document.querySelectorAll('.chapter');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  let quizScore = 0;
+  let quizAnswered = new Set();
+  let totalQuizQuestions = 0;
+
+  function checkAnswer(element, isCorrect) {
+    const quizId = element.closest('.quiz').querySelector('.quiz-question').textContent;
+    if (quizAnswered.has(quizId)) return;
+    quizAnswered.add(quizId);
+
+    const options = element.parentElement.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+      element.classList.add('correct');
+      quizScore++;
+    } else {
+      element.classList.add('wrong');
+      options.forEach(opt => {
+        if (opt.getAttribute('onclick').includes('true')) opt.classList.add('correct');
+      });
+    }
+
+    if (quizAnswered.size === totalQuizQuestions) {
+      setTimeout(() => {
+        const pct = Math.round((quizScore/totalQuizQuestions)*100);
+        alert(`🎮 Bạn đạt ${quizScore}/${totalQuizQuestions} điểm (${pct}%)!\n\n${
+          pct >= 90 ? '🏆 Xuất sắc! Bạn sẵn sàng làm Senior Game Designer!' :
+          pct >= 75 ? '🎯 Tốt lắm! Bạn đã nắm vững kiến thức nền tảng.' :
+          pct >= 50 ? '📚 Khá ổn! Hãy đọc lại các chương khó.' :
+          '💪 Đừng nản! Hãy đọc lại khóa học và thử lại.'
+        }`);
+      }, 500);
+    }
+  }
+
+  window.addEventListener('load', () => {
+    totalQuizQuestions = document.querySelectorAll('.quiz').length;
+  });
+</script>
+
+</body>
+</html>

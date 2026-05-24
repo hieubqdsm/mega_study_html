@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học In 3D Toàn Diện - Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #00d4ff;
+    --secondary: #7c3aed;
+    --accent: #f59e0b;
+    --dark: #0f172a;
+    --darker: #020617;
+    --light: #f1f5f9;
+    --gray: #94a3b8;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --card: #1e293b;
+    --border: #334155;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  /* Layout */
+  .container { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 300px;
+    background: linear-gradient(180deg, var(--dark) 0%, #1a1f3a 100%);
+    padding: 30px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid var(--border);
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo {
+    text-align: center;
+    padding: 0 20px 30px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .logo h1 {
+    font-size: 24px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+  }
+  .logo p { font-size: 12px; color: var(--gray); margin-top: 5px; }
+  .nav-menu { list-style: none; padding: 0 15px; }
+  .nav-menu li { margin-bottom: 5px; }
+  .nav-menu a {
+    display: block;
+    padding: 12px 15px;
+    color: var(--gray);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+    font-size: 14px;
+    border-left: 3px solid transparent;
+  }
+  .nav-menu a:hover, .nav-menu a.active {
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--primary);
+    border-left-color: var(--primary);
+    transform: translateX(5px);
+  }
+  .nav-menu .chapter-num {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    background: var(--card);
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .main-content {
+    margin-left: 300px;
+    flex: 1;
+    padding: 40px 60px;
+    max-width: calc(100% - 300px);
+  }
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+    padding: 80px 40px;
+    border-radius: 20px;
+    margin-bottom: 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,0.03) 35px, rgba(255,255,255,0.03) 70px);
+    animation: slide 20s linear infinite;
+  }
+  @keyframes slide {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+  }
+  .hero h1 { font-size: 48px; margin-bottom: 20px; position: relative; z-index: 1; }
+  .hero p { font-size: 20px; opacity: 0.95; position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 20px 30px;
+    border-radius: 12px;
+    min-width: 140px;
+  }
+  .stat-num { font-size: 32px; font-weight: 800; display: block; }
+  .stat-label { font-size: 14px; opacity: 0.9; }
+  /* Chapters */
+  .chapter {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    scroll-margin-top: 20px;
+  }
+  .chapter-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .chapter-badge {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .chapter h2 {
+    font-size: 32px;
+    color: var(--primary);
+    flex: 1;
+  }
+  .chapter h3 {
+    font-size: 22px;
+    color: var(--accent);
+    margin: 30px 0 15px;
+    padding-left: 15px;
+    border-left: 4px solid var(--accent);
+  }
+  .chapter h4 {
+    font-size: 18px;
+    color: var(--primary);
+    margin: 20px 0 10px;
+  }
+  .chapter p { margin-bottom: 15px; color: #cbd5e1; }
+  .chapter ul, .chapter ol {
+    margin: 15px 0 20px 25px;
+    color: #cbd5e1;
+  }
+  .chapter li { margin-bottom: 8px; }
+  .chapter strong { color: var(--primary); }
+  /* Boxes */
+  .info-box, .warning-box, .tip-box, .danger-box {
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 5px solid;
+  }
+  .info-box {
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--primary);
+  }
+  .warning-box {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--warning);
+  }
+  .tip-box {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+  }
+  .danger-box {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger);
+  }
+  .info-box::before, .warning-box::before, .tip-box::before, .danger-box::before {
+    content: attr(data-title);
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 16px;
+  }
+  .info-box::before { color: var(--primary); }
+  .warning-box::before { color: var(--warning); }
+  .tip-box::before { color: var(--success); }
+  .danger-box::before { color: var(--danger); }
+  /* Grid */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin: 20px 0;
+  }
+  .card-item {
+    background: var(--dark);
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .card-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+    box-shadow: 0 10px 20px rgba(0, 212, 255, 0.2);
+  }
+  .card-item h4 {
+    color: var(--primary);
+    margin-bottom: 10px;
+  }
+  .card-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: var(--dark);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: white;
+    font-weight: 700;
+  }
+  tr:hover { background: rgba(0, 212, 255, 0.05); }
+  /* Code blocks */
+  .code-block {
+    background: #0a0e27;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 14px;
+    margin: 15px 0;
+    overflow-x: auto;
+    color: #a5f3fc;
+    position: relative;
+  }
+  .code-block::before {
+    content: 'CODE';
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 11px;
+    color: var(--gray);
+    letter-spacing: 2px;
+  }
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+    margin: 30px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--primary), var(--secondary));
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 30px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 0 4px var(--card);
+  }
+  .timeline-year {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  /* Steps */
+  .steps {
+    counter-reset: step;
+    margin: 20px 0;
+  }
+  .step {
+    counter-increment: step;
+    padding: 20px 20px 20px 70px;
+    background: var(--dark);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 4px solid var(--primary);
+  }
+  .step::before {
+    content: counter(step);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: white;
+  }
+  .step h4 { color: var(--primary); margin-bottom: 5px; }
+  /* Progress bar */
+  .progress-section {
+    position: fixed;
+    top: 0;
+    left: 300px;
+    right: 0;
+    height: 4px;
+    background: var(--dark);
+    z-index: 99;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    width: 0%;
+    transition: width 0.1s;
+  }
+  /* Quiz */
+  .quiz {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(0, 212, 255, 0.1));
+    border: 2px solid var(--secondary);
+    border-radius: 16px;
+    padding: 25px;
+    margin: 25px 0;
+  }
+  .quiz-question {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--primary);
+  }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-option {
+    padding: 12px 18px;
+    background: var(--dark);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .quiz-option:hover {
+    border-color: var(--primary);
+    transform: translateX(5px);
+  }
+  .quiz-option.correct {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: var(--success);
+    color: var(--success);
+  }
+  .quiz-option.wrong {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+  /* Mobile */
+  .menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 200;
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  @media (max-width: 1024px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; padding: 70px 20px 20px; }
+    .menu-toggle { display: block; }
+    .progress-section { left: 0; }
+    .hero h1 { font-size: 32px; }
+    .hero p { font-size: 16px; }
+    .chapter { padding: 25px 20px; }
+    .chapter h2 { font-size: 24px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .hero-stats { gap: 15px; }
+    .stat { padding: 15px 20px; min-width: 120px; }
+  }
+  /* Animation on scroll */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+  }
+  /* Print-specific decoration */
+  .printer-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  /* Badge */
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: 5px;
+  }
+  .badge-easy { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+  .badge-medium { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+  .badge-hard { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="toggleMenu()">☰</button>
+
+<div class="progress-section">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">
+      <h1>🖨️ 3D PRINT</h1>
+      <p>Khóa Học Toàn Diện</p>
+    </div>
+    <ul class="nav-menu">
+      <li><a href="#intro" class="active"><span class="chapter-num">1</span>Giới thiệu In 3D</a></li>
+      <li><a href="#history"><span class="chapter-num">2</span>Lịch sử phát triển</a></li>
+      <li><a href="#technologies"><span class="chapter-num">3</span>Các công nghệ in 3D</a></li>
+      <li><a href="#materials"><span class="chapter-num">4</span>Vật liệu in 3D</a></li>
+      <li><a href="#anatomy"><span class="chapter-num">5</span>Cấu tạo máy in</a></li>
+      <li><a href="#modeling"><span class="chapter-num">6</span>Phần mềm mô hình 3D</a></li>
+      <li><a href="#slicer"><span class="chapter-num">7</span>Phần mềm Slicer</a></li>
+      <li><a href="#workflow"><span class="chapter-num">8</span>Quy trình in 3D</a></li>
+      <li><a href="#settings"><span class="chapter-num">9</span>Cài đặt in chi tiết</a></li>
+      <li><a href="#supports"><span class="chapter-num">10</span>Cấu trúc đỡ (Support)</a></li>
+      <li><a href="#calibration"><span class="chapter-num">11</span>Hiệu chỉnh máy in</a></li>
+      <li><a href="#troubleshooting"><span class="chapter-num">12</span>Khắc phục lỗi</a></li>
+      <li><a href="#postprocessing"><span class="chapter-num">13</span>Xử lý hậu kỳ</a></li>
+      <li><a href="#advanced"><span class="chapter-num">14</span>Kỹ thuật nâng cao</a></li>
+      <li><a href="#safety"><span class="chapter-num">15</span>An toàn lao động</a></li>
+      <li><a href="#business"><span class="chapter-num">16</span>Kinh doanh in 3D</a></li>
+      <li><a href="#quiz"><span class="chapter-num">17</span>Bài kiểm tra</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <!-- HERO -->
+    <section class="hero">
+      <span class="printer-icon">🖨️</span>
+      <h1>KHÓA HỌC IN 3D TOÀN DIỆN</h1>
+      <p>Từ kiến thức cơ bản đến nâng cao - Trở thành chuyên gia in 3D trong 17 chương học có hệ thống</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">17</span>
+          <span class="stat-label">Chương học</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">100+</span>
+          <span class="stat-label">Khái niệm</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">50+</span>
+          <span class="stat-label">Mẹo thực hành</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">∞</span>
+          <span class="stat-label">Sáng tạo</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 1: GIỚI THIỆU -->
+    <section id="intro" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 1</span>
+        <h2>Giới Thiệu Về In 3D</h2>
+      </div>
+
+      <h3>1.1. In 3D là gì?</h3>
+      <p><strong>In 3D (3D Printing)</strong>, còn gọi là <strong>Sản xuất bồi đắp (Additive Manufacturing - AM)</strong>, là quá trình tạo ra vật thể ba chiều từ mô hình kỹ thuật số bằng cách đắp chồng từng lớp vật liệu lên nhau.</p>
+
+      <div class="info-box" data-title="💡 Khái niệm cốt lõi">
+        Khác với gia công truyền thống (cắt gọt - subtractive manufacturing) loại bỏ vật liệu từ khối lớn, in 3D <strong>thêm vật liệu</strong> từng lớp để tạo hình. Điều này cho phép tạo ra hình dạng phức tạp mà các phương pháp khác không thể.
+      </div>
+
+      <h3>1.2. Tại sao nên học In 3D?</h3>
+      <div class="grid-3">
+        <div class="card-item">
+          <span class="card-icon">🚀</span>
+          <h4>Sáng tạo không giới hạn</h4>
+          <p>Biến ý tưởng thành sản phẩm thực tế chỉ trong vài giờ.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">💰</span>
+          <h4>Tiết kiệm chi phí</h4>
+          <p>Sản xuất nguyên mẫu, phụ tùng với giá rẻ hơn nhiều lần.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🎯</span>
+          <h4>Cá nhân hóa</h4>
+          <p>Tùy chỉnh sản phẩm theo nhu cầu cụ thể của từng cá nhân.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🏭</span>
+          <h4>Cơ hội nghề nghiệp</h4>
+          <p>Thị trường in 3D toàn cầu dự kiến đạt 80 tỷ USD vào 2030.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">🌱</span>
+          <h4>Giảm lãng phí</h4>
+          <p>Chỉ sử dụng đúng lượng vật liệu cần thiết, thân thiện môi trường.</p>
+        </div>
+        <div class="card-item">
+          <span class="card-icon">📚</span>
+          <h4>Học tập STEM</h4>
+          <p>Kết hợp Khoa học, Công nghệ, Kỹ thuật và Toán học.</p>
+        </div>
+      </div>
+
+      <h3>1.3. Ứng dụng của In 3D</h3>
+      <ul>
+        <li><strong>Y tế:</strong> Răng giả, chân tay giả, mô hình giải phẫu, in mô sinh học</li>
+        <li><strong>Hàng không vũ trụ:</strong> Linh kiện máy bay, vệ tinh, động cơ rocket</li>
+        <li><strong>Ô tô:</strong> Prototype, phụ tùng tùy chỉnh, sản xuất hàng loạt nhẹ</li>
+        <li><strong>Kiến trúc:</strong> Mô hình kiến trúc, in nhà ở quy mô lớn</li>
+        <li><strong>Thời trang:</strong> Trang sức, giày dép, phụ kiện thiết kế độc đáo</li>
+        <li><strong>Giáo dục:</strong> Mô hình giảng dạy, học cụ tương tác</li>
+        <li><strong>Đồ chơi & Sưu tầm:</strong> Figure, cosplay props, board game pieces</li>
+        <li><strong>Thực phẩm:</strong> Chocolate, bánh ngọt, mì pasta tạo hình</li>
+      </ul>
+
+      <div class="tip-box" data-title="🎓 Mẹo cho người mới">
+        Bắt đầu với một máy in FDM giá rẻ (~3-7 triệu VND) như Creality Ender 3, Anycubic Kobra Neo, hoặc Bambu Lab A1 mini. Đây là cách rẻ nhất để học và thực hành.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 2: LỊCH SỬ -->
+    <section id="history" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 2</span>
+        <h2>Lịch Sử Phát Triển</h2>
+      </div>
+
+      <p>In 3D có lịch sử hơn 40 năm với những bước phát triển đột phá. Hiểu lịch sử giúp bạn nắm được tại sao các công nghệ hiện tại tồn tại.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-year">1981</div>
+          <p><strong>Hideo Kodama</strong> (Nhật Bản) công bố nghiên cứu đầu tiên về tạo mẫu nhanh bằng polymer cảm quang - tiền đề của công nghệ SLA.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1984</div>
+          <p><strong>Chuck Hull</strong> phát minh ra công nghệ <strong>Stereolithography (SLA)</strong> - được coi là cha đẻ của ngành in 3D. Ông sau này sáng lập 3D Systems.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1988</div>
+          <p>Chiếc máy in 3D thương mại đầu tiên <strong>SLA-1</strong> được bán bởi 3D Systems với giá hơn 100,000 USD.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1989</div>
+          <p><strong>Scott Crump</strong> phát minh ra công nghệ <strong>Fused Deposition Modeling (FDM)</strong> và thành lập Stratasys - công nghệ phổ biến nhất hiện nay.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">1992</div>
+          <p>Công nghệ <strong>Selective Laser Sintering (SLS)</strong> được DTM Corporation thương mại hóa, cho phép in bằng bột nylon.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2005</div>
+          <p>Dự án <strong>RepRap</strong> của Adrian Bowyer khởi động - mục tiêu tạo máy in 3D tự sao chép mã nguồn mở, đặt nền móng cho phong trào in 3D đại chúng.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2009</div>
+          <p>Bằng sáng chế FDM hết hạn, mở đường cho hàng loạt máy in 3D giá rẻ. <strong>MakerBot</strong> ra mắt Cupcake CNC.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2014</div>
+          <p>Công nghệ <strong>CLIP (Continuous Liquid Interface Production)</strong> ra đời từ Carbon3D - nhanh hơn SLA 25-100 lần.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2018-2020</div>
+          <p>Máy in 3D trở nên phổ cập với giá &lt; 200 USD. Ender 3 trở thành "iPhone của in 3D" với hàng triệu chiếc bán ra.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-year">2022-2026</div>
+          <p>Kỷ nguyên máy in tốc độ cao với <strong>Bambu Lab X1</strong>, <strong>Prusa MK4</strong>. Tốc độ in tăng 5-10 lần. AI tích hợp tự phát hiện lỗi. Multi-material printing trở nên phổ biến.</p>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🔥 Sự thật thú vị">
+        NASA đã mang máy in 3D lên Trạm Vũ trụ Quốc tế (ISS) năm 2014 để sản xuất công cụ ngoài không gian. Năm 2024, các nhà khoa học đã in thành công thịt bò Wagyu nhân tạo.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 3: CÔNG NGHỆ -->
+    <section id="technologies" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 3</span>
+        <h2>Các Công Nghệ In 3D</h2>
+      </div>
+
+      <p>Có hơn 10 công nghệ in 3D khác nhau, mỗi loại có ưu nhược điểm riêng. Chúng ta sẽ tập trung vào những công nghệ phổ biến nhất.</p>
+
+      <h3>3.1. FDM/FFF - Fused Deposition Modeling</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>Nguyên lý:</strong> Đùn nóng chảy sợi nhựa (filament) qua đầu phun (nozzle), đắp từng lớp lên bàn in.</p>
+          <h4>✅ Ưu điểm:</h4>
+          <ul>
+            <li>Giá rẻ nhất (máy từ 3 triệu VND)</li>
+            <li>Đa dạng vật liệu (PLA, ABS, PETG, TPU...)</li>
+            <li>Dễ học, cộng đồng lớn</li>
+            <li>Vật liệu rẻ (~300k VND/kg)</li>
+          </ul>
+        </div>
+        <div>
+          <h4>❌ Nhược điểm:</h4>
+          <ul>
+            <li>Độ phân giải thấp hơn SLA</li>
+            <li>Có thể nhìn thấy đường lớp</li>
+            <li>Yêu cầu support cho overhang lớn</li>
+            <li>Tốc độ trung bình</li>
+          </ul>
+          <h4>🎯 Phù hợp với:</h4>
+          <p>Người mới, prototype, đồ chơi, đồ gia dụng, mô hình kiến trúc.</p>
+        </div>
+      </div>
+
+      <h3>3.2. SLA - Stereolithography</h3>
+      <div class="grid-2">
+        <div>
+          <p><strong>Nguyên lý:</strong> Tia laser UV cứng hóa nhựa lỏng (resin) cảm quang từng điểm theo lớp.</p>
+          <h4>✅ Ưu điểm:</h4>
+          <ul>
+            <li>Độ phân giải cực cao (25-100 micron)</li>
+            <li>Bề mặt mịn, không thấy đường lớp</li>
+            <li>Phù hợp chi tiết nhỏ phức tạp</li>
+          </ul>
+        </div>
+        <div>
+          <h4>❌ Nhược điểm:</h4>
+          <ul>
+            <li>Resin độc hại, cần thông gió</li>
+            <li>Cần xử lý hậu kỳ (rửa, cure UV)</li>
+            <li>Vật liệu đắt hơn FDM</li>
+            <li>Khu vực in nhỏ hơn</li>
+          </ul>
+          <h4>🎯 Phù hợp với:</h4>
+          <p>Mô hình minifigure, trang sức, nha khoa, mẫu trưng bày.</p>
+        </div>
+      </div>
+
+      <h3>3.3. MSLA / LCD / DLP</h3>
+      <p>Đây là các biến thể của SLA, sử dụng màn hình LCD hoặc projector DLP thay vì laser. Hiện nay phổ biến hơn SLA truyền thống vì nhanh hơn và rẻ hơn (ví dụ Anycubic Photon, Elegoo Mars).</p>
+
+      <h3>3.4. SLS - Selective Laser Sintering</h3>
+      <p>Sử dụng laser công suất cao để thiêu kết bột nhựa nylon thành lớp. Không cần support vì bột chưa thiêu kết đóng vai trò đỡ. Phù hợp cho sản xuất công nghiệp.</p>
+
+      <h3>3.5. SLM/DMLS - In kim loại</h3>
+      <p>Tương tự SLS nhưng dùng bột kim loại (titan, thép, nhôm). Đắt đỏ, dùng trong hàng không, y tế cấy ghép.</p>
+
+      <h3>3.6. Bảng so sánh các công nghệ</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Công nghệ</th>
+            <th>Vật liệu</th>
+            <th>Độ phân giải</th>
+            <th>Giá máy</th>
+            <th>Phù hợp với</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>FDM</strong></td>
+            <td>Filament nhựa</td>
+            <td>100-300 μm</td>
+            <td>3-50 triệu VND</td>
+            <td>Người mới, hobby, prototype</td>
+          </tr>
+          <tr>
+            <td><strong>SLA/MSLA</strong></td>
+            <td>Resin lỏng</td>
+            <td>25-100 μm</td>
+            <td>5-30 triệu VND</td>
+            <td>Mô hình chi tiết, trang sức</td>
+          </tr>
+          <tr>
+            <td><strong>SLS</strong></td>
+            <td>Bột nylon</td>
+            <td>80-120 μm</td>
+            <td>200tr - 2 tỷ VND</td>
+            <td>Sản xuất công nghiệp</td>
+          </tr>
+          <tr>
+            <td><strong>DMLS/SLM</strong></td>
+            <td>Bột kim loại</td>
+            <td>20-50 μm</td>
+            <td>2-10 tỷ VND</td>
+            <td>Hàng không, y tế</td>
+          </tr>
+          <tr>
+            <td><strong>Material Jetting</strong></td>
+            <td>Photopolymer</td>
+            <td>16-30 μm</td>
+            <td>500tr - 5 tỷ VND</td>
+            <td>Đa màu, đa vật liệu</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- CHƯƠNG 4: VẬT LIỆU -->
+    <section id="materials" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 4</span>
+        <h2>Vật Liệu In 3D</h2>
+      </div>
+
+      <p>Vật liệu là linh hồn của in 3D. Lựa chọn đúng vật liệu quyết định 70% chất lượng và tính năng của sản phẩm.</p>
+
+      <h3>4.1. Filament cho FDM</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🟢 PLA (Polylactic Acid)</h4>
+          <p><span class="badge badge-easy">DỄ IN</span></p>
+          <ul>
+            <li>Nhiệt độ in: 190-220°C</li>
+            <li>Bàn in: 50-60°C (hoặc không cần)</li>
+            <li>Sinh học phân hủy (từ tinh bột ngô)</li>
+            <li>Ít cong vênh, mùi nhẹ</li>
+            <li>Dễ in nhất, phù hợp người mới</li>
+            <li>⚠️ Mềm ở 60°C, không dùng ngoài nắng</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🔵 PETG (Polyethylene Terephthalate Glycol)</h4>
+          <p><span class="badge badge-medium">TRUNG BÌNH</span></p>
+          <ul>
+            <li>Nhiệt độ in: 220-250°C</li>
+            <li>Bàn in: 70-85°C</li>
+            <li>Bền, dẻo dai hơn PLA</li>
+            <li>Chịu được hóa chất, nước</li>
+            <li>An toàn thực phẩm (có loại)</li>
+            <li>⚠️ Dễ bị stringing (kéo sợi)</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🔴 ABS (Acrylonitrile Butadiene Styrene)</h4>
+          <p><span class="badge badge-hard">KHÓ</span></p>
+          <ul>
+            <li>Nhiệt độ in: 230-260°C</li>
+            <li>Bàn in: 95-110°C</li>
+            <li>Cần buồng kín (enclosure)</li>
+            <li>Bền, chịu nhiệt tốt (>100°C)</li>
+            <li>Có thể đánh bóng bằng acetone</li>
+            <li>⚠️ Mùi độc, dễ cong vênh</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🟡 TPU (Thermoplastic Polyurethane)</h4>
+          <p><span class="badge badge-medium">TRUNG BÌNH</span></p>
+          <ul>
+            <li>Nhiệt độ in: 210-240°C</li>
+            <li>Bàn in: 40-60°C</li>
+            <li>Dẻo như cao su (Shore 85A-95A)</li>
+            <li>Phù hợp ốp điện thoại, đệm</li>
+            <li>Cần in chậm (20-30 mm/s)</li>
+            <li>⚠️ Yêu cầu direct drive extruder</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>⚫ Nylon (PA)</h4>
+          <p><span class="badge badge-hard">KHÓ</span></p>
+          <ul>
+            <li>Nhiệt độ in: 240-270°C</li>
+            <li>Bàn in: 70-90°C</li>
+            <li>Cực bền, chịu mài mòn</li>
+            <li>Phù hợp bánh răng, móc khóa</li>
+            <li>⚠️ Hút ẩm cực mạnh, phải sấy khô</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🟠 PC (Polycarbonate)</h4>
+          <p><span class="badge badge-hard">KHÓ</span></p>
+          <ul>
+            <li>Nhiệt độ in: 260-310°C</li>
+            <li>Bàn in: 100-130°C</li>
+            <li>Cực bền, trong suốt</li>
+            <li>Chịu nhiệt >120°C</li>
+            <li>⚠️ Cần máy in cao cấp</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Composite (CF, GF, Wood)</h4>
+          <p><span class="badge badge-medium">TRUNG BÌNH</span></p>
+          <ul>
+            <li>PLA/PETG/Nylon trộn sợi carbon, thủy tinh, gỗ</li>
+            <li>Tăng độ cứng, ngoại hình đẹp</li>
+            <li>⚠️ Cần nozzle thép tôi (hardened steel)</li>
+            <li>Mài mòn nozzle thường nhanh chóng</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>💧 PVA / HIPS (Hỗ trợ tan)</h4>
+          <p><span class="badge badge-medium">TRUNG BÌNH</span></p>
+          <ul>
+            <li>PVA: Tan trong nước</li>
+            <li>HIPS: Tan trong Limonene</li>
+            <li>Dùng làm support trong máy 2 đầu phun</li>
+            <li>⚠️ Đắt, cần bảo quản kín</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>4.2. Resin cho SLA/LCD</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Loại Resin</th>
+            <th>Đặc tính</th>
+            <th>Ứng dụng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Standard Resin</td>
+            <td>Cứng, giòn, rẻ</td>
+            <td>Mô hình trưng bày, minifigure</td>
+          </tr>
+          <tr>
+            <td>Tough/ABS-like Resin</td>
+            <td>Bền, dẻo dai hơn</td>
+            <td>Linh kiện chức năng</td>
+          </tr>
+          <tr>
+            <td>Flexible Resin</td>
+            <td>Dẻo, giống cao su</td>
+            <td>Đệm, ốp lưng</td>
+          </tr>
+          <tr>
+            <td>Dental/Castable</td>
+            <td>An toàn nha khoa / nung chảy được</td>
+            <td>Răng giả, trang sức (cast)</td>
+          </tr>
+          <tr>
+            <td>Water-washable</td>
+            <td>Rửa bằng nước, không cần IPA</td>
+            <td>Người mới học SLA</td>
+          </tr>
+          <tr>
+            <td>High-temp Resin</td>
+            <td>Chịu nhiệt >200°C</td>
+            <td>Khuôn đúc, kỹ thuật</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4.3. Bảo quản vật liệu</h3>
+      <div class="warning-box" data-title="⚠️ Quan trọng">
+        Filament hút ẩm rất mạnh. Filament ẩm tạo ra bọt, popping, in xấu. Hãy bảo quản trong hộp kín có gói hút ẩm silica gel, hoặc dùng máy sấy filament chuyên dụng (60-70°C trong 4-8 giờ tùy loại).
+      </div>
+
+      <ul>
+        <li><strong>PLA, PETG:</strong> Có thể để ngoài nhưng nên cất tủ kín</li>
+        <li><strong>Nylon, PC, TPU:</strong> BẮT BUỘC bảo quản kín, sấy trước khi in</li>
+        <li><strong>Resin:</strong> Tránh ánh sáng UV, đậy nắp kín, để nơi mát</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 5: CẤU TẠO MÁY IN -->
+    <section id="anatomy" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 5</span>
+        <h2>Cấu Tạo Máy In 3D FDM</h2>
+      </div>
+
+      <p>Hiểu cấu tạo máy in giúp bạn vận hành, bảo trì và sửa chữa hiệu quả. Một máy in FDM tiêu chuẩn gồm các bộ phận chính sau.</p>
+
+      <h3>5.1. Khung máy (Frame)</h3>
+      <ul>
+        <li><strong>Kiểu Cartesian:</strong> XYZ chuyển động theo trục vuông góc (Ender 3, Prusa MK4)</li>
+        <li><strong>Kiểu CoreXY:</strong> X và Y chuyển động cùng đầu phun, bàn chỉ di chuyển Z (Voron, Bambu X1) - nhanh hơn</li>
+        <li><strong>Kiểu Delta:</strong> 3 cánh tay điều khiển đầu phun, bàn cố định - in trụ tròn cao</li>
+      </ul>
+
+      <h3>5.2. Hệ thống chuyển động</h3>
+      <ul>
+        <li><strong>Motor bước (Stepper motor):</strong> Thường là NEMA 17, di chuyển chính xác từng bước nhỏ</li>
+        <li><strong>Belt (Dây đai GT2):</strong> Truyền chuyển động cho trục X, Y</li>
+        <li><strong>Leadscrew (Trục vít me):</strong> Di chuyển trục Z chính xác</li>
+        <li><strong>Linear rail/Linear rod:</strong> Đường ray dẫn hướng</li>
+      </ul>
+
+      <h3>5.3. Hệ thống đùn (Extruder)</h3>
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>Bowden Extruder</h4>
+          <p>Motor đùn ở khung máy, đẩy filament qua ống PTFE dài đến hotend.</p>
+          <ul>
+            <li>✅ Đầu in nhẹ → in nhanh hơn</li>
+            <li>❌ Khó in TPU, retraction kém chính xác</li>
+          </ul>
+        </div>
+        <div class="card-item">
+          <h4>Direct Drive Extruder</h4>
+          <p>Motor đùn gắn trực tiếp ngay phía trên hotend.</p>
+          <ul>
+            <li>✅ In tốt mọi vật liệu (kể cả TPU)</li>
+            <li>✅ Retraction chính xác</li>
+            <li>❌ Đầu in nặng → tốc độ giới hạn</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>5.4. Hotend (Đầu phun nóng)</h3>
+      <p>Là bộ phận làm nóng và phun nhựa. Gồm các phần:</p>
+      <ul>
+        <li><strong>Heat block:</strong> Khối kim loại đốt nóng nhựa</li>
+        <li><strong>Heater cartridge:</strong> Thanh nhiệt cung cấp nhiệt</li>
+        <li><strong>Thermistor:</strong> Cảm biến nhiệt độ</li>
+        <li><strong>Nozzle:</strong> Đầu phun, có nhiều kích cỡ (0.2/0.4/0.6/0.8/1.0mm)</li>
+        <li><strong>Heatbreak:</strong> Ngăn nhiệt lan ngược lên trên</li>
+        <li><strong>Heatsink + Fan:</strong> Tản nhiệt phần lạnh</li>
+      </ul>
+
+      <div class="tip-box" data-title="💡 Mẹo chọn nozzle">
+        <strong>0.4mm:</strong> Mặc định, cân bằng giữa tốc độ và chi tiết<br>
+        <strong>0.2mm:</strong> Chi tiết siêu mịn nhưng in chậm gấp 4 lần<br>
+        <strong>0.6-0.8mm:</strong> In nhanh hơn 2-3 lần, phù hợp vật to<br>
+        <strong>Chất liệu:</strong> Brass (rẻ) → Hardened Steel (in CF) → Ruby/Tungsten (cao cấp)
+      </div>
+
+      <h3>5.5. Bàn in (Print Bed)</h3>
+      <ul>
+        <li><strong>Glass bed:</strong> Mặt phẳng, bám PLA tốt khi nóng</li>
+        <li><strong>PEI Sheet:</strong> Bám dính tốt cho hầu hết vật liệu</li>
+        <li><strong>Spring Steel + PEI:</strong> Tháo rời, uốn để lấy print</li>
+        <li><strong>Magnetic Build Plate:</strong> Phổ biến nhất hiện nay</li>
+      </ul>
+
+      <h3>5.6. Bo mạch điều khiển (Mainboard)</h3>
+      <ul>
+        <li><strong>32-bit MCU:</strong> STM32, RP2040 - thay thế 8-bit cũ</li>
+        <li><strong>TMC Driver:</strong> TMC2208/2209 cho motor êm</li>
+        <li><strong>Firmware:</strong> Marlin, Klipper, RepRap, RRF</li>
+      </ul>
+
+      <h3>5.7. Cảm biến và phụ kiện</h3>
+      <ul>
+        <li><strong>BLTouch / Inductive Probe:</strong> Auto-level bàn in</li>
+        <li><strong>Filament sensor:</strong> Phát hiện hết filament</li>
+        <li><strong>Camera:</strong> Giám sát từ xa (Octoprint, Bambu Studio)</li>
+        <li><strong>Accelerometer:</strong> Input shaping (giảm rung)</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 6: PHẦN MỀM MÔ HÌNH 3D -->
+    <section id="modeling" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 6</span>
+        <h2>Phần Mềm Mô Hình 3D</h2>
+      </div>
+
+      <p>Trước khi in, bạn cần file mô hình 3D. Có 3 cách: <strong>(1) Tải về</strong>, <strong>(2) Scan 3D</strong>, hoặc <strong>(3) Tự thiết kế</strong>.</p>
+
+      <h3>6.1. Tải mô hình miễn phí</h3>
+      <ul>
+        <li><strong>Thingiverse:</strong> Lớn nhất, miễn phí, đa dạng</li>
+        <li><strong>Printables.com (Prusa):</strong> Chất lượng cao, có thưởng</li>
+        <li><strong>MakerWorld (Bambu):</strong> UI hiện đại, tích hợp slicer</li>
+        <li><strong>Cults3D:</strong> Mix miễn phí và trả phí</li>
+        <li><strong>MyMiniFactory:</strong> Tập trung minifigure, fantasy</li>
+        <li><strong>Thangs:</strong> Search engine cho file 3D</li>
+      </ul>
+
+      <h3>6.2. Phần mềm thiết kế theo trình độ</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Người mới hoàn toàn - Tinkercad</h4>
+          <p>Miễn phí, chạy trên trình duyệt, kéo thả khối hình. Học trong 1 giờ. Phù hợp trẻ em, học sinh, hobby cơ bản.</p>
+        </div>
+        <div class="step">
+          <h4>Người mới có cơ bản - Fusion 360 (Hobby miễn phí)</h4>
+          <p>Parametric CAD chuyên nghiệp của Autodesk. Học 1-2 tuần để làm chủ. Phù hợp thiết kế kỹ thuật, phụ tùng chính xác.</p>
+        </div>
+        <div class="step">
+          <h4>Thiết kế hữu cơ - Blender (Miễn phí)</h4>
+          <p>Mạnh mẽ, mã nguồn mở. Phù hợp tạo hình mỹ thuật, character, sinh vật, môi trường. Học 2-3 tháng để thành thạo.</p>
+        </div>
+        <div class="step">
+          <h4>Sculpting/Minifigure - ZBrush / Nomad Sculpt</h4>
+          <p>Tạo hình như nặn đất sét. Tốt cho figure, nhân vật chi tiết. ZBrush trả phí, Nomad Sculpt rẻ trên iPad.</p>
+        </div>
+        <div class="step">
+          <h4>Chuyên nghiệp - SolidWorks / Onshape / FreeCAD</h4>
+          <p>Thiết kế kỹ thuật công nghiệp. Onshape miễn phí cho cá nhân, chạy trên cloud. FreeCAD hoàn toàn open source.</p>
+        </div>
+      </div>
+
+      <h3>6.3. Các định dạng file 3D</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Định dạng</th>
+            <th>Đặc điểm</th>
+            <th>Khi nào dùng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>.STL</td>
+            <td>Mesh tam giác, phổ biến nhất, không có màu</td>
+            <td>Tiêu chuẩn cho in 3D</td>
+          </tr>
+          <tr>
+            <td>.OBJ</td>
+            <td>Hỗ trợ texture, màu sắc</td>
+            <td>Mô hình từ Blender, ZBrush</td>
+          </tr>
+          <tr>
+            <td>.3MF</td>
+            <td>Định dạng mới, lưu cả setting in</td>
+            <td>Tốt nhất hiện nay, Bambu/Prusa khuyến nghị</td>
+          </tr>
+          <tr>
+            <td>.STEP/.STP</td>
+            <td>CAD chính xác, không phải mesh</td>
+            <td>Thiết kế kỹ thuật, lắp ghép</td>
+          </tr>
+          <tr>
+            <td>.G-code</td>
+            <td>Lệnh điều khiển máy in (sau khi slice)</td>
+            <td>File cuối cùng nạp vào máy in</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>6.4. Nguyên tắc thiết kế cho in 3D (DfAM)</h3>
+      <ul>
+        <li><strong>Quy tắc 45°:</strong> Overhang &lt; 45° không cần support</li>
+        <li><strong>Độ dày tối thiểu:</strong> Tường ≥ 0.8mm (2 perimeter với nozzle 0.4mm)</li>
+        <li><strong>Lỗ:</strong> Đường kính lỗ in nhỏ hơn thực tế ~0.2mm (do co rút)</li>
+        <li><strong>Bridging:</strong> Nhịp ngang &lt; 50mm có thể in không cần support</li>
+        <li><strong>Hướng in:</strong> Lực kéo dọc đường lớp yếu nhất, thiết kế tránh điều này</li>
+        <li><strong>Khe hở lắp ghép:</strong> 0.2-0.3mm cho khe khít, 0.4-0.5mm cho khe trượt</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 7: SLICER -->
+    <section id="slicer" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 7</span>
+        <h2>Phần Mềm Slicer</h2>
+      </div>
+
+      <p><strong>Slicer</strong> là phần mềm chuyển mô hình 3D (.STL) thành file G-code chứa lệnh điều khiển máy in. Đây là phần mềm quan trọng nhất quyết định chất lượng in.</p>
+
+      <h3>7.1. Top phần mềm Slicer phổ biến</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🌟 Bambu Studio</h4>
+          <p>Miễn phí, hiện đại nhất 2026. Tích hợp tốt với máy Bambu Lab nhưng cũng dùng được cho máy khác. UI trực quan, profile sẵn cho nhiều máy.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌟 OrcaSlicer</h4>
+          <p>Fork của Bambu Studio, mã nguồn mở, cộng đồng phát triển nhanh. Hỗ trợ nhiều máy in, có thêm tính năng calibration.</p>
+        </div>
+        <div class="card-item">
+          <h4>📘 PrusaSlicer</h4>
+          <p>Mã nguồn mở, cực ổn định, profile cho hàng trăm máy. Lý tưởng cho Prusa và các máy DIY.</p>
+        </div>
+        <div class="card-item">
+          <h4>🟦 UltiMaker Cura</h4>
+          <p>Phổ biến nhất từ trước đến nay, hỗ trợ rất nhiều máy in giá rẻ. Plugin phong phú.</p>
+        </div>
+        <div class="card-item">
+          <h4>🟪 Simplify3D</h4>
+          <p>Trả phí ($199), có lợi thế quản lý support nâng cao, nhiều process trong 1 file.</p>
+        </div>
+        <div class="card-item">
+          <h4>🟧 Chitubox / Lychee Slicer</h4>
+          <p>Dành cho máy SLA/LCD. Hỗ trợ tốt cho hollowing, drainage hole, support cho resin.</p>
+        </div>
+      </div>
+
+      <h3>7.2. Các bước slice cơ bản</h3>
+      <div class="steps">
+        <div class="step">
+          <h4>Import mô hình</h4>
+          <p>Kéo thả file STL/3MF vào slicer. Có thể nhập nhiều mô hình cùng lúc.</p>
+        </div>
+        <div class="step">
+          <h4>Chọn máy in và vật liệu</h4>
+          <p>Chọn đúng máy in (Ender 3, Bambu A1...) và filament (PLA, PETG...).</p>
+        </div>
+        <div class="step">
+          <h4>Định vị mô hình</h4>
+          <p>Xoay, di chuyển, scale. Hướng đặt ảnh hưởng lớn đến chất lượng và support.</p>
+        </div>
+        <div class="step">
+          <h4>Cài đặt thông số in</h4>
+          <p>Layer height, infill, support, speed... (xem chương 9)</p>
+        </div>
+        <div class="step">
+          <h4>Slice và preview</h4>
+          <p>Bấm Slice. Xem preview từng lớp để kiểm tra trước khi in.</p>
+        </div>
+        <div class="step">
+          <h4>Xuất G-code</h4>
+          <p>Lưu file vào thẻ SD, USB, hoặc gửi WiFi/cloud đến máy in.</p>
+        </div>
+      </div>
+
+      <h3>7.3. Ví dụ G-code</h3>
+      <div class="code-block">
+; Start G-code
+G28 ; Home all axes
+G1 Z15.0 F6000 ; Nâng đầu phun lên 15mm
+M104 S210 ; Đặt nhiệt độ nozzle 210°C
+M140 S60 ; Đặt nhiệt độ bàn 60°C
+M109 S210 ; Chờ nozzle đạt 210°C
+M190 S60 ; Chờ bàn đạt 60°C
+G92 E0 ; Reset vị trí extruder
+
+; In lớp đầu tiên
+G1 X10 Y10 Z0.2 F3000
+G1 X50 Y10 E2.5 F1500 ; Đùn nhựa khi di chuyển
+G1 X50 Y50 E5.0 F1500
+G1 X10 Y50 E7.5 F1500
+G1 X10 Y10 E10.0 F1500
+
+; End G-code
+M104 S0 ; Tắt nozzle
+M140 S0 ; Tắt bàn
+G28 X0 Y0 ; Home X, Y
+M84 ; Tắt motor
+      </div>
+
+      <div class="info-box" data-title="📚 Giải thích G-code">
+        <strong>G28:</strong> Home (về vị trí gốc)<br>
+        <strong>G1:</strong> Di chuyển có điều khiển<br>
+        <strong>G92:</strong> Reset vị trí<br>
+        <strong>M104/M140:</strong> Set nhiệt độ (không chờ)<br>
+        <strong>M109/M190:</strong> Set nhiệt độ và chờ<br>
+        <strong>F:</strong> Feedrate (tốc độ mm/phút)<br>
+        <strong>E:</strong> Lượng nhựa đùn (mm)
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 8: QUY TRÌNH -->
+    <section id="workflow" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 8</span>
+        <h2>Quy Trình In 3D Hoàn Chỉnh</h2>
+      </div>
+
+      <p>Quy trình từ ý tưởng đến sản phẩm hoàn thiện gồm 8 bước. Tuân thủ quy trình giúp giảm 90% lỗi.</p>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Ý tưởng và Thiết kế</h4>
+          <p>Vẽ phác thảo, đo kích thước, xác định mục đích sử dụng. Quyết định in chức năng hay trang trí.</p>
+        </div>
+        <div class="step">
+          <h4>Mô hình hóa 3D</h4>
+          <p>Sử dụng phần mềm CAD/Modeling phù hợp để tạo file 3D. Xuất file STL/3MF.</p>
+        </div>
+        <div class="step">
+          <h4>Kiểm tra mesh (Mesh repair)</h4>
+          <p>Dùng Netfabb, Meshmixer, hoặc tích hợp slicer để sửa lỗi: non-manifold, hole, intersection.</p>
+        </div>
+        <div class="step">
+          <h4>Slicing</h4>
+          <p>Định vị, cài đặt thông số, sinh G-code. Preview kỹ trước khi in.</p>
+        </div>
+        <div class="step">
+          <h4>Chuẩn bị máy in</h4>
+          <p>Vệ sinh bàn in (cồn isopropyl), level bàn, kiểm tra filament, đặt nhiệt độ.</p>
+        </div>
+        <div class="step">
+          <h4>In ấn</h4>
+          <p>Giám sát 5-10 phút đầu (lớp 1 cực quan trọng). Sau đó có thể đi nhưng nên có camera.</p>
+        </div>
+        <div class="step">
+          <h4>Tháo sản phẩm</h4>
+          <p>Đợi nguội ~5-10 phút, tháo nhẹ nhàng. Với bàn từ tính, uốn nhẹ để lấy ra.</p>
+        </div>
+        <div class="step">
+          <h4>Xử lý hậu kỳ</h4>
+          <p>Tháo support, mài, sơn, ráp, lắp đặt phụ kiện điện tử... (xem chương 13)</p>
+        </div>
+      </div>
+
+      <h3>8.1. Kiểm tra lớp đầu tiên - quan trọng nhất!</h3>
+      <div class="tip-box" data-title="🎯 Lớp đầu hoàn hảo trông như thế nào?">
+        <ul>
+          <li>Các đường nhựa song song, dính chặt vào nhau (không có khe)</li>
+          <li>Bề mặt hơi bóng, đều màu</li>
+          <li>Không bị "elephant foot" (chân voi - phình ra)</li>
+          <li>Không bị warping (cong vênh) ở góc</li>
+          <li>Dính chặt vào bàn nhưng không quá khó tháo sau khi nguội</li>
+        </ul>
+      </div>
+
+      <div class="danger-box" data-title="❌ Dấu hiệu lớp đầu sai">
+        <ul>
+          <li><strong>Nhựa cong lên thành búi:</strong> Khoảng cách nozzle-bed quá xa</li>
+          <li><strong>Đường nhựa bị bóp dẹt, lan rộng:</strong> Quá gần bàn</li>
+          <li><strong>Đường nhựa tròn riêng lẻ không dính:</strong> Quá xa</li>
+          <li><strong>Nhựa bong tróc:</strong> Bàn bẩn, nhiệt độ không đủ</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 9: CÀI ĐẶT IN -->
+    <section id="settings" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 9</span>
+        <h2>Cài Đặt In Chi Tiết</h2>
+      </div>
+
+      <p>Có hàng trăm thông số trong slicer. Đây là những thông số quan trọng nhất mà bạn cần làm chủ.</p>
+
+      <h3>9.1. Layer Height (Chiều cao lớp)</h3>
+      <p>Khoảng cách giữa 2 lớp in liên tiếp. Quyết định độ mịn và thời gian in.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Layer Height</th>
+            <th>Chất lượng</th>
+            <th>Thời gian</th>
+            <th>Phù hợp</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0.08mm (Ultra Fine)</td>
+            <td>Cực mịn</td>
+            <td>x4-5</td>
+            <td>Minifigure, chi tiết nhỏ</td>
+          </tr>
+          <tr>
+            <td>0.12mm (Fine)</td>
+            <td>Mịn</td>
+            <td>x2-3</td>
+            <td>Tượng trưng bày</td>
+          </tr>
+          <tr>
+            <td>0.20mm (Standard)</td>
+            <td>Tốt</td>
+            <td>x1 (cơ sở)</td>
+            <td>Đa số trường hợp</td>
+          </tr>
+          <tr>
+            <td>0.28mm (Draft)</td>
+            <td>Thấp hơn</td>
+            <td>x0.7</td>
+            <td>Prototype, vật to</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Quy tắc:</strong> Layer height ≤ 80% đường kính nozzle. Ví dụ: nozzle 0.4mm → max 0.32mm.</p>
+
+      <h3>9.2. Infill (Mật độ lõi)</h3>
+      <p>Tỷ lệ lấp đầy bên trong vật in. Tiết kiệm nhựa và thời gian.</p>
+      <ul>
+        <li><strong>0%:</strong> Rỗng - chỉ vỏ, dùng cho vật trang trí</li>
+        <li><strong>10-15%:</strong> Đủ dùng cho đồ chơi, mô hình</li>
+        <li><strong>20-25%:</strong> Mặc định, cân bằng tốt</li>
+        <li><strong>50-75%:</strong> Đồ chức năng chịu lực</li>
+        <li><strong>100%:</strong> Đặc, cực bền nhưng tốn thời gian/nhựa</li>
+      </ul>
+
+      <h4>Các kiểu Infill phổ biến:</h4>
+      <div class="grid-3">
+        <div class="card-item">
+          <h4>Grid</h4>
+          <p>Lưới đơn giản, nhanh, đủ bền cho hầu hết</p>
+        </div>
+        <div class="card-item">
+          <h4>Gyroid</h4>
+          <p>Sóng 3D đẹp mắt, bền đều mọi hướng, in nhanh</p>
+        </div>
+        <div class="card-item">
+          <h4>Triangle</h4>
+          <p>Tam giác, rất bền, hơi chậm</p>
+        </div>
+        <div class="card-item">
+          <h4>Honeycomb (Tổ ong)</h4>
+          <p>Bền nhất theo tỷ lệ vật liệu, chậm</p>
+        </div>
+        <div class="card-item">
+          <h4>Cubic</h4>
+          <p>Khối lập phương, bền 3 trục</p>
+        </div>
+        <div class="card-item">
+          <h4>Lightning</h4>
+          <p>Tiết kiệm nhựa nhất, chỉ đỡ phần đỉnh</p>
+        </div>
+      </div>
+
+      <h3>9.3. Tốc độ in (Print Speed)</h3>
+      <ul>
+        <li><strong>Máy thường (Ender 3):</strong> 50-80 mm/s</li>
+        <li><strong>Máy nâng cấp:</strong> 100-150 mm/s</li>
+        <li><strong>Máy tốc độ cao (Bambu, Voron):</strong> 200-500 mm/s</li>
+        <li><strong>Lớp đầu:</strong> Luôn chậm 20-25 mm/s</li>
+        <li><strong>Outer wall (vách ngoài):</strong> Chậm 50% của tốc độ chính để mặt đẹp</li>
+        <li><strong>TPU dẻo:</strong> Tối đa 30 mm/s</li>
+      </ul>
+
+      <h3>9.4. Nhiệt độ in</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Vật liệu</th>
+            <th>Nozzle (°C)</th>
+            <th>Bed (°C)</th>
+            <th>Enclosure</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>PLA</td><td>190-220</td><td>50-60</td><td>Không cần</td></tr>
+          <tr><td>PETG</td><td>220-250</td><td>70-85</td><td>Khuyến khích</td></tr>
+          <tr><td>ABS</td><td>230-260</td><td>95-110</td><td>BẮT BUỘC</td></tr>
+          <tr><td>TPU</td><td>210-240</td><td>40-60</td><td>Không cần</td></tr>
+          <tr><td>Nylon</td><td>240-270</td><td>70-90</td><td>BẮT BUỘC</td></tr>
+          <tr><td>PC</td><td>260-310</td><td>100-130</td><td>BẮT BUỘC</td></tr>
+        </tbody>
+      </table>
+
+      <h3>9.5. Retraction (Rút filament)</h3>
+      <p>Rút ngược filament khi đầu phun di chuyển để tránh chảy nhựa thừa (stringing).</p>
+      <ul>
+        <li><strong>Direct Drive:</strong> 0.5-2mm, tốc độ 25-40 mm/s</li>
+        <li><strong>Bowden:</strong> 4-6mm, tốc độ 35-60 mm/s</li>
+      </ul>
+
+      <h3>9.6. Walls và Top/Bottom Layers</h3>
+      <ul>
+        <li><strong>Wall count (số vách):</strong> 2-3 cho thường, 4-5 cho bền</li>
+        <li><strong>Top layers:</strong> 4-6 lớp để mặt trên không bị thủng</li>
+        <li><strong>Bottom layers:</strong> 3-4 lớp</li>
+      </ul>
+
+      <h3>9.7. Cooling Fan (Quạt làm mát)</h3>
+      <ul>
+        <li><strong>PLA:</strong> 100% quạt</li>
+        <li><strong>PETG:</strong> 30-50%</li>
+        <li><strong>ABS/Nylon/PC:</strong> 0% hoặc rất ít (để tránh nứt)</li>
+        <li><strong>Lớp đầu:</strong> Luôn 0% để bám bàn</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 10: SUPPORT -->
+    <section id="supports" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 10</span>
+        <h2>Cấu Trúc Đỡ (Support)</h2>
+      </div>
+
+      <p>Support là cấu trúc tạm thời đỡ các phần "treo lơ lửng" trong quá trình in, sau đó tháo bỏ.</p>
+
+      <h3>10.1. Khi nào cần support?</h3>
+      <ul>
+        <li><strong>Overhang &gt; 45°:</strong> Phần nghiêng quá dốc</li>
+        <li><strong>Bridge dài:</strong> Nhịp ngang &gt; 50-100mm</li>
+        <li><strong>Phần lơ lửng hoàn toàn:</strong> Như cánh tay nhân vật mở rộng</li>
+        <li><strong>Lỗ ngang đường kính lớn:</strong> Mặt trên lỗ có thể võng</li>
+      </ul>
+
+      <h3>10.2. Các loại Support</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>Normal/Grid Support</h4>
+          <p>Hỗ trợ truyền thống, dễ tạo, dễ tháo nhưng đôi khi xấu mặt tiếp xúc.</p>
+        </div>
+        <div class="card-item">
+          <h4>Tree Support</h4>
+          <p>Hình cây, ít vật liệu hơn, dễ tháo, ít để lại vết. Tốt cho figure phức tạp.</p>
+        </div>
+        <div class="card-item">
+          <h4>Organic Support (Bambu/Orca)</h4>
+          <p>Phiên bản nâng cấp của Tree Support, mềm mại và hiệu quả hơn.</p>
+        </div>
+        <div class="card-item">
+          <h4>Soluble Support (PVA/HIPS)</h4>
+          <p>Vật liệu khác hòa tan được, cho bề mặt hoàn hảo. Cần máy 2 đầu phun.</p>
+        </div>
+      </div>
+
+      <h3>10.3. Cài đặt support quan trọng</h3>
+      <ul>
+        <li><strong>Support Angle:</strong> 45° (mặc định) - thấp hơn → ít support, cao hơn → nhiều</li>
+        <li><strong>Z Distance (Gap):</strong> 0.1-0.2mm - khoảng cách giữa support và model</li>
+        <li><strong>Pattern:</strong> Zigzag (dễ tháo), Grid (chắc hơn)</li>
+        <li><strong>Density:</strong> 10-20% cho support thường</li>
+        <li><strong>Interface Layer:</strong> 2-3 lớp dày đặc ngay dưới model để bề mặt mịn</li>
+      </ul>
+
+      <h3>10.4. Mẹo giảm nhu cầu support</h3>
+      <div class="tip-box" data-title="💡 Thiết kế thông minh">
+        <ul>
+          <li><strong>Cắt mô hình:</strong> Tách thành 2 phần, in từng phần rồi dán</li>
+          <li><strong>Xoay hướng in:</strong> Đặt overhang xuống dưới</li>
+          <li><strong>Thiết kế lại:</strong> Thêm chamfer 45° thay vì overhang 90°</li>
+          <li><strong>Bridging:</strong> Tận dụng khả năng bridging của máy thay vì support</li>
+        </ul>
+      </div>
+
+      <h3>10.5. Tháo support</h3>
+      <ul>
+        <li>Dùng <strong>flush cutter</strong> (kìm cắt nhựa) cắt sát model</li>
+        <li>Dùng <strong>pliers</strong> (kìm) gỡ phần lớn</li>
+        <li>Dùng <strong>dao khắc / X-Acto</strong> cho chi tiết</li>
+        <li>Dùng <strong>giấy nhám</strong> mài láng vết support</li>
+        <li>⚠️ Cẩn thận tránh làm gãy chi tiết mỏng</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 11: HIỆU CHỈNH -->
+    <section id="calibration" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 11</span>
+        <h2>Hiệu Chỉnh Máy In</h2>
+      </div>
+
+      <p>Hiệu chỉnh (calibration) là chìa khóa cho chất lượng in cao. Mỗi máy in cần được hiệu chỉnh trước khi sử dụng và định kỳ.</p>
+
+      <h3>11.1. Level bàn in (Bed Leveling)</h3>
+      <p>Đảm bảo bàn in song song với mặt phẳng chuyển động của đầu phun.</p>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Manual Leveling (4 góc)</h4>
+          <p>Dùng giấy A4: kéo giữa nozzle và bàn ở 4 góc + giữa, cảm thấy ma sát nhẹ là vừa. Lặp lại 2-3 lần vì các góc ảnh hưởng nhau.</p>
+        </div>
+        <div class="step">
+          <h4>Auto Bed Leveling (ABL)</h4>
+          <p>Dùng BLTouch, cảm biến cảm ứng, hoặc strain gauge. Máy tự đo nhiều điểm và tạo mesh bù trừ.</p>
+        </div>
+        <div class="step">
+          <h4>Tinh chỉnh Z-Offset</h4>
+          <p>Điều chỉnh khoảng cách nozzle-bed cho lớp đầu tiên. Mỗi 0.05mm tạo khác biệt lớn. Thường -2.0 đến -2.5mm (số âm = gần bàn hơn).</p>
+        </div>
+      </div>
+
+      <h3>11.2. E-Steps Calibration (Đùn nhựa chính xác)</h3>
+      <p>Đảm bảo motor đùn đúng lượng nhựa cần thiết.</p>
+      <ol>
+        <li>Đánh dấu 120mm trên filament</li>
+        <li>Gõ lệnh: <code>G1 E100 F100</code> (đùn 100mm)</li>
+        <li>Đo lượng nhựa còn lại</li>
+        <li>Nếu thiếu/thừa, điều chỉnh E-steps theo công thức:<br>
+          <code>E-steps mới = E-steps cũ × (100 / lượng thực tế)</code></li>
+        <li>Lưu: <code>M92 E[giá trị mới]</code> rồi <code>M500</code></li>
+      </ol>
+
+      <h3>11.3. Flow Rate / Extrusion Multiplier</h3>
+      <p>Mặc định 100%. Nếu tường bị over-extrusion (nhô lên) giảm về 95%; nếu under-extrusion (mỏng/lỗ) tăng 102-105%.</p>
+
+      <h3>11.4. PID Tuning (Nhiệt độ ổn định)</h3>
+      <p>Hiệu chỉnh thuật toán điều khiển nhiệt độ để nozzle/bed đạt và giữ nhiệt độ ổn định.</p>
+      <div class="code-block">
+M303 E0 S210 C8  ; PID tune nozzle ở 210°C, 8 chu kỳ
+M303 E-1 S60 C8  ; PID tune bed ở 60°C, 8 chu kỳ
+M500             ; Lưu vào EEPROM
+      </div>
+
+      <h3>11.5. Các bài Test Calibration</h3>
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🚤 Benchy</h4>
+          <p>"3DBenchy" - chiếc thuyền nhỏ kiểm tra mọi khía cạnh in trong ~1 giờ.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌡️ Temp Tower</h4>
+          <p>Tháp nhiều tầng, mỗi tầng nhiệt độ khác nhau. Tìm nhiệt độ tối ưu cho filament.</p>
+        </div>
+        <div class="card-item">
+          <h4>🔄 Retraction Tower</h4>
+          <p>Test các giá trị retraction để loại bỏ stringing.</p>
+        </div>
+        <div class="card-item">
+          <h4>📏 Calibration Cube</h4>
+          <p>Khối lập phương XYZ 20mm, đo lại sau in để hiệu chỉnh steps/mm.</p>
+        </div>
+        <div class="card-item">
+          <h4>🌉 Bridge Test</h4>
+          <p>Đo khả năng in bridge của máy.</p>
+        </div>
+        <div class="card-item">
+          <h4>⚙️ Overhang Test</h4>
+          <p>Test các góc overhang khác nhau.</p>
+        </div>
+      </div>
+
+      <h3>11.6. Input Shaping (Máy hiện đại)</h3>
+      <p>Với máy chạy Klipper hoặc firmware hiện đại (Bambu, Prusa MK4), input shaping dùng accelerometer đo rung và bù trừ, cho phép in tốc độ cao mà không bị ringing (vết sóng trên mặt).</p>
+    </section>
+
+    <!-- CHƯƠNG 12: LỖI -->
+    <section id="troubleshooting" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 12</span>
+        <h2>Khắc Phục Các Lỗi Thường Gặp</h2>
+      </div>
+
+      <p>Ai cũng gặp lỗi khi in 3D. Quan trọng là biết chẩn đoán và sửa chữa. Dưới đây là 15 lỗi phổ biến nhất.</p>
+
+      <h3>12.1. Lỗi liên quan đến lớp đầu</h3>
+
+      <div class="card-item">
+        <h4>❌ Lớp đầu không dính bàn</h4>
+        <p><strong>Nguyên nhân:</strong> Bàn không level, Z-offset sai, bàn bẩn, nhiệt độ thấp.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Level lại bàn cẩn thận</li>
+          <li>Giảm Z-offset (đầu phun gần bàn hơn)</li>
+          <li>Lau bàn bằng cồn isopropyl 90%</li>
+          <li>Tăng nhiệt độ bàn 5-10°C</li>
+          <li>Dùng keo dán (glue stick) hoặc hairspray</li>
+          <li>Tăng line width lớp đầu lên 120%</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Warping (Cong vênh)</h4>
+        <p><strong>Nguyên nhân:</strong> Co rút nhiệt độ, thường gặp với ABS, PETG.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Tăng nhiệt độ bàn</li>
+          <li>Dùng brim (vành) hoặc raft (đế)</li>
+          <li>Đóng cửa, tránh gió lùa</li>
+          <li>Dùng enclosure (buồng kín) cho ABS</li>
+          <li>Bôi keo Magigoo, Dimafix lên bàn</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Elephant Foot (Chân voi)</h4>
+        <p><strong>Nguyên nhân:</strong> Lớp đầu bị ép quá sát, nhiệt độ bàn cao.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Tăng Z-offset (xa bàn hơn 1 chút)</li>
+          <li>Giảm nhiệt độ bàn sau vài lớp đầu</li>
+          <li>Bật "Elephant foot compensation" trong slicer</li>
+          <li>Thêm chamfer 0.5mm vào đáy mô hình khi thiết kế</li>
+        </ul>
+      </div>
+
+      <h3>12.2. Lỗi trong quá trình in</h3>
+
+      <div class="card-item">
+        <h4>❌ Stringing (Sợi tơ)</h4>
+        <p><strong>Nguyên nhân:</strong> Nhựa rò ra khi di chuyển không đùn.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Tăng retraction distance (thử 0.5mm mỗi lần)</li>
+          <li>Tăng retraction speed</li>
+          <li>Giảm nhiệt độ nozzle 5-10°C</li>
+          <li>Bật "Combing" (đi qua infill thay vì air)</li>
+          <li>Sấy khô filament (đặc biệt PETG, Nylon)</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Layer Shifting (Lệch lớp)</h4>
+        <p><strong>Nguyên nhân:</strong> Belt lỏng, motor mất bước, va chạm.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Căng lại belt X, Y</li>
+          <li>Giảm tốc độ in</li>
+          <li>Giảm acceleration trong firmware</li>
+          <li>Kiểm tra pulley có chặt vào trục motor</li>
+          <li>Kiểm tra motor driver có quá nóng (lắp tản nhiệt)</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Under-extrusion (Đùn thiếu)</h4>
+        <p><strong>Nguyên nhân:</strong> Nozzle tắc, filament bị xước bánh răng, nhiệt độ thấp.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Vệ sinh nozzle (cold pull, atomic pull)</li>
+          <li>Thay nozzle mới nếu mòn</li>
+          <li>Tăng nhiệt độ nozzle 5-10°C</li>
+          <li>Kiểm tra extruder gear có sạch</li>
+          <li>Tăng flow rate lên 102-105%</li>
+          <li>Giảm tốc độ in</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Over-extrusion (Đùn thừa)</h4>
+        <p><strong>Nguyên nhân:</strong> E-steps quá cao, flow rate cao, nhiệt độ cao.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Calibrate lại E-steps</li>
+          <li>Giảm flow rate xuống 95-98%</li>
+          <li>Giảm nhiệt độ</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Ghosting / Ringing (Vết sóng)</h4>
+        <p><strong>Nguyên nhân:</strong> Rung động khi đầu phun đổi hướng nhanh.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Giảm acceleration và jerk</li>
+          <li>Giảm tốc độ in</li>
+          <li>Căng belt</li>
+          <li>Đặt máy trên bề mặt vững chắc</li>
+          <li>Bật Input Shaping nếu có</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Layer Separation (Tách lớp)</h4>
+        <p><strong>Nguyên nhân:</strong> Lớp không dính nhau do nhiệt độ thấp, quạt mạnh.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Tăng nhiệt độ nozzle</li>
+          <li>Giảm tốc độ quạt</li>
+          <li>Giảm layer height</li>
+          <li>Giảm tốc độ in</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Blob/Zit trên bề mặt</h4>
+        <p><strong>Nguyên nhân:</strong> Áp suất nhựa không đều ở điểm bắt đầu/kết thúc đường in.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Bật "Outer Wall Wipe Distance"</li>
+          <li>Sử dụng Coasting</li>
+          <li>Tăng retraction tại Z hop</li>
+          <li>Bật "Pressure Advance" / "Linear Advance"</li>
+        </ul>
+      </div>
+
+      <div class="card-item">
+        <h4>❌ Spaghetti Print (In ra mì sợi)</h4>
+        <p><strong>Nguyên nhân:</strong> Print bong khỏi bàn giữa chừng, máy tiếp tục in trong không khí.</p>
+        <p><strong>Giải pháp:</strong></p>
+        <ul>
+          <li>Cải thiện bám dính lớp đầu (xem phần trên)</li>
+          <li>Dùng brim/raft cho mô hình diện tích đáy nhỏ</li>
+          <li>Lắp camera AI phát hiện spaghetti (Bambu Lab, OctoPrint plugin)</li>
+        </ul>
+      </div>
+
+      <h3>12.3. Lỗi nghiêm trọng</h3>
+
+      <div class="danger-box" data-title="🔥 Nguy hiểm">
+        <strong>Heater thermal runaway:</strong> Nếu thermistor lỏng/hỏng, heater có thể đốt cháy máy. Luôn bật "Thermal Runaway Protection" trong firmware.<br><br>
+        <strong>Nozzle clog nghiêm trọng:</strong> Không cố force feed, có thể làm hỏng extruder. Tháo nozzle ra vệ sinh.
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 13: HẬU KỲ -->
+    <section id="postprocessing" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 13</span>
+        <h2>Xử Lý Hậu Kỳ</h2>
+      </div>
+
+      <p>Hậu kỳ (post-processing) biến sản phẩm in thô thành sản phẩm hoàn thiện đẹp mắt. Quy trình tùy thuộc vật liệu và yêu cầu.</p>
+
+      <h3>13.1. Hậu kỳ cho FDM</h3>
+
+      <h4>Bước 1: Tháo Support</h4>
+      <ul>
+        <li>Dùng kìm cắt sát model</li>
+        <li>Cẩn thận tránh để lại vết lõm</li>
+        <li>Với mô hình mỏng: dùng X-Acto</li>
+      </ul>
+
+      <h4>Bước 2: Mài (Sanding)</h4>
+      <ul>
+        <li>Bắt đầu nhám 120-200 grit, tăng dần 400, 800, 1500, 2000</li>
+        <li>Mài ướt (wet sanding) từ 400 grit để giảm bụi</li>
+        <li>Mài theo nhiều hướng để giấu đường lớp</li>
+      </ul>
+
+      <h4>Bước 3: Trám lỗ (Filling)</h4>
+      <ul>
+        <li><strong>Bondo / Body filler:</strong> Trám vết lớn</li>
+        <li><strong>Filler primer:</strong> Sơn primer dày, lấp đường lớp</li>
+        <li><strong>Epoxy putty:</strong> Cứng, mài tốt</li>
+        <li><strong>UV resin:</strong> Đông cứng nhanh dưới đèn UV</li>
+      </ul>
+
+      <h4>Bước 4: Đánh bóng hóa học (chỉ ABS)</h4>
+      <div class="warning-box" data-title="⚠️ An toàn">
+        Acetone vapor smoothing cho ABS: đặt model trong bình kín có ít acetone, hơi acetone làm tan nhẹ bề mặt → mịn như kính. Phải làm ngoài trời, đeo mặt nạ, tránh xa lửa!
+      </div>
+
+      <h4>Bước 5: Sơn (Painting)</h4>
+      <ol>
+        <li>Rửa sạch model bằng xà phòng, để khô</li>
+        <li>Phun primer (Tamiya, Mr. Surfacer) 1-2 lớp</li>
+        <li>Mài primer nhẹ 800 grit</li>
+        <li>Phun màu nền (3-4 lớp mỏng)</li>
+        <li>Vẽ chi tiết bằng cọ acrylic</li>
+        <li>Wash (làm shading) bằng inks pha loãng</li>
+        <li>Dry brush (chấm khô) cho hiệu ứng nổi</li>
+        <li>Sơn bảo vệ (varnish): matte, satin, gloss</li>
+      </ol>
+
+      <h3>13.2. Hậu kỳ cho SLA/Resin</h3>
+
+      <div class="steps">
+        <div class="step">
+          <h4>Rửa</h4>
+          <p>Rửa trong cồn isopropyl 95% (IPA) hoặc Mean Green. Dùng máy rửa siêu âm hoặc Wash &amp; Cure station. Thời gian: 3-5 phút.</p>
+        </div>
+        <div class="step">
+          <h4>Tháo support</h4>
+          <p>Dễ hơn khi resin chưa cure hoàn toàn. Tháo cẩn thận khi vừa rửa xong.</p>
+        </div>
+        <div class="step">
+          <h4>Cure UV</h4>
+          <p>Phơi nắng hoặc đèn UV chuyên dụng. PLA-like resin: 5-10 phút. Tough resin: 10-30 phút.</p>
+        </div>
+        <div class="step">
+          <h4>Vệ sinh và sơn</h4>
+          <p>Mài nhẹ (resin cure hoàn toàn rất cứng), primer, sơn như FDM.</p>
+        </div>
+      </div>
+
+      <h3>13.3. Kỹ thuật nâng cao</h3>
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>Mạ điện (Electroplating)</h4>
+          <p>Phủ lớp đồng/niken/chrome cho mô hình - bề mặt như kim loại thật. Cần kit chuyên dụng.</p>
+        </div>
+        <div class="card-item">
+          <h4>Phủ Resin / Epoxy</h4>
+          <p>Phủ epoxy trong suốt cho hiệu ứng kính, bóng tuyệt đối.</p>
+        </div>
+        <div class="card-item">
+          <h4>Đúc Silicon</h4>
+          <p>Dùng print làm master, đúc khuôn silicon, đổ resin lỏng → sản xuất hàng loạt.</p>
+        </div>
+        <div class="card-item">
+          <h4>Vacuum Forming</h4>
+          <p>Dùng print làm khuôn để vacuum form nhựa mỏng.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 14: NÂNG CAO -->
+    <section id="advanced" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 14</span>
+        <h2>Kỹ Thuật Nâng Cao</h2>
+      </div>
+
+      <p>Khi đã thành thạo cơ bản, đây là những kỹ thuật giúp bạn vượt trội.</p>
+
+      <h3>14.1. Multi-material Printing (In đa vật liệu)</h3>
+      <ul>
+        <li><strong>AMS (Bambu):</strong> Hệ thống đổi 4-16 màu tự động</li>
+        <li><strong>MMU (Prusa):</strong> Multi Material Upgrade cho Prusa</li>
+        <li><strong>Dual Extruder:</strong> Máy 2 đầu phun độc lập (IDEX)</li>
+      </ul>
+      <p>Ứng dụng: in nhiều màu, kết hợp PLA+TPU, dùng support hòa tan.</p>
+
+      <h3>14.2. In bằng vật liệu đặc biệt</h3>
+      <ul>
+        <li><strong>Carbon Fiber filled:</strong> Bền hơn, đẹp, cần nozzle hardened</li>
+        <li><strong>Glass Fiber filled:</strong> Cứng, ổn định kích thước</li>
+        <li><strong>Metal-filled (Copperfill, Bronzefill):</strong> In ra rồi đánh bóng giống kim loại</li>
+        <li><strong>Wood-filled:</strong> Mùi gỗ, có thể mài và sơn như gỗ</li>
+        <li><strong>Glow-in-the-dark:</strong> Phát sáng trong tối</li>
+        <li><strong>Conductive filament:</strong> Dẫn điện, dùng làm mạch đơn giản</li>
+      </ul>
+
+      <h3>14.3. Klipper Firmware</h3>
+      <p>Firmware hiện đại chạy trên Raspberry Pi, tách rời tính toán khỏi mainboard. Lợi ích:</p>
+      <ul>
+        <li>Tốc độ in nhanh hơn 2-5 lần</li>
+        <li>Input Shaping chống rung</li>
+        <li>Pressure Advance cho góc sắc nét</li>
+        <li>Web UI tiện lợi (Mainsail, Fluidd)</li>
+        <li>Cấu hình bằng file text dễ chỉnh</li>
+      </ul>
+
+      <h3>14.4. Remote Printing / Cloud</h3>
+      <ul>
+        <li><strong>OctoPrint:</strong> Cài Raspberry Pi, điều khiển qua web</li>
+        <li><strong>Bambu Handy / Studio:</strong> App native, điều khiển từ xa</li>
+        <li><strong>Obico (TheSpaghettiDetective):</strong> AI phát hiện lỗi print</li>
+        <li><strong>Mainsail / Fluidd:</strong> UI cho Klipper</li>
+      </ul>
+
+      <h3>14.5. Variable Layer Height (Lớp biến đổi)</h3>
+      <p>Slicer dùng layer cao ở vùng đứng (mặt thẳng) và layer thấp ở vùng cong (slope) - cân bằng tốc độ và chất lượng.</p>
+
+      <h3>14.6. Ironing (Là phẳng)</h3>
+      <p>Sau khi in lớp trên cùng, nozzle chạy lại với chút nhựa, làm phẳng bề mặt như là quần áo. Tuyệt đẹp cho mặt phẳng nằm ngang.</p>
+
+      <h3>14.7. Fuzzy Skin (Da nhăn)</h3>
+      <p>Tạo hiệu ứng bề mặt nhám/sần. Tốt cho grip (cầm), nhân vật fantasy, ẩn đường lớp.</p>
+
+      <h3>14.8. Print-in-Place (In tại chỗ)</h3>
+      <p>Thiết kế các bộ phận chuyển động (bản lề, articulated dragon, fidget) in xong là dùng được không cần lắp ráp. Khe hở 0.2-0.3mm.</p>
+
+      <h3>14.9. Vase Mode (Chế độ bình hoa)</h3>
+      <p>In liên tục spiral, không có lớp, vách 1 đường. Cực nhanh, đẹp, nhưng chỉ in được vật rỗng.</p>
+
+      <h3>14.10. Conformal Cooling Channels</h3>
+      <p>Ứng dụng cho khuôn đúc - in các đường làm mát uốn lượn theo bề mặt khuôn, không thể gia công bằng phương pháp khác.</p>
+    </section>
+
+    <!-- CHƯƠNG 15: AN TOÀN -->
+    <section id="safety" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 15</span>
+        <h2>An Toàn Lao Động</h2>
+      </div>
+
+      <p>In 3D nhìn an toàn nhưng có nhiều rủi ro tiềm ẩn. Hãy đọc kỹ chương này trước khi bắt đầu.</p>
+
+      <h3>15.1. Rủi ro về điện và cháy</h3>
+      <div class="danger-box" data-title="⚡ Cảnh báo điện">
+        <ul>
+          <li>Máy in có nhiệt 300°C, heater dùng 100-200W. Nguy cơ cháy nếu hỏng.</li>
+          <li>Luôn dùng <strong>firmware có Thermal Runaway Protection</strong></li>
+          <li>Lắp <strong>smoke detector</strong> trong phòng in</li>
+          <li>Để máy trên mặt <strong>không cháy</strong> (gạch, kim loại)</li>
+          <li>Có <strong>bình chữa cháy CO2/bột</strong> gần đó</li>
+          <li>KHÔNG in qua đêm không giám sát với máy cũ/rẻ</li>
+          <li>Kiểm tra dây điện, đầu cắm định kỳ</li>
+        </ul>
+      </div>
+
+      <h3>15.2. Rủi ro về khí thải</h3>
+      <p>Khi in nhựa nóng, các hạt siêu nhỏ (UFP - Ultra Fine Particles) và VOC (hợp chất hữu cơ bay hơi) thoát ra.</p>
+      <ul>
+        <li><strong>PLA:</strong> Ít khí thải, vẫn nên thông gió</li>
+        <li><strong>ABS, ASA:</strong> Mùi mạnh, độc, BẮT BUỘC thông gió tốt hoặc enclosure có lọc</li>
+        <li><strong>Nylon:</strong> Có thể thải caprolactam</li>
+        <li><strong>Polycarbonate:</strong> Có thể thải BPA</li>
+      </ul>
+      <div class="warning-box" data-title="🌬️ Giải pháp">
+        <ul>
+          <li>Đặt máy in phòng riêng có cửa sổ mở</li>
+          <li>Lắp máy lọc không khí HEPA + Carbon</li>
+          <li>Enclosure với hệ thống hút khí ra ngoài</li>
+          <li>Không đặt máy in phòng ngủ, phòng trẻ em</li>
+        </ul>
+      </div>
+
+      <h3>15.3. An toàn với Resin (SLA/LCD)</h3>
+      <div class="danger-box" data-title="☠️ Resin độc hại">
+        <strong>Resin lỏng chưa cure CỰC ĐỘC:</strong> gây dị ứng da, kích ứng mắt, có thể gây ung thư khi tiếp xúc lâu.
+        <ul>
+          <li>LUÔN đeo găng tay nitrile khi tiếp xúc resin</li>
+          <li>Đeo kính bảo hộ, khẩu trang lọc hơi (3M P100)</li>
+          <li>Thông gió mạnh hoặc đặt trong phòng kín ngăn cách</li>
+          <li>Vệ sinh resin tràn bằng giấy + IPA, không dùng tay</li>
+          <li>Xử lý resin thừa ĐÚNG CÁCH: phơi nắng cure rồi vứt rác cứng, KHÔNG đổ xuống cống</li>
+          <li>IPA đã dùng cũng phải cure trước khi vứt</li>
+          <li>KHÔNG để gần thức ăn, vật nuôi, trẻ em</li>
+        </ul>
+      </div>
+
+      <h3>15.4. An toàn cơ học</h3>
+      <ul>
+        <li><strong>Bộ phận chuyển động:</strong> Đầu phun di chuyển nhanh có thể đập tay → không thò tay khi đang in</li>
+        <li><strong>Bộ phận nóng:</strong> Nozzle 250°C, bed 110°C → đợi nguội trước khi chạm</li>
+        <li><strong>Tia laser SLA:</strong> Hại mắt → KHÔNG nhìn trực tiếp</li>
+        <li><strong>Đèn UV:</strong> Hại da, mắt → đeo kính UV protection khi cure</li>
+        <li><strong>Dao cắt/X-Acto:</strong> Sắc, cẩn thận khi tháo support</li>
+      </ul>
+
+      <h3>15.5. An toàn với trẻ em</h3>
+      <ul>
+        <li>Trẻ em CHỈ in dưới sự giám sát người lớn</li>
+        <li>Nhựa in 3D KHÔNG an toàn thực phẩm trừ khi ghi rõ "Food Safe"</li>
+        <li>Đồ chơi in 3D có thể có cạnh sắc</li>
+        <li>Không in các bộ phận nhỏ cho trẻ &lt; 3 tuổi (nguy cơ nuốt)</li>
+      </ul>
+    </section>
+
+    <!-- CHƯƠNG 16: KINH DOANH -->
+    <section id="business" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 16</span>
+        <h2>Kinh Doanh Với In 3D</h2>
+      </div>
+
+      <p>Sau khi thành thạo, bạn có thể biến đam mê thành thu nhập. Đây là các mô hình kinh doanh khả thi tại Việt Nam.</p>
+
+      <h3>16.1. Các mô hình kinh doanh</h3>
+
+      <div class="grid-2">
+        <div class="card-item">
+          <h4>🏪 Dịch vụ in theo yêu cầu</h4>
+          <p>Khách gửi file, bạn in. Phù hợp cho sinh viên, kỹ sư cần prototype, người sưu tầm.</p>
+          <p><strong>Vốn:</strong> 10-30 triệu</p>
+          <p><strong>Lợi nhuận:</strong> 30-50% sau chi phí</p>
+        </div>
+        <div class="card-item">
+          <h4>🎨 Bán sản phẩm in sẵn</h4>
+          <p>Đồ chơi, figure, đồ trang trí, gadget. Bán trên Shopee, Etsy (quốc tế).</p>
+          <p><strong>Vốn:</strong> 5-20 triệu</p>
+          <p><strong>Lợi nhuận:</strong> 100-300%</p>
+        </div>
+        <div class="card-item">
+          <h4>📐 Thiết kế custom</h4>
+          <p>Thiết kế 3D theo yêu cầu khách (logo công ty, kỷ niệm chương, sản phẩm độc đáo).</p>
+          <p><strong>Vốn:</strong> 0-10 triệu</p>
+          <p><strong>Giá thiết kế:</strong> 200k - 5tr/file</p>
+        </div>
+        <div class="card-item">
+          <h4>🦷 Lĩnh vực chuyên môn</h4>
+          <p>Nha khoa (răng giả, khay nắn), thời trang (jewelry), y tế (chân tay giả). Lợi nhuận cao nhưng cần chứng chỉ.</p>
+        </div>
+        <div class="card-item">
+          <h4>🎓 Giảng dạy / Workshop</h4>
+          <p>Mở lớp dạy in 3D cho trẻ em, người lớn. Tạo khóa học online trên Udemy, YouTube.</p>
+        </div>
+        <div class="card-item">
+          <h4>🛍️ Bán file STL</h4>
+          <p>Thiết kế file 3D đẹp, bán trên Cults3D, Patreon, MyMiniFactory. Thu nhập thụ động.</p>
+        </div>
+      </div>
+
+      <h3>16.2. Định giá sản phẩm</h3>
+      <p>Công thức cơ bản:</p>
+      <div class="code-block">
+Giá thành = (Chi phí vật liệu) + (Chi phí điện)
+         + (Khấu hao máy) + (Công lao động)
+         + (Hậu kỳ) + (Chi phí thất bại ~10%)
+
+Giá bán = Giá thành × (1.5 đến 3)
+      </div>
+
+      <p><strong>Ví dụ:</strong> In 1 figure 100g PLA</p>
+      <ul>
+        <li>Vật liệu: 100g × 350đ = 35,000đ</li>
+        <li>Điện: 0.2kWh × 3,500đ = 700đ (8 giờ in, 250W)</li>
+        <li>Khấu hao máy: 7tr / 3,000 giờ = 2,333đ/giờ × 8 = 18,667đ</li>
+        <li>Công + hậu kỳ: 30,000đ</li>
+        <li><strong>Giá thành: ~85,000đ</strong></li>
+        <li><strong>Giá bán: 200,000 - 350,000đ</strong></li>
+      </ul>
+
+      <h3>16.3. Kênh bán hàng tại VN</h3>
+      <ul>
+        <li><strong>Shopee, Lazada, TikTok Shop:</strong> Đại chúng, khối lượng lớn</li>
+        <li><strong>Facebook Marketplace, Group:</strong> Local, phù hợp ngách</li>
+        <li><strong>Tự website:</strong> Brand riêng, không phí sàn</li>
+        <li><strong>Etsy:</strong> Khách quốc tế, giá cao hơn</li>
+      </ul>
+
+      <h3>16.4. Pháp lý cần biết</h3>
+      <ul>
+        <li><strong>Bản quyền:</strong> Không in/bán sản phẩm có copyright (Disney, Marvel, Pokémon...) nếu không có license</li>
+        <li><strong>Đăng ký kinh doanh:</strong> Khi doanh thu lớn (&gt;100tr/năm)</li>
+        <li><strong>An toàn thực phẩm:</strong> Nếu in đồ ăn/uống phải dùng filament food-safe + xử lý đặc biệt</li>
+        <li><strong>Đồ chơi cho trẻ em:</strong> Cần tuân thủ tiêu chuẩn an toàn</li>
+      </ul>
+
+      <h3>16.5. Mẹo thành công</h3>
+      <div class="tip-box" data-title="🏆 Bí quyết">
+        <ul>
+          <li><strong>Chuyên 1 ngách:</strong> "Figure Genshin Impact" hơn là "đồ in 3D"</li>
+          <li><strong>Chất lượng = tất cả:</strong> Một print xấu lan tỏa nhanh hơn 10 print đẹp</li>
+          <li><strong>Đầu tư máy ảnh tốt:</strong> Hình sản phẩm đẹp tăng 3-5 lần đơn hàng</li>
+          <li><strong>Reels/TikTok:</strong> Video timelapse in 3D rất hot, dễ viral</li>
+          <li><strong>Mở rộng từ từ:</strong> 1 máy → 3 máy → 10 máy, không nhảy vọt</li>
+          <li><strong>Chăm khách quen:</strong> Khách quay lại quan trọng hơn khách mới</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHƯƠNG 17: QUIZ -->
+    <section id="quiz" class="chapter fade-in">
+      <div class="chapter-header">
+        <span class="chapter-badge">CHƯƠNG 17</span>
+        <h2>Bài Kiểm Tra Kiến Thức</h2>
+      </div>
+
+      <p>Kiểm tra kiến thức của bạn với 10 câu hỏi sau. Bấm vào đáp án bạn chọn.</p>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 1: Công nghệ in 3D nào phù hợp nhất cho người mới?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. SLS</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. FDM</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. SLM</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. CLIP</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 2: Filament nào dễ in nhất?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. ABS</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Nylon</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. PLA</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Polycarbonate</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 3: Overhang dưới góc bao nhiêu thì không cần support?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 30°</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. 45°</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. 60°</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. 90°</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 4: Layer height thường dùng cho chất lượng tốt là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. 0.5mm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. 0.2mm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. 0.05mm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. 1mm</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 5: Định dạng file 3D phổ biến nhất cho in 3D là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. .JPG</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. .PDF</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. .STL</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. .DOC</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 6: Nguyên nhân chính của stringing là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Bed quá lạnh</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Nhựa rò khi di chuyển và retraction không đủ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Belt lỏng</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Z-offset sai</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 7: Vật liệu cần buồng kín (enclosure) khi in là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. PLA</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. ABS</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. PETG</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. TPU</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 8: Để kiểm tra máy in tổng thể, người ta thường in mô hình nào?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Cube 20mm</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. 3DBenchy</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. Yoda</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Pikachu</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 9: Khi in resin (SLA), điều quan trọng nhất về an toàn là?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Đeo tai nghe</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">B. Đeo găng tay, kính, khẩu trang và thông gió tốt</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">C. In trong phòng ngủ</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Để gần thức ăn</div>
+        </div>
+      </div>
+
+      <div class="quiz">
+        <div class="quiz-question">Câu 10: G-code là gì?</div>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">A. Một loại nhựa</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">B. Phần mềm thiết kế</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">C. Lệnh điều khiển máy in từng bước</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">D. Loại nozzle</div>
+        </div>
+      </div>
+
+      <div class="info-box" data-title="🎓 Kết thúc khóa học">
+        <p><strong>Chúc mừng!</strong> Bạn đã hoàn thành khóa học In 3D toàn diện. Đây mới chỉ là khởi đầu của hành trình. Hãy bắt tay vào thực hành ngay hôm nay - không có thầy giáo nào tốt hơn chiếc máy in của bạn!</p>
+        <p style="margin-top: 15px;"><strong>Bước tiếp theo:</strong></p>
+        <ul>
+          <li>Mua máy in đầu tiên (Bambu A1 mini, Creality Ender 3, Anycubic Kobra)</li>
+          <li>Tải Benchy và in thử</li>
+          <li>Tham gia các nhóm Facebook về in 3D Việt Nam</li>
+          <li>Theo dõi YouTube: CHEP, Maker's Muse, Thomas Sanladerer</li>
+          <li>Thiết kế sản phẩm đầu tiên của riêng bạn</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>🖨️ Khóa Học In 3D Toàn Diện | © 2026</p>
+      <p style="margin-top: 10px; font-size: 14px;">"Hành trình ngàn dặm bắt đầu từ một bước chân. Hành trình in 3D bắt đầu từ một Benchy."</p>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Toggle menu trên mobile
+  function toggleMenu() {
+    document.getElementById('sidebar').classList.toggle('open');
+  }
+
+  // Đóng menu khi click vào link (mobile)
+  document.querySelectorAll('.nav-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+    });
+  });
+
+  // Active link khi scroll
+  const sections = document.querySelectorAll('.chapter');
+  const navLinks = document.querySelectorAll('.nav-menu a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 100;
+      if (window.scrollY >= sectionTop) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) {
+        link.classList.add('active');
+      }
+    });
+
+    // Progress bar
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Fade in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Quiz logic
+  let quizScore = 0;
+  let quizAnswered = new Set();
+
+  function checkAnswer(element, isCorrect) {
+    const quizId = element.closest('.quiz').querySelector('.quiz-question').textContent;
+    if (quizAnswered.has(quizId)) return;
+    quizAnswered.add(quizId);
+
+    const options = element.parentElement.querySelectorAll('.quiz-option');
+    options.forEach(opt => opt.style.pointerEvents = 'none');
+
+    if (isCorrect) {
+      element.classList.add('correct');
+      quizScore++;
+    } else {
+      element.classList.add('wrong');
+      // Hiện đáp án đúng
+      options.forEach(opt => {
+        if (opt.getAttribute('onclick').includes('true')) {
+          opt.classList.add('correct');
+        }
+      });
+    }
+
+    if (quizAnswered.size === 10) {
+      setTimeout(() => {
+        alert(`🎓 Bạn đạt ${quizScore}/10 điểm!\n\n${
+          quizScore >= 9 ? '🏆 Xuất sắc! Bạn đã sẵn sàng trở thành chuyên gia in 3D!' :
+          quizScore >= 7 ? '🎯 Tốt lắm! Bạn đã nắm vững kiến thức cơ bản.' :
+          quizScore >= 5 ? '📚 Khá ổn! Hãy đọc lại các chương để củng cố thêm.' :
+          '💪 Đừng nản! Hãy đọc lại khóa học từ đầu và thử lại.'
+        }`);
+      }, 500);
+    }
+  }
+</script>
+
+</body>
+</html>
