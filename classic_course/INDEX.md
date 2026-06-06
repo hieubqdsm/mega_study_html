@@ -64,9 +64,20 @@ Hệ thống tạo content marketing chuyên ngành Điện Mặt Trời - 200+ 
 
 ---
 
+### 8. 🐍 Khóa Học Python - Từ Newbie Đến Early Senior
+Lộ trình Python toàn diện theo 4 cấp độ năng lực (Newbie → Junior → Mid → Early Senior) - 35 chương + 4 mini-project + ngân hàng bài tập theo chương + 3 đề thi cuối khóa (theo đề phỏng vấn thật) + glossary. Phủ Backend/Web, Data/AI, Automation/DevOps và Python thuần. Có 2 chương chuyên sâu Regex & CLI.
+
+- 📄 Markdown: [khoa-hoc-python.md](khoa-hoc-python.md)
+- 🌐 HTML: [khoa-hoc-python.html](khoa-hoc-python.html)
+
+> ⚡ *Bản HTML cho phép **chạy code Python trực tiếp trong trình duyệt** (Pyodide), có quiz tương tác, đáp án ẩn, **flashcards lật thẻ** và **rubric chấm điểm**. Phần "Thực chiến & Phỏng vấn" mô phỏng đề phỏng vấn Junior/Mid/Senior thật.*
+
+---
+
 ## 🗂️ Phân loại theo chủ đề
 
 ### 🛠️ Kỹ thuật & Công nghệ
+- [Khóa Học Python - Newbie → Early Senior](khoa-hoc-python.md)
 - [Khóa Học In 3D Toàn Diện](khoa-hoc-in-3d.md)
 - [Khóa Học Tester / QA](khoa-hoc-tester-qa.md)
 
@@ -92,7 +103,8 @@ Hệ thống tạo content marketing chuyên ngành Điện Mặt Trời - 200+ 
 | 5 | Tester / QA | 24 | ✅ | ✅ |
 | 6 | Sale & Marketing ĐMT | — | ✅ | ✅ |
 | 7 | Content Engine ĐMT | App | ✅ | ✅ |
+| 8 | 🐍 Python (Newbie→Early Senior) | 35 + đề thi | ✅ (interactive) | ✅ |
 
 ---
 
-*Cập nhật: 2026-05-15*
+*Cập nhật: 2026-06-06*
