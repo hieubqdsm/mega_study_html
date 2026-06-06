@@ -65,7 +65,7 @@ Hệ thống tạo content marketing chuyên ngành Điện Mặt Trời - 200+ 
 ---
 
 ### 8. 🐍 Khóa Học Python - Từ Newbie Đến Early Senior
-Lộ trình Python toàn diện theo 4 cấp độ năng lực (Newbie → Junior → Mid → Early Senior) - 35 chương + 4 mini-project + ngân hàng bài tập theo chương + 3 đề thi cuối khóa (theo đề phỏng vấn thật) + glossary. Phủ Backend/Web, Data/AI, Automation/DevOps và Python thuần. Có 2 chương chuyên sâu Regex & CLI.
+Lộ trình Python toàn diện theo 4 cấp độ năng lực (Newbie → Junior → Mid → Early Senior) - 37 chương + 4 mini-project + ngân hàng bài tập theo chương + 3 đề thi cuối khóa (theo đề phỏng vấn thật) + glossary. Phủ Backend/Web, Data/AI, Automation/DevOps và Python thuần. Có chương chuyên sâu Regex, CLI và **chuyên đề Data/ML + Agentic AI** (agent loop, tool calling, RAG, MCP, multi-agent).
 
 - 📄 Markdown: [khoa-hoc-python.md](khoa-hoc-python.md)
 - 🌐 HTML: [khoa-hoc-python.html](khoa-hoc-python.html)
@@ -74,10 +74,21 @@ Lộ trình Python toàn diện theo 4 cấp độ năng lực (Newbie → Junio
 
 ---
 
+### 9. 🔤 Khóa Học Regex - Từ Căn Bản Đến Nâng Cao
+Làm chủ biểu thức chính quy qua 13 chương / 3 phần (Căn bản → Trung cấp → Nâng cao). Phủ character class, quantifier, anchor, group, backreference, lookaround, backtracking/ReDoS, Unicode/flavors và regex thực chiến (Python, grep/sed).
+
+- 📄 Markdown: [khoa-hoc-regex.md](khoa-hoc-regex.md)
+- 🌐 HTML: [khoa-hoc-regex.html](khoa-hoc-regex.html)
+
+> ⚡ *Bản HTML có **Regex Playground** (kiểm thử pattern trực tiếp, highlight match) và **bài tập tự chấm** theo test case — chạy offline ngay trong trình duyệt.*
+
+---
+
 ## 🗂️ Phân loại theo chủ đề
 
 ### 🛠️ Kỹ thuật & Công nghệ
 - [Khóa Học Python - Newbie → Early Senior](khoa-hoc-python.md)
+- [Khóa Học Regex - Căn Bản Đến Nâng Cao](khoa-hoc-regex.md)
 - [Khóa Học In 3D Toàn Diện](khoa-hoc-in-3d.md)
 - [Khóa Học Tester / QA](khoa-hoc-tester-qa.md)
 
@@ -103,7 +114,8 @@ Lộ trình Python toàn diện theo 4 cấp độ năng lực (Newbie → Junio
 | 5 | Tester / QA | 24 | ✅ | ✅ |
 | 6 | Sale & Marketing ĐMT | — | ✅ | ✅ |
 | 7 | Content Engine ĐMT | App | ✅ | ✅ |
-| 8 | 🐍 Python (Newbie→Early Senior) | 35 + đề thi | ✅ (interactive) | ✅ |
+| 8 | 🐍 Python (Newbie→Early Senior) | 37 + đề thi + Agentic AI | ✅ (interactive) | ✅ |
+| 9 | 🔤 Regex (Căn bản→Nâng cao) | 13 | ✅ (playground + tự chấm) | ✅ |
 
 ---
 

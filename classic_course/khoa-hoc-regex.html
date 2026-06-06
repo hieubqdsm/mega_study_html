@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Regex - Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #2dd4bf;        /* teal */
+    --primary-glow: #5eead4;
+    --accent: #f472b6;         /* magenta highlight */
+    --accent-2: #f9a8d4;
+    --p1: #2dd4bf;             /* basic teal */
+    --p2: #a78bfa;             /* intermediate violet */
+    --p3: #fb923c;             /* advanced orange */
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --info: #60a5fa;
+    --dark: #0b1220;
+    --darker: #060912;
+    --light: #cbd5e1;
+    --light-strong: #f1f5f9;
+    --gray: #94a3b8;
+    --card: #131c2b;
+    --card-2: #1a2536;
+    --border: #2a3852;
+    --terminal: #08111f;
+    --code-green: #5eead4;
+    --code-yellow: #fcd34d;
+    --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4;
+    --code-red: #fca5a5;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(45,212,191,.08) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(244,114,182,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono, input.rx, textarea.rx { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #04060c 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(45,212,191,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(45,212,191,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45,212,191,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#04101a; }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(45,212,191,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,9,18,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .mini-lab { font-size: 12px; color: var(--primary-glow); text-decoration:none; border:1px solid var(--border); padding:6px 13px; border-radius:8px; }
+  .topbar .mini-lab:hover { border-color: var(--primary); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(45,212,191,.14), rgba(244,114,182,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"/.*/"; position:absolute; right:18px; bottom:-6px; font-family:monospace; font-size:120px; opacity:.06; color:var(--accent); }
+  .hero h1 { font-size: 32px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 700px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp1 { background: rgba(45,212,191,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(167,139,250,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(251,146,60,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 25px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .rxtoken { background: var(--terminal); color: var(--code-yellow); padding: 2px 7px; border-radius: 5px; font-family: monospace; border:1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(251,146,60,.07); border-color: rgba(251,146,60,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE / EXAMPLE */
+  .ex-line { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:10px 0; padding:12px 14px; background: var(--terminal); border:1px solid var(--border); border-radius:9px; }
+  .ex-line .pat { font-family: monospace; color: var(--code-yellow); font-size: 14px; }
+  .ex-line .arrow { color: var(--gray); }
+  .ex-line .desc { color: var(--light); font-size: 13.5px; }
+  .ex-line .try { margin-left:auto; background: rgba(45,212,191,.12); color: var(--primary-glow); border:1px solid rgba(45,212,191,.35); border-radius:6px; padding:4px 12px; font-size:12px; cursor:pointer; font-family:inherit; }
+  .ex-line .try:hover { background: rgba(45,212,191,.22); }
+  mark, .hl { background: var(--accent); color: #2a0a1c; border-radius: 3px; padding: 0 1px; }
+
+  /* ===== REGEX PLAYGROUND ===== */
+  .rx-lab { background: var(--card); border: 1px solid var(--primary); border-radius: 14px; padding: 18px 20px; margin: 18px 0; box-shadow: 0 0 26px rgba(45,212,191,.1); }
+  .rx-lab .lab-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 12px; display:flex; align-items:center; gap:8px; }
+  .rx-field { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .rx-field .slash { color: var(--gray); font-family: monospace; font-size: 18px; }
+  input.rx, textarea.rx { width:100%; background: var(--terminal); border: 1px solid var(--border); border-radius: 8px; color: var(--code-yellow); font-size: 14px; padding: 10px 12px; }
+  input.rx:focus, textarea.rx:focus { outline:none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45,212,191,.13); }
+  textarea.rx { color: var(--light); min-height: 92px; resize: vertical; }
+  .rx-flags { display:flex; gap:14px; flex-wrap:wrap; margin:6px 0 12px; font-size: 13px; }
+  .rx-flags label { color: var(--gray); cursor:pointer; user-select:none; }
+  .rx-flags label:hover { color: var(--light); }
+  .rx-flags code { color: var(--code-pink); }
+  .rx-out-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing:1px; margin: 4px 0; }
+  .rx-highlight { background: var(--terminal); border: 1px dashed var(--border); border-radius: 8px; padding: 12px 14px; min-height: 50px; white-space: pre-wrap; word-break: break-word; font-family: monospace; font-size: 14px; line-height: 1.7; }
+  .rx-info { font-size: 13px; margin-top: 10px; color: var(--light); }
+  .rx-info .ok { color: var(--ok); } .rx-info .bad { color: var(--danger); } .rx-info .muted { color: var(--gray); }
+  .rx-groups { margin-top:8px; font-size:12.5px; }
+  .rx-groups .g { display:inline-block; background: var(--card-2); border:1px solid var(--border); border-radius:6px; padding:2px 9px; margin:3px 5px 0 0; }
+  .rx-groups .g b { color: var(--accent-2); }
+
+  /* ===== EXERCISE (AUTO-GRADE) ===== */
+  .rx-ex { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 17px 19px; margin: 20px 0; }
+  .rx-ex .exh { font-weight: 800; color: var(--accent-2); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .rx-ex .lvl { font-size: 11px; padding: 1px 8px; border-radius: 10px; background: var(--card-2); border:1px solid var(--border); color: var(--gray); }
+  .rx-ex .task { font-size: 14px; margin-bottom: 10px; }
+  .rx-ex .ex-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .rx-ex .ex-row .slash { color: var(--gray); font-family:monospace; }
+  .rx-ex input.rx { flex:1; min-width: 180px; }
+  .rx-ex .check { background: var(--primary); color: #04141a; border:none; border-radius:8px; padding:9px 18px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; }
+  .rx-ex .check:hover { background: var(--primary-glow); }
+  .rx-ex-result { margin-top: 12px; font-size: 13px; }
+  .rx-verdict { font-weight: 800; margin-bottom: 6px; }
+  .rx-case { padding: 4px 0; font-family: monospace; font-size: 12.5px; }
+  .rx-ok { color: var(--ok); } .rx-bad { color: var(--danger); } .rx-muted { color: var(--gray); }
+  .rx-case code { background: var(--terminal); padding: 1px 6px; border-radius:4px; color: var(--light); }
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 6px 13px 12px; font-size: 13.5px; }
+  details .body code { background: var(--terminal); color: var(--code-yellow); padding: 1px 6px; border-radius:4px; }
+
+  /* CHEATSHEET */
+  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 14px; margin: 16px 0; }
+  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .cheat-card h4 { color: var(--primary-glow); font-size: 14px; margin-bottom: 8px; }
+  .cheat-card table { margin: 0; font-size: 12.5px; }
+  .cheat-card td { padding: 5px 8px; border: none; border-bottom: 1px solid var(--border); }
+  .cheat-card td:first-child { color: var(--code-yellow); font-family: monospace; white-space: nowrap; width: 40%; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#04141a; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left:18px; padding-right:18px; } .topbar { padding-left:66px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🔤</div>
+      <h1>REGEX MASTERY</h1>
+      <div class="sub">CĂN BẢN → NÂNG CAO</div>
+      <div class="pat">/^.*$/</div>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="cn">★</span> Giới thiệu</a></li>
+      <li><a href="#playground"><span class="cn">🧪</span> Regex Playground</a></li>
+
+      <li class="nav-section-title np1"><span class="badge">P1</span> CĂN BẢN</li>
+      <li><a href="#ch1"><span class="cn">1</span> Regex là gì?</a></li>
+      <li><a href="#ch2"><span class="cn">2</span> Ký tự thường &amp; escape</a></li>
+      <li><a href="#ch3"><span class="cn">3</span> Character class [ ]</a></li>
+      <li><a href="#ch4"><span class="cn">4</span> Lượng từ (quantifiers)</a></li>
+      <li><a href="#ch5"><span class="cn">5</span> Neo &amp; ranh giới (anchors)</a></li>
+
+      <li class="nav-section-title np2"><span class="badge">P2</span> TRUNG CẤP</li>
+      <li><a href="#ch6"><span class="cn">6</span> Nhóm &amp; lựa chọn ( ) |</a></li>
+      <li><a href="#ch7"><span class="cn">7</span> Nhóm tên &amp; backreference</a></li>
+      <li><a href="#ch8"><span class="cn">8</span> Greedy vs Lazy</a></li>
+      <li><a href="#ch9"><span class="cn">9</span> Cờ (flags)</a></li>
+
+      <li class="nav-section-title np3"><span class="badge">P3</span> NÂNG CAO</li>
+      <li><a href="#ch10"><span class="cn">10</span> Lookaround</a></li>
+      <li><a href="#ch11"><span class="cn">11</span> Backtracking &amp; ReDoS</a></li>
+      <li><a href="#ch12"><span class="cn">12</span> Unicode &amp; flavors</a></li>
+      <li><a href="#ch13"><span class="cn">13</span> Regex thực chiến</a></li>
+
+      <li class="nav-section-title np1"><span class="badge">+</span> THỰC HÀNH</li>
+      <li><a href="#patterns"><span class="cn">📋</span> Thư viện pattern</a></li>
+      <li><a href="#challenge"><span class="cn">🏆</span> Thử thách tổng hợp</a></li>
+      <li><a href="#cheatsheet"><span class="cn">📑</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🔤 <b>Regex Mastery</b> — Biểu thức chính quy</div>
+      <a class="mini-lab" href="#playground">🧪 Mở Playground</a>
+    </div>
+    <div class="content-inner" id="content">
+      <!-- INTRO -->
+      <section class="chapter" id="gioi-thieu">
+        <div class="hero">
+          <h1><span class="g">Regex Mastery</span><br>Biểu thức chính quy từ căn bản đến nâng cao</h1>
+          <p>Regex (Regular Expression) là "ngôn ngữ mini" để <strong>tìm, khớp, trích xuất và thay thế</strong> văn bản theo mẫu. Khóa học này dạy bạn từ con số 0 đến thành thạo, với <strong>Playground thực hành trực tiếp</strong> và <strong>bài tập tự chấm</strong> ngay trong trình duyệt — không cần cài đặt gì.</p>
+          <div class="meta-row">
+            <div class="meta-pill"><b>13</b> chương</div>
+            <div class="meta-pill"><b>3</b> phần</div>
+            <div class="meta-pill"><b>🧪</b> Playground live</div>
+            <div class="meta-pill"><b>✅</b> Bài tập tự chấm</div>
+            <div class="meta-pill"><b>📋</b> Thư viện pattern</div>
+          </div>
+        </div>
+        <div class="box tip"><span class="bt">Cách học khóa này</span>Đọc lý thuyết → bấm <strong>"Thử ngay 🧪"</strong> ở mỗi ví dụ để nạp vào Playground và xem nó khớp gì → làm <strong>bài tập tại chỗ</strong>: gõ pattern, bấm <strong>Kiểm tra</strong>, máy chấm theo bộ test case. Pattern nào pass hết test là bạn đã hiểu.</div>
+        <div class="box info"><span class="bt">Regex chạy ở đâu?</span>Khóa này dùng <strong>cú pháp regex của JavaScript</strong> (RegExp) vì nó chạy trực tiếp trong trình duyệt. Đa số kiến thức giống hệt ở Python (<code class="ic">re</code>), PCRE, Java, grep... Chương 12 nói rõ điểm khác biệt giữa các "flavor".</div>
+      </section>
+
+      <!-- PLAYGROUND -->
+      <section class="chapter" id="playground">
+        <h2 class="ch-title"><span class="num">🧪</span> Regex Playground</h2>
+        <p class="ch-sub">Khu thực hành chính. Gõ pattern &amp; chuỗi thử — kết quả khớp được <mark>tô sáng</mark> ngay lập tức.</p>
+        <div class="rx-lab">
+          <div class="lab-head">🧪 Thử nghiệm Regex trực tiếp</div>
+          <div class="rx-out-label">Pattern</div>
+          <div class="rx-field"><span class="slash">/</span><input class="rx" id="rxPattern" oninput="runLab()" spellcheck="false" value="\d+"><span class="slash">/</span></div>
+          <div class="rx-flags">
+            <label><input type="checkbox" class="rx-flag" value="g" checked onchange="runLab()"> <code>g</code> global (tất cả)</label>
+            <label><input type="checkbox" class="rx-flag" value="i" onchange="runLab()"> <code>i</code> không phân biệt hoa/thường</label>
+            <label><input type="checkbox" class="rx-flag" value="m" onchange="runLab()"> <code>m</code> multiline (^$ mỗi dòng)</label>
+            <label><input type="checkbox" class="rx-flag" value="s" onchange="runLab()"> <code>s</code> dotall (. khớp \n)</label>
+          </div>
+          <div class="rx-out-label">Chuỗi thử nghiệm</div>
+          <textarea class="rx" id="rxText" oninput="runLab()" spellcheck="false">Đơn hàng #1024 ngày 2024-03-15
+Liên hệ: an@mail.com, 0912345678
+Giá: 1500000 VND</textarea>
+          <div class="rx-out-label">Kết quả (match được tô sáng)</div>
+          <div class="rx-highlight" id="rxHighlight"></div>
+          <div class="rx-info" id="rxInfo"></div>
+          <div class="rx-groups" id="rxGroups"></div>
+        </div>
+        <div class="box pro"><span class="bt">Mẹo</span>Thử thay pattern bằng <code class="ic">[a-z]+@[a-z.]+</code> (email), <code class="ic">\d{4}-\d{2}-\d{2}</code> (ngày), hay <code class="ic">0\d{9}</code> (SĐT). Bật cờ <code class="ic">i</code> để bỏ phân biệt hoa thường.</div>
+      </section>
+
+      <!-- ============ PART 1 ============ -->
+      <div class="part-divider" id="part1"><div class="line"></div><span class="tag tp1">P1 · Căn bản</span><div class="line"></div></div>
+
+      <!-- CH1 -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Regex là gì &amp; hoạt động ra sao?</h2>
+        <p class="ch-sub">Hiểu bản chất trước khi học cú pháp.</p>
+        <p>Một <strong>regex</strong> là một chuỗi mô tả <strong>mẫu (pattern)</strong>. "Bộ máy regex" (regex engine) quét chuỗi đầu vào từ trái sang phải, thử khớp mẫu tại từng vị trí. Ví dụ pattern <span class="rxtoken">cat</span> sẽ tìm chữ "cat" trong "the cat sat".</p>
+        <h3 class="sec">Regex giải quyết việc gì?</h3>
+        <ul>
+          <li><strong>Tìm kiếm:</strong> có chứa số điện thoại không? dòng nào chứa "ERROR"?</li>
+          <li><strong>Kiểm tra hợp lệ (validation):</strong> email/mật khẩu/mã có đúng định dạng?</li>
+          <li><strong>Trích xuất:</strong> lấy mọi ngày tháng / link / hashtag trong văn bản.</li>
+          <li><strong>Thay thế:</strong> ẩn số thẻ, đổi định dạng ngày, dọn khoảng trắng.</li>
+        </ul>
+        <div class="ex-line"><span class="pat">cat</span><span class="arrow">→</span><span class="desc">khớp "cat" trong "the <mark>cat</mark> sat"</span><button class="try" onclick="loadLab('cat','the cat sat on the mat','g')">Thử ngay 🧪</button></div>
+        <div class="box info"><span class="bt">Cách viết regex</span>Trong JS: <code class="ic">/pattern/flags</code> hoặc <code class="ic">new RegExp("pattern","flags")</code>. Trong Python: <code class="ic">re.search(r"pattern", text)</code>. Phần <em>pattern</em> (giữa hai dấu <code class="ic">/</code>) là thứ khóa này tập trung dạy.</div>
+      </section>
+
+      <!-- CH2 -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Ký tự thường &amp; ký tự đặc biệt (escape)</h2>
+        <p class="ch-sub">Đa số ký tự khớp chính nó. Một số ký tự "đặc biệt" cần escape bằng <code class="ic">\</code>.</p>
+        <p>Ký tự thường (chữ, số) khớp chính nó: <span class="rxtoken">abc</span> khớp "abc". Nhưng các ký tự sau có <strong>ý nghĩa đặc biệt</strong>, muốn khớp nghĩa đen phải thêm <code class="ic">\</code> phía trước:</p>
+        <p style="text-align:center;font-size:18px;color:var(--code-yellow);font-family:monospace">. ^ $ * + ? ( ) [ ] { } | \ /</p>
+        <table>
+          <tr><th>Pattern</th><th>Khớp</th><th>Ghi chú</th></tr>
+          <tr><td><span class="rxtoken">.</span></td><td>ký tự <em>bất kỳ</em> (trừ xuống dòng)</td><td>metacharacter</td></tr>
+          <tr><td><span class="rxtoken">\.</span></td><td>dấu chấm nghĩa đen</td><td>đã escape</td></tr>
+          <tr><td><span class="rxtoken">a\+b</span></td><td>chuỗi "a+b"</td><td>escape dấu +</td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">.</span><span class="arrow">→</span><span class="desc">khớp MỌI ký tự</span><button class="try" onclick="loadLab('.','a.b.c','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\.</span><span class="arrow">→</span><span class="desc">chỉ khớp dấu chấm</span><button class="try" onclick="loadLab('\\.','a.b.c','g')">Thử ngay 🧪</button></div>
+        <div class="box warn"><span class="bt">Lỗi kinh điển</span><code class="ic">.</code> không phải "dấu chấm" — nó khớp <strong>mọi ký tự</strong>. Muốn khớp dấu chấm thật (vd trong "file.txt") phải viết <code class="ic">\.</code>.</div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"a.b","ok":true},{"s":"axb","ok":false},{"s":"aXb","ok":false},{"s":"a.b.c","ok":false}]'>
+          <div class="exh">✏️ Bài tập 2.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Viết pattern khớp <strong>đúng chuỗi</strong> <code class="ic">a.b</code> (với dấu chấm <em>nghĩa đen</em>, không phải ký tự bất kỳ).</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="hint"><summary>Gợi ý</summary><div class="body">Escape dấu chấm: dùng <code>\.</code> giữa a và b.</div></details>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>a\.b</code> — nếu viết <code>a.b</code> thì "axb" cũng khớp (sai).</div></details>
+        </div>
+      </section>
+
+      <!-- CH3 -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Character class <code class="ic">[ ]</code> — tập ký tự</h2>
+        <p class="ch-sub">Khớp "một trong các ký tự" — viên gạch quan trọng nhất của regex.</p>
+        <table>
+          <tr><th>Pattern</th><th>Khớp một ký tự là...</th></tr>
+          <tr><td><span class="rxtoken">[abc]</span></td><td>a, b, hoặc c</td></tr>
+          <tr><td><span class="rxtoken">[a-z]</span></td><td>bất kỳ chữ thường (khoảng)</td></tr>
+          <tr><td><span class="rxtoken">[A-Za-z0-9]</span></td><td>chữ hoặc số</td></tr>
+          <tr><td><span class="rxtoken">[^0-9]</span></td><td><strong>KHÔNG</strong> phải chữ số (phủ định bằng ^)</td></tr>
+        </table>
+        <h3 class="sec">Lớp viết tắt (shorthand)</h3>
+        <table>
+          <tr><th>Viết tắt</th><th>Tương đương</th><th>Phủ định</th></tr>
+          <tr><td><span class="rxtoken">\d</span></td><td>chữ số <code class="ic">[0-9]</code></td><td><span class="rxtoken">\D</span></td></tr>
+          <tr><td><span class="rxtoken">\w</span></td><td>chữ/số/_ <code class="ic">[A-Za-z0-9_]</code></td><td><span class="rxtoken">\W</span></td></tr>
+          <tr><td><span class="rxtoken">\s</span></td><td>khoảng trắng (space, tab, \n)</td><td><span class="rxtoken">\S</span></td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">[aeiou]</span><span class="arrow">→</span><span class="desc">khớp nguyên âm thường</span><button class="try" onclick="loadLab('[aeiou]','Regex that hoa','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\d</span><span class="arrow">→</span><span class="desc">khớp từng chữ số</span><button class="try" onclick="loadLab('\\d','Phong 101, nam 2024','g')">Thử ngay 🧪</button></div>
+        <div class="box tip"><span class="bt">Bên trong <code class="ic">[ ]</code> mọi thứ "hiền" hơn</span>Đa số metacharacter mất ý nghĩa đặc biệt trong class: <code class="ic">[.+]</code> khớp dấu chấm hoặc dấu cộng (không cần escape). Chỉ <code class="ic">] ^ - \</code> cần lưu ý vị trí.</div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"a","ok":true},{"s":"e","ok":true},{"s":"u","ok":true},{"s":"b","ok":false},{"s":"A","ok":false},{"s":"ae","ok":false}]'>
+          <div class="exh">✏️ Bài tập 3.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp <strong>đúng một</strong> nguyên âm thường (a, e, i, o, u).</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>[aeiou]</code></div></details>
+        </div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"abc_123","ok":true},{"s":"Hello","ok":true},{"s":"a-b","ok":false},{"s":"x y","ok":false},{"s":"","ok":false}]'>
+          <div class="exh">✏️ Bài tập 3.2 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp chuỗi <strong>chỉ gồm</strong> chữ, số và dấu gạch dưới (ít nhất 1 ký tự). Gợi ý: dùng <code class="ic">\w</code> và lượng từ <code class="ic">+</code> (học ở CH4).</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>\w+</code> (hoặc <code>[A-Za-z0-9_]+</code>)</div></details>
+        </div>
+      </section>
+
+      <!-- CH4 -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Lượng từ (Quantifiers) — lặp lại</h2>
+        <p class="ch-sub">Cho biết một thành phần được lặp bao nhiêu lần.</p>
+        <table>
+          <tr><th>Lượng từ</th><th>Ý nghĩa</th><th>Ví dụ</th></tr>
+          <tr><td><span class="rxtoken">*</span></td><td>0 hoặc nhiều</td><td><code class="ic">ab*</code> = "a","ab","abbb"</td></tr>
+          <tr><td><span class="rxtoken">+</span></td><td>1 hoặc nhiều</td><td><code class="ic">\d+</code> = "5","2024"</td></tr>
+          <tr><td><span class="rxtoken">?</span></td><td>0 hoặc 1 (tùy chọn)</td><td><code class="ic">colou?r</code> = "color","colour"</td></tr>
+          <tr><td><span class="rxtoken">{3}</span></td><td>đúng 3 lần</td><td><code class="ic">\d{3}</code> = "123"</td></tr>
+          <tr><td><span class="rxtoken">{2,5}</span></td><td>từ 2 đến 5 lần</td><td><code class="ic">\d{2,5}</code></td></tr>
+          <tr><td><span class="rxtoken">{2,}</span></td><td>ít nhất 2 lần</td><td><code class="ic">\d{2,}</code></td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">\d+</span><span class="arrow">→</span><span class="desc">mỗi cụm số nguyên</span><button class="try" onclick="loadLab('\\d+','Phong 101 co 25 nguoi nam 2024','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\d{4}</span><span class="arrow">→</span><span class="desc">đúng 4 chữ số liền</span><button class="try" onclick="loadLab('\\d{4}','ma 12 nam 2024 quy 3','g')">Thử ngay 🧪</button></div>
+        <div class="box warn"><span class="bt">Cẩn thận với <code class="ic">*</code></span><code class="ic">a*</code> khớp cả "chuỗi rỗng" (0 lần). Pattern toàn các thứ "có thể rỗng" sẽ khớp ở mọi vị trí. Khi cần "ít nhất 1", dùng <code class="ic">+</code>.</div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"123","ok":true},{"s":"7","ok":true},{"s":"2024","ok":true},{"s":"","ok":false},{"s":"12a","ok":false},{"s":"a12","ok":false}]'>
+          <div class="exh">✏️ Bài tập 4.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp chuỗi <strong>chỉ gồm chữ số</strong>, ít nhất 1 chữ số.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>\d+</code> — <code>\d*</code> sẽ sai vì khớp cả chuỗi rỗng.</div></details>
+        </div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"2024-03-15","ok":true},{"s":"1999-12-01","ok":true},{"s":"24-3-5","ok":false},{"s":"2024/03/15","ok":false},{"s":"abcd-ef-gh","ok":false}]'>
+          <div class="exh">✏️ Bài tập 4.2 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp định dạng ngày <code class="ic">YYYY-MM-DD</code> (4 số, gạch, 2 số, gạch, 2 số).</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="hint"><summary>Gợi ý</summary><div class="body"><code>\d{4}</code> rồi <code>-</code> rồi <code>\d{2}</code>...</div></details>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>\d{4}-\d{2}-\d{2}</code></div></details>
+        </div>
+      </section>
+
+      <!-- CH5 -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Neo &amp; ranh giới (Anchors)</h2>
+        <p class="ch-sub">Anchor không khớp ký tự — chúng khớp <em>vị trí</em>.</p>
+        <table>
+          <tr><th>Anchor</th><th>Khớp vị trí</th></tr>
+          <tr><td><span class="rxtoken">^</span></td><td>đầu chuỗi (hoặc đầu dòng nếu bật cờ <code class="ic">m</code>)</td></tr>
+          <tr><td><span class="rxtoken">$</span></td><td>cuối chuỗi (hoặc cuối dòng với cờ <code class="ic">m</code>)</td></tr>
+          <tr><td><span class="rxtoken">\b</span></td><td>ranh giới từ (giữa <code class="ic">\w</code> và non-<code class="ic">\w</code>)</td></tr>
+          <tr><td><span class="rxtoken">\B</span></td><td>KHÔNG phải ranh giới từ</td></tr>
+        </table>
+        <p>Để <strong>validate cả chuỗi</strong>, bọc pattern giữa <code class="ic">^</code> và <code class="ic">$</code>: <span class="rxtoken">^\d+$</span> nghĩa là "toàn bộ chuỗi chỉ gồm chữ số". (Đây chính là lý do các bài tập tự chấm ở trên tự thêm <code class="ic">^(?:...)$</code> cho bạn.)</p>
+        <div class="ex-line"><span class="pat">^\d+$</span><span class="arrow">→</span><span class="desc">cả chuỗi chỉ là số (thử dòng có chữ)</span><button class="try" onclick="loadLab('^\\d+$','12345','gm')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\bcat\b</span><span class="arrow">→</span><span class="desc">"cat" như TỪ riêng (không khớp "category")</span><button class="try" onclick="loadLab('\\bcat\\b','the cat in category','g')">Thử ngay 🧪</button></div>
+        <div class="box tip"><span class="bt"><code class="ic">\b</code> cực hữu ích</span><code class="ic">cat</code> khớp cả trong "<u>cat</u>egory" &amp; "edu<u>cat</u>ion". Dùng <code class="ic">\bcat\b</code> để chỉ khớp từ "cat" độc lập.</div>
+
+        <div class="rx-ex" data-cases='[{"s":"ERROR: disk full","ok":true},{"s":"ERRORlog","ok":true},{"s":"see ERROR here","ok":false},{"s":"warning","ok":false}]'>
+          <div class="exh">✏️ Bài tập 5.1 <span class="lvl">tự chấm · không anchor sẵn</span></div>
+          <p class="task">Khớp những dòng <strong>bắt đầu bằng</strong> "ERROR". (Lưu ý bài này KHÔNG tự thêm <code class="ic">^...$</code> — bạn tự dùng anchor.)</p>
+          <div class="ex-row"><span class="slash">/</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>^ERROR</code> — không có <code>^</code> thì "see ERROR here" cũng khớp (sai).</div></details>
+        </div>
+
+        <div class="rx-ex" data-cases='[{"s":"the cat sat","ok":true},{"s":"a cat.","ok":true},{"s":"category","ok":false},{"s":"educated","ok":false},{"s":"scatter","ok":false}]'>
+          <div class="exh">✏️ Bài tập 5.2 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp từ "cat" như một <strong>từ độc lập</strong> (không nằm trong từ khác).</p>
+          <div class="ex-row"><span class="slash">/</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>\bcat\b</code></div></details>
+        </div>
+      </section>
+
+      <!-- ============ PART 2 ============ -->
+      <div class="part-divider" id="part2"><div class="line"></div><span class="tag tp2">P2 · Trung cấp</span><div class="line"></div></div>
+
+      <!-- CH6 -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> Nhóm <code class="ic">( )</code> &amp; lựa chọn <code class="ic">|</code></h2>
+        <p class="ch-sub">Gom nhiều thành phần thành một đơn vị; chọn giữa các phương án.</p>
+        <h3 class="sec">Nhóm bắt (capturing group)</h3>
+        <p>Dấu ngoặc <code class="ic">( )</code> gom các thành phần để áp lượng từ lên cả cụm, đồng thời <strong>"bắt" (capture)</strong> phần khớp để dùng lại / trích xuất.</p>
+        <table>
+          <tr><th>Pattern</th><th>Ý nghĩa</th></tr>
+          <tr><td><span class="rxtoken">(ab)+</span></td><td>"ab" lặp 1+ lần: "ab","abab"</td></tr>
+          <tr><td><span class="rxtoken">(\d{4})-(\d{2})</span></td><td>nhóm 1 = năm, nhóm 2 = tháng</td></tr>
+          <tr><td><span class="rxtoken">cat|dog</span></td><td>"cat" HOẶC "dog"</td></tr>
+          <tr><td><span class="rxtoken">gr(a|e)y</span></td><td>"gray" hoặc "grey"</td></tr>
+          <tr><td><span class="rxtoken">(?:ab)+</span></td><td>nhóm <strong>không bắt</strong> (chỉ gom, không capture)</td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">(\d{4})-(\d{2})-(\d{2})</span><span class="arrow">→</span><span class="desc">tách năm/tháng/ngày (xem mục Nhóm bên dưới Playground)</span><button class="try" onclick="loadLab('(\\d{4})-(\\d{2})-(\\d{2})','Ngay 2024-03-15 va 1999-12-01','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">https?://</span><span class="arrow">→</span><span class="desc">"http://" hoặc "https://" (s là tùy chọn)</span><button class="try" onclick="loadLab('https?://','xem http://a.com va https://b.com','g')">Thử ngay 🧪</button></div>
+        <div class="box info"><span class="bt">Capturing vs non-capturing</span>Dùng <code class="ic">( )</code> khi cần <strong>trích</strong> phần đó (như năm/tháng). Dùng <code class="ic">(?:...)</code> khi chỉ cần <strong>gom nhóm</strong> để áp lượng từ/lựa chọn mà không muốn lưu — giúp đánh số nhóm gọn &amp; nhanh hơn chút.</div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"cat","ok":true},{"s":"dog","ok":true},{"s":"fish","ok":true},{"s":"bird","ok":false},{"s":"catdog","ok":false},{"s":"ca","ok":false}]'>
+          <div class="exh">✏️ Bài tập 6.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp <strong>đúng một</strong> trong ba từ: <code class="ic">cat</code>, <code class="ic">dog</code>, <code class="ic">fish</code>.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>cat|dog|fish</code></div></details>
+        </div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"gray","ok":true},{"s":"grey","ok":true},{"s":"groy","ok":false},{"s":"grays","ok":false}]'>
+          <div class="exh">✏️ Bài tập 6.2 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp cả "gray" lẫn "grey" (chữ ở giữa là a hoặc e).</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>gr(a|e)y</code> hoặc <code>gr[ae]y</code> (gọn hơn).</div></details>
+        </div>
+      </section>
+
+      <!-- CH7 -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Nhóm có tên &amp; Backreference</h2>
+        <p class="ch-sub">Đặt tên cho nhóm để code dễ đọc; tham chiếu lại phần đã khớp.</p>
+        <h3 class="sec">Nhóm có tên</h3>
+        <div class="ex-line"><span class="pat">(?&lt;y&gt;\d{4})-(?&lt;m&gt;\d{2})</span><span class="arrow">→</span><span class="desc">nhóm tên "y" và "m" (xem ô Nhóm)</span><button class="try" onclick="loadLab('(?<y>\\d{4})-(?<m>\\d{2})','2024-03 va 1999-12','g')">Thử ngay 🧪</button></div>
+        <p>Trong JS: <code class="ic">m.groups.y</code>; trong Python: <code class="ic">m.group("y")</code>. Dễ đọc hơn nhiều so với <code class="ic">m.group(1)</code>.</p>
+        <h3 class="sec">Backreference — tham chiếu nhóm đã khớp</h3>
+        <p><code class="ic">\1</code> (hoặc <code class="ic">\k&lt;ten&gt;</code>) khớp <strong>lại đúng nội dung</strong> mà nhóm 1 đã bắt. Dùng để tìm phần lặp.</p>
+        <table>
+          <tr><th>Pattern</th><th>Khớp</th></tr>
+          <tr><td><span class="rxtoken">(\w+) \1</span></td><td>từ bị lặp 2 lần: "the the"</td></tr>
+          <tr><td><span class="rxtoken">&lt;(\w+)&gt;.*&lt;/\1&gt;</span></td><td>cặp thẻ mở/đóng cùng tên</td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">\b(\w+)\s+\1\b</span><span class="arrow">→</span><span class="desc">phát hiện từ lặp</span><button class="try" onclick="loadLab('\\b(\\w+)\\s+\\1\\b','toi di di hoc hoc bai','g')">Thử ngay 🧪</button></div>
+
+        <div class="rx-ex" data-cases='[{"s":"hello hello","ok":true},{"s":"the the cat","ok":true},{"s":"hello world","ok":false},{"s":"cat dog","ok":false}]'>
+          <div class="exh">✏️ Bài tập 7.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Phát hiện <strong>từ bị lặp liền kề</strong> (ví dụ "hello hello"). Dùng nhóm bắt + backreference.</p>
+          <div class="ex-row"><span class="slash">/</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="hint"><summary>Gợi ý</summary><div class="body">Bắt một từ <code>(\w+)</code>, theo sau là khoảng trắng <code>\s+</code>, rồi <code>\1</code>.</div></details>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>\b(\w+)\s+\1\b</code></div></details>
+        </div>
+      </section>
+
+      <!-- CH8 -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> Greedy vs Lazy (tham lam vs lười)</h2>
+        <p class="ch-sub">Mặc định lượng từ "tham lam" — ăn càng nhiều càng tốt. Thêm <code class="ic">?</code> để "lười".</p>
+        <table>
+          <tr><th>Pattern</th><th>Trên <code class="ic">&lt;a&gt;&lt;b&gt;</code> khớp</th></tr>
+          <tr><td><span class="rxtoken">&lt;.+&gt;</span> (greedy)</td><td><code class="ic">&lt;a&gt;&lt;b&gt;</code> — ăn cả chuỗi!</td></tr>
+          <tr><td><span class="rxtoken">&lt;.+?&gt;</span> (lazy)</td><td><code class="ic">&lt;a&gt;</code> rồi <code class="ic">&lt;b&gt;</code> — từng thẻ</td></tr>
+          <tr><td><span class="rxtoken">&lt;[^&gt;]+&gt;</span> (tốt nhất)</td><td>từng thẻ, không cần lazy</td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">&lt;.+&gt;</span><span class="arrow">→</span><span class="desc">tham lam — ăn hết</span><button class="try" onclick="loadLab('<.+>','<a><b><c>','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">&lt;.+?&gt;</span><span class="arrow">→</span><span class="desc">lười — từng thẻ một</span><button class="try" onclick="loadLab('<.+?>','<a><b><c>','g')">Thử ngay 🧪</button></div>
+        <div class="box pro"><span class="bt">Mẹo của dân chuyên</span>Thường <strong>không nên</strong> dùng <code class="ic">.+?</code> mà nên dùng <strong>lớp phủ định</strong> như <code class="ic">[^&gt;]+</code> ("mọi thứ trừ dấu &gt;"). Nó rõ ràng hơn, nhanh hơn và tránh nhiều lỗi backtracking (CH11).</div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"<div>","ok":true},{"s":"<a>","ok":true},{"s":"<a><b>","ok":false},{"s":"<>","ok":false}]'>
+          <div class="exh">✏️ Bài tập 8.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp <strong>đúng một</strong> thẻ HTML đơn như <code class="ic">&lt;div&gt;</code> (có ít nhất 1 ký tự bên trong, KHÔNG được "nuốt" nhiều thẻ). Gợi ý: đừng dùng <code class="ic">.+</code>.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>&lt;[^&gt;]+&gt;</code> — <code>&lt;.+&gt;</code> sẽ khớp cả "&lt;a&gt;&lt;b&gt;" (sai). Lớp phủ định <code>[^&gt;]</code> chặn việc vượt qua dấu &gt;.</div></details>
+        </div>
+      </section>
+
+      <!-- CH9 -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Cờ (Flags / Modifiers)</h2>
+        <p class="ch-sub">Thay đổi cách regex hoạt động trên toàn pattern.</p>
+        <table>
+          <tr><th>Cờ</th><th>Tên</th><th>Tác dụng</th></tr>
+          <tr><td><span class="rxtoken">i</span></td><td>ignore case</td><td>không phân biệt hoa/thường: <code class="ic">/cat/i</code> khớp "CAT"</td></tr>
+          <tr><td><span class="rxtoken">g</span></td><td>global</td><td>tìm <strong>tất cả</strong> (không dừng ở match đầu)</td></tr>
+          <tr><td><span class="rxtoken">m</span></td><td>multiline</td><td><code class="ic">^ $</code> khớp đầu/cuối <strong>mỗi dòng</strong></td></tr>
+          <tr><td><span class="rxtoken">s</span></td><td>dotall</td><td><code class="ic">.</code> khớp cả ký tự xuống dòng <code class="ic">\n</code></td></tr>
+        </table>
+        <p>Trong Playground ở trên có sẵn 4 checkbox cờ — hãy bật/tắt để thấy khác biệt. Trong Python: <code class="ic">re.findall(pat, text, re.IGNORECASE | re.MULTILINE)</code>.</p>
+        <div class="ex-line"><span class="pat">cat</span> + cờ <span class="pat">i</span><span class="arrow">→</span><span class="desc">khớp Cat, CAT, cat</span><button class="try" onclick="loadLab('cat','Cat CAT cat caT','gi')">Thử ngay 🧪 (đã bật i)</button></div>
+        <div class="box tip"><span class="bt">Cờ <code class="ic">m</code> hay bị hiểu nhầm</span><code class="ic">m</code> KHÔNG làm <code class="ic">.</code> khớp xuống dòng (đó là <code class="ic">s</code>). <code class="ic">m</code> chỉ đổi nghĩa của <code class="ic">^</code> và <code class="ic">$</code> sang "đầu/cuối mỗi dòng".</div>
+      </section>
+
+      <!-- ============ PART 3 ============ -->
+      <div class="part-divider" id="part3"><div class="line"></div><span class="tag tp3">P3 · Nâng cao</span><div class="line"></div></div>
+
+      <!-- CH10 -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> Lookaround (nhìn trước / nhìn sau)</h2>
+        <p class="ch-sub">Kiểm tra điều kiện xung quanh mà <strong>không "tiêu thụ"</strong> ký tự — công cụ mạnh nhất của regex nâng cao.</p>
+        <table>
+          <tr><th>Cú pháp</th><th>Tên</th><th>Ý nghĩa</th></tr>
+          <tr><td><span class="rxtoken">(?=...)</span></td><td>lookahead dương</td><td>theo sau PHẢI là ...</td></tr>
+          <tr><td><span class="rxtoken">(?!...)</span></td><td>lookahead âm</td><td>theo sau KHÔNG được là ...</td></tr>
+          <tr><td><span class="rxtoken">(?&lt;=...)</span></td><td>lookbehind dương</td><td>phía trước PHẢI là ...</td></tr>
+          <tr><td><span class="rxtoken">(?&lt;!...)</span></td><td>lookbehind âm</td><td>phía trước KHÔNG được là ...</td></tr>
+        </table>
+        <div class="ex-line"><span class="pat">\d+(?=px)</span><span class="arrow">→</span><span class="desc">số đứng trước "px" (không lấy "px")</span><button class="try" onclick="loadLab('\\d+(?=px)','width 12px height 30em pad 5px','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">(?&lt;=\$)\d+</span><span class="arrow">→</span><span class="desc">số đứng sau dấu $</span><button class="try" onclick="loadLab('(?<=\\$)\\d+','gia $50 va 30 dong $99','g')">Thử ngay 🧪</button></div>
+        <p>Ứng dụng kinh điển: <strong>kiểm tra mật khẩu mạnh</strong> bằng nhiều lookahead độc lập:</p>
+        <div class="ex-line"><span class="pat">^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$</span><span class="arrow">→</span><span class="desc">≥8 ký tự, có hoa, thường, số</span><button class="try" onclick="loadLab('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$','Abcd1234','g')">Thử ngay 🧪</button></div>
+        <div class="box info"><span class="bt">Vì sao lookahead "không tiêu thụ"?</span>Nó chỉ <em>kiểm tra</em> tại vị trí hiện tại rồi quay lại, không di chuyển con trỏ. Nhờ vậy có thể xếp chồng nhiều điều kiện <code class="ic">(?=...)(?=...)</code> trên cùng một chỗ — như mật khẩu phải thỏa đồng thời nhiều quy tắc.</div>
+
+        <div class="rx-ex" data-cases='[{"s":"12px","ok":true},{"s":"5px wide","ok":true},{"s":"12em","ok":false},{"s":"px","ok":false},{"s":"30","ok":false}]'>
+          <div class="exh">✏️ Bài tập 10.1 <span class="lvl">tự chấm</span></div>
+          <p class="task">Khớp <strong>chữ số</strong> đứng <strong>ngay trước "px"</strong> (chỉ khớp phần số, dùng lookahead).</p>
+          <div class="ex-row"><span class="slash">/</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>\d+(?=px)</code></div></details>
+        </div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"Abcd1234","ok":true},{"s":"Password9","ok":true},{"s":"abcd1234","ok":false},{"s":"ABCD1234","ok":false},{"s":"Abc12","ok":false}]'>
+          <div class="exh">✏️ Bài tập 10.2 <span class="lvl">tự chấm · khó</span></div>
+          <p class="task">Mật khẩu hợp lệ: <strong>≥8 ký tự</strong>, có ít nhất 1 chữ <strong>thường</strong>, 1 chữ <strong>HOA</strong>, 1 <strong>số</strong>.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="hint"><summary>Gợi ý</summary><div class="body">Ba lookahead <code>(?=.*[a-z])</code>, <code>(?=.*[A-Z])</code>, <code>(?=.*\d)</code> rồi <code>.{8,}</code>. (Bài tự bọc <code>^...$</code> sẵn nên bạn không cần gõ <code>^ $</code>.)</div></details>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}</code></div></details>
+        </div>
+      </section>
+
+      <!-- CH11 -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Backtracking &amp; ReDoS (hiệu năng &amp; bảo mật)</h2>
+        <p class="ch-sub">Hiểu cách engine "thử &amp; lùi" — và vì sao vài regex có thể treo cả server.</p>
+        <p>Khi một nhánh không khớp, engine <strong>lùi lại (backtrack)</strong> và thử cách khác. Với pattern mơ hồ kiểu <strong>lượng từ lồng lượng từ</strong>, số cách thử có thể bùng nổ theo cấp số nhân.</p>
+        <div class="box danger"><span class="bt">ReDoS — Regular expression Denial of Service</span>Pattern như <code class="ic">(a+)+$</code> gặp chuỗi <code class="ic">"aaaa...a!"</code> sẽ thử <strong>hàng tỉ</strong> tổ hợp → treo CPU. Kẻ tấn công gửi input độc hại để làm sập dịch vụ. Đây là lỗ hổng bảo mật thực tế trên nhiều hệ thống lớn.</div>
+        <h3 class="sec">Cách viết regex an toàn</h3>
+        <ul>
+          <li>Tránh <strong>lượng từ lồng nhau mơ hồ</strong>: <code class="ic">(a+)+</code>, <code class="ic">(a*)*</code>, <code class="ic">(.*)*</code>.</li>
+          <li>Dùng <strong>lớp phủ định</strong> thay <code class="ic">.*</code>: <code class="ic">"[^"]*"</code> thay vì <code class="ic">".*?"</code>.</li>
+          <li><strong>Neo</strong> chặt bằng <code class="ic">^ $</code> và giới hạn độ dài <code class="ic">{1,100}</code>.</li>
+          <li>Với input không tin cậy: đặt <strong>timeout</strong> (Python: thư viện <code class="ic">regex</code>; .NET có timeout sẵn) hoặc kiểm tra độ dài trước.</li>
+        </ul>
+        <div class="box pro"><span class="bt">Quy tắc vàng</span>Một mẫu con chỉ nên khớp một chuỗi theo <strong>một cách duy nhất</strong>. Nếu engine có nhiều "lối đi" để khớp cùng một đoạn → mầm mống backtracking. Test pattern với input dài/xấu trước khi đưa lên production.</div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"hello@mail.com","ok":true},{"s":"a.b@x.co","ok":true},{"s":"no-at-sign","ok":false},{"s":"a@b","ok":false},{"s":"a@@b.com","ok":false}]'>
+          <div class="exh">✏️ Bài tập 11.1 <span class="lvl">tự chấm · an toàn</span></div>
+          <p class="task">Viết regex email <strong>đơn giản &amp; an toàn</strong>: phần-trước @ (không chứa @ hay khoảng trắng), @, tên miền, dấu chấm, đuôi. Dùng <strong>lớp phủ định</strong> thay <code class="ic">.*</code>.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>[^@\s]+@[^@\s]+\.[^@\s]+</code> — dùng <code>[^@\s]</code> (không @ và không khoảng trắng) là an toàn, rõ ràng. <em>(Validate email "đúng chuẩn" rất phức tạp; trong thực tế mẫu đơn giản này là đủ.)</em></div></details>
+        </div>
+      </section>
+
+      <!-- CH12 -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Unicode &amp; sự khác biệt giữa các "flavor"</h2>
+        <p class="ch-sub">Regex không hoàn toàn giống nhau giữa JavaScript, Python, PCRE, Java, grep...</p>
+        <table>
+          <tr><th>Tính năng</th><th>JS</th><th>Python <code class="ic">re</code></th><th>Ghi chú</th></tr>
+          <tr><td>Nhóm tên</td><td><code class="ic">(?&lt;n&gt;)</code></td><td><code class="ic">(?P&lt;n&gt;)</code></td><td>cú pháp khác nhau!</td></tr>
+          <tr><td>Backref tên</td><td><code class="ic">\k&lt;n&gt;</code></td><td><code class="ic">(?P=n)</code></td><td></td></tr>
+          <tr><td>Lookbehind</td><td>có (mới)</td><td>có (độ dài cố định)</td><td>JS linh hoạt hơn</td></tr>
+          <tr><td>Unicode prop <code class="ic">\p{...}</code></td><td>cần cờ <code class="ic">u</code></td><td>cần module <code class="ic">regex</code></td><td>vd <code class="ic">\p{L}</code> = chữ cái mọi ngôn ngữ</td></tr>
+          <tr><td>Cờ dotall</td><td><code class="ic">s</code></td><td><code class="ic">re.S</code></td><td></td></tr>
+        </table>
+        <div class="box warn"><span class="bt">Tiếng Việt &amp; Unicode</span><code class="ic">\w</code> trong JS mặc định <strong>không</strong> tính ký tự có dấu (à, ê, ố...). Để khớp chữ Unicode, dùng cờ <code class="ic">u</code> + <code class="ic">\p{L}</code> (vd <code class="ic">/\p{L}+/u</code>), hoặc liệt kê khoảng. Trong Python 3, <code class="ic">\w</code> mặc định đã hỗ trợ Unicode.</p></div>
+        <div class="box info"><span class="bt">Khi đổi ngôn ngữ</span>Kiến thức cốt lõi (class, quantifier, anchor, group, lookaround) <strong>giống nhau ~90%</strong>. Khi chuyển giữa JS/Python/grep, chỉ cần tra lại: cú pháp nhóm tên, cờ, và mức hỗ trợ lookbehind/Unicode.</div>
+      </section>
+
+      <!-- CH13 -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> Regex thực chiến — Python, grep/sed &amp; khi nào KHÔNG dùng</h2>
+        <p class="ch-sub">Áp dụng vào công việc thật.</p>
+        <h3 class="sec">Trong Python</h3>
+        <div class="ex-line" style="display:block"><pre class="mono" style="margin:0;color:var(--light);font-size:13px;white-space:pre-wrap">import re
+text = "Liên hệ: an@mail.com, 0912345678"
+re.findall(r"[\w.]+@[\w.]+", text)        # ['an@mail.com']  - tìm tất cả
+re.search(r"\d{10}", text).group()         # '0912345678'    - khớp đầu tiên
+re.sub(r"\d", "*", text)                    # ẩn mọi chữ số
+pat = re.compile(r"\bERROR\b")             # compile để dùng lại (nhanh hơn)</pre></div>
+        <div class="box tip"><span class="bt">Luôn dùng raw string <code class="ic">r"..."</code> trong Python</span>Để <code class="ic">\d</code>, <code class="ic">\b</code> không bị hiểu nhầm thành escape của Python. <code class="ic">re.findall</code> (lấy tất cả), <code class="ic">re.search</code> (khớp đầu), <code class="ic">re.match</code> (khớp từ đầu chuỗi), <code class="ic">re.sub</code> (thay thế), <code class="ic">re.compile</code> (tái dùng).</div>
+        <h3 class="sec">Trong terminal (grep / sed)</h3>
+        <div class="ex-line" style="display:block"><pre class="mono" style="margin:0;color:var(--light);font-size:13px;white-space:pre-wrap">grep -E "ERROR|WARN" app.log        # lọc dòng chứa ERROR hoặc WARN
+grep -oE "[0-9]{4}-[0-9]{2}-[0-9]{2}" data.txt   # trích mọi ngày
+sed -E "s/[0-9]+/#/g" file.txt      # thay mọi số bằng #</pre></div>
+        <h3 class="sec">⚠️ Khi nào KHÔNG nên dùng regex</h3>
+        <div class="box danger"><span class="bt">Đừng parse cấu trúc lồng nhau bằng regex</span><strong>HTML, JSON, XML, code</strong> — dùng parser chuyên dụng (<code class="ic">BeautifulSoup</code>, <code class="ic">json</code>, <code class="ic">ast</code>...). Regex không hiểu cấu trúc lồng nhau (ngoặc lồng ngoặc), sẽ sai &amp; khó bảo trì. Regex hợp cho: validate định dạng, trích token đơn giản, tìm/thay thế.</div>
+
+        <div class="rx-ex" data-cases='[{"s":"call 0912345678 now","ok":true},{"s":"+84987654321","ok":true},{"s":"123","ok":false},{"s":"no number","ok":false}]'>
+          <div class="exh">✏️ Bài tập 13.1 <span class="lvl">tự chấm · thực tế</span></div>
+          <p class="task">Tìm <strong>SĐT Việt Nam</strong> trong văn bản: bắt đầu bằng <code class="ic">0</code> hoặc <code class="ic">+84</code>, theo sau 9 chữ số. (Không anchor — chỉ cần tìm thấy trong chuỗi.)</p>
+          <div class="ex-row"><span class="slash">/</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>(?:\+84|0)\d{9}</code> — dùng nhóm không bắt <code>(?:...)</code> cho phần lựa chọn đầu số.</div></details>
+        </div>
+      </section>
+
+      <!-- ============ PATTERNS LIBRARY ============ -->
+      <div class="part-divider" id="patterns"><div class="line"></div><span class="tag tp1">📋 Thư viện pattern</span><div class="line"></div></div>
+      <section class="chapter">
+        <h2 class="ch-title"><span class="num">📋</span> Thư viện pattern thực dụng</h2>
+        <p class="ch-sub">Các mẫu hay dùng — bấm "Thử ngay" để nạp vào Playground và nghịch.</p>
+        <div class="ex-line"><span class="pat">[^@\s]+@[^@\s]+\.[^@\s]+</span><span class="arrow">→</span><span class="desc">Email (đơn giản, an toàn)</span><button class="try" onclick="loadLab('[^@\\s]+@[^@\\s]+\\.[^@\\s]+','lh: an@mail.com, b.c@x.co.uk','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">https?://[^\s]+</span><span class="arrow">→</span><span class="desc">URL http/https</span><button class="try" onclick="loadLab('https?://[^\\s]+','xem https://a.com/x va http://b.org','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">(?:\+84|0)\d{9}</span><span class="arrow">→</span><span class="desc">SĐT Việt Nam</span><button class="try" onclick="loadLab('(?:\\+84|0)\\d{9}','goi 0912345678 hoac +84987654321','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\d{4}-\d{2}-\d{2}</span><span class="arrow">→</span><span class="desc">Ngày YYYY-MM-DD</span><button class="try" onclick="loadLab('\\d{4}-\\d{2}-\\d{2}','tu 2024-01-15 den 2024-12-31','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">#\w+</span><span class="arrow">→</span><span class="desc">Hashtag</span><button class="try" onclick="loadLab('#\\w+','yeu #python va #regex nhe','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\b\d{1,3}(\.\d{1,3}){3}\b</span><span class="arrow">→</span><span class="desc">Địa chỉ IPv4 (thô)</span><button class="try" onclick="loadLab('\\b\\d{1,3}(\\.\\d{1,3}){3}\\b','server 192.168.1.5 va 10.0.0.1','g')">Thử ngay 🧪</button></div>
+        <div class="ex-line"><span class="pat">\s+</span><span class="arrow">→</span><span class="desc">Khoảng trắng thừa (để thay/dọn)</span><button class="try" onclick="loadLab('\\s+','dong    nhieu    khoang   trang','g')">Thử ngay 🧪</button></div>
+        <div class="box info"><span class="bt">Lưu ý</span>Các pattern "thô" này đủ dùng cho việc tìm/lọc/dọn dữ liệu hằng ngày. Để <strong>validate nghiêm ngặt</strong> (email RFC, IP hợp lệ 0-255) cần pattern phức tạp hơn nhiều — khi đó cân nhắc thư viện chuyên dụng thay vì tự viết regex khổng lồ.</div>
+      </section>
+
+      <!-- ============ CHALLENGE ============ -->
+      <section class="chapter" id="challenge">
+        <h2 class="ch-title"><span class="num">🏆</span> Thử thách tổng hợp</h2>
+        <p class="ch-sub">Vận dụng mọi thứ đã học. Tự chấm — pass hết test mới tính đạt.</p>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"255.255.255.0","ok":true},{"s":"192.168.1.1","ok":true},{"s":"0.0.0.0","ok":true},{"s":"256.1.1.1","ok":false},{"s":"1.2.3","ok":false},{"s":"1.2.3.4.5","ok":false}]'>
+          <div class="exh">🏆 TT1 · IPv4 hợp lệ <span class="lvl">khó</span></div>
+          <p class="task">Khớp địa chỉ IPv4 <strong>hợp lệ</strong> (mỗi octet 0-255). Đây là bài kinh điển — đòi hỏi lựa chọn khéo léo.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="hint"><summary>Gợi ý</summary><div class="body">Một octet 0-255 = <code>25[0-5]</code> | <code>2[0-4]\d</code> | <code>1\d\d</code> | <code>[1-9]?\d</code>. Lặp lại 4 lần, ngăn bởi <code>\.</code>.</div></details>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(?:\.(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}</code></div></details>
+        </div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"00:00","ok":true},{"s":"23:59","ok":true},{"s":"09:05","ok":true},{"s":"24:00","ok":false},{"s":"12:60","ok":false},{"s":"9:5","ok":false}]'>
+          <div class="exh">🏆 TT2 · Giờ 24h (HH:MM) <span class="lvl">trung bình</span></div>
+          <p class="task">Khớp giờ định dạng 24h <code class="ic">HH:MM</code> (00:00 đến 23:59, luôn 2 chữ số).</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>(?:[01]\d|2[0-3]):[0-5]\d</code></div></details>
+        </div>
+
+        <div class="rx-ex" data-anchor="1" data-cases='[{"s":"user_01","ok":true},{"s":"abc","ok":true},{"s":"ab","ok":false},{"s":"1abc","ok":false},{"s":"has space","ok":false},{"s":"toolongusername99","ok":false}]'>
+          <div class="exh">🏆 TT3 · Username hợp lệ <span class="lvl">khó</span></div>
+          <p class="task">Username: <strong>3-16 ký tự</strong>, chỉ chữ/số/gạch dưới, <strong>phải bắt đầu bằng chữ cái</strong>.</p>
+          <div class="ex-row"><span class="slash">/^(?:</span><input class="rx" spellcheck="false" placeholder="pattern..."><span class="slash">)$/</span><button class="check" onclick="checkRx(this)">Kiểm tra</button></div>
+          <div class="rx-ex-result"></div>
+          <details class="hint"><summary>Gợi ý</summary><div class="body">Ký tự đầu <code>[A-Za-z]</code>, rồi 2-15 ký tự <code>\w{2,15}</code> (tổng 3-16).</div></details>
+          <details class="answer"><summary>Đáp án</summary><div class="body"><code>[A-Za-z]\w{2,15}</code></div></details>
+        </div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📑</span> Cheatsheet — tra cứu nhanh</h2>
+        <p class="ch-sub">In ra hoặc bookmark. Đủ cho 95% nhu cầu hằng ngày.</p>
+        <div class="cheat-grid">
+          <div class="cheat-card"><h4>Lớp ký tự</h4><table>
+            <tr><td>.</td><td>ký tự bất kỳ</td></tr>
+            <tr><td>\d \D</td><td>số / không phải số</td></tr>
+            <tr><td>\w \W</td><td>chữ-số-_ / ngược lại</td></tr>
+            <tr><td>\s \S</td><td>khoảng trắng / ngược lại</td></tr>
+            <tr><td>[abc]</td><td>a, b hoặc c</td></tr>
+            <tr><td>[^abc]</td><td>không a,b,c</td></tr>
+            <tr><td>[a-z]</td><td>khoảng a đến z</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4>Lượng từ</h4><table>
+            <tr><td>*</td><td>0 hoặc nhiều</td></tr>
+            <tr><td>+</td><td>1 hoặc nhiều</td></tr>
+            <tr><td>?</td><td>0 hoặc 1</td></tr>
+            <tr><td>{3}</td><td>đúng 3 lần</td></tr>
+            <tr><td>{2,5}</td><td>2 đến 5 lần</td></tr>
+            <tr><td>{2,}</td><td>≥ 2 lần</td></tr>
+            <tr><td>+? *?</td><td>phiên bản lazy</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4>Neo &amp; ranh giới</h4><table>
+            <tr><td>^</td><td>đầu chuỗi/dòng</td></tr>
+            <tr><td>$</td><td>cuối chuỗi/dòng</td></tr>
+            <tr><td>\b \B</td><td>ranh giới từ / không</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4>Nhóm &amp; lựa chọn</h4><table>
+            <tr><td>(...)</td><td>nhóm bắt</td></tr>
+            <tr><td>(?:...)</td><td>nhóm không bắt</td></tr>
+            <tr><td>(?&lt;n&gt;...)</td><td>nhóm có tên (JS)</td></tr>
+            <tr><td>a|b</td><td>a hoặc b</td></tr>
+            <tr><td>\1</td><td>backreference nhóm 1</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4>Lookaround</h4><table>
+            <tr><td>(?=...)</td><td>theo sau phải là</td></tr>
+            <tr><td>(?!...)</td><td>theo sau không là</td></tr>
+            <tr><td>(?&lt;=...)</td><td>phía trước phải là</td></tr>
+            <tr><td>(?&lt;!...)</td><td>phía trước không là</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4>Cờ (flags)</h4><table>
+            <tr><td>i</td><td>không phân biệt hoa/thường</td></tr>
+            <tr><td>g</td><td>tìm tất cả (global)</td></tr>
+            <tr><td>m</td><td>^$ theo mỗi dòng</td></tr>
+            <tr><td>s</td><td>. khớp cả \n</td></tr>
+          </table></div>
+        </div>
+        <div class="box pro"><span class="bt">Lời khuyên cuối</span>Regex giỏi đến từ <strong>nghịch nhiều</strong>. Mỗi khi gặp bài toán văn bản, mở Playground thử trước. Bắt đầu từ mẫu thô rồi siết dần bằng test case. Và nhớ: <em>regex dễ viết hơn đọc</em> — luôn comment pattern phức tạp (Python: <code class="ic">re.VERBOSE</code>). Chúc bạn match thành công! 🔤✨</div>
+      </section>
+
+      <!-- CONTENT-MARKER -->
+    </div>
+    <footer class="foot">
+      🔤 <b>Regex Mastery</b> · Khóa học biểu thức chính quy từ căn bản đến nâng cao · thuộc bộ Studies ·
+      Playground &amp; bài tập chạy bằng <b>RegExp</b> của trình duyệt (JavaScript) — hoạt động offline.
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ============ HELPERS ============ */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ============ MAIN PLAYGROUND ============ */
+function getLabFlags(){
+  return [...document.querySelectorAll('.rx-flag:checked')].map(c=>c.value).join('');
+}
+function runLab(){
+  const pat = document.getElementById('rxPattern').value;
+  const text = document.getElementById('rxText').value;
+  const hl = document.getElementById('rxHighlight');
+  const info = document.getElementById('rxInfo');
+  const groupsEl = document.getElementById('rxGroups');
+  groupsEl.innerHTML = '';
+  if(!pat){ hl.textContent = text; info.innerHTML = '<span class="muted">Nhập pattern để bắt đầu khớp...</span>'; return; }
+  let userFlags = getLabFlags();
+  let flags = userFlags.includes('g') ? userFlags : userFlags + 'g';   // luôn cần g để highlight tất cả
+  let re;
+  try { re = new RegExp(pat, flags); }
+  catch(e){ hl.textContent = text; info.innerHTML = '<span class="bad">⚠ Regex không hợp lệ: '+esc(e.message)+'</span>'; return; }
+  let matches;
+  try { matches = [...text.matchAll(re)]; }
+  catch(e){ info.innerHTML = '<span class="bad">⚠ '+esc(e.message)+'</span>'; return; }
+  // build highlight
+  let html=''; let last=0;
+  for(const m of matches){
+    const idx = m.index;
+    html += esc(text.slice(last, idx));
+    const matched = m[0];
+    html += '<mark>'+ (matched.length ? esc(matched) : '∅') +'</mark>';
+    last = idx + matched.length;
+    if(matched.length === 0) { html += esc(text.slice(last, last+1)); last++; } // tránh kẹt zero-length
+  }
+  html += esc(text.slice(last));
+  hl.innerHTML = html || '<span class="muted">(chuỗi rỗng)</span>';
+  // info
+  const n = matches.length;
+  info.innerHTML = n ? '<span class="ok">✓ '+n+' kết quả khớp</span>' : '<span class="bad">✗ Không khớp đoạn nào</span>';
+  // groups of first match
+  if(n && (matches[0].length>1 || matches[0].groups)){
+    let g = '<div class="rx-info" style="margin-top:6px;color:var(--gray)">Nhóm của match đầu tiên:</div><div>';
+    const m0 = matches[0];
+    for(let i=1;i<m0.length;i++){ g += '<span class="g"><b>$'+i+'</b> = '+(m0[i]===undefined?'<i>undefined</i>':esc(m0[i]))+'</span>'; }
+    if(m0.groups){ for(const k in m0.groups){ g += '<span class="g"><b>'+esc(k)+'</b> = '+(m0.groups[k]===undefined?'<i>undefined</i>':esc(m0.groups[k]))+'</span>'; } }
+    g += '</div>';
+    groupsEl.innerHTML = g;
+  }
+}
+/* load an example into the main playground */
+function loadLab(pattern, text, flags){
+  document.getElementById('rxPattern').value = pattern;
+  if(text!==undefined) document.getElementById('rxText').value = text;
+  document.querySelectorAll('.rx-flag').forEach(c=>{ c.checked = (flags||'').includes(c.value); });
+  document.getElementById('playground').scrollIntoView({behavior:'smooth', block:'start'});
+  runLab();
+}
+
+/* ============ AUTO-GRADE EXERCISES ============ */
+function checkRx(btn){
+  const box = btn.closest('.rx-ex');
+  const input = box.querySelector('input.rx');
+  const out = box.querySelector('.rx-ex-result');
+  const pat = input.value;
+  if(!pat){ out.innerHTML = '<span class="rx-muted">Nhập pattern rồi bấm Kiểm tra.</span>'; return; }
+  const anchor = box.dataset.anchor === '1';
+  const flags = box.dataset.flags || '';
+  let cases;
+  try { cases = JSON.parse(box.dataset.cases); }
+  catch(e){ out.innerHTML = '<span class="rx-bad">(lỗi cấu hình bài tập)</span>'; return; }
+  let re;
+  try { re = new RegExp(anchor ? '^(?:'+pat+')$' : pat, flags); }
+  catch(e){ out.innerHTML = '<span class="rx-bad">⚠ Regex không hợp lệ: '+esc(e.message)+'</span>'; return; }
+  let allPass = true, rows = '';
+  for(const c of cases){
+    re.lastIndex = 0;
+    const got = re.test(c.s);
+    const pass = (got === c.ok);
+    if(!pass) allPass = false;
+    rows += '<div class="rx-case '+(pass?'rx-ok':'rx-bad')+'">'+(pass?'✓':'✗')+' <code>'+esc(c.s===''?'(rỗng)':c.s)+'</code> — '
+          + (c.ok ? 'phải khớp' : 'KHÔNG được khớp')
+          + (pass ? '' : ' → của bạn: '+(got?'khớp':'không khớp')) + '</div>';
+  }
+  out.innerHTML = '<div class="rx-verdict '+(allPass?'rx-ok':'rx-bad')+'">'
+    + (allPass ? '🎉 Tất cả '+cases.length+' test PASS! Pattern hợp lệ.' : '❌ Chưa đạt — xem từng case:')
+    + '</div>' + rows;
+}
+
+/* ============ NAV ============ */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+window.addEventListener('scroll', () => {
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 140) cur = s.id; });
+  navLinks.forEach(a=> a.classList.toggle('active', a.getAttribute('href')==='#'+cur));
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')){ li.style.display=''; return; }
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+
+/* khởi tạo Playground với pattern mẫu ngay khi tải trang */
+window.addEventListener('load', runLab);
+</script>
+</body>
+</html>

@@ -1518,6 +1518,137 @@ Cách người phỏng vấn thật chấm. Dùng để tự đánh giá sau khi
 
 ---
 
+# 🤖 CHUYÊN ĐỀ DATA/AI & AGENTIC AI
+
+Nhánh chuyên môn hóa sau khi vững Python nền tảng — cho hướng Data/AI Engineer hoặc xây sản phẩm AI.
+
+## Chương 36: Data & Machine Learning nền tảng
+
+Quy trình ML kinh điển: **thu thập → làm sạch (pandas) → chia train/val/test → huấn luyện → đánh giá → triển khai → giám sát**. 80% công việc nằm ở làm sạch & feature engineering.
+
+| Khái niệm | Ý nghĩa |
+|---|---|
+| Supervised | học từ dữ liệu có nhãn (phân loại, hồi quy) |
+| Unsupervised | tìm cấu trúc dữ liệu không nhãn (phân cụm) |
+| Classification vs Regression | dự đoán nhãn rời rạc vs giá trị liên tục |
+| Overfitting | thuộc lòng train, kém trên dữ liệu mới |
+| Train/Val/Test | huấn luyện / tinh chỉnh / đánh giá cuối (không đụng test khi train) |
+
+```python
+# scikit-learn (chạy trên máy)
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = RandomForestClassifier(n_estimators=100); model.fit(X_train, y_train)
+print(classification_report(y_test, model.predict(X_test)))
+```
+
+🎯 Hệ sinh thái: pandas/polars → scikit-learn → PyTorch → LLM/agents. Tránh data leakage, chọn metric đúng (accuracy vô nghĩa khi lệch lớp → precision/recall/F1), set seed, versioning (DVC/MLflow).
+
+> **BT 36.1:** Vì sao accuracy gây hiểu lầm với dữ liệu lệch lớp? → đoán "luôn lớp đa số" đạt accuracy cao nhưng vô dụng; dùng precision/recall/F1/ROC-AUC.
+
+---
+
+## Chương 37: Agentic AI với Python 🤖
+
+Xây **AI agent**: LLM tự suy luận, gọi công cụ, lặp nhiều bước để hoàn thành mục tiêu.
+
+### Phân biệt 3 mức
+| Mức | Mô tả |
+|---|---|
+| Chatbot | 1 lượt hỏi-đáp, không hành động |
+| Workflow | chuỗi bước **cố định** do người thiết kế |
+| **Agent** | LLM **tự quyết** bước kế, dùng tool, lặp tới khi xong |
+
+Cốt lõi: **vòng lặp Quan sát → Suy luận → Hành động** (ReAct). LLM nhận mục tiêu + tools, quyết định gọi tool nào, đọc kết quả, lặp tới khi đủ thông tin trả lời.
+
+```python
+# Agent loop tối giản (mock LLM, không cần API) - minh họa pattern
+def calculator(expr): return eval(expr, {"__builtins__": {}})
+TOOLS = {"calculator": calculator}
+def mock_llm(goal, scratch):
+    if "result" not in scratch: return {"tool": "calculator", "input": goal}
+    return {"tool": "final", "input": scratch["result"]}
+def run_agent(goal, max_steps=5):
+    scratch = {}
+    for step in range(max_steps):           # GIỚI HẠN bước - chống lặp vô hạn
+        d = mock_llm(goal, scratch)
+        if d["tool"] == "final": return f"✅ {d['input']}"
+        scratch["result"] = TOOLS[d["tool"]](d["input"])
+    return "⚠ Hết bước"
+print(run_agent("2 * (3 + 4)"))   # 14
+```
+
+```python
+# Tool calling thật với Claude (pip install anthropic, cần API key)
+import anthropic
+client = anthropic.Anthropic()
+tools = [{"name": "get_weather", "description": "Thời tiết theo thành phố",
+          "input_schema": {"type": "object",
+              "properties": {"city": {"type": "string"}}, "required": ["city"]}}]
+messages = [{"role": "user", "content": "Thời tiết Hà Nội?"}]
+while True:
+    resp = client.messages.create(model="claude-sonnet-4-6", max_tokens=1024,
+                                  tools=tools, messages=messages)
+    if resp.stop_reason != "tool_use":
+        print(resp.content[0].text); break          # LLM trả lời cuối
+    messages.append({"role": "assistant", "content": resp.content})
+    results = [{"type": "tool_result", "tool_use_id": b.id,
+                "content": get_weather(**b.input)}
+               for b in resp.content if b.type == "tool_use"]
+    messages.append({"role": "user", "content": results})
+```
+
+Đây chính là **agent loop**: LLM → gọi tool → bạn chạy → trả kết quả → lặp tới khi `stop_reason != "tool_use"`. Mọi framework agent đều là biến thể của vòng lặp này.
+
+### RAG — Retrieval Augmented Generation
+Embed tài liệu riêng → vector DB → tìm đoạn liên quan → chèn vào prompt làm context.
+
+| Phương án | Khi nào |
+|---|---|
+| Context dài | ít tài liệu, dùng 1 lần |
+| RAG | kho lớn, cập nhật liên tục, cần trích nguồn |
+| Fine-tuning | đổi phong cách/hành vi, không phải thêm kiến thức |
+
+### Framework & chuẩn
+| Công cụ | Vai trò |
+|---|---|
+| LangChain / LangGraph | orchestrate agent & workflow (LangGraph: agent đồ thị có trạng thái) |
+| LlamaIndex | chuyên RAG & lập chỉ mục |
+| Pydantic AI | agent type-safe, structured output |
+| CrewAI / AutoGen | multi-agent phối hợp vai trò |
+| Claude Agent SDK | xây agent dùng năng lực Claude (tool, file, MCP) |
+| MCP | chuẩn mở kết nối agent ↔ tools/data ("USB-C cho AI") |
+| Vector DB | Chroma, Qdrant, pgvector, Pinecone |
+
+🚫 **Bẫy & rủi ro:** Hallucination (giảm bằng RAG có nguồn, structured output, eval); Prompt injection (coi dữ liệu ngoài là data không phải lệnh, giới hạn quyền tool, sandbox); vòng lặp vô hạn & chi phí (luôn `max_steps` + ngân sách token); tool nguy hiểm phải idempotent + human-in-the-loop.
+
+🎯 **Production:** prompt caching (giảm chi phí), structured output (ép JSON schema), observability (LangSmith/tracing), eval (test cho output không deterministic), guardrails, fallback/retry, chọn model theo bài. *Bắt đầu từ workflow đơn giản nhất — chỉ dùng agent tự chủ khi thật sự cần.*
+
+> **BT 37.1:** Thiết kế agent "trợ lý nghiên cứu". → tools `web_search`/`fetch_url`/`finish`; `max_steps`+budget chống lặp; chống hallucination bằng bắt buộc trích URL nguồn (structured output `{claim, source_url}`) + bước verify; coi nội dung web là data (chống prompt injection).
+>
+> **BT 37.2:** RAG vs fine-tune vs context dài — chọn khi nào? → context dài: tài liệu nhỏ dùng 1 lần; RAG: kho lớn cần nguồn; fine-tune: đổi phong cách/hành vi. Thử theo thứ tự tăng chi phí: prompt → RAG → fine-tune.
+
+---
+
+## 🃏 Flashcards Data/AI & Agentic AI
+
+| Câu hỏi | Đáp án |
+|---|---|
+| Supervised vs Unsupervised? | có nhãn (phân loại/hồi quy) vs không nhãn (phân cụm) |
+| Overfitting & chống? | thuộc lòng train, kém data mới → thêm data, regularization, CV, early stopping |
+| Accuracy lệch lớp? | đoán "luôn đa số" cao giả tạo → precision/recall/F1/ROC-AUC |
+| Agent vs chatbot/workflow? | agent LLM tự quyết bước & gọi tool, lặp; workflow bước cố định; chatbot 1 lượt |
+| Tool calling? | khai báo schema → LLM trả tool call → bạn thực thi → trả kết quả → lặp |
+| Vòng lặp ReAct? | Quan sát→Suy luận→Hành động→đọc kết quả→lặp; đặt max_steps + budget |
+| RAG? | embed tài liệu → vector DB → tìm đoạn liên quan → chèn vào prompt |
+| RAG vs fine-tune vs context? | context: nhỏ 1 lần; RAG: kho lớn cần nguồn; fine-tune: đổi hành vi |
+| MCP? | chuẩn mở kết nối agent ↔ tools/data ("USB-C cho AI") |
+| Prompt injection & phòng? | dữ liệu ngoài "ra lệnh" agent → coi là data, giới hạn quyền tool, sandbox, human-in-loop |
+
+---
+
 ## 📖 Glossary thuật ngữ
 
 | Thuật ngữ | Giải thích ngắn |
