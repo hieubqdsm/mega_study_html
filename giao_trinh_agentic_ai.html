@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giáo Trình Thực Chiến: Agentic AI với CrewAI và LangGraph</title>
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #334155;
+            --text-dark: #0f172a;
+            --code-bg: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1e293b 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--secondary);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .intro-box {
+            background-color: var(--bg-card);
+            border-left: 5px solid var(--secondary);
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .intro-box h2 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .syllabus-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .module-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .module-header {
+            background-color: #f1f5f9;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-header h2 {
+            color: var(--text-dark);
+            font-size: 1.4rem;
+        }
+
+        .module-duration {
+            font-weight: 600;
+            color: var(--secondary);
+            background-color: #dbeafe;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .module-body {
+            padding: 30px 25px;
+        }
+
+        .lesson {
+            margin-bottom: 35px;
+        }
+
+        .lesson:last-of-type {
+            margin-bottom: 25px;
+        }
+
+        .lesson h3 {
+            color: var(--text-dark);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .lesson h3::before {
+            content: "•";
+            color: var(--secondary);
+            font-size: 1.8rem;
+            margin-right: 10px;
+            line-height: 0;
+        }
+
+        .lesson p {
+            margin-bottom: 15px;
+            color: #475569;
+        }
+
+        .tech-tags {
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #f1f5f9;
+            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 4px;
+            margin-right: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tag.highlight {
+            background-color: #e6f4ea;
+            color: var(--accent);
+            border-color: #a7f3d0;
+        }
+
+        code-block {
+            display: block;
+            background-color: var(--code-bg);
+            color: #f8fafc;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            white-space: pre;
+        }
+
+        .exercise-box {
+            background-color: #faf5ff;
+            border: 1px dashed #d8b4fe;
+            border-left: 5px solid #a855f7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .exercise-box h4 {
+            color: #6b21a8;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .exercise-box h4::before {
+            content: "🛠️";
+            margin-right: 8px;
+        }
+
+        .exercise-box ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+
+        .exercise-box li {
+            margin-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GIÁO TRÌNH THỰC CHIẾN: AGENTIC AI & MULTI-AGENT</h1>
+        <p>Lộ trình 12 tuần làm chủ CrewAI, LangGraph và hệ sinh thái AI thế hệ mới dành cho AI Developer & Growth Engineer</p>
+        <span class="badge">Phiên bản 2026 - Biên soạn cao cấp</span>
+    </header>
+
+    <div class="container">
+        
+        <div class="intro-box">
+            <h2>🎯 Giới Thiệu Tổng Quan</h2>
+            <p>Giáo trình này không tập trung vào toán học hay việc huấn luyện (training) mô hình AI truyền thống. Khóa học được thiết kế 100% theo hướng <strong>AI Engineering</strong> và <strong>Agentic Workflows</strong>. Mục tiêu tối thượng là giúp bạn làm chủ tư duy xây dựng các hệ thống AI tự trị (Autonomous Agents), tích hợp sâu vào sản phẩm và giải quyết bài toán tự động hóa tăng trưởng (Growth) doanh nghiệp.</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mục tiêu đầu ra</th>
+                        <th>Kỹ năng cốt lõi</th>
+                        <th>Công cụ làm chủ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>AI Agent Engineer</strong></td>
+                        <td>Prompt Eng nâng cao, Multi-Agent Architecture, RAG, State Machine AI</td>
+                        <td>CrewAI, LangGraph, Python, FastAPI</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Growth Engineer (AI)</strong></td>
+                        <td>Automated Workflow, Cào dữ liệu thông minh, AI Copywriting Pipeline</td>
+                        <td>LangChain, ChromaDB, Cursor/Windsurf, Next.js</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="syllabus-grid">
+
+            <!-- MODULE 1 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <h2>Module 1: Nền Tảng AI Engineering Cốt Lõi</h2>
+                    <span class="module-duration">Tuần 1 - Tuần 2</span>
+                </div>
+                <div class="module-body">
+                    
+                    <div class="lesson">
+                        <h3>Bài 1: Làm chủ LLM API & Định dạng JSON Mode</h3>
+                        <p>Hiểu cách tương tác sâu với OpenAI, Anthropic và DeepSeek API thông qua mã nguồn Python. Học cách kiểm soát tính ngẫu nhiên (Temperature) và ép mô hình luôn trả về cấu trúc dữ liệu chuẩn tuyệt đối bằng Pydantic.</p>
+                        <div class="tech-tags">
+                            <span class="tag">OpenAI API</span><span class="tag">DeepSeek</span><span class="tag">Pydantic</span><span class="tag highlight">JSON Mode</span>
+                        </div>
+                        <code-block>from pydantic import BaseModel
+from openai import OpenAI
+
+class GrowthInsight(BaseModel):
+    competitor_name: str
+    weakness_identified: str
+    marketing_angle: list[str]
+
+# Sử dụng Pydantic với OpenAI API để ép cấu trúc dữ liệu đầu ra an toàn cho phần mềm
+client = OpenAI()
+completion = client.beta.chat.completions.parse(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Phân tích đối thủ cạnh tranh ngành SaaS"}],
+    response_format=GrowthInsight,
+)</code-block>
+                    </div>
+
+                    <div class="lesson">
+                        <h3>Bài 2: Function Calling (Tool Calling) & Vector DB (RAG)</h3>
+                        <p>Biến LLM thành bộ não điều khiển phần mềm bằng cách "gắn" các hàm Python (Tools) cho AI. Thiết lập hệ thống RAG cơ bản để kết nối AI với kho tri thức nội bộ.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Function Calling</span><span class="tag">ChromaDB</span><span class="tag">Embeddings</span><span class="tag">Semantic Search</span>
+                        </div>
+                    </div>
+
+                    <div class="exercise-box">
+                        <h4>Bài tập Thực hành Module 1</h4>
+                        <p><strong>Đề bài:</strong> Viết một script Python nhận vào 1 URL bài viết bất kỳ. Thực hiện các bước:</p>
+                        <ul>
+                            <li>Tự động dùng thư viện cào dữ liệu để lấy nội dung thô (Raw content).</li>
+                            <li>Sử dụng Vector DB để tìm ra các từ khóa và đoạn quan trọng nhất.</li>
+                            <li>Dùng LLM API định dạng JSON xuất ra file: Tiêu đề, Tác giả, và 3 ý tưởng tăng trưởng trích xuất được.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MODULE 2 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <h2>Module 2: Xây Dựng Hệ Thống Tuyến Tính Với CrewAI</h2>
+                    <span class="module-duration">Tuần 3 - Tuần 5</span>
+                </div>
+                <div class="module-body">
+                    
+                    <div class="lesson">
+                        <h3>Bài 3: Kiến Trúc Phân Vai Tuyến Tính (Role-Playing AI)</h3>
+                        <p>Học cách tư duy chia nhỏ công việc lớn thành các Task tuần tự. Định nghĩa Persona cho AI Agent bằng bộ ba: <code>Role</code> (Vai trò), <code>Goal</code> (Mục tiêu), và <code>Backstory</code> (Tính cách/Ngữ cảnh).</p>
+                        <div class="tech-tags">
+                            <span class="tag">CrewAI</span><span class="tag">Agent Persona</span><span class="tag">Sequential Process</span>
+                        </div>
+                        <code-block>from crewai import Agent, Task, Crew
+
+# Định nghĩa một Agent nghiên cứu thị trường thị trường
+researcher = Agent(
+    role='Chuyên gia Nghiên cứu Thị trường',
+    goal='Tìm kiếm và tổng hợp các insight mới nhất về đối thủ',
+    backstory='Bạn là một chuyên gia phân tích dữ liệu với 10 năm kinh nghiệm trong ngành MarTech.',
+    verbose=True
+)</code-block>
+                    </div>
+
+                    <div class="lesson">
+                        <h3>Bài 4: Phát Triển Custom Tools & Quản Lý Bộ Nhớ Agent</h3>
+                        <p>Cách viết công cụ tùy biến (Custom Tools) tối ưu cho CrewAI. Cấu hình bộ nhớ ngắn hạn (Short-term memory) và bộ nhớ đệm (Caching) giúp các Agent giảm thiểu chi phí API token.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Custom Tools</span><span class="tag">Agent Memory</span><span class="tag">Token Optimization</span>
+                        </div>
+                    </div>
+
+                    <div class="exercise-box">
+                        <h4>Bài tập Thực hành Module 2 (Growth Marketing Pipeline)</h4>
+                        <p><strong>Đề bài:</strong> Xây dựng hệ thống "AI Marketing Agency tự động" gồm 3 Agents chạy phối hợp:</p>
+                        <ul>
+                            <li><strong>Agent 1 (Researcher):</strong> Nhận từ khóa sản phẩm, lên mạng search Google tìm top 3 đối thủ.</li>
+                            <li><strong>Agent 2 (Copywriter):</strong> Nhận dữ liệu của Agent 1, viết 3 kịch bản quảng cáo đánh trúng yếu điểm đối thủ.</li>
+                            <li><strong>Agent 3 (Editor/Manager):</strong> Đóng vai Giám đốc Marketing, duyệt bài viết. Nếu bài viết không đạt tiêu chuẩn, tự động gửi trả lại Agent 2 kèm nhận xét để viết lại.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MODULE 3 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <h2>Module 3: Làm Chủ Vòng Lặp & Tự Sửa Lỗi Với LangGraph</h2>
+                    <span class="module-duration">Tuần 6 - Tuần 9</span>
+                </div>
+                <div class="module-body">
+                    
+                    <div class="lesson">
+                        <h3>Bài 5: Kiến Trúc Đồ Thị Trạng Thái (State Graph)</h3>
+                        <p>Học cách thiết lập hệ thống Agent có khả năng rẽ nhánh, lặp lại và tự đưa ra quyết định phức tạp mà CrewAI không làm được. Làm chủ khái niệm <code>Nodes</code> (Hành động), <code>Edges</code> (Đường nối), và <code>State</code> (Biến trạng thái toàn cục).</p>
+                        <div class="tech-tags">
+                            <span class="tag highlight">LangGraph</span><span class="tag">State Management</span><span class="tag">Graph Architecture</span>
+                        </div>
+                        <code-block>from typing import TypedDict
+from langgraph.graph import StateGraph, END
+
+# Định nghĩa trạng thái chung của hệ thống
+class AgentState(TypedDict):
+    code_written: str
+    error_log: str
+    iteration_count: int
+
+workflow = StateGraph(AgentState)
+# Nodes và Edges sẽ được định nghĩa dựa trên State này</code-block>
+                    </div>
+
+                    <div class="lesson">
+                        <h3>Bài 6: Conditional Routing & Human-In-The-Loop (Sự can thiệp của con người)</h3>
+                        <p>Thiết lập các điều kiện rẽ nhánh (Conditional Edges). Học cách tạm dừng luồng chạy của AI tại các bước nhạy cảm (như gửi email cho khách hoặc thanh toán) để chờ con người phê duyệt (Approval UI) trước khi tiếp tục.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Conditional Edges</span><span class="tag highlight">Human-in-the-loop</span><span class="tag">Interrupts</span>
+                        </div>
+                    </div>
+
+                    <div class="exercise-box">
+                        <h4>Bài tập Thực hành Module 3 (Self-Healing AI Coder)</h4>
+                        <p><strong>Đề bài:</strong> Tạo một hệ thống AI viết code có khả năng tự chạy thử và sửa lỗi:</p>
+                        <ul>
+                            <li><strong>Node 1 (Write Code):</strong> AI nhận yêu cầu bài toán toán học và viết mã Python.</li>
+                            <li><strong>Node 2 (Execute Code):</strong> Hệ thống tự động chạy file python đó trong môi trường ảo sandbox.</li>
+                            <li><strong>Rẽ nhánh (Conditional Router):</strong> Nếu chạy ra lỗi -> Chuyển hướng quay lại Node 1 kèm log lỗi để AI tự sửa (Cho phép lặp tối đa 3 lần). Nếu chạy thành công -> Xuất ra file code hoàn chỉnh.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MODULE 4 -->
+            <div class="module-card">
+                <div class="module-header">
+                    <h2>Module 4: Hiện Thực Hóa Sản Phẩm & Triển Khai Thực Tế</h2>
+                    <span class="module-duration">Tuần 10 - Tuần 12</span>
+                </div>
+                <div class="module-body">
+                    
+                    <div class="lesson">
+                        <h3>Bài 7: Xây dựng Backend API & Luồng Dữ Liệu Real-Time (Streaming)</h3>
+                        <p>Đóng gói toàn bộ logic Agent của CrewAI hoặc LangGraph vào framework FastAPI. Kích hoạt tính năng Server-Sent Events (SSE) để truyền tải chữ ra màn hình theo dạng "gõ phím" thời gian thực.</p>
+                        <div class="tech-tags">
+                            <span class="tag">FastAPI</span><span class="tag">Streaming Output</span><span class="tag">Event-Driven API</span>
+                        </div>
+                    </div>
+
+                    <div class="lesson">
+                        <h3>Bài 8: Giao Diện Người Dùng & Kiểm Soát Ngân Sách API</h3>
+                        <p>Sử dụng Vercel AI SDK để tích hợp nhanh giao diện chat hoặc Dashboard quản trị Agent. Thiết lập cơ chế giám sát chi phí token (Rate limits & Guardrails) để ngăn chặn tình trạng cạn kiệt tài khoản API do vòng lặp vô hạn của AI.</p>
+                        <div class="tech-tags">
+                            <span class="tag">Vercel AI SDK</span><span class="tag">Next.js UI</span><span class="tag highlight">API Budget Control</span><span class="tag">Docker</span>
+                        </div>
+                    </div>
+
+                    <div class="exercise-box">
+                        <h4>Dự án Tốt nghiệp Cuối khóa (Capstone Project)</h4>
+                        <p><strong>Đề bài:</strong> Đóng gói hệ thống Multi-Agent từ các tuần trước thành một sản phẩm SaaS hoàn chỉnh:</p>
+                        <ul>
+                            <li>Có giao diện Dashboard (Next.js hoặc Streamlit) cho phép người dùng nhập yêu cầu.</li>
+                            <li>Backend chạy FastAPI gọi luồng xử lý LangGraph/CrewAI và stream kết quả real-time về client.</li>
+                            <li>Triển khai (Deploy) thành công ứng dụng lên Docker Cloud / Render hoặc Hugging Face Spaces để làm Portfolio nộp cho các công ty nước ngoài tuyển vị trí Remote.</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Giáo trình Kỹ Nghệ AI Thực Chiến. Tài liệu lưu hành nội bộ cho Nhà Phát Triển & Kỹ Sư Tăng Trưởng.</p>
+    </footer>
+
+</body>
+</html>
