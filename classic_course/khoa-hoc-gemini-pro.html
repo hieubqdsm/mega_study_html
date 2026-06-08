@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Gemini Pro cho Nghiên cứu &amp; Dữ liệu (Không cần code)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #4285F4;        /* google blue */
+    --primary-glow: #8ab4f8;
+    --accent: #c58af9;         /* gemini purple */
+    --accent-2: #f28b82;       /* coral */
+    --l0: #34a853;             /* green */
+    --l1: #4285F4;             /* blue */
+    --l2: #c58af9;             /* purple */
+    --l3: #f9ab00;             /* amber */
+    --ok: #2ea043;
+    --warn: #d29922;
+    --danger: #f85149;
+    --info: #58a6ff;
+    --dark: #0d1117;
+    --darker: #010409;
+    --light: #c9d1d9;
+    --light-strong: #f0f6fc;
+    --gray: #8b949e;
+    --card: #161b22;
+    --card-2: #1c2128;
+    --border: #30363d;
+    --terminal: #0a0e14;
+    --code-green: #7ee787;
+    --code-blue: #79c0ff;
+    --code-purple: #d2a8ff;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(66,133,244,0.09) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(197,138,249,0.07) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar {
+    width: 340px; background: linear-gradient(180deg, var(--dark) 0%, #050810 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s;
+    box-shadow: 4px 0 30px rgba(66,133,244,0.15);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .g-icon { font-size: 44px; margin-bottom: 8px; background: linear-gradient(135deg,#4285F4,#c58af9,#f28b82); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; filter: drop-shadow(0 0 16px rgba(197,138,249,0.5)); }
+  .logo h1 {
+    font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    font-weight: 900; letter-spacing: 0.3px;
+  }
+  .logo p { font-size: 10.5px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input {
+    width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--light); font-size: 13px; transition: all 0.3s;
+  }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(66,133,244,0.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #06121a; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--primary-glow); } .nav-l1 .badge { background: var(--l1); color:#fff;}
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(66,133,244,0.14); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* ---------- MAIN ---------- */
+  .main-content { margin-left: 340px; flex: 1; padding: 0; max-width: calc(100% - 340px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(1,4,9,0.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent); }
+  .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero { background: linear-gradient(135deg, rgba(66,133,244,0.18), rgba(197,138,249,0.12), rgba(242,139,130,0.08)); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero::after { content:"✦"; position:absolute; right:6px; bottom:-30px; font-size:180px; opacity:.07; color: var(--accent); }
+  .hero h1 { font-size: 33px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--primary-glow), var(--accent), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 760px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(52,168,83,.14); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(66,133,244,.14); color: var(--primary-glow); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(197,138,249,.14); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(249,171,0,.14); color: var(--l3); border:1px solid var(--l3);}
+
+  h2.ch-title { font-size: 26px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 14px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space: nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; }
+  li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  .kw { color: var(--accent); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* ---------- BOXES ---------- */
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(88,166,255,.07); border-color: rgba(88,166,255,.4); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(46,160,67,.07); border-color: rgba(46,160,67,.4); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(210,153,34,.08); border-color: rgba(210,153,34,.45); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,81,73,.07); border-color: rgba(248,81,73,.4); } .box.danger::before{content:"🚫";}
+  .box.use { background: rgba(197,138,249,.08); border-color: rgba(197,138,249,.4); } .box.use::before{content:"🎯";}
+  .box.compare { background: rgba(66,133,244,.08); border-color: rgba(66,133,244,.4); } .box.compare::before{content:"⚖️";}
+
+  /* ---------- PROMPT CARD ---------- */
+  .prompt-card { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .prompt-head { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .prompt-head .ptag { font-size: 10px; font-weight: 900; letter-spacing: 1px; color: #06121a; background: linear-gradient(135deg,var(--primary-glow),var(--accent)); padding: 2px 9px; border-radius: 8px; }
+  .prompt-head .plabel { font-size: 12.5px; color: var(--gray); flex: 1; }
+  .prompt-head button.copy { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .prompt-head button.copy:hover { border-color: var(--primary); color: var(--primary-glow); }
+  pre.prompt-body { padding: 14px 16px; overflow-x: auto; font-size: 13px; line-height: 1.6; color: var(--code-green); white-space: pre-wrap; }
+  pre.prompt-body .ph { color: var(--accent-2); font-weight: 700; }   /* placeholder [..] */
+  pre.prompt-body .cm { color: var(--gray); font-style: italic; }
+
+  /* ---------- CHECKLIST ---------- */
+  .checklist { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+  .checklist h4 { color: var(--primary-glow); margin-bottom: 10px; font-size: 15px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 14px; }
+  .checklist input { margin-top: 5px; accent-color: var(--primary); }
+  .checklist input:checked + span { color: var(--gray); text-decoration: line-through; }
+
+  /* ---------- EXERCISE / TRY ---------- */
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .exercise .lvl-dot { font-size: 11px; padding: 1px 8px; border-radius: 10px; background: var(--card-2); border:1px solid var(--border); color: var(--gray); }
+  details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; transition: background .2s; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content: "▸ "; }
+  details[open] summary::before { content: "▾ "; }
+  details.answer summary { background: rgba(197,138,249,.1); color: var(--accent); }
+  details .body { padding: 8px 14px 12px; }
+
+  /* ---------- QUIZ ---------- */
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; display:flex; align-items:center; gap:8px; }
+  .quiz .q { margin-bottom: 18px; }
+  .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; transition: all .15s; font-size: 14px; }
+  .quiz .opt:hover { border-color: var(--primary); }
+  .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(46,160,67,.14); border-color: var(--ok); }
+  .quiz .opt.wrong { background: rgba(248,81,73,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color:#fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  /* ---------- FLASHCARDS ---------- */
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; transition: all .2s; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 170px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); }
+  .fc-back { background: linear-gradient(135deg, rgba(66,133,244,.16), rgba(197,138,249,.12)); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(52,168,83,.18); color: var(--l0); }
+  .fc-tag.t1 { background: rgba(66,133,244,.2); color: var(--primary-glow); }
+  .fc-tag.t2 { background: rgba(197,138,249,.18); color: var(--l2); }
+  .fc-tag.t3 { background: rgba(249,171,0,.18); color: var(--l3); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; }
+  .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; }
+  .fc-a code { background: rgba(0,0,0,.25); color: var(--code-purple); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  /* ---------- FLOATING PROMPT BUILDER ---------- */
+  .pb-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--primary),var(--accent)); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .2s; }
+  .pb-fab:hover { transform: translateY(-2px); box-shadow: 0 9px 28px rgba(0,0,0,.55); }
+  .pb-fab.hidden { display: none; }
+  .pb-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: min(560px, calc(100vw - 32px)); height: min(640px, calc(100vh - 40px)); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden; }
+  .pb-panel.open { display: flex; }
+  .pb-head { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: linear-gradient(135deg, rgba(66,133,244,.25), rgba(197,138,249,.18)); border-bottom: 1px solid var(--border); cursor: move; }
+  .pb-head .pb-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
+  .pb-head button { background: rgba(255,255,255,.08); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 11px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
+  .pb-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 16px; }
+  .pb-body label.fld { display:block; font-size: 12px; color: var(--primary-glow); font-weight: 700; margin: 10px 0 4px; }
+  .pb-body input, .pb-body textarea, .pb-body select { width: 100%; background: var(--terminal); border: 1px solid var(--border); border-radius: 7px; color: var(--light); padding: 8px 10px; font-size: 13px; font-family: inherit; }
+  .pb-body textarea { resize: vertical; min-height: 52px; }
+  .pb-body input:focus, .pb-body textarea:focus, .pb-body select:focus { outline:none; border-color: var(--primary); }
+  .pb-row { display:flex; gap: 10px; } .pb-row > div { flex:1; }
+  .pb-actions { display:flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); background: var(--card-2); }
+  .pb-actions button { flex:1; border:none; border-radius: 8px; padding: 9px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit; }
+  .pb-actions .gen { background: linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; }
+  .pb-actions .cpy { background: var(--card); color: var(--light); border:1px solid var(--border)!important; }
+  .pb-out { white-space: pre-wrap; background: var(--terminal); border:1px dashed var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: 'JetBrains Mono',monospace; font-size: 12.5px; color: var(--code-green); min-height: 40px; }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color:#fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; }
+    .topbar { padding-left: 66px; }
+    .pb-panel { width: calc(100vw - 16px); height: calc(100vh - 24px); right: 8px; bottom: 8px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="g-icon">✦</div>
+      <h1>GEMINI PRO</h1>
+      <p>NGHIÊN CỨU · DỮ LIỆU · BÁO CÁO</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; Lộ trình</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">L0</span> NHẬP MÔN</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> Gemini Pro là gì &amp; bạn có gì</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> Giao diện &amp; thiết lập</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> Nghệ thuật viết prompt</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> Làm việc đa phương thức</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">L1</span> WORKSPACE &amp; NĂNG SUẤT</li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> Gemini trong Gmail</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> Gemini trong Docs</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> Gemini trong Sheets &amp; =AI()</a></li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> Workspace Intelligence, Drive &amp; Meet</a></li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> Tạo Gems tùy chỉnh</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">L2</span> NGHIÊN CỨU</li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> NotebookLM nền tảng</a></li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> NotebookLM nâng cao</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> Deep Research</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> Literature review end-to-end</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L3</span> DỮ LIỆU · THỐNG KÊ · BÁO CÁO</li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> Phân tích dữ liệu không cần code</a></li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> Database không cần SQL</a></li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> Trợ lý SPSS &amp; thống kê</a></li>
+      <li><a href="#ch17"><span class="chapter-num">17</span> Quy trình tạo Report</a></li>
+      <li><a href="#ch18"><span class="chapter-num">18</span> Google AI Studio</a></li>
+      <li><a href="#ch19"><span class="chapter-num">19</span> Kiểm chứng, đạo đức &amp; bảo mật</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">📚</span> ÔN TẬP &amp; CÔNG CỤ</li>
+      <li><a href="#thu-vien-prompt"><span class="chapter-num">📦</span> Thư viện Prompt</a></li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">✦ <b>Gemini Pro Mastery</b> — dành cho team nghiên cứu &amp; dữ liệu, không cần code</div>
+      <div class="pill">Cập nhật theo tính năng 2026</div>
+    </div>
+
+    <div class="content-inner">
+      <div class="hero" id="gioi-thieu">
+        <h1>Khóa Học <span class="grad">Gemini Pro</span><br>cho Nghiên cứu &amp; Dữ liệu</h1>
+        <p>Khai thác <strong>toàn bộ</strong> sức mạnh Gemini Pro mà <strong>không cần biết lập trình</strong>: từ Gemini app, Google Workspace (Gmail, Docs, Sheets), đến NotebookLM và Google AI Studio. Thiết kế riêng cho <strong>team nghiên cứu</strong> làm việc với <strong>database, SPSS, Excel</strong> và <strong>viết báo cáo</strong>. Học bằng prompt mẫu bấm-là-copy, có công cụ <strong>Prompt Builder</strong> tạo prompt tự động.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>19</b> chương · 4 cấp độ</div>
+          <div class="meta-pill"><b>Prompt Builder</b> tạo prompt</div>
+          <div class="meta-pill"><b>Thư viện</b> prompt copy-paste</div>
+          <div class="meta-pill"><b>Không</b> cần code</div>
+        </div>
+      </div>
+
+      <div class="box use"><span class="box-title">Cách dùng khóa học</span>Mỗi ô <strong>PROMPT</strong> có nút <strong>⧉ Copy</strong> — bấm rồi dán thẳng vào Gemini. Phần trong <span style="color:var(--accent-2);font-weight:700">[ngoặc vuông]</span> là chỗ bạn thay bằng nội dung của mình. Bấm nút <strong>✦ Prompt Builder</strong> (góc dưới phải) để tự ghép một prompt chuẩn từ bất cứ đâu. Khóa học không gọi API nên không phát sinh chi phí — bạn thực hành trực tiếp trên tài khoản Gemini của mình.</div>
+
+      <div class="box info"><span class="box-title">Lộ trình 4 cấp độ</span>
+        <strong style="color:var(--l0)">L0 Nhập môn</strong> (ch1–4): hiểu bạn có gì, thiết lập, viết prompt, đính kèm tài liệu. →
+        <strong style="color:var(--primary-glow)">L1 Workspace</strong> (ch5–9): Gmail, Docs, Sheets, Drive/Meet, Gems. →
+        <strong style="color:var(--l2)">L2 Nghiên cứu</strong> (ch10–13): NotebookLM, Deep Research, tổng quan tài liệu. →
+        <strong style="color:var(--l3)">L3 Dữ liệu &amp; Báo cáo</strong> (ch14–19): phân tích dữ liệu, SQL không cần code, SPSS, quy trình report, AI Studio, kiểm chứng &amp; bảo mật.
+      </div>
+
+      <div class="box warn"><span class="box-title">Lưu ý quan trọng</span>Google cập nhật tên gói, tên model và tính năng Gemini <strong>rất thường xuyên</strong>. Khóa học bám theo trạng thái 2026 (Gemini 2.5 Pro / Gemini 3 Pro, gói Google AI Plus/Pro/Ultra, hàm <code class="ic">=AI()</code> trong Sheets, Workspace Intelligence, NotebookLM Audio/Video Overview). Nếu giao diện của bạn khác đôi chút, <em>nguyên tắc</em> trong khóa vẫn đúng — chỉ vị trí nút có thể đổi.</div>
+
+      <!-- ===================== LEVEL 0 ===================== -->
+      <div class="level-divider" id="lv0"><div class="line"></div><span class="tag tag-l0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Gemini Pro là gì &amp; bạn đang có những gì</h2>
+        <p class="ch-sub">Hiểu đúng "bộ đồ nghề" trước khi dùng — đây là nền tảng để tận dụng hết.</p>
+
+        <p><strong>Gemini</strong> là trợ lý AI của Google. <strong>Gemini Pro</strong> không phải một app riêng, mà là <em>tầng model mạnh nhất</em> (hiện là <strong>Gemini 2.5 Pro</strong>, và <strong>Gemini 3 Pro</strong> ở nhiều khu vực) bạn truy cập được khi đăng ký gói trả phí <strong>Google AI Pro</strong> (hoặc Ultra). Gói này (trước đây gọi là "Gemini Advanced") mở khóa: model thông minh nhất, cửa sổ ngữ cảnh dài, <strong>Deep Research</strong>, Gemini tích hợp trong Workspace, và bản nâng cấp NotebookLM.</p>
+
+        <h3 class="sec">Bản đồ hệ sinh thái — bạn dùng cái nào, khi nào?</h3>
+        <table>
+          <thead><tr><th>Công cụ</th><th>Là gì</th><th>Dùng tốt nhất cho</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Gemini app</strong><br>(gemini.google.com)</td><td>Chatbot chính + Gems, Deep Research, Canvas</td><td>Hỏi đáp, brainstorm, viết, phân tích file, nghiên cứu sâu</td></tr>
+            <tr><td><strong>Gemini trong Workspace</strong></td><td>Gemini nhúng trong Gmail, Docs, Sheets, Slides, Meet, Drive</td><td>Làm việc <em>ngay trong</em> tài liệu &amp; email công việc</td></tr>
+            <tr><td><strong>NotebookLM</strong><br>(notebooklm.google.com)</td><td>Trợ lý nghiên cứu "đóng khung" theo <em>nguồn bạn cung cấp</em></td><td>Đọc &amp; tổng hợp tài liệu, trả lời có trích dẫn, ít bịa</td></tr>
+            <tr><td><strong>Google AI Studio</strong><br>(aistudio.google.com)</td><td>Phòng thí nghiệm để tinh chỉnh cách model trả lời</td><td>Thử nghiệm nâng cao, xử lý hàng loạt, ngữ cảnh siêu dài</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">Quy tắc chọn nhanh</span>Cần <strong>câu trả lời tin cậy từ tài liệu của bạn</strong> (không bịa) → <strong>NotebookLM</strong>. Cần <strong>khảo sát chủ đề mới trên web</strong> → <strong>Deep Research</strong> trong Gemini app. Cần <strong>làm việc trong file Excel/Docs/Gmail</strong> → <strong>Gemini trong Workspace</strong>. Cần <strong>kiểm soát chi tiết / xử lý nhiều file giống nhau</strong> → <strong>AI Studio</strong>.</div>
+
+        <h3 class="sec">Các gói (cập nhật 2026)</h3>
+        <table>
+          <thead><tr><th>Gói</th><th>Điểm chính</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Miễn phí</strong></td><td>Model nhanh (Flash), Deep Research giới hạn, đủ dùng cơ bản</td></tr>
+            <tr><td><strong>Google AI Pro</strong></td><td>Gemini 2.5/3 Pro, Deep Research đầy đủ, Gemini trong Gmail &amp; Docs, NotebookLM nâng cấp, hạn mức cao, ~1.000 AI credits/tháng</td></tr>
+            <tr><td><strong>Google AI Ultra</strong></td><td>Hạn mức cao nhất, tính năng thử nghiệm sớm nhất (Deep Think...), nhiều credits</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Hạn mức dùng (2026)</span>Gemini app dùng cơ chế <strong>hạn mức theo "compute"</strong>, làm mới mỗi <strong>5 giờ</strong> và có trần theo tuần. Các tính năng "nặng" (model Pro, Deep Think, Deep Research, tạo media) tiêu hạn mức nhanh hơn. Mẹo: dùng model nhanh cho việc đơn giản, để dành model Pro cho việc khó.</div>
+
+        <div class="box danger"><span class="box-title">⚖️ Quyền riêng tư dữ liệu — RẤT quan trọng với nghiên cứu</span>
+          <ul style="margin-bottom:0">
+            <li>Tài khoản <strong>cá nhân</strong>: theo mặc định Google có thể dùng nội dung chat (kể cả bản review bởi người) để cải thiện sản phẩm. Vào <em>Cài đặt → Gemini Apps Activity</em> để <strong>tắt</strong> nếu xử lý dữ liệu nhạy cảm.</li>
+            <li>Tài khoản <strong>Workspace doanh nghiệp/giáo dục</strong>: dữ liệu <strong>không</strong> dùng để huấn luyện model, có cam kết bảo mật — nên dùng tài khoản tổ chức cho dữ liệu nghiên cứu.</li>
+            <li><strong>Không dán</strong> dữ liệu định danh cá nhân (PII), dữ liệu bệnh nhân, dữ liệu mật chưa ẩn danh vào công cụ AI khi chưa được phép. Xem chương 19.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Giao diện &amp; thiết lập ban đầu</h2>
+        <p class="ch-sub">Làm quen các nút bấm quan trọng — 5 phút để không bị lạc.</p>
+
+        <h3 class="sec">Những thứ cần biết trong Gemini app</h3>
+        <table>
+          <thead><tr><th>Thành phần</th><th>Công dụng</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Chọn model</strong> (đầu trang)</td><td>Đổi giữa model <em>nhanh</em> (Flash) và <em>Pro/Thinking</em> (chậm hơn nhưng giỏi suy luận). Dùng Pro cho phân tích, lập luận, viết quan trọng.</td></tr>
+            <tr><td><strong>📎 Đính kèm</strong></td><td>Tải lên PDF, ảnh, file Excel/CSV, hoặc gắn từ Drive để Gemini đọc.</td></tr>
+            <tr><td><strong>Deep Research</strong></td><td>Bật để Gemini tự lập kế hoạch, duyệt nhiều nguồn web rồi viết báo cáo (xem ch12).</td></tr>
+            <tr><td><strong>Canvas</strong></td><td>Cửa sổ soạn thảo bên cạnh — viết tài liệu/bảng dài, chỉnh sửa từng phần, xuất ra.</td></tr>
+            <tr><td><strong>Gems</strong></td><td>Trợ lý tùy chỉnh bạn tự tạo cho việc lặp lại (ch9).</td></tr>
+            <tr><td><strong>Lịch sử &amp; bộ nhớ</strong></td><td>Xem lại hội thoại cũ; Gemini có thể "nhớ" thông tin/sở thích bạn khai báo để cá nhân hóa.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box tip"><span class="box-title">3 thói quen tốt ngay từ đầu</span>
+          <ol style="margin-bottom:0">
+            <li><strong>Mỗi chủ đề một cuộc chat mới</strong> — tránh việc ngữ cảnh cũ làm "nhiễu" câu trả lời.</li>
+            <li><strong>Dùng Canvas</strong> khi viết tài liệu dài (báo cáo, đề cương) để chỉnh sửa thuận tiện.</li>
+            <li><strong>Kiểm tra model đang chọn</strong> trước khi giao việc khó — đảm bảo đang dùng Pro/Thinking.</li>
+          </ol>
+        </div>
+
+        <h3 class="sec">Thiết lập nên làm</h3>
+        <div class="checklist">
+          <h4>✔️ Checklist thiết lập</h4>
+          <label><input type="checkbox"><span>Đăng nhập đúng tài khoản (ưu tiên tài khoản <strong>Workspace tổ chức</strong> cho dữ liệu nghiên cứu).</span></label>
+          <label><input type="checkbox"><span>Vào <strong>Cài đặt → Gemini Apps Activity</strong>: cân nhắc tắt nếu xử lý dữ liệu nhạy cảm.</span></label>
+          <label><input type="checkbox"><span>Đặt ngôn ngữ trả lời mặc định (tiếng Việt) nếu cần.</span></label>
+          <label><input type="checkbox"><span>Thử đính kèm 1 file PDF và hỏi "Tóm tắt tài liệu này trong 5 ý chính".</span></label>
+          <label><input type="checkbox"><span>Mở thử Canvas và Deep Research để biết chúng nằm ở đâu.</span></label>
+        </div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Nghệ thuật viết prompt</h2>
+        <p class="ch-sub">Kỹ năng quan trọng nhất khóa học. Prompt tốt = kết quả tốt, bất kể bạn có code hay không.</p>
+
+        <p>Một prompt mơ hồ cho kết quả chung chung. Hãy nghĩ như khi <em>giao việc cho một trợ lý giỏi nhưng chưa biết gì về bối cảnh của bạn</em>: càng rõ ràng, càng đúng ý.</p>
+
+        <h3 class="sec">Khung 5 thành phần: V-B-N-Đ-V</h3>
+        <table>
+          <thead><tr><th>Thành phần</th><th>Trả lời câu hỏi</th><th>Ví dụ</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Vai trò</strong></td><td>Gemini đóng vai ai?</td><td>"Bạn là chuyên gia thống kê y sinh."</td></tr>
+            <tr><td><strong>Bối cảnh</strong></td><td>Tình huống &amp; dữ liệu là gì?</td><td>"Tôi có dữ liệu khảo sát 300 bệnh nhân..."</td></tr>
+            <tr><td><strong>Nhiệm vụ</strong></td><td>Cần làm gì cụ thể?</td><td>"Đề xuất phép kiểm định so sánh 2 nhóm."</td></tr>
+            <tr><td><strong>Định dạng</strong></td><td>Trình bày ra sao?</td><td>"Trả lời dạng bảng, kèm lý do."</td></tr>
+            <tr><td><strong>Ví dụ</strong> (tùy chọn)</td><td>Mẫu mong muốn?</td><td>"Theo mẫu: Tên test — Khi nào dùng — Giả định."</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">So sánh: prompt dở vs prompt tốt</h3>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">❌ DỞ</span><span class="plabel">Mơ hồ, thiếu bối cảnh</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">phân tích dữ liệu giúp tôi</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">✅ TỐT</span><span class="plabel">Đầy đủ V-B-N-Đ</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Bạn là chuyên gia phân tích dữ liệu khảo sát.
+
+BỐI CẢNH: Tôi đính kèm file Excel khảo sát mức độ hài lòng của 480 khách
+hàng (thang Likert 1-5), kèm cột tuổi, giới tính, khu vực.
+
+NHIỆM VỤ: Hãy (1) tóm tắt thống kê mô tả các biến chính, (2) chỉ ra 3 phát
+hiện đáng chú ý, (3) đề xuất phép kiểm định để so sánh hài lòng giữa các khu vực.
+
+YÊU CẦU:
+- Trình bày dạng gạch đầu dòng, có số liệu cụ thể.
+- Giải thích thuật ngữ thống kê bằng ngôn ngữ dễ hiểu.
+- Nếu thiếu thông tin, hãy hỏi tôi trước khi phân tích.</pre>
+        </div>
+
+        <h3 class="sec">7 kỹ thuật tăng chất lượng</h3>
+        <ul>
+          <li><strong>Cụ thể hóa</strong>: thay "ngắn gọn" bằng "tối đa 5 gạch đầu dòng, mỗi dòng &lt; 20 từ".</li>
+          <li><strong>Cho ví dụ (few-shot)</strong>: dán 1–2 mẫu kết quả mong muốn → model bắt chước định dạng.</li>
+          <li><strong>Chỉ định định dạng</strong>: "dạng bảng", "dạng JSON", "dàn ý báo cáo".</li>
+          <li><strong>Chia bước</strong>: "Bước 1... Bước 2..." hoặc yêu cầu "suy nghĩ từng bước".</li>
+          <li><strong>Yêu cầu hỏi lại</strong>: "Nếu thiếu thông tin, hãy hỏi tôi trước" — giảm việc bịa.</li>
+          <li><strong>Lặp &amp; tinh chỉnh</strong>: "Viết lại nhưng trang trọng hơn", "Rút còn một nửa", "Tập trung vào phần B".</li>
+          <li><strong>Gán vai trò &amp; đối tượng</strong>: "Giải thích cho sinh viên năm nhất" vs "cho hội đồng khoa học".</li>
+        </ul>
+
+        <div class="box use"><span class="box-title">Mẹo "siêu prompt"</span>Khi bí, hãy nhờ chính Gemini viết prompt: <em>"Tôi muốn đạt [mục tiêu]. Hãy viết giúp tôi một prompt tốt để giao cho bạn, và hỏi tôi những thông tin còn thiếu."</em></div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 3.1 <span class="lvl-dot">dễ</span></div>
+          <p>Lấy một việc bạn hay làm (vd: tóm tắt biên bản họp) và viết lại thành prompt đủ 4 thành phần V-B-N-Đ. Hoặc bấm <strong>✦ Prompt Builder</strong> góc dưới phải để ghép tự động.</p>
+          <details class="answer"><summary>Xem một mẫu tham khảo</summary><div class="body">
+            <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Tóm tắt biên bản họp</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+            <pre class="prompt-body">Bạn là thư ký dự án chuyên nghiệp.
+BỐI CẢNH: Dưới đây là bản ghi cuộc họp nhóm nghiên cứu (dán bên dưới).
+NHIỆM VỤ: Tóm tắt thành (1) quyết định chính, (2) việc cần làm kèm người phụ
+trách &amp; hạn, (3) vấn đề còn mở.
+YÊU CẦU: trình bày 3 mục rõ ràng, dạng bảng cho mục việc cần làm.
+
+[dán bản ghi cuộc họp vào đây]</pre></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Làm việc đa phương thức (file, ảnh, bảng)</h2>
+        <p class="ch-sub">Gemini không chỉ đọc chữ bạn gõ — nó "nhìn" được tài liệu, ảnh và dữ liệu.</p>
+
+        <p>Đính kèm (📎) cho phép Gemini đọc <strong>PDF, Word, ảnh chụp, ảnh màn hình, file Excel/CSV, Google Docs/Sheets từ Drive</strong>. Nhờ cửa sổ ngữ cảnh dài, model Pro đọc được tài liệu rất dài cùng lúc — lý tưởng cho nghiên cứu.</p>
+
+        <table>
+          <thead><tr><th>Bạn đính kèm</th><th>Có thể yêu cầu</th></tr></thead>
+          <tbody>
+            <tr><td>Bài báo / PDF dài</td><td>Tóm tắt, rút ý chính, giải thích đoạn khó, lập bảng so sánh nhiều bài</td></tr>
+            <tr><td>Ảnh chụp bảng số liệu / biểu đồ</td><td>Trích thành bảng gõ được, đọc số, mô tả xu hướng</td></tr>
+            <tr><td>Ảnh chụp output SPSS/phần mềm</td><td>Diễn giải kết quả bằng tiếng Việt dễ hiểu (xem ch16)</td></tr>
+            <tr><td>File Excel/CSV</td><td>Thống kê mô tả, tìm bất thường, gợi ý biểu đồ (xem ch14)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Đọc & tóm tắt một bài báo khoa học</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Bạn là trợ lý nghiên cứu. Tôi đính kèm một bài báo khoa học.
+Hãy tóm tắt theo cấu trúc:
+- Câu hỏi nghiên cứu &amp; mục tiêu
+- Phương pháp (thiết kế, mẫu, công cụ)
+- Kết quả chính (kèm số liệu nếu có)
+- Hạn chế của nghiên cứu
+- 3 câu hỏi tôi nên đặt ra để đánh giá độ tin cậy
+Viết bằng tiếng Việt, dễ hiểu cho người mới vào ngành.</pre>
+        </div>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Trích bảng từ ảnh chụp thành dữ liệu gõ được</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Tôi đính kèm ảnh chụp một bảng số liệu. Hãy trích xuất chính xác thành
+bảng dạng văn bản (markdown) để tôi copy sang Excel. Giữ nguyên số, không
+làm tròn. Nếu ô nào mờ/không chắc, đánh dấu [?] thay vì đoán.</pre>
+        </div>
+
+        <div class="box warn"><span class="box-title">Luôn kiểm chứng số liệu</span>AI có thể đọc sai chữ số trên ảnh mờ hoặc "đoán" khi không chắc. Với dữ liệu quan trọng, hãy <strong>đối chiếu lại</strong> kết quả trích xuất với nguồn gốc trước khi dùng cho phân tích/báo cáo.</div>
+
+        <h3 class="sec">Quiz cấp độ L0</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L0</div>
+          <div class="q" data-answer="b">
+            <p>1. Bạn cần câu trả lời <strong>chỉ dựa trên tài liệu của mình</strong>, hạn chế bịa. Nên dùng?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q1" value="a"> Deep Research</label>
+            <label class="opt" data-key="b"><input type="radio" name="q1" value="b"> NotebookLM</label>
+            <label class="opt" data-key="c"><input type="radio" name="q1" value="c"> Tạo ảnh Imagen</label>
+            <div class="explain">NotebookLM "đóng khung" theo nguồn bạn cung cấp và trả lời có trích dẫn → ít bịa nhất.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Thành phần nào thường giúp prompt tốt hơn nhiều nhất?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q2" value="a"> Viết hoa toàn bộ</label>
+            <label class="opt" data-key="b"><input type="radio" name="q2" value="b"> Càng ngắn càng tốt</label>
+            <label class="opt" data-key="c"><input type="radio" name="q2" value="c"> Nêu rõ vai trò, bối cảnh, nhiệm vụ, định dạng</label>
+            <div class="explain">Khung V-B-N-Đ giúp model hiểu đúng ý và trả về đúng định dạng.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Với dữ liệu nghiên cứu nhạy cảm, lựa chọn an toàn hơn là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q3" value="a"> Dùng tài khoản Workspace tổ chức &amp; ẩn danh dữ liệu</label>
+            <label class="opt" data-key="b"><input type="radio" name="q3" value="b"> Dán tất cả dữ liệu gốc vào tài khoản cá nhân</label>
+            <label class="opt" data-key="c"><input type="radio" name="q3" value="c"> Gửi qua email cho AI</label>
+            <div class="explain">Tài khoản Workspace tổ chức không dùng dữ liệu để huấn luyện; luôn ẩn danh PII trước khi đưa vào AI.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 1 ===================== -->
+      <div class="level-divider" id="lv1"><div class="line"></div><span class="tag tag-l1">L1 · Workspace &amp; Năng suất</span><div class="line"></div></div>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Gemini trong Gmail</h2>
+        <p class="ch-sub">Xử lý hộp thư nhanh hơn: tóm tắt luồng dài, soạn &amp; trả lời, rút thông tin.</p>
+
+        <p>Trong Gmail (web &amp; app di động), nút <strong>Gemini</strong> (biểu tượng ✦) mở bảng bên (side panel); ngoài ra có nút <strong>"Help me write"</strong> khi soạn thư và nút <strong>tóm tắt</strong> ở đầu luồng email dài.</p>
+
+        <table>
+          <thead><tr><th>Việc</th><th>Cách làm</th></tr></thead>
+          <tbody>
+            <tr><td>Tóm tắt luồng email dài</td><td>Mở email → bấm "Summarize this email" (hoặc hỏi trong side panel)</td></tr>
+            <tr><td>Soạn thư mới</td><td>Nhấn "Help me write" → mô tả ý → chọn giọng/độ dài</td></tr>
+            <tr><td>Trả lời nhanh</td><td>Gemini gợi ý nội dung trả lời dựa trên luồng</td></tr>
+            <tr><td>Tìm thông tin trong hộp thư</td><td>Side panel: "Tìm email từ [tên] về [chủ đề] tháng trước"</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Soạn email mời tham gia khảo sát (Help me write)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Soạn email mời đồng nghiệp tham gia khảo sát nội bộ về điều kiện làm việc.
+- Giọng: lịch sự, ngắn gọn (dưới 150 từ).
+- Nêu: mục đích, thời gian làm (5 phút), hạn chót [ngày], cam kết ẩn danh.
+- Kết thúc bằng lời cảm ơn và link khảo sát: [dán link].</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Trích việc cần làm từ email</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Tóm tắt luồng email này thành danh sách "việc cần làm" của tôi: mỗi việc
+gồm nội dung, người liên quan và hạn (nếu có). Bỏ qua phần xã giao.</pre>
+        </div>
+        <div class="box tip"><span class="box-title">Mẹo</span>Luôn <strong>đọc lại</strong> email AI soạn trước khi gửi — chỉnh tên, số liệu, sắc thái cho đúng. AI soạn nháp tốt, nhưng bạn là người chịu trách nhiệm nội dung.</div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> Gemini trong Google Docs</h2>
+        <p class="ch-sub">Từ trang trắng đến báo cáo hoàn chỉnh: dàn ý, viết, chỉnh giọng, tóm tắt.</p>
+
+        <p>Trong Docs, dùng <strong>"Help me write"</strong> (xuất hiện trên dòng trống hoặc bôi đen đoạn văn) và <strong>side panel ✦</strong> để hỏi/đặt việc dựa trên nội dung tài liệu.</p>
+
+        <table>
+          <thead><tr><th>Tình huống</th><th>Yêu cầu Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>Bắt đầu báo cáo</td><td>"Tạo dàn ý báo cáo về [chủ đề] gồm các mục..."</td></tr>
+            <tr><td>Viết nháp một mục</td><td>Bôi đen tiêu đề mục → "Help me write" → viết nội dung</td></tr>
+            <tr><td>Chỉnh giọng/độ dài</td><td>Bôi đen đoạn → "trang trọng hơn" / "rút ngắn" / "diễn giải rõ hơn"</td></tr>
+            <tr><td>Tóm tắt tài liệu dài</td><td>Side panel: "Tóm tắt tài liệu này thành 5 ý"</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Dàn ý báo cáo nghiên cứu</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Tạo dàn ý chi tiết cho báo cáo nghiên cứu về "[chủ đề]".
+Cấu trúc chuẩn học thuật: Tóm tắt, Đặt vấn đề, Tổng quan tài liệu, Phương pháp,
+Kết quả, Thảo luận, Kết luận &amp; Khuyến nghị, Tài liệu tham khảo.
+Với mỗi mục, ghi 2-3 gạch đầu dòng gợi ý nội dung cần viết.</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Chỉnh văn phong học thuật</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Viết lại đoạn dưới đây theo văn phong học thuật, khách quan, mạch lạc;
+giữ nguyên ý và số liệu; tránh từ cảm tính; câu không quá dài.
+
+[dán đoạn văn của bạn]</pre>
+        </div>
+        <div class="box use"><span class="box-title">Quy trình viết báo cáo gợi ý</span>Dàn ý (Gemini) → bạn bổ sung dữ liệu/ý chính → nhờ Gemini viết nháp từng mục → bạn biên tập &amp; kiểm chứng số liệu → nhờ Gemini soát chính tả/nhất quán thuật ngữ → hoàn thiện. <em>AI viết nháp, bạn làm chủ nội dung.</em></div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Gemini trong Google Sheets &amp; hàm =AI()</h2>
+        <p class="ch-sub">Trọng tâm cho người làm dữ liệu: phân tích, làm sạch, phân loại, dựng dashboard — không cần công thức phức tạp.</p>
+
+        <p>Gemini trong Sheets làm được hai nhóm việc: (1) <strong>trợ lý qua side panel</strong> — mô tả việc bằng lời, Gemini lập kế hoạch và <em>tự xây bảng/biểu đồ</em>; (2) <strong>hàm <code class="ic">=AI()</code></strong> — đưa sức mạnh model vào từng ô để sinh/biến đổi dữ liệu hàng loạt.</p>
+
+        <h3 class="sec">Trợ lý Sheets (side panel)</h3>
+        <table>
+          <thead><tr><th>Yêu cầu (gõ vào side panel)</th><th>Kết quả</th></tr></thead>
+          <tbody>
+            <tr><td>"Tính thống kê mô tả cho cột Doanh thu"</td><td>Trung bình, min/max, tổng, độ lệch chuẩn...</td></tr>
+            <tr><td>"Vẽ biểu đồ cột doanh thu theo tháng"</td><td>Tự tạo chart</td></tr>
+            <tr><td>"Tạo bảng tổng hợp (pivot) doanh thu theo khu vực &amp; quý"</td><td>Tự dựng pivot table</td></tr>
+            <tr><td>"Tô màu đỏ các ô có giá trị thiếu"</td><td>Conditional formatting</td></tr>
+            <tr><td>"Xây dashboard P&amp;L từ dữ liệu này"</td><td>Lập kế hoạch → bạn duyệt → dựng nguyên trang có định dạng</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Hàm =AI() — AI trong từng ô</h3>
+        <p>Hàm <code class="ic">=AI("hướng dẫn", vùng_dữ_liệu)</code> chạy model trên dữ liệu ô để: phân loại, tóm tắt, phân tích cảm xúc, trích xuất, sinh văn bản. Kéo xuống để áp cho cả cột.</p>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">CÔNG THỨC</span><span class="plabel">Phân loại &amp; phân tích cảm xúc phản hồi khách hàng</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body"># Phân loại chủ đề phản hồi ở cột A
+=AI("Phân loại phản hồi này vào 1 trong: Giá, Chất lượng, Dịch vụ, Khác", A2)
+
+# Phân tích cảm xúc (Tích cực/Trung lập/Tiêu cực)
+=AI("Phản hồi này có cảm xúc gì? Trả lời 1 từ: Tích cực, Trung lập, hoặc Tiêu cực", A2)
+
+# Trích tên sản phẩm được nhắc đến
+=AI("Trích tên sản phẩm được nhắc trong câu, nếu không có ghi 'không'", A2)</pre>
+        </div>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Làm sạch dữ liệu lộn xộn (side panel)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Cột "Tỉnh/Thành" của tôi nhập không nhất quán (vd "tp hcm", "TPHCM",
+"Hồ Chí Minh", "HCM"). Hãy tạo cột mới chuẩn hóa tất cả về tên đầy đủ
+thống nhất, và liệt kê các biến thể bạn đã gộp.</pre>
+        </div>
+
+        <div class="box warn"><span class="box-title">Lưu ý khi dùng =AI()</span>Kết quả từ <code class="ic">=AI()</code> là <em>do model sinh ra</em>, có thể sai/không nhất quán — hãy <strong>rà soát mẫu</strong> trước khi tin toàn bộ cột, và cân nhắc "dán giá trị" (paste as values) để cố định kết quả. Với phân loại quan trọng, kiểm tra thủ công một số dòng ngẫu nhiên.</div>
+        <div class="box tip"><span class="box-title">Liên hệ kiến thức cũ</span>Bạn đã quen Excel/Sheets — hãy để Gemini làm phần "khó nhớ" (công thức phức tạp, regex, pivot, biểu đồ). Cứ mô tả mục tiêu bằng tiếng Việt, Gemini lo phần kỹ thuật.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 7.1 <span class="lvl-dot">trung bình</span></div>
+          <p>Lấy một bảng dữ liệu bất kỳ của bạn, mở side panel Gemini và yêu cầu: "Tóm tắt 3 phát hiện thú vị nhất từ dữ liệu này và đề xuất 1 biểu đồ phù hợp để trình bày".</p>
+        </div>
+      </section>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> Workspace Intelligence, Drive &amp; Meet</h2>
+        <p class="ch-sub">Gemini đọc xuyên suốt tài liệu, email, lịch của bạn — và ghi chú họp tự động.</p>
+
+        <p><strong>Workspace Intelligence</strong> (2026) cho phép Gemini trả lời bằng cách <em>đọc xuyên</em> toàn bộ "tài sản" Workspace của bạn (Drive, Gmail, Chat, Lịch) — thay vì bạn phải tự tìm và dán từng file. Có công tắc quản trị để bật/tắt từng nguồn dữ liệu.</p>
+
+        <table>
+          <thead><tr><th>Công cụ</th><th>Việc làm được</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Gemini side panel</strong> (trong mọi app)</td><td>"Dựa trên các tài liệu dự án X trong Drive của tôi, tóm tắt tiến độ"</td></tr>
+            <tr><td><strong>Gemini trong Drive</strong></td><td>Tóm tắt một file PDF/Doc dài mà không cần mở</td></tr>
+            <tr><td><strong>Gemini trong Meet</strong></td><td>"Take notes for me" — tự ghi biên bản, tóm tắt, việc cần làm sau họp</td></tr>
+            <tr><td><strong>Hỏi xuyên nguồn</strong></td><td>"Tìm số liệu mẫu khảo sát trong báo cáo quý 2 và email của chị Lan"</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Tổng hợp tiến độ dự án từ nhiều nguồn</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Dựa trên các tài liệu và email liên quan đến dự án "[tên dự án]", hãy tổng hợp:
+1) Các mốc đã hoàn thành, 2) Việc đang chậm tiến độ, 3) Rủi ro cần chú ý.
+Trích dẫn tên tài liệu/email nguồn cho mỗi điểm.</pre>
+        </div>
+        <div class="box danger"><span class="box-title">Quyền &amp; bảo mật</span>Workspace Intelligence chỉ đọc dữ liệu <strong>bạn có quyền truy cập</strong>. Tuy vậy, hãy cẩn trọng khi tóm tắt tài liệu chứa thông tin nhạy cảm và khi chia sẻ kết quả. Quản trị viên tổ chức có thể giới hạn nguồn dữ liệu.</div>
+      </section>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Tạo Gems tùy chỉnh</h2>
+        <p class="ch-sub">Đóng gói một quy trình lặp lại thành "trợ lý riêng" — dùng lại mãi, chuẩn hóa cho cả team.</p>
+
+        <p><strong>Gem</strong> là một phiên bản Gemini bạn cấu hình sẵn với <em>vai trò, hướng dẫn và đôi khi tài liệu nền</em>. Thay vì gõ lại prompt dài mỗi lần, bạn mở Gem và làm việc ngay. Lý tưởng cho team nghiên cứu: ai cũng dùng cùng một "chuẩn".</p>
+
+        <h3 class="sec">Cấu trúc một Gem tốt</h3>
+        <ol>
+          <li><strong>Vai trò &amp; mục tiêu</strong>: "Bạn là trợ lý phân tích dữ liệu khảo sát của nhóm..."</li>
+          <li><strong>Quy trình</strong>: các bước cố định cần làm mỗi lần.</li>
+          <li><strong>Định dạng đầu ra</strong>: mẫu kết quả chuẩn của nhóm.</li>
+          <li><strong>Ràng buộc</strong>: ngôn ngữ, điều cấm (vd "không bịa số liệu, luôn nêu giả định").</li>
+          <li><strong>Tài liệu nền</strong> (tùy chọn): đính kèm sổ tay/quy chuẩn của nhóm.</li>
+        </ol>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">HƯỚNG DẪN GEM</span><span class="plabel">"Trợ lý thống kê của nhóm"</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">VAI TRÒ: Bạn là chuyên gia thống kê hỗ trợ nhóm nghiên cứu (không chuyên về
+thống kê). Luôn giải thích dễ hiểu.
+
+QUY TRÌNH mỗi khi tôi đưa một câu hỏi/dữ liệu:
+1. Làm rõ: mục tiêu phân tích &amp; loại biến (định tính/định lượng).
+2. Đề xuất phép phân tích/kiểm định phù hợp + nêu giả định cần kiểm tra.
+3. Hướng dẫn các bước thực hiện (Excel/SPSS) bằng ngôn ngữ đơn giản.
+4. Cảnh báo lỗi thường gặp.
+
+RÀNG BUỘC: Trả lời tiếng Việt. KHÔNG bịa số liệu. Nếu thiếu thông tin, hỏi lại.
+Khi diễn giải kết quả, luôn nhắc "tương quan ≠ nhân quả" khi phù hợp.</pre>
+        </div>
+
+        <div class="box use"><span class="box-title">Ý tưởng Gems cho team nghiên cứu</span>
+          <ul style="margin-bottom:0">
+            <li><strong>Trợ lý tóm tắt bài báo</strong> (theo mẫu cố định của nhóm).</li>
+            <li><strong>Trợ lý viết biên bản họp</strong> → quyết định/việc cần làm/vấn đề mở.</li>
+            <li><strong>Trợ lý chuẩn hóa thuật ngữ</strong> báo cáo theo style guide của tổ chức.</li>
+            <li><strong>Trợ lý "phản biện"</strong>: đóng vai reviewer khó tính tìm điểm yếu lập luận.</li>
+          </ul>
+        </div>
+
+        <h3 class="sec">Quiz cấp độ L1</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L1</div>
+          <div class="q" data-answer="b">
+            <p>1. Hàm <code>=AI()</code> trong Sheets dùng để?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l1q1" value="a"> Chỉ tính tổng nhanh hơn</label>
+            <label class="opt" data-key="b"><input type="radio" name="l1q1" value="b"> Phân loại, tóm tắt, trích xuất, phân tích cảm xúc... trên dữ liệu ô</label>
+            <label class="opt" data-key="c"><input type="radio" name="l1q1" value="c"> Khóa bảng tính</label>
+            <div class="explain">=AI() đưa khả năng ngôn ngữ của model vào từng ô để biến đổi/sinh dữ liệu hàng loạt.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Lợi ích chính của Gems là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l1q2" value="a"> Trả lời nhanh gấp đôi</label>
+            <label class="opt" data-key="b"><input type="radio" name="l1q2" value="b"> Miễn phí hoàn toàn</label>
+            <label class="opt" data-key="c"><input type="radio" name="l1q2" value="c"> Đóng gói quy trình lặp lại &amp; chuẩn hóa cho cả nhóm</label>
+            <div class="explain">Gem lưu sẵn vai trò + hướng dẫn + tài liệu nền, dùng lại nhất quán.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Sau khi Gemini soạn email/đoạn báo cáo, việc bắt buộc là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l1q3" value="a"> Đọc lại, kiểm chứng số liệu &amp; chỉnh sửa trước khi dùng</label>
+            <label class="opt" data-key="b"><input type="radio" name="l1q3" value="b"> Gửi/đăng ngay</label>
+            <label class="opt" data-key="c"><input type="radio" name="l1q3" value="c"> Xóa rồi tự viết lại từ đầu</label>
+            <div class="explain">AI tạo nháp tốt nhưng bạn chịu trách nhiệm cuối cùng — luôn rà soát.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 2 ===================== -->
+      <div class="level-divider" id="lv2"><div class="line"></div><span class="tag tag-l2">L2 · Nghiên cứu</span><div class="line"></div></div>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> NotebookLM — nền tảng</h2>
+        <p class="ch-sub">Công cụ nghiên cứu quan trọng nhất cho team: trả lời <strong>chỉ dựa trên nguồn của bạn</strong>, có trích dẫn.</p>
+
+        <p><strong>NotebookLM</strong> (notebooklm.google.com) khác Gemini app ở chỗ nó <em>"đóng khung" trong các nguồn bạn tải lên</em>. Mọi câu trả lời đều kèm <strong>trích dẫn</strong> chỉ về đúng đoạn trong tài liệu — nên độ tin cậy cao và <strong>ít bịa</strong> nhất. Đây là điểm vàng cho nghiên cứu.</p>
+
+        <h3 class="sec">Nguồn được hỗ trợ</h3>
+        <p>PDF, Google Docs, Google Slides, trang web (URL), văn bản dán, <strong>YouTube</strong> (bản ghi lời), file âm thanh, EPUB. Mỗi nguồn lên tới ~<strong>500.000 từ</strong>; một notebook chứa nhiều nguồn → tổng hợp xuyên tài liệu.</p>
+
+        <h3 class="sec">Quy trình dùng cơ bản</h3>
+        <ol>
+          <li>Tạo notebook mới → <strong>Add sources</strong> (tải tài liệu nghiên cứu, bài báo, báo cáo...).</li>
+          <li>Đặt câu hỏi ở khung chat → nhận câu trả lời <strong>kèm số trích dẫn</strong> (bấm để nhảy tới nguồn).</li>
+          <li>Dùng các nút tạo nhanh: <strong>tóm tắt, FAQ, study guide, timeline, briefing doc</strong>.</li>
+          <li>Lưu câu trả lời hữu ích vào <strong>Notes</strong>.</li>
+        </ol>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Hỏi xuyên nhiều tài liệu trong notebook</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Dựa trên tất cả các nguồn trong notebook này:
+1. Các tác giả đồng thuận ở điểm nào? Mâu thuẫn ở điểm nào?
+2. Những phương pháp nghiên cứu nào được dùng phổ biến nhất?
+3. Có "khoảng trống nghiên cứu" (research gap) nào được nhắc tới?
+Trích dẫn nguồn cho từng ý.</pre>
+        </div>
+
+        <div class="box use"><span class="box-title">Vì sao hợp với team nghiên cứu</span>Trả lời <strong>có trích dẫn về đúng nguồn</strong> → dễ kiểm chứng, dễ trích lại vào báo cáo. Khi bạn cần "sự thật từ tài liệu" chứ không phải "ý kiến chung của internet", hãy ưu tiên NotebookLM hơn chat thường.</div>
+        <div class="box warn"><span class="box-title">Vẫn cần kiểm tra</span>NotebookLM ít bịa hơn nhiều, nhưng vẫn có thể tóm tắt lệch ý. Hãy bấm vào <strong>trích dẫn</strong> để xác minh đoạn gốc trước khi đưa vào báo cáo chính thức.</div>
+      </section>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> NotebookLM nâng cao</h2>
+        <p class="ch-sub">Audio/Video Overview, Deep Research tích hợp, và briefing cho cả nhóm.</p>
+
+        <h3 class="sec">Audio Overview — "podcast" từ tài liệu của bạn</h3>
+        <p>Tính năng nổi tiếng nhất: biến tài liệu thành một <strong>cuộc trò chuyện</strong> giữa hai "người dẫn" AI — họ tóm tắt, nối kết các ý, trao đổi qua lại như podcast. Hữu ích để "nghe" tài liệu khi di chuyển, hoặc nắm nhanh nội dung trước khi đọc kỹ. Bạn có thể <strong>tùy chỉnh</strong> (tập trung chủ đề nào, độ dài) và thậm chí <strong>tham gia hỏi</strong> trong phiên.</p>
+        <p><strong>Video Overview</strong> (2026): tạo video "deep-dive" có hình minh họa từ nguồn — tiện để trình bày.</p>
+
+        <h3 class="sec">Deep Research trong NotebookLM</h3>
+        <p>Từ cuối 2025, NotebookLM thêm khả năng <strong>chủ động đi tìm nguồn mới</strong> (không chỉ trả lời từ nguồn có sẵn) — biến nó từ công cụ "đọc tài liệu của bạn" thành "trợ lý nghiên cứu" thực thụ. Bạn có thể để nó mở rộng tập nguồn rồi vẫn giữ tính trích dẫn.</p>
+
+        <table>
+          <thead><tr><th>Đầu ra Studio</th><th>Dùng khi</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Audio Overview</strong></td><td>Muốn "nghe" tổng quan, ôn tập khi di chuyển</td></tr>
+            <tr><td><strong>Video Overview</strong></td><td>Cần bản trình bày trực quan để chia sẻ</td></tr>
+            <tr><td><strong>Briefing doc</strong></td><td>Bản tóm tắt 1 trang cho cả nhóm đọc nhanh</td></tr>
+            <tr><td><strong>Study guide / FAQ / Timeline</strong></td><td>Học/ôn, chuẩn bị Q&amp;A, dựng dòng thời gian sự kiện</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Tạo briefing 1 trang cho cuộc họp nhóm</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Tạo một tài liệu briefing 1 trang từ các nguồn này, dành cho thành viên nhóm
+chưa đọc tài liệu. Gồm: bối cảnh, 5 phát hiện chính, hàm ý thực tiễn, và
+3 câu hỏi để thảo luận trong họp. Ngắn gọn, có trích dẫn.</pre>
+        </div>
+        <div class="box tip"><span class="box-title">Mẹo tùy chỉnh Audio Overview</span>Trước khi tạo, dùng ô "customize" để chỉ định: "Tập trung vào phương pháp &amp; hạn chế nghiên cứu, dành cho người làm chính sách, độ dài ~10 phút".</div>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Deep Research (Gemini app)</h2>
+        <p class="ch-sub">Giao cho Gemini một chủ đề, nó tự khảo sát hàng chục nguồn và viết báo cáo có cấu trúc.</p>
+
+        <p><strong>Deep Research</strong> là chế độ "đại lý" (agent): Gemini <em>lập kế hoạch</em> nghiên cứu, <em>duyệt nhiều trang web</em> (và file bạn tải lên), rồi tổng hợp thành <strong>báo cáo dài có trích dẫn</strong>. Khác NotebookLM (đóng khung trong nguồn của bạn), Deep Research <em>chủ động tìm trên web</em> — hợp khi khám phá chủ đề mới.</p>
+
+        <h3 class="sec">Quy trình</h3>
+        <ol>
+          <li>Bật <strong>Deep Research</strong> trong Gemini app → nhập chủ đề.</li>
+          <li>Gemini đưa ra <strong>kế hoạch nghiên cứu</strong> → bạn xem &amp; chỉnh (thêm/bớt khía cạnh).</li>
+          <li>Nó chạy (vài phút), duyệt nguồn, rồi xuất <strong>báo cáo</strong> kèm danh sách nguồn.</li>
+          <li>Có thể đưa báo cáo vào <strong>Canvas</strong> để chỉnh, hoặc biến thành trang web/quiz/infographic.</li>
+          <li>Bạn có thể <strong>tải lên file riêng</strong> làm nguồn bổ sung cho Deep Research.</li>
+        </ol>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Yêu cầu Deep Research cho tổng quan chủ đề</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Nghiên cứu tổng quan về "[chủ đề nghiên cứu của bạn]" trong 5 năm gần đây.
+Tập trung vào: (1) các hướng nghiên cứu chính, (2) phương pháp phổ biến,
+(3) phát hiện nổi bật &amp; tranh luận, (4) khoảng trống nghiên cứu.
+Ưu tiên nguồn học thuật/đáng tin. Trình bày báo cáo có mục rõ ràng, trích dẫn
+đầy đủ, và một bảng tóm tắt các nghiên cứu tiêu biểu.</pre>
+        </div>
+
+        <div class="box compare"><span class="box-title">NotebookLM vs Deep Research — chọn cái nào?</span>
+          <ul style="margin-bottom:0">
+            <li><strong>NotebookLM</strong>: bạn <em>đã có</em> bộ tài liệu, cần trả lời chính xác &amp; trích dẫn từ chúng. Độ tin cậy cao nhất.</li>
+            <li><strong>Deep Research</strong>: bạn <em>chưa có</em> tài liệu, cần khảo sát rộng trên web để lập bản đồ chủ đề. Phải kiểm chứng nguồn kỹ hơn.</li>
+            <li><strong>Kết hợp</strong>: Deep Research để tìm &amp; chọn nguồn tốt → tải vào NotebookLM để khai thác sâu &amp; trích dẫn cho báo cáo.</li>
+          </ul>
+        </div>
+        <div class="box warn"><span class="box-title">Kiểm chứng nguồn</span>Deep Research duyệt web nên có thể dẫn nguồn chất lượng không đồng đều. Luôn <strong>bấm vào nguồn gốc</strong>, ưu tiên tạp chí/đơn vị uy tín, và đối chiếu các số liệu quan trọng.</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> Literature review end-to-end</h2>
+        <p class="ch-sub">Ghép mọi thứ lại: quy trình tổng quan tài liệu hoàn chỉnh với Gemini + NotebookLM.</p>
+
+        <h3 class="sec">Quy trình 6 bước</h3>
+        <table>
+          <thead><tr><th>Bước</th><th>Công cụ</th><th>Việc làm</th></tr></thead>
+          <tbody>
+            <tr><td>1. Phác thảo phạm vi</td><td>Gemini app</td><td>Làm rõ câu hỏi nghiên cứu, từ khóa, tiêu chí chọn bài</td></tr>
+            <tr><td>2. Khảo sát rộng</td><td>Deep Research</td><td>Lập bản đồ chủ đề, tìm các bài/nguồn tiêu biểu</td></tr>
+            <tr><td>3. Thu thập &amp; sàng lọc</td><td>Bạn</td><td>Tải PDF các bài đã chọn (kiểm tra chất lượng nguồn)</td></tr>
+            <tr><td>4. Khai thác sâu</td><td>NotebookLM</td><td>Hỏi xuyên tài liệu, lập bảng so sánh, tìm gap, trích dẫn</td></tr>
+            <tr><td>5. Viết</td><td>Docs + Gemini</td><td>Dàn ý → viết nháp từng phần → biên tập</td></tr>
+            <tr><td>6. Hoàn thiện</td><td>Bạn + Gemini</td><td>Kiểm chứng trích dẫn, chuẩn hóa thuật ngữ, soát lỗi</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Lập bảng so sánh các nghiên cứu (NotebookLM)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Lập bảng so sánh tất cả các nghiên cứu trong notebook theo các cột:
+Tác giả &amp; năm | Mục tiêu | Mẫu &amp; bối cảnh | Phương pháp | Kết quả chính | Hạn chế.
+Trích dẫn nguồn cho mỗi dòng. Sau bảng, nêu 3 xu hướng &amp; 2 khoảng trống nghiên cứu.</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Viết đoạn tổng quan có tổng hợp (synthesis)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Dựa trên bảng so sánh ở trên, viết một đoạn tổng quan tài liệu (~250 từ)
+TỔNG HỢP các nghiên cứu theo chủ đề (KHÔNG liệt kê từng bài một),
+nêu điểm đồng thuận, mâu thuẫn và khoảng trống. Văn phong học thuật, tiếng Việt.
+Giữ chỗ [trích dẫn] để tôi điền nguồn theo đúng chuẩn của tôi.</pre>
+        </div>
+        <div class="box danger"><span class="box-title">Liêm chính học thuật</span>AI hỗ trợ <em>quy trình</em> (tìm, tóm tắt, sắp xếp, soạn nháp) — nhưng <strong>không trích dẫn hộ một cách đáng tin</strong>: AI có thể bịa tên bài báo/DOI ("citation ảo"). <strong>Luôn tự kiểm tra mọi trích dẫn</strong> tại nguồn gốc. Tuân thủ quy định về dùng AI của tạp chí/đơn vị bạn nộp. Xem ch19.</div>
+      </section>
+
+      <!-- ===================== LEVEL 3 ===================== -->
+      <div class="level-divider" id="lv3"><div class="line"></div><span class="tag tag-l3">L3 · Dữ liệu · Thống kê · Báo cáo</span><div class="line"></div></div>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> Phân tích dữ liệu không cần code</h2>
+        <p class="ch-sub">Tải bộ dữ liệu lên, hỏi bằng tiếng Việt, nhận thống kê &amp; insight.</p>
+
+        <p>Bạn có thể đính kèm <strong>CSV/Excel</strong> vào Gemini (hoặc làm trong Sheets) và yêu cầu phân tích mà không viết một dòng code nào. Model Pro sẽ mô tả dữ liệu, tính thống kê, phát hiện bất thường và gợi ý biểu đồ.</p>
+
+        <div class="box use"><span class="box-title">Quy trình "hỏi dữ liệu" 4 bước</span>
+          <ol style="margin-bottom:0">
+            <li><strong>Mô tả dữ liệu</strong>: "Mỗi dòng là gì? Các cột nghĩa gì?" để Gemini hiểu đúng ngữ cảnh.</li>
+            <li><strong>Khám phá</strong>: thống kê mô tả, phân phối, giá trị thiếu, ngoại lai.</li>
+            <li><strong>Đặt câu hỏi nghiệp vụ</strong>: "Nhóm nào hài lòng nhất? Yếu tố nào liên quan đến X?"</li>
+            <li><strong>Trực quan &amp; báo cáo</strong>: gợi ý biểu đồ phù hợp + diễn giải.</li>
+          </ol>
+        </div>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Khám phá nhanh một bộ dữ liệu (EDA)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Bạn là chuyên gia phân tích dữ liệu. Tôi đính kèm file dữ liệu khảo sát.
+Hãy thực hiện khám phá dữ liệu (EDA):
+1. Mô tả cấu trúc: số dòng/cột, kiểu mỗi biến.
+2. Thống kê mô tả các biến số (trung bình, trung vị, độ lệch chuẩn, min/max).
+3. Tỷ lệ giá trị thiếu mỗi cột &amp; cảnh báo bất thường/ngoại lai.
+4. 3-5 phát hiện đáng chú ý, mỗi phát hiện kèm con số minh chứng.
+5. Đề xuất 3 biểu đồ phù hợp để trình bày (loại biểu đồ + biến nào).
+Trình bày rõ ràng theo mục, tiếng Việt. KHÔNG bịa số; nếu không chắc, nói rõ.</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Hỏi câu hỏi nghiệp vụ trên dữ liệu</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Từ dữ liệu đã tải: nhóm khách hàng theo [khu vực], so sánh điểm hài lòng
+trung bình giữa các nhóm, sắp xếp giảm dần, và cho biết chênh lệch có vẻ
+đáng kể không (kèm khuyến nghị nên dùng kiểm định thống kê nào để xác nhận).</pre>
+        </div>
+        <div class="box warn"><span class="box-title">Giới hạn cần biết</span>Với file rất lớn, AI có thể chỉ xem mẫu hoặc gặp giới hạn — hãy hỏi "bạn đã dùng bao nhiêu dòng để tính?". Số liệu AI đưa ra <strong>phải được đối chiếu</strong> với công cụ chính xác (Sheets/SPSS) trước khi đưa vào báo cáo.</div>
+      </section>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> Làm việc với Database không cần SQL</h2>
+        <p class="ch-sub">Mô tả nhu cầu bằng tiếng Việt → Gemini viết SQL, giải thích &amp; sửa lỗi giúp bạn.</p>
+
+        <p>Nếu nhóm bạn có dữ liệu trong database (PostgreSQL, MySQL...), Gemini là "phiên dịch viên" tuyệt vời: bạn nói cần gì, nó viết câu <strong>SQL</strong>, giải thích từng phần, và sửa khi báo lỗi. Bạn vẫn nên hiểu sơ về bảng/khóa (xem khóa PostgreSQL trong thư viện này).</p>
+
+        <div class="box use"><span class="box-title">Bí quyết: cho Gemini "biết" cấu trúc bảng</span>Dán <strong>lược đồ (schema)</strong> — tên bảng &amp; cột — vào prompt. Câu SQL sẽ chính xác hơn nhiều. Lấy schema bằng cách hỏi DBA, hoặc copy phần <code class="ic">CREATE TABLE</code>.</div>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Viết SQL từ mô tả tiếng Việt</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Bạn là chuyên gia SQL (PostgreSQL). Đây là lược đồ các bảng của tôi:
+
+employees(id, name, dept_id, salary, hired_at)
+departments(id, name, city)
+
+NHIỆM VỤ: Viết câu SQL lấy tên phòng ban và lương trung bình mỗi phòng,
+chỉ gồm phòng có trên 2 nhân viên, sắp theo lương trung bình giảm dần.
+YÊU CẦU: giải thích ngắn gọn từng mệnh đề bằng tiếng Việt; cảnh báo nếu
+câu lệnh có thể chậm và gợi ý index nên có.</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Sửa lỗi & diễn giải câu SQL</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Câu SQL dưới đây báo lỗi: "[dán thông báo lỗi]".
+Hãy chỉ ra nguyên nhân, sửa lại cho đúng, và giải thích chỗ sai bằng tiếng Việt.
+
+[dán câu SQL của bạn]</pre>
+        </div>
+        <div class="box danger"><span class="box-title">An toàn dữ liệu</span>Chỉ chạy câu SQL bạn <strong>hiểu</strong>. Tuyệt đối thận trọng với <code class="ic">UPDATE</code>/<code class="ic">DELETE</code>/<code class="ic">DROP</code> — yêu cầu Gemini giải thích tác động trước, và luôn thử trên bản sao/môi trường test. Không dán dữ liệu thật nhạy cảm; chỉ cần dán <em>cấu trúc</em> bảng là đủ để viết query.</div>
+      </section>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> Trợ lý SPSS &amp; thống kê</h2>
+        <p class="ch-sub">Chọn đúng phép kiểm định, viết cú pháp SPSS, và diễn giải output bằng ngôn ngữ dễ hiểu.</p>
+
+        <p>Gemini không chạy SPSS, nhưng là <strong>cố vấn thống kê</strong> rất mạnh cho người không chuyên: gợi ý phép phân tích phù hợp, viết <strong>SPSS syntax</strong>, kiểm tra giả định, và <strong>đọc hộ output</strong> (kể cả từ ảnh chụp).</p>
+
+        <h3 class="sec">Chọn phép kiểm định phù hợp</h3>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Tư vấn chọn test thống kê</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Bạn là chuyên gia thống kê, giải thích cho người không chuyên.
+BỐI CẢNH: Tôi muốn so sánh [biến phụ thuộc, vd: điểm hài lòng thang 1-5]
+giữa [số nhóm, vd: 3 khu vực]. Mẫu ~[n] người. Dữ liệu [có/không] phân phối chuẩn.
+NHIỆM VỤ: Đề xuất phép kiểm định phù hợp (kèm phương án thay thế nếu vi phạm
+giả định), nêu rõ: tên test, khi nào dùng, các giả định cần kiểm tra, và cách
+diễn giải kết quả. Trình bày dạng bảng + giải thích, tiếng Việt.</pre>
+        </div>
+
+        <h3 class="sec">Viết cú pháp SPSS</h3>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Sinh SPSS syntax</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Viết cú pháp SPSS (syntax) để chạy [vd: ANOVA một chiều] so sánh biến
+[satisfaction] theo nhóm [region], kèm kiểm định hậu định (post-hoc Tukey)
+và kiểm tra tính đồng nhất phương sai (Levene). Giải thích mỗi lệnh làm gì
+và cách đọc bảng kết quả tương ứng.</pre>
+        </div>
+
+        <h3 class="sec">Diễn giải output</h3>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Đọc hộ kết quả SPSS (kèm ảnh chụp)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Tôi đính kèm ảnh chụp bảng output SPSS của [tên phân tích]. Hãy:
+1. Diễn giải kết quả bằng tiếng Việt, dễ hiểu cho người không chuyên thống kê.
+2. Nêu rõ giá trị p, ý nghĩa thống kê, và độ lớn ảnh hưởng (effect size) nếu có.
+3. Viết 2-3 câu kết luận có thể đưa thẳng vào phần "Kết quả" của báo cáo.
+4. Cảnh báo nếu có dấu hiệu vi phạm giả định hoặc cần thận trọng khi kết luận.</pre>
+        </div>
+
+        <div class="box warn"><span class="box-title">Thống kê: cẩn trọng gấp đôi</span>AI có thể nhầm khái niệm hoặc đọc sai số trên ảnh. Hãy coi Gemini như <em>trợ giảng</em>: nó giúp bạn hiểu &amp; làm nhanh, nhưng <strong>kết luận thống kê cuối cùng phải do bạn xác nhận</strong> (đối chiếu số gốc, hỏi chuyên gia khi quan trọng). Ghi nhớ: "ý nghĩa thống kê" ≠ "ý nghĩa thực tiễn", và "tương quan ≠ nhân quả".</div>
+      </section>
+
+      <!-- ===== CH17 ===== -->
+      <section class="chapter" id="ch17">
+        <h2 class="ch-title"><span class="num">CH 17</span> Quy trình tạo Report hoàn chỉnh</h2>
+        <p class="ch-sub">Từ dữ liệu thô đến báo cáo &amp; slide trình bày — phối hợp mọi công cụ đã học.</p>
+
+        <table>
+          <thead><tr><th>Giai đoạn</th><th>Công cụ</th><th>Việc làm</th></tr></thead>
+          <tbody>
+            <tr><td>1. Chuẩn bị dữ liệu</td><td>Sheets + =AI()</td><td>Làm sạch, chuẩn hóa, phân loại</td></tr>
+            <tr><td>2. Phân tích</td><td>Gemini / SPSS</td><td>Thống kê, kiểm định, tìm insight (ch14, 16)</td></tr>
+            <tr><td>3. Cấu trúc báo cáo</td><td>Docs + Gemini</td><td>Dàn ý → viết nháp từng mục</td></tr>
+            <tr><td>4. Trực quan hóa</td><td>Sheets</td><td>Biểu đồ phù hợp cho từng phát hiện</td></tr>
+            <tr><td>5. Trình bày</td><td>Slides + Gemini</td><td>Tạo slide từ nội dung báo cáo</td></tr>
+            <tr><td>6. Rà soát</td><td>Bạn + Gemini</td><td>Kiểm chứng số liệu, nhất quán, soát lỗi</td></tr>
+          </tbody>
+        </table>
+
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Biến kết quả phân tích thành tóm tắt điều hành (executive summary)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Dưới đây là các phát hiện phân tích của tôi: [dán các phát hiện/số liệu].
+Viết một "tóm tắt điều hành" (~200 từ) cho lãnh đạo không chuyên kỹ thuật:
+nêu bối cảnh, 3 phát hiện quan trọng nhất (kèm con số), và 2-3 khuyến nghị
+hành động. Giọng văn chuyên nghiệp, súc tích, ưu tiên hàm ý thực tiễn.</pre>
+        </div>
+        <div class="prompt-card">
+          <div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Tạo dàn ý slide thuyết trình</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+          <pre class="prompt-body">Từ báo cáo này, tạo dàn ý bài thuyết trình 10 slide: mỗi slide gồm tiêu đề,
+3-4 ý chính (gạch đầu dòng), và gợi ý hình ảnh/biểu đồ. Slide đầu là tổng quan,
+slide cuối là khuyến nghị &amp; bước tiếp theo.</pre>
+        </div>
+        <div class="box use"><span class="box-title">Mẹo nhất quán</span>Tạo một <strong>Gem "Trợ lý báo cáo của nhóm"</strong> (ch9) chứa style guide, thuật ngữ chuẩn và mẫu cấu trúc báo cáo — để mọi report của team đồng nhất giọng văn &amp; định dạng.</div>
+      </section>
+
+      <!-- ===== CH18 ===== -->
+      <section class="chapter" id="ch18">
+        <h2 class="ch-title"><span class="num">CH 18</span> Google AI Studio cho người không code</h2>
+        <p class="ch-sub">Phòng thí nghiệm để kiểm soát chi tiết cách model trả lời — vẫn không cần lập trình.</p>
+
+        <p><strong>Google AI Studio</strong> (aistudio.google.com) là giao diện web <strong>miễn phí</strong> để "tinh chỉnh" cách model trả lời — không cần code, chỉ cần hiểu vài núm chỉnh. Hợp khi app chat chưa đủ kiểm soát, nhất là khi bạn cần <strong>kết quả đều khuôn lặp lại</strong> (vd: trích cùng một bộ thông tin từ hàng chục bài báo).</p>
+
+        <h3 class="sec">Bắt đầu trong 1 phút</h3>
+        <ol>
+          <li>Vào <a class="inline" href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> → đăng nhập tài khoản Google (giao diện <strong>miễn phí</strong>, không cần thẻ).</li>
+          <li>Chọn <strong>Create Prompt</strong> (hoặc "Chat") → bạn có ô nhập ở giữa, bảng <strong>Run settings</strong> bên phải.</li>
+          <li>Gõ yêu cầu → bấm <strong>Run</strong> (hoặc Ctrl/⌘+Enter). Xong!</li>
+        </ol>
+
+        <h3 class="sec">Bản đồ màn hình</h3>
+        <table>
+          <thead><tr><th>Khu vực</th><th>Để làm gì</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Model</strong> (góc trên phải)</td><td>Chọn model: Gemini 2.5/3 Pro (giỏi suy luận) hay Flash (nhanh)</td></tr>
+            <tr><td><strong>System instructions</strong> (ô trên cùng)</td><td>"Luật chơi" cố định áp cho mọi câu trả lời trong phiên — như một Gem chi tiết</td></tr>
+            <tr><td><strong>Khung prompt</strong> (giữa)</td><td>Nơi gõ yêu cầu &amp; đính kèm file (📎). Đếm token hiển thị ở dưới</td></tr>
+            <tr><td><strong>Run settings</strong> (phải)</td><td>Temperature, độ dài đầu ra, <strong>Structured output</strong>, các công cụ (Google Search grounding, code execution), bộ lọc an toàn</td></tr>
+            <tr><td><strong>Run</strong></td><td>Chạy thử. <strong>Save</strong> lưu prompt vào Drive để dùng lại / chia sẻ team</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">3 núm chỉnh quan trọng nhất</h3>
+        <table>
+          <thead><tr><th>Núm</th><th>Ý nghĩa &amp; nên đặt</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Temperature</strong> (0–2)</td><td>Độ "sáng tạo". <strong>Phân tích/trích xuất dữ liệu → để 0–0.3</strong> (ổn định, bám sát). Viết sáng tạo → cao hơn.</td></tr>
+            <tr><td><strong>Structured output</strong></td><td>Bật để model <strong>luôn trả về JSON</strong> theo khuôn bạn định nghĩa — tiện đổ thẳng vào Sheets. Đây là "vũ khí" để xử lý hàng loạt.</td></tr>
+            <tr><td><strong>Grounding with Google Search</strong></td><td>Bật để model tra cứu web &amp; bớt bịa cho câu hỏi cần dữ kiện thực tế.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Ví dụ thực chiến: trích thông tin từ nhiều bài báo thành bảng</h3>
+        <p>Tình huống: bạn có 30 bài báo (PDF), muốn lập bảng so sánh với cùng các cột. Thay vì làm thủ công, dùng AI Studio để mỗi bài cho ra một dòng JSON đều khuôn.</p>
+        <ol>
+          <li><strong>Đặt System instructions</strong> (dán prompt bên dưới) — quy định vai trò &amp; quy tắc.</li>
+          <li>Đặt <strong>Temperature = 0</strong> để kết quả ổn định.</li>
+          <li>Bật <strong>Structured output</strong> → dán cấu trúc JSON mong muốn (prompt thứ 2).</li>
+          <li>📎 Đính kèm bài báo thứ nhất → <strong>Run</strong> → copy JSON.</li>
+          <li>Lặp với từng bài (thay file, Run). Dán toàn bộ JSON vào Gemini/Sheets và yêu cầu "gộp các dòng JSON này thành một bảng" → có ngay bảng so sánh.</li>
+        </ol>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">SYSTEM</span><span class="plabel">System instructions cho việc trích xuất</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Bạn là trợ lý trích xuất dữ liệu từ bài báo khoa học. Với mỗi tài liệu được
+cung cấp, trích đúng các trường yêu cầu. Quy tắc:
+- Chỉ dùng thông tin CÓ trong tài liệu, KHÔNG suy đoán/bịa.
+- Nếu không tìm thấy một trường, ghi giá trị "không rõ".
+- Trả lời bằng tiếng Việt, ngắn gọn, đúng định dạng JSON đã chỉ định.</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">CẤU TRÚC JSON</span><span class="plabel">Khuôn đầu ra (dán vào Structured output / hoặc mô tả trong prompt)</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Trả về JSON với đúng các trường sau:
+{
+  "tac_gia_nam": "Tác giả chính &amp; năm",
+  "muc_tieu": "Câu hỏi/mục tiêu nghiên cứu",
+  "mau": "Cỡ mẫu &amp; bối cảnh",
+  "phuong_phap": "Thiết kế &amp; phương pháp",
+  "ket_qua_chinh": "Kết quả chính kèm số liệu",
+  "han_che": "Hạn chế của nghiên cứu"
+}</pre></div>
+
+        <div class="box use"><span class="box-title">Khi nào dùng AI Studio thay vì app chat?</span>
+          <ul style="margin-bottom:0">
+            <li>Cần <strong>kết quả đều khuôn lặp lại</strong> (trích cùng bộ trường từ nhiều tài liệu) → bật Structured output.</li>
+            <li>Cần <strong>độ ổn định cao</strong> → đặt temperature thấp (app chat không cho chỉnh núm này).</li>
+            <li>Cần dán <strong>tài liệu cực dài</strong> hoặc <strong>so sánh nhiều model</strong> cho cùng một prompt.</li>
+            <li>Hỏi đáp thường ngày, tiện lợi → vẫn nên dùng <strong>Gemini app</strong>.</li>
+          </ul>
+        </div>
+        <div class="box danger"><span class="box-title">⚠️ Dữ liệu nghiên cứu nhạy cảm — đọc kỹ</span>Trên <strong>free tier</strong> của AI Studio/Gemini API, Google <strong>có thể dùng prompt &amp; kết quả của bạn để cải thiện model</strong>. Vì vậy <strong>KHÔNG dán dữ liệu nhạy cảm/chưa ẩn danh</strong> (PII, dữ liệu bệnh nhân, dữ liệu mật) vào AI Studio free. Với dữ liệu nghiên cứu thật: ẩn danh trước, hoặc dùng môi trường trả phí/doanh nghiệp (Google Cloud <strong>Vertex AI</strong> / cấu hình tổ chức) nơi dữ liệu không bị dùng để huấn luyện. Nếu được cấp <strong>API key</strong>, giữ bí mật — không chia sẻ/đăng công khai.</div>
+      </section>
+
+      <!-- ===== CH19 ===== -->
+      <section class="chapter" id="ch19">
+        <h2 class="ch-title"><span class="num">CH 19</span> Kiểm chứng, đạo đức &amp; bảo mật</h2>
+        <p class="ch-sub">Chương quan trọng nhất về trách nhiệm: dùng AI đúng cách trong nghiên cứu.</p>
+
+        <h3 class="sec">Ảo giác (hallucination) — AI tự tin nói sai</h3>
+        <p>Mô hình ngôn ngữ <em>dự đoán văn bản hợp lý</em>, không "biết sự thật". Nó có thể bịa số liệu, <strong>bịa tên bài báo/DOI</strong>, hoặc tóm tắt lệch. Càng chuyên sâu/ngách, rủi ro càng cao.</p>
+        <div class="checklist">
+          <h4>✔️ Thói quen kiểm chứng</h4>
+          <label><input type="checkbox"><span>Mọi <strong>số liệu</strong> đưa vào báo cáo → đối chiếu nguồn gốc/công cụ chính xác.</span></label>
+          <label><input type="checkbox"><span>Mọi <strong>trích dẫn/tài liệu tham khảo</strong> → tự kiểm tra có thật &amp; đúng nội dung.</span></label>
+          <label><input type="checkbox"><span>Ưu tiên <strong>NotebookLM</strong> (có trích dẫn về nguồn) cho khẳng định quan trọng.</span></label>
+          <label><input type="checkbox"><span>Hỏi lại "nguồn nào?", "độ chắc chắn?" và yêu cầu nói rõ khi không chắc.</span></label>
+          <label><input type="checkbox"><span>Với kết luận thống kê/khoa học → có người chuyên môn rà soát.</span></label>
+        </div>
+
+        <h3 class="sec">Bảo mật &amp; quyền riêng tư dữ liệu</h3>
+        <ul>
+          <li><strong>Ẩn danh hóa</strong> trước khi đưa vào AI: bỏ tên, mã định danh, thông tin nhận dạng (PII), dữ liệu bệnh nhân.</li>
+          <li>Dùng <strong>tài khoản Workspace tổ chức</strong> (không dùng dữ liệu để huấn luyện) cho dữ liệu nghiên cứu.</li>
+          <li>Tuân thủ <strong>quy định nội bộ &amp; pháp luật</strong> (đồng thuận tham gia, IRB/hội đồng đạo đức, bảo vệ dữ liệu).</li>
+          <li>Với dữ liệu rất nhạy cảm: cân nhắc chỉ dán <em>cấu trúc/metadata</em>, không dán dữ liệu thô.</li>
+        </ul>
+
+        <h3 class="sec">Liêm chính học thuật &amp; thiên kiến</h3>
+        <ul>
+          <li>Nhiều tạp chí/đơn vị yêu cầu <strong>khai báo việc dùng AI</strong> — kiểm tra &amp; tuân thủ.</li>
+          <li>AI hỗ trợ <em>quy trình</em> (tìm, tóm tắt, soạn nháp, sửa văn) — không thay tư duy &amp; trách nhiệm của bạn.</li>
+          <li>Cảnh giác <strong>thiên kiến</strong>: model phản ánh dữ liệu huấn luyện, có thể thiếu sót/định kiến. Đa dạng nguồn &amp; kiểm tra chéo.</li>
+        </ul>
+
+        <div class="box danger"><span class="box-title">Nguyên tắc vàng</span><strong>Bạn là tác giả &amp; người chịu trách nhiệm.</strong> Gemini là trợ lý mạnh giúp bạn nhanh hơn và làm được nhiều hơn — nhưng mọi con số, trích dẫn và kết luận trong sản phẩm cuối <strong>phải được bạn kiểm chứng và đứng tên</strong>.</div>
+
+        <h3 class="sec">Quiz cấp độ L3</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L3</div>
+          <div class="q" data-answer="b">
+            <p>1. "Citation ảo" nghĩa là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q1" value="a"> Trích dẫn viết bằng mực vô hình</label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q1" value="b"> AI bịa ra tên bài báo/DOI không tồn tại</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q1" value="c"> Trích dẫn quá cũ</label>
+            <div class="explain">AI có thể tạo trích dẫn nghe rất thật nhưng không tồn tại — phải tự kiểm tra mọi tài liệu tham khảo.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>2. Khi cần kết quả ổn định, đều khuôn để đổ vào Sheets, trong AI Studio nên?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q2" value="a"> Để temperature thấp + bật structured output (JSON)</label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q2" value="b"> Để temperature cao nhất</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q2" value="c"> Tắt system instructions</label>
+            <div class="explain">Temperature thấp = ổn định; structured output ép định dạng đều để dễ xử lý tiếp.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>3. Trước khi đưa dữ liệu nghiên cứu nhạy cảm vào AI, việc cần làm là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q3" value="a"> Không cần làm gì</label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q3" value="b"> Phóng to dữ liệu</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q3" value="c"> Ẩn danh hóa (bỏ PII) &amp; dùng tài khoản tổ chức, tuân thủ quy định</label>
+            <div class="explain">Bảo vệ người tham gia &amp; tuân thủ quy định là bắt buộc; ẩn danh trước khi đưa vào công cụ AI.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== THƯ VIỆN PROMPT ===================== -->
+      <section class="chapter" id="thu-vien-prompt">
+        <h2 class="ch-title"><span class="num">📦</span> Thư viện Prompt</h2>
+        <p class="ch-sub">Bộ prompt sẵn dùng cho công việc nghiên cứu &amp; dữ liệu. Bấm <strong>⧉ Copy</strong>, thay phần <span style="color:var(--accent-2)">[trong ngoặc]</span>, dán vào Gemini.</p>
+
+        <h3 class="sec">🔬 Nghiên cứu &amp; tài liệu</h3>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Phản biện một lập luận</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Đóng vai một reviewer khó tính. Đọc lập luận sau và chỉ ra: điểm yếu logic,
+giả định chưa chứng minh, bằng chứng còn thiếu, và cách phản biện có thể gặp.
+Gợi ý cách củng cố. [dán lập luận/đoạn văn]</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Giải thích khái niệm khó theo 3 cấp độ</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Giải thích khái niệm "[khái niệm]" theo 3 cấp độ: (1) cho người mới hoàn toàn,
+(2) cho sinh viên ngành, (3) chính xác về mặt học thuật. Mỗi cấp 3-4 câu,
+kèm 1 ví dụ minh họa.</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Tạo bộ câu hỏi phỏng vấn/khảo sát</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Tôi nghiên cứu về "[chủ đề]" với đối tượng "[đối tượng]". Soạn 10 câu hỏi
+[phỏng vấn sâu / bảng hỏi] chất lượng: tránh câu dẫn dắt, rõ ràng, đo đúng
+khái niệm. Nhóm câu theo chủ đề và ghi mục đích mỗi câu.</pre></div>
+
+        <h3 class="sec">📊 Dữ liệu &amp; Excel/Sheets</h3>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Đề xuất cách trực quan hóa</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Tôi cần trình bày [mô tả dữ liệu/phát hiện]. Đề xuất 3 loại biểu đồ phù hợp
+nhất, giải thích ưu/nhược mỗi loại, và loại nào nên tránh cho dữ liệu này.</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">CÔNG THỨC</span><span class="plabel">Nhờ viết công thức Sheets/Excel</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Trong Google Sheets, tôi cần công thức để [mô tả mục tiêu, vd: đếm số khách
+hàng ở khu vực "Miền Bắc" có điểm hài lòng >= 4]. Dữ liệu: cột A=khu vực,
+cột B=điểm. Cho công thức + giải thích từng phần.</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Phát hiện vấn đề chất lượng dữ liệu</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Kiểm tra bộ dữ liệu đính kèm về các vấn đề chất lượng: giá trị thiếu, trùng lặp,
+sai định dạng, ngoại lai, không nhất quán (vd cách viết khác nhau). Liệt kê
+từng vấn đề kèm số lượng &amp; cột bị ảnh hưởng, và gợi ý cách xử lý.</pre></div>
+
+        <h3 class="sec">📈 Thống kê &amp; SPSS</h3>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Kiểm tra giả định trước khi phân tích</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Tôi định dùng [tên phép phân tích]. Liệt kê các giả định cần thỏa, cách kiểm tra
+từng giả định trong SPSS (kèm tên lệnh/menu), và phương án thay thế nếu vi phạm.</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Viết phần "Kết quả" từ số liệu</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Dưới đây là kết quả thống kê của tôi: [dán số liệu/output]. Viết đoạn "Kết quả"
+theo chuẩn báo cáo khoa học (nêu test, thống kê, p, effect size, kết luận),
+khách quan, không diễn giải quá mức. Tiếng Việt.</pre></div>
+
+        <h3 class="sec">📝 Báo cáo, Email &amp; Workspace</h3>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Rút gọn theo độ dài mục tiêu</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Rút gọn đoạn sau còn [số] từ, giữ mọi ý &amp; số liệu quan trọng, văn phong
+chuyên nghiệp. [dán đoạn văn]</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Chuyển báo cáo dài thành email cập nhật</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Từ báo cáo đính kèm, viết email cập nhật ngắn (dưới 200 từ) cho lãnh đạo:
+3 điểm chính, 1 rủi ro, 1 đề xuất. Lịch sự, đi thẳng vấn đề.</pre></div>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">PROMPT</span><span class="plabel">Chuẩn hóa thuật ngữ toàn tài liệu</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Rà soát tài liệu và chuẩn hóa thuật ngữ cho nhất quán (vd thống nhất "khách hàng"
+thay vì lẫn lộn "khách"/"người dùng"). Liệt kê các thay đổi đã đề xuất dạng bảng
+"Cũ → Mới → Số lần".</pre></div>
+
+        <div class="box use"><span class="box-title">Dùng kèm Prompt Builder</span>Cần một prompt "may đo" cho tình huống riêng? Mở <strong>✦ Prompt Builder</strong> (góc dưới phải) — điền vai trò, bối cảnh, nhiệm vụ, định dạng → nhận prompt chuẩn để copy.</div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards ôn tập</h2>
+        <p class="ch-sub">Bấm thẻ để lật. Lọc theo cấp độ.</p>
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'0')">L0</button>
+          <button class="fc-filter" onclick="filterFC(this,'1')">L1</button>
+          <button class="fc-filter" onclick="filterFC(this,'2')">L2</button>
+          <button class="fc-filter" onclick="filterFC(this,'3')">L3</button>
+          <span id="fcCount" style="margin-left:auto;color:var(--gray);font-size:12.5px;align-self:center">15 thẻ</span>
+        </div>
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Khung viết prompt V-B-N-Đ là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><strong>V</strong>ai trò + <strong>B</strong>ối cảnh + <strong>N</strong>hiệm vụ + <strong>Đ</strong>ịnh dạng (+ ví dụ). Càng rõ → kết quả càng đúng ý.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Gemini Pro là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">Tầng model mạnh nhất (Gemini 2.5/3 Pro) truy cập qua gói <strong>Google AI Pro/Ultra</strong> — không phải app riêng.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Dữ liệu nhạy cảm: tài khoản nào an toàn hơn?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">Tài khoản <strong>Workspace tổ chức</strong> — không dùng dữ liệu để huấn luyện. Luôn ẩn danh PII trước.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Đính kèm cho phép Gemini đọc gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">PDF, Word, ảnh/ảnh màn hình, Excel/CSV, file Drive. "Nhìn" được cả bảng &amp; biểu đồ trong ảnh.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Hàm =AI() trong Sheets làm gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Đưa model vào từng ô để phân loại, tóm tắt, trích xuất, phân tích cảm xúc... trên dữ liệu hàng loạt.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Gem là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Trợ lý tùy chỉnh lưu sẵn vai trò + hướng dẫn + tài liệu nền → chuẩn hóa quy trình lặp cho cả team.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Workspace Intelligence?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Gemini đọc xuyên Drive/Gmail/Chat/Lịch để trả lời, thay vì bạn tự tìm &amp; dán từng file.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Việc bắt buộc sau khi AI soạn nội dung?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Đọc lại, kiểm chứng số liệu &amp; chỉnh sửa — bạn chịu trách nhiệm cuối cùng.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">NotebookLM khác chat thường ở đâu?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">"Đóng khung" trong <strong>nguồn bạn cung cấp</strong>, trả lời <strong>có trích dẫn</strong> → ít bịa, dễ kiểm chứng.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Audio Overview của NotebookLM?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Biến tài liệu thành "podcast" 2 người dẫn AI trò chuyện — nghe để nắm nhanh. Có cả Video Overview.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">NotebookLM vs Deep Research?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">NotebookLM: khai thác <strong>nguồn bạn đã có</strong> (tin cậy nhất). Deep Research: <strong>tự khảo sát web</strong> chủ đề mới.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">"Hallucination" là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">AI tự tin nói sai/bịa (kể cả tên bài báo, DOI). Luôn kiểm chứng số liệu &amp; trích dẫn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Khi viết SQL: nên dán gì cho Gemini?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Dán <strong>lược đồ (schema)</strong> — tên bảng &amp; cột — không cần dán dữ liệu thật. Query sẽ chính xác hơn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Temperature trong AI Studio?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Độ "sáng tạo". Phân tích dữ liệu → để <strong>thấp</strong> (ổn định, bám sát). Sáng tác → cao.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Nguyên tắc vàng khi dùng AI trong nghiên cứu?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Bạn là <strong>tác giả &amp; người chịu trách nhiệm</strong>. AI hỗ trợ quy trình; mọi số liệu/kết luận phải do bạn kiểm chứng.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra cứu nhanh: chọn công cụ, khung prompt, mẫu câu hay dùng.</p>
+
+        <h3 class="sec">Chọn công cụ nào?</h3>
+        <table>
+          <thead><tr><th>Bạn muốn...</th><th>Dùng</th></tr></thead>
+          <tbody>
+            <tr><td>Câu trả lời tin cậy từ <strong>tài liệu của bạn</strong>, có trích dẫn</td><td><strong>NotebookLM</strong></td></tr>
+            <tr><td>Khảo sát <strong>chủ đề mới trên web</strong>, ra báo cáo</td><td><strong>Deep Research</strong> (Gemini app)</td></tr>
+            <tr><td>Làm việc trong <strong>Excel/Sheets</strong> (phân tích, =AI())</td><td><strong>Gemini in Sheets</strong></td></tr>
+            <tr><td>Soạn/tóm tắt <strong>email, tài liệu</strong></td><td><strong>Gemini in Gmail/Docs</strong></td></tr>
+            <tr><td>Quy trình lặp lại, <strong>chuẩn hóa team</strong></td><td><strong>Gems</strong></td></tr>
+            <tr><td>Kết quả <strong>đều khuôn</strong>, ngữ cảnh siêu dài, kiểm soát chi tiết</td><td><strong>AI Studio</strong></td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Khung prompt (dán &amp; điền)</h3>
+        <div class="prompt-card"><div class="prompt-head"><span class="ptag">KHUNG</span><span class="plabel">Mẫu prompt vạn năng</span><button class="copy" onclick="copyPrompt(this)">⧉ Copy</button></div>
+        <pre class="prompt-body">Bạn là [vai trò].
+BỐI CẢNH: [tình huống + dữ liệu].
+NHIỆM VỤ: [việc cần làm, cụ thể].
+YÊU CẦU:
+- Định dạng: [bảng / gạch đầu dòng / JSON...].
+- Giọng văn: [chuyên nghiệp / dễ hiểu...].
+- [ràng buộc khác: tiếng Việt, độ dài, trích nguồn...].
+Nếu thiếu thông tin, hãy hỏi tôi trước khi trả lời.</pre></div>
+
+        <h3 class="sec">Câu lệnh chỉnh sửa nhanh</h3>
+        <table>
+          <thead><tr><th>Muốn</th><th>Nói với Gemini</th></tr></thead>
+          <tbody>
+            <tr><td>Ngắn hơn</td><td>"Rút còn [N] từ, giữ ý chính."</td></tr>
+            <tr><td>Trang trọng hơn</td><td>"Viết lại trang trọng/học thuật hơn."</td></tr>
+            <tr><td>Dễ hiểu hơn</td><td>"Giải thích cho người không chuyên."</td></tr>
+            <tr><td>Đổi định dạng</td><td>"Chuyển thành bảng / gạch đầu dòng."</td></tr>
+            <tr><td>Tập trung lại</td><td>"Chỉ tập trung vào phần [X]."</td></tr>
+            <tr><td>Kiểm tra độ tin</td><td>"Nguồn nào? Mức độ chắc chắn? Chỗ nào bạn không chắc?"</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box use"><span class="box-title">Quy tắc 3 chữ V</span><strong>Vai trò</strong> (cho AI biết đóng vai ai) · <strong>Văn cảnh</strong> (cung cấp bối cảnh &amp; dữ liệu) · <strong>Verify</strong> (luôn kiểm chứng kết quả). Nhớ ba chữ V là dùng AI hiệu quả &amp; an toàn.</div>
+
+        <div class="box tip"><span class="box-title">Hết khóa học! 🎉</span>Bạn đã đi qua 19 chương từ làm quen đến quy trình nghiên cứu &amp; báo cáo hoàn chỉnh với Gemini. Cách học tốt nhất là <strong>thực hành ngay trên công việc thật</strong>: chọn một việc bạn hay làm, áp dụng một prompt trong thư viện, rồi tinh chỉnh. Dùng <strong>✦ Prompt Builder</strong> bất cứ khi nào cần. Chúc bạn &amp; cả team làm việc hiệu quả hơn!</div>
+      </section>
+
+      <footer class="foot">
+        ✦ Khóa học Gemini Pro cho nghiên cứu &amp; dữ liệu — không cần code. Nội dung tham khảo tài liệu &amp; cập nhật chính thức của Google (Gemini, Workspace, NotebookLM, AI Studio) tới 2026. Google có thể thay đổi tính năng bất kỳ lúc nào.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== FLOATING PROMPT BUILDER ===== -->
+<button class="pb-fab" id="pbFab" onclick="togglePB(true)">✦ Prompt Builder</button>
+<div class="pb-panel" id="pbPanel">
+  <div class="pb-head" id="pbHead">
+    <span class="pb-title">✦ Prompt Builder — ghép prompt chuẩn</span>
+    <button onclick="togglePB(false)">✕</button>
+  </div>
+  <div class="pb-body">
+    <label class="fld">1. Vai trò của Gemini (role)</label>
+    <input id="pbRole" placeholder="vd: chuyên gia phân tích dữ liệu khảo sát xã hội học">
+    <label class="fld">2. Bối cảnh / dữ liệu đầu vào</label>
+    <textarea id="pbContext" placeholder="vd: Tôi có bộ dữ liệu khảo sát 500 người về mức độ hài lòng (thang Likert 1-5), kèm tuổi, giới tính, khu vực."></textarea>
+    <label class="fld">3. Nhiệm vụ cụ thể</label>
+    <textarea id="pbTask" placeholder="vd: Đề xuất các phép kiểm định thống kê phù hợp và giải thích vì sao."></textarea>
+    <div class="pb-row">
+      <div>
+        <label class="fld">4. Định dạng đầu ra</label>
+        <select id="pbFormat">
+          <option value="">— không yêu cầu —</option>
+          <option>gạch đầu dòng ngắn gọn</option>
+          <option>bảng so sánh</option>
+          <option>đoạn văn mạch lạc</option>
+          <option>các bước đánh số (step-by-step)</option>
+          <option>dàn ý báo cáo</option>
+          <option>email lịch sự</option>
+          <option>bảng JSON có cấu trúc</option>
+          <option>câu lệnh SQL kèm giải thích</option>
+          <option>cú pháp SPSS kèm giải thích</option>
+        </select>
+      </div>
+      <div>
+        <label class="fld">5. Giọng văn</label>
+        <select id="pbTone">
+          <option value="">— mặc định —</option>
+          <option>chuyên nghiệp, học thuật</option>
+          <option>đơn giản, dễ hiểu cho người không chuyên</option>
+          <option>ngắn gọn, đi thẳng vấn đề</option>
+          <option>thân thiện</option>
+          <option>trang trọng</option>
+        </select>
+      </div>
+    </div>
+    <label class="fld">6. Ràng buộc / lưu ý thêm (tùy chọn)</label>
+    <input id="pbConstraints" placeholder="vd: trả lời bằng tiếng Việt, trích nguồn nếu có, tối đa 300 từ">
+    <div class="pb-out" id="pbOut">Điền các ô trên rồi bấm <strong>Tạo prompt</strong>. Prompt chuẩn sẽ hiện ở đây để bạn copy &amp; dán vào Gemini.</div>
+  </div>
+  <div class="pb-actions">
+    <button class="gen" onclick="buildPrompt()">✦ Tạo prompt</button>
+    <button class="cpy" onclick="copyPB(this)">⧉ Copy</button>
+  </div>
+</div>
+
+<script>
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll() {
+  let cur = '';
+  document.querySelectorAll('section[id], div[id].level-divider, div[id].hero').forEach(s => { if (s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li => {
+    if (li.classList.contains('nav-section-title')) { li.style.display=''; return; }
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a => a.addEventListener('click', () => { if (window.innerWidth <= 980) document.querySelector('.sidebar').classList.remove('open'); }));
+
+/* ===== COPY PROMPT ===== */
+function copyPrompt(btn) {
+  const txt = btn.closest('.prompt-card').querySelector('.prompt-body').innerText;
+  navigator.clipboard.writeText(txt).then(()=>{ const o=btn.textContent; btn.textContent='✓ Đã copy'; setTimeout(()=>btn.textContent=o,1400); });
+}
+
+/* ===== QUIZ ===== */
+function checkQuiz(btn) {
+  btn.closest('.quiz').querySelectorAll('.q').forEach(q => {
+    const correct = q.dataset.answer;
+    const chosen = q.querySelector('input:checked');
+    q.querySelectorAll('.opt').forEach(o => { o.classList.remove('correct','wrong'); if (o.dataset.key === correct) o.classList.add('correct'); });
+    if (chosen && chosen.value !== correct) chosen.closest('.opt').classList.add('wrong');
+    const ex = q.querySelector('.explain'); if (ex) ex.classList.add('show');
+  });
+}
+
+/* ===== FLASHCARDS ===== */
+function flipCard(el) { el.classList.toggle('flipped'); }
+function filterFC(btn, cat) {
+  document.querySelectorAll('.fc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let shown = 0;
+  document.querySelectorAll('.flashcard').forEach(c => { const ok = (cat==='all'||c.dataset.cat===cat); c.style.display = ok?'':'none'; c.classList.remove('flipped'); if(ok) shown++; });
+  const cnt = document.getElementById('fcCount'); if (cnt) cnt.textContent = shown + ' thẻ';
+}
+
+/* ===== PROMPT BUILDER ===== */
+function togglePB(open){ document.getElementById('pbPanel').classList.toggle('open',open); document.getElementById('pbFab').classList.toggle('hidden',open); }
+function val(id){ return document.getElementById(id).value.trim(); }
+function buildPrompt(){
+  const role=val('pbRole'), ctx=val('pbContext'), task=val('pbTask');
+  const fmt=document.getElementById('pbFormat').value, tone=document.getElementById('pbTone').value, cons=val('pbConstraints');
+  let p='';
+  if(role) p += 'Bạn là ' + role + '.\n\n';
+  if(ctx)  p += 'BỐI CẢNH:\n' + ctx + '\n\n';
+  p += 'NHIỆM VỤ:\n' + (task || '[mô tả nhiệm vụ bạn cần]') + '\n\n';
+  const reqs=[];
+  if(fmt)  reqs.push('Trình bày kết quả dưới dạng ' + fmt + '.');
+  if(tone) reqs.push('Giọng văn: ' + tone + '.');
+  if(cons) reqs.push(cons);
+  if(reqs.length) p += 'YÊU CẦU:\n- ' + reqs.join('\n- ') + '\n\n';
+  p += 'Nếu thiếu thông tin để làm tốt nhiệm vụ, hãy đặt câu hỏi làm rõ cho tôi TRƯỚC khi trả lời.';
+  document.getElementById('pbOut').textContent = p;
+}
+function copyPB(btn){
+  const t=document.getElementById('pbOut').textContent;
+  navigator.clipboard.writeText(t).then(()=>{ const o=btn.textContent; btn.textContent='✓ Đã copy'; setTimeout(()=>btn.textContent=o,1400); });
+}
+/* kéo thả panel */
+(function(){ const panel=document.getElementById('pbPanel'), head=document.getElementById('pbHead'); let d=false,ox=0,oy=0;
+  head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup',()=>d=false);
+})();
+</script>
+</body>
+</html>

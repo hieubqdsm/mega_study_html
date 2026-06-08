@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Godot 2D Physics — Từ Căn Bản Đến Slinky &amp; Xuất Bản Mobile</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #478CBF;        /* godot blue */
+    --primary-glow: #6bb0e0;
+    --accent: #ff7043;         /* coil orange */
+    --accent-2: #ffca28;
+    --l0: #6cc644; --l1: #478CBF; --l2: #b07cff; --l3: #ff7043; --l4: #f6c945;
+    --ok: #2ea043; --warn: #d29922; --danger: #f85149; --info: #58a6ff;
+    --dark: #0d1117; --darker: #010409; --light: #c9d1d9; --light-strong: #f0f6fc; --gray: #8b949e;
+    --card: #161b22; --card-2: #1c2128; --border: #30363d; --terminal: #0a0e14;
+    --code-green: #7ee787; --code-yellow: #ffd43b; --code-blue: #79c0ff; --code-red: #ff7b72; --code-purple: #d2a8ff; --code-orange: #ffa657;
+  }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image: radial-gradient(circle at 16% 22%, rgba(71,140,191,0.10) 0%, transparent 45%), radial-gradient(circle at 84% 72%, rgba(255,112,67,0.06) 0%, transparent 45%); background-attachment: fixed; }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 340px; background: linear-gradient(180deg, var(--dark) 0%, #050810 100%); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(71,140,191,0.18); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .g-icon { font-size: 44px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(71,140,191,0.6)); }
+  .logo h1 { font-size: 19px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+  .logo p { font-size: 10px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(71,140,191,0.2); }
+  .nav-menu { list-style: none; padding: 0 14px; } .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #06121a; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--primary-glow); } .nav-l1 .badge { background: var(--l1); color:#fff;}
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-l4 { color: var(--l4); } .nav-l4 .badge { background: var(--l4); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(71,140,191,0.18); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  .main-content { margin-left: 340px; flex: 1; max-width: calc(100% - 340px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(1,4,9,0.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent); }
+  .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero { background: linear-gradient(135deg, rgba(71,140,191,0.2), rgba(255,112,67,0.10)); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero::after { content:"🌀"; position:absolute; right:10px; bottom:-22px; font-size:155px; opacity:.08; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 780px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 1.5px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(108,198,68,.14); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(71,140,191,.16); color: var(--primary-glow); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(176,124,255,.14); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(255,112,67,.14); color: var(--l3); border:1px solid var(--l3);}
+  .tag-l4 { background: rgba(246,201,69,.14); color: var(--l4); border:1px solid var(--l4);}
+
+  h2.ch-title { font-size: 25px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; } ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .formula { background: var(--card); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:12px 16px; margin:14px 0; font-family:'JetBrains Mono',monospace; color:var(--accent-2); font-size:15px; }
+
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(88,166,255,.07); border-color: rgba(88,166,255,.4); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(46,160,67,.07); border-color: rgba(46,160,67,.4); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(210,153,34,.08); border-color: rgba(210,153,34,.45); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,81,73,.07); border-color: rgba(248,81,73,.4); } .box.danger::before{content:"🚫";}
+  .box.slinky { background: rgba(255,112,67,.08); border-color: rgba(255,112,67,.4); } .box.slinky::before{content:"🌀";}
+  .box.ver { background: rgba(71,140,191,.08); border-color: rgba(71,140,191,.4); } .box.ver::before{content:"🔀";}
+
+  .code-block { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .code-head .fname { font-size: 12px; color: var(--gray); display:flex; align-items:center; gap:8px; }
+  .code-head .dots { display:flex; gap:6px; } .code-head .dots i { width:11px;height:11px;border-radius:50%; display:inline-block; }
+  .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
+  .code-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: var(--light); white-space: pre; tab-size: 4; }
+  pre.code .c { color: var(--gray); font-style: italic; } pre.code .s { color: var(--code-green); } pre.code .k { color: var(--code-red); }
+  pre.code .n { color: var(--code-blue); } pre.code .f { color: var(--code-purple); } pre.code .d { color: var(--code-yellow); } pre.code .t { color: var(--code-orange); }
+
+  .checklist { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+  .checklist h4 { color: var(--primary-glow); margin-bottom: 10px; font-size: 15px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 14px; }
+  .checklist input { margin-top: 5px; accent-color: var(--primary); }
+  .checklist input:checked + span { color: var(--gray); text-decoration: line-through; }
+
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; }
+  details summary::-webkit-details-marker { display:none; } details summary::before { content: "▸ "; } details[open] summary::before { content: "▾ "; }
+  details.answer summary { background: rgba(255,112,67,.1); color: var(--accent); } details .body { padding: 8px 14px 12px; }
+
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; }
+  .quiz .q { margin-bottom: 18px; } .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 14px; }
+  .quiz .opt:hover { border-color: var(--primary); } .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(46,160,67,.14); border-color: var(--ok); } .quiz .opt.wrong { background: rgba(248,81,73,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color:#fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 180px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); } .fc-back { background: linear-gradient(135deg, rgba(71,140,191,.2), rgba(255,112,67,.12)); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(108,198,68,.18); color: var(--l0); } .fc-tag.t1 { background: rgba(71,140,191,.2); color: var(--primary-glow); }
+  .fc-tag.t2 { background: rgba(176,124,255,.18); color: var(--l2); } .fc-tag.t3 { background: rgba(255,112,67,.18); color: var(--l3); } .fc-tag.t4 { background: rgba(246,201,69,.18); color: var(--l4); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; } .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; } .fc-a code { background: rgba(0,0,0,.25); color: var(--code-purple); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  /* ---------- SLINKY LAB ---------- */
+  .lab-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--primary),var(--accent)); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s; }
+  .lab-fab:hover { transform: translateY(-2px); } .lab-fab.hidden { display: none; }
+  .lab-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: 380px; max-width: calc(100vw - 24px); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden; }
+  .lab-panel.open { display: flex; }
+  .lab-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: linear-gradient(135deg, rgba(71,140,191,.3), rgba(255,112,67,.18)); border-bottom: 1px solid var(--border); cursor: move; }
+  .lab-head .lab-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
+  .lab-head button { background: rgba(255,255,255,.08); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
+  #slinkyCanvas { display:block; width:100%; height:300px; background: radial-gradient(circle at 50% 30%, #10202e, #0a0e14); touch-action:none; cursor: grab; }
+  #slinkyCanvas:active { cursor: grabbing; }
+  .lab-controls { padding: 10px 14px 14px; }
+  .lab-controls .row { display:flex; align-items:center; gap:8px; margin-bottom:7px; font-size:12px; color: var(--gray); }
+  .lab-controls .row label { width: 92px; flex-shrink:0; color: var(--primary-glow); font-weight:600; }
+  .lab-controls input[type=range] { flex:1; accent-color: var(--accent); }
+  .lab-controls .val { width: 34px; text-align:right; color: var(--light); font-family:'JetBrains Mono',monospace; }
+  .lab-btns { display:flex; gap:8px; margin-top:8px; }
+  .lab-btns button { flex:1; border:none; border-radius:7px; padding:8px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .lab-btns .shake { background: var(--accent); color:#1a0e08; } .lab-btns .reset { background: var(--card-2); color:var(--light); border:1px solid var(--border)!important; }
+  .lab-hint { font-size: 11px; color: var(--gray); padding: 0 14px 12px; }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color:#fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; } .topbar { padding-left: 66px; }
+    .lab-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="g-icon">🤖</div>
+      <h1>GODOT 2D PHYSICS</h1>
+      <p>CĂN BẢN → SLINKY → MOBILE</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; Lộ trình</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">L0</span> NHẬP MÔN GODOT</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> Godot là gì &amp; cài đặt</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> Scene, Node &amp; cây cảnh</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> GDScript căn bản</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> Game 2D đầu tiên</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">L1</span> VẬT LÝ 2D NỀN TẢNG</li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> Tổng quan Physics 2D</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> RigidBody2D</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> CharacterBody2D</a></li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> Area2D &amp; va chạm</a></li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> Input chuột &amp; cảm ứng</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">L2</span> LÒ XO &amp; SLINKY 🌀</li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> Lý thuyết lò xo</a></li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> Joints trong Godot</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> Slinky bằng RigidBody+Joint</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> Slinky bằng Verlet</a></li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> Vẽ &amp; tạo hình coil</a></li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> Tương tác &amp; wave</a></li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> Tinh chỉnh cảm giác</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L3</span> NÂNG CAO 2D</li>
+      <li><a href="#ch17"><span class="chapter-num">17</span> Soft body &amp; rope</a></li>
+      <li><a href="#ch18"><span class="chapter-num">18</span> Tối ưu hiệu năng</a></li>
+      <li><a href="#ch19"><span class="chapter-num">19</span> Polish &amp; juice</a></li>
+      <li><a href="#ch20"><span class="chapter-num">20</span> Kiến trúc dự án</a></li>
+
+      <li class="nav-section-title nav-l4"><span class="badge">L4</span> XUẤT BẢN MOBILE</li>
+      <li><a href="#ch21"><span class="chapter-num">21</span> Chuẩn bị mobile</a></li>
+      <li><a href="#ch22"><span class="chapter-num">22</span> Export Android</a></li>
+      <li><a href="#ch23"><span class="chapter-num">23</span> Export iOS</a></li>
+      <li><a href="#ch24"><span class="chapter-num">24</span> Tích hợp quảng cáo</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">🎮</span> CAPSTONE</li>
+      <li><a href="#capstone"><span class="chapter-num">🎮</span> Mini-game: Slinky Goal</a></li>
+
+      <li class="nav-section-title nav-l4"><span class="badge">📚</span> ÔN TẬP</li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🤖 <b>Godot 2D Physics</b> — căn bản đến Slinky &amp; xuất bản Android/iOS có quảng cáo</div>
+      <div class="pill">Godot 4.x · GDScript 2.0</div>
+    </div>
+
+    <div class="content-inner">
+      <div class="hero" id="gioi-thieu">
+        <h1>Godot <span class="grad">2D Physics</span><br>Từ Căn Bản Đến Slinky &amp; Mobile</h1>
+        <p>Học làm game 2D <strong>tương tác vật lý</strong> trong Godot 4 — từ scene/node, GDScript, đến RigidBody/Character/Area, joints, và đặc biệt <strong>mô phỏng lò xo Slinky</strong> (cả cách dùng engine joint lẫn Verlet tùy chỉnh). Kết thúc bằng <strong>xuất bản Android &amp; iOS</strong> và <strong>tích hợp quảng cáo</strong> (AdMob/Unity Ads/AppLovin). Có <strong>Slinky Lab</strong> mô phỏng sống ngay trong trang để bạn cảm nhận vật lý trước khi code.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>24</b> chương · 5 cấp độ</div>
+          <div class="meta-pill"><b>🌀 Slinky Lab</b> sống</div>
+          <div class="meta-pill"><b>Android + iOS</b> export</div>
+          <div class="meta-pill"><b>Ads</b> banner/interstitial/rewarded</div>
+        </div>
+      </div>
+
+      <div class="box slinky"><span class="box-title">🌀 Slinky Lab — thử ngay</span>Bấm nút <strong>🌀 Slinky Lab</strong> (góc dưới phải) để mở mô phỏng lò xo Slinky: <strong>kéo thả</strong> bằng chuột/cảm ứng, chỉnh <strong>độ cứng (stiffness), giảm chấn (damping), trọng lực, số đốt, số vòng coil</strong>, bấm <strong>Lắc</strong> để xem sóng lan truyền. Đây chính là mô hình <em>mass-spring + Verlet</em> bạn sẽ dựng lại trong Godot ở chương 13.</div>
+
+      <div class="box info"><span class="box-title">Yêu cầu &amp; phạm vi</span>Không cần kinh nghiệm Godot trước. Nên biết lập trình cơ bản (biến, hàm, vòng lặp). Tập trung <strong>2D + vật lý</strong>; dùng <strong>Godot 4.x</strong> (GDScript 2.0). Mỗi ô code có nút Copy. Godot không chạy trong trình duyệt nên bạn thực hành trong Godot Editor trên máy.</div>
+
+      <div class="box info"><span class="box-title">Lộ trình 5 cấp độ</span>
+        <strong style="color:var(--l0)">L0 Nhập môn</strong> (1–4) → <strong style="color:var(--primary-glow)">L1 Vật lý 2D</strong> (5–9) → <strong style="color:var(--l2)">L2 Lò xo &amp; Slinky 🌀</strong> (10–16, trọng tâm) → <strong style="color:var(--l3)">L3 Nâng cao</strong> (17–20) → <strong style="color:var(--l4)">L4 Xuất bản Mobile &amp; Ads</strong> (21–24).
+      </div>
+
+      <!-- ===================== LEVEL 0 ===================== -->
+      <div class="level-divider" id="lv0"><div class="line"></div><span class="tag tag-l0">L0 · Nhập môn Godot</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Godot là gì &amp; cài đặt</h2>
+        <p class="ch-sub">Engine mã nguồn mở, nhẹ, cực hợp cho game 2D vật lý.</p>
+
+        <p><strong>Godot</strong> là game engine mã nguồn mở (giấy phép MIT), làm được cả 2D &amp; 3D. Điểm mạnh cho người mới: <strong>nhẹ</strong> (một file thực thi ~vài chục MB, không cần cài đặt), ngôn ngữ <strong>GDScript</strong> giống Python (dễ học), và kiến trúc <strong>node</strong> trực quan. Engine có sẵn <strong>physics 2D</strong> và các node lò xo/khớp nối — rất hợp mục tiêu Slinky của bạn.</p>
+
+        <h3 class="sec">Cài đặt</h3>
+        <ol>
+          <li>Tải Godot 4.x từ <a class="inline" href="https://godotengine.org/download" target="_blank">godotengine.org/download</a> (bản <em>Standard</em> dùng GDScript là đủ).</li>
+          <li>Giải nén &amp; chạy — <strong>không cần cài đặt</strong>.</li>
+          <li>Project Manager → <strong>New Project</strong> → chọn renderer (Mobile/Compatibility hợp cho mobile) → Create.</li>
+        </ol>
+
+        <h3 class="sec">Làm quen giao diện</h3>
+        <table>
+          <thead><tr><th>Khu vực</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Scene</strong> (trái trên)</td><td>Cây node của cảnh hiện tại</td></tr>
+            <tr><td><strong>FileSystem</strong> (trái dưới)</td><td>Tài nguyên dự án (scene, script, ảnh...)</td></tr>
+            <tr><td><strong>Viewport</strong> (giữa)</td><td>Khung nhìn 2D/3D, chỗ dàn cảnh</td></tr>
+            <tr><td><strong>Inspector</strong> (phải)</td><td>Thuộc tính của node đang chọn</td></tr>
+            <tr><td><strong>Script editor</strong></td><td>Viết GDScript (chuyển bằng tab trên cùng)</td></tr>
+            <tr><td><strong>▶ (F5)</strong></td><td>Chạy game; <strong>F6</strong> chạy scene hiện tại</td></tr>
+          </tbody>
+        </table>
+        <div class="box ver"><span class="box-title">Godot 4 vs 3</span>Khóa dùng <strong>Godot 4.x</strong> (GDScript 2.0). Khác biệt lớn so với 3.x: <code class="ic">KinematicBody2D</code>→<code class="ic">CharacterBody2D</code>, <code class="ic">@export</code> thay <code class="ic">export</code>, <code class="ic">@onready</code>, kết nối signal bằng <code class="ic">.connect(callable)</code>, <code class="ic">Sprite</code>→<code class="ic">Sprite2D</code>. Code 3.x <strong>không</strong> chạy thẳng trên 4.x.</div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Scene, Node &amp; cây cảnh</h2>
+        <p class="ch-sub">Tư duy "mọi thứ là node" — nền tảng kiến trúc Godot.</p>
+
+        <p>Trong Godot, mọi thứ là <strong>Node</strong> (sprite, va chạm, âm thanh, camera, body vật lý...). Các node ghép thành <strong>cây</strong> tạo nên một <strong>Scene</strong>. Một scene có thể <strong>nhúng (instance)</strong> vào scene khác — đây là cách tái sử dụng (vd: scene "Đốt Slinky" nhúng nhiều lần thành cả lò xo).</p>
+
+        <h3 class="sec">Node 2D thường gặp</h3>
+        <table>
+          <thead><tr><th>Node</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">Node2D</code></td><td>Node gốc 2D (có vị trí/xoay/scale) — thường làm root</td></tr>
+            <tr><td><code class="ic">Sprite2D</code></td><td>Hiển thị ảnh/texture</td></tr>
+            <tr><td><code class="ic">Camera2D</code></td><td>Camera (theo nhân vật, zoom)</td></tr>
+            <tr><td><code class="ic">CollisionShape2D</code></td><td>Hình va chạm (con của body)</td></tr>
+            <tr><td><code class="ic">Line2D</code></td><td>Vẽ đường nhiều điểm (dùng vẽ Slinky!)</td></tr>
+            <tr><td><code class="ic">RigidBody2D / CharacterBody2D / Area2D</code></td><td>Các thân vật lý (L1)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Signals — giao tiếp giữa node</h3>
+        <p>Signal là cơ chế "phát tín hiệu" (observer pattern): một node phát, node khác lắng nghe — giúp các phần rời rạc mà vẫn liên lạc. Ví dụ nút bấm phát <code class="ic">pressed</code>, vùng va chạm phát <code class="ic">body_entered</code>.</p>
+        <div class="box info"><span class="box-title">Mẹo dàn cảnh</span>Tạo scene riêng cho thành phần lặp lại (player, viên đạn, đốt lò xo) rồi instance. Đổi scene gốc → mọi bản nhúng tự cập nhật. Đây là "prefab" của Godot.</div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> GDScript căn bản</h2>
+        <p class="ch-sub">Ngôn ngữ chính của Godot — giống Python, gắn vào node.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> player.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D          <span class="c"># script "kế thừa" loại node nó gắn vào</span>
+
+<span class="d">@export</span> <span class="k">var</span> speed: <span class="t">float</span> = <span class="n">200.0</span>     <span class="c"># hiện trong Inspector, chỉnh không cần sửa code</span>
+<span class="d">@onready</span> <span class="k">var</span> sprite: Sprite2D = $Sprite2D  <span class="c"># lấy node con khi scene sẵn sàng</span>
+
+<span class="k">var</span> health: <span class="t">int</span> = <span class="n">100</span>
+<span class="k">var</span> velocity := Vector2.ZERO       <span class="c"># := tự suy kiểu</span>
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:        <span class="c"># gọi 1 lần khi node vào cây</span>
+    print(<span class="s">"Sẵn sàng!"</span>)
+
+<span class="k">func</span> <span class="f">_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:   <span class="c"># gọi MỖI khung hình; delta = thời gian giữa 2 frame</span>
+    position += velocity * delta
+
+<span class="k">func</span> <span class="f">take_damage</span>(amount: <span class="t">int</span>) -> <span class="t">void</span>:
+    health -= amount
+    <span class="k">if</span> health &lt;= <span class="n">0</span>:
+        queue_free()              <span class="c"># xóa node an toàn</span></pre>
+        </div>
+
+        <h3 class="sec">Những thứ cần nhớ</h3>
+        <table>
+          <thead><tr><th>Cú pháp</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">extends X</code></td><td>Script là một X (Node2D, RigidBody2D...)</td></tr>
+            <tr><td><code class="ic">@export var</code></td><td>Biến chỉnh được trong Inspector</td></tr>
+            <tr><td><code class="ic">@onready var n = $Path</code></td><td>Tham chiếu node con (<code class="ic">$</code> = get_node)</td></tr>
+            <tr><td><code class="ic">_ready()</code></td><td>Khởi tạo (1 lần)</td></tr>
+            <tr><td><code class="ic">_process(delta)</code></td><td>Mỗi frame (logic, hiển thị)</td></tr>
+            <tr><td><code class="ic">_physics_process(delta)</code></td><td>Mỗi bước vật lý (cố định) — <strong>dùng cho physics!</strong></td></tr>
+            <tr><td><code class="ic">queue_free()</code></td><td>Xóa node</td></tr>
+          </tbody>
+        </table>
+        <div class="box danger"><span class="box-title">delta — đừng quên!</span>Luôn nhân chuyển động/lực với <code class="ic">delta</code> để game chạy <strong>nhất quán theo thời gian</strong>, không phụ thuộc tốc độ máy/FPS. Logic vật lý nên đặt trong <code class="ic">_physics_process</code> (timestep cố định) thay vì <code class="ic">_process</code>.</div>
+
+        <h3 class="sec">Kết nối signal bằng code</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">signals.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">func</span> <span class="f">_ready</span>():
+    $Button.pressed.connect(_on_button_pressed)   <span class="c"># Godot 4: signal.connect(callable)</span>
+
+<span class="k">func</span> <span class="f">_on_button_pressed</span>():
+    print(<span class="s">"Đã bấm!"</span>)</pre>
+        </div>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Game 2D đầu tiên</h2>
+        <p class="ch-sub">Di chuyển một sprite bằng phím/cảm ứng — nắm vòng lặp game.</p>
+
+        <h3 class="sec">Bước 1 — Input Map</h3>
+        <p>Project → Project Settings → <strong>Input Map</strong>: thêm action <code class="ic">move_left</code>, <code class="ic">move_right</code>, <code class="ic">move_up</code>, <code class="ic">move_down</code> và gán phím (mũi tên/WASD). Dùng action thay vì hard-code phím để dễ đổi &amp; hỗ trợ nhiều thiết bị.</p>
+
+        <h3 class="sec">Bước 2 — Scene &amp; script</h3>
+        <p>Tạo scene: <code class="ic">Node2D</code> (root) → thêm <code class="ic">Sprite2D</code> (gán một ảnh, vd icon.svg). Gắn script vào root:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">mover.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D
+
+<span class="d">@export</span> <span class="k">var</span> speed: <span class="t">float</span> = <span class="n">300.0</span>
+<span class="d">@onready</span> <span class="k">var</span> sprite: Sprite2D = $Sprite2D
+
+<span class="k">func</span> <span class="f">_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="c"># get_vector trả Vector2 đã chuẩn hóa từ 4 action (rất tiện)</span>
+    <span class="k">var</span> dir := Input.get_vector(<span class="s">"move_left"</span>, <span class="s">"move_right"</span>, <span class="s">"move_up"</span>, <span class="s">"move_down"</span>)
+    sprite.position += dir * speed * delta</pre>
+        </div>
+        <p>Nhấn <strong>F6</strong> để chạy scene. Sprite di chuyển theo phím. 🎉</p>
+
+        <div class="box tip"><span class="box-title">Input cho cảm ứng</span>Trên mobile, dùng nút ảo (TouchScreenButton) gán cùng action, hoặc đọc <code class="ic">InputEventScreenTouch</code>/<code class="ic">InputEventScreenDrag</code> (ch9). Nhờ Input Map, cùng một action chạy cho cả phím lẫn cảm ứng.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 4.1 <span class="lvl-dot">dễ</span></div>
+          <p>Thêm giới hạn để sprite không ra khỏi màn hình (dùng <code class="ic">clamp</code> với kích thước viewport <code class="ic">get_viewport_rect().size</code>).</p>
+          <details class="answer"><summary>Gợi ý</summary><div class="body">
+<pre class="code"><span class="k">var</span> sz := get_viewport_rect().size
+sprite.position.x = clamp(sprite.position.x, <span class="n">0</span>, sz.x)
+sprite.position.y = clamp(sprite.position.y, <span class="n">0</span>, sz.y)</pre>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 1 ===================== -->
+      <div class="level-divider" id="lv1"><div class="line"></div><span class="tag tag-l1">L1 · Vật lý 2D nền tảng</span><div class="line"></div></div>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Tổng quan Physics 2D</h2>
+        <p class="ch-sub">Các loại "thân vật lý" và cách va chạm được lọc.</p>
+
+        <p>Godot có engine vật lý 2D tích hợp. Bạn dựng vật lý bằng các <strong>physics body</strong> + <strong>CollisionShape2D</strong> (mỗi body cần ít nhất một hình va chạm).</p>
+        <table>
+          <thead><tr><th>Body</th><th>Bản chất</th><th>Dùng khi</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">StaticBody2D</code></td><td>Bất động</td><td>Tường, sàn, vật cố định</td></tr>
+            <tr><td><code class="ic">RigidBody2D</code></td><td>Engine mô phỏng đầy đủ (lực, trọng lực, va đập)</td><td>Vật rơi/lăn/bật, mảnh vỡ — <strong>và đốt Slinky cách 1</strong></td></tr>
+            <tr><td><code class="ic">CharacterBody2D</code></td><td>Bạn điều khiển vị trí, có hỗ trợ va chạm</td><td>Nhân vật, platformer</td></tr>
+            <tr><td><code class="ic">Area2D</code></td><td>Vùng phát hiện (không cản)</td><td>Cảm biến, vùng sát thương, nhặt đồ</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Collision Layers &amp; Masks</h3>
+        <p>Mỗi body có <strong>layer</strong> (nó "ở tầng nào") và <strong>mask</strong> (nó "quét va chạm với tầng nào"). Đây là cách kiểm soát <em>cái gì va với cái gì</em> — vd: đạn của người chơi chỉ trúng kẻ địch, không trúng người chơi.</p>
+        <div class="box info"><span class="box-title">Quy tắc nhớ</span>A phát hiện B khi <strong>mask của A</strong> bao gồm <strong>layer của B</strong>. Thường đặt tên layer (Project Settings → Layer Names → 2D Physics) để dễ quản lý.</div>
+        <div class="box danger"><span class="box-title">Vật lý chạy ở _physics_process</span>Mọi thao tác lực/vận tốc/di chuyển body phải đặt trong <code class="ic">_physics_process(delta)</code> (timestep cố định, mặc định 60Hz) — không phải <code class="ic">_process</code>. Đặt sai chỗ → giật, thiếu ổn định, va chạm lỗi.</div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> RigidBody2D</h2>
+        <p class="ch-sub">Vật thể được engine mô phỏng — nền cho cách dựng Slinky thứ nhất.</p>
+
+        <p><code class="ic">RigidBody2D</code> được engine tự lo: trọng lực, va đập, ma sát, nảy. Bạn <strong>không</strong> đặt <code class="ic">position</code> trực tiếp (sẽ "đánh nhau" với engine) — thay vào đó tác động bằng <strong>lực</strong> và <strong>xung lực (impulse)</strong>.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">ball.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> RigidBody2D
+
+<span class="k">func</span> <span class="f">_ready</span>():
+    mass = <span class="n">1.0</span>
+    gravity_scale = <span class="n">1.0</span>
+    <span class="c"># nảy &amp; ma sát đặt qua PhysicsMaterial trong Inspector (bounce, friction)</span>
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta):
+    <span class="k">if</span> Input.is_action_just_pressed(<span class="s">"jump"</span>):
+        apply_central_impulse(Vector2.UP * <span class="n">400</span>)   <span class="c"># cú đẩy tức thời (nhảy/bắn)</span>
+
+<span class="k">func</span> <span class="f">push_right</span>():
+    apply_central_force(Vector2.RIGHT * <span class="n">600</span>)        <span class="c"># lực liên tục mỗi bước</span></pre>
+        </div>
+
+        <table>
+          <thead><tr><th>API</th><th>Tác dụng</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">apply_central_impulse(v)</code></td><td>Xung lực tức thời tại tâm (nhảy, bắn, gõ)</td></tr>
+            <tr><td><code class="ic">apply_central_force(v)</code></td><td>Lực liên tục (gió, lực đẩy) — gọi mỗi physics frame</td></tr>
+            <tr><td><code class="ic">apply_impulse(v, pos)</code></td><td>Xung lực lệch tâm → tạo xoay</td></tr>
+            <tr><td><code class="ic">linear_velocity</code> / <code class="ic">angular_velocity</code></td><td>Đọc/đặt vận tốc (đặt trực tiếp khi cần)</td></tr>
+            <tr><td><code class="ic">freeze</code></td><td>Tạm "đóng băng" body</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">PhysicsMaterial</span>Đặt <strong>bounce</strong> (độ nảy 0–1) và <strong>friction</strong> qua resource <code class="ic">PhysicsMaterial</code> trên body (Inspector). Trọng lực toàn cục chỉnh ở Project Settings → Physics → 2D → Default Gravity.</div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> CharacterBody2D</h2>
+        <p class="ch-sub">Cho nhân vật bạn điều khiển trực tiếp — platformer/top-down.</p>
+
+        <p>Khác RigidBody (engine lo), <code class="ic">CharacterBody2D</code> để <strong>bạn tự tính vận tốc</strong> rồi gọi <code class="ic">move_and_slide()</code> — engine lo phần trượt dọc tường &amp; phát hiện va chạm.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">player.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> CharacterBody2D
+
+<span class="d">@export</span> <span class="k">var</span> speed: <span class="t">float</span> = <span class="n">300.0</span>
+<span class="d">@export</span> <span class="k">var</span> jump_force: <span class="t">float</span> = <span class="n">500.0</span>
+<span class="d">@export</span> <span class="k">var</span> gravity: <span class="t">float</span> = <span class="n">1200.0</span>
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="c"># trọng lực</span>
+    <span class="k">if</span> <span class="k">not</span> is_on_floor():
+        velocity.y += gravity * delta
+    <span class="c"># nhảy</span>
+    <span class="k">if</span> Input.is_action_just_pressed(<span class="s">"jump"</span>) <span class="k">and</span> is_on_floor():
+        velocity.y = -jump_force
+    <span class="c"># đi ngang</span>
+    <span class="k">var</span> dir := Input.get_axis(<span class="s">"move_left"</span>, <span class="s">"move_right"</span>)
+    velocity.x = dir * speed
+    move_and_slide()        <span class="c"># Godot 4: không truyền tham số; dùng thuộc tính velocity</span></pre>
+        </div>
+        <div class="box ver"><span class="box-title">Godot 4 vs 3</span>Godot 3: <code class="ic">KinematicBody2D</code> + <code class="ic">velocity = move_and_slide(velocity, Vector2.UP)</code>. Godot 4: <code class="ic">CharacterBody2D</code> có sẵn thuộc tính <code class="ic">velocity</code>, chỉ gọi <code class="ic">move_and_slide()</code>; dùng <code class="ic">is_on_floor()</code> để biết chạm đất.</div>
+      </section>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> Area2D &amp; phát hiện va chạm</h2>
+        <p class="ch-sub">Vùng cảm biến không cản — nhặt đồ, vùng sát thương, trigger.</p>
+
+        <p><code class="ic">Area2D</code> phát hiện khi body/area khác đi vào/ra mà <strong>không cản</strong> chuyển động. Dùng signal:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">coin.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Area2D
+
+<span class="k">signal</span> collected            <span class="c"># tự định nghĩa signal để báo ra ngoài</span>
+
+<span class="k">func</span> <span class="f">_ready</span>():
+    body_entered.connect(_on_body_entered)
+
+<span class="k">func</span> <span class="f">_on_body_entered</span>(body: Node2D) -> <span class="t">void</span>:
+    <span class="k">if</span> body.is_in_group(<span class="s">"player"</span>):
+        collected.emit()      <span class="c"># phát signal</span>
+        queue_free()          <span class="c"># nhặt xong, biến mất</span></pre>
+        </div>
+        <table>
+          <thead><tr><th>Signal Area2D</th><th>Khi nào</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">body_entered(body)</code></td><td>Một physics body đi vào</td></tr>
+            <tr><td><code class="ic">body_exited(body)</code></td><td>Body đi ra</td></tr>
+            <tr><td><code class="ic">area_entered(area)</code></td><td>Một Area2D khác đi vào</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Groups</span><code class="ic">add_to_group("player")</code> + <code class="ic">is_in_group("player")</code> là cách gắn "nhãn" cho node để phân loại nhanh khi va chạm — gọn hơn kiểm tra kiểu lớp.</div>
+      </section>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Input chuột &amp; cảm ứng — kéo thả</h2>
+        <p class="ch-sub">Tương tác trực tiếp: kéo vật bằng chuột/ngón tay (nền cho kéo Slinky).</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">draggable.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> RigidBody2D
+
+<span class="k">var</span> dragging := <span class="k">false</span>
+
+<span class="k">func</span> <span class="f">_ready</span>():
+    input_pickable = <span class="k">true</span>      <span class="c"># cho phép body nhận input chuột (cần CollisionShape)</span>
+    input_event.connect(_on_input_event)
+
+<span class="k">func</span> <span class="f">_on_input_event</span>(_viewport, event: InputEvent, _idx):
+    <span class="k">if</span> event <span class="k">is</span> InputEventMouseButton <span class="k">and</span> event.button_index == MOUSE_BUTTON_LEFT:
+        dragging = event.pressed
+
+<span class="k">func</span> <span class="f">_physics_process</span>(_delta):
+    <span class="k">if</span> dragging:
+        <span class="c"># kéo "mềm": đặt vận tốc hướng về con trỏ (giữ ổn định vật lý)</span>
+        <span class="k">var</span> target := get_global_mouse_position()
+        linear_velocity = (target - global_position) * <span class="n">20.0</span></pre>
+        </div>
+        <div class="box tip"><span class="box-title">Kéo "cứng" vs "mềm"</span>Với RigidBody, <strong>đừng</strong> gán thẳng <code class="ic">global_position = chuột</code> (phá vật lý, nổ văng). Hãy kéo "mềm" bằng cách đặt <code class="ic">linear_velocity</code> hướng về con trỏ (như trên) — vật theo tay mà vẫn tương tác lò xo/va chạm mượt. Đây đúng là cách bạn sẽ kéo đốt Slinky.</div>
+        <div class="box info"><span class="box-title">Cảm ứng</span>Trên mobile, bật <em>Project Settings → Input Devices → Emulate Mouse From Touch</em> để code chuột chạy luôn với cảm ứng; hoặc xử lý <code class="ic">InputEventScreenTouch</code>/<code class="ic">InputEventScreenDrag</code> để hỗ trợ đa chạm.</div>
+
+        <h3 class="sec">Quiz cấp độ L1</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L1</div>
+          <div class="q" data-answer="b">
+            <p>1. Logic vật lý (lực, vận tốc) nên đặt ở đâu?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l1q1" value="a"> <code>_process(delta)</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l1q1" value="b"> <code>_physics_process(delta)</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l1q1" value="c"> <code>_ready()</code></label>
+            <div class="explain">_physics_process chạy ở timestep cố định — ổn định cho vật lý.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Để "nhảy" một RigidBody2D, dùng?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l1q2" value="a"> Gán <code>position.y -= 100</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l1q2" value="b"> <code>queue_free()</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l1q2" value="c"> <code>apply_central_impulse(Vector2.UP * f)</code></label>
+            <div class="explain">RigidBody do engine mô phỏng → tác động bằng lực/xung lực, không đặt position trực tiếp.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Vùng phát hiện không cản chuyển động là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l1q3" value="a"> <code>Area2D</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l1q3" value="b"> <code>StaticBody2D</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l1q3" value="c"> <code>RigidBody2D</code></label>
+            <div class="explain">Area2D dùng để phát hiện (body_entered...) mà không cản — hợp cảm biến, nhặt đồ.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 2 ===================== -->
+      <div class="level-divider" id="lv2"><div class="line"></div><span class="tag tag-l2">L2 · Lò xo &amp; Slinky 🌀</span><div class="line"></div></div>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> Lý thuyết lò xo &amp; dao động</h2>
+        <p class="ch-sub">Hiểu vật lý trước khi code — và 2 hướng mô phỏng Slinky.</p>
+
+        <h3 class="sec">Định luật Hooke &amp; giảm chấn</h3>
+        <p>Lực lò xo tỉ lệ với độ biến dạng, ngược chiều: <strong>kéo dài thì kéo về, nén thì đẩy ra</strong>. Thêm lực giảm chấn (damping) tỉ lệ vận tốc để dao động tắt dần (không rung mãi).</p>
+        <div class="formula">F_lò_xo = −k · x        (k: độ cứng, x: độ lệch khỏi chiều dài nghỉ)
+F_giảm_chấn = −c · v    (c: hệ số giảm chấn, v: vận tốc)</div>
+
+        <h3 class="sec">Slinky = chuỗi khối lượng nối bằng lò xo</h3>
+        <p>Một Slinky là nhiều <strong>đốt (mass)</strong> nối liên tiếp bằng <strong>lò xo</strong>. Khi bạn lắc một đầu, lực truyền qua từng lò xo → tạo <strong>sóng lan truyền</strong> dọc thân (đặc trưng "uốn lượn" của slinky, và trò "đi xuống cầu thang"). Mở <strong>🌀 Slinky Lab</strong> và bấm <em>Lắc</em> để thấy sóng này.</p>
+
+        <h3 class="sec">Hai hướng mô phỏng</h3>
+        <table>
+          <thead><tr><th>Hướng</th><th>Ý tưởng</th><th>Ưu / Nhược</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Engine joint</strong> (ch12)</td><td>Chuỗi <code class="ic">RigidBody2D</code> nối bằng <code class="ic">DampedSpringJoint2D</code></td><td>✅ Va chạm "miễn phí", đúng vật lý engine. ⚠️ Dễ rung/nặng khi nhiều đốt, khó tune.</td></tr>
+            <tr><td><strong>Verlet tùy chỉnh</strong> (ch13)</td><td>Các điểm khối lượng + ràng buộc khoảng cách, tự tích phân</td><td>✅ Ổn định, nhẹ, kiểm soát cao, sóng đẹp. ⚠️ Tự lo va chạm.</td></tr>
+          </tbody>
+        </table>
+        <div class="box slinky"><span class="box-title">Khuyến nghị cho Slinky</span>Với <em>cảm giác slinky mượt &amp; ổn định</em>, hướng <strong>Verlet</strong> (ch13) thường tốt hơn — chính là mô hình trong Slinky Lab. Dùng engine joint khi bạn cần đốt slinky va chạm/tương tác đầy đủ với thế giới vật lý.</div>
+
+        <h3 class="sec">Verlet integration — vì sao ổn định</h3>
+        <p>Thay vì lưu vận tốc, Verlet suy vận tốc từ <em>vị trí trước đó</em>: <code class="ic">x_mới = x + (x − x_cũ)·damp + a·dt²</code>. Sau đó "kéo" các điểm về đúng khoảng cách nghỉ bằng <strong>ràng buộc</strong> (lặp vài lần). Cách "position-based" này rất ổn định với lò xo cứng — lý do nó là kỹ thuật kinh điển cho dây/vải/slinky.</p>
+      </section>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Joints trong Godot</h2>
+        <p class="ch-sub">Các khớp nối sẵn có để ràng buộc 2 body.</p>
+        <table>
+          <thead><tr><th>Joint</th><th>Tác dụng</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">PinJoint2D</code></td><td>Ghim 2 body tại 1 điểm (như bản lề) — nối cứng, vẫn xoay</td></tr>
+            <tr><td><code class="ic">DampedSpringJoint2D</code></td><td><strong>Lò xo giảm chấn</strong> giữa 2 body (rest_length, stiffness, damping) — dùng cho Slinky cách 1</td></tr>
+            <tr><td><code class="ic">GrooveJoint2D</code></td><td>Cho body trượt dọc một rãnh</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block"><div class="code-head"><span class="fname">spring_setup.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> spring := DampedSpringJoint2D.new()
+spring.node_a = body_a.get_path()      <span class="c"># 2 body cần nối</span>
+spring.node_b = body_b.get_path()
+spring.length = <span class="n">0</span>                    <span class="c"># chiều dài tối đa (0 = tự)</span>
+spring.rest_length = <span class="n">16</span>             <span class="c"># chiều dài nghỉ của lò xo</span>
+spring.stiffness = <span class="n">40</span>               <span class="c"># độ cứng</span>
+spring.damping = <span class="n">1.5</span>                <span class="c"># giảm chấn</span>
+add_child(spring)</pre>
+        </div>
+        <div class="box info"><span class="box-title">Mẹo</span><code class="ic">node_a</code>/<code class="ic">node_b</code> nhận <strong>NodePath</strong>, nên thường set sau khi body đã được <code class="ic">add_child</code> vào cây. Joint phải là con của một node trong cùng cây với 2 body.</div>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Slinky bằng RigidBody2D + DampedSpringJoint2D</h2>
+        <p class="ch-sub">Cách "engine-based": sinh chuỗi đốt &amp; nối lò xo bằng code.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">slinky_rigid.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D
+
+<span class="d">@export</span> <span class="k">var</span> segments: <span class="t">int</span> = <span class="n">18</span>
+<span class="d">@export</span> <span class="k">var</span> spacing: <span class="t">float</span> = <span class="n">16.0</span>
+<span class="d">@export</span> <span class="k">var</span> stiffness: <span class="t">float</span> = <span class="n">40.0</span>
+<span class="d">@export</span> <span class="k">var</span> damping: <span class="t">float</span> = <span class="n">1.5</span>
+
+<span class="k">var</span> bodies: Array[RigidBody2D] = []
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> prev: PhysicsBody2D = <span class="k">null</span>
+    <span class="k">for</span> i <span class="k">in</span> segments:
+        <span class="k">var</span> seg := _make_segment(Vector2(<span class="n">0</span>, i * spacing))
+        <span class="c"># đốt đầu tiên cố định (treo lò xo lên)</span>
+        <span class="k">if</span> i == <span class="n">0</span>:
+            seg.freeze = <span class="k">true</span>
+            seg.freeze_mode = RigidBody2D.FREEZE_MODE_STATIC
+        add_child(seg)
+        bodies.append(seg)
+        <span class="k">if</span> prev:
+            _connect_spring(prev, seg)
+        prev = seg
+
+<span class="k">func</span> <span class="f">_make_segment</span>(pos: Vector2) -> RigidBody2D:
+    <span class="k">var</span> b := RigidBody2D.new()
+    b.position = pos
+    b.mass = <span class="n">0.4</span>
+    <span class="k">var</span> shape := CollisionShape2D.new()
+    <span class="k">var</span> circle := CircleShape2D.new()
+    circle.radius = <span class="n">5.0</span>
+    shape.shape = circle
+    b.add_child(shape)
+    <span class="k">return</span> b
+
+<span class="k">func</span> <span class="f">_connect_spring</span>(a: PhysicsBody2D, b: PhysicsBody2D) -> <span class="t">void</span>:
+    <span class="k">var</span> s := DampedSpringJoint2D.new()
+    s.position = a.position
+    s.node_a = a.get_path()
+    s.node_b = b.get_path()
+    s.rest_length = spacing
+    s.stiffness = stiffness
+    s.damping = damping
+    add_child(s)</pre>
+        </div>
+        <div class="box warn"><span class="box-title">Khi nào đủ tốt</span>Cách này cho slinky <em>va chạm thật</em> với thế giới, nhưng với nhiều đốt + lò xo cứng dễ <strong>rung/giật</strong> và tốn CPU. Tăng ổn định: giảm số đốt, tăng <code class="ic">mass</code>, tăng <em>Physics → Solver Iterations</em>, hoặc chuyển sang Verlet (ch13).</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> Slinky bằng Verlet (tùy chỉnh)</h2>
+        <p class="ch-sub">Tự code mass-spring — đúng mô hình trong Slinky Lab. Ổn định &amp; kiểm soát cao.</p>
+
+        <p>Ta lưu các <strong>điểm</strong> (vị trí + vị trí trước), tích phân Verlet với trọng lực, rồi áp <strong>ràng buộc khoảng cách</strong> nhiều lần để mô phỏng lò xo cứng. Điểm đầu được "ghim".</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">slinky_verlet.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D
+
+<span class="d">@export</span> <span class="k">var</span> segments: <span class="t">int</span> = <span class="n">20</span>
+<span class="d">@export</span> <span class="k">var</span> rest: <span class="t">float</span> = <span class="n">12.0</span>      <span class="c"># khoảng cách nghỉ giữa 2 điểm</span>
+<span class="d">@export</span> <span class="k">var</span> stiffness: <span class="t">float</span> = <span class="n">0.6</span>   <span class="c"># 0..1 (độ cứng ràng buộc)</span>
+<span class="d">@export</span> <span class="k">var</span> damping: <span class="t">float</span> = <span class="n">0.98</span>    <span class="c"># giữ vận tốc (gần 1 = ít mất năng lượng)</span>
+<span class="d">@export</span> <span class="k">var</span> gravity: <span class="t">float</span> = <span class="n">900.0</span>
+<span class="d">@export</span> <span class="k">var</span> iterations: <span class="t">int</span> = <span class="n">6</span>      <span class="c"># số lần lặp ràng buộc/khung (cao = cứng hơn)</span>
+
+<span class="k">var</span> pos: PackedVector2Array = []      <span class="c"># vị trí hiện tại</span>
+<span class="k">var</span> prev: PackedVector2Array = []     <span class="c"># vị trí khung trước</span>
+<span class="k">var</span> pinned: Array[bool] = []          <span class="c"># điểm bị ghim?</span>
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    <span class="k">for</span> i <span class="k">in</span> segments:
+        <span class="k">var</span> p := Vector2(<span class="n">0</span>, i * rest)
+        pos.append(p); prev.append(p)
+        pinned.append(i == <span class="n">0</span>)        <span class="c"># ghim điểm đầu</span>
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    _integrate(delta)
+    <span class="k">for</span> i <span class="k">in</span> iterations:
+        _solve_constraints()
+    queue_redraw()                    <span class="c"># vẽ lại (ch14)</span>
+
+<span class="k">func</span> <span class="f">_integrate</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="k">var</span> g := Vector2(<span class="n">0</span>, gravity) * delta * delta
+    <span class="k">for</span> i <span class="k">in</span> pos.size():
+        <span class="k">if</span> pinned[i]:
+            <span class="k">continue</span>
+        <span class="k">var</span> velocity := (pos[i] - prev[i]) * damping
+        prev[i] = pos[i]
+        pos[i] += velocity + g
+
+<span class="k">func</span> <span class="f">_solve_constraints</span>() -> <span class="t">void</span>:
+    <span class="k">for</span> i <span class="k">in</span> pos.size() - <span class="n">1</span>:
+        <span class="k">var</span> a := pos[i]
+        <span class="k">var</span> b := pos[i + <span class="n">1</span>]
+        <span class="k">var</span> delta := b - a
+        <span class="k">var</span> dist := delta.length()
+        <span class="k">if</span> dist == <span class="n">0.0</span>:
+            <span class="k">continue</span>
+        <span class="k">var</span> diff := (dist - rest) / dist * <span class="n">0.5</span> * stiffness
+        <span class="k">var</span> offset := delta * diff
+        <span class="k">if</span> <span class="k">not</span> pinned[i]:
+            pos[i] += offset
+        <span class="k">if</span> <span class="k">not</span> pinned[i + <span class="n">1</span>]:
+            pos[i + <span class="n">1</span>] -= offset</pre>
+        </div>
+        <div class="box slinky"><span class="box-title">Giống hệt Slinky Lab</span>Mô hình trên chính là thứ chạy trong <strong>🌀 Slinky Lab</strong>. Hãy mở Lab, chỉnh các slider (stiffness/damping/gravity/segments) để <em>cảm nhận</em> từng tham số làm gì, rồi mang đúng giá trị đó sang <code class="ic">@export</code> trong Godot.</div>
+        <div class="box info"><span class="box-title">Vì sao lặp ràng buộc</span>Mỗi lần <code class="ic">_solve_constraints</code> kéo các điểm gần đúng khoảng cách nghỉ hơn. Lặp nhiều lần (<code class="ic">iterations</code>) → lò xo "cứng" hơn &amp; ổn định hơn. Đây là kỹ thuật <em>Position-Based Dynamics</em>.</div>
+      </section>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> Vẽ &amp; tạo hình coil</h2>
+        <p class="ch-sub">Biến chuỗi điểm thành hình lò xo xoắn đặc trưng.</p>
+
+        <p>Có 2 cách: dùng <code class="ic">Line2D</code> (đẩy điểm vào <code class="ic">points</code>) hoặc <code class="ic">_draw()</code> tùy chỉnh. Để có <strong>coil xoắn</strong>, ta vẽ đường tâm rồi <em>lệch vuông góc theo hàm sin</em> — pha sin chạy theo vị trí dọc thân nên khi nén/giãn, các vòng tự bó lại/giãn ra (đúng như slinky thật).</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">slinky_draw.gd (thêm vào script ch13)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="d">@export</span> <span class="k">var</span> coils: <span class="t">int</span> = <span class="n">20</span>      <span class="c"># số vòng xoắn</span>
+<span class="d">@export</span> <span class="k">var</span> coil_radius: <span class="t">float</span> = <span class="n">14.0</span>
+<span class="d">@export</span> <span class="k">var</span> color: Color = Color(<span class="s">"6bb0e0"</span>)
+
+<span class="k">func</span> <span class="f">_draw</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> n := pos.size() - <span class="n">1</span>
+    <span class="k">if</span> n &lt; <span class="n">1</span>:
+        <span class="k">return</span>
+    <span class="k">var</span> path: PackedVector2Array = []
+    <span class="k">var</span> sub := <span class="n">7</span>
+    <span class="k">for</span> i <span class="k">in</span> n:
+        <span class="k">var</span> a := pos[i]
+        <span class="k">var</span> b := pos[i + <span class="n">1</span>]
+        <span class="k">var</span> tangent := (b - a).normalized()
+        <span class="k">var</span> normal := Vector2(-tangent.y, tangent.x)   <span class="c"># vuông góc</span>
+        <span class="k">for</span> s <span class="k">in</span> sub:
+            <span class="k">var</span> f := <span class="t">float</span>(s) / sub
+            <span class="k">var</span> t := (i + f) / <span class="t">float</span>(n)             <span class="c"># 0..1 dọc toàn thân</span>
+            <span class="k">var</span> center := a.lerp(b, f)
+            <span class="k">var</span> off := coil_radius * sin(t * coils * TAU)
+            path.append(center + normal * off)
+    path.append(pos[n])
+    <span class="c"># vẽ đường nối các điểm coil</span>
+    <span class="k">for</span> i <span class="k">in</span> path.size() - <span class="n">1</span>:
+        draw_line(path[i], path[i + <span class="n">1</span>], color, <span class="n">3.0</span>, <span class="k">true</span>)</pre>
+        </div>
+        <div class="box info"><span class="box-title">Line2D thay cho _draw</span>Không muốn tự <code class="ic">_draw</code>? Thêm node <code class="ic">Line2D</code> con, mỗi frame gán <code class="ic">line.points = path</code> (cùng cách tính coil), bật <em>Antialiased</em>, đặt <em>width</em> &amp; gradient. <code class="ic">Line2D</code> còn hỗ trợ texture để slinky trông như kim loại.</div>
+      </section>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> Tương tác &amp; sóng lan truyền</h2>
+        <p class="ch-sub">Kéo thả đốt, di chuyển đầu treo, va chạm sàn, và trò "đi cầu thang".</p>
+
+        <h3 class="sec">Kéo điểm bằng chuột/cảm ứng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">slinky_interact.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> drag_index: <span class="t">int</span> = -<span class="n">1</span>
+
+<span class="k">func</span> <span class="f">_unhandled_input</span>(event: InputEvent) -> <span class="t">void</span>:
+    <span class="k">if</span> event <span class="k">is</span> InputEventMouseButton <span class="k">and</span> event.button_index == MOUSE_BUTTON_LEFT:
+        <span class="k">if</span> event.pressed:
+            drag_index = _nearest_point(get_local_mouse_position())
+        <span class="k">else</span>:
+            drag_index = -<span class="n">1</span>
+
+<span class="k">func</span> <span class="f">_nearest_point</span>(m: Vector2) -> <span class="t">int</span>:
+    <span class="k">var</span> best := -<span class="n">1</span>
+    <span class="k">var</span> best_d := <span class="n">400.0</span>      <span class="c"># bán kính bắt điểm (px^2)</span>
+    <span class="k">for</span> i <span class="k">in</span> pos.size():
+        <span class="k">var</span> d := pos[i].distance_squared_to(m)
+        <span class="k">if</span> d &lt; best_d:
+            best_d = d; best = i
+    <span class="k">return</span> best
+
+<span class="c"># gọi cuối _physics_process: ghì điểm đang kéo về con trỏ</span>
+<span class="k">func</span> <span class="f">_apply_drag</span>() -> <span class="t">void</span>:
+    <span class="k">if</span> drag_index &gt;= <span class="n">0</span>:
+        pos[drag_index] = get_local_mouse_position()</pre>
+        </div>
+
+        <h3 class="sec">Va chạm sàn (đơn giản)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">floor_collision.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="d">@export</span> <span class="k">var</span> floor_y: <span class="t">float</span> = <span class="n">500.0</span>
+
+<span class="k">func</span> <span class="f">_clamp_floor</span>() -> <span class="t">void</span>:
+    <span class="k">for</span> i <span class="k">in</span> pos.size():
+        <span class="k">if</span> <span class="k">not</span> pinned[i] <span class="k">and</span> pos[i].y &gt; floor_y:
+            pos[i].y = floor_y          <span class="c"># chặn dưới sàn (ma sát: cũng kéo prev.x về)</span></pre>
+        </div>
+
+        <h3 class="sec">"Slinky đi xuống cầu thang"</h3>
+        <p>Hiệu ứng kinh điển xuất hiện <em>tự nhiên</em> từ mô hình mass-spring khi: trọng lực kéo các đốt dưới, năng lượng dồn về một đầu rồi "lật" qua bậc thang (các <code class="ic">StaticBody2D</code> bậc thang + va chạm). Bạn không phải lập trình riêng — chỉ cần vật lý đúng + va chạm bậc. Dùng <strong>🌀 Slinky Lab → Lắc</strong> để xem sóng truyền dọc thân, cơ chế nền của trò này.</p>
+        <div class="box tip"><span class="box-title">Truyền động đầu treo</span>Cho điểm ghim (đầu treo) đi theo con trỏ/đường đi → sóng truyền xuống các đốt tạo chuyển động slinky sống động. Đây là cách "điều khiển" slinky trong gameplay.</div>
+      </section>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> Tinh chỉnh cảm giác (tuning)</h2>
+        <p class="ch-sub">Cùng mô hình, tham số khác nhau cho ra "cảm giác" rất khác.</p>
+        <table>
+          <thead><tr><th>Tham số</th><th>Tăng lên thì...</th><th>Gợi ý</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">iterations</code> / <code class="ic">stiffness</code></td><td>Lò xo cứng hơn, ít giãn</td><td>Slinky mềm: iterations thấp (3–5); dây cứng: cao (10+)</td></tr>
+            <tr><td><code class="ic">damping</code></td><td>Gần 1 = nảy lâu; thấp = tắt nhanh</td><td>0.96–0.99 cho slinky "sống"</td></tr>
+            <tr><td><code class="ic">rest</code> / <code class="ic">segments</code></td><td>Dài hơn / mượt hơn (nặng hơn)</td><td>16–28 đốt là đẹp &amp; đủ nhẹ</td></tr>
+            <tr><td><code class="ic">gravity</code></td><td>Trĩu xuống nhanh</td><td>Tùy gameplay; quá cao làm lò xo "sập"</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Ổn định số học</h3>
+        <ul>
+          <li><strong>Sub-stepping</strong>: nếu chuyển động nhanh gây "nổ", chia mỗi physics frame thành 2–4 bước nhỏ (lặp integrate+constraints).</li>
+          <li><strong>Giới hạn vận tốc</strong>: kẹp độ dịch chuyển mỗi frame để tránh điểm văng xa.</li>
+          <li><strong>Frame-rate</strong>: dùng <code class="ic">_physics_process</code> (timestep cố định) để hành vi nhất quán mọi máy.</li>
+          <li><strong>stiffness ≤ 1</strong> trong mô hình ràng buộc; muốn cứng hơn thì tăng <code class="ic">iterations</code> thay vì đẩy stiffness &gt; 1 (gây dao động).</li>
+        </ul>
+
+        <div class="box slinky"><span class="box-title">Quy trình tune thực dụng</span>1) Mở Slinky Lab, chỉnh tới khi "đã mắt". 2) Ghi lại stiffness/damping/gravity/segments/coils. 3) Đưa vào <code class="ic">@export</code> trong Godot (đổi gravity Lab→giá trị px/s² hợp lý, vd ~900). 4) Tinh chỉnh thêm <code class="ic">iterations</code> cho độ cứng.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành L2 <span class="lvl-dot">trọng tâm</span></div>
+          <p>Dựng một Slinky Verlet hoàn chỉnh: gộp script ch13 (mô phỏng) + ch14 (vẽ coil) + ch15 (kéo &amp; sàn). Ghim đầu trên vào con trỏ, thả các đốt rơi theo trọng lực, kéo đốt cuối rồi thả để xem dao động. So sánh cảm giác với Slinky Lab.</p>
+          <details class="answer"><summary>Gợi ý ghép</summary><div class="body">Trong <code class="ic">_physics_process</code>: thứ tự gọi <code class="ic">_integrate(delta)</code> → vòng lặp <code class="ic">_solve_constraints()</code> → <code class="ic">_apply_drag()</code> → <code class="ic">_clamp_floor()</code> → <code class="ic">queue_redraw()</code>. Cho điểm ghim đi theo <code class="ic">get_local_mouse_position()</code> nếu muốn điều khiển đầu treo.</div></details>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 3 ===================== -->
+      <div class="level-divider" id="lv3"><div class="line"></div><span class="tag tag-l3">L3 · Nâng cao 2D</span><div class="line"></div></div>
+
+      <!-- ===== CH17 ===== -->
+      <section class="chapter" id="ch17">
+        <h2 class="ch-title"><span class="num">CH 17</span> Soft body &amp; rope tổng quát</h2>
+        <p class="ch-sub">Cùng kỹ thuật Verlet, mở rộng thành dây, vải, jelly.</p>
+
+        <p>Mô hình mass-spring + ràng buộc khoảng cách bạn dùng cho Slinky là <strong>vạn năng</strong>. Đổi cách nối điểm là ra vật thể mềm khác:</p>
+        <table>
+          <thead><tr><th>Vật thể</th><th>Cách nối điểm</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Rope / dây</strong></td><td>Chuỗi điểm nối liền (như Slinky nhưng vẽ thẳng, không coil)</td></tr>
+            <tr><td><strong>Cloth / vải</strong></td><td>Lưới điểm: ràng buộc ngang + dọc (+ chéo cho cứng)</td></tr>
+            <tr><td><strong>Jelly / blob</strong></td><td>Vòng điểm + ràng buộc giữ thể tích/hình dạng</td></tr>
+            <tr><td><strong>Cầu/giàn</strong></td><td>Điểm + thanh cứng (ràng buộc rất cứng, iterations cao)</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Ý tưởng cốt lõi</span>"Điểm + ràng buộc" = nền tảng mọi soft-body 2D. Slinky chỉ là một cấu hình (chuỗi 1 chiều + vẽ coil). Nắm chương 13 là bạn mở khóa cả họ hiệu ứng này. Godot cũng có node <code class="ic">SoftBody</code> cho 3D, nhưng 2D thì tự Verlet là gọn &amp; chủ động nhất.</div>
+      </section>
+
+      <!-- ===== CH18 ===== -->
+      <section class="chapter" id="ch18">
+        <h2 class="ch-title"><span class="num">CH 18</span> Tối ưu hiệu năng</h2>
+        <p class="ch-sub">Giữ 60 FPS, đặc biệt trên mobile.</p>
+        <div class="checklist">
+          <h4>✔️ Tối ưu trọng yếu</h4>
+          <label><input type="checkbox"><span>Vật lý/Verlet trong <code class="ic">_physics_process</code>; tách hiển thị (<code class="ic">_process</code>/<code class="ic">_draw</code>) khỏi mô phỏng.</span></label>
+          <label><input type="checkbox"><span>Dùng <code class="ic">PackedVector2Array</code> cho mảng điểm (nhanh hơn Array thường).</span></label>
+          <label><input type="checkbox"><span>Giảm <code class="ic">iterations</code> &amp; số điểm tới mức "đủ đẹp"; số điểm là yếu tố tốn nhất.</span></label>
+          <label><input type="checkbox"><span>Vẽ bằng <strong>một</strong> <code class="ic">Line2D</code>/<code class="ic">_draw</code> thay vì nhiều node sprite cho từng đốt (giảm draw call).</span></label>
+          <label><input type="checkbox"><span>Hạn chế <code class="ic">queue_redraw()</code> mỗi frame nếu không đổi; dùng object pooling cho vật sinh nhiều.</span></label>
+          <label><input type="checkbox"><span>Profiler (Debugger → Profiler / Monitors) để tìm điểm nóng; test trên <strong>thiết bị thật</strong>, không chỉ PC.</span></label>
+        </div>
+        <div class="box warn"><span class="box-title">Bẫy mobile</span>Điện thoại yếu hơn PC nhiều. Một slinky 40 đốt × 8 iterations mượt trên PC có thể tụt FPS trên máy rẻ. Luôn đo trên thiết bị mục tiêu &amp; có tham số "chất lượng" hạ được.</div>
+      </section>
+
+      <!-- ===== CH19 ===== -->
+      <section class="chapter" id="ch19">
+        <h2 class="ch-title"><span class="num">CH 19</span> Polish &amp; "juice"</h2>
+        <p class="ch-sub">Những chi tiết nhỏ biến tech demo thành game đã tay.</p>
+        <table>
+          <thead><tr><th>Kỹ thuật</th><th>Cách làm trong Godot</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Particles</strong></td><td><code class="ic">GPUParticles2D</code> / <code class="ic">CPUParticles2D</code> (bụi, tia, lấp lánh)</td></tr>
+            <tr><td><strong>Tween</strong></td><td><code class="ic">create_tween()</code> cho scale/màu mượt (đập, nảy UI)</td></tr>
+            <tr><td><strong>Camera shake</strong></td><td>Lệch <code class="ic">Camera2D.offset</code> ngẫu nhiên giảm dần</td></tr>
+            <tr><td><strong>Trail</strong></td><td><code class="ic">Line2D</code> theo dấu chuyển động (đuôi slinky)</td></tr>
+            <tr><td><strong>Âm thanh</strong></td><td><code class="ic">AudioStreamPlayer</code> theo va chạm/độ căng lò xo</td></tr>
+            <tr><td><strong>Squash &amp; stretch</strong></td><td>Biến dạng scale theo vận tốc (cảm giác đàn hồi)</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">"Juice" cho Slinky</span>Phát âm "boing" khi độ giãn vượt ngưỡng, đổi màu theo độ căng (xanh→đỏ), thêm particle ở điểm va chạm, camera rung nhẹ khi slinky đập mạnh. Nhỏ nhưng tạo cảm giác sống động khác biệt.</div>
+      </section>
+
+      <!-- ===== CH20 ===== -->
+      <section class="chapter" id="ch20">
+        <h2 class="ch-title"><span class="num">CH 20</span> Kiến trúc dự án</h2>
+        <p class="ch-sub">Tổ chức để game lớn lên không rối.</p>
+        <table>
+          <thead><tr><th>Khái niệm</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Autoload / Singleton</strong></td><td>Trạng thái toàn cục: điểm số, audio manager, ads manager (Project Settings → Autoload)</td></tr>
+            <tr><td><strong>Scene riêng từng thành phần</strong></td><td>Player, slinky, level, UI — instance &amp; tái dùng</td></tr>
+            <tr><td><strong>Resource (.tres)</strong></td><td>Cấu hình dữ liệu (level config, tuning slinky) tách khỏi code</td></tr>
+            <tr><td><strong>Signals</strong></td><td>Giảm phụ thuộc cứng giữa các phần (UI lắng nghe gameplay)</td></tr>
+            <tr><td><strong>Save/Load</strong></td><td><code class="ic">FileAccess</code> + JSON / <code class="ic">ResourceSaver</code> (tiến độ, cài đặt)</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block"><div class="code-head"><span class="fname">Game.gd (Autoload singleton)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node      <span class="c"># đăng ký ở Autoload tên "Game" → gọi Game.score ở mọi nơi</span>
+
+<span class="k">var</span> score: <span class="t">int</span> = <span class="n">0</span>
+<span class="k">signal</span> score_changed(value: <span class="t">int</span>)
+
+<span class="k">func</span> <span class="f">add_score</span>(n: <span class="t">int</span>) -> <span class="t">void</span>:
+    score += n
+    score_changed.emit(score)</pre>
+        </div>
+        <div class="box info"><span class="box-title">Mẹo</span>Một <strong>AdsManager</strong> dạng Autoload là nơi lý tưởng gói toàn bộ logic quảng cáo (load/show banner/interstitial/rewarded) — phần còn lại của game chỉ gọi <code class="ic">Ads.show_interstitial()</code>. Ta dựng nó ở chương 24.</div>
+      </section>
+
+      <!-- ===================== LEVEL 4 ===================== -->
+      <div class="level-divider" id="lv4"><div class="line"></div><span class="tag tag-l4">L4 · Xuất bản Mobile &amp; Ads</span><div class="line"></div></div>
+
+      <!-- ===== CH21 ===== -->
+      <section class="chapter" id="ch21">
+        <h2 class="ch-title"><span class="num">CH 21</span> Chuẩn bị mobile</h2>
+        <p class="ch-sub">Trước khi export: cảm ứng, đa kích thước màn hình, hiệu năng.</p>
+        <div class="checklist">
+          <h4>✔️ Checklist mobile-ready</h4>
+          <label><input type="checkbox"><span><strong>Cảm ứng</strong>: dùng Input Map + TouchScreenButton, hoặc <code class="ic">InputEventScreenTouch/Drag</code>; bật <em>Emulate Mouse From Touch</em>.</span></label>
+          <label><input type="checkbox"><span><strong>Màn hình</strong>: Project Settings → Display → Window → Stretch <em>mode=canvas_items</em>, <em>aspect=expand</em> để co giãn đa thiết bị.</span></label>
+          <label><input type="checkbox"><span><strong>Hướng</strong>: đặt orientation (portrait/landscape) phù hợp game.</span></label>
+          <label><input type="checkbox"><span><strong>UI an toàn</strong>: chừa "safe area" (tai thỏ/notch); nút đủ to cho ngón tay.</span></label>
+          <label><input type="checkbox"><span><strong>Hiệu năng</strong>: renderer <em>Mobile</em> hoặc <em>Compatibility</em>; giảm điểm/iterations slinky; test thiết bị thật.</span></label>
+          <label><input type="checkbox"><span><strong>Pin</strong>: tránh tính toán thừa mỗi frame; giới hạn FPS nếu cần (tiết kiệm pin/nhiệt).</span></label>
+        </div>
+      </section>
+
+      <!-- ===== CH22 ===== -->
+      <section class="chapter" id="ch22">
+        <h2 class="ch-title"><span class="num">CH 22</span> Export Android</h2>
+        <p class="ch-sub">Từ project Godot → file APK/AAB cài được &amp; lên Play Store.</p>
+
+        <h3 class="sec">Chuẩn bị một lần</h3>
+        <ol>
+          <li><strong>Export Templates</strong>: Editor → Manage Export Templates → Download &amp; Install (đúng phiên bản Godot).</li>
+          <li><strong>Android SDK + JDK</strong>: cài Android Studio (kéo theo SDK), hoặc command-line tools. Cần OpenJDK 17 (theo bản Godot).</li>
+          <li>Editor Settings → <strong>Export → Android</strong>: trỏ đường dẫn Android SDK &amp; Java.</li>
+          <li><strong>Debug keystore</strong>: tạo debug.keystore (Godot có thể tự tạo) để build thử.</li>
+        </ol>
+
+        <h3 class="sec">Tạo preset &amp; build</h3>
+        <ol>
+          <li>Project → <strong>Export</strong> → Add → <strong>Android</strong>.</li>
+          <li>Đặt <strong>Package → Unique Name</strong> (vd <code class="ic">com.tencongty.tengame</code>), tên, icon, version.</li>
+          <li>Chọn architectures (arm64-v8a bắt buộc cho Play Store; thêm armeabi-v7a nếu cần máy cũ).</li>
+          <li><strong>Debug</strong>: "Export Project" ra <code class="ic">.apk</code> để test (hoặc nút "One-Click Deploy" khi cắm máy bật USB debugging).</li>
+          <li><strong>Release</strong>: tạo <strong>release keystore</strong> (giữ kỹ — mất là không update app được!), điền vào preset (keystore, alias, mật khẩu), bật <em>Use Gradle Build</em>, export ra <strong>.aab</strong> (Android App Bundle) để nộp Play Store.</li>
+        </ol>
+        <div class="box danger"><span class="box-title">Giữ release keystore!</span>Google Play định danh app qua chữ ký. <strong>Mất keystore = không thể cập nhật app</strong> (phải đăng app mới). Sao lưu keystore &amp; mật khẩu ở nơi an toàn.</div>
+        <div class="box info"><span class="box-title">Gradle build</span>Bật <em>Use Gradle Build</em> (Install Android Build Template) khi cần plugin (như ads), kiến trúc tùy biến, hoặc AAB. Đây là yêu cầu cho phần quảng cáo ở ch24.</div>
+      </section>
+
+      <!-- ===== CH23 ===== -->
+      <section class="chapter" id="ch23">
+        <h2 class="ch-title"><span class="num">CH 23</span> Export iOS</h2>
+        <p class="ch-sub">Lên App Store — cần máy Mac.</p>
+        <div class="box danger"><span class="box-title">Bắt buộc có macOS + Xcode</span>Không thể build iOS trên Windows/Linux. Cần: máy <strong>Mac</strong>, <strong>Xcode</strong>, và <strong>tài khoản Apple Developer</strong> (99$/năm) để ký &amp; phát hành.</div>
+        <ol>
+          <li>Cài Export Templates (như Android).</li>
+          <li>Project → Export → Add → <strong>iOS</strong>; đặt Bundle Identifier (vd <code class="ic">com.tencongty.tengame</code>), tên, icon, version.</li>
+          <li>Khai báo App ID &amp; tạo <strong>provisioning profile</strong> + certificate trong Apple Developer / Xcode.</li>
+          <li>Export ra <strong>dự án Xcode</strong> → mở bằng Xcode → ký (signing team) → build lên thiết bị thật để test.</li>
+          <li>Archive trong Xcode → upload lên <strong>App Store Connect</strong> → điền thông tin → nộp duyệt.</li>
+        </ol>
+        <div class="box info"><span class="box-title">Quy trình thực tế</span>Godot xuất ra một <em>Xcode project</em>; phần ký số, profile, archive &amp; nộp đều làm trong <strong>Xcode</strong>. Nếu chưa có Mac, có thể dùng dịch vụ CI macOS (vd GitHub Actions runner macOS) — nhưng quy trình phức tạp hơn.</div>
+      </section>
+
+      <!-- ===== CH24 ===== -->
+      <section class="chapter" id="ch24">
+        <h2 class="ch-title"><span class="num">CH 24</span> Tích hợp quảng cáo</h2>
+        <p class="ch-sub">Banner, interstitial, rewarded — kiếm tiền mà không phá trải nghiệm.</p>
+
+        <div class="box warn"><span class="box-title">Godot không có ads sẵn</span>Quảng cáo nhúng qua <strong>plugin nền tảng</strong> (Android/iOS). Godot lõi không kèm SDK quảng cáo. Tên &amp; API plugin thay đổi theo thời gian — kiểm tra AssetLib/GitHub cho bản hợp Godot 4.x của bạn.</div>
+
+        <h3 class="sec">Chọn mạng quảng cáo</h3>
+        <table>
+          <thead><tr><th>Mạng</th><th>Ghi chú</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Google AdMob</strong></td><td>Phổ biến nhất cho mobile game. Có plugin Godot Android &amp; iOS (cộng đồng / Poing Studios). Hỗ trợ <strong>mediation</strong> để gọi cả Unity Ads/AppLovin qua một SDK.</td></tr>
+            <tr><td><strong>AppLovin MAX</strong></td><td>Mediation mạnh, eCPM tốt; thường tích hợp như SDK mediation chính.</td></tr>
+            <tr><td><strong>Unity Ads</strong></td><td>Tốt cho rewarded; thường gọi qua mediation (AdMob/AppLovin) thay vì plugin riêng.</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">Lời khuyên thực dụng</span>Chọn <strong>một SDK mediation</strong> (AdMob hoặc AppLovin MAX) làm "cửa chính", rồi bật Unity Ads/các mạng khác làm <em>nguồn quảng cáo trong mediation</em>. Tránh nhồi nhiều SDK ads rời rạc (xung đột, nặng app).</p>
+        </div>
+
+        <h3 class="sec">3 loại quảng cáo</h3>
+        <table>
+          <thead><tr><th>Loại</th><th>Khi nào dùng</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Banner</strong></td><td>Dải nhỏ thường trực (menu) — doanh thu thấp, ít phiền</td></tr>
+            <tr><td><strong>Interstitial</strong></td><td>Toàn màn hình tại điểm dừng tự nhiên (qua màn, game over) — KHÔNG giữa lúc chơi</td></tr>
+            <tr><td><strong>Rewarded</strong></td><td>Người chơi <em>tự chọn</em> xem để nhận thưởng (mạng, gold, hồi sinh) — eCPM cao nhất, thân thiện nhất</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Quy trình tích hợp (nguyên lý chung)</h3>
+        <ol>
+          <li>Tạo tài khoản mạng ads → tạo <strong>App</strong> &amp; các <strong>Ad Unit ID</strong> (banner/interstitial/rewarded).</li>
+          <li>Cài <strong>plugin</strong> vào <code class="ic">addons/</code>, bật trong preset Export Android (cần <em>Gradle Build</em>) / cấu hình iOS.</li>
+          <li>Khai <strong>App ID</strong> (AdMob yêu cầu trong AndroidManifest/Info.plist — plugin thường có ô cấu hình).</li>
+          <li><strong>Consent/GDPR</strong>: hiện form đồng ý (UMP) trước khi tải ads cá nhân hóa (bắt buộc ở nhiều khu vực).</li>
+          <li>Khởi tạo SDK → load → show → xử lý <strong>signal/callback</strong> (loaded, failed, closed, rewarded).</li>
+          <li>Dùng <strong>test ad unit</strong> khi dev (đừng bấm ad thật của mình → bị khóa tài khoản!).</li>
+        </ol>
+
+        <h3 class="sec">AdsManager (Autoload) — gói gọn logic</h3>
+        <p>API mỗi plugin khác nhau, nên hãy bọc trong một singleton để phần game chỉ gọi <code class="ic">Ads.show_interstitial()</code>. Mẫu minh họa (đổi tên class/hàm theo plugin bạn dùng):</p>
+        <div class="code-block"><div class="code-head"><span class="fname">Ads.gd (Autoload — minh họa)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node
+<span class="c"># Đăng ký Autoload tên "Ads". API dưới đây là MINH HỌA —</span>
+<span class="c"># thay bằng API thực của plugin AdMob/AppLovin bạn cài.</span>
+
+<span class="k">var</span> _admob                       <span class="c"># instance plugin</span>
+<span class="k">var</span> interstitial_ready := <span class="k">false</span>
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    <span class="k">if</span> Engine.has_singleton(<span class="s">"AdMob"</span>):          <span class="c"># plugin chỉ có trên thiết bị</span>
+        _admob = Engine.get_singleton(<span class="s">"AdMob"</span>)
+        _admob.initialize()
+        <span class="c"># nối signal của plugin (tên tùy plugin)</span>
+        <span class="c"># _admob.interstitial_loaded.connect(func(): interstitial_ready = true)</span>
+        <span class="c"># _admob.rewarded_user_earned_reward.connect(_on_reward)</span>
+        _load_interstitial()
+
+<span class="k">func</span> <span class="f">_load_interstitial</span>() -> <span class="t">void</span>:
+    <span class="k">if</span> _admob:
+        _admob.load_interstitial(<span class="s">"ca-app-pub-XXX/interstitial_id"</span>)
+
+<span class="k">func</span> <span class="f">show_interstitial</span>() -> <span class="t">void</span>:
+    <span class="k">if</span> _admob <span class="k">and</span> interstitial_ready:
+        _admob.show_interstitial()
+        interstitial_ready = <span class="k">false</span>
+        _load_interstitial()             <span class="c"># nạp sẵn cho lần sau</span>
+
+<span class="k">func</span> <span class="f">show_rewarded</span>() -> <span class="t">void</span>:
+    <span class="k">if</span> _admob:
+        _admob.show_rewarded(<span class="s">"ca-app-pub-XXX/rewarded_id"</span>)
+
+<span class="k">func</span> <span class="f">_on_reward</span>(amount: <span class="t">int</span>) -> <span class="t">void</span>:
+    Game.add_score(amount)               <span class="c"># thưởng người chơi sau khi xem xong</span></pre>
+        </div>
+        <p>Phần game gọi rất gọn:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">gameplay.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">func</span> <span class="f">_on_level_complete</span>():
+    levels_done += <span class="n">1</span>
+    <span class="k">if</span> levels_done % <span class="n">3</span> == <span class="n">0</span>:        <span class="c"># interstitial cách quãng, không spam</span>
+        Ads.show_interstitial()
+
+<span class="k">func</span> <span class="f">_on_revive_button_pressed</span>():
+    Ads.show_rewarded()               <span class="c"># người chơi tự chọn xem để hồi sinh</span></pre>
+        </div>
+
+        <div class="box danger"><span class="box-title">Best practice &amp; chính sách</span>
+          <ul style="margin-bottom:0">
+            <li><strong>Không</strong> hiện interstitial giữa lúc đang chơi hay ngay khi mở app — chỉ ở điểm dừng tự nhiên.</li>
+            <li>Ưu tiên <strong>rewarded</strong> (người chơi tự nguyện) — doanh thu cao &amp; không gây ức chế.</li>
+            <li>Tần suất hợp lý (vd interstitial cách ≥1–2 phút) — quá nhiều → gỡ app &amp; vi phạm chính sách.</li>
+            <li>Tuân thủ <strong>GDPR/UMP consent</strong>, và <strong>gắn nhãn quảng cáo cho trẻ em</strong> nếu game hướng trẻ em (COPPA/Families).</li>
+            <li>Luôn dùng <strong>test ad IDs</strong> khi phát triển; bấm ad thật của chính mình → AdMob khóa tài khoản.</li>
+          </ul>
+        </div>
+
+        <h3 class="sec">Quiz cấp độ L4</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L4</div>
+          <div class="q" data-answer="b">
+            <p>1. Định dạng nộp Google Play hiện nay?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l4q1" value="a"> .exe</label>
+            <label class="opt" data-key="b"><input type="radio" name="l4q1" value="b"> .aab (Android App Bundle)</label>
+            <label class="opt" data-key="c"><input type="radio" name="l4q1" value="c"> .zip</label>
+            <div class="explain">Play Store yêu cầu AAB; APK vẫn dùng để cài/test trực tiếp.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Loại quảng cáo thân thiện &amp; eCPM cao nhất?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l4q2" value="a"> Banner</label>
+            <label class="opt" data-key="b"><input type="radio" name="l4q2" value="b"> Interstitial giữa lúc chơi</label>
+            <label class="opt" data-key="c"><input type="radio" name="l4q2" value="c"> Rewarded (người chơi tự chọn xem)</label>
+            <div class="explain">Rewarded do người chơi chủ động xem để nhận thưởng — doanh thu tốt, ít phiền.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Build app iOS cần?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l4q3" value="a"> macOS + Xcode + tài khoản Apple Developer</label>
+            <label class="opt" data-key="b"><input type="radio" name="l4q3" value="b"> Chỉ Windows</label>
+            <label class="opt" data-key="c"><input type="radio" name="l4q3" value="c"> Không cần gì thêm</label>
+            <div class="explain">iOS bắt buộc Mac + Xcode để ký &amp; nộp App Store; Godot xuất ra dự án Xcode.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== CAPSTONE MINI-GAME ===================== -->
+      <div class="level-divider" id="lvc"><div class="line"></div><span class="tag tag-l3">🎮 Capstone · Mini-game</span><div class="line"></div></div>
+      <section class="chapter" id="capstone">
+        <h2 class="ch-title"><span class="num">🎮</span> Mini-game hoàn chỉnh: "Slinky Goal"</h2>
+        <p class="ch-sub">Ghép mọi thứ đã học thành một game chơi được — và dựng lại trong Godot từng bước.</p>
+
+        <p><strong>Luật chơi:</strong> bạn <strong>kéo đầu treo</strong> của lò xo (chấm vàng) bằng chuột/ngón tay. Lò xo đung đưa theo vật lý. Đưa <strong>đuôi lò xo (chấm cam)</strong> chạm <strong>đích xanh</strong> để qua màn, <strong>né các thanh gai đỏ</strong> (chạm gai → chơi lại màn). Có 3 màn tăng dần độ khó.</p>
+
+        <h3 class="sec">▶ Chơi ngay (bản web)</h3>
+        <div class="box slinky"><span class="box-title">Đây là chính game bạn sắp dựng trong Godot</span>Bản web này chạy đúng mô hình Verlet + luật chơi mà phần Godot bên dưới hiện thực hóa. Chơi thử để "thấy" mục tiêu, rồi dựng lại bằng GDScript.</div>
+        <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#0a0e14; margin:16px 0;">
+          <canvas id="mgCanvas" width="560" height="360" style="display:block; width:100%; height:auto; aspect-ratio:560/360; touch-action:none; cursor:grab; background:radial-gradient(circle at 50% 25%, #122131, #0a0e14);"></canvas>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:-6px;">
+          <button onclick="mgReset()" style="background:var(--card-2);color:var(--light);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">↺ Chơi lại màn</button>
+          <button onclick="mgSkip()" style="background:var(--accent);color:#1a0e08;border:none;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;">⏭ Bỏ qua màn</button>
+          <span style="align-self:center;color:var(--gray);font-size:12.5px;">Kéo chấm vàng để điều khiển đầu treo · đuôi cam chạm đích xanh để thắng.</span>
+        </div>
+
+        <h3 class="sec">🧱 Bước 1 — Cấu trúc dự án &amp; scene</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">Cây scene Main.tscn</span></div>
+<pre class="code">Main (Node2D)              <span class="c"># main.gd — quản lý màn, input, thắng/thua</span>
+├── Slinky (Node2D)        <span class="c"># slinky.gd — Verlet + vẽ coil + đuôi</span>
+└── HUD (CanvasLayer)
+    ├── LevelLabel (Label)
+    ├── MsgLabel (Label)   <span class="c"># "Qua màn!" / "Chạm gai!"</span>
+    ├── RetryButton (Button)
+    └── SkipButton (Button)   <span class="c"># xem rewarded ad để bỏ qua</span>
+
+<span class="c"># Autoload (Project Settings → Autoload): Ads (ch24), Game (ch20) — tùy chọn</span></pre>
+        </div>
+
+        <h3 class="sec">🌀 Bước 2 — Script lò xo (slinky.gd)</h3>
+        <p>Mở rộng từ chương 13 (Verlet) + 14 (vẽ coil): thêm điểm treo đi theo một <em>target</em>, và hàm lấy đuôi.</p>
+        <div class="code-block"><div class="code-head"><span class="fname">slinky.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D
+
+<span class="d">@export</span> <span class="k">var</span> segments: <span class="t">int</span> = <span class="n">16</span>
+<span class="d">@export</span> <span class="k">var</span> rest: <span class="t">float</span> = <span class="n">14.0</span>
+<span class="d">@export</span> <span class="k">var</span> damping: <span class="t">float</span> = <span class="n">0.98</span>
+<span class="d">@export</span> <span class="k">var</span> gravity: <span class="t">float</span> = <span class="n">900.0</span>
+<span class="d">@export</span> <span class="k">var</span> iterations: <span class="t">int</span> = <span class="n">6</span>
+<span class="d">@export</span> <span class="k">var</span> coils: <span class="t">int</span> = <span class="n">16</span>
+<span class="d">@export</span> <span class="k">var</span> coil_radius: <span class="t">float</span> = <span class="n">12.0</span>
+
+<span class="k">var</span> pos: PackedVector2Array = []
+<span class="k">var</span> prev: PackedVector2Array = []
+<span class="k">var</span> anchor: Vector2 = Vector2.ZERO   <span class="c"># vị trí đầu treo (main set mỗi frame)</span>
+
+<span class="k">func</span> <span class="f">setup</span>(start: Vector2) -> <span class="t">void</span>:
+    anchor = start
+    pos.clear(); prev.clear()
+    <span class="k">for</span> i <span class="k">in</span> segments:
+        <span class="k">var</span> p := start + Vector2(<span class="n">0</span>, i * rest)
+        pos.append(p); prev.append(p)
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="k">if</span> pos.is_empty():
+        <span class="k">return</span>
+    <span class="c"># tích phân Verlet</span>
+    <span class="k">var</span> g := Vector2(<span class="n">0</span>, gravity) * delta * delta
+    <span class="k">for</span> i <span class="k">in</span> range(<span class="n">1</span>, pos.size()):
+        <span class="k">var</span> v := (pos[i] - prev[i]) * damping
+        prev[i] = pos[i]
+        pos[i] += v + g
+    <span class="c"># ràng buộc + ghim đầu treo vào anchor</span>
+    <span class="k">for</span> it <span class="k">in</span> iterations:
+        pos[<span class="n">0</span>] = anchor
+        <span class="k">for</span> i <span class="k">in</span> pos.size() - <span class="n">1</span>:
+            <span class="k">var</span> d := pos[i + <span class="n">1</span>] - pos[i]
+            <span class="k">var</span> dist := d.length()
+            <span class="k">if</span> dist == <span class="n">0.0</span>: <span class="k">continue</span>
+            <span class="k">var</span> off := d * ((dist - rest) / dist * <span class="n">0.5</span>)
+            <span class="k">if</span> i != <span class="n">0</span>: pos[i] += off
+            pos[i + <span class="n">1</span>] -= off
+    queue_redraw()
+
+<span class="k">func</span> <span class="f">get_tail</span>() -> Vector2:
+    <span class="k">return</span> pos[pos.size() - <span class="n">1</span>] <span class="k">if</span> <span class="k">not</span> pos.is_empty() <span class="k">else</span> anchor
+
+<span class="k">func</span> <span class="f">_draw</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> n := pos.size() - <span class="n">1</span>
+    <span class="k">if</span> n &lt; <span class="n">1</span>: <span class="k">return</span>
+    <span class="k">var</span> path: PackedVector2Array = []
+    <span class="k">var</span> sub := <span class="n">7</span>
+    <span class="k">for</span> i <span class="k">in</span> n:
+        <span class="k">var</span> a := pos[i]; <span class="k">var</span> b := pos[i + <span class="n">1</span>]
+        <span class="k">var</span> tg := (b - a).normalized()
+        <span class="k">var</span> nm := Vector2(-tg.y, tg.x)
+        <span class="k">for</span> s <span class="k">in</span> sub:
+            <span class="k">var</span> f := <span class="t">float</span>(s) / sub
+            <span class="k">var</span> t := (i + f) / <span class="t">float</span>(n)
+            path.append(a.lerp(b, f) + nm * (coil_radius * sin(t * coils * TAU)))
+    path.append(pos[n])
+    <span class="k">for</span> i <span class="k">in</span> path.size() - <span class="n">1</span>:
+        draw_line(path[i], path[i + <span class="n">1</span>], Color(<span class="s">"6bb0e0"</span>), <span class="n">3.0</span>, <span class="k">true</span>)
+    draw_circle(anchor, <span class="n">6</span>, Color(<span class="s">"ffca28"</span>))            <span class="c"># đầu treo</span>
+    draw_circle(pos[n], <span class="n">6</span>, Color(<span class="s">"ff7043"</span>))            <span class="c"># đuôi</span></pre>
+        </div>
+
+        <h3 class="sec">🎯 Bước 3 — Game chính (main.gd): màn, input, thắng/thua</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">main.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D
+
+<span class="d">@onready</span> <span class="k">var</span> slinky: Node2D = $Slinky
+<span class="d">@onready</span> <span class="k">var</span> level_label: Label = $HUD/LevelLabel
+<span class="d">@onready</span> <span class="k">var</span> msg_label: Label = $HUD/MsgLabel
+
+<span class="c"># mỗi màn: vị trí treo, đích (tâm+bán kính), danh sách chướng ngại (Rect2)</span>
+<span class="k">var</span> levels := [
+    {<span class="s">"anchor"</span>: Vector2(<span class="n">120</span>, <span class="n">60</span>), <span class="s">"goal"</span>: Vector2(<span class="n">620</span>, <span class="n">340</span>), <span class="s">"goal_r"</span>: <span class="n">30.0</span>,
+     <span class="s">"obstacles"</span>: [Rect2(<span class="n">320</span>, <span class="n">150</span>, <span class="n">28</span>, <span class="n">240</span>)]},
+    {<span class="s">"anchor"</span>: Vector2(<span class="n">110</span>, <span class="n">60</span>), <span class="s">"goal"</span>: Vector2(<span class="n">640</span>, <span class="n">160</span>), <span class="s">"goal_r"</span>: <span class="n">28.0</span>,
+     <span class="s">"obstacles"</span>: [Rect2(<span class="n">280</span>, <span class="n">0</span>, <span class="n">28</span>, <span class="n">230</span>), Rect2(<span class="n">470</span>, <span class="n">200</span>, <span class="n">28</span>, <span class="n">280</span>)]},
+    {<span class="s">"anchor"</span>: Vector2(<span class="n">120</span>, <span class="n">60</span>), <span class="s">"goal"</span>: Vector2(<span class="n">380</span>, <span class="n">420</span>), <span class="s">"goal_r"</span>: <span class="n">28.0</span>,
+     <span class="s">"obstacles"</span>: [Rect2(<span class="n">220</span>, <span class="n">130</span>, <span class="n">300</span>, <span class="n">26</span>), Rect2(<span class="n">260</span>, <span class="n">280</span>, <span class="n">300</span>, <span class="n">26</span>)]},
+]
+<span class="k">var</span> current := <span class="n">0</span>
+<span class="k">var</span> dragging := <span class="k">false</span>
+<span class="k">var</span> cleared := <span class="k">false</span>
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    $HUD/RetryButton.pressed.connect(load_level)
+    $HUD/SkipButton.pressed.connect(_on_skip)
+    load_level()
+
+<span class="k">func</span> <span class="f">load_level</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> lv = levels[current]
+    slinky.setup(lv[<span class="s">"anchor"</span>])
+    cleared = <span class="k">false</span>
+    msg_label.text = <span class="s">""</span>
+    level_label.text = <span class="s">"Màn %d / %d"</span> % [current + <span class="n">1</span>, levels.size()]
+    queue_redraw()
+
+<span class="k">func</span> <span class="f">_unhandled_input</span>(event: InputEvent) -> <span class="t">void</span>:
+    <span class="k">if</span> event <span class="k">is</span> InputEventMouseButton <span class="k">and</span> event.button_index == MOUSE_BUTTON_LEFT:
+        dragging = event.pressed
+    <span class="k">elif</span> event <span class="k">is</span> InputEventScreenTouch:
+        dragging = event.pressed
+
+<span class="k">func</span> <span class="f">_physics_process</span>(_delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="c"># kéo đầu treo theo con trỏ (kẹp trong màn)</span>
+    <span class="k">if</span> dragging:
+        <span class="k">var</span> m := get_global_mouse_position()
+        slinky.anchor = Vector2(clamp(m.x, <span class="n">10</span>, <span class="n">780</span>), clamp(m.y, <span class="n">20</span>, <span class="n">440</span>))
+    <span class="k">if</span> <span class="k">not</span> cleared:
+        _check()
+
+<span class="k">func</span> <span class="f">_check</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> lv = levels[current]
+    <span class="c"># thắng: đuôi chạm đích</span>
+    <span class="k">if</span> slinky.get_tail().distance_to(lv[<span class="s">"goal"</span>]) &lt; lv[<span class="s">"goal_r"</span>]:
+        _win(); <span class="k">return</span>
+    <span class="c"># thua: BẤT KỲ đốt nào chạm chướng ngại</span>
+    <span class="k">for</span> r <span class="k">in</span> lv[<span class="s">"obstacles"</span>]:
+        <span class="k">for</span> p <span class="k">in</span> slinky.pos:
+            <span class="k">if</span> r.has_point(p):
+                _fail(); <span class="k">return</span>
+
+<span class="k">func</span> <span class="f">_win</span>() -> <span class="t">void</span>:
+    cleared = <span class="k">true</span>
+    msg_label.text = <span class="s">"🎉 Qua màn!"</span>
+    <span class="k">await</span> get_tree().create_timer(<span class="n">0.8</span>).timeout
+    current = (current + <span class="n">1</span>) % levels.size()
+    load_level()
+
+<span class="k">func</span> <span class="f">_fail</span>() -> <span class="t">void</span>:
+    msg_label.text = <span class="s">"💥 Chạm gai! Thử lại"</span>
+    load_level()
+
+<span class="k">func</span> <span class="f">_on_skip</span>() -> <span class="t">void</span>:
+    <span class="c"># xem quảng cáo rewarded để bỏ qua màn (ch24)</span>
+    <span class="k">if</span> Engine.has_singleton(<span class="s">"AdMob"</span>) <span class="k">or</span> <span class="k">true</span>:   <span class="c"># Ads là Autoload</span>
+        Ads.show_rewarded()      <span class="c"># khi xem xong, callback gọi skip_level()</span>
+
+<span class="k">func</span> <span class="f">skip_level</span>() -> <span class="t">void</span>:    <span class="c"># Ads gọi hàm này sau khi thưởng</span>
+    current = (current + <span class="n">1</span>) % levels.size()
+    load_level()
+
+<span class="k">func</span> <span class="f">_draw</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> lv = levels[current]
+    <span class="c"># chướng ngại</span>
+    <span class="k">for</span> r <span class="k">in</span> lv[<span class="s">"obstacles"</span>]:
+        draw_rect(r, Color(<span class="s">"f85149"</span>))
+    <span class="c"># đích</span>
+    draw_circle(lv[<span class="s">"goal"</span>], lv[<span class="s">"goal_r"</span>], Color(<span class="s">"2ea043"</span>, <span class="n">0.35</span>))
+    draw_arc(lv[<span class="s">"goal"</span>], lv[<span class="s">"goal_r"</span>], <span class="n">0</span>, TAU, <span class="n">32</span>, Color(<span class="s">"2ea043"</span>), <span class="n">3.0</span>)</pre>
+        </div>
+        <div class="box info"><span class="box-title">Lưu ý nối dây</span>Vì <code class="ic">main.gd</code> đọc <code class="ic">slinky.pos</code> và đặt <code class="ic">slinky.anchor</code> trực tiếp, hãy đảm bảo <code class="ic">main._physics_process</code> chạy <em>cùng nhịp</em> với slinky (cả hai đều trong <code class="ic">_physics_process</code> nên OK). Đích/chướng ngại vẽ ở <code class="ic">main._draw</code>; cần gọi <code class="ic">queue_redraw()</code> khi đổi màn (đã có trong <code class="ic">load_level</code>).</div>
+
+        <h3 class="sec">🖼️ Bước 4 — HUD &amp; nút</h3>
+        <p>Trong <code class="ic">HUD (CanvasLayer)</code>: thêm 2 <code class="ic">Label</code> (LevelLabel góc trên, MsgLabel giữa) và 2 <code class="ic">Button</code> (RetryButton, SkipButton). <code class="ic">main.gd</code> đã <code class="ic">connect</code> tín hiệu <code class="ic">pressed</code> ở <code class="ic">_ready</code>. CanvasLayer giúp HUD <strong>không bị camera ảnh hưởng</strong> &amp; luôn nổi trên game.</p>
+
+        <h3 class="sec">📱 Bước 5 — Mobile &amp; quảng cáo rewarded</h3>
+        <ul>
+          <li>Cảm ứng đã hỗ trợ sẵn (xử lý <code class="ic">InputEventScreenTouch</code> + kéo theo <code class="ic">get_global_mouse_position</code> khi bật <em>Emulate Mouse From Touch</em>).</li>
+          <li>Nút <strong>Bỏ qua màn</strong> gọi <code class="ic">Ads.show_rewarded()</code> (AdsManager ở ch24). Trong callback "đã thưởng" của Ads, gọi <code class="ic">get_tree().current_scene.skip_level()</code> để qua màn.</li>
+          <li>Có thể thêm <strong>interstitial</strong> sau mỗi 3 màn thắng: trong <code class="ic">_win()</code> thêm <code class="ic">if current % 3 == 0: Ads.show_interstitial()</code>.</li>
+        </ul>
+
+        <h3 class="sec">✨ Bước 6 — Polish &amp; mở rộng</h3>
+        <div class="checklist">
+          <h4>✔️ Nâng cấp game</h4>
+          <label><input type="checkbox"><span>Âm "boing"/thắng (<code class="ic">AudioStreamPlayer</code>), particle khi chạm đích (<code class="ic">GPUParticles2D</code>).</span></label>
+          <label><input type="checkbox"><span>Đổi màu coil theo độ căng; camera rung nhẹ khi chạm gai.</span></label>
+          <label><input type="checkbox"><span>Đồng hồ/“số lần thử” mỗi màn → tính sao (1–3 sao).</span></label>
+          <label><input type="checkbox"><span>Thêm màn từ file <code class="ic">Resource (.tres)</code> để dễ tạo level mới (không sửa code).</span></label>
+          <label><input type="checkbox"><span>Lưu màn cao nhất đã qua (save/load, ch20).</span></label>
+          <label><input type="checkbox"><span>Va chạm thân với vật động (RigidBody2D) để slinky đẩy/khều vật — kết hợp ch6.</span></label>
+        </div>
+        <h3 class="sec">🆕 Bước 7 — Cơ chế puzzle: hộp đẩy + công tắc + cổng</h3>
+        <p>Bản web (màn 3) đã có: <strong>hộp 🟫 đẩy được</strong> → đè lên <strong>công tắc 🟨</strong> → mở <strong>cổng tím 🔒</strong> chặn đường tới đích. Trong Godot:</p>
+        <ul>
+          <li><strong>Hộp</strong>: <code class="ic">RigidBody2D</code> + CollisionShape (chữ nhật) + Sprite. Sàn/tường là <code class="ic">StaticBody2D</code> → hộp tự rơi &amp; nằm yên. Slinky (hình học) đẩy hộp bằng cách <em>cấp xung lực</em> khi điểm slinky chạm hộp.</li>
+          <li><strong>Công tắc</strong>: <code class="ic">Area2D</code> — bật khi hộp (RigidBody) đi vào (<code class="ic">body_entered</code>).</li>
+          <li><strong>Cổng</strong>: <code class="ic">StaticBody2D</code> (tường đặc) + visual; khi công tắc bật → <strong>tắt collision</strong> &amp; ẩn đi.</li>
+        </ul>
+        <div class="code-block"><div class="code-head"><span class="fname">box_push + switch + gate (thêm vào main.gd)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="d">@onready</span> <span class="k">var</span> box: RigidBody2D = $Box
+<span class="d">@onready</span> <span class="k">var</span> gate: StaticBody2D = $Gate
+<span class="d">@onready</span> <span class="k">var</span> switch_area: Area2D = $Switch
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    switch_area.body_entered.connect(_on_switch)
+
+<span class="k">func</span> <span class="f">_on_switch</span>(body: Node) -> <span class="t">void</span>:
+    <span class="k">if</span> body == box:
+        gate.hide()
+        gate.get_node(<span class="s">"CollisionShape2D"</span>).set_deferred(<span class="s">"disabled"</span>, <span class="k">true</span>)  <span class="c"># mở cổng</span>
+
+<span class="k">func</span> <span class="f">_push_boxes</span>() -> <span class="t">void</span>:    <span class="c"># gọi trong _physics_process</span>
+    <span class="k">var</span> rect := Rect2(box.global_position - box_size * <span class="n">0.5</span>, box_size)
+    <span class="k">for</span> p <span class="k">in</span> slinky.pos:
+        <span class="k">if</span> rect.has_point(p):
+            <span class="k">var</span> dir := signf(box.global_position.x - p.x)
+            box.apply_central_impulse(Vector2(dir * <span class="n">12</span>, <span class="n">0</span>))  <span class="c"># slinky huých hộp</span></pre>
+        </div>
+        <div class="box info"><span class="box-title">Vì sao đẩy bằng impulse</span>Slinky của ta là <em>hình học</em> (Verlet), không phải physics body, nên không tự va chạm với RigidBody. Cách gọn: phát hiện điểm slinky nằm trong hộp → <code class="ic">apply_central_impulse</code> theo hướng đẩy. Muốn "thật" hơn nữa, có thể làm mỗi đốt là một <code class="ic">RigidBody2D</code> (cách ch12) — đổi lại nặng hơn.</div>
+
+        <h3 class="sec">⏱️ Bước 8 — Tính giờ, sao &amp; lưu kỷ lục</h3>
+        <p>Bản web đã có: <strong>đồng hồ</strong>, <strong>sao ⭐ theo thời gian</strong> (so với <code class="ic">par</code>), và <strong>lưu kỷ lục</strong> qua localStorage. Trong Godot dùng <code class="ic">FileAccess</code> + JSON ghi vào <code class="ic">user://</code>.</p>
+        <div class="code-block"><div class="code-head"><span class="fname">time + stars + save (main.gd)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> elapsed := <span class="n">0.0</span>
+<span class="k">var</span> playing := <span class="k">false</span>
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="k">if</span> playing <span class="k">and</span> <span class="k">not</span> cleared:
+        elapsed += delta
+    <span class="c"># ... (kéo anchor, _check, _push_boxes) ...</span>
+
+<span class="k">func</span> <span class="f">_stars_for</span>(t: <span class="t">float</span>) -> <span class="t">int</span>:
+    <span class="k">var</span> par: <span class="t">float</span> = levels[current].get(<span class="s">"par"</span>, <span class="n">10.0</span>)
+    <span class="k">if</span> t &lt;= par: <span class="k">return</span> <span class="n">3</span>
+    <span class="k">elif</span> t &lt;= par * <span class="n">1.7</span>: <span class="k">return</span> <span class="n">2</span>
+    <span class="k">return</span> <span class="n">1</span>
+
+<span class="k">func</span> <span class="f">_win</span>() -> <span class="t">void</span>:
+    cleared = <span class="k">true</span>
+    <span class="k">var</span> stars := _stars_for(elapsed)
+    msg_label.text = <span class="s">"🎉 Qua màn! "</span> + <span class="s">"⭐"</span>.repeat(stars)
+    _save_best(current, stars, elapsed)
+    <span class="k">await</span> get_tree().create_timer(<span class="n">0.9</span>).timeout
+    current = (current + <span class="n">1</span>) % levels.size(); load_level()
+
+<span class="c"># ---- Save/Load: user://save.json ----</span>
+<span class="k">func</span> <span class="f">_save_best</span>(lvl: <span class="t">int</span>, stars: <span class="t">int</span>, t: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="k">var</span> data := _load_all()
+    <span class="k">var</span> key := str(lvl)
+    <span class="k">var</span> old: Dictionary = data.get(key, {<span class="s">"stars"</span>: <span class="n">0</span>, <span class="s">"time"</span>: <span class="n">9999.0</span>})
+    <span class="k">if</span> stars &gt; old[<span class="s">"stars"</span>] <span class="k">or</span> (stars == old[<span class="s">"stars"</span>] <span class="k">and</span> t &lt; old[<span class="s">"time"</span>]):
+        data[key] = {<span class="s">"stars"</span>: stars, <span class="s">"time"</span>: t}
+        <span class="k">var</span> f := FileAccess.open(<span class="s">"user://save.json"</span>, FileAccess.WRITE)
+        f.store_string(JSON.stringify(data)); f.close()
+
+<span class="k">func</span> <span class="f">_load_all</span>() -> Dictionary:
+    <span class="k">if</span> <span class="k">not</span> FileAccess.file_exists(<span class="s">"user://save.json"</span>): <span class="k">return</span> {}
+    <span class="k">var</span> f := FileAccess.open(<span class="s">"user://save.json"</span>, FileAccess.READ)
+    <span class="k">var</span> res = JSON.parse_string(f.get_as_text()); f.close()
+    <span class="k">return</span> res <span class="k">if</span> res <span class="k">is</span> Dictionary <span class="k">else</span> {}</pre>
+        </div>
+        <div class="box info"><span class="box-title">user:// là gì</span><code class="ic">user://</code> là thư mục lưu riêng của game (mỗi nền tảng một chỗ: AppData/Documents/...). An toàn để ghi save, settings, kỷ lục — tương đương localStorage của bản web.</div>
+
+        <h3 class="sec">🧩 Bước 9 — Tự thiết kế màn bằng Level Editor</h3>
+        <p>Bấm nút <strong>🧩 Level Editor</strong> (góc dưới <em>trái</em>) để <strong>vẽ màn của riêng bạn</strong>: chọn công cụ rồi bấm/kéo trên lưới đặt đầu treo, đích, gai, hộp, công tắc, cổng. Sau đó:</p>
+        <ul>
+          <li><strong>▶ Chơi thử</strong>: nạp ngay màn vừa vẽ vào game phía trên để test.</li>
+          <li><strong>⬇ Xuất Godot</strong> + <strong>⧉ Copy</strong>: lấy đoạn dữ liệu màn (định dạng <code class="ic">Vector2/Rect2</code>) và dán vào mảng <code class="ic">levels</code> trong <code class="ic">main.gd</code> — không phải gõ tay tọa độ.</li>
+        </ul>
+        <div class="box slinky"><span class="box-title">Quy trình thiết kế nhanh</span>Vẽ trong Level Editor → Chơi thử tinh chỉnh độ khó (canh đường đi của đuôi, khoảng né gai, vị trí hộp/công tắc) → Xuất Godot → dán vào <code class="ic">levels</code>. Lặp lại để ra nhiều màn mà không cần build lại trong editor Godot mỗi lần.</div>
+
+        <div class="box slinky"><span class="box-title">Bạn vừa có một game hoàn chỉnh 🎉</span>3 màn, điều khiển vật lý, thắng/thua, HUD, nút, và móc quảng cáo — đủ để mở rộng thành sản phẩm publish. Tinh chỉnh "feel" trong <strong>🌀 Slinky Lab</strong>, thêm màn, polish, rồi export Android/iOS (L4). Chúc vui!</div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards ôn tập</h2>
+        <p class="ch-sub">Bấm thẻ để lật. Lọc theo cấp độ.</p>
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'0')">L0</button>
+          <button class="fc-filter" onclick="filterFC(this,'1')">L1</button>
+          <button class="fc-filter" onclick="filterFC(this,'2')">L2 🌀</button>
+          <button class="fc-filter" onclick="filterFC(this,'3')">L3</button>
+          <button class="fc-filter" onclick="filterFC(this,'4')">L4</button>
+          <span id="fcCount" style="margin-left:auto;color:var(--gray);font-size:12.5px;align-self:center">16 thẻ</span>
+        </div>
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">_process vs _physics_process?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>_process</code> mỗi khung hình (hiển thị); <code>_physics_process</code> timestep cố định (vật lý). Logic physics → dùng cái sau.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">@export &amp; @onready để làm gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>@export</code>: biến chỉnh trong Inspector. <code>@onready</code>: gán tham chiếu node con khi scene sẵn sàng (<code>$Path</code>).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Tác động RigidBody2D thế nào?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Bằng lực/xung lực: <code>apply_central_impulse</code> (tức thời), <code>apply_central_force</code> (liên tục). KHÔNG đặt position trực tiếp.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">CharacterBody2D di chuyển ra sao?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Tự đặt <code>velocity</code> rồi gọi <code>move_and_slide()</code> (Godot 4). <code>is_on_floor()</code> để biết chạm đất.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Layer vs Mask?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Layer = "tôi ở tầng nào"; Mask = "tôi quét tầng nào". A thấy B khi mask của A chứa layer của B.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2 🌀</span><div class="fc-q">Định luật Hooke?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a"><code>F = −k·x</code>: lực lò xo tỉ lệ &amp; ngược chiều độ biến dạng. Thêm <code>−c·v</code> để giảm chấn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2 🌀</span><div class="fc-q">Verlet integration là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Suy vận tốc từ vị trí trước: <code>x' = x + (x−x_cũ)·damp + a·dt²</code>, rồi áp ràng buộc khoảng cách. Rất ổn định cho lò xo/dây.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2 🌀</span><div class="fc-q">2 cách dựng Slinky trong Godot?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">(1) RigidBody2D + DampedSpringJoint2D (engine, va chạm sẵn). (2) Verlet tùy chỉnh (ổn định, nhẹ, kiểm soát cao).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2 🌀</span><div class="fc-q">Làm coil cứng hơn mà ổn định?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Tăng <code>iterations</code> (lặp ràng buộc) thay vì đẩy stiffness &gt; 1. Lặp nhiều = cứng &amp; ổn định hơn (PBD).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2 🌀</span><div class="fc-q">Vẽ hình coil xoắn thế nào?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Đường tâm + lệch vuông góc theo <code>sin(t·coils·TAU)</code> với t là vị trí dọc thân (0..1). Nén/giãn → vòng tự bó/giãn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">"Điểm + ràng buộc" mở khóa gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Cả họ soft-body 2D: rope, cloth (lưới), jelly, cầu/giàn — chỉ đổi cách nối điểm. Slinky là một cấu hình.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Tối ưu vẽ slinky?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Một <code>Line2D</code>/<code>_draw</code> cho cả thân (ít draw call); <code>PackedVector2Array</code>; giảm điểm/iterations; test thiết bị thật.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Cần gì để build iOS?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t4">ĐÁP ÁN</span><div class="fc-a">macOS + Xcode + Apple Developer account. Godot xuất ra dự án Xcode để ký &amp; nộp App Store.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Ads trong Godot lấy từ đâu?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t4">ĐÁP ÁN</span><div class="fc-a">Plugin nền tảng (AdMob/AppLovin) — Godot lõi không có. Cần Gradle Build cho Android. Bọc trong Autoload AdsManager.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Quy tắc vàng khi gắn ads?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t4">ĐÁP ÁN</span><div class="fc-a">Ưu tiên rewarded; interstitial chỉ ở điểm dừng tự nhiên, cách quãng; dùng test ad ID khi dev; tuân thủ consent/GDPR.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Vì sao phải giữ release keystore?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t4">ĐÁP ÁN</span><div class="fc-a">Play định danh app qua chữ ký. Mất keystore = không cập nhật được app. Sao lưu cẩn thận.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra cứu nhanh node, API, Slinky, export.</p>
+
+        <h3 class="sec">Node vật lý &amp; lifecycle</h3>
+        <table>
+          <thead><tr><th>Mục</th><th>Dùng</th></tr></thead>
+          <tbody>
+            <tr><td>Body</td><td>StaticBody2D · RigidBody2D · CharacterBody2D · Area2D (+ CollisionShape2D)</td></tr>
+            <tr><td>Joint</td><td>PinJoint2D · DampedSpringJoint2D · GrooveJoint2D</td></tr>
+            <tr><td>Callbacks</td><td>_ready() · _process(delta) · _physics_process(delta) · _draw() · _unhandled_input(e)</td></tr>
+            <tr><td>RigidBody</td><td>apply_central_impulse/force · linear_velocity · freeze</td></tr>
+            <tr><td>Character</td><td>velocity + move_and_slide() · is_on_floor()</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Slinky Verlet (rút gọn)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">slinky_core.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># integrate</span>
+v = (pos[i] - prev[i]) * damping; prev[i] = pos[i]; pos[i] += v + g*dt*dt
+<span class="c"># constraint (lặp 'iterations' lần)</span>
+d = pos[i+1] - pos[i]; diff = (d.length()-rest)/d.length() * 0.5 * stiffness
+pos[i] += d*diff (nếu !pinned);  pos[i+1] -= d*diff (nếu !pinned)
+<span class="c"># vẽ coil: off = coil_radius * sin(t * coils * TAU)  (t=0..1 dọc thân)</span></pre>
+        </div>
+
+        <h3 class="sec">Export &amp; Ads</h3>
+        <table>
+          <thead><tr><th>Việc</th><th>Tóm tắt</th></tr></thead>
+          <tbody>
+            <tr><td>Android</td><td>Export Templates + SDK/JDK → preset → debug .apk / release .aab (Gradle Build) + giữ keystore</td></tr>
+            <tr><td>iOS</td><td>macOS + Xcode + Apple Developer → export Xcode project → ký → App Store Connect</td></tr>
+            <tr><td>Ads</td><td>Plugin AdMob/AppLovin → Autoload AdsManager → banner/interstitial/rewarded → consent + test IDs</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box slinky"><span class="box-title">Hết guide! 🎉</span>Bạn đã đi từ node/GDScript → vật lý 2D → <strong>mô phỏng Slinky</strong> (engine joint &amp; Verlet) → polish → <strong>xuất bản Android/iOS có quảng cáo</strong>. Bước tiếp: dựng một game nhỏ quanh Slinky (vd puzzle kéo-thả lò xo), tinh chỉnh trong <strong>🌀 Slinky Lab</strong>, rồi publish. Chúc bạn ra game thành công! 🤖🌀</div>
+      </section>
+
+      <footer class="foot">
+        🤖 Godot 2D Physics — tham khảo tài liệu chính thức <a class="inline" href="https://docs.godotengine.org" target="_blank">Godot Engine Documentation</a>. Godot là engine mã nguồn mở (MIT). Quảng cáo qua plugin cộng đồng (AdMob/Unity Ads/AppLovin) — tên &amp; API plugin có thể thay đổi.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== SLINKY LAB ===== -->
+<button class="lab-fab" id="labFab" onclick="toggleLab(true)">🌀 Slinky Lab</button>
+<div class="lab-panel" id="labPanel">
+  <div class="lab-head" id="labHead">
+    <span class="lab-title">🌀 Slinky Lab — mass-spring sim</span>
+    <button onclick="toggleLab(false)">✕</button>
+  </div>
+  <canvas id="slinkyCanvas" width="380" height="300"></canvas>
+  <div class="lab-controls">
+    <div class="row"><label>Số đốt</label><input type="range" id="sgSeg" min="6" max="40" value="20"><span class="val" id="vSeg">20</span></div>
+    <div class="row"><label>Độ cứng</label><input type="range" id="sgStiff" min="5" max="100" value="55"><span class="val" id="vStiff">.55</span></div>
+    <div class="row"><label>Giảm chấn</label><input type="range" id="sgDamp" min="80" max="100" value="98"><span class="val" id="vDamp">.98</span></div>
+    <div class="row"><label>Trọng lực</label><input type="range" id="sgGrav" min="0" max="120" value="40"><span class="val" id="vGrav">.40</span></div>
+    <div class="row"><label>Vòng coil</label><input type="range" id="sgCoil" min="4" max="40" value="20"><span class="val" id="vCoil">20</span></div>
+    <div class="lab-btns">
+      <button class="shake" onclick="shakeSlinky()">↯ Lắc</button>
+      <button class="reset" onclick="resetSlinky()">↺ Reset</button>
+    </div>
+  </div>
+  <div class="lab-hint">Kéo điểm bất kỳ bằng chuột/cảm ứng. Kéo đốt trên cùng để di chuyển cả lò xo.</div>
+</div>
+
+<script>
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll(){ let cur=''; document.querySelectorAll('section[id], div[id].level-divider, div[id].hero').forEach(s=>{ if(s.getBoundingClientRect().top<150) cur=s.id; }); navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+cur)); }
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase().trim(); document.querySelectorAll('#navMenu li').forEach(li=>{ if(li.classList.contains('nav-section-title')){li.style.display='';return;} li.style.display=li.textContent.toLowerCase().includes(q)?'':'none'; }); });
+navLinks.forEach(a=>a.addEventListener('click',()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+function copyCode(btn){ const txt=btn.closest('.code-block').querySelector('pre.code').innerText; navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent='✓ Đã copy';setTimeout(()=>btn.textContent=o,1400);}); }
+function checkQuiz(btn){ btn.closest('.quiz').querySelectorAll('.q').forEach(q=>{ const c=q.dataset.answer; const ch=q.querySelector('input:checked'); q.querySelectorAll('.opt').forEach(o=>{o.classList.remove('correct','wrong'); if(o.dataset.key===c)o.classList.add('correct');}); if(ch&&ch.value!==c)ch.closest('.opt').classList.add('wrong'); const ex=q.querySelector('.explain'); if(ex)ex.classList.add('show'); }); }
+function flipCard(el){ el.classList.toggle('flipped'); }
+function filterFC(btn,cat){ document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); let n=0; document.querySelectorAll('.flashcard').forEach(c=>{const ok=(cat==='all'||c.dataset.cat===cat); c.style.display=ok?'':'none'; c.classList.remove('flipped'); if(ok)n++;}); const el=document.getElementById('fcCount'); if(el)el.textContent=n+' thẻ'; }
+
+/* ============ SLINKY LAB (Verlet mass-spring) ============ */
+const cv = document.getElementById('slinkyCanvas');
+const ctx = cv.getContext('2d');
+let P = { seg:20, stiff:0.55, damp:0.98, grav:0.40, coils:20 };
+let pts = [];
+let REST = 11;
+let dragIdx = -1;
+let labRunning = false;
+
+function initSlinky(){
+  pts = [];
+  const topX = cv.width/2, topY = 36;
+  for (let i=0;i<P.seg;i++){
+    pts.push({ x:topX, y:topY+i*REST, px:topX, py:topY+i*REST, pinned: i===0 });
+  }
+}
+function stepSlinky(){
+  for (const p of pts){
+    if (p.pinned) continue;
+    const vx = (p.x-p.px)*P.damp, vy = (p.y-p.py)*P.damp;
+    p.px = p.x; p.py = p.y;
+    p.x += vx; p.y += vy + P.grav;
+  }
+  for (let it=0; it<6; it++){
+    for (let i=0;i<pts.length-1;i++){
+      const a=pts[i], b=pts[i+1];
+      let dx=b.x-a.x, dy=b.y-a.y;
+      let d=Math.hypot(dx,dy)||0.0001;
+      const diff=(d-REST)/d * 0.5 * P.stiff;
+      const ox=dx*diff, oy=dy*diff;
+      if(!a.pinned){a.x+=ox;a.y+=oy;}
+      if(!b.pinned){b.x-=ox;b.y-=oy;}
+    }
+    for (const p of pts){
+      if(p.pinned) continue;
+      if(p.x<6){p.x=6;} if(p.x>cv.width-6){p.x=cv.width-6;}
+      if(p.y>cv.height-6){p.y=cv.height-6;}
+    }
+  }
+}
+function drawSlinky(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  // floor line
+  ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.beginPath(); ctx.moveTo(0,cv.height-6); ctx.lineTo(cv.width,cv.height-6); ctx.stroke();
+  // build coil path
+  const SUB=7, amp=15, n=pts.length-1;
+  const path=[];
+  for (let i=0;i<n;i++){
+    const a=pts[i], b=pts[i+1];
+    let tx=b.x-a.x, ty=b.y-a.y; const tl=Math.hypot(tx,ty)||0.0001; tx/=tl; ty/=tl;
+    const nx=-ty, ny=tx;
+    for (let s=0;s<SUB;s++){
+      const f=s/SUB;
+      const t=(i+f)/n;
+      const lx=a.x+(b.x-a.x)*f, ly=a.y+(b.y-a.y)*f;
+      const off=amp*Math.sin(t*P.coils*Math.PI*2);
+      path.push({x:lx+nx*off, y:ly+ny*off});
+    }
+  }
+  path.push({x:pts[n].x, y:pts[n].y});
+  // glow stroke
+  const grad=ctx.createLinearGradient(0,0,0,cv.height);
+  grad.addColorStop(0,'#6bb0e0'); grad.addColorStop(1,'#ff7043');
+  ctx.lineWidth=3.2; ctx.strokeStyle=grad; ctx.lineJoin='round'; ctx.lineCap='round';
+  ctx.shadowColor='rgba(107,176,224,.5)'; ctx.shadowBlur=6;
+  ctx.beginPath(); ctx.moveTo(path[0].x,path[0].y);
+  for (let i=1;i<path.length;i++) ctx.lineTo(path[i].x,path[i].y);
+  ctx.stroke(); ctx.shadowBlur=0;
+  // anchor + end knobs
+  ctx.fillStyle='#ffca28'; ctx.beginPath(); ctx.arc(pts[0].x,pts[0].y,5,0,7); ctx.fill();
+  ctx.fillStyle='#ff7043'; ctx.beginPath(); ctx.arc(pts[n].x,pts[n].y,5,0,7); ctx.fill();
+}
+function loopSlinky(){ if(!labRunning) return; stepSlinky(); drawSlinky(); requestAnimationFrame(loopSlinky); }
+function startLab(){ if(!labRunning){ labRunning=true; loopSlinky(); } }
+function resetSlinky(){ initSlinky(); }
+function shakeSlinky(){ // đẩy anchor sang ngang để tạo sóng
+  pts[0].x += 26; setTimeout(()=>{ if(pts[0]) pts[0].x -= 26; }, 90);
+}
+/* pointer drag */
+function canvasPos(e){ const r=cv.getBoundingClientRect(); const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:cx*(cv.width/r.width), y:cy*(cv.height/r.height)}; }
+function pointerDown(e){ const m=canvasPos(e); let best=-1,bd=400; pts.forEach((p,i)=>{ const d=(p.x-m.x)**2+(p.y-m.y)**2; if(d<bd){bd=d;best=i;} }); if(best>=0) dragIdx=best; e.preventDefault(); }
+function pointerMove(e){ if(dragIdx<0) return; const m=canvasPos(e); pts[dragIdx].x=m.x; pts[dragIdx].y=m.y; e.preventDefault(); }
+function pointerUp(){ dragIdx=-1; }
+cv.addEventListener('mousedown',pointerDown); cv.addEventListener('mousemove',pointerMove); window.addEventListener('mouseup',pointerUp);
+cv.addEventListener('touchstart',pointerDown,{passive:false}); cv.addEventListener('touchmove',pointerMove,{passive:false}); window.addEventListener('touchend',pointerUp);
+/* sliders */
+function bindSlider(id,valId,fn){ const el=document.getElementById(id); el.addEventListener('input',()=>{ fn(+el.value); }); }
+bindSlider('sgSeg','vSeg',v=>{ P.seg=v; document.getElementById('vSeg').textContent=v; initSlinky(); });
+bindSlider('sgStiff','vStiff',v=>{ P.stiff=v/100; document.getElementById('vStiff').textContent=(v/100).toFixed(2); });
+bindSlider('sgDamp','vDamp',v=>{ P.damp=v/100; document.getElementById('vDamp').textContent=(v/100).toFixed(2); });
+bindSlider('sgGrav','vGrav',v=>{ P.grav=v/100; document.getElementById('vGrav').textContent=(v/100).toFixed(2); });
+bindSlider('sgCoil','vCoil',v=>{ P.coils=v; document.getElementById('vCoil').textContent=v; });
+
+function toggleLab(open){ document.getElementById('labPanel').classList.toggle('open',open); document.getElementById('labFab').classList.toggle('hidden',open); if(open){ startLab(); } }
+(function(){ const panel=document.getElementById('labPanel'), head=document.getElementById('labHead'); let d=false,ox=0,oy=0;
+  head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup',()=>d=false);
+})();
+initSlinky();
+</script>
+
+<!-- ===== PLAYABLE MINI-GAME: Slinky Goal ===== -->
+<script>
+(function(){
+  const cv = document.getElementById('mgCanvas'); if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const SEG = 16, REST = 11, ITER = 6, DAMP = 0.98, GRAV = 0.55;
+  const FLOOR = H - 4;
+  const builtin = [
+    { anchor:{x:90,y:34}, goal:{x:480,y:255,r:26}, par:8,
+      obs:[{x:250,y:120,w:24,h:200}] },
+    { anchor:{x:80,y:34}, goal:{x:500,y:120,r:24}, par:12,
+      obs:[{x:210,y:0,w:24,h:180},{x:360,y:150,w:24,h:200}] },
+    // màn puzzle: đẩy hộp lên công tắc (hoặc chạm đuôi) để mở cổng tím chặn đích
+    { anchor:{x:90,y:34}, goal:{x:520,y:320,r:24}, par:22,
+      obs:[],
+      boxes:[{x:300,y:320,w:34,h:34}],
+      switches:[{x:55,y:340,w:74,h:16, gate:0}],
+      gates:[{x:430,y:150,w:22,h:206}] },
+  ];
+  let custom = null;
+  function levelsArr(){ return custom ? custom : builtin; }
+  function curLevel(){ return levelsArr()[level]; }
+  let level = 0, pos = [], prev = [], anchor = {x:90,y:34};
+  let boxes = [], gatesOpen = [];
+  let dragging = false, cleared = false, msg = '', msgTimer = 0, pulse = 0;
+  let timeMs = 0, started = false, attempts = 0, lastStars = 0;
+  let best = loadBest();
+  function loadBest(){ try { return JSON.parse(localStorage.getItem('slinkyGoalBest')||'{}'); } catch(e){ return {}; } }
+  function saveBest(){ try { localStorage.setItem('slinkyGoalBest', JSON.stringify(best)); } catch(e){} }
+  function bestKey(){ return (custom?'c':'b') + level; }
+  function rectsOverlap(a,b){ return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y; }
+
+  function initChain(){
+    const lv = curLevel(); const a = lv.anchor;
+    anchor = {x:a.x, y:a.y};
+    pos = []; prev = [];
+    for (let i=0;i<SEG;i++){ pos.push({x:a.x, y:a.y+i*REST}); prev.push({x:a.x, y:a.y+i*REST}); }
+    boxes = (lv.boxes||[]).map(b=>({x:b.x,y:b.y,w:b.w,h:b.h,vx:0,vy:0}));
+    gatesOpen = (lv.gates||[]).map(()=>false);
+    cleared = false; started = false; timeMs = 0;
+  }
+  function pushOut(p, r, box){
+    if(p.x>r.x && p.x<r.x+r.w && p.y>r.y && p.y<r.y+r.h){
+      const dl=p.x-r.x, dr=r.x+r.w-p.x, dt=p.y-r.y, db=r.y+r.h-p.y;
+      const m=Math.min(dl,dr,dt,db);
+      if(m===dl){ p.x=r.x; if(box) box.vx-=dl*0.18; }
+      else if(m===dr){ p.x=r.x+r.w; if(box) box.vx+=dr*0.18; }
+      else if(m===dt){ p.y=r.y; }
+      else { p.y=r.y+r.h; }
+    }
+  }
+  function step(dt){
+    if (started && !cleared) timeMs += dt;
+    const lv = curLevel();
+    pos[0].x = anchor.x; pos[0].y = anchor.y; prev[0] = {x:anchor.x,y:anchor.y};
+    for (let i=1;i<SEG;i++){
+      const vx=(pos[i].x-prev[i].x)*DAMP, vy=(pos[i].y-prev[i].y)*DAMP;
+      prev[i]={x:pos[i].x,y:pos[i].y};
+      pos[i].x+=vx; pos[i].y+=vy+GRAV;
+    }
+    for (let it=0; it<ITER; it++){
+      pos[0].x=anchor.x; pos[0].y=anchor.y;
+      for (let i=0;i<SEG-1;i++){
+        const a=pos[i], b=pos[i+1];
+        let dx=b.x-a.x, dy=b.y-a.y; let d=Math.hypot(dx,dy)||0.0001;
+        const diff=(d-REST)/d*0.5; const ox=dx*diff, oy=dy*diff;
+        if(i!==0){a.x+=ox;a.y+=oy;} b.x-=ox;b.y-=oy;
+      }
+      // va chạm SOLID: hộp + cổng đang đóng (đẩy điểm slinky ra ngoài)
+      for (let i=1;i<SEG;i++){
+        for (const bx of boxes) pushOut(pos[i], bx, bx);
+        (lv.gates||[]).forEach((g,gi)=>{ if(!gatesOpen[gi]) pushOut(pos[i], g, null); });
+      }
+      for (let i=1;i<SEG;i++){ const p=pos[i]; if(p.y>FLOOR)p.y=FLOOR; if(p.x<4)p.x=4; if(p.x>W-4)p.x=W-4; }
+    }
+    // vật lý hộp (trọng lực + sàn + tường + chặn bởi cổng đóng)
+    for (const bx of boxes){
+      bx.vy+=GRAV; bx.x+=bx.vx; bx.y+=bx.vy; bx.vx*=0.9;
+      if(bx.y+bx.h>FLOOR){ bx.y=FLOOR-bx.h; bx.vy=0; }
+      if(bx.x<2){ bx.x=2; bx.vx=0; } if(bx.x+bx.w>W-2){ bx.x=W-2-bx.w; bx.vx=0; }
+      (lv.gates||[]).forEach((g,gi)=>{ if(!gatesOpen[gi] && rectsOverlap(bx,g)){ if((bx.x+bx.w/2)<(g.x+g.w/2)) bx.x=g.x-bx.w; else bx.x=g.x+g.w; bx.vx=0; } });
+    }
+    // công tắc → mở cổng (hộp đè lên hoặc đuôi chạm)
+    (lv.switches||[]).forEach(sw=>{
+      let on=false;
+      for(const bx of boxes){ if(rectsOverlap(bx,sw)) on=true; }
+      const t=pos[SEG-1]; if(t.x>sw.x&&t.x<sw.x+sw.w&&t.y>sw.y-8&&t.y<sw.y+sw.h) on=true;
+      sw._on=on; if(on && sw.gate!=null) gatesOpen[sw.gate]=true;
+    });
+  }
+  function check(){
+    if(cleared) return;
+    const lv=curLevel(), tail=pos[SEG-1];
+    if(Math.hypot(tail.x-lv.goal.x, tail.y-lv.goal.y) < lv.goal.r){ win(); return; }
+    for(const o of (lv.obs||[])){ for(let i=1;i<SEG;i++){ const p=pos[i]; if(p.x>o.x&&p.x<o.x+o.w&&p.y>o.y&&p.y<o.y+o.h){ fail(); return; } } }
+  }
+  function starsFor(ms){ const par=(curLevel().par||10)*1000; if(ms<=par) return 3; if(ms<=par*1.7) return 2; return 1; }
+  function win(){
+    cleared=true; const s=starsFor(timeMs); lastStars=s;
+    const k=bestKey(); const rec=best[k]||{stars:0,time:1e9};
+    if(s>rec.stars || (s===rec.stars && timeMs<rec.time)){ best[k]={stars:s,time:Math.round(timeMs)}; saveBest(); }
+    msg='🎉 Qua màn! '+'⭐'.repeat(s); msgTimer=140;
+    setTimeout(()=>{ level=level+1; if(level>=levelsArr().length){ level=0; setTimeout(()=>{ msg='🏆 Hoàn thành tất cả!'; msgTimer=150; },20); } initChain(); }, 950);
+  }
+  function fail(){ attempts++; msg='💥 Chạm gai! Thử lại'; msgTimer=85; initChain(); }
+  function fmtTime(ms){ return (ms/1000).toFixed(1)+'s'; }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const lv=curLevel(); pulse=(pulse+0.05)%(Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,.06)'; ctx.beginPath(); ctx.moveTo(0,FLOOR); ctx.lineTo(W,FLOOR); ctx.stroke();
+    // gates (đóng = tím khóa; mở = viền nét đứt)
+    (lv.gates||[]).forEach((g,gi)=>{
+      if(gatesOpen[gi]){ ctx.strokeStyle='rgba(46,160,67,.5)'; ctx.setLineDash([4,4]); ctx.lineWidth=1; ctx.strokeRect(g.x,g.y,g.w,g.h); ctx.setLineDash([]); }
+      else { ctx.fillStyle='rgba(176,124,255,.85)'; ctx.fillRect(g.x,g.y,g.w,g.h); ctx.fillStyle='#fff'; ctx.font='12px sans-serif'; ctx.textAlign='center'; ctx.fillText('🔒', g.x+g.w/2, g.y+16); }
+    });
+    // switches
+    (lv.switches||[]).forEach(sw=>{
+      ctx.fillStyle = sw._on ? 'rgba(255,202,40,.9)' : 'rgba(255,202,40,.3)'; ctx.fillRect(sw.x,sw.y,sw.w,sw.h);
+      ctx.strokeStyle='#ffca28'; ctx.lineWidth=1; ctx.strokeRect(sw.x,sw.y,sw.w,sw.h);
+    });
+    // boxes
+    for(const bx of boxes){ ctx.fillStyle='#b07c4c'; ctx.fillRect(bx.x,bx.y,bx.w,bx.h); ctx.strokeStyle='#d8a566'; ctx.lineWidth=2; ctx.strokeRect(bx.x,bx.y,bx.w,bx.h); }
+    // spikes
+    for(const o of (lv.obs||[])){ ctx.fillStyle='rgba(248,81,73,.85)'; ctx.fillRect(o.x,o.y,o.w,o.h); ctx.strokeStyle='rgba(255,150,140,.6)'; ctx.lineWidth=1; ctx.strokeRect(o.x,o.y,o.w,o.h); }
+    // goal
+    const gr=lv.goal.r+Math.sin(pulse)*3;
+    ctx.fillStyle='rgba(46,160,67,.25)'; ctx.beginPath(); ctx.arc(lv.goal.x,lv.goal.y,gr,0,7); ctx.fill();
+    ctx.strokeStyle='#2ea043'; ctx.lineWidth=3; ctx.beginPath(); ctx.arc(lv.goal.x,lv.goal.y,gr,0,7); ctx.stroke();
+    ctx.fillStyle='#7ee787'; ctx.font='14px sans-serif'; ctx.textAlign='center'; ctx.fillText('🎯', lv.goal.x, lv.goal.y+5);
+    // slinky coil
+    const SUB=7, amp=11, n=SEG-1, path=[];
+    for(let i=0;i<n;i++){ const a=pos[i],b=pos[i+1]; let tx=b.x-a.x,ty=b.y-a.y; const tl=Math.hypot(tx,ty)||0.0001; tx/=tl;ty/=tl; const nx=-ty,ny=tx;
+      for(let s=0;s<SUB;s++){ const f=s/SUB; const t=(i+f)/n; const lx=a.x+(b.x-a.x)*f, ly=a.y+(b.y-a.y)*f; const off=amp*Math.sin(t*SEG*Math.PI*2); path.push({x:lx+nx*off,y:ly+ny*off}); } }
+    path.push({x:pos[n].x,y:pos[n].y});
+    const grad=ctx.createLinearGradient(0,0,0,H); grad.addColorStop(0,'#6bb0e0'); grad.addColorStop(1,'#ff7043');
+    ctx.lineWidth=3; ctx.strokeStyle=grad; ctx.lineJoin='round'; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(path[0].x,path[0].y); for(let i=1;i<path.length;i++)ctx.lineTo(path[i].x,path[i].y); ctx.stroke();
+    ctx.fillStyle='#ffca28'; ctx.beginPath(); ctx.arc(anchor.x,anchor.y,6,0,7); ctx.fill();
+    ctx.fillStyle='#ff7043'; ctx.beginPath(); ctx.arc(pos[n].x,pos[n].y,6,0,7); ctx.fill();
+    // HUD
+    ctx.fillStyle='rgba(255,255,255,.9)'; ctx.font='bold 14px sans-serif'; ctx.textAlign='left';
+    ctx.fillText(custom ? 'Màn tùy chỉnh' : 'Màn '+(level+1)+'/'+builtin.length, 12, 22);
+    ctx.font='12px sans-serif'; ctx.fillStyle='rgba(255,255,255,.7)';
+    ctx.fillText('⏱ '+fmtTime(timeMs)+'   ❌ '+attempts, 12, 40);
+    const rec=best[bestKey()];
+    ctx.textAlign='right'; ctx.fillStyle='rgba(255,255,255,.55)';
+    ctx.fillText(rec ? ('Kỷ lục: '+'⭐'.repeat(rec.stars)+' '+fmtTime(rec.time)) : 'Kéo chấm vàng', W-12, 22);
+    if(msgTimer>0){ msgTimer--; ctx.fillStyle='rgba(0,0,0,.6)'; ctx.fillRect(0,H/2-26,W,52); ctx.fillStyle='#fff'; ctx.font='bold 22px sans-serif'; ctx.textAlign='center'; ctx.fillText(msg, W/2, H/2+8); }
+  }
+  function mpos(e){ const r=cv.getBoundingClientRect(); const cx=(e.touches?e.touches[0].clientX:e.clientX)-r.left; const cy=(e.touches?e.touches[0].clientY:e.clientY)-r.top; return {x:cx*(W/r.width), y:cy*(H/r.height)}; }
+  function setAnchor(m){ anchor.x=Math.max(10,Math.min(W-10,m.x)); anchor.y=Math.max(18,Math.min(H-20,m.y)); }
+  function down(e){ dragging=true; started=true; setAnchor(mpos(e)); e.preventDefault(); }
+  function move(e){ if(dragging){ setAnchor(mpos(e)); e.preventDefault(); } }
+  function up(){ dragging=false; }
+  cv.addEventListener('mousedown',down); cv.addEventListener('mousemove',move); window.addEventListener('mouseup',up);
+  cv.addEventListener('touchstart',down,{passive:false}); cv.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up);
+
+  window.mgReset = function(){ attempts=0; initChain(); };
+  window.mgSkip = function(){ level=(level+1)%levelsArr().length; initChain(); };
+  window.mgPlayCustom = function(lv){ custom=[lv]; level=0; attempts=0; initChain(); cv.scrollIntoView({behavior:'smooth', block:'center'}); };
+  window.mgUseBuiltin = function(){ custom=null; level=0; attempts=0; initChain(); };
+
+  let running=false, lastTs=0;
+  function loop(ts){ if(!running) return; const dt=Math.min(50, (ts-lastTs)||16); lastTs=ts; step(dt); check(); draw(); requestAnimationFrame(loop); }
+  initChain(); draw();
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ const was=running; running=e.isIntersecting; if(running&&!was){ lastTs=0; requestAnimationFrame(loop); } }); },{threshold:0.15});
+    io.observe(cv);
+  } else { running=true; requestAnimationFrame(loop); }
+})();
+</script>
+
+<!-- ===== LEVEL EDITOR ===== -->
+<style>
+  .led-fab { position: fixed; left: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--accent),var(--primary)); color:#fff; border:none; border-radius:999px; padding:12px 18px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 6px 22px rgba(0,0,0,.45); }
+  .led-fab.hidden { display:none; }
+  .led-panel { position: fixed; left: 22px; bottom: 22px; z-index: 401; width: min(600px, calc(100vw - 24px)); background: var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 18px 60px rgba(0,0,0,.6); display:none; flex-direction:column; overflow:hidden; }
+  .led-panel.open { display:flex; }
+  .led-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:linear-gradient(135deg,rgba(255,112,67,.25),rgba(71,140,191,.2)); border-bottom:1px solid var(--border); cursor:move; font-size:13px; font-weight:800; color:var(--light-strong); }
+  .led-head button { background:rgba(255,255,255,.08); color:var(--light); border:1px solid var(--border); border-radius:6px; padding:4px 10px; cursor:pointer; font-family:inherit; font-weight:700; }
+  .led-tools { display:flex; flex-wrap:wrap; gap:5px; padding:10px 12px 4px; }
+  .led-tools button { background:var(--card-2); color:var(--light); border:1px solid var(--border); border-radius:7px; padding:5px 9px; font-size:12px; cursor:pointer; font-family:inherit; }
+  .led-tools button.active { border-color:var(--accent); color:var(--accent); background:rgba(255,112,67,.12); }
+  #ledCanvas { display:block; width:100%; height:auto; aspect-ratio:560/360; background:#0a0e14; touch-action:none; cursor:crosshair; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .led-actions { display:flex; flex-wrap:wrap; gap:6px; padding:10px 12px; }
+  .led-actions button { flex:1; min-width:80px; border:none; border-radius:7px; padding:8px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; background:var(--card-2); color:var(--light); border:1px solid var(--border)!important; }
+  .led-actions button:first-child { background:var(--accent); color:#1a0e08; border:none!important; }
+  .led-hint { font-size:11px; color:var(--gray); padding:0 14px 8px; }
+  .led-out { margin:0 12px 12px; background:var(--terminal); border:1px dashed var(--border); border-radius:8px; padding:10px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--code-green); white-space:pre; overflow:auto; max-height:150px; }
+</style>
+<button class="led-fab" id="ledFab" onclick="ledToggle(true)">🧩 Level Editor</button>
+<div class="led-panel" id="ledPanel">
+  <div class="led-head" id="ledHead"><span>🧩 Level Editor — vẽ màn → xuất Godot</span><button onclick="ledToggle(false)">✕</button></div>
+  <div class="led-tools">
+    <button data-tool="anchor" class="active">🟡 Đầu treo</button>
+    <button data-tool="goal">🎯 Đích</button>
+    <button data-tool="obs">🟥 Gai</button>
+    <button data-tool="box">🟫 Hộp</button>
+    <button data-tool="switch">🟨 Công tắc</button>
+    <button data-tool="gate">🟪 Cổng</button>
+    <button data-tool="erase">🧽 Xóa</button>
+  </div>
+  <canvas id="ledCanvas" width="560" height="360"></canvas>
+  <div class="led-actions">
+    <button onclick="ledPlay()">▶ Chơi thử</button>
+    <button onclick="ledExport()">⬇ Xuất Godot</button>
+    <button onclick="ledCopy(this)">⧉ Copy</button>
+    <button onclick="ledClear()">Xóa hết</button>
+    <button onclick="window.mgUseBuiltin&&mgUseBuiltin()">↩ Màn gốc</button>
+  </div>
+  <div class="led-hint">Điểm (đầu treo / đích / công tắc): <strong>bấm</strong> để đặt. Khối (gai / hộp / cổng): <strong>kéo</strong> để vẽ. Công tắc tự liên kết mở cổng đầu tiên.</div>
+  <pre class="led-out" id="ledOut">Vẽ màn rồi bấm "Xuất Godot" để lấy code dán vào mảng levels trong main.gd.</pre>
+</div>
+<script>
+(function(){
+  const cv=document.getElementById('ledCanvas'); if(!cv) return;
+  const ctx=cv.getContext('2d'); const W=cv.width, H=cv.height, FLOOR=H-4;
+  let tool='anchor';
+  const L={ anchor:{x:90,y:34}, goal:{x:480,y:255,r:26}, obs:[], boxes:[], switches:[], gates:[], par:15 };
+  let drag=null;
+  document.querySelectorAll('.led-tools button').forEach(b=>b.addEventListener('click',()=>{ tool=b.dataset.tool; document.querySelectorAll('.led-tools button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); }));
+  function mp(e){ const r=cv.getBoundingClientRect(); return {x:((e.touches?e.touches[0].clientX:e.clientX)-r.left)*(W/r.width), y:((e.touches?e.touches[0].clientY:e.clientY)-r.top)*(H/r.height)}; }
+  function norm(x1,y1,x2,y2){ return {x:Math.round(Math.min(x1,x2)),y:Math.round(Math.min(y1,y2)),w:Math.round(Math.abs(x2-x1)),h:Math.round(Math.abs(y2-y1))}; }
+  function down(e){ const m=mp(e);
+    if(tool==='anchor') L.anchor={x:Math.round(m.x),y:Math.round(m.y)};
+    else if(tool==='goal') L.goal={x:Math.round(m.x),y:Math.round(m.y),r:26};
+    else if(tool==='switch') L.switches=[{x:Math.round(m.x-37),y:FLOOR-16,w:74,h:16,gate:0}];
+    else if(tool==='erase') erase(m);
+    else drag={x:m.x,y:m.y,cx:m.x,cy:m.y};
+    e.preventDefault(); draw();
+  }
+  function move(e){ if(drag){ const m=mp(e); drag.cx=m.x; drag.cy=m.y; draw(); const r=norm(drag.x,drag.y,drag.cx,drag.cy); ctx.strokeStyle='#fff'; ctx.setLineDash([4,4]); ctx.strokeRect(r.x,r.y,r.w,r.h); ctx.setLineDash([]); e.preventDefault(); } }
+  function up(e){ if(drag){ const r=norm(drag.x,drag.y,drag.cx,drag.cy); if(r.w>6&&r.h>6){ if(tool==='obs')L.obs.push(r); else if(tool==='box')L.boxes.push(r); else if(tool==='gate')L.gates.push(r); } drag=null; draw(); } }
+  function erase(m){ for(const arr of [L.gates,L.boxes,L.obs]){ for(let i=arr.length-1;i>=0;i--){ const r=arr[i]; if(m.x>r.x&&m.x<r.x+r.w&&m.y>r.y&&m.y<r.y+r.h){ arr.splice(i,1); return; } } } }
+  function rect(r,fill,stroke,icon){ ctx.fillStyle=fill;ctx.fillRect(r.x,r.y,r.w,r.h);ctx.strokeStyle=stroke;ctx.lineWidth=1;ctx.strokeRect(r.x,r.y,r.w,r.h); if(icon){ctx.fillStyle='#fff';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText(icon,r.x+r.w/2,r.y+r.h/2+4);} }
+  function draw(){ ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,.05)'; for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();} for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    ctx.strokeStyle='rgba(255,255,255,.14)'; ctx.beginPath();ctx.moveTo(0,FLOOR);ctx.lineTo(W,FLOOR);ctx.stroke();
+    L.gates.forEach(g=>rect(g,'rgba(176,124,255,.7)','#b07cff','🔒'));
+    L.switches.forEach(s=>rect(s,'rgba(255,202,40,.6)','#ffca28','⚡'));
+    L.boxes.forEach(b=>rect(b,'#b07c4c','#d8a566','📦'));
+    L.obs.forEach(o=>rect(o,'rgba(248,81,73,.8)','#ff968c',''));
+    ctx.fillStyle='rgba(46,160,67,.3)';ctx.beginPath();ctx.arc(L.goal.x,L.goal.y,L.goal.r,0,7);ctx.fill();ctx.strokeStyle='#2ea043';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#7ee787';ctx.textAlign='center';ctx.font='13px sans-serif';ctx.fillText('🎯',L.goal.x,L.goal.y+5);
+    ctx.fillStyle='#ffca28';ctx.beginPath();ctx.arc(L.anchor.x,L.anchor.y,7,0,7);ctx.fill();
+  }
+  cv.addEventListener('mousedown',down);cv.addEventListener('mousemove',move);window.addEventListener('mouseup',up);
+  cv.addEventListener('touchstart',down,{passive:false});cv.addEventListener('touchmove',move,{passive:false});window.addEventListener('touchend',up);
+  function v2(x,y){return 'Vector2('+Math.round(x)+', '+Math.round(y)+')';}
+  function r2(r){return 'Rect2('+r.x+', '+r.y+', '+r.w+', '+r.h+')';}
+  function toGodot(){
+    return '{\n'+
+      '    "anchor": '+v2(L.anchor.x,L.anchor.y)+',\n'+
+      '    "goal": '+v2(L.goal.x,L.goal.y)+', "goal_r": '+L.goal.r.toFixed(1)+',\n'+
+      '    "obstacles": ['+L.obs.map(r2).join(', ')+'],\n'+
+      '    "boxes": ['+L.boxes.map(r2).join(', ')+'],\n'+
+      '    "switches": ['+L.switches.map(r2).join(', ')+'],\n'+
+      '    "gates": ['+L.gates.map(r2).join(', ')+'],\n'+
+      '    "par": '+L.par.toFixed(1)+',\n'+
+      '},';
+  }
+  window.ledToggle=function(o){ document.getElementById('ledPanel').classList.toggle('open',o); document.getElementById('ledFab').classList.toggle('hidden',o); if(o)draw(); };
+  window.ledClear=function(){ L.obs=[];L.boxes=[];L.switches=[];L.gates=[]; draw(); document.getElementById('ledOut').textContent='Đã xóa khối. (Đầu treo & đích vẫn giữ.)'; };
+  window.ledExport=function(){ document.getElementById('ledOut').textContent=toGodot(); };
+  window.ledCopy=function(btn){ navigator.clipboard.writeText(document.getElementById('ledOut').textContent).then(()=>{const o=btn.textContent;btn.textContent='✓';setTimeout(()=>btn.textContent=o,1200);}); };
+  window.ledPlay=function(){ if(window.mgPlayCustom){ mgPlayCustom(JSON.parse(JSON.stringify(L))); } };
+  // kéo thả panel
+  (function(){ const panel=document.getElementById('ledPanel'), head=document.getElementById('ledHead'); let d=false,ox=0,oy=0;
+    head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.bottom='auto'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+    window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+    window.addEventListener('mouseup',()=>d=false);
+  })();
+  draw();
+})();
+</script>
+</body>
+</html>

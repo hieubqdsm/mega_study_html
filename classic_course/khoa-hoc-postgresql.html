@@ -1,0 +1,2633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học PostgreSQL - Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #336791;        /* postgres blue */
+    --primary-glow: #5a9fd4;
+    --accent: #f4a522;         /* elephant amber */
+    --accent-2: #ffc857;
+    --l0: #6cc644;             /* cơ bản green */
+    --l1: #4B8BBE;             /* trung cấp blue */
+    --l2: #b07cff;             /* nâng cao purple */
+    --l3: #ff7043;             /* chuyên gia orange */
+    --ok: #2ea043;
+    --warn: #d29922;
+    --danger: #f85149;
+    --info: #58a6ff;
+    --dark: #0d1117;
+    --darker: #010409;
+    --light: #c9d1d9;
+    --light-strong: #f0f6fc;
+    --gray: #8b949e;
+    --card: #161b22;
+    --card-2: #1c2128;
+    --border: #30363d;
+    --terminal: #0a0e14;
+    --code-green: #7ee787;
+    --code-yellow: #ffd43b;
+    --code-blue: #79c0ff;
+    --code-red: #ff7b72;
+    --code-purple: #d2a8ff;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker);
+    color: var(--light);
+    line-height: 1.75;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 18% 25%, rgba(51, 103, 145, 0.08) 0%, transparent 45%),
+      radial-gradient(circle at 82% 70%, rgba(244, 165, 34, 0.05) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar {
+    width: 330px;
+    background: linear-gradient(180deg, var(--dark) 0%, #050810 100%);
+    padding: 26px 0 60px;
+    position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s;
+    box-shadow: 4px 0 30px rgba(51, 103, 145, 0.15);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .pg-icon { font-size: 46px; margin-bottom: 8px; filter: drop-shadow(0 0 18px rgba(51, 103, 145, 0.55)); }
+  .logo h1 {
+    font-size: 21px;
+    background: linear-gradient(135deg, var(--primary-glow), var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    font-weight: 900; letter-spacing: 0.5px;
+  }
+  .logo p { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input {
+    width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--light); font-size: 13px; transition: all 0.3s;
+  }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(51,103,145,0.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px;
+  }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #06121a; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--primary-glow); } .nav-l1 .badge { background: var(--l1); color:#fff;}
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-menu a {
+    display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none;
+    border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent;
+  }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(51,103,145,0.15); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num {
+    display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px;
+    background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold;
+    border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0;
+  }
+
+  /* ---------- MAIN ---------- */
+  .main-content { margin-left: 330px; flex: 1; padding: 0; max-width: calc(100% - 330px); }
+  .topbar {
+    position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px);
+    background: rgba(1,4,9,0.82); border-bottom: 1px solid var(--border);
+    padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent); }
+  .db-status { font-size: 11px; color: var(--gray); display: flex; align-items: center; gap: 7px; }
+  .db-status .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); transition: background .3s; }
+  .db-status.ready .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .db-status.loading .dot { background: var(--warn); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero {
+    background: linear-gradient(135deg, rgba(51,103,145,0.18), rgba(244,165,34,0.08));
+    border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden;
+  }
+  .hero::after { content:"🐘"; position:absolute; right:-10px; bottom:-24px; font-size:160px; opacity:.08; }
+  .hero h1 { font-size: 34px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 760px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(108,198,68,.14); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(75,139,190,.14); color: var(--primary-glow); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(176,124,255,.14); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(255,112,67,.14); color: var(--l3); border:1px solid var(--l3);}
+
+  h2.ch-title { font-size: 26px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 14px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; }
+  li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  .kw { color: var(--accent); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* ---------- BOXES ---------- */
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(88,166,255,.07); border-color: rgba(88,166,255,.4); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(46,160,67,.07); border-color: rgba(46,160,67,.4); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(210,153,34,.08); border-color: rgba(210,153,34,.45); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,81,73,.07); border-color: rgba(248,81,73,.4); } .box.danger::before{content:"🚫";}
+  .box.compare { background: rgba(176,124,255,.07); border-color: rgba(176,124,255,.4); } .box.compare::before{content:"⚖️";}
+
+  /* ---------- CODE / SQL ---------- */
+  .code-block { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .code-head .fname { font-size: 12px; color: var(--gray); display:flex; align-items:center; gap:8px; }
+  .code-head .dots { display:flex; gap:6px; }
+  .code-head .dots i { width:11px;height:11px;border-radius:50%; display:inline-block; }
+  .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
+  .code-actions { display:flex; gap:8px; }
+  .code-actions button {
+    background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px;
+    padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit;
+  }
+  .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  .code-actions button.run { color: var(--code-green); border-color: rgba(126,231,135,.4); }
+  .code-actions button.run:hover { background: rgba(126,231,135,.12); }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13.5px; line-height: 1.65; color: var(--light); white-space: pre; }
+  pre.code .c { color: var(--gray); font-style: italic; }   /* comment */
+  pre.code .s { color: var(--code-green); }                  /* string */
+  pre.code .k { color: var(--code-red); }                    /* keyword */
+  pre.code .n { color: var(--code-blue); }                   /* number */
+  pre.code .f { color: var(--code-purple); }                 /* function */
+  pre.code .t { color: var(--code-yellow); }                 /* type */
+  /* editable SQL editor */
+  textarea.sql-edit {
+    width: 100%; min-height: 90px; resize: vertical; border: none; outline: none; display: block;
+    background: var(--terminal); color: var(--light); padding: 14px 16px;
+    font-family: 'JetBrains Mono','Consolas',monospace; font-size: 13.5px; line-height: 1.6; tab-size: 2;
+  }
+  .code-output {
+    border-top: 1px dashed var(--border); background: #05080d; padding: 0 16px; max-height: 0; overflow: hidden;
+    font-size: 13px; color: var(--code-green); transition: max-height .3s, padding .3s; white-space: pre-wrap;
+  }
+  .code-output.show { max-height: 460px; overflow: auto; padding: 12px 16px; }
+  .code-output .err { color: var(--code-red); }
+  .code-output .label { color: var(--gray); font-size: 11px; display:block; margin-bottom: 6px; }
+  .code-output .note { color: var(--gray); }
+  .code-output .pass { color: var(--ok); font-weight: 800; }
+  .code-output .fail { color: var(--danger); font-weight: 800; }
+  .code-block.graded-ok { border-color: var(--ok); box-shadow: 0 0 0 1px rgba(46,160,67,.4); }
+  .code-block.graded-bad { border-color: var(--danger); }
+  .code-actions button.grade { color: var(--accent-2); border-color: rgba(244,165,34,.5); }
+  .code-actions button.grade:hover { background: rgba(244,165,34,.12); }
+  /* SQL result table */
+  table.sql-table { width: auto; min-width: 50%; margin: 4px 0 10px; font-size: 12.5px; border-color: #1d2730; }
+  table.sql-table th { background: #11202b; color: var(--primary-glow); padding: 5px 11px; border-color: #1d2730; position: sticky; top: 0; }
+  table.sql-table td { padding: 4px 11px; border-color: #16212b; color: var(--light); background: transparent; }
+  table.sql-table tr:nth-child(even) td { background: rgba(255,255,255,.025); }
+  table.sql-table .nullv { color: var(--gray); font-style: italic; }
+
+  /* ---------- EXERCISE ---------- */
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .exercise .lvl-dot { font-size: 11px; padding: 1px 8px; border-radius: 10px; background: var(--card-2); border:1px solid var(--border); color: var(--gray); }
+  details.hint, details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; transition: background .2s; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content: "▸ "; }
+  details[open] summary::before { content: "▾ "; }
+  details.hint summary { background: rgba(88,166,255,.08); color: var(--info); }
+  details.answer summary { background: rgba(46,160,67,.08); color: var(--code-green); }
+  details .body { padding: 4px 14px 12px; }
+
+  /* ---------- QUIZ ---------- */
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; display:flex; align-items:center; gap:8px; }
+  .quiz .q { margin-bottom: 18px; }
+  .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; transition: all .15s; font-size: 14px; }
+  .quiz .opt:hover { border-color: var(--primary); }
+  .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(46,160,67,.14); border-color: var(--ok); }
+  .quiz .opt.wrong { background: rgba(248,81,73,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color:#fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  /* ---------- FLASHCARDS ---------- */
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; transition: all .2s; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 165px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); }
+  .fc-back { background: linear-gradient(135deg, rgba(51,103,145,.18), rgba(244,165,34,.10)); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(108,198,68,.18); color: var(--l0); }
+  .fc-tag.t1 { background: rgba(75,139,190,.2); color: var(--primary-glow); }
+  .fc-tag.t2 { background: rgba(176,124,255,.18); color: var(--l2); }
+  .fc-tag.t3 { background: rgba(255,112,67,.18); color: var(--l3); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; }
+  .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; }
+  .fc-a code { background: rgba(0,0,0,.25); color: var(--code-purple); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  /* ---------- GLOBAL SQL PLAYGROUND ---------- */
+  .pg-fab {
+    position: fixed; right: 22px; bottom: 22px; z-index: 400;
+    background: var(--primary); color: #fff; border: none; border-radius: 999px;
+    padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+    box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .2s;
+  }
+  .pg-fab:hover { transform: translateY(-2px); box-shadow: 0 9px 28px rgba(0,0,0,.55); }
+  .pg-fab.hidden { display: none; }
+  .pg-panel {
+    position: fixed; right: 22px; bottom: 22px; z-index: 401;
+    width: min(620px, calc(100vw - 32px)); height: min(580px, calc(100vh - 40px));
+    background: var(--terminal); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden;
+  }
+  .pg-panel.open { display: flex; }
+  .pg-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--card); border-bottom: 1px solid var(--border); cursor: move; }
+  .pg-head .pg-title { font-weight: 800; font-size: 13px; color: var(--light-strong); display:flex; align-items:center; gap:8px; }
+  .pg-head .pg-title .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); }
+  .pg-head .pg-title.ready .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .pg-actions { display: flex; gap: 7px; }
+  .pg-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; font-weight: 700; }
+  .pg-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  .pg-actions button.run { color: var(--code-green); border-color: rgba(126,231,135,.4); }
+  .pg-actions button.run:hover { background: rgba(126,231,135,.12); }
+  .pg-editor { flex: 1 1 auto; width: 100%; resize: none; border: none; outline: none; background: var(--terminal); color: var(--light); padding: 14px 16px; font-family: 'JetBrains Mono','Consolas',monospace; font-size: 13.5px; line-height: 1.6; tab-size: 2; }
+  .pg-editor::placeholder { color: var(--gray); }
+  .pg-output { flex: 0 0 auto; max-height: 45%; overflow: auto; border-top: 1px dashed var(--border); background: #05080d; padding: 12px 16px; font-size: 13px; color: var(--code-green); white-space: pre-wrap; }
+  .pg-output:empty { display: none; }
+  .pg-output .label { color: var(--gray); font-size: 11px; display:block; margin-bottom: 4px; }
+  .pg-output .err { color: var(--code-red); }
+  .pg-hint { font-size: 11px; color: var(--gray); padding: 6px 14px; border-top: 1px solid var(--border); background: var(--card); }
+  @media (max-width: 600px) { .pg-panel { width: calc(100vw - 16px); height: calc(100vh - 24px); right: 8px; bottom: 8px; } }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color:#fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; }
+    .topbar { padding-left: 66px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="pg-icon">🐘</div>
+      <h1>POSTGRESQL</h1>
+      <p>CƠ BẢN → NÂNG CAO</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; Lộ trình</a></li>
+      <li><a href="#so-sanh"><span class="chapter-num">⚖️</span> So sánh PostgreSQL vs khác</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">L0</span> CƠ BẢN · NỀN TẢNG</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> PostgreSQL là gì</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> Cài đặt &amp; công cụ</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> Kiểu dữ liệu</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> Tạo bảng &amp; ràng buộc</a></li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> INSERT / UPDATE / DELETE</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> Truy vấn SELECT</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> Hàm, toán tử &amp; NULL</a></li>
+      <li><a href="#project-l0"><span class="chapter-num">🏆</span> Mini-project L0</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">L1</span> TRUNG CẤP</li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> JOIN nhiều bảng</a></li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> Gộp nhóm (GROUP BY)</a></li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> Subquery &amp; CTE</a></li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> Phép toán tập hợp</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> View &amp; Materialized View</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> Index cơ bản</a></li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> Transaction &amp; ACID</a></li>
+      <li><a href="#project-l1"><span class="chapter-num">🏆</span> Mini-project L1</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">L2</span> NÂNG CAO</li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> Index nâng cao</a></li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> Window Functions</a></li>
+      <li><a href="#ch17"><span class="chapter-num">17</span> JSON &amp; JSONB</a></li>
+      <li><a href="#ch18"><span class="chapter-num">18</span> Array &amp; kiểu phức hợp</a></li>
+      <li><a href="#ch19"><span class="chapter-num">19</span> Full-text Search</a></li>
+      <li><a href="#ch20"><span class="chapter-num">20</span> Hàm &amp; PL/pgSQL</a></li>
+      <li><a href="#ch21"><span class="chapter-num">21</span> Trigger</a></li>
+      <li><a href="#ch22"><span class="chapter-num">22</span> Tối ưu &amp; EXPLAIN</a></li>
+      <li><a href="#project-l2"><span class="chapter-num">🏆</span> Mini-project L2</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L3</span> CHUYÊN GIA · VẬN HÀNH</li>
+      <li><a href="#ch23"><span class="chapter-num">23</span> MVCC &amp; khóa</a></li>
+      <li><a href="#ch24"><span class="chapter-num">24</span> VACUUM &amp; bảo trì</a></li>
+      <li><a href="#ch25"><span class="chapter-num">25</span> Partitioning</a></li>
+      <li><a href="#ch26"><span class="chapter-num">26</span> Replication &amp; HA</a></li>
+      <li><a href="#ch27"><span class="chapter-num">27</span> Extensions</a></li>
+      <li><a href="#ch28"><span class="chapter-num">28</span> Backup &amp; Bảo mật</a></li>
+      <li><a href="#ch29"><span class="chapter-num">29</span> Scaling &amp; chọn DB đúng</a></li>
+      <li><a href="#project-l3"><span class="chapter-num">🏆</span> Capstone L3</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">📚</span> ÔN TẬP</li>
+      <li><a href="#bai-tap"><span class="chapter-num">🎯</span> Ngân hàng bài tập</a></li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🐘 <b>PostgreSQL Mastery</b> — Khóa học tương tác chạy SQL thật trong trình duyệt</div>
+      <div class="db-status loading" id="dbStatus"><span class="dot"></span><span id="dbStatusText">Đang tải PostgreSQL engine...</span></div>
+    </div>
+
+    <div class="content-inner">
+      <!-- ===== HERO ===== -->
+      <div class="hero" id="gioi-thieu">
+        <h1>Khóa Học <span class="grad">PostgreSQL</span><br>Từ Cơ Bản Đến Nâng Cao</h1>
+        <p>PostgreSQL là hệ quản trị cơ sở dữ liệu quan hệ (RDBMS) mã nguồn mở mạnh nhất thế giới — chuẩn SQL, ACID, mở rộng vô hạn, vừa là <strong>SQL database</strong> vừa làm tốt vai trò <strong>document store (JSONB)</strong>, <strong>search engine</strong>, <strong>vector DB</strong> và <strong>geospatial</strong>. Khóa học này đi từ con số 0 đến vận hành production, <strong>so sánh thẳng với MySQL, SQLite, MongoDB, SQL Server, Oracle</strong> ở mỗi chủ đề.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>29</b> chương · 4 cấp độ</div>
+          <div class="meta-pill"><b>Chạy SQL</b> thật trong trình duyệt</div>
+          <div class="meta-pill"><b>So sánh</b> 5+ database khác</div>
+          <div class="meta-pill"><b>Flashcards</b> + Quiz + Cheatsheet</div>
+        </div>
+      </div>
+
+      <div class="box tip"><span class="box-title">Cách dùng khóa học này</span>Bấm nút <strong>▶ Run</strong> ở mỗi ô SQL để chạy <strong>PostgreSQL thật</strong> (qua PGlite/WebAssembly) ngay trong trình duyệt — lần đầu mất ~5–10s tải engine, cần internet. Các ô SQL có thể <strong>sửa trực tiếp</strong> rồi chạy lại. Một <strong>bộ dữ liệu mẫu</strong> (departments, employees, products, customers, orders...) được tự nạp sẵn để bạn truy vấn ngay. Hoặc bấm nút <strong>🐘 SQL Playground</strong> góc dưới phải để gõ SQL tự do từ bất cứ đâu.</div>
+
+      <div class="box info"><span class="box-title">Lộ trình 4 cấp độ</span>
+        <strong style="color:var(--l0)">L0 Cơ bản</strong> (ch1–7): cài đặt, kiểu dữ liệu, tạo bảng, CRUD, SELECT. →
+        <strong style="color:var(--primary-glow)">L1 Trung cấp</strong> (ch8–14): JOIN, gộp nhóm, subquery/CTE, view, index, transaction. →
+        <strong style="color:var(--l2)">L2 Nâng cao</strong> (ch15–22): index chuyên sâu, window function, JSONB, full-text, PL/pgSQL, trigger, tối ưu. →
+        <strong style="color:var(--l3)">L3 Chuyên gia</strong> (ch23–29): MVCC, VACUUM, partition, replication, extension, backup/bảo mật, scaling.
+      </div>
+
+      <!-- ===================== SO SÁNH TỔNG HỢP ===================== -->
+      <section class="chapter" id="so-sanh">
+        <h2 class="ch-title"><span class="num">⚖️</span> PostgreSQL so với các database khác</h2>
+        <p class="ch-sub">Bức tranh toàn cảnh trước khi học chi tiết — đặt PostgreSQL cạnh các đối thủ phổ biến nhất.</p>
+
+        <p>Không có database "tốt nhất", chỉ có database <strong>phù hợp nhất với bài toán</strong>. Bảng dưới đây tóm tắt định vị của từng hệ; xuyên suốt khóa học, mỗi chương sẽ có hộp <span style="color:var(--l2)">⚖️ So sánh</span> đào sâu hơn.</p>
+
+        <h3 class="sec">Bảng so sánh nhanh</h3>
+        <table>
+          <thead><tr><th>Tiêu chí</th><th>PostgreSQL</th><th>MySQL / MariaDB</th><th>SQLite</th><th>MongoDB</th><th>SQL Server / Oracle</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Mô hình</strong></td><td>Quan hệ + đối tượng + JSON</td><td>Quan hệ</td><td>Quan hệ (file)</td><td>Document (NoSQL)</td><td>Quan hệ</td></tr>
+            <tr><td><strong>Giấy phép</strong></td><td>Mã nguồn mở (PostgreSQL License)</td><td>Mở (GPL) / Oracle</td><td>Public domain</td><td>SSPL</td><td>Thương mại $$$</td></tr>
+            <tr><td><strong>Mạnh nhất ở</strong></td><td>Tính đúng đắn, tính năng phong phú, mở rộng</td><td>Đọc nhanh, web phổ thông</td><td>Nhúng, app di động/desktop</td><td>Dữ liệu phi cấu trúc, scale ngang</td><td>Doanh nghiệp lớn, hệ sinh thái</td></tr>
+            <tr><td><strong>ACID</strong></td><td>✅ Đầy đủ, mặc định</td><td>✅ (InnoDB)</td><td>✅</td><td>✅ (từ 4.0, ở mức document/giao dịch)</td><td>✅</td></tr>
+            <tr><td><strong>JSON</strong></td><td>✅ JSONB (đánh index, truy vấn mạnh)</td><td>⚠️ JSON (yếu hơn)</td><td>⚠️ JSON1 (hàm)</td><td>✅ Bản địa (BSON)</td><td>✅ có hỗ trợ</td></tr>
+            <tr><td><strong>Mở rộng</strong></td><td>✅ Extension (PostGIS, pgvector, TimescaleDB...)</td><td>⚠️ Hạn chế</td><td>⚠️ Hạn chế</td><td>—</td><td>⚠️ Đóng</td></tr>
+            <tr><td><strong>Concurrency</strong></td><td>MVCC (không khóa khi đọc)</td><td>MVCC (InnoDB)</td><td>Khóa toàn file ghi</td><td>Khóa document</td><td>MVCC</td></tr>
+            <tr><td><strong>Scale ngang</strong></td><td>⚠️ Cần Citus/sharding thủ công</td><td>⚠️ Tương tự</td><td>❌</td><td>✅ Sharding bản địa</td><td>⚠️ Đắt</td></tr>
+            <tr><td><strong>Chi phí</strong></td><td>Miễn phí</td><td>Miễn phí</td><td>Miễn phí</td><td>Miễn phí/Atlas</td><td>Bản quyền cao</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box compare"><span class="box-title">Tóm trong một câu</span>
+          <ul style="margin-bottom:0">
+            <li><strong>PostgreSQL</strong>: "con dao đa năng" — chọn khi cần đúng đắn, tính năng mạnh và muốn một DB lo nhiều việc (SQL + JSON + search + geo + vector).</li>
+            <li><strong>MySQL</strong>: web phổ thông, đọc nhiều, hệ sinh thái LAMP/WordPress, dễ tuyển người.</li>
+            <li><strong>SQLite</strong>: nhúng trong app (mobile, desktop, IoT, file cấu hình) — không cần server.</li>
+            <li><strong>MongoDB</strong>: schema linh hoạt, dữ liệu dạng document thay đổi nhanh, scale ngang dễ.</li>
+            <li><strong>SQL Server / Oracle</strong>: doanh nghiệp lớn đã đầu tư hệ sinh thái, cần hỗ trợ thương mại.</li>
+          </ul>
+        </div>
+
+        <div class="box tip"><span class="box-title">Xu hướng</span>PostgreSQL nhiều năm liền đứng đầu khảo sát Stack Overflow về DB được dùng và được yêu thích nhất. "Just use Postgres" trở thành lời khuyên mặc định cho phần lớn dự án mới — vì một mình nó thay được nhiều thành phần (search engine, cache hàng đợi, document store, vector DB).</div>
+      </section>
+
+      <!-- ===================== LEVEL 0 ===================== -->
+      <div class="level-divider" id="lv0"><div class="line"></div><span class="tag tag-l0">L0 · Cơ bản</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> PostgreSQL là gì &amp; vì sao chọn</h2>
+        <p class="ch-sub">Bản chất RDBMS, lịch sử, triết lý đúng đắn, và khi nào nên/không nên dùng.</p>
+
+        <h3 class="sec">Cơ sở dữ liệu quan hệ (RDBMS) là gì?</h3>
+        <p>Dữ liệu được tổ chức thành <strong>bảng</strong> (table) gồm các <strong>dòng</strong> (row/record) và <strong>cột</strong> (column). Các bảng liên kết với nhau qua <strong>khóa</strong> (key). Bạn thao tác bằng ngôn ngữ <strong>SQL</strong> (Structured Query Language). Đây là mô hình thống trị suốt 40+ năm vì nó đảm bảo dữ liệu <em>nhất quán, không trùng lặp, và truy vấn linh hoạt</em>.</p>
+
+        <p><strong>PostgreSQL</strong> (đọc là "post-gress-Q-L", thường gọi tắt "Postgres") ra đời năm 1986 tại UC Berkeley, là một <em>object-relational</em> DBMS: ngoài quan hệ thuần còn hỗ trợ kiểu dữ liệu tự định nghĩa, kế thừa bảng, hàm trong nhiều ngôn ngữ. Nó nổi tiếng vì <strong>tuân thủ chuẩn SQL</strong> nghiêm ngặt và <strong>ưu tiên tính đúng đắn của dữ liệu</strong> hơn là "chạy được cho xong".</p>
+
+        <div class="box info"><span class="box-title">ACID — 4 đảm bảo của một giao dịch</span>
+          <strong>A</strong>tomicity (nguyên tử: all-or-nothing) · <strong>C</strong>onsistency (nhất quán: luôn thỏa ràng buộc) · <strong>I</strong>solation (cô lập: giao dịch song song không giẫm chân nhau) · <strong>D</strong>urability (bền vững: đã commit là không mất kể cả mất điện). PostgreSQL đảm bảo cả 4 ở mặc định.</div>
+
+        <h3 class="sec">Thử ngay: truy vấn đầu tiên</h3>
+        <p>Dữ liệu mẫu đã được nạp sẵn. Bấm <strong>▶ Run</strong> (sửa được rồi chạy lại tùy ý):</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> hello.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Phiên bản PostgreSQL đang chạy + 5 nhân viên lương cao nhất
+SELECT version();
+SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 5;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Khi nào dùng PostgreSQL?</h3>
+        <table>
+          <thead><tr><th>✅ Rất hợp khi</th><th>🤔 Cân nhắc cái khác khi</th></tr></thead>
+          <tbody>
+            <tr><td>Dữ liệu có quan hệ rõ ràng, cần toàn vẹn (tài chính, đơn hàng, người dùng)</td><td>App nhúng 1 người dùng, offline → <strong>SQLite</strong></td></tr>
+            <tr><td>Truy vấn phức tạp, báo cáo, phân tích</td><td>Dữ liệu document tự do, schema đổi liên tục → <strong>MongoDB</strong></td></tr>
+            <tr><td>Cần JSON + quan hệ + tìm kiếm + geo trong một DB</td><td>Cache key-value siêu nhanh, TTL → <strong>Redis</strong></td></tr>
+            <tr><td>Muốn miễn phí, mã nguồn mở, không khóa nhà cung cấp</td><td>Ghi cực lớn dạng time-series thuần → <strong>TimescaleDB/ClickHouse</strong></td></tr>
+          </tbody>
+        </table>
+
+        <div class="box compare"><span class="box-title">⚖️ Postgres vs MySQL — khác biệt cốt lõi</span>
+          MySQL truyền thống nghiêng về <em>tốc độ đọc và đơn giản</em>; PostgreSQL nghiêng về <em>tính năng và tính đúng đắn</em>. Ví dụ kinh điển: MySQL (chế độ mặc định cũ) từng âm thầm cho phép chèn ngày <code class="ic">'0000-00-00'</code> hoặc cắt cụt chuỗi quá dài; PostgreSQL sẽ <strong>báo lỗi</strong> thay vì làm hỏng dữ liệu của bạn. Postgres cũng hỗ trợ nhiều kiểu (array, JSONB, range, custom type), CTE đệ quy, window function đầy đủ từ rất sớm.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Bài tập 1.1 <span class="lvl-dot">dễ</span></div>
+          <p>Viết câu lệnh lấy <strong>tên và thành phố</strong> của tất cả phòng ban trong bảng <code class="ic">departments</code>. Sửa trực tiếp ô dưới rồi Run.</p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai1_1.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">-- Viết câu SELECT của bạn ở đây
+SELECT ;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">solution.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT name, city FROM departments;</textarea><div class="code-output"></div></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Cài đặt &amp; công cụ làm việc</h2>
+        <p class="ch-sub">Cài Postgres trên máy, dùng psql, và các GUI phổ biến.</p>
+
+        <h3 class="sec">Cài đặt</h3>
+        <ul>
+          <li><strong>Windows / macOS</strong>: tải bộ cài từ <a class="inline" href="https://www.postgresql.org/download/" target="_blank">postgresql.org/download</a> (kèm pgAdmin). macOS còn có <a class="inline" href="https://postgresapp.com" target="_blank">Postgres.app</a> rất tiện.</li>
+          <li><strong>Linux (Debian/Ubuntu)</strong>: <code class="ic">sudo apt install postgresql</code></li>
+          <li><strong>Docker</strong> (khuyên dùng cho dev): <code class="ic">docker run -e POSTGRES_PASSWORD=secret -p 5432:5432 postgres:16</code></li>
+        </ul>
+
+        <div class="box info"><span class="box-title">Khái niệm cụm (cluster)</span>Một <strong>server PostgreSQL</strong> chứa nhiều <strong>database</strong>; mỗi database chứa nhiều <strong>schema</strong> (mặc định là <code class="ic">public</code>); mỗi schema chứa bảng, view, function... Người dùng đăng nhập bằng <strong>role</strong>. Cổng mặc định: <code class="ic">5432</code>.</div>
+
+        <h3 class="sec">psql — dòng lệnh chính thức</h3>
+        <p><code class="ic">psql</code> là client terminal. Kết nối: <code class="ic">psql -h localhost -U postgres -d mydb</code>. Các lệnh "meta" bắt đầu bằng dấu gạch chéo ngược:</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">psql-meta.txt</span></div>
+<pre class="code"><span class="c">\l</span>            <span class="c">-- liệt kê databases</span>
+<span class="c">\c mydb</span>       <span class="c">-- chuyển sang database mydb</span>
+<span class="c">\dt</span>          <span class="c">-- liệt kê bảng (tables)</span>
+<span class="c">\d employees</span> <span class="c">-- mô tả cấu trúc bảng employees</span>
+<span class="c">\du</span>          <span class="c">-- liệt kê roles/users</span>
+<span class="c">\dn</span>          <span class="c">-- liệt kê schemas</span>
+<span class="c">\timing</span>      <span class="c">-- bật đo thời gian truy vấn</span>
+<span class="c">\x</span>           <span class="c">-- chế độ hiển thị dọc (expanded), dễ đọc</span>
+<span class="c">\i file.sql</span>  <span class="c">-- chạy file SQL</span>
+<span class="c">\q</span>           <span class="c">-- thoát</span></pre>
+        </div>
+        <p class="ch-sub" style="margin-top:-6px">Các lệnh <code class="ic">\</code> là của riêng psql, không phải SQL — nên không chạy được trong playground trình duyệt ở đây.</p>
+
+        <h3 class="sec">GUI &amp; công cụ</h3>
+        <table>
+          <thead><tr><th>Công cụ</th><th>Ghi chú</th></tr></thead>
+          <tbody>
+            <tr><td><strong>pgAdmin</strong></td><td>GUI chính thức, đi kèm bộ cài. Đầy đủ nhưng nặng.</td></tr>
+            <tr><td><strong>DBeaver</strong></td><td>Miễn phí, đa nền tảng, hỗ trợ nhiều DB — rất được ưa chuộng.</td></tr>
+            <tr><td><strong>TablePlus / DataGrip</strong></td><td>GUI gọn đẹp (trả phí), DataGrip của JetBrains rất mạnh.</td></tr>
+            <tr><td><strong>psql</strong></td><td>Nhanh, scriptable, luôn có sẵn — nên học dù dùng GUI.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box compare"><span class="box-title">⚖️ Mô hình kết nối</span>PostgreSQL/MySQL/SQL Server là <strong>client–server</strong>: phải chạy một tiến trình server, app kết nối qua mạng (TCP cổng 5432/3306/1433). <strong>SQLite</strong> thì khác hẳn — không có server, cả database là <em>một file</em> <code class="ic">.db</code>, thư viện đọc/ghi trực tiếp file đó. Đó là lý do SQLite hoàn hảo cho app nhúng nhưng không hợp khi nhiều máy chủ cùng ghi.</div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Kiểu dữ liệu (Data Types)</h2>
+        <p class="ch-sub">Chọn đúng kiểu = dữ liệu đúng + nhanh + tốn ít chỗ. Đây là nơi Postgres tỏa sáng.</p>
+
+        <h3 class="sec">Các kiểu thường dùng</h3>
+        <table>
+          <thead><tr><th>Nhóm</th><th>Kiểu</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td>Số nguyên</td><td><code class="ic">SMALLINT</code>, <code class="ic">INTEGER</code>, <code class="ic">BIGINT</code></td><td>2 / 4 / 8 byte</td></tr>
+            <tr><td>Tự tăng</td><td><code class="ic">SERIAL</code>, <code class="ic">BIGSERIAL</code>, hoặc <code class="ic">GENERATED ... AS IDENTITY</code></td><td>Khóa chính tự sinh</td></tr>
+            <tr><td>Số thực/thập phân</td><td><code class="ic">NUMERIC(p,s)</code>, <code class="ic">REAL</code>, <code class="ic">DOUBLE PRECISION</code></td><td>Tiền tệ → dùng NUMERIC (chính xác)</td></tr>
+            <tr><td>Chuỗi</td><td><code class="ic">TEXT</code>, <code class="ic">VARCHAR(n)</code>, <code class="ic">CHAR(n)</code></td><td>TEXT là lựa chọn mặc định tốt</td></tr>
+            <tr><td>Boolean</td><td><code class="ic">BOOLEAN</code></td><td>TRUE / FALSE / NULL</td></tr>
+            <tr><td>Thời gian</td><td><code class="ic">DATE</code>, <code class="ic">TIME</code>, <code class="ic">TIMESTAMP</code>, <code class="ic">TIMESTAMPTZ</code>, <code class="ic">INTERVAL</code></td><td>TIMESTAMPTZ = có múi giờ (nên dùng)</td></tr>
+            <tr><td>Định danh</td><td><code class="ic">UUID</code></td><td>Khóa phân tán, khó đoán</td></tr>
+            <tr><td>Bán cấu trúc</td><td><code class="ic">JSONB</code>, <code class="ic">ARRAY</code>, <code class="ic">HSTORE</code></td><td>Linh hoạt (xem L2)</td></tr>
+            <tr><td>Đặc biệt</td><td><code class="ic">ENUM</code>, <code class="ic">RANGE</code>, <code class="ic">INET/CIDR</code>, <code class="ic">geometry</code> (PostGIS)</td><td>Miền giá trị, dải, IP, không gian</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Thử các kiểu &amp; ép kiểu (cast)</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">types.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT
+  42::TEXT            AS so_thanh_chuoi,
+  '3.14'::NUMERIC      AS chuoi_thanh_so,
+  'true'::BOOLEAN      AS bool_val,
+  '2024-01-15'::DATE   AS ngay,
+  now()               AS bay_gio,
+  now() + INTERVAL '7 days' AS tuan_sau,
+  gen_random_uuid()    AS id_uuid;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box tip"><span class="box-title">Quy tắc thực dụng</span>
+          <ul style="margin-bottom:0">
+            <li>Tiền/giá → <code class="ic">NUMERIC</code> (KHÔNG dùng float vì sai số làm tròn).</li>
+            <li>Chuỗi → mặc định dùng <code class="ic">TEXT</code>; <code class="ic">VARCHAR(n)</code> chỉ khi thật sự cần giới hạn. (Trong Postgres TEXT và VARCHAR hiệu năng như nhau.)</li>
+            <li>Thời gian → <code class="ic">TIMESTAMPTZ</code> để tránh ác mộng múi giờ.</li>
+            <li>Khóa chính → <code class="ic">BIGINT GENERATED ALWAYS AS IDENTITY</code> (chuẩn SQL, thay cho SERIAL) hoặc <code class="ic">UUID</code> nếu phân tán.</li>
+          </ul>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Kiểu dữ liệu: Postgres vs MySQL vs SQLite</span>
+          <strong>Postgres</strong>: kho kiểu phong phú nhất (array, jsonb, range, network, custom type, enum thật).
+          <strong>MySQL</strong>: có <code class="ic">ENUM</code>, <code class="ic">JSON</code> nhưng không có array hay range bản địa; phân biệt nhiều kiểu integer signed/unsigned.
+          <strong>SQLite</strong>: nổi tiếng "type affinity" — cột gần như <em>không ép kiểu cứng</em>, bạn có thể nhét chuỗi vào cột INTEGER. Linh hoạt nhưng dễ lỗi âm thầm; Postgres thì kiểm soát kiểu rất chặt.</div>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Tạo bảng &amp; ràng buộc (Constraints)</h2>
+        <p class="ch-sub">DDL: CREATE TABLE, và các ràng buộc giữ cho dữ liệu luôn đúng.</p>
+
+        <h3 class="sec">CREATE TABLE</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">create.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS accounts;
+CREATE TABLE accounts (
+  id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  username  TEXT        NOT NULL UNIQUE,
+  email     TEXT        NOT NULL UNIQUE,
+  age       INT         CHECK (age >= 0 AND age < 150),
+  balance   NUMERIC(12,2) NOT NULL DEFAULT 0,
+  dept_id   INT         REFERENCES departments(id) ON DELETE SET NULL,
+  is_active BOOLEAN     NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+INSERT INTO accounts (username, email, age, balance, dept_id)
+VALUES ('alice','alice@x.com', 30, 1000, 1),
+       ('bob',  'bob@x.com',   25, 500,  2);
+
+SELECT id, username, balance, is_active, created_at FROM accounts;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Các loại ràng buộc</h3>
+        <table>
+          <thead><tr><th>Ràng buộc</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">PRIMARY KEY</code></td><td>Định danh duy nhất mỗi dòng (= UNIQUE + NOT NULL). Mỗi bảng 1 PK.</td></tr>
+            <tr><td><code class="ic">FOREIGN KEY</code> (<code class="ic">REFERENCES</code>)</td><td>Trỏ tới PK bảng khác — đảm bảo toàn vẹn quan hệ.</td></tr>
+            <tr><td><code class="ic">UNIQUE</code></td><td>Không trùng giá trị (email, username).</td></tr>
+            <tr><td><code class="ic">NOT NULL</code></td><td>Bắt buộc có giá trị.</td></tr>
+            <tr><td><code class="ic">CHECK (...)</code></td><td>Điều kiện tùy ý (age &gt;= 0, price &gt; 0).</td></tr>
+            <tr><td><code class="ic">DEFAULT</code></td><td>Giá trị mặc định khi không cung cấp.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Khóa ngoại &amp; hành vi khi xóa</h3>
+        <p>Khi xóa dòng cha, dòng con xử lý theo: <code class="ic">ON DELETE CASCADE</code> (xóa luôn con), <code class="ic">SET NULL</code> (đặt con = NULL), <code class="ic">RESTRICT/NO ACTION</code> (chặn, mặc định). Thử vi phạm ràng buộc để thấy Postgres bảo vệ dữ liệu:</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">violate.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Chèn nhân viên trỏ tới phòng ban không tồn tại (id=999) → lỗi FK
+INSERT INTO employees (name, dept_id, salary) VALUES ('Test', 999, 1000);</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Sửa cấu trúc bảng: ALTER TABLE</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">alter.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">ALTER TABLE accounts ADD COLUMN phone TEXT;
+ALTER TABLE accounts ALTER COLUMN age SET DEFAULT 18;
+ALTER TABLE accounts RENAME COLUMN phone TO phone_number;
+-- ALTER TABLE accounts DROP COLUMN phone_number;
+\d</textarea>
+          <div class="code-output"></div>
+        </div>
+        <p class="ch-sub" style="margin-top:-6px">(Dòng <code class="ic">\d</code> sẽ lỗi vì là lệnh psql — bỏ đi nếu muốn chạy sạch. Để xem cấu trúc, truy vấn <code class="ic">information_schema.columns</code>.)</p>
+
+        <div class="box compare"><span class="box-title">⚖️ DDL transaction</span>Một điểm cộng lớn của Postgres: <strong>DDL có giao dịch</strong> — bạn có thể <code class="ic">BEGIN; ALTER TABLE...; CREATE...; ROLLBACK;</code> và mọi thay đổi cấu trúc được hoàn tác sạch. MySQL (trước 8.0) thì <em>tự động commit</em> mỗi DDL, không rollback được — migration lỗi giữa chừng để lại schema dở dang.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Bài tập 4.1 <span class="lvl-dot">trung bình</span></div>
+          <p>Tạo bảng <code class="ic">books</code> gồm: <code class="ic">id</code> tự tăng (PK), <code class="ic">title</code> bắt buộc, <code class="ic">price</code> kiểu NUMERIC phải &gt; 0, <code class="ic">published_year</code> kiểu INT. Sau đó chèn 1 cuốn sách.</p>
+          <details class="answer"><summary>Đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">sol.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS books;
+CREATE TABLE books (
+  id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title TEXT NOT NULL,
+  price NUMERIC(10,2) CHECK (price > 0),
+  published_year INT
+);
+INSERT INTO books (title, price, published_year)
+VALUES ('Designing Data-Intensive Applications', 45.00, 2017);
+SELECT * FROM books;</textarea><div class="code-output"></div></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> INSERT / UPDATE / DELETE (DML)</h2>
+        <p class="ch-sub">Thêm, sửa, xóa dữ liệu — và mệnh đề RETURNING độc đáo của Postgres.</p>
+
+        <h3 class="sec">INSERT</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">insert.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Chèn nhiều dòng cùng lúc + lấy lại id vừa sinh bằng RETURNING
+INSERT INTO products (name, category, price, stock) VALUES
+  ('Webcam HD', 'Phụ kiện', 60.00, 40),
+  ('Đế tản nhiệt', 'Phụ kiện', 25.00, 75)
+RETURNING id, name;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">UPDATE</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">update.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Tăng lương 10% cho phòng Engineering (dept_id = 1)
+UPDATE employees
+SET salary = salary * 1.10
+WHERE dept_id = 1
+RETURNING name, salary;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box danger"><span class="box-title">Quy tắc sống còn</span><code class="ic">UPDATE</code>/<code class="ic">DELETE</code> <strong>không có WHERE</strong> sẽ tác động <strong>TOÀN BỘ bảng</strong>! Thói quen tốt: viết <code class="ic">SELECT</code> với cùng điều kiện WHERE trước để kiểm tra số dòng, rồi mới đổi thành UPDATE/DELETE. Trên production luôn bọc trong transaction.</div>
+
+        <h3 class="sec">DELETE</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">delete.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Xóa các sản phẩm hết hàng (stock = 0)
+DELETE FROM products WHERE stock = 0 RETURNING name;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">UPSERT — INSERT ... ON CONFLICT</h3>
+        <p>"Chèn nếu chưa có, cập nhật nếu đã có" — cực kỳ hữu dụng:</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">upsert.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">INSERT INTO customers (name, email, country)
+VALUES ('Lan','lan@mail.com','SG')      -- email đã tồn tại
+ON CONFLICT (email)
+DO UPDATE SET country = EXCLUDED.country -- thì cập nhật country
+RETURNING name, email, country;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ RETURNING &amp; UPSERT</span><code class="ic">RETURNING</code> (lấy lại dữ liệu vừa ghi trong cùng một câu lệnh) là tính năng được Postgres hỗ trợ rất sớm và sạch sẽ — MySQL không có (phải dùng <code class="ic">LAST_INSERT_ID()</code> rời rạc). UPSERT: Postgres dùng <code class="ic">ON CONFLICT</code>, MySQL dùng <code class="ic">ON DUPLICATE KEY UPDATE</code>, SQLite cũng có <code class="ic">ON CONFLICT</code>. Mỗi DB cú pháp khác nhau — đây là lý do "SQL chuẩn" thực tế vẫn có nhiều phương ngữ (dialect).</div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> Truy vấn SELECT</h2>
+        <p class="ch-sub">Trái tim của SQL: lọc, sắp xếp, giới hạn, khử trùng lặp.</p>
+
+        <h3 class="sec">Cấu trúc &amp; thứ tự thực thi logic</h3>
+        <p>Bạn <em>viết</em> theo thứ tự SELECT → FROM → WHERE..., nhưng SQL <em>thực thi logic</em> theo thứ tự khác — hiểu điều này giải thích nhiều lỗi:</p>
+        <table>
+          <thead><tr><th>#</th><th>Mệnh đề</th><th>Việc</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code class="ic">FROM</code> / <code class="ic">JOIN</code></td><td>Lấy &amp; ghép bảng nguồn</td></tr>
+            <tr><td>2</td><td><code class="ic">WHERE</code></td><td>Lọc từng dòng</td></tr>
+            <tr><td>3</td><td><code class="ic">GROUP BY</code></td><td>Gom nhóm</td></tr>
+            <tr><td>4</td><td><code class="ic">HAVING</code></td><td>Lọc nhóm</td></tr>
+            <tr><td>5</td><td><code class="ic">SELECT</code></td><td>Chọn cột / tính biểu thức</td></tr>
+            <tr><td>6</td><td><code class="ic">DISTINCT</code></td><td>Khử trùng lặp</td></tr>
+            <tr><td>7</td><td><code class="ic">ORDER BY</code></td><td>Sắp xếp</td></tr>
+            <tr><td>8</td><td><code class="ic">LIMIT</code> / <code class="ic">OFFSET</code></td><td>Cắt số dòng</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Hệ quả thực tế</span>Vì <code class="ic">SELECT</code> chạy <em>sau</em> <code class="ic">WHERE</code>, bạn không dùng được bí danh (alias) cột trong WHERE. Nhưng <code class="ic">ORDER BY</code> chạy sau SELECT nên dùng alias được.</div>
+
+        <h3 class="sec">WHERE — các toán tử lọc</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">where.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT name, salary, hired_at FROM employees
+WHERE salary BETWEEN 1500 AND 2300        -- trong khoảng
+  AND dept_id IN (1, 2)                    -- thuộc tập
+  AND name LIKE '%n%'                      -- chứa chữ 'n' (ILIKE = không phân biệt hoa thường)
+  AND hired_at > '2020-01-01'
+ORDER BY salary DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">ORDER BY, LIMIT, OFFSET, DISTINCT</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">order.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Các category sản phẩm khác nhau
+SELECT DISTINCT category FROM products;
+
+-- Phân trang: 2 sản phẩm đắt nhất, bỏ qua 1 cái đầu (trang 2, mỗi trang ~1)
+SELECT name, price FROM products
+ORDER BY price DESC
+LIMIT 2 OFFSET 1;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box tip"><span class="box-title">CASE — if/else trong SQL</span>Phân loại dữ liệu ngay trong SELECT:</div>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">case.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT name, salary,
+  CASE
+    WHEN salary >= 2200 THEN 'Cao'
+    WHEN salary >= 1500 THEN 'Trung bình'
+    ELSE 'Thấp'
+  END AS muc_luong
+FROM employees
+ORDER BY salary DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Bài tập 6.1 <span class="lvl-dot">trung bình</span></div>
+          <p>Lấy tên và lương của <strong>3 nhân viên có lương cao nhất</strong> thuộc phòng ban có <code class="ic">dept_id = 1</code>.</p>
+          <details class="answer"><summary>Đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">sol.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT name, salary FROM employees
+WHERE dept_id = 1
+ORDER BY salary DESC
+LIMIT 3;</textarea><div class="code-output"></div></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Hàm, toán tử &amp; xử lý NULL</h2>
+        <p class="ch-sub">Biến đổi dữ liệu với hàm có sẵn, và cạm bẫy NULL.</p>
+
+        <h3 class="sec">Hàm chuỗi, số, ngày tháng</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">functions.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT
+  upper('postgres')             AS in_hoa,
+  length('database')            AS do_dai,
+  'Post' || 'greSQL'           AS noi_chuoi,         -- || là nối chuỗi
+  substring('PostgreSQL' FROM 1 FOR 4) AS cat_chuoi,
+  round(3.14159, 2)             AS lam_tron,
+  age(now(), '1995-05-20')      AS tuoi,
+  date_trunc('month', now())    AS dau_thang,
+  extract(year FROM now())      AS nam;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">NULL — "không biết", không phải 0 hay rỗng</h3>
+        <p>NULL nghĩa là <em>thiếu/không xác định</em>. Mọi phép so sánh với NULL đều trả về NULL (không TRUE, không FALSE):</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">null.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT
+  NULL = NULL        AS so_sanh_bang,   -- → NULL (không phải TRUE!)
+  NULL IS NULL       AS dung_is_null,   -- → true (cách đúng để kiểm tra)
+  5 + NULL           AS phep_cong,      -- → NULL (lan truyền)
+  COALESCE(NULL, NULL, 'mặc định') AS coalesce_val, -- giá trị đầu tiên khác NULL
+  NULLIF(10, 10)     AS nullif_val;     -- → NULL nếu hai giá trị bằng nhau</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box warn"><span class="box-title">Bẫy NULL kinh điển</span>Câu <code class="ic">WHERE manager_id != 1</code> sẽ <strong>bỏ sót</strong> các dòng có <code class="ic">manager_id IS NULL</code>, vì <code class="ic">NULL != 1</code> ra NULL (bị loại). Muốn lấy cả NULL phải viết thêm <code class="ic">OR manager_id IS NULL</code>. Dùng <code class="ic">COALESCE(manager_id, 0)</code> để thay NULL bằng giá trị mặc định khi cần.</div>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">null_filter.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Nhân viên không có quản lý (là sếp)
+SELECT name FROM employees WHERE manager_id IS NULL;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ NULL &amp; chuỗi rỗng</span>Trong Postgres (và chuẩn SQL), <code class="ic">NULL</code> và chuỗi rỗng <code class="ic">''</code> là <em>khác nhau</em>. <strong>Oracle</strong> lại coi chuỗi rỗng <em>chính là</em> NULL — một khác biệt gây nhiều đau khổ khi di trú dữ liệu. Đây là ví dụ Postgres bám sát chuẩn SQL hơn.</div>
+
+        <h3 class="sec">Quiz cấp độ L0</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L0</div>
+          <div class="q" data-answer="b">
+            <p>1. Để kiểm tra một cột có giá trị NULL, dùng cách nào?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q1" value="a"> <code>col = NULL</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q1" value="b"> <code>col IS NULL</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q1" value="c"> <code>col == NULL</code></label>
+            <div class="explain">Mọi so sánh <code>=</code> với NULL đều ra NULL. Phải dùng <code>IS NULL</code> / <code>IS NOT NULL</code>.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Kiểu nào nên dùng để lưu <strong>tiền tệ</strong> chính xác?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q2" value="a"> <code>REAL</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q2" value="b"> <code>DOUBLE PRECISION</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q2" value="c"> <code>NUMERIC(p,s)</code></label>
+            <div class="explain">Float/double có sai số nhị phân. <code>NUMERIC</code> lưu thập phân chính xác — bắt buộc cho tiền.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Mệnh đề nào <strong>không</strong> dùng được alias cột định nghĩa ở SELECT?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q3" value="a"> <code>WHERE</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q3" value="b"> <code>ORDER BY</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q3" value="c"> cả hai đều được</label>
+            <div class="explain">WHERE thực thi trước SELECT nên chưa biết alias; ORDER BY chạy sau SELECT nên dùng được.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===== MINI-PROJECT L0 ===== -->
+      <section class="chapter" id="project-l0">
+        <h2 class="ch-title"><span class="num">🏆 L0</span> Mini-project: Quản lý thư viện</h2>
+        <p class="ch-sub">Vận dụng CREATE TABLE, ràng buộc, INSERT và SELECT cơ bản.</p>
+        <div class="box info"><span class="box-title">Bối cảnh</span>Bạn xây database nhỏ cho một thư viện: quản lý <strong>sách</strong> và <strong>thành viên</strong>. Chạy ô khởi tạo dưới đây trước, rồi hoàn thành các nhiệm vụ.</div>
+
+        <h3 class="sec">Bước 1 — Khởi tạo schema (chạy ô này trước)</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">lib_setup.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS lib_books CASCADE;
+CREATE TABLE lib_books (
+  id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title  TEXT NOT NULL,
+  author TEXT NOT NULL,
+  genre  TEXT,
+  year   INT CHECK (year > 0),
+  copies INT NOT NULL DEFAULT 1 CHECK (copies >= 0)
+);
+INSERT INTO lib_books (title, author, genre, year, copies) VALUES
+  ('Clean Code','Robert Martin','Tech',2008,3),
+  ('Sapiens','Yuval Harari','History',2011,2),
+  ('The Pragmatic Programmer','Hunt & Thomas','Tech',1999,0),
+  ('Dune','Frank Herbert','SciFi',1965,5),
+  ('Atomic Habits','James Clear','SelfHelp',2018,4);
+SELECT * FROM lib_books;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Bước 2 — Nhiệm vụ</h3>
+        <ol>
+          <li>Liệt kê tất cả sách thể loại <code class="ic">'Tech'</code>, sắp theo năm xuất bản tăng dần.</li>
+          <li>Tìm các sách <strong>còn bản để mượn</strong> (<code class="ic">copies &gt; 0</code>), chỉ hiện title &amp; copies.</li>
+          <li>Đếm số đầu sách theo từng <code class="ic">genre</code>.</li>
+          <li>Thêm một cuốn sách mới bất kỳ, dùng <code class="ic">RETURNING</code> để lấy lại id.</li>
+        </ol>
+
+        <details class="answer"><summary>Xem đáp án gợi ý</summary><div class="body">
+          <div class="code-block"><div class="code-head"><span class="fname">lib_answers.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- 1
+SELECT * FROM lib_books WHERE genre = 'Tech' ORDER BY year;
+-- 2
+SELECT title, copies FROM lib_books WHERE copies > 0;
+-- 3
+SELECT genre, COUNT(*) AS so_dau_sach FROM lib_books GROUP BY genre ORDER BY so_dau_sach DESC;
+-- 4
+INSERT INTO lib_books (title, author, genre, year, copies)
+VALUES ('Designing Data-Intensive Applications','Kleppmann','Tech',2017,2)
+RETURNING id, title;</textarea><div class="code-output"></div></div>
+        </div></details>
+      </section>
+
+      <!-- ===================== LEVEL 1 ===================== -->
+      <div class="level-divider" id="lv1"><div class="line"></div><span class="tag tag-l1">L1 · Trung cấp</span><div class="line"></div></div>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> JOIN — ghép nhiều bảng</h2>
+        <p class="ch-sub">Sức mạnh thật của mô hình quan hệ: kết hợp dữ liệu từ các bảng liên quan.</p>
+
+        <p>Dữ liệu được tách thành nhiều bảng để tránh trùng lặp (chuẩn hóa). JOIN ghép chúng lại theo điều kiện khớp (thường là khóa ngoại = khóa chính).</p>
+
+        <table>
+          <thead><tr><th>Loại JOIN</th><th>Trả về</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">INNER JOIN</code></td><td>Chỉ các dòng khớp ở <strong>cả hai</strong> bảng</td></tr>
+            <tr><td><code class="ic">LEFT JOIN</code></td><td>Tất cả dòng bảng trái + khớp bên phải (không khớp → NULL)</td></tr>
+            <tr><td><code class="ic">RIGHT JOIN</code></td><td>Tất cả dòng bảng phải + khớp bên trái</td></tr>
+            <tr><td><code class="ic">FULL OUTER JOIN</code></td><td>Tất cả dòng cả hai bên</td></tr>
+            <tr><td><code class="ic">CROSS JOIN</code></td><td>Tích Descartes (mọi cặp)</td></tr>
+            <tr><td>Self join</td><td>Bảng tự ghép với chính nó (vd: nhân viên ↔ quản lý)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">INNER JOIN</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">inner.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Mỗi nhân viên kèm tên phòng ban
+SELECT e.name AS nhan_vien, d.name AS phong_ban, d.city
+FROM employees e
+JOIN departments d ON e.dept_id = d.id
+ORDER BY d.name;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">LEFT JOIN — giữ lại cả bên không khớp</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">left.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Tất cả khách hàng, kèm số đơn (kể cả khách chưa đặt đơn nào)
+SELECT c.name, COUNT(o.id) AS so_don
+FROM customers c
+LEFT JOIN orders o ON o.customer_id = c.id
+GROUP BY c.name
+ORDER BY so_don DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+        <div class="box tip"><span class="box-title">Mẹo</span>Muốn tìm "dòng cô đơn" (bên trái không có bên phải)? <code class="ic">LEFT JOIN ... WHERE b.id IS NULL</code> — ví dụ khách chưa từng mua, sản phẩm chưa từng bán.</div>
+
+        <h3 class="sec">Self JOIN — nhân viên &amp; quản lý</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">self.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT e.name AS nhan_vien, m.name AS quan_ly
+FROM employees e
+LEFT JOIN employees m ON e.manager_id = m.id
+ORDER BY quan_ly NULLS FIRST;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ JOIN trong SQL vs MongoDB</span>JOIN là điểm mạnh cốt lõi của RDBMS. MongoDB (document) khuyến khích <em>nhúng (embed)</em> dữ liệu liên quan vào cùng một document để tránh JOIN; khi buộc phải ghép, dùng <code class="ic">$lookup</code> trong aggregation pipeline — chậm và kém linh hoạt hơn JOIN của SQL. Nếu dữ liệu của bạn nhiều quan hệ và cần ghép linh hoạt → RDBMS thắng rõ.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Bài tập 8.1 <span class="lvl-dot">trung bình</span></div>
+          <p>Liệt kê mỗi <strong>đơn hàng</strong> kèm <strong>tên khách hàng</strong> và <strong>trạng thái</strong>, chỉ lấy đơn có trạng thái <code class="ic">'paid'</code>.</p>
+          <details class="answer"><summary>Đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">sol.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT o.id, c.name AS khach, o.status
+FROM orders o
+JOIN customers c ON o.customer_id = c.id
+WHERE o.status = 'paid'
+ORDER BY o.id;</textarea><div class="code-output"></div></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Gộp nhóm &amp; tổng hợp (GROUP BY)</h2>
+        <p class="ch-sub">Từ dữ liệu chi tiết → con số tổng hợp: đếm, tổng, trung bình.</p>
+
+        <h3 class="sec">Hàm tổng hợp (aggregate)</h3>
+        <p><code class="ic">COUNT</code>, <code class="ic">SUM</code>, <code class="ic">AVG</code>, <code class="ic">MIN</code>, <code class="ic">MAX</code> — và <code class="ic">GROUP BY</code> để tính theo từng nhóm.</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">groupby.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT d.name AS phong_ban,
+       COUNT(*)        AS so_nhan_vien,
+       ROUND(AVG(e.salary), 0) AS luong_tb,
+       MAX(e.salary)   AS luong_cao_nhat
+FROM employees e
+JOIN departments d ON e.dept_id = d.id
+GROUP BY d.name
+ORDER BY luong_tb DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">HAVING — lọc sau khi gộp nhóm</h3>
+        <p><code class="ic">WHERE</code> lọc <em>dòng</em> (trước gộp), <code class="ic">HAVING</code> lọc <em>nhóm</em> (sau gộp):</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">having.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Phòng ban có nhiều hơn 1 nhân viên
+SELECT dept_id, COUNT(*) AS n
+FROM employees
+GROUP BY dept_id
+HAVING COUNT(*) > 1
+ORDER BY n DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box info"><span class="box-title">Quy tắc vàng GROUP BY</span>Mọi cột trong SELECT mà <strong>không</strong> nằm trong hàm tổng hợp thì <strong>phải</strong> có mặt trong GROUP BY. (Postgres báo lỗi nếu vi phạm — đúng chuẩn. MySQL chế độ lỏng từng cho qua, trả kết quả "ngẫu nhiên" khó lường.)</div>
+
+        <h3 class="sec">FILTER &amp; gộp có điều kiện</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">filter.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Đếm đơn theo trạng thái trong một dòng (FILTER là cú pháp chuẩn SQL, Postgres hỗ trợ)
+SELECT
+  COUNT(*)                              AS tong_don,
+  COUNT(*) FILTER (WHERE status='paid') AS da_thanh_toan,
+  COUNT(*) FILTER (WHERE status='cancelled') AS da_huy
+FROM orders;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Bài tập 9.1 <span class="lvl-dot">khá</span></div>
+          <p>Tính <strong>doanh thu</strong> (số lượng × giá) cho mỗi sản phẩm đã bán. Gợi ý: JOIN <code class="ic">order_items</code> với <code class="ic">products</code>, rồi <code class="ic">SUM(oi.qty * p.price)</code> theo <code class="ic">p.name</code>.</p>
+          <details class="answer"><summary>Đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">sol.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT p.name, SUM(oi.qty * p.price) AS doanh_thu
+FROM order_items oi
+JOIN products p ON p.id = oi.product_id
+GROUP BY p.name
+ORDER BY doanh_thu DESC;</textarea><div class="code-output"></div></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> Subquery &amp; CTE (WITH)</h2>
+        <p class="ch-sub">Truy vấn lồng truy vấn, và cách viết SQL phức tạp mà vẫn đọc được.</p>
+
+        <h3 class="sec">Subquery (truy vấn con)</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">subquery.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Nhân viên có lương trên mức trung bình toàn công ty
+SELECT name, salary FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees)
+ORDER BY salary DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">EXISTS / IN — subquery tương quan</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">exists.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Khách hàng đã từng có ít nhất 1 đơn hàng
+SELECT name FROM customers c
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.customer_id = c.id);</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">CTE — Common Table Expression (WITH)</h3>
+        <p>CTE đặt tên cho một truy vấn con để tái sử dụng và đọc dễ — như "biến tạm" trong SQL. Cực hữu ích khi chia bài toán phức tạp thành các bước:</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">cte.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">WITH doanh_thu_don AS (
+  SELECT o.id AS order_id, SUM(oi.qty * p.price) AS tong
+  FROM orders o
+  JOIN order_items oi ON oi.order_id = o.id
+  JOIN products p ON p.id = oi.product_id
+  GROUP BY o.id
+)
+SELECT order_id, tong
+FROM doanh_thu_don
+WHERE tong > 200
+ORDER BY tong DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">CTE đệ quy (recursive) — duyệt cây phân cấp</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">recursive.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Cây quản lý: bắt đầu từ các sếp (manager_id IS NULL), đi xuống cấp dưới
+WITH RECURSIVE org AS (
+  SELECT id, name, manager_id, 1 AS cap
+  FROM employees WHERE manager_id IS NULL
+  UNION ALL
+  SELECT e.id, e.name, e.manager_id, org.cap + 1
+  FROM employees e
+  JOIN org ON e.manager_id = org.id
+)
+SELECT repeat('— ', cap - 1) || name AS so_do, cap FROM org ORDER BY cap, name;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ CTE đệ quy</span>CTE (chuẩn SQL:1999) và đặc biệt <strong>recursive CTE</strong> được Postgres hỗ trợ từ lâu và rất mạnh. SQLite cũng có. MySQL chỉ thêm CTE từ phiên bản 8.0 (2018) — khá muộn. Recursive CTE là cách "chuẩn" để xử lý dữ liệu phân cấp (cây thư mục, sơ đồ tổ chức, đồ thị) trong SQL.</div>
+      </section>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Phép toán tập hợp</h2>
+        <p class="ch-sub">Gộp, giao, trừ kết quả của nhiều truy vấn.</p>
+        <table>
+          <thead><tr><th>Toán tử</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">UNION</code></td><td>Gộp 2 kết quả, <strong>loại trùng</strong></td></tr>
+            <tr><td><code class="ic">UNION ALL</code></td><td>Gộp, <strong>giữ trùng</strong> (nhanh hơn)</td></tr>
+            <tr><td><code class="ic">INTERSECT</code></td><td>Phần chung của cả hai</td></tr>
+            <tr><td><code class="ic">EXCEPT</code></td><td>Có ở vế trái nhưng không ở vế phải</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">setops.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Các thành phố xuất hiện ở phòng ban (gộp danh sách, không trùng)
+SELECT city FROM departments
+UNION
+SELECT 'Cần Thơ'
+ORDER BY city;</textarea>
+          <div class="code-output"></div>
+        </div>
+        <div class="box info"><span class="box-title">Điều kiện</span>Các truy vấn phải có <strong>cùng số cột</strong> và <strong>kiểu tương thích</strong>. <code class="ic">ORDER BY</code> đặt ở cuối cùng, áp cho kết quả gộp.</div>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> View &amp; Materialized View</h2>
+        <p class="ch-sub">Đặt tên cho truy vấn để tái dùng — và bản "đông lạnh" để tăng tốc.</p>
+
+        <h3 class="sec">VIEW — truy vấn ảo</h3>
+        <p>View là một truy vấn được lưu lại như một bảng ảo. Mỗi lần SELECT từ view, Postgres chạy lại truy vấn nền. Giúp ẩn độ phức tạp và phân quyền.</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">view.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">CREATE OR REPLACE VIEW v_nhan_vien AS
+SELECT e.name, e.salary, d.name AS phong_ban, d.city
+FROM employees e JOIN departments d ON e.dept_id = d.id;
+
+SELECT * FROM v_nhan_vien WHERE city = 'Hà Nội';</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">MATERIALIZED VIEW — kết quả được lưu vật lý</h3>
+        <p>Khác với view thường, materialized view <strong>lưu kết quả</strong> trên đĩa. Đọc cực nhanh (như bảng), nhưng dữ liệu là ảnh chụp tại thời điểm refresh — phải <code class="ic">REFRESH</code> để cập nhật. Hợp cho báo cáo nặng, ít đổi.</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">matview.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">CREATE MATERIALIZED VIEW mv_doanh_thu AS
+SELECT p.category, SUM(oi.qty * p.price) AS doanh_thu
+FROM order_items oi JOIN products p ON p.id = oi.product_id
+GROUP BY p.category;
+
+SELECT * FROM mv_doanh_thu ORDER BY doanh_thu DESC;
+-- Khi dữ liệu thay đổi: REFRESH MATERIALIZED VIEW mv_doanh_thu;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Materialized view</span>Postgres có materialized view bản địa (kèm <code class="ic">REFRESH ... CONCURRENTLY</code> để không khóa khi làm mới). MySQL <em>không</em> có — phải tự mô phỏng bằng bảng + trigger/cron. Oracle/SQL Server có dạng tương tự (indexed view / materialized view). Đây là một công cụ tối ưu báo cáo rất tiện của Postgres.</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> Index cơ bản</h2>
+        <p class="ch-sub">"Mục lục" của database — biến truy vấn từ giây xuống mili-giây.</p>
+
+        <p>Không có index, để tìm 1 dòng Postgres phải quét <strong>toàn bộ bảng</strong> (sequential scan). Index (mặc định <strong>B-tree</strong>) là cấu trúc sắp xếp giúp tìm nhanh như tra từ điển — đổi lại tốn thêm dung lượng và làm chậm INSERT/UPDATE một chút.</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">index.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Tạo index trên cột hay lọc/join
+CREATE INDEX idx_emp_dept ON employees(dept_id);
+CREATE INDEX idx_emp_salary ON employees(salary);
+
+-- Xem kế hoạch thực thi: có dùng index không?
+EXPLAIN SELECT * FROM employees WHERE dept_id = 1;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box tip"><span class="box-title">Nên đánh index ở đâu?</span>
+          <ul style="margin-bottom:0">
+            <li>Cột trong <code class="ic">WHERE</code>, <code class="ic">JOIN ON</code>, <code class="ic">ORDER BY</code> thường xuyên.</li>
+            <li>Khóa ngoại (FK) — Postgres <em>không</em> tự tạo index cho FK, bạn phải tự thêm.</li>
+            <li><code class="ic">UNIQUE</code> và <code class="ic">PRIMARY KEY</code> tự động có index.</li>
+          </ul>
+        </div>
+        <div class="box warn"><span class="box-title">Đừng lạm dụng</span>Mỗi index làm chậm ghi và tốn chỗ. Bảng ghi nhiều, đọc ít thì index nhiều phản tác dụng. Index không dùng tới = chi phí thuần. (Index nâng cao: GIN, GiST, partial, covering... ở chương 15.)</div>
+      </section>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> Transaction &amp; ACID</h2>
+        <p class="ch-sub">Nhóm nhiều lệnh thành một đơn vị "tất cả hoặc không gì".</p>
+
+        <p>Transaction đảm bảo một chuỗi thao tác hoặc <strong>thành công trọn vẹn</strong> (COMMIT) hoặc <strong>hoàn tác sạch</strong> (ROLLBACK). Ví dụ kinh điển: chuyển tiền — trừ tài khoản A và cộng tài khoản B phải cùng xảy ra, không được trừ xong rồi crash.</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">transaction.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">BEGIN;
+  UPDATE accounts SET balance = balance - 200 WHERE username = 'alice';
+  UPDATE accounts SET balance = balance + 200 WHERE username = 'bob';
+COMMIT;
+
+SELECT username, balance FROM accounts;</textarea>
+          <div class="code-output"></div>
+        </div>
+        <p class="ch-sub" style="margin-top:-6px">(Cần đã chạy ví dụ tạo bảng <code class="ic">accounts</code> ở chương 4. Nếu chưa, bấm Reset DB rồi chạy lại chương 4.)</p>
+
+        <h3 class="sec">ROLLBACK &amp; SAVEPOINT</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">rollback.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">BEGIN;
+  DELETE FROM products;          -- "lỡ tay" xóa hết
+  SELECT COUNT(*) AS con_lai FROM products;  -- 0
+ROLLBACK;                        -- hoàn tác!
+SELECT COUNT(*) AS sau_rollback FROM products;  -- trở lại như cũ</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Mức cô lập (Isolation Levels)</h3>
+        <table>
+          <thead><tr><th>Mức</th><th>Ngăn được</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">READ COMMITTED</code> (mặc định)</td><td>Dirty read</td></tr>
+            <tr><td><code class="ic">REPEATABLE READ</code></td><td>+ Non-repeatable read, phantom (ở Postgres)</td></tr>
+            <tr><td><code class="ic">SERIALIZABLE</code></td><td>Mọi bất thường — như chạy tuần tự</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box compare"><span class="box-title">⚖️ Transaction &amp; DDL</span>Mọi RDBMS lớn (Postgres, MySQL/InnoDB, SQL Server, Oracle) đều có transaction ACID. Điểm Postgres nổi bật: <strong>transactional DDL</strong> (rollback được cả CREATE/ALTER) và <strong>SERIALIZABLE thật sự</strong> (Serializable Snapshot Isolation — phát hiện xung đột mà ít khóa). MongoDB chỉ có multi-document transaction từ 4.0, và thường khuyến nghị thiết kế tránh dùng. <strong>SQLite</strong> dùng khóa toàn DB khi ghi → transaction đơn giản nhưng không cho nhiều ghi đồng thời.</div>
+
+        <h3 class="sec">Quiz cấp độ L1</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L1</div>
+          <div class="q" data-answer="b">
+            <p>1. JOIN nào giữ lại <strong>tất cả</strong> dòng bảng bên trái dù không khớp?</p>
+            <label class="opt" data-key="a"><input type="radio" name="lq1" value="a"> <code>INNER JOIN</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="lq1" value="b"> <code>LEFT JOIN</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="lq1" value="c"> <code>CROSS JOIN</code></label>
+            <div class="explain">LEFT JOIN giữ mọi dòng bảng trái; phần không khớp bên phải = NULL.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Lọc <strong>nhóm</strong> sau GROUP BY dùng mệnh đề nào?</p>
+            <label class="opt" data-key="a"><input type="radio" name="lq2" value="a"> <code>WHERE</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="lq2" value="b"> <code>FILTER</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="lq2" value="c"> <code>HAVING</code></label>
+            <div class="explain">WHERE lọc dòng trước gộp; HAVING lọc nhóm sau gộp.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Sau <code>ROLLBACK</code>, các thay đổi trong transaction sẽ?</p>
+            <label class="opt" data-key="a"><input type="radio" name="lq3" value="a"> Bị hoàn tác hoàn toàn</label>
+            <label class="opt" data-key="b"><input type="radio" name="lq3" value="b"> Được lưu vĩnh viễn</label>
+            <label class="opt" data-key="c"><input type="radio" name="lq3" value="c"> Lưu một nửa</label>
+            <div class="explain">ROLLBACK hủy mọi thay đổi từ BEGIN — tính nguyên tử (Atomicity) của ACID.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===== MINI-PROJECT L1 ===== -->
+      <section class="chapter" id="project-l1">
+        <h2 class="ch-title"><span class="num">🏆 L1</span> Mini-project: Phân tích quán cà phê</h2>
+        <p class="ch-sub">Vận dụng JOIN, GROUP BY, HAVING, subquery/CTE và transaction.</p>
+        <div class="box info"><span class="box-title">Bối cảnh</span>Một chuỗi cà phê cần báo cáo doanh số. Dữ liệu gồm <strong>menu</strong>, <strong>hóa đơn</strong> và <strong>chi tiết hóa đơn</strong>.</div>
+
+        <h3 class="sec">Bước 1 — Khởi tạo schema</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">cafe_setup.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS cafe_items CASCADE;
+DROP TABLE IF EXISTS cafe_bills CASCADE;
+DROP TABLE IF EXISTS cafe_menu CASCADE;
+CREATE TABLE cafe_menu (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT, kind TEXT, price NUMERIC(8,2));
+CREATE TABLE cafe_bills (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  bill_date DATE, staff TEXT);
+CREATE TABLE cafe_items (
+  bill_id INT REFERENCES cafe_bills(id),
+  menu_id INT REFERENCES cafe_menu(id),
+  qty INT);
+INSERT INTO cafe_menu (name, kind, price) VALUES
+  ('Espresso','Coffee',35),('Latte','Coffee',55),('Trà đào','Tea',45),
+  ('Bánh mì','Food',40),('Croissant','Food',50);
+INSERT INTO cafe_bills (bill_date, staff) VALUES
+  ('2024-05-01','Lan'),('2024-05-01','Minh'),('2024-05-02','Lan'),('2024-05-02','Minh');
+INSERT INTO cafe_items (bill_id, menu_id, qty) VALUES
+  (1,1,2),(1,4,1),(2,2,1),(2,3,2),(3,2,3),(3,5,2),(4,1,1),(4,3,1),(4,4,2);
+SELECT 'Đã tạo xong dữ liệu quán cà phê ✓' AS thong_bao;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Bước 2 — Nhiệm vụ</h3>
+        <ol>
+          <li>Tính <strong>doanh thu mỗi món</strong> (tên món + tổng tiền), sắp giảm dần.</li>
+          <li>Tính <strong>doanh thu theo nhân viên</strong> (staff).</li>
+          <li>Tìm các <strong>loại món</strong> (<code class="ic">kind</code>) có tổng doanh thu &gt; 150 (dùng HAVING).</li>
+          <li>Dùng CTE: tính doanh thu mỗi hóa đơn, rồi lấy hóa đơn có giá trị lớn nhất.</li>
+        </ol>
+
+        <details class="answer"><summary>Xem đáp án gợi ý</summary><div class="body">
+          <div class="code-block"><div class="code-head"><span class="fname">cafe_answers.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- 1: doanh thu mỗi món
+SELECT m.name, SUM(i.qty * m.price) AS doanh_thu
+FROM cafe_items i JOIN cafe_menu m ON m.id = i.menu_id
+GROUP BY m.name ORDER BY doanh_thu DESC;
+
+-- 2: doanh thu theo nhân viên
+SELECT b.staff, SUM(i.qty * m.price) AS doanh_thu
+FROM cafe_items i
+JOIN cafe_bills b ON b.id = i.bill_id
+JOIN cafe_menu m ON m.id = i.menu_id
+GROUP BY b.staff ORDER BY doanh_thu DESC;
+
+-- 3: loại món > 150
+SELECT m.kind, SUM(i.qty * m.price) AS dt
+FROM cafe_items i JOIN cafe_menu m ON m.id = i.menu_id
+GROUP BY m.kind HAVING SUM(i.qty * m.price) > 150;
+
+-- 4: hóa đơn giá trị lớn nhất (CTE)
+WITH bill_total AS (
+  SELECT i.bill_id, SUM(i.qty * m.price) AS tong
+  FROM cafe_items i JOIN cafe_menu m ON m.id = i.menu_id
+  GROUP BY i.bill_id
+)
+SELECT * FROM bill_total ORDER BY tong DESC LIMIT 1;</textarea><div class="code-output"></div></div>
+        </div></details>
+      </section>
+
+      <!-- ===================== LEVEL 2 ===================== -->
+      <div class="level-divider" id="lv2"><div class="line"></div><span class="tag tag-l2">L2 · Nâng cao</span><div class="line"></div></div>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> Index nâng cao</h2>
+        <p class="ch-sub">Đúng loại index cho đúng bài toán — đây là siêu năng lực của Postgres.</p>
+        <table>
+          <thead><tr><th>Loại</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><strong>B-tree</strong> (mặc định)</td><td>So sánh <code class="ic">=</code>, <code class="ic">&lt;</code>, <code class="ic">&gt;</code>, BETWEEN, ORDER BY</td></tr>
+            <tr><td><strong>GIN</strong></td><td>JSONB, mảng, full-text — "nhiều giá trị trong một ô"</td></tr>
+            <tr><td><strong>GiST</strong></td><td>Dữ liệu hình học, range, tìm gần đúng (PostGIS)</td></tr>
+            <tr><td><strong>BRIN</strong></td><td>Bảng cực lớn, dữ liệu sắp xếp tự nhiên (time-series) — index siêu nhỏ</td></tr>
+            <tr><td><strong>Hash</strong></td><td>Chỉ so sánh bằng <code class="ic">=</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Partial, Expression &amp; Composite index</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">adv_index.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Partial index: chỉ index dòng thỏa điều kiện (nhỏ & nhanh hơn)
+CREATE INDEX idx_orders_paid ON orders(customer_id) WHERE status = 'paid';
+
+-- Expression index: index trên kết quả hàm (cho tìm không phân biệt hoa thường)
+CREATE INDEX idx_cust_lower_email ON customers(LOWER(email));
+
+-- Composite index: nhiều cột (thứ tự cột rất quan trọng!)
+CREATE INDEX idx_emp_dept_salary ON employees(dept_id, salary DESC);
+
+EXPLAIN SELECT * FROM customers WHERE LOWER(email) = 'lan@mail.com';</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box info"><span class="box-title">Covering index (INCLUDE)</span><code class="ic">CREATE INDEX ... ON t(a) INCLUDE (b)</code> cho phép truy vấn lấy luôn cột <code class="ic">b</code> từ index mà không cần đọc bảng — gọi là "index-only scan", cực nhanh.</div>
+        <div class="box compare"><span class="box-title">⚖️ Đa dạng index</span>Đây là nơi Postgres bỏ xa phần lớn đối thủ: GIN/GiST/BRIN/partial/expression/covering. MySQL chủ yếu B-tree (InnoDB) + full-text + spatial hạn chế, không có partial index hay nhiều loại index chuyên dụng. Khả năng chọn đúng loại index giúp Postgres xử lý JSON, mảng, văn bản, không gian hiệu quả trong cùng một engine.</div>
+      </section>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> Window Functions</h2>
+        <p class="ch-sub">Tính toán trên "cửa sổ" các dòng mà không gộp mất chi tiết — kỹ năng phỏng vấn kinh điển.</p>
+
+        <p>Khác với <code class="ic">GROUP BY</code> (gộp nhiều dòng thành một), window function tính giá trị tổng hợp <em>nhưng vẫn giữ nguyên từng dòng</em>. Cú pháp: <code class="ic">hàm() OVER (PARTITION BY ... ORDER BY ...)</code>.</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">window.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Xếp hạng lương trong từng phòng ban + so với lương TB phòng
+SELECT name, dept_id, salary,
+  RANK()       OVER (PARTITION BY dept_id ORDER BY salary DESC) AS hang,
+  ROUND(AVG(salary) OVER (PARTITION BY dept_id), 0)            AS luong_tb_phong,
+  salary - ROUND(AVG(salary) OVER (PARTITION BY dept_id), 0)   AS chenh_lech
+FROM employees
+ORDER BY dept_id, hang;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <table>
+          <thead><tr><th>Hàm window</th><th>Công dụng</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">ROW_NUMBER()</code></td><td>Số thứ tự duy nhất</td></tr>
+            <tr><td><code class="ic">RANK()</code> / <code class="ic">DENSE_RANK()</code></td><td>Xếp hạng (có/không nhảy bậc khi đồng hạng)</td></tr>
+            <tr><td><code class="ic">LAG()</code> / <code class="ic">LEAD()</code></td><td>Lấy giá trị dòng trước / sau</td></tr>
+            <tr><td><code class="ic">SUM/AVG ... OVER</code></td><td>Running total, trung bình trượt</td></tr>
+            <tr><td><code class="ic">NTILE(n)</code></td><td>Chia thành n nhóm (phân vị)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Running total &amp; LAG</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">running.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- Tổng lương cộng dồn theo ngày vào làm
+SELECT name, hired_at, salary,
+  SUM(salary) OVER (ORDER BY hired_at) AS cong_don,
+  LAG(salary) OVER (ORDER BY hired_at) AS luong_nguoi_truoc
+FROM employees
+ORDER BY hired_at;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Window functions</span>Là một phần chuẩn SQL được Postgres hỗ trợ đầy đủ từ rất sớm. MySQL chỉ có từ 8.0. Đây là công cụ phân tích cực mạnh (top-N theo nhóm, tăng trưởng kỳ trước, phân vị) mà nếu thiếu thì phải viết subquery rối rắm.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Bài tập 16.1 <span class="lvl-dot">khó</span></div>
+          <p>Tìm <strong>nhân viên lương cao nhất của mỗi phòng ban</strong> (chỉ 1 người/phòng). Gợi ý: dùng <code class="ic">ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY salary DESC)</code> trong CTE rồi lọc <code class="ic">= 1</code>.</p>
+          <details class="answer"><summary>Đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">sol.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">WITH ranked AS (
+  SELECT name, dept_id, salary,
+         ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS rn
+  FROM employees
+)
+SELECT name, dept_id, salary FROM ranked WHERE rn = 1 ORDER BY dept_id;</textarea><div class="code-output"></div></div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH17 ===== -->
+      <section class="chapter" id="ch17">
+        <h2 class="ch-title"><span class="num">CH 17</span> JSON &amp; JSONB</h2>
+        <p class="ch-sub">Postgres vừa là SQL DB vừa là document store — đối đầu trực tiếp với MongoDB.</p>
+
+        <p>Postgres có hai kiểu: <code class="ic">JSON</code> (lưu nguyên văn bản) và <code class="ic">JSONB</code> (lưu dạng nhị phân đã phân tích — <strong>nên dùng JSONB</strong>: nhanh hơn, đánh index được). Cho phép lưu dữ liệu phi cấu trúc ngay trong cột.</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">jsonb.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS events;
+CREATE TABLE events (
+  id   BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  data JSONB
+);
+INSERT INTO events (data) VALUES
+  ('{"user":"an","action":"login","tags":["web","vn"],"meta":{"ip":"1.2.3.4"}}'),
+  ('{"user":"binh","action":"purchase","amount":120,"tags":["mobile"]}');
+
+SELECT
+  data->>'user'           AS nguoi_dung,   -- ->> trả TEXT
+  data->'meta'->>'ip'     AS ip,           -- truy cập lồng nhau
+  data->'tags'            AS tags_json,    -- -> trả JSONB
+  (data->>'amount')::numeric AS so_tien
+FROM events;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Toán tử truy vấn JSONB &amp; index GIN</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">jsonb_query.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- @> kiểm tra "chứa"; ? kiểm tra tồn tại key
+SELECT data->>'user' AS u
+FROM events
+WHERE data @> '{"action":"purchase"}';        -- chứa cặp key/value
+
+-- Index GIN tăng tốc các phép @>, ?, tìm trong JSONB
+CREATE INDEX idx_events_data ON events USING GIN (data);
+
+-- Tìm event có tag 'web'
+SELECT data->>'user' AS u FROM events WHERE data->'tags' ? 'web';</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Postgres JSONB vs MongoDB</span>
+          <ul style="margin-bottom:0">
+            <li><strong>Giống</strong>: cả hai lưu document linh hoạt, không cần schema cứng, đánh index trường lồng nhau.</li>
+            <li><strong>Postgres thắng</strong>: có thể trộn dữ liệu quan hệ + JSON trong một truy vấn, JOIN với bảng thường, ràng buộc &amp; transaction ACID đầy đủ, một hệ thống lo tất cả.</li>
+            <li><strong>MongoDB thắng</strong>: scale ngang (sharding) bản địa, hệ sinh thái document-first, ghi rất nhiều với schema thay đổi liên tục.</li>
+            <li><strong>Lời khuyên</strong>: cần linh hoạt <em>và</em> quan hệ → JSONB của Postgres thường đủ tốt, đỡ phải vận hành thêm một DB riêng.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== CH18 ===== -->
+      <section class="chapter" id="ch18">
+        <h2 class="ch-title"><span class="num">CH 18</span> Array &amp; kiểu phức hợp</h2>
+        <p class="ch-sub">Mảng bản địa, ENUM, và các kiểu Postgres độc đáo.</p>
+
+        <h3 class="sec">Mảng (Array)</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">array.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS articles;
+CREATE TABLE articles (
+  id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title TEXT,
+  tags  TEXT[]            -- cột mảng
+);
+INSERT INTO articles (title, tags) VALUES
+  ('Học Postgres', ARRAY['db','sql','postgres']),
+  ('Mẹo index',   '{"db","performance"}');
+
+SELECT title, tags, tags[1] AS tag_dau,
+       array_length(tags,1) AS so_tag
+FROM articles
+WHERE 'db' = ANY(tags);            -- có chứa 'db'</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">ENUM &amp; unnest</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">enum.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TYPE IF EXISTS mood CASCADE;
+CREATE TYPE mood AS ENUM ('low','ok','high');
+SELECT 'high'::mood AS trang_thai;
+
+-- unnest: biến mảng thành các dòng
+SELECT unnest(ARRAY['a','b','c']) AS chu_cai;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Mảng bản địa</span>Postgres hỗ trợ mảng như công dân hạng nhất (lưu, index GIN, toán tử <code class="ic">ANY</code>/<code class="ic">@&gt;</code>, <code class="ic">unnest</code>). MySQL không có kiểu mảng (phải dùng JSON hoặc bảng phụ). Tuy nhiên, lạm dụng mảng có thể vi phạm chuẩn hóa — cân nhắc bảng quan hệ khi cần JOIN/truy vấn phức tạp trên phần tử.</div>
+      </section>
+
+      <!-- ===== CH19 ===== -->
+      <section class="chapter" id="ch19">
+        <h2 class="ch-title"><span class="num">CH 19</span> Full-text Search</h2>
+        <p class="ch-sub">Tìm kiếm văn bản thông minh ngay trong Postgres — thay được Elasticsearch cho nhiều dự án.</p>
+
+        <p>Khác với <code class="ic">LIKE '%từ%'</code> (chậm, ngây thơ), full-text search tách văn bản thành các "lexeme" (<code class="ic">tsvector</code>), hỗ trợ gốc từ, xếp hạng độ liên quan, và truy vấn bằng <code class="ic">tsquery</code>.</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">fts.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">SELECT
+  to_tsvector('english', 'PostgreSQL is a powerful database system') AS vector,
+  to_tsvector('english', 'The quick brown fox jumps')
+    @@ to_tsquery('english', 'quick & fox') AS khop;  -- tìm 'quick' VÀ 'fox'</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">fts_rank.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS docs;
+CREATE TABLE docs (id INT, body TEXT);
+INSERT INTO docs VALUES
+  (1,'PostgreSQL supports advanced indexing and full text search'),
+  (2,'MongoDB is a document database'),
+  (3,'Indexing makes database queries fast');
+
+SELECT id, body,
+  ts_rank(to_tsvector('english', body), to_tsquery('english','database & index:*')) AS diem
+FROM docs
+WHERE to_tsvector('english', body) @@ to_tsquery('english','database & index:*')
+ORDER BY diem DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Postgres FTS vs Elasticsearch</span>Postgres full-text search (kèm extension <code class="ic">pg_trgm</code> cho tìm gần đúng/typo, và GIN index) đủ tốt cho hầu hết ứng dụng vừa và nhỏ — đỡ phải vận hành thêm Elasticsearch. Khi cần tìm kiếm quy mô rất lớn, đa ngôn ngữ phức tạp, gợi ý realtime, phân tích log khổng lồ → Elasticsearch/OpenSearch vẫn vượt trội. "Bắt đầu với Postgres FTS, chuyển sang ES khi thật sự cần".</div>
+      </section>
+
+      <!-- ===== CH20 ===== -->
+      <section class="chapter" id="ch20">
+        <h2 class="ch-title"><span class="num">CH 20</span> Hàm &amp; PL/pgSQL</h2>
+        <p class="ch-sub">Viết logic chạy ngay trong database bằng ngôn ngữ thủ tục.</p>
+
+        <h3 class="sec">Hàm SQL đơn giản</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">func_sql.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">CREATE OR REPLACE FUNCTION tang_luong(luong NUMERIC, phan_tram NUMERIC)
+RETURNS NUMERIC AS $$
+  SELECT luong * (1 + phan_tram/100);
+$$ LANGUAGE sql;
+
+SELECT name, salary, tang_luong(salary, 15) AS sau_tang FROM employees LIMIT 4;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">PL/pgSQL — có biến, vòng lặp, điều kiện</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">plpgsql.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">CREATE OR REPLACE FUNCTION xep_loai_luong(p_salary NUMERIC)
+RETURNS TEXT AS $$
+DECLARE
+  ket_qua TEXT;
+BEGIN
+  IF p_salary >= 2200 THEN
+    ket_qua := 'Cao';
+  ELSIF p_salary >= 1500 THEN
+    ket_qua := 'Trung bình';
+  ELSE
+    ket_qua := 'Thấp';
+  END IF;
+  RETURN ket_qua;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT name, salary, xep_loai_luong(salary) AS xep_loai FROM employees ORDER BY salary DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Ngôn ngữ thủ tục</span>Postgres cho viết hàm/stored procedure bằng nhiều ngôn ngữ: <strong>PL/pgSQL</strong> (mặc định), và cả <strong>PL/Python, PL/Perl, PL/v8 (JavaScript)</strong> qua extension. SQL Server dùng T-SQL, Oracle dùng PL/SQL (PL/pgSQL lấy cảm hứng từ đây), MySQL có stored procedure nhưng yếu hơn. Khả năng nhúng nhiều ngôn ngữ là một điểm mở rộng đặc trưng của Postgres.</div>
+      </section>
+
+      <!-- ===== CH21 ===== -->
+      <section class="chapter" id="ch21">
+        <h2 class="ch-title"><span class="num">CH 21</span> Trigger</h2>
+        <p class="ch-sub">Tự động chạy logic khi dữ liệu thay đổi — audit log, cập nhật timestamp, kiểm tra phức tạp.</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">trigger.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS notes CASCADE;
+CREATE TABLE notes (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  body TEXT,
+  updated_at TIMESTAMPTZ
+);
+
+-- Hàm trigger: tự đặt updated_at mỗi khi INSERT/UPDATE
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_notes_updated
+BEFORE INSERT OR UPDATE ON notes
+FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+INSERT INTO notes (body) VALUES ('Ghi chú đầu tiên');
+SELECT id, body, updated_at FROM notes;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box warn"><span class="box-title">Dùng trigger có chừng mực</span>Trigger mạnh nhưng "ẩn" — logic chạy ngầm khó debug, dễ gây hiệu ứng dây chuyền và chậm ghi. Hợp cho: audit/history, cập nhật cột dẫn xuất, ràng buộc phức tạp. Tránh nhồi nghiệp vụ phức tạp vào trigger nếu có thể xử lý ở tầng ứng dụng.</div>
+        <div class="box info"><span class="box-title">Biến đặc biệt</span>Trong trigger: <code class="ic">NEW</code> = dòng mới (INSERT/UPDATE), <code class="ic">OLD</code> = dòng cũ (UPDATE/DELETE), <code class="ic">TG_OP</code> = loại thao tác.</div>
+      </section>
+
+      <!-- ===== CH22 ===== -->
+      <section class="chapter" id="ch22">
+        <h2 class="ch-title"><span class="num">CH 22</span> Tối ưu &amp; EXPLAIN</h2>
+        <p class="ch-sub">Đọc kế hoạch thực thi để hiểu vì sao truy vấn chậm và sửa nó.</p>
+
+        <p><code class="ic">EXPLAIN</code> cho biết Postgres <em>dự định</em> chạy truy vấn thế nào; <code class="ic">EXPLAIN ANALYZE</code> chạy thật và báo thời gian thực tế.</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">explain.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">EXPLAIN ANALYZE
+SELECT e.name, d.name
+FROM employees e JOIN departments d ON e.dept_id = d.id
+WHERE e.salary > 1500;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Đọc kế hoạch</h3>
+        <table>
+          <thead><tr><th>Node</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Seq Scan</strong></td><td>Quét toàn bảng — chậm nếu bảng lớn, có thể thiếu index</td></tr>
+            <tr><td><strong>Index Scan / Index Only Scan</strong></td><td>Dùng index — tốt</td></tr>
+            <tr><td><strong>Bitmap Heap Scan</strong></td><td>Kết hợp index khi nhiều dòng khớp</td></tr>
+            <tr><td><strong>Nested Loop / Hash Join / Merge Join</strong></td><td>Các chiến lược ghép bảng</td></tr>
+            <tr><td><strong>cost / rows / actual time</strong></td><td>Ước lượng &amp; thực tế — chú ý lệch lớn giữa ước lượng và thực tế</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box tip"><span class="box-title">Quy trình tối ưu</span>
+          <ol style="margin-bottom:0">
+            <li>Tìm truy vấn chậm (<code class="ic">pg_stat_statements</code>).</li>
+            <li><code class="ic">EXPLAIN ANALYZE</code> → tìm Seq Scan trên bảng lớn, sort tốn kém, lệch ước lượng.</li>
+            <li>Thêm index phù hợp / viết lại truy vấn / cập nhật thống kê (<code class="ic">ANALYZE</code>).</li>
+            <li>Đo lại. Đừng tối ưu mò — luôn dựa vào số liệu.</li>
+          </ol>
+        </div>
+
+        <h3 class="sec">Quiz cấp độ L2</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L2</div>
+          <div class="q" data-answer="b">
+            <p>1. Kiểu nào nên dùng để lưu &amp; index dữ liệu JSON hiệu quả?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l2q1" value="a"> <code>JSON</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l2q1" value="b"> <code>JSONB</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l2q1" value="c"> <code>TEXT</code></label>
+            <div class="explain">JSONB lưu nhị phân đã phân tích — truy vấn nhanh và đánh index GIN được; JSON chỉ là văn bản thô.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Để xếp hạng trong từng nhóm mà <strong>không gộp mất dòng</strong>, dùng?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l2q2" value="a"> <code>GROUP BY</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l2q2" value="b"> <code>DISTINCT</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l2q2" value="c"> <code>RANK() OVER (PARTITION BY ...)</code></label>
+            <div class="explain">Window function tính toán theo nhóm nhưng giữ nguyên từng dòng.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Trong EXPLAIN, dấu hiệu thường gặp của truy vấn cần index là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l2q3" value="a"> <code>Seq Scan</code> trên bảng lớn</label>
+            <label class="opt" data-key="b"><input type="radio" name="l2q3" value="b"> <code>Index Only Scan</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l2q3" value="c"> <code>Hash Join</code></label>
+            <div class="explain">Seq Scan = quét toàn bảng. Trên bảng lớn với điều kiện lọc chọn lọc, thường nên thêm index.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===== MINI-PROJECT L2 ===== -->
+      <section class="chapter" id="project-l2">
+        <h2 class="ch-title"><span class="num">🏆 L2</span> Mini-project: Analytics &amp; JSONB</h2>
+        <p class="ch-sub">Vận dụng window functions, JSONB, CTE và index nâng cao.</p>
+        <div class="box info"><span class="box-title">Bối cảnh</span>Bạn phân tích log sự kiện người dùng của một app. Mỗi event là một bản ghi JSONB linh hoạt.</div>
+
+        <h3 class="sec">Bước 1 — Khởi tạo schema</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">analytics_setup.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS app_events CASCADE;
+CREATE TABLE app_events (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  ts TIMESTAMPTZ,
+  payload JSONB
+);
+INSERT INTO app_events (ts, payload) VALUES
+  ('2024-06-01 08:00', '{"user":"an","event":"view","amount":0,"plan":"free"}'),
+  ('2024-06-01 09:30', '{"user":"an","event":"purchase","amount":120,"plan":"pro"}'),
+  ('2024-06-01 10:15', '{"user":"binh","event":"view","amount":0,"plan":"free"}'),
+  ('2024-06-02 11:00', '{"user":"binh","event":"purchase","amount":80,"plan":"pro"}'),
+  ('2024-06-02 14:20', '{"user":"an","event":"purchase","amount":200,"plan":"pro"}'),
+  ('2024-06-03 16:45', '{"user":"chi","event":"view","amount":0,"plan":"free"}');
+CREATE INDEX idx_app_events_payload ON app_events USING GIN (payload);
+SELECT 'Đã tạo xong log sự kiện ✓' AS thong_bao;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <h3 class="sec">Bước 2 — Nhiệm vụ</h3>
+        <ol>
+          <li>Lấy tất cả event <code class="ic">purchase</code> kèm <code class="ic">user</code> và <code class="ic">amount</code> (rút từ JSONB).</li>
+          <li>Tổng chi tiêu (<code class="ic">amount</code>) theo từng user, sắp giảm dần.</li>
+          <li>Dùng window function: với mỗi purchase, tính <strong>tổng cộng dồn</strong> theo thời gian cho từng user.</li>
+          <li>Xếp hạng user theo tổng chi tiêu (RANK).</li>
+        </ol>
+
+        <details class="answer"><summary>Xem đáp án gợi ý</summary><div class="body">
+          <div class="code-block"><div class="code-head"><span class="fname">analytics_answers.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">-- 1
+SELECT payload->>'user' AS usr, (payload->>'amount')::numeric AS amount
+FROM app_events WHERE payload->>'event' = 'purchase';
+
+-- 2
+SELECT payload->>'user' AS usr, SUM((payload->>'amount')::numeric) AS tong_chi
+FROM app_events
+GROUP BY payload->>'user' ORDER BY tong_chi DESC;
+
+-- 3: cộng dồn theo thời gian cho từng user
+SELECT ts, payload->>'user' AS usr,
+  (payload->>'amount')::numeric AS amount,
+  SUM((payload->>'amount')::numeric)
+    OVER (PARTITION BY payload->>'user' ORDER BY ts) AS cong_don
+FROM app_events
+WHERE payload->>'event' = 'purchase'
+ORDER BY usr, ts;
+
+-- 4: xếp hạng user
+WITH spend AS (
+  SELECT payload->>'user' AS usr, SUM((payload->>'amount')::numeric) AS tong
+  FROM app_events GROUP BY payload->>'user'
+)
+SELECT usr, tong, RANK() OVER (ORDER BY tong DESC) AS hang FROM spend;</textarea><div class="code-output"></div></div>
+        </div></details>
+      </section>
+
+      <!-- ===================== LEVEL 3 ===================== -->
+      <div class="level-divider" id="lv3"><div class="line"></div><span class="tag tag-l3">L3 · Chuyên gia &amp; Vận hành</span><div class="line"></div></div>
+
+      <!-- ===== CH23 ===== -->
+      <section class="chapter" id="ch23">
+        <h2 class="ch-title"><span class="num">CH 23</span> MVCC &amp; khóa (Concurrency)</h2>
+        <p class="ch-sub">Bí mật giúp Postgres cho nhiều người đọc/ghi cùng lúc mà không "kẹt".</p>
+
+        <p><strong>MVCC</strong> (Multi-Version Concurrency Control) là cơ chế cốt lõi: mỗi lần UPDATE/DELETE, Postgres <em>không</em> ghi đè dòng cũ mà tạo <strong>phiên bản mới</strong>, giữ phiên bản cũ cho các transaction đang đọc. Hệ quả vàng: <strong>người đọc không bao giờ chặn người ghi, và ngược lại</strong>. Mỗi transaction thấy một "ảnh chụp" (snapshot) nhất quán của dữ liệu.</p>
+
+        <div class="box info"><span class="box-title">Hệ quả của MVCC</span>
+          <ul style="margin-bottom:0">
+            <li>Đọc không cần khóa → đọc đồng thời cực tốt.</li>
+            <li>Sinh ra "dead tuples" (phiên bản cũ chết) → cần <strong>VACUUM</strong> dọn (chương 24).</li>
+            <li>Số transaction (XID) tăng dần → cần tránh "transaction ID wraparound".</li>
+          </ul>
+        </div>
+
+        <h3 class="sec">Khóa khi ghi cùng dòng</h3>
+        <p>Hai transaction cùng sửa <em>một dòng</em> thì cái sau phải chờ cái trước commit/rollback. Để chủ động khóa khi đọc nhằm cập nhật an toàn (chống race condition), dùng <code class="ic">SELECT ... FOR UPDATE</code>:</p>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">for_update.sql</span></div>
+<pre class="code"><span class="k">BEGIN</span>;
+  <span class="c">-- khóa dòng để không ai sửa xen vào giữa</span>
+  <span class="k">SELECT</span> balance <span class="k">FROM</span> accounts <span class="k">WHERE</span> username = <span class="s">'alice'</span> <span class="k">FOR UPDATE</span>;
+  <span class="k">UPDATE</span> accounts <span class="k">SET</span> balance = balance - <span class="n">100</span> <span class="k">WHERE</span> username = <span class="s">'alice'</span>;
+<span class="k">COMMIT</span>;</pre>
+        </div>
+        <p class="ch-sub" style="margin-top:-6px">Demo khóa cần 2 phiên kết nối song song nên không minh họa trực tiếp trong playground 1-phiên này.</p>
+
+        <div class="box compare"><span class="box-title">⚖️ MVCC: Postgres vs các DB khác</span>Postgres lưu phiên bản cũ <em>ngay trong bảng</em> (heap) → cần VACUUM. <strong>Oracle/MySQL-InnoDB</strong> dùng "undo log/rollback segment" riêng → ít bloat hơn nhưng cơ chế phức tạp khác. <strong>SQLite</strong> đơn giản hóa bằng khóa toàn database khi ghi (chỉ 1 writer tại một thời điểm), đánh đổi concurrency lấy sự đơn giản.</div>
+      </section>
+
+      <!-- ===== CH24 ===== -->
+      <section class="chapter" id="ch24">
+        <h2 class="ch-title"><span class="num">CH 24</span> VACUUM &amp; bảo trì</h2>
+        <p class="ch-sub">Dọn rác MVCC, cập nhật thống kê, giữ database khỏe.</p>
+
+        <p>Vì MVCC để lại "dead tuples", bảng sẽ phình (bloat) nếu không dọn. <code class="ic">VACUUM</code> thu hồi không gian các dòng chết để tái sử dụng; <code class="ic">ANALYZE</code> cập nhật thống kê cho query planner; <code class="ic">VACUUM FULL</code> nén bảng thật sự (khóa bảng — dùng cẩn thận).</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">vacuum.sql</span></div>
+<pre class="code"><span class="k">VACUUM</span> employees;            <span class="c">-- thu hồi dead tuples</span>
+<span class="k">ANALYZE</span> employees;           <span class="c">-- cập nhật thống kê cho planner</span>
+<span class="k">VACUUM</span> (<span class="k">VERBOSE</span>, <span class="k">ANALYZE</span>) employees;
+<span class="k">VACUUM FULL</span> employees;       <span class="c">-- nén triệt để (KHÓA bảng!)</span>
+<span class="k">REINDEX</span> <span class="k">TABLE</span> employees;     <span class="c">-- xây lại index bị phình</span></pre>
+        </div>
+
+        <div class="box tip"><span class="box-title">Autovacuum</span>Postgres có tiến trình <strong>autovacuum</strong> tự động chạy nền — hầu hết trường hợp bạn không cần VACUUM thủ công. Nhưng với bảng ghi/cập nhật cực nhiều, cần <em>tinh chỉnh</em> ngưỡng autovacuum để tránh bloat tích tụ.</div>
+        <div class="box warn"><span class="box-title">Dấu hiệu cần chú ý</span>Truy vấn chậm dần, kích thước bảng phình bất thường, planner chọn sai kế hoạch (thống kê cũ) → thường liên quan VACUUM/ANALYZE chưa kịp. Theo dõi qua <code class="ic">pg_stat_user_tables</code> (cột <code class="ic">n_dead_tup</code>, <code class="ic">last_autovacuum</code>).</div>
+      </section>
+
+      <!-- ===== CH25 ===== -->
+      <section class="chapter" id="ch25">
+        <h2 class="ch-title"><span class="num">CH 25</span> Partitioning (phân mảnh bảng)</h2>
+        <p class="ch-sub">Chia bảng khổng lồ thành nhiều mảnh nhỏ để quản lý &amp; truy vấn nhanh hơn.</p>
+
+        <p>Khi bảng lên hàng trăm triệu dòng, partition chia nó theo khoảng/danh sách/băm. Truy vấn chỉ chạm phân vùng liên quan ("partition pruning"); xóa dữ liệu cũ = drop nguyên một partition (cực nhanh).</p>
+
+        <div class="code-block">
+          <div class="code-head"><span class="fname">partition.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS logs CASCADE;
+CREATE TABLE logs (
+  id BIGINT, created_at DATE NOT NULL, msg TEXT
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE logs_2024 PARTITION OF logs
+  FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
+CREATE TABLE logs_2025 PARTITION OF logs
+  FOR VALUES FROM ('2025-01-01') TO ('2026-01-01');
+
+INSERT INTO logs VALUES (1,'2024-06-01','a'), (2,'2025-03-15','b');
+
+-- Postgres tự định tuyến dòng vào đúng partition
+SELECT tableoid::regclass AS partition, * FROM logs ORDER BY created_at;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <div class="box compare"><span class="box-title">⚖️ Partitioning &amp; time-series</span>Postgres hỗ trợ declarative partitioning (range/list/hash) từ v10+. Với time-series quy mô lớn, extension <strong>TimescaleDB</strong> (xây trên Postgres) tự động hóa partition theo thời gian + nén + hàm chuyên dụng. Đối thủ thuần time-series như <strong>ClickHouse</strong> ghi/đọc analytic nhanh hơn nữa nhưng không phải RDBMS giao dịch đầy đủ.</div>
+      </section>
+
+      <!-- ===== CH26 ===== -->
+      <section class="chapter" id="ch26">
+        <h2 class="ch-title"><span class="num">CH 26</span> Replication &amp; High Availability</h2>
+        <p class="ch-sub">Nhân bản dữ liệu sang nhiều máy để chịu tải đọc &amp; chống mất dịch vụ.</p>
+
+        <table>
+          <thead><tr><th>Khái niệm</th><th>Mô tả</th></tr></thead>
+          <tbody>
+            <tr><td><strong>WAL</strong> (Write-Ahead Log)</td><td>Nhật ký mọi thay đổi — nền tảng của recovery &amp; replication</td></tr>
+            <tr><td><strong>Streaming replication</strong></td><td>Gửi WAL sang máy replica gần như realtime (physical, toàn cụm)</td></tr>
+            <tr><td><strong>Logical replication</strong></td><td>Nhân bản theo bảng/dòng (publish/subscribe) — linh hoạt, qua các version</td></tr>
+            <tr><td><strong>Primary / Standby</strong></td><td>1 máy ghi (primary) + nhiều bản sao đọc (read replica)</td></tr>
+            <tr><td><strong>Sync vs Async</strong></td><td>Đồng bộ (an toàn, chậm hơn) vs bất đồng bộ (nhanh, có thể trễ)</td></tr>
+            <tr><td><strong>Failover</strong></td><td>Tự chuyển primary khi máy chính chết (Patroni, repmgr, pg_auto_failover)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box info"><span class="box-title">Scale đọc vs scale ghi</span>Read replica giúp <em>scale đọc</em> dễ dàng (phân tải truy vấn đọc sang nhiều bản sao). <em>Scale ghi</em> khó hơn nhiều — vì chỉ có một primary nhận ghi; cần sharding (Citus) hoặc kiến trúc phân tán.</div>
+        <div class="box compare"><span class="box-title">⚖️ Replication &amp; scale ngang</span><strong>MongoDB</strong> sinh ra với sharding + replica set bản địa → scale ngang ghi dễ hơn. <strong>Postgres</strong> mạnh ở replica đọc; muốn sharding tự động cần <strong>Citus</strong> (extension). <strong>SQL Server/Oracle</strong> có giải pháp HA doanh nghiệp (Always On, RAC) nhưng đắt. Nếu bài toán cần scale ghi cực lớn ngay từ đầu, cân nhắc kiến trúc phân tán; đa số dự án thì 1 primary Postgres + replica là quá đủ rất lâu.</div>
+      </section>
+
+      <!-- ===== CH27 ===== -->
+      <section class="chapter" id="ch27">
+        <h2 class="ch-title"><span class="num">CH 27</span> Extensions — vũ khí bí mật</h2>
+        <p class="ch-sub">Cắm thêm tính năng biến Postgres thành nhiều loại database trong một.</p>
+        <table>
+          <thead><tr><th>Extension</th><th>Biến Postgres thành</th></tr></thead>
+          <tbody>
+            <tr><td><strong>PostGIS</strong></td><td>Geospatial DB hàng đầu (bản đồ, tọa độ, khoảng cách)</td></tr>
+            <tr><td><strong>pgvector</strong></td><td>Vector DB cho AI/embedding (RAG, similarity search)</td></tr>
+            <tr><td><strong>TimescaleDB</strong></td><td>Time-series DB (IoT, metrics)</td></tr>
+            <tr><td><strong>pg_trgm</strong></td><td>Tìm gần đúng / fuzzy / chịu lỗi chính tả</td></tr>
+            <tr><td><strong>Citus</strong></td><td>Sharding phân tán, scale ngang</td></tr>
+            <tr><td><strong>pg_stat_statements</strong></td><td>Theo dõi truy vấn chậm (phải có khi vận hành)</td></tr>
+            <tr><td><strong>hstore / uuid-ossp / pgcrypto</strong></td><td>Key-value, UUID, mã hóa</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">extension.sql</span></div>
+<pre class="code"><span class="k">CREATE EXTENSION IF NOT EXISTS</span> pg_trgm;     <span class="c">-- fuzzy search</span>
+<span class="k">CREATE EXTENSION IF NOT EXISTS</span> vector;      <span class="c">-- pgvector (AI)</span>
+<span class="k">CREATE EXTENSION IF NOT EXISTS</span> postgis;     <span class="c">-- geospatial</span>
+
+<span class="c">-- Liệt kê extension đang cài</span>
+<span class="k">SELECT</span> * <span class="k">FROM</span> pg_extension;</pre>
+        </div>
+        <div class="box compare"><span class="box-title">⚖️ Vì sao "Just use Postgres"</span>Hệ sinh thái extension là lý do lớn nhất khiến Postgres thay thế được nhiều database chuyên dụng: pgvector thay Pinecone/Weaviate cho RAG quy mô vừa, PostGIS thống trị geospatial, JSONB thay MongoDB, FTS thay Elasticsearch nhỏ. Một đội nhỏ vận hành <em>một</em> Postgres thay vì 5 hệ thống khác nhau — giảm chi phí và độ phức tạp khổng lồ.</div>
+      </section>
+
+      <!-- ===== CH28 ===== -->
+      <section class="chapter" id="ch28">
+        <h2 class="ch-title"><span class="num">CH 28</span> Backup &amp; Bảo mật</h2>
+        <p class="ch-sub">Giữ dữ liệu an toàn và không rơi vào tay sai người.</p>
+
+        <h3 class="sec">Sao lưu &amp; phục hồi</h3>
+        <table>
+          <thead><tr><th>Công cụ</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">pg_dump</code></td><td>Backup logic một database (ra file SQL/nén) — dễ, hợp DB vừa</td></tr>
+            <tr><td><code class="ic">pg_dumpall</code></td><td>Backup cả cụm (gồm roles, tablespace)</td></tr>
+            <tr><td><code class="ic">pg_restore</code></td><td>Phục hồi từ bản dump định dạng custom</td></tr>
+            <tr><td><strong>PITR</strong> (base backup + WAL)</td><td>Phục hồi về <em>thời điểm bất kỳ</em> — chuẩn production</td></tr>
+            <tr><td><strong>pgBackRest / Barman</strong></td><td>Quản lý backup chuyên nghiệp, tăng dần, nén</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">backup.sh</span></div>
+<pre class="code"><span class="c"># Backup một DB ra file nén (custom format)</span>
+pg_dump -Fc -U postgres mydb &gt; mydb.dump
+<span class="c"># Phục hồi</span>
+pg_restore -U postgres -d mydb_new mydb.dump
+<span class="c"># Backup dạng SQL thuần</span>
+pg_dump -U postgres mydb &gt; mydb.sql</pre>
+        </div>
+
+        <h3 class="sec">Roles &amp; phân quyền</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">roles.sql</span></div>
+<pre class="code"><span class="k">CREATE ROLE</span> app_user <span class="k">LOGIN PASSWORD</span> <span class="s">'secret'</span>;
+<span class="k">GRANT</span> <span class="k">CONNECT</span> <span class="k">ON</span> <span class="k">DATABASE</span> mydb <span class="k">TO</span> app_user;
+<span class="k">GRANT</span> <span class="k">SELECT</span>, <span class="k">INSERT</span>, <span class="k">UPDATE</span> <span class="k">ON</span> <span class="k">ALL</span> <span class="k">TABLES</span> <span class="k">IN</span> <span class="k">SCHEMA</span> public <span class="k">TO</span> app_user;
+<span class="k">REVOKE</span> <span class="k">DELETE</span> <span class="k">ON</span> orders <span class="k">FROM</span> app_user;
+
+<span class="c">-- Row Level Security: mỗi user chỉ thấy dòng của mình</span>
+<span class="k">ALTER TABLE</span> orders <span class="k">ENABLE ROW LEVEL SECURITY</span>;
+<span class="k">CREATE POLICY</span> own_orders <span class="k">ON</span> orders
+  <span class="k">USING</span> (customer_id = current_setting(<span class="s">'app.user_id'</span>)::int);</pre>
+        </div>
+        <div class="box tip"><span class="box-title">Checklist bảo mật</span>
+          <ul style="margin-bottom:0">
+            <li>Nguyên tắc <strong>least privilege</strong>: app dùng role hạn chế, không dùng superuser.</li>
+            <li>Bật <strong>SSL/TLS</strong> cho kết nối; cấu hình <code class="ic">pg_hba.conf</code> chặt.</li>
+            <li>Mã hóa cột nhạy cảm (<code class="ic">pgcrypto</code>); không lưu mật khẩu dạng thường.</li>
+            <li><strong>Row Level Security</strong> cho multi-tenant; cập nhật bản vá định kỳ.</li>
+          </ul>
+        </div>
+        <div class="box compare"><span class="box-title">⚖️ Bảo mật</span>Postgres có Row Level Security bản địa (rất mạnh cho multi-tenant) — tính năng SQL Server/Oracle cũng có nhưng MySQL thiếu. Mô hình role thống nhất (user = role) linh hoạt, kế thừa quyền qua nhóm role.</div>
+      </section>
+
+      <!-- ===== CH29 ===== -->
+      <section class="chapter" id="ch29">
+        <h2 class="ch-title"><span class="num">CH 29</span> Scaling &amp; chọn đúng database</h2>
+        <p class="ch-sub">Tổng kết: khi nào Postgres tỏa sáng, khi nào nên chọn thứ khác.</p>
+
+        <h3 class="sec">Thang scale một Postgres</h3>
+        <ol>
+          <li><strong>Tối ưu truy vấn &amp; index</strong> — rẻ nhất, hiệu quả nhất.</li>
+          <li><strong>Tăng phần cứng</strong> (vertical scaling) — RAM, SSD NVMe, CPU.</li>
+          <li><strong>Connection pooling</strong> (PgBouncer) — Postgres tốn tài nguyên mỗi kết nối.</li>
+          <li><strong>Caching</strong> (Redis) cho dữ liệu nóng; materialized view cho báo cáo.</li>
+          <li><strong>Read replica</strong> — phân tải đọc.</li>
+          <li><strong>Partitioning</strong> cho bảng khổng lồ.</li>
+          <li><strong>Sharding</strong> (Citus) — bước cuối, phức tạp nhất.</li>
+        </ol>
+
+        <h3 class="sec">Bảng quyết định: chọn database nào?</h3>
+        <table>
+          <thead><tr><th>Tình huống</th><th>Nên chọn</th></tr></thead>
+          <tbody>
+            <tr><td>App web/SaaS có dữ liệu quan hệ, cần đúng đắn</td><td><strong>PostgreSQL</strong> ✅</td></tr>
+            <tr><td>Cần JSON + quan hệ + search + vector trong 1 hệ</td><td><strong>PostgreSQL</strong> (+ extensions)</td></tr>
+            <tr><td>App di động/desktop nhúng, offline</td><td><strong>SQLite</strong></td></tr>
+            <tr><td>Blog/CMS phổ thông, hosting rẻ, WordPress</td><td><strong>MySQL/MariaDB</strong></td></tr>
+            <tr><td>Document schema đổi liên tục, scale ngang ghi</td><td><strong>MongoDB</strong></td></tr>
+            <tr><td>Cache, session, rate-limit, leaderboard</td><td><strong>Redis</strong></td></tr>
+            <tr><td>Analytics/OLAP cột, log khổng lồ</td><td><strong>ClickHouse / BigQuery</strong></td></tr>
+            <tr><td>Doanh nghiệp đã đầu tư hệ sinh thái Microsoft/Oracle</td><td><strong>SQL Server / Oracle</strong></td></tr>
+          </tbody>
+        </table>
+
+        <div class="box tip"><span class="box-title">Kết luận khóa học</span>PostgreSQL là <strong>lựa chọn mặc định an toàn</strong> cho phần lớn dự án mới: miễn phí, đúng đắn, tính năng phong phú, mở rộng vô hạn qua extension, cộng đồng khổng lồ. Hãy bắt đầu với Postgres; chỉ thêm/đổi database khi bạn có <em>bằng chứng đo lường</em> rằng bài toán cụ thể cần thứ khác. "Use Postgres until you can't."</div>
+
+        <h3 class="sec">Quiz cấp độ L3</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L3</div>
+          <div class="q" data-answer="b">
+            <p>1. Vì sao Postgres cần VACUUM?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q1" value="a"> Để tạo index tự động</label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q1" value="b"> Dọn "dead tuples" do MVCC tạo ra</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q1" value="c"> Để mã hóa dữ liệu</label>
+            <div class="explain">MVCC giữ phiên bản cũ của dòng; VACUUM thu hồi không gian các dòng chết đó.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Extension nào biến Postgres thành vector DB cho AI?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q2" value="a"> PostGIS</label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q2" value="b"> pg_trgm</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q2" value="c"> pgvector</label>
+            <div class="explain">pgvector thêm kiểu vector + tìm kiếm tương đồng — dùng cho embedding/RAG.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Cách dễ nhất để scale <strong>đọc</strong> trong Postgres?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q3" value="a"> Thêm read replica (streaming replication)</label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q3" value="b"> Xóa hết index</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q3" value="c"> Dùng VACUUM FULL liên tục</label>
+            <div class="explain">Replica nhận bản sao dữ liệu để phân tải truy vấn đọc; ghi vẫn vào primary.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===== CAPSTONE L3 ===== -->
+      <section class="chapter" id="project-l3">
+        <h2 class="ch-title"><span class="num">🏆 L3</span> Capstone: Thiết kế hệ thống</h2>
+        <p class="ch-sub">Tổng hợp tư duy kiến trúc — không chỉ viết SQL mà còn ra quyết định thiết kế &amp; vận hành.</p>
+        <div class="box info"><span class="box-title">Đề bài</span>Thiết kế database cho một <strong>nền tảng SaaS đa người thuê (multi-tenant)</strong> ghi lại <strong>hoạt động người dùng</strong> (hàng chục triệu dòng/tháng) và phục vụ cả giao dịch lẫn báo cáo. Hãy trả lời các câu hỏi thiết kế dưới đây — đây là dạng câu hỏi phỏng vấn senior.</p>
+
+        <h3 class="sec">Câu hỏi thiết kế</h3>
+        <ol>
+          <li><strong>Schema &amp; toàn vẹn</strong>: thiết kế bảng <code class="ic">tenants</code>, <code class="ic">users</code>, <code class="ic">activity_logs</code>. Chọn kiểu khóa chính (BIGINT identity hay UUID)? Vì sao?</li>
+          <li><strong>Multi-tenant isolation</strong>: làm sao đảm bảo tenant A không đọc được dữ liệu tenant B?</li>
+          <li><strong>Bảng log khổng lồ</strong>: chiến lược partition? Index nào cho truy vấn "log của tenant X trong khoảng thời gian Y"?</li>
+          <li><strong>Báo cáo nặng</strong>: làm sao tính dashboard mà không làm chậm hệ thống giao dịch?</li>
+          <li><strong>Scaling &amp; vận hành</strong>: khi tải tăng, mở rộng theo thứ tự nào? Backup &amp; HA ra sao?</li>
+        </ol>
+
+        <h3 class="sec">Phác thảo schema (tham khảo)</h3>
+        <div class="code-block">
+          <div class="code-head"><span class="fname">capstone_schema.sql</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button><button class="run" onclick="runSQL(this)">▶ Run</button></div></div>
+          <textarea class="sql-edit" spellcheck="false">DROP TABLE IF EXISTS activity_logs CASCADE;
+CREATE TABLE activity_logs (
+  id         BIGINT GENERATED ALWAYS AS IDENTITY,
+  tenant_id  INT NOT NULL,
+  user_id    INT NOT NULL,
+  action     TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  detail     JSONB
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE activity_logs_2024 PARTITION OF activity_logs
+  FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
+
+-- Index phục vụ "log của tenant trong khoảng thời gian"
+CREATE INDEX idx_logs_tenant_time ON activity_logs (tenant_id, created_at DESC);
+-- Index JSONB cho truy vấn linh hoạt trong detail
+CREATE INDEX idx_logs_detail ON activity_logs USING GIN (detail);
+
+INSERT INTO activity_logs (tenant_id, user_id, action, created_at, detail) VALUES
+  (1, 10, 'login',  '2024-07-01 09:00', '{"ip":"1.2.3.4"}'),
+  (1, 10, 'export', '2024-07-01 09:05', '{"rows":1200}'),
+  (2, 22, 'login',  '2024-07-01 10:00', '{"ip":"9.9.9.9"}');
+
+SELECT tenant_id, action, created_at FROM activity_logs
+WHERE tenant_id = 1 AND created_at >= '2024-07-01'
+ORDER BY created_at DESC;</textarea>
+          <div class="code-output"></div>
+        </div>
+
+        <details class="answer"><summary>Xem gợi ý lời giải &amp; trade-off</summary><div class="body">
+          <p><strong>1. Khóa chính:</strong> <code class="ic">BIGINT identity</code> cho bảng nội bộ (nhỏ gọn, index hiệu quả, tuần tự tốt cho B-tree). Dùng <code class="ic">UUID</code> khi id bị lộ ra ngoài/URL hoặc sinh phân tán nhiều nơi (đổi lại index cồng kềnh hơn — cân nhắc UUIDv7 để gần tuần tự).</p>
+          <p><strong>2. Multi-tenant:</strong> mọi bảng có cột <code class="ic">tenant_id</code>; bật <strong>Row Level Security</strong> với policy lọc theo <code class="ic">tenant_id</code> = phiên hiện tại. Tầng ứng dụng set <code class="ic">SET app.tenant_id</code>. RLS là lưới an toàn cuối cùng kể cả khi code quên thêm WHERE.</p>
+          <p><strong>3. Partition + index:</strong> partition <code class="ic">activity_logs</code> theo <strong>RANGE thời gian</strong> (tháng/năm) → truy vấn theo khoảng thời gian chỉ chạm partition liên quan, và xóa dữ liệu cũ = DROP partition (cực nhanh, không bloat). Composite index <code class="ic">(tenant_id, created_at DESC)</code> khớp đúng mẫu truy vấn phổ biến nhất.</p>
+          <p><strong>4. Báo cáo:</strong> đẩy truy vấn đọc nặng sang <strong>read replica</strong>; dùng <strong>materialized view</strong> (refresh định kỳ) cho dashboard; cân nhắc bảng tổng hợp (rollup) cập nhật bằng job. Tránh chạy báo cáo ad-hoc trên primary giờ cao điểm.</p>
+          <p><strong>5. Scaling:</strong> theo thứ tự — tối ưu query/index → tăng phần cứng → PgBouncer (pooling) → Redis cache → read replica → partition → cuối cùng sharding (Citus). <strong>Backup:</strong> pgBackRest + PITR (base backup + WAL). <strong>HA:</strong> streaming replication + tự động failover (Patroni). Theo dõi bằng <code class="ic">pg_stat_statements</code>.</p>
+          <div class="box tip" style="margin-top:12px"><span class="box-title">Tiêu chí chấm (tự đánh giá)</span>Một câu trả lời tốt thể hiện: hiểu trade-off (không có "đáp án đúng duy nhất"), bám sát mẫu truy vấn thực tế khi chọn index, ưu tiên giải pháp đơn giản trước khi sharding, và có kế hoạch backup/HA cụ thể.</div>
+        </div></details>
+      </section>
+
+      <!-- ===================== NGÂN HÀNG BÀI TẬP TỰ CHẤM ===================== -->
+      <section class="chapter" id="bai-tap">
+        <h2 class="ch-title"><span class="num">🎯</span> Ngân hàng bài tập (tự chấm)</h2>
+        <p class="ch-sub">Viết SQL → bấm <strong>✓ Chấm bài</strong>. Hệ thống chạy SQL của bạn và <strong>so kết quả với đáp án mẫu</strong> ngay trong trình duyệt.</p>
+
+        <div class="box info"><span class="box-title">Cách chấm hoạt động</span>Bài chấm <strong>đúng/sai theo tập kết quả</strong> (so các dòng trả về). <strong>Thứ tự dòng không quan trọng</strong>, nhưng <strong>đúng cột và đúng thứ tự cột</strong> thì quan trọng — đề bài luôn ghi rõ các cột cần trả. Đáp án mẫu chạy trên <em>cùng database hiện tại</em> nên kết quả luôn nhất quán dù bạn đã sửa dữ liệu ở các chương trước. Nếu lỡ làm hỏng dữ liệu, bấm <strong>↺ Reset DB</strong> trong Playground.</div>
+
+        <h3 class="sec">Cấp độ L0 — Cơ bản</h3>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 1 <span class="lvl-dot">dễ</span></div>
+          <p>Lấy <code class="ic">name</code> và <code class="ic">price</code> của các sản phẩm thuộc category <code class="ic">'Phụ kiện'</code> có giá <strong>nhỏ hơn 100</strong>. <em>Cột trả về: name, price.</em></p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai1.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">-- Viết câu SELECT của bạn
+SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT name, price FROM products WHERE category = 'Phụ kiện' AND price < 100;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT name, price FROM products WHERE category = 'Phụ kiện' AND price &lt; 100;</code></div></details>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 2 <span class="lvl-dot">dễ</span></div>
+          <p>Đếm số nhân viên theo từng phòng ban. <em>Cột trả về: dept_id, n</em> (n = số nhân viên).</p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai2.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT dept_id, COUNT(*) AS n FROM employees GROUP BY dept_id;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT dept_id, COUNT(*) AS n FROM employees GROUP BY dept_id;</code></div></details>
+        </div>
+
+        <h3 class="sec">Cấp độ L1 — Trung cấp</h3>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 3 <span class="lvl-dot">trung bình</span></div>
+          <p>Với mỗi phòng ban, lấy <strong>tên phòng</strong> và <strong>lương trung bình</strong> (làm tròn 0 chữ số thập phân). <em>Cột trả về: phong_ban, luong_tb.</em></p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai3.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT d.name AS phong_ban, ROUND(AVG(e.salary),0) AS luong_tb FROM employees e JOIN departments d ON e.dept_id = d.id GROUP BY d.name;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT d.name AS phong_ban, ROUND(AVG(e.salary),0) AS luong_tb FROM employees e JOIN departments d ON e.dept_id = d.id GROUP BY d.name;</code></div></details>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 4 <span class="lvl-dot">trung bình</span></div>
+          <p>Liệt kê <strong>mọi khách hàng</strong> kèm <strong>số đơn hàng</strong> của họ (khách chưa đặt đơn nào thì hiện 0). <em>Cột trả về: name, so_don.</em> (Gợi ý: LEFT JOIN.)</p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai4.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT c.name, COUNT(o.id) AS so_don FROM customers c LEFT JOIN orders o ON o.customer_id = c.id GROUP BY c.name;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT c.name, COUNT(o.id) AS so_don FROM customers c LEFT JOIN orders o ON o.customer_id = c.id GROUP BY c.name;</code></div></details>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 5 <span class="lvl-dot">khá</span></div>
+          <p>Tìm các <strong>sản phẩm chưa từng được đặt</strong> (không xuất hiện trong <code class="ic">order_items</code>). <em>Cột trả về: name.</em> (Gợi ý: anti-join — LEFT JOIN ... WHERE ... IS NULL.)</p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai5.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT p.name FROM products p LEFT JOIN order_items oi ON oi.product_id = p.id WHERE oi.product_id IS NULL;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT p.name FROM products p LEFT JOIN order_items oi ON oi.product_id = p.id WHERE oi.product_id IS NULL;</code></div></details>
+        </div>
+
+        <h3 class="sec">Cấp độ L2 — Nâng cao</h3>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 6 <span class="lvl-dot">khó</span></div>
+          <p>Lấy <strong>nhân viên lương cao nhất của mỗi phòng ban</strong> (đúng 1 người/phòng). <em>Cột trả về: name, dept_id, salary.</em> (Gợi ý: ROW_NUMBER() OVER (PARTITION BY...).)</p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai6.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">-- Gợi ý: dùng CTE + ROW_NUMBER rồi lọc rn = 1
+SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>WITH r AS (SELECT name, dept_id, salary, ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS rn FROM employees) SELECT name, dept_id, salary FROM r WHERE rn = 1;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">WITH r AS (SELECT name, dept_id, salary, ROW_NUMBER() OVER (PARTITION BY dept_id ORDER BY salary DESC) AS rn FROM employees) SELECT name, dept_id, salary FROM r WHERE rn = 1;</code></div></details>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 7 <span class="lvl-dot">khó</span></div>
+          <p>Tính <strong>doanh thu mỗi category</strong> (= tổng qty × price), chỉ giữ category có doanh thu <strong>lớn hơn 200</strong>. <em>Cột trả về: category, doanh_thu.</em></p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai7.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT p.category, SUM(oi.qty * p.price) AS doanh_thu FROM order_items oi JOIN products p ON p.id = oi.product_id GROUP BY p.category HAVING SUM(oi.qty * p.price) > 200;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT p.category, SUM(oi.qty * p.price) AS doanh_thu FROM order_items oi JOIN products p ON p.id = oi.product_id GROUP BY p.category HAVING SUM(oi.qty * p.price) &gt; 200;</code></div></details>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">🎯 Bài 8 <span class="lvl-dot">khó</span></div>
+          <p>Với mỗi nhân viên, hiện <strong>tên nhân viên</strong> và <strong>tên quản lý</strong> trực tiếp (sếp không có quản lý → để NULL). <em>Cột trả về: name, quan_ly.</em> (Gợi ý: self LEFT JOIN.)</p>
+          <div class="code-block">
+            <div class="code-head"><span class="fname">bai8.sql</span><div class="code-actions"><button class="run" onclick="runSQL(this)">▶ Run</button><button class="grade" onclick="gradeSQL(this)">✓ Chấm bài</button></div></div>
+            <textarea class="sql-edit" spellcheck="false">SELECT ;</textarea>
+            <textarea class="sql-solution" hidden>SELECT e.name, m.name AS quan_ly FROM employees e LEFT JOIN employees m ON e.manager_id = m.id;</textarea>
+            <div class="code-output"></div>
+          </div>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body"><code class="ic">SELECT e.name, m.name AS quan_ly FROM employees e LEFT JOIN employees m ON e.manager_id = m.id;</code></div></details>
+        </div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards ôn tập</h2>
+        <p class="ch-sub">Bấm vào thẻ để lật xem đáp án. Lọc theo cấp độ.</p>
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'0')">L0 Cơ bản</button>
+          <button class="fc-filter" onclick="filterFC(this,'1')">L1 Trung cấp</button>
+          <button class="fc-filter" onclick="filterFC(this,'2')">L2 Nâng cao</button>
+          <button class="fc-filter" onclick="filterFC(this,'3')">L3 Chuyên gia</button>
+          <span id="fcCount" style="margin-left:auto;color:var(--gray);font-size:12.5px;align-self:center">16 thẻ</span>
+        </div>
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">ACID là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><strong>A</strong>tomicity, <strong>C</strong>onsistency, <strong>I</strong>solation, <strong>D</strong>urability — 4 đảm bảo của transaction. Postgres có đủ ở mặc định.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Kiểu nào để lưu tiền tệ?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>NUMERIC(p,s)</code> — chính xác thập phân. KHÔNG dùng <code>REAL</code>/<code>float</code> vì sai số làm tròn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Kiểm tra NULL thế nào?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>IS NULL</code> / <code>IS NOT NULL</code>. <code>= NULL</code> luôn ra NULL (không bao giờ TRUE).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">UPSERT trong Postgres?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>INSERT ... ON CONFLICT (cot) DO UPDATE SET ...</code>. Dùng <code>EXCLUDED</code> để lấy giá trị định chèn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">WHERE vs HAVING?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a"><code>WHERE</code> lọc <strong>dòng</strong> trước GROUP BY; <code>HAVING</code> lọc <strong>nhóm</strong> sau GROUP BY.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">LEFT JOIN trả về gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Tất cả dòng bảng <strong>trái</strong>, kèm dữ liệu khớp bên phải; không khớp thì các cột phải = NULL.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">CTE (WITH) là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Truy vấn con có tên, đặt trước câu chính bằng <code>WITH</code>. Giúp đọc dễ; <code>WITH RECURSIVE</code> để duyệt cây/đồ thị.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">View vs Materialized View?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">View = truy vấn ảo, chạy lại mỗi lần. Materialized view = lưu kết quả vật lý, đọc nhanh, phải <code>REFRESH</code>.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Index mặc định là loại gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a"><strong>B-tree</strong> — tốt cho <code>=</code>, <code>&lt;</code>, <code>&gt;</code>, BETWEEN, ORDER BY. FK không tự có index, phải tự thêm.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">JSON vs JSONB?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a"><code>JSONB</code> lưu nhị phân đã phân tích → nhanh, index GIN được. Hầu như luôn chọn JSONB.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Window function khác GROUP BY?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Tính tổng hợp theo nhóm nhưng <strong>giữ nguyên từng dòng</strong>. Cú pháp <code>OVER (PARTITION BY ... ORDER BY ...)</code>.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Index GIN dùng khi nào?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">"Nhiều giá trị trong một ô": JSONB, mảng, full-text search. Tăng tốc <code>@&gt;</code>, <code>?</code>, <code>@@</code>.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">EXPLAIN vs EXPLAIN ANALYZE?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a"><code>EXPLAIN</code> chỉ ước lượng kế hoạch; <code>EXPLAIN ANALYZE</code> chạy thật và báo thời gian thực tế.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">MVCC là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Multi-Version Concurrency Control: tạo phiên bản mới thay vì ghi đè → người đọc không chặn người ghi. Sinh dead tuples cần VACUUM.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">WAL dùng để làm gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Write-Ahead Log: ghi nhật ký thay đổi trước khi áp vào dữ liệu → đảm bảo Durability, nền tảng cho recovery &amp; replication.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Khi nào KHÔNG nên dùng Postgres?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">App nhúng offline → SQLite; cache → Redis; OLAP/log cực lớn → ClickHouse; cần scale ngang ghi cực lớn ngay → kiến trúc phân tán/MongoDB.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra cứu nhanh cú pháp &amp; lệnh hay dùng.</p>
+
+        <h3 class="sec">DDL — định nghĩa cấu trúc</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">ddl.sql</span></div>
+<pre class="code"><span class="k">CREATE TABLE</span> t (id <span class="k">BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY</span>, name <span class="t">TEXT NOT NULL</span>);
+<span class="k">ALTER TABLE</span> t <span class="k">ADD COLUMN</span> age <span class="t">INT</span>;
+<span class="k">ALTER TABLE</span> t <span class="k">RENAME COLUMN</span> age <span class="k">TO</span> tuoi;
+<span class="k">DROP TABLE IF EXISTS</span> t <span class="k">CASCADE</span>;
+<span class="k">CREATE INDEX</span> idx <span class="k">ON</span> t(name);
+<span class="k">TRUNCATE</span> t;                  <span class="c">-- xóa sạch nhanh (không WHERE)</span></pre></div>
+
+        <h3 class="sec">DML — thao tác dữ liệu</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">dml.sql</span></div>
+<pre class="code"><span class="k">INSERT INTO</span> t (name) <span class="k">VALUES</span> (<span class="s">'a'</span>),(<span class="s">'b'</span>) <span class="k">RETURNING</span> id;
+<span class="k">UPDATE</span> t <span class="k">SET</span> name=<span class="s">'x'</span> <span class="k">WHERE</span> id=<span class="n">1</span>;
+<span class="k">DELETE FROM</span> t <span class="k">WHERE</span> id=<span class="n">1</span>;
+<span class="k">INSERT INTO</span> t (id,name) <span class="k">VALUES</span> (<span class="n">1</span>,<span class="s">'a'</span>)
+  <span class="k">ON CONFLICT</span> (id) <span class="k">DO UPDATE SET</span> name=<span class="k">EXCLUDED</span>.name;</pre></div>
+
+        <h3 class="sec">SELECT — truy vấn</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">select.sql</span></div>
+<pre class="code"><span class="k">SELECT</span> col, <span class="f">COUNT</span>(*) <span class="k">FROM</span> t
+<span class="k">WHERE</span> x <span class="k">BETWEEN</span> <span class="n">1</span> <span class="k">AND</span> <span class="n">10</span> <span class="k">AND</span> y <span class="k">IN</span> (<span class="n">1</span>,<span class="n">2</span>) <span class="k">AND</span> z <span class="k">ILIKE</span> <span class="s">'%ab%'</span>
+<span class="k">GROUP BY</span> col <span class="k">HAVING</span> <span class="f">COUNT</span>(*) &gt; <span class="n">1</span>
+<span class="k">ORDER BY</span> col <span class="k">DESC NULLS LAST</span>
+<span class="k">LIMIT</span> <span class="n">10</span> <span class="k">OFFSET</span> <span class="n">20</span>;</pre></div>
+
+        <h3 class="sec">JOIN &amp; CTE &amp; Window</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">advanced.sql</span></div>
+<pre class="code"><span class="k">SELECT</span> a.*, b.* <span class="k">FROM</span> a <span class="k">JOIN</span> b <span class="k">ON</span> a.id=b.a_id;     <span class="c">-- INNER</span>
+<span class="k">SELECT</span> a.* <span class="k">FROM</span> a <span class="k">LEFT JOIN</span> b <span class="k">ON</span> ... <span class="k">WHERE</span> b.id <span class="k">IS NULL</span>; <span class="c">-- anti-join</span>
+
+<span class="k">WITH</span> x <span class="k">AS</span> (<span class="k">SELECT</span> ...) <span class="k">SELECT</span> * <span class="k">FROM</span> x;        <span class="c">-- CTE</span>
+
+<span class="f">ROW_NUMBER</span>() <span class="k">OVER</span> (<span class="k">PARTITION BY</span> g <span class="k">ORDER BY</span> v <span class="k">DESC</span>)    <span class="c">-- window</span></pre></div>
+
+        <h3 class="sec">JSONB</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">jsonb.sql</span></div>
+<pre class="code">data-&gt;<span class="s">'key'</span>      <span class="c">-- lấy JSONB con</span>
+data-&gt;&gt;<span class="s">'key'</span>     <span class="c">-- lấy TEXT</span>
+data#&gt;&gt;<span class="s">'{a,b}'</span>  <span class="c">-- đường dẫn lồng → TEXT</span>
+data @&gt; <span class="s">'{"k":1}'</span> <span class="c">-- chứa</span>
+data ? <span class="s">'key'</span>      <span class="c">-- tồn tại key</span>
+<span class="k">CREATE INDEX</span> ... <span class="k">USING</span> <span class="k">GIN</span> (data);</pre></div>
+
+        <h3 class="sec">Transaction &amp; bảo trì</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">tx.sql</span></div>
+<pre class="code"><span class="k">BEGIN</span>; ... <span class="k">COMMIT</span>;  |  <span class="k">ROLLBACK</span>;  |  <span class="k">SAVEPOINT</span> s; <span class="k">ROLLBACK TO</span> s;
+<span class="k">SELECT</span> ... <span class="k">FOR UPDATE</span>;          <span class="c">-- khóa dòng</span>
+<span class="k">VACUUM</span> <span class="k">ANALYZE</span> t;  <span class="k">REINDEX TABLE</span> t;
+<span class="k">EXPLAIN</span> <span class="k">ANALYZE</span> <span class="k">SELECT</span> ...;     <span class="c">-- xem kế hoạch thực thi</span></pre></div>
+
+        <div class="box tip"><span class="box-title">Hết khóa học! 🎉</span>Bạn đã đi qua 29 chương từ con số 0 đến vận hành PostgreSQL ở mức chuyên gia. Hãy mở <strong>🐘 SQL Playground</strong> (góc dưới phải) và tự thực hành — cách học DB tốt nhất là gõ truy vấn thật. Chúc bạn thành công!</div>
+      </section>
+
+      <footer class="foot">
+        🐘 Khóa học PostgreSQL — chạy trực tiếp bằng <a class="inline" href="https://pglite.dev" target="_blank">PGlite</a> (PostgreSQL biên dịch ra WebAssembly). Nội dung bám sát <a class="inline" href="https://www.postgresql.org/docs/" target="_blank">tài liệu chính thức PostgreSQL</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== GLOBAL SQL PLAYGROUND ===== -->
+<button class="pg-fab" id="pgFab" onclick="togglePlayground(true)">🐘 SQL Playground</button>
+<div class="pg-panel" id="pgPanel">
+  <div class="pg-head" id="pgHead">
+    <span class="pg-title" id="pgTitle"><span class="dot"></span> PostgreSQL Playground</span>
+    <div class="pg-actions">
+      <button class="run" onclick="runPlaygroundSQL()">▶ Run</button>
+      <button onclick="clearPlayground()">Xóa</button>
+      <button onclick="resetDB()" title="Tạo lại dữ liệu mẫu">↺ Reset DB</button>
+      <button onclick="togglePlayground(false)">✕</button>
+    </div>
+  </div>
+  <textarea class="pg-editor" id="pgEditor" spellcheck="false" placeholder="-- Gõ SQL rồi bấm ▶ Run (hoặc Ctrl+Enter)&#10;-- Đã có sẵn bảng: departments, employees, products, customers, orders, order_items&#10;&#10;SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 5;"></textarea>
+  <div class="pg-output" id="pgOutput"></div>
+  <div class="pg-hint">▶ Run hoặc <strong>Ctrl/⌘+Enter</strong> • dùng chung 1 database với các ví dụ trong bài • code tự lưu trong trình duyệt</div>
+</div>
+
+<!-- non-module UI logic -->
+<script>
+/* ============ NAV: active on scroll + search ============ */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll() {
+  let cur = '';
+  document.querySelectorAll('section[id], div[id].level-divider, div[id].hero, h2[id]').forEach(s => {
+    if (s.getBoundingClientRect().top < 140) cur = s.id;
+  });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li => {
+    if (li.classList.contains('nav-section-title')) { li.style.display=''; return; }
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a => a.addEventListener('click', () => {
+  if (window.innerWidth <= 980) document.querySelector('.sidebar').classList.remove('open');
+}));
+
+/* ============ QUIZ ENGINE ============ */
+function checkQuiz(btn) {
+  btn.closest('.quiz').querySelectorAll('.q').forEach(q => {
+    const correct = q.dataset.answer;
+    const chosen = q.querySelector('input:checked');
+    q.querySelectorAll('.opt').forEach(o => { o.classList.remove('correct','wrong'); if (o.dataset.key === correct) o.classList.add('correct'); });
+    if (chosen && chosen.value !== correct) chosen.closest('.opt').classList.add('wrong');
+    const ex = q.querySelector('.explain'); if (ex) ex.classList.add('show');
+  });
+}
+
+/* ============ FLASHCARDS ============ */
+function flipCard(el) { el.classList.toggle('flipped'); }
+function filterFC(btn, cat) {
+  document.querySelectorAll('.fc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let shown = 0;
+  document.querySelectorAll('.flashcard').forEach(c => {
+    const ok = (cat === 'all' || c.dataset.cat === cat);
+    c.style.display = ok ? '' : 'none'; c.classList.remove('flipped'); if (ok) shown++;
+  });
+  const cnt = document.getElementById('fcCount'); if (cnt) cnt.textContent = shown + ' thẻ';
+}
+
+function copyCode(btn) {
+  const block = btn.closest('.code-block');
+  const el = block.querySelector('textarea.sql-edit') || block.querySelector('pre.code');
+  const txt = el.value !== undefined ? el.value : el.innerText;
+  navigator.clipboard.writeText(txt).then(()=>{ const o=btn.textContent; btn.textContent='✓ Đã copy'; setTimeout(()=>btn.textContent=o,1400); });
+}
+
+/* ============ PLAYGROUND UI ============ */
+const PG_KEY = 'pg_sql_playground';
+function togglePlayground(open) {
+  document.getElementById('pgPanel').classList.toggle('open', open);
+  document.getElementById('pgFab').classList.toggle('hidden', open);
+  if (open) { window.ensureDB && window.ensureDB(); document.getElementById('pgEditor').focus(); }
+}
+function clearPlayground() {
+  document.getElementById('pgEditor').value = '';
+  document.getElementById('pgOutput').innerHTML = '';
+  localStorage.removeItem(PG_KEY);
+}
+(function initPgUI(){
+  const ed = document.getElementById('pgEditor');
+  const saved = localStorage.getItem(PG_KEY); if (saved) ed.value = saved;
+  ed.addEventListener('input', () => localStorage.setItem(PG_KEY, ed.value));
+  ed.addEventListener('keydown', e => {
+    if ((e.ctrlKey||e.metaKey) && e.key === 'Enter') { e.preventDefault(); window.runPlaygroundSQL && window.runPlaygroundSQL(); }
+    else if (e.key === 'Tab') { e.preventDefault(); const s=ed.selectionStart,en=ed.selectionEnd; ed.value=ed.value.slice(0,s)+'  '+ed.value.slice(en); ed.selectionStart=ed.selectionEnd=s+2; }
+  });
+  const panel=document.getElementById('pgPanel'), head=document.getElementById('pgHead');
+  let drag=false,ox=0,oy=0;
+  head.addEventListener('mousedown', e=>{ if(e.target.closest('button'))return; drag=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove', e=>{ if(!drag)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup', ()=>drag=false);
+})();
+</script>
+
+<!-- PGlite: PostgreSQL in the browser (WASM) -->
+<script type="module">
+import { PGlite } from "https://cdn.jsdelivr.net/npm/@electric-sql/pglite/dist/index.js";
+
+let dbReady = null;
+const SEED = `
+CREATE TABLE departments (
+  id   SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  city TEXT
+);
+INSERT INTO departments (name, city) VALUES
+  ('Engineering','Hà Nội'), ('Sales','TP.HCM'), ('Marketing','Đà Nẵng'), ('HR','Hà Nội');
+
+CREATE TABLE employees (
+  id       SERIAL PRIMARY KEY,
+  name     TEXT NOT NULL,
+  dept_id  INT REFERENCES departments(id),
+  salary   NUMERIC(10,2),
+  hired_at DATE,
+  manager_id INT
+);
+INSERT INTO employees (name, dept_id, salary, hired_at, manager_id) VALUES
+  ('An',    1, 2500.00, '2019-03-01', NULL),
+  ('Bình',  1, 1800.00, '2021-06-15', 1),
+  ('Cường', 1, 1600.00, '2022-01-10', 1),
+  ('Dung',  2, 2200.00, '2018-11-20', NULL),
+  ('Em',    2, 1400.00, '2023-02-01', 4),
+  ('Phúc',  3, 1700.00, '2020-09-05', NULL),
+  ('Giang', 3, 1300.00, '2023-08-12', 6),
+  ('Hà',    4, 1500.00, '2021-04-30', NULL);
+
+CREATE TABLE customers (
+  id    SERIAL PRIMARY KEY,
+  name  TEXT NOT NULL,
+  email TEXT UNIQUE,
+  country TEXT
+);
+INSERT INTO customers (name, email, country) VALUES
+  ('Lan','lan@mail.com','VN'), ('Minh','minh@mail.com','VN'),
+  ('John','john@mail.com','US'), ('Yuki','yuki@mail.com','JP');
+
+CREATE TABLE products (
+  id    SERIAL PRIMARY KEY,
+  name  TEXT NOT NULL,
+  category TEXT,
+  price NUMERIC(10,2),
+  stock INT DEFAULT 0
+);
+INSERT INTO products (name, category, price, stock) VALUES
+  ('Bàn phím cơ','Phụ kiện', 120.00, 50),
+  ('Chuột không dây','Phụ kiện', 45.00, 120),
+  ('Màn hình 27"','Màn hình', 320.00, 30),
+  ('Laptop 14"','Máy tính', 1200.00, 15),
+  ('Tai nghe','Phụ kiện', 80.00, 0);
+
+CREATE TABLE orders (
+  id          SERIAL PRIMARY KEY,
+  customer_id INT REFERENCES customers(id),
+  ordered_at  TIMESTAMP DEFAULT now(),
+  status      TEXT DEFAULT 'pending'
+);
+INSERT INTO orders (customer_id, ordered_at, status) VALUES
+  (1,'2024-01-05 10:00','paid'), (1,'2024-02-11 14:30','paid'),
+  (2,'2024-02-15 09:15','shipped'), (3,'2024-03-01 16:45','paid'),
+  (4,'2024-03-20 11:00','cancelled');
+
+CREATE TABLE order_items (
+  order_id   INT REFERENCES orders(id),
+  product_id INT REFERENCES products(id),
+  qty        INT NOT NULL,
+  PRIMARY KEY (order_id, product_id)
+);
+INSERT INTO order_items (order_id, product_id, qty) VALUES
+  (1,1,2),(1,2,1),(2,4,1),(3,3,2),(3,2,3),(4,1,1),(4,5,2),(5,4,1);
+`;
+
+async function makeDB() {
+  const db = await PGlite.create();
+  await db.exec(SEED);
+  return db;
+}
+async function initDB() {
+  const st = document.getElementById('dbStatus'), txt = document.getElementById('dbStatusText');
+  try {
+    window._db = await makeDB();
+    st.classList.remove('loading'); st.classList.add('ready'); txt.textContent = 'PostgreSQL sẵn sàng ✓';
+    const t = document.getElementById('pgTitle'); if (t) t.classList.add('ready');
+  } catch (e) {
+    txt.textContent = 'Không tải được engine (cần internet)';
+    st.classList.remove('loading');
+    console.error(e);
+  }
+}
+function ensureDB(){ if(!dbReady) dbReady = initDB(); return dbReady; }
+window.ensureDB = ensureDB;
+
+window.resetDB = async function(){
+  await ensureDB(); await dbReady;
+  if (!window._db) return;
+  window._db = await makeDB();
+  const o = document.getElementById('pgOutput');
+  if (o) o.innerHTML = '<span class="label">OK</span>Đã tạo lại dữ liệu mẫu ✓';
+};
+
+function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmtCell(v){
+  if (v === null || v === undefined) return '<span class="nullv">NULL</span>';
+  if (typeof v === 'object') return escapeHtml(JSON.stringify(v));
+  return escapeHtml(v);
+}
+function renderResults(results){
+  // results: array from db.exec  OR single from db.query
+  const arr = Array.isArray(results) ? results : [results];
+  let html = '';
+  let any = false;
+  for (const r of arr) {
+    if (!r) continue;
+    const fields = r.fields || [];
+    const rows = r.rows || [];
+    if (fields.length && rows.length) {
+      any = true;
+      html += '<table class="sql-table"><thead><tr>' + fields.map(f=>'<th>'+escapeHtml(f.name)+'</th>').join('') + '</tr></thead><tbody>';
+      for (const row of rows) {
+        html += '<tr>' + fields.map(f=>'<td>'+fmtCell(row[f.name])+'</td>').join('') + '</tr>';
+      }
+      html += '</tbody></table>';
+      html += '<div class="note">' + rows.length + ' dòng</div>';
+    } else if (fields.length && !rows.length) {
+      any = true;
+      html += '<div class="note">(0 dòng)</div>';
+    } else if (r.affectedRows !== undefined && r.affectedRows !== null) {
+      any = true;
+      html += '<div class="note">✓ OK — ' + r.affectedRows + ' dòng bị ảnh hưởng</div>';
+    }
+  }
+  if (!any) html = '<div class="note">✓ Thực thi thành công.</div>';
+  return html;
+}
+
+async function execSQL(sql, out) {
+  out.classList.add('show');
+  out.innerHTML = '<span class="label">KẾT QUẢ</span><span class="note">⏳ Đang chạy...</span>';
+  await ensureDB(); await dbReady;
+  if (!window._db) { out.innerHTML = '<span class="err">⚠ PostgreSQL engine chưa sẵn sàng (cần internet để tải PGlite).</span>'; return; }
+  try {
+    const results = await window._db.exec(sql);
+    out.innerHTML = '<span class="label">KẾT QUẢ</span>' + renderResults(results);
+  } catch (err) {
+    out.innerHTML = '<span class="label">LỖI</span><span class="err">' + escapeHtml(err.message || err) + '</span>';
+  }
+}
+
+window.runSQL = function(btn){
+  const block = btn.closest('.code-block');
+  const ed = block.querySelector('textarea.sql-edit');
+  const sql = ed ? ed.value : block.querySelector('pre.code').innerText;
+  execSQL(sql, block.querySelector('.code-output'));
+};
+window.runPlaygroundSQL = function(){
+  execSQL(document.getElementById('pgEditor').value, document.getElementById('pgOutput'));
+};
+
+// ----- Auto-grading: so kết quả người dùng với đáp án mẫu (chạy trên cùng DB) -----
+async function lastRows(sql){
+  const res = await window._db.exec(sql);
+  for (let i = res.length - 1; i >= 0; i--) {
+    if (res[i] && res[i].fields && res[i].fields.length) return { fields: res[i].fields, rows: res[i].rows };
+  }
+  return { fields: [], rows: [] };
+}
+function normRows(r){
+  return r.rows.map(row => r.fields.map(f => {
+    const v = row[f.name];
+    return v === null || v === undefined ? '␀' : String(v).trim();
+  }).join('')).sort();
+}
+window.gradeSQL = async function(btn){
+  const block = btn.closest('.code-block');
+  const out = block.querySelector('.code-output');
+  const userSql = block.querySelector('.sql-edit').value;
+  const solSql = block.querySelector('.sql-solution').value;
+  out.classList.add('show');
+  out.innerHTML = '<span class="label">CHẤM BÀI</span><span class="note">⏳ Đang chấm...</span>';
+  await ensureDB(); await dbReady;
+  if (!window._db) { out.innerHTML = '<span class="err">⚠ Engine chưa sẵn sàng (cần internet).</span>'; return; }
+  let exp;
+  try { exp = await lastRows(solSql); }
+  catch (e) { out.innerHTML = '<span class="label">CHẤM BÀI</span><span class="err">Lỗi đáp án mẫu (báo tác giả): ' + escapeHtml(e.message || e) + '</span>'; return; }
+  let got;
+  try { got = await lastRows(userSql); }
+  catch (e) { out.innerHTML = '<span class="label">CHẤM BÀI</span><span class="err">✗ SQL của bạn bị lỗi: ' + escapeHtml(e.message || e) + '</span>'; return; }
+  const a = normRows(exp), b = normRows(got);
+  const ok = a.length === b.length && a.every((v, i) => v === b[i]);
+  if (ok) {
+    out.innerHTML = '<span class="label">CHẤM BÀI</span><span class="pass">✓ Chính xác! ' + b.length + ' dòng khớp đáp án.</span>' + renderResults([got]);
+    block.classList.add('graded-ok'); block.classList.remove('graded-bad');
+  } else {
+    out.innerHTML = '<span class="label">CHẤM BÀI</span><span class="fail">✗ Chưa đúng.</span> <span class="note">Bạn ra ' + got.rows.length + ' dòng (' + got.fields.length + ' cột), mong đợi ' + exp.rows.length + ' dòng (' + exp.fields.length + ' cột). Kiểm tra lại cột, thứ tự cột &amp; điều kiện lọc.</span>' + renderResults([got]);
+    block.classList.add('graded-bad'); block.classList.remove('graded-ok');
+  }
+};
+
+// auto warm-up engine shortly after load
+window.addEventListener('load', () => setTimeout(ensureDB, 600));
+</script>
+</body>
+</html>

@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Odoo cho Sản Xuất Thực Phẩm &amp; Tích Hợp Dây Chuyền</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #714B67;        /* odoo aubergine */
+    --primary-glow: #a87c9c;
+    --accent: #43a047;         /* food green */
+    --accent-2: #8bc34a;
+    --l0: #43a047;
+    --l1: #a87c9c;
+    --l2: #00A09D;
+    --l3: #f0a32b;
+    --ok: #2ea043;
+    --warn: #d29922;
+    --danger: #f85149;
+    --info: #58a6ff;
+    --dark: #0d1117;
+    --darker: #010409;
+    --light: #c9d1d9;
+    --light-strong: #f0f6fc;
+    --gray: #8b949e;
+    --card: #161b22;
+    --card-2: #1c2128;
+    --border: #30363d;
+    --terminal: #0a0e14;
+    --code-green: #7ee787;
+    --code-yellow: #ffd43b;
+    --code-blue: #79c0ff;
+    --code-red: #ff7b72;
+    --code-purple: #d2a8ff;
+    --code-orange: #ffa657;
+  }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image: radial-gradient(circle at 16% 22%, rgba(113,75,103,0.10) 0%, transparent 45%), radial-gradient(circle at 84% 72%, rgba(67,160,71,0.07) 0%, transparent 45%); background-attachment: fixed; }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 350px; background: linear-gradient(180deg, var(--dark) 0%, #050810 100%); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(113,75,103,0.18); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .o-icon { font-size: 42px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(67,160,71,0.55)); }
+  .logo h1 { font-size: 18px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+  .logo p { font-size: 10px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(113,75,103,0.2); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #06121a; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--primary-glow); } .nav-l1 .badge { background: var(--l1); color:#fff;}
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(113,75,103,0.18); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  .main-content { margin-left: 350px; flex: 1; max-width: calc(100% - 350px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(1,4,9,0.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent); }
+  .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero { background: linear-gradient(135deg, rgba(113,75,103,0.22), rgba(67,160,71,0.12)); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero::after { content:"🏭"; position:absolute; right:8px; bottom:-24px; font-size:160px; opacity:.08; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 780px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 1.5px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(67,160,71,.14); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(168,124,156,.16); color: var(--primary-glow); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(0,160,157,.14); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(240,163,43,.14); color: var(--l3); border:1px solid var(--l3);}
+
+  h2.ch-title { font-size: 25px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .ce-comm { color: var(--ok); font-weight: 700; } .ce-ent { color: var(--accent-2); font-weight: 700; }
+
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(88,166,255,.07); border-color: rgba(88,166,255,.4); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(46,160,67,.07); border-color: rgba(46,160,67,.4); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(210,153,34,.08); border-color: rgba(210,153,34,.45); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,81,73,.07); border-color: rgba(248,81,73,.4); } .box.danger::before{content:"🚫";}
+  .box.ver { background: rgba(0,160,157,.08); border-color: rgba(0,160,157,.4); } .box.ver::before{content:"🔀";}
+  .box.food { background: rgba(67,160,71,.08); border-color: rgba(67,160,71,.4); } .box.food::before{content:"🍽️";}
+  .box.ent { background: rgba(139,195,74,.08); border-color: rgba(139,195,74,.4); } .box.ent::before{content:"💼";}
+
+  .code-block { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .code-head .fname { font-size: 12px; color: var(--gray); display:flex; align-items:center; gap:8px; }
+  .code-head .dots { display:flex; gap:6px; } .code-head .dots i { width:11px;height:11px;border-radius:50%; display:inline-block; }
+  .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
+  .code-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: var(--light); white-space: pre; tab-size: 4; }
+  pre.code .c { color: var(--gray); font-style: italic; } pre.code .s { color: var(--code-green); } pre.code .k { color: var(--code-red); }
+  pre.code .n { color: var(--code-blue); } pre.code .f { color: var(--code-purple); } pre.code .d { color: var(--code-yellow); } pre.code .t { color: var(--code-orange); }
+
+  .checklist { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+  .checklist h4 { color: var(--primary-glow); margin-bottom: 10px; font-size: 15px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 14px; }
+  .checklist input { margin-top: 5px; accent-color: var(--primary); }
+  .checklist input:checked + span { color: var(--gray); text-decoration: line-through; }
+
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; }
+  details summary::-webkit-details-marker { display:none; } details summary::before { content: "▸ "; } details[open] summary::before { content: "▾ "; }
+  details.answer summary { background: rgba(67,160,71,.1); color: var(--accent); }
+  details .body { padding: 8px 14px 12px; }
+
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; }
+  .quiz .q { margin-bottom: 18px; } .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 14px; }
+  .quiz .opt:hover { border-color: var(--primary); } .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(46,160,67,.14); border-color: var(--ok); }
+  .quiz .opt.wrong { background: rgba(248,81,73,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color:#fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 180px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); }
+  .fc-back { background: linear-gradient(135deg, rgba(113,75,103,.2), rgba(67,160,71,.12)); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(67,160,71,.18); color: var(--l0); } .fc-tag.t1 { background: rgba(168,124,156,.2); color: var(--primary-glow); }
+  .fc-tag.t2 { background: rgba(0,160,157,.18); color: var(--l2); } .fc-tag.t3 { background: rgba(240,163,43,.18); color: var(--l3); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; }
+  .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; } .fc-a code { background: rgba(0,0,0,.25); color: var(--code-purple); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  .sg-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--primary),var(--accent)); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s; }
+  .sg-fab:hover { transform: translateY(-2px); } .sg-fab.hidden { display: none; }
+  .sg-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: min(700px, calc(100vw - 32px)); height: min(700px, calc(100vh - 40px)); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden; }
+  .sg-panel.open { display: flex; }
+  .sg-head { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: linear-gradient(135deg, rgba(113,75,103,.3), rgba(67,160,71,.18)); border-bottom: 1px solid var(--border); cursor: move; }
+  .sg-head .sg-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
+  .sg-head button { background: rgba(255,255,255,.08); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 11px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
+  .sg-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 16px; }
+  .sg-body label.fld { display:block; font-size: 12px; color: var(--primary-glow); font-weight: 700; margin: 10px 0 4px; }
+  .sg-body input, .sg-body textarea { width: 100%; background: var(--terminal); border: 1px solid var(--border); border-radius: 7px; color: var(--light); padding: 8px 10px; font-size: 13px; font-family: 'JetBrains Mono',monospace; }
+  .sg-body textarea { resize: vertical; min-height: 80px; }
+  .sg-body input:focus, .sg-body textarea:focus { outline:none; border-color: var(--primary); }
+  .sg-row { display:flex; gap: 10px; } .sg-row > div { flex:1; }
+  .sg-hint { font-size: 11px; color: var(--gray); margin-top: 3px; }
+  .sg-actions { display:flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); background: var(--card-2); }
+  .sg-actions button { flex:1; border:none; border-radius: 8px; padding: 9px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit; }
+  .sg-actions .gen { background: linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; }
+  .sg-actions .cpy { background: var(--card); color: var(--light); border:1px solid var(--border)!important; }
+  .sg-out { white-space: pre; overflow-x:auto; background: var(--terminal); border:1px dashed var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: 'JetBrains Mono',monospace; font-size: 12px; color: var(--code-green); line-height:1.55; }
+  .sg-out b { color: var(--code-orange); font-weight:700; }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color:#fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; } .topbar { padding-left: 66px; }
+    .sg-panel { width: calc(100vw - 16px); height: calc(100vh - 24px); right: 8px; bottom: 8px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="o-icon">🏭</div>
+      <h1>ODOO · THỰC PHẨM</h1>
+      <p>SẢN XUẤT &amp; TÍCH HỢP DÂY CHUYỀN</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; bối cảnh</a></li>
+      <li><a href="#community-enterprise"><span class="chapter-num">💼</span> Community vs Enterprise</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">P1</span> SẢN XUẤT (MRP)</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> MRP &amp; mô hình dữ liệu</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> BoM &amp; công thức (recipe)</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> Manufacturing Order &amp; hook</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> UoM &amp; catch-weight</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">P2</span> LÔ · TRUY XUẤT · CHẤT LƯỢNG</li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> Lô &amp; hạn sử dụng</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> FEFO &amp; xuất kho</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> Truy xuất &amp; thu hồi (recall)</a></li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> Chất lượng &amp; HACCP</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">P3</span> TÍCH HỢP DÂY CHUYỀN</li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> Shop Floor / MES</a></li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> IoT Box &amp; thiết bị</a></li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> Tích hợp PLC/SCADA</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> Dữ liệu realtime &amp; async</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> Báo cáo vận hành &amp; OEE</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">P4</span> VẬN HÀNH QUY MÔ LỚN</li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> Performance quy mô sản xuất</a></li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> Kiểm thử, audit &amp; compliance</a></li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> Deploy &amp; migration an toàn</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">📚</span> ÔN TẬP &amp; CÔNG CỤ</li>
+      <li><a href="#snippets"><span class="chapter-num">🧰</span> Thư viện snippet</a></li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🏭 <b>Odoo cho Sản xuất Thực phẩm</b> — ERP đặc thù + tích hợp dây chuyền</div>
+      <div class="pill">Mở rộng từ khóa Odoo Framework</div>
+    </div>
+
+    <div class="content-inner">
+      <div class="hero" id="gioi-thieu">
+        <h1>Odoo cho <span class="grad">Sản Xuất Thực Phẩm</span><br>&amp; Tích Hợp Dây Chuyền</h1>
+        <p>Khóa <strong>chuyên ngành</strong> nối tiếp khóa <em>Làm chủ Odoo Framework</em>: áp dụng Odoo làm <strong>ERP sản xuất thực phẩm đặc thù</strong> — quản lý công thức/BoM, lô &amp; hạn dùng, <strong>truy xuất nguồn gốc &amp; thu hồi (recall)</strong>, chất lượng/HACCP — và <strong>tích hợp dây chuyền sản xuất</strong> (Shop Floor/MES, IoT, PLC/SCADA) ở quy mô lớn. Trọng tâm: <strong>kiến trúc &amp; code phía Odoo</strong> để mở rộng và kết nối.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>16</b> chương · 4 phần</div>
+          <div class="meta-pill"><b>Tích hợp line</b> IoT/PLC/MES</div>
+          <div class="meta-pill"><b>Endpoint Generator</b> sinh API line</div>
+          <div class="meta-pill"><b>Truy xuất</b> &amp; HACCP</div>
+        </div>
+      </div>
+
+      <div class="box info"><span class="box-title">Yêu cầu trước</span>Khóa này giả định bạn đã nắm <strong>framework Odoo</strong> (models, ORM, kế thừa, security, views) — xem khóa <a class="inline" href="khoa-hoc-odoo-framework.html">🧩 Làm chủ Odoo Framework</a>. Ở đây ta đi thẳng vào lớp <strong>sản xuất &amp; tích hợp</strong>.</div>
+      <div class="box food"><span class="box-title">Vì sao thực phẩm cần "đặc thù"</span>Ngành thực phẩm có yêu cầu <strong>bắt buộc về pháp lý</strong>: truy xuất nguồn gốc lô (để thu hồi nhanh khi sự cố), kiểm soát <strong>hạn sử dụng</strong> (FEFO), điểm kiểm soát tới hạn <strong>HACCP</strong>, quản lý dị ứng nguyên (allergen), chuỗi lạnh (cold chain). Cấu hình Odoo "chuẩn" thôi chưa đủ — thường phải mở rộng/tích hợp.</div>
+      <div class="box tip"><span class="box-title">Công cụ &amp; lưu ý</span>Mỗi ô code có nút <strong>Copy</strong>. Bấm <strong>🏭 Endpoint Generator</strong> (góc dưới phải) để sinh nhanh khung <strong>API nhận dữ liệu từ dây chuyền</strong> (controller + xử lý bất đồng bộ). Khóa nêu rõ tính năng nào cần <span class="ce-ent">Enterprise</span> vs có ở <span class="ce-comm">Community</span>.</div>
+
+      <!-- ===== COMMUNITY VS ENTERPRISE ===== -->
+      <section class="chapter" id="community-enterprise">
+        <h2 class="ch-title"><span class="num">💼</span> Community vs Enterprise</h2>
+        <p class="ch-sub">Biết trước cái gì cần bản trả phí — để tư vấn khách hàng đúng ngay từ đầu.</p>
+        <table>
+          <thead><tr><th>Tính năng</th><th>Community</th><th>Enterprise</th><th>Ghi chú</th></tr></thead>
+          <tbody>
+            <tr><td>Manufacturing (MRP): BoM, MO, work center</td><td class="ce-comm">Có</td><td class="ce-ent">Có</td><td>Nền tảng sản xuất có sẵn ở Community</td></tr>
+            <tr><td>Lô/serial, hạn dùng, FEFO, traceability</td><td class="ce-comm">Có</td><td class="ce-ent">Có</td><td>Lot tracking &amp; expiration ở Community</td></tr>
+            <tr><td><strong>Quality</strong> (control point/check)</td><td>—</td><td class="ce-ent">Có</td><td>Module Quality là Enterprise</td></tr>
+            <tr><td><strong>PLM</strong> (quản lý phiên bản công thức/ECO)</td><td>—</td><td class="ce-ent">Có</td><td>Engineering change</td></tr>
+            <tr><td><strong>Shop Floor / MES</strong> (tablet work order)</td><td>—</td><td class="ce-ent">Có</td><td>Giao diện công nhân realtime</td></tr>
+            <tr><td><strong>IoT</strong> (IoT Box, thiết bị)</td><td>—</td><td class="ce-ent">Có</td><td>Cân, in tem, scanner, sensor</td></tr>
+            <tr><td>Maintenance (bảo trì thiết bị)</td><td>—</td><td class="ce-ent">Có</td><td></td></tr>
+            <tr><td>External API (XML-RPC/JSON-RPC)</td><td class="ce-comm">Có</td><td class="ce-ent">Có</td><td>Tích hợp luôn dùng được</td></tr>
+          </tbody>
+        </table>
+        <div class="box ent"><span class="box-title">Tư vấn khách hàng</span>Công ty thực phẩm lớn tích hợp dây chuyền gần như chắc chắn cần <span class="ce-ent">Enterprise</span> (Quality, MES, IoT). Nếu ngân sách hạn chế hoặc cần tính năng đặc thù, có thể thay thế bằng <strong>module OCA</strong> (cộng đồng) hoặc <strong>tự phát triển</strong> — khóa này dạy cả hai hướng. Luôn cân nhắc tổng chi phí sở hữu (license + custom + bảo trì).</div>
+      </section>
+
+      <!-- ===================== PHẦN 1 ===================== -->
+      <div class="level-divider" id="p1"><div class="line"></div><span class="tag tag-l0">Phần 1 · Sản xuất (MRP)</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> MRP &amp; mô hình dữ liệu sản xuất</h2>
+        <p class="ch-sub">Bản đồ các model sản xuất bạn sẽ mở rộng suốt khóa.</p>
+
+        <p>Module <strong>Manufacturing (MRP)</strong> của Odoo mô hình hóa quy trình "biến nguyên liệu thành thành phẩm". Hiểu các model cốt lõi và quan hệ là nền tảng để custom cho thực phẩm.</p>
+
+        <table>
+          <thead><tr><th>Model</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">mrp.bom</code></td><td>Định mức nguyên vật liệu (Bill of Materials) — "công thức". Dòng con: <code class="ic">mrp.bom.line</code></td></tr>
+            <tr><td><code class="ic">mrp.production</code></td><td>Lệnh sản xuất (Manufacturing Order - MO)</td></tr>
+            <tr><td><code class="ic">mrp.workorder</code></td><td>Công đoạn của MO (gắn với work center)</td></tr>
+            <tr><td><code class="ic">mrp.workcenter</code></td><td>Trung tâm sản xuất (máy/dây chuyền/tổ) — nơi đo OEE</td></tr>
+            <tr><td><code class="ic">mrp.routing.workcenter</code> (operations)</td><td>Quy trình công đoạn trong BoM</td></tr>
+            <tr><td><code class="ic">stock.move</code> / <code class="ic">stock.move.line</code></td><td>Dịch chuyển tồn kho (tiêu hao NVL, nhập thành phẩm) — gắn lô</td></tr>
+            <tr><td><code class="ic">stock.lot</code></td><td>Lô/serial — nơi gắn hạn dùng (xem Phần 2)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box info"><span class="box-title">Luồng cơ bản</span>BoM (công thức) → tạo <strong>MO</strong> → xác nhận (reserve NVL) → sản xuất qua <strong>work order</strong> tại <strong>work center</strong> → đánh dấu hoàn thành (<em>done</em>): Odoo tự tiêu hao NVL theo lô (FEFO) và nhập kho thành phẩm với lô + hạn dùng mới.</div>
+
+        <h3 class="sec">Mở rộng model sản xuất (ví dụ)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">models/mrp_production.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, fields
+
+
+<span class="k">class</span> <span class="f">MrpProduction</span>(models.Model):
+    _inherit = <span class="s">"mrp.production"</span>          <span class="c"># mở rộng MO có sẵn</span>
+
+    x_line_ref = fields.Char(string=<span class="s">"Mã lệnh từ dây chuyền"</span>, index=<span class="k">True</span>)
+    x_batch_temp = fields.Float(string=<span class="s">"Nhiệt độ mẻ (°C)"</span>)   <span class="c"># dữ liệu đặc thù FB</span></pre>
+        </div>
+        <div class="box ent"><span class="box-title">Community vs Enterprise</span>MRP (BoM, MO, work center, work order) <span class="ce-comm">có ở Community</span>. <strong>Shop Floor/MES, Quality, PLM, IoT</strong> là <span class="ce-ent">Enterprise</span> (Phần 2–3 sẽ nhắc lại từng chỗ).</div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> BoM &amp; công thức (recipe)</h2>
+        <p class="ch-sub">Trái tim của sản xuất thực phẩm: định mức nguyên liệu, phụ phẩm, hao hụt.</p>
+
+        <h3 class="sec">Đặc thù công thức thực phẩm</h3>
+        <ul>
+          <li><strong>By-product (phụ phẩm)</strong>: một mẻ tạo ra nhiều sản phẩm (vd xay thịt → nạc + mỡ). Khai trong tab <em>By-products</em> của BoM.</li>
+          <li><strong>Scrap / hao hụt</strong>: hao hụt tự nhiên (bay hơi, rơi vãi) — phản ánh qua định mức hoặc khai báo scrap.</li>
+          <li><strong>BoM nhiều cấp</strong>: bán thành phẩm (sốt, bột trộn) là BoM riêng, lắp vào BoM thành phẩm.</li>
+          <li><strong>Phiên bản công thức</strong>: thay đổi recipe theo thời gian → quản lý bằng <span class="ce-ent">PLM/ECO</span> (Enterprise) hoặc versioning tự xây.</li>
+        </ul>
+
+        <h3 class="sec">Định mức theo tỷ lệ &amp; mẻ biến thiên</h3>
+        <p>Thực phẩm thường sản xuất theo "mẻ" với khối lượng biến thiên (vd mẻ 500kg hôm nay, 800kg ngày mai). BoM khai theo <strong>tỷ lệ trên 1 đơn vị thành phẩm</strong>; khi tạo MO với số lượng khác, Odoo tự nhân định mức.</p>
+        <div class="code-block"><div class="code-head"><span class="fname">tạo MO theo lô lớn (Python)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">mo = self.env[<span class="s">"mrp.production"</span>].create({
+    <span class="s">"product_id"</span>: product.id,
+    <span class="s">"product_qty"</span>: <span class="n">800</span>,            <span class="c"># mẻ 800 kg</span>
+    <span class="s">"bom_id"</span>: bom.id,
+})
+mo.action_confirm()                  <span class="c"># xác nhận → tạo stock.move tiêu hao NVL</span></pre>
+        </div>
+        <div class="box food"><span class="box-title">Mẹo ngành</span>Với công thức nhạy theo độ ẩm/độ Brix/hàm lượng, định mức "cứng" trong BoM thường không đủ — nhiều nhà máy thêm bước <strong>điều chỉnh định mức theo kết quả QC đầu vào</strong> (vd nguyên liệu loãng hơn thì tăng lượng). Đây là điểm hay phải custom (override <code class="ic">_get_moves_raw_values</code> hoặc onchange khi lập MO).</div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Manufacturing Order: vòng đời &amp; hook</h2>
+        <p class="ch-sub">Nơi bạn "cắm" logic nghiệp vụ và dữ liệu từ dây chuyền vào.</p>
+
+        <h3 class="sec">Vòng đời MO</h3>
+        <p><code class="ic">draft</code> → <code class="ic">confirmed</code> (đã giữ NVL) → <code class="ic">progress</code> (đang làm) → <code class="ic">to_close</code> → <code class="ic">done</code> / <code class="ic">cancel</code>. Các nút gọi method: <code class="ic">action_confirm</code>, <code class="ic">button_mark_done</code>...</p>
+
+        <h3 class="sec">Hook khi hoàn thành MO (ghi nhận sản lượng từ line)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">models/mrp_production.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">class</span> <span class="f">MrpProduction</span>(models.Model):
+    _inherit = <span class="s">"mrp.production"</span>
+
+    <span class="k">def</span> <span class="f">button_mark_done</span>(self):
+        res = super().button_mark_done()       <span class="c"># LUÔN gọi super()</span>
+        <span class="k">for</span> mo <span class="k">in</span> self:
+            <span class="c"># ví dụ: gửi thông báo/đồng bộ ra hệ thống khác khi mẻ xong</span>
+            mo.message_post(body=<span class="s">f"Mẻ {mo.name} hoàn thành: {mo.qty_produced} {mo.product_uom_id.name}"</span>)
+        <span class="k">return</span> res</pre>
+        </div>
+
+        <h3 class="sec">Ghi nhận sản lượng từng phần (in-line production)</h3>
+        <p>Dây chuyền thường báo sản lượng <em>liên tục</em>, không phải một lần cuối. Mẫu xử lý: cập nhật <code class="ic">qty_producing</code> theo dữ liệu line rồi <code class="ic">record production</code> từng đợt. Khi nhận dữ liệu tần suất cao, đừng ghi trực tiếp mỗi tick — gom &amp; xử lý bất đồng bộ (Phần 3, ch12).</p>
+        <div class="box warn"><span class="box-title">Cẩn thận khi override</span>Các method MRP (<code class="ic">button_mark_done</code>, <code class="ic">_post_inventory</code>...) có nhiều tác dụng phụ (tạo stock move, gắn lô). Luôn <code class="ic">super()</code>, thêm logic <em>quanh</em> nó, và <strong>test kỹ</strong> — sai một bước dễ lệch tồn kho.</div>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Đơn vị đo (UoM) &amp; catch-weight</h2>
+        <p class="ch-sub">Kg, gram, lít, thùng... và sản phẩm "cân theo trọng lượng thực".</p>
+
+        <h3 class="sec">Units of Measure</h3>
+        <p>Odoo dùng <strong>nhóm UoM</strong> (Unit category): trong cùng nhóm có thể chuyển đổi (kg ↔ g ↔ tấn). Mỗi nhóm có một <em>đơn vị tham chiếu</em>. Mua bằng "bao 25kg", tồn kho bằng "kg", bán bằng "gói 500g" — Odoo tự quy đổi.</p>
+        <div class="box warn"><span class="box-title">Bẫy làm tròn UoM</span>Quy đổi giữa các đơn vị sinh <strong>sai số làm tròn</strong> (vd 1 gói ÷ 3 mẻ). Đặt <code class="ic">rounding</code> của UoM hợp lý; với nguyên liệu đắt/định lượng chính xác, kiểm tra kỹ tồn kho sau quy đổi. Đây là nguồn lỗi lệch kho kinh điển ở nhà máy thực phẩm.</div>
+
+        <h3 class="sec">Catch-weight (trọng lượng biến thiên)</h3>
+        <p>Nhiều mặt hàng thực phẩm <strong>bán theo kg nhưng quản theo thùng/con</strong> với trọng lượng mỗi đơn vị khác nhau (vd: thùng cá, đùi gà). Đây gọi là <strong>catch-weight</strong>: theo dõi đồng thời <em>số lượng đơn vị</em> và <em>trọng lượng thực</em>.</p>
+        <div class="box ent"><span class="box-title">Giải pháp</span>Odoo lõi không có catch-weight đầy đủ. Thường dùng <strong>module OCA</strong> (vd <code class="ic">product_catch_weight</code>) hoặc app chuyên ngành thực phẩm trên Odoo, hoặc tự phát triển (thêm field trọng lượng vào <code class="ic">stock.move.line</code> &amp; điều chỉnh định giá/báo cáo). Hãy đánh giá kỹ trước khi tự xây vì nó chạm tới kho, mua, bán, kế toán.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành P1 <span class="lvl-dot">vận dụng</span></div>
+          <p>Thiết kế (trên giấy) mô hình dữ liệu cho một dây chuyền đóng gói sữa: thành phẩm "Sữa hộp 1L", BoM gồm sữa nguyên liệu (lít) + hộp + nắp, work center "Dây chuyền chiết rót". Cần thêm field đặc thù nào (lô, hạn dùng, nhiệt độ thanh trùng)? Phần 2 sẽ giúp bạn hiện thực hóa lô &amp; hạn dùng.</p>
+        </div>
+      </section>
+
+      <!-- ===================== PHẦN 2 ===================== -->
+      <div class="level-divider" id="p2"><div class="line"></div><span class="tag tag-l1">Phần 2 · Lô · Truy xuất · Chất lượng</span><div class="line"></div></div>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Lô (lot) &amp; hạn sử dụng</h2>
+        <p class="ch-sub">Nền tảng pháp lý của thực phẩm — không có lô đúng là không truy xuất được.</p>
+
+        <p>Bật <strong>Lot/Serial tracking</strong> trên sản phẩm (Inventory → cấu hình product: <em>Tracking by Lots</em>). Mỗi lô là một <code class="ic">stock.lot</code>, mang các mốc thời gian:</p>
+        <table>
+          <thead><tr><th>Field (stock.lot)</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">expiration_date</code></td><td>Hạn sử dụng (hết hạn → cảnh báo/không bán)</td></tr>
+            <tr><td><code class="ic">use_date</code></td><td>Nên dùng trước (best-before mềm)</td></tr>
+            <tr><td><code class="ic">removal_date</code></td><td>Ngày nên đưa khỏi kho (để FEFO ưu tiên)</td></tr>
+            <tr><td><code class="ic">alert_date</code></td><td>Ngày cảnh báo sớm</td></tr>
+          </tbody>
+        </table>
+        <p>Bật <strong>Expiration Dates</strong> trong cấu hình Inventory. Trên product/category có thể đặt "số ngày" để Odoo <strong>tự tính</strong> các mốc từ ngày sản xuất.</p>
+
+        <h3 class="sec">Tự sinh lô khi sản xuất + đặt hạn dùng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">models/stock_lot.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, fields, api
+<span class="k">from</span> dateutil.relativedelta <span class="k">import</span> relativedelta
+
+
+<span class="k">class</span> <span class="f">StockLot</span>(models.Model):
+    _inherit = <span class="s">"stock.lot"</span>
+
+    x_production_temp = fields.Float(string=<span class="s">"Nhiệt độ SX (°C)"</span>)   <span class="c"># dữ liệu QC từ line</span>
+
+    <span class="d">@api.model_create_multi</span>
+    <span class="k">def</span> <span class="f">create</span>(self, vals_list):
+        lots = super().create(vals_list)
+        <span class="k">for</span> lot <span class="k">in</span> lots:
+            <span class="c"># nếu chưa có hạn dùng, tự đặt 12 tháng từ hôm nay (ví dụ)</span>
+            <span class="k">if</span> <span class="k">not</span> lot.expiration_date:
+                lot.expiration_date = fields.Datetime.now() + relativedelta(months=<span class="n">12</span>)
+        <span class="k">return</span> lots</pre>
+        </div>
+        <div class="box food"><span class="box-title">In tem lô + hạn dùng</span>Tem dán bao bì thường theo chuẩn <strong>GS1</strong> (mã vạch chứa GTIN + lô + hạn dùng). Odoo render tem qua report; in qua máy in nhãn (ZPL) — kết nối bằng <span class="ce-ent">IoT</span> (ch10) hoặc gửi lệnh in trực tiếp.</div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> FEFO &amp; chiến lược xuất kho</h2>
+        <p class="ch-sub">Hàng hết hạn trước phải xuất trước — sống còn với thực phẩm.</p>
+
+        <p>Odoo có các <strong>removal strategy</strong> (đặt trên <em>Location</em> hoặc <em>Product Category</em>):</p>
+        <table>
+          <thead><tr><th>Chiến lược</th><th>Xuất theo</th></tr></thead>
+          <tbody>
+            <tr><td><strong>FIFO</strong></td><td>Nhập trước xuất trước (theo ngày nhập)</td></tr>
+            <tr><td><strong>LIFO</strong></td><td>Nhập sau xuất trước (hiếm dùng)</td></tr>
+            <tr><td><strong>FEFO</strong> ⭐</td><td><strong>Hết hạn trước xuất trước</strong> (theo <code class="ic">removal_date</code>) — chuẩn cho thực phẩm</td></tr>
+            <tr><td>Closest location</td><td>Theo vị trí gần nhất</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">Bật FEFO</span>Cần bật <em>Expiration Dates</em>, sau đó đặt removal strategy = <strong>FEFO</strong> trên Product Category liên quan. Khi đó lúc giữ hàng (reservation), Odoo tự chọn lô có <code class="ic">removal_date</code> sớm nhất.</div>
+
+        <h3 class="sec">Cảnh báo &amp; chặn xuất hàng hết hạn</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">models/stock_move_line.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, api, fields
+<span class="k">from</span> odoo.exceptions <span class="k">import</span> UserError
+
+
+<span class="k">class</span> <span class="f">StockMoveLine</span>(models.Model):
+    _inherit = <span class="s">"stock.move.line"</span>
+
+    <span class="d">@api.constrains</span>(<span class="s">"lot_id"</span>, <span class="s">"quantity"</span>)
+    <span class="k">def</span> <span class="f">_check_not_expired</span>(self):
+        now = fields.Datetime.now()
+        <span class="k">for</span> line <span class="k">in</span> self:
+            lot = line.lot_id
+            <span class="k">if</span> lot <span class="k">and</span> lot.expiration_date <span class="k">and</span> lot.expiration_date &lt; now:
+                <span class="k">raise</span> UserError(
+                    <span class="s">f"Lô {lot.name} đã hết hạn ({lot.expiration_date:%d/%m/%Y}) — không được xuất."</span>)</pre>
+        </div>
+        <div class="box warn"><span class="box-title">Cân nhắc nghiệp vụ</span>Chặn cứng có thể cản trở vận hành hợp lệ (vd xuất hàng hết hạn đi tiêu hủy). Thực tế nên: <strong>cảnh báo</strong> + yêu cầu quyền/lý do, thay vì cấm tuyệt đối. Thiết kế theo quy trình thật của nhà máy.</div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Truy xuất nguồn gốc &amp; thu hồi (recall)</h2>
+        <p class="ch-sub">Khi có sự cố, phải biết: lô này đi đâu, làm từ nguyên liệu lô nào — trong vài phút.</p>
+
+        <p>Nhờ lô gắn vào mọi <code class="ic">stock.move.line</code>, Odoo dựng được <strong>chuỗi truy xuất</strong>:</p>
+        <ul>
+          <li><strong>Truy xuất xuôi (downstream)</strong>: lô nguyên liệu X đã vào những mẻ nào, ra thành phẩm lô nào, bán cho khách nào.</li>
+          <li><strong>Truy xuất ngược (upstream)</strong>: thành phẩm lô Y được làm từ nguyên liệu lô nào, nhà cung cấp nào.</li>
+        </ul>
+        <p>Báo cáo có sẵn: <em>Inventory → Reporting → Traceability</em> (hoặc nút "Traceability" trên lô). Để dựng <strong>quy trình thu hồi</strong> bài bản, thường custom thêm.</p>
+
+        <h3 class="sec">Truy ngược trong code (tìm khách bị ảnh hưởng)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">recall_helper.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">def</span> <span class="f">find_customers_for_lot</span>(self, lot):
+    <span class="c"># tìm các move xuất giao (delivery) có dính lô này</span>
+    move_lines = self.env[<span class="s">"stock.move.line"</span>].search([
+        (<span class="s">"lot_id"</span>, <span class="s">"="</span>, lot.id),
+        (<span class="s">"picking_id.picking_type_id.code"</span>, <span class="s">"="</span>, <span class="s">"outgoing"</span>),
+        (<span class="s">"state"</span>, <span class="s">"="</span>, <span class="s">"done"</span>),
+    ])
+    customers = move_lines.mapped(<span class="s">"picking_id.partner_id"</span>)
+    <span class="k">return</span> customers      <span class="c"># danh sách khách cần thông báo thu hồi</span></pre>
+        </div>
+        <div class="box food"><span class="box-title">Electronic Batch Record (EBR)</span>Nhiều nhà máy thực phẩm cần "hồ sơ lô điện tử": gói trọn thông tin một mẻ (nguyên liệu &amp; lô, thông số QC, nhiệt độ, người vận hành, kết quả kiểm) thành một bản ghi/PDF ký số. Đây là hạng mục custom giá trị cao — gom dữ liệu từ MO + lô + quality check + dữ liệu line.</div>
+        <div class="box danger"><span class="box-title">Tuân thủ</span>Truy xuất nguồn gốc là <strong>yêu cầu pháp lý</strong> (vd nguyên tắc "one step back, one step forward"). Hệ thống phải đảm bảo <em>không lô nào bị mất dấu</em> — tránh các thao tác phá vỡ liên kết lô (điều chỉnh kho thủ công không gắn lô, gộp lô tùy tiện).</div>
+      </section>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> Chất lượng &amp; HACCP</h2>
+        <p class="ch-sub">Điểm kiểm soát tới hạn, kiểm tra chất lượng gắn vào quy trình sản xuất.</p>
+
+        <div class="box ent"><span class="box-title">Module Quality = Enterprise</span><span class="ce-ent">Quality</span> (<code class="ic">quality.point</code>, <code class="ic">quality.check</code>) là Enterprise. Bản Community có thể tự xây tối giản hoặc dùng module OCA.</div>
+
+        <h3 class="sec">Cấu trúc Quality của Odoo</h3>
+        <ul>
+          <li><strong>Quality Control Point</strong> (<code class="ic">quality.point</code>): "tại bước nào, kiểm gì, kiểu kiểm gì" (đo lường/pass-fail/hướng dẫn). Gắn vào thao tác kho hoặc work order.</li>
+          <li><strong>Quality Check</strong> (<code class="ic">quality.check</code>): lần kiểm thực tế (kết quả, người kiểm).</li>
+          <li><strong>Quality Alert</strong>: cảnh báo khi fail → quy trình xử lý.</li>
+        </ul>
+
+        <h3 class="sec">Ánh xạ HACCP vào Odoo</h3>
+        <table>
+          <thead><tr><th>Khái niệm HACCP</th><th>Trong Odoo</th></tr></thead>
+          <tbody>
+            <tr><td>CCP (điểm kiểm soát tới hạn)</td><td>Quality Control Point tại work order/bước kho</td></tr>
+            <tr><td>Giới hạn tới hạn (vd nhiệt độ ≥ 72°C)</td><td>Quality point kiểu "measure" với ngưỡng min/max</td></tr>
+            <tr><td>Giám sát</td><td>Quality check (thủ công hoặc <strong>tự động từ IoT/line</strong>)</td></tr>
+            <tr><td>Hành động khắc phục</td><td>Quality alert + quy trình</td></tr>
+            <tr><td>Lưu hồ sơ</td><td>Check gắn vào MO/lô → EBR</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Tự động tạo quality check từ dữ liệu cảm biến</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">auto_quality.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Khi nhận nhiệt độ thanh trùng từ line → ghi vào quality check (đạt/không đạt)</span>
+<span class="k">def</span> <span class="f">record_temp_check</span>(self, mo, temperature):
+    <span class="c"># giả sử CCP: nhiệt độ phải &gt;= 72°C</span>
+    passed = temperature &gt;= <span class="n">72.0</span>
+    self.env[<span class="s">"quality.check"</span>].create({
+        <span class="s">"production_id"</span>: mo.id,
+        <span class="s">"measure"</span>: temperature,
+        <span class="s">"quality_state"</span>: <span class="s">"pass"</span> <span class="k">if</span> passed <span class="k">else</span> <span class="s">"fail"</span>,
+    })
+    <span class="k">if</span> <span class="k">not</span> passed:
+        mo.message_post(body=<span class="s">f"⚠ CCP nhiệt độ KHÔNG đạt: {temperature}°C (mẻ {mo.name})"</span>)</pre>
+        </div>
+        <div class="box food"><span class="box-title">Allergen &amp; cross-contamination</span>Quản lý dị ứng nguyên (sữa, đậu phộng, gluten...) thường thêm field allergen trên product, kiểm tra khi đổi line/đổi mẻ (cần vệ sinh giữa mẻ chứa allergen khác nhau). Đây là logic custom đặc thù — gắn cảnh báo vào quy trình lập kế hoạch sản xuất.</div>
+      </section>
+
+      <!-- ===================== PHẦN 3 ===================== -->
+      <div class="level-divider" id="p3"><div class="line"></div><span class="tag tag-l2">Phần 3 · Tích hợp dây chuyền</span><div class="line"></div></div>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Shop Floor / MES</h2>
+        <p class="ch-sub">Giao diện cho công nhân tại xưởng — cầu nối người vận hành ↔ Odoo.</p>
+
+        <div class="box ent"><span class="box-title">Enterprise</span><span class="ce-ent">Shop Floor</span> (MES) là module Enterprise. Bản Community có thể thay bằng giao diện tùy biến (kiosk/tablet tự xây) gọi vào ORM/API.</div>
+
+        <p><strong>Shop Floor</strong> là giao diện dạng bảng kanban tối ưu cho máy tính bảng tại xưởng: công nhân thấy work order của mình, bấm <em>Start/Pause/Done</em>, nhập sản lượng, thực hiện quality check, in tem — tất cả cập nhật MO realtime.</p>
+
+        <h3 class="sec">Khi nào đủ, khi nào cần custom</h3>
+        <ul>
+          <li><strong>Đủ dùng</strong>: quy trình thủ công/bán tự động, công nhân thao tác trên tablet.</li>
+          <li><strong>Cần custom/tích hợp</strong>: dữ liệu đến từ <em>máy móc</em> (cân, PLC) thay vì người bấm → cần IoT (ch10) hoặc API (ch11–12).</li>
+        </ul>
+        <div class="box info"><span class="box-title">Mẹo thiết kế</span>Ngay cả khi dùng Shop Floor, hãy thiết kế để <strong>vừa nhận thao tác tay vừa nhận dữ liệu máy</strong>. Thường: máy đẩy dữ liệu qua API → cập nhật MO; công nhân chỉ xác nhận/can thiệp ngoại lệ. Tránh bắt người nhập tay thứ máy đã đo.</div>
+      </section>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> IoT Box &amp; thiết bị</h2>
+        <p class="ch-sub">Kết nối phần cứng gần dây chuyền: cân, máy in tem, scanner, cảm biến.</p>
+
+        <div class="box ent"><span class="box-title">Enterprise</span><span class="ce-ent">IoT</span> (IoT Box + app) là Enterprise. IoT Box là một thiết bị (thường Raspberry Pi) chạy phần mềm Odoo IoT, làm cầu nối giữa thiết bị vật lý và Odoo.</div>
+
+        <table>
+          <thead><tr><th>Thiết bị</th><th>Dùng cho thực phẩm</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cân điện tử</strong></td><td>Cân nguyên liệu/thành phẩm tự động vào MO (catch-weight)</td></tr>
+            <tr><td><strong>Máy in nhãn (ZPL)</strong></td><td>In tem lô + hạn dùng (GS1) ngay tại line</td></tr>
+            <tr><td><strong>Barcode scanner</strong></td><td>Quét lô NVL khi nạp liệu, quét thành phẩm khi đóng gói</td></tr>
+            <tr><td><strong>Cảm biến nhiệt / đo lường</strong></td><td>Ghi nhiệt độ thanh trùng/bảo quản (CCP), độ ẩm, pH</td></tr>
+            <tr><td><strong>Camera / footswitch</strong></td><td>Chụp QC, kích hành động rảnh tay</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Mô hình hoạt động</h3>
+        <p>Thiết bị → cắm vào <strong>IoT Box</strong> (USB/serial/network) → IoT Box giao tiếp với Odoo. Trong view (vd quality check, work order), field có thể gắn <em>"lấy giá trị từ thiết bị IoT"</em> (vd nút cân tự điền khối lượng). Lập trình driver tùy chỉnh cho thiết bị lạ là khả thi (Python trên IoT Box).</p>
+        <div class="box food"><span class="box-title">Chuỗi lạnh (cold chain)</span>Cảm biến nhiệt độ kho lạnh/xe lạnh có thể đẩy dữ liệu định kỳ → ghi log + cảnh báo khi vượt ngưỡng. Với nhiều điểm đo tần suất cao, cân nhắc kiến trúc time-series riêng (ch12) thay vì nhồi vào bảng Odoo thường.</div>
+      </section>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Tích hợp PLC/SCADA &amp; hệ thống ngoài</h2>
+        <p class="ch-sub">Kiến trúc kết nối Odoo với "bộ não" điều khiển dây chuyền.</p>
+
+        <div class="box danger"><span class="box-title">Ranh giới OT/IT</span>Lập trình <strong>PLC</strong> và mạng <strong>OT</strong> (operational technology) thuộc <em>kỹ sư tự động hóa</em>. Khóa này dạy <strong>phía Odoo (IT)</strong>: nhận/gửi dữ liệu an toàn, đúng kiến trúc. Hai bên gặp nhau ở một <strong>lớp trung gian (gateway)</strong>.</div>
+
+        <h3 class="sec">Kiến trúc khuyến nghị</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">architecture.txt</span></div>
+<pre class="code">[ PLC / SCADA ]  --OPC-UA / Modbus / MQTT-->  [ Gateway / Middleware ]
+   (tầng OT)                                      (đệm, chuẩn hóa, retry)
+                                                        |
+                                                  REST/JSON-RPC
+                                                        v
+                                                  [  ODOO  ]
+                                                  (controller + queue_job)</pre>
+        </div>
+        <p><strong>Vì sao cần gateway ở giữa</strong> (không nối PLC thẳng Odoo):</p>
+        <ul>
+          <li>PLC nói "ngôn ngữ" công nghiệp (OPC-UA/Modbus), Odoo nói HTTP/JSON — cần phiên dịch.</li>
+          <li>PLC bắn dữ liệu <strong>tần suất rất cao</strong>; gateway <strong>đệm &amp; gom</strong> trước khi gửi Odoo (tránh quá tải).</li>
+          <li>Cách ly an ninh: mạng OT không nên lộ trực tiếp ra IT.</li>
+          <li>Gateway xử lý mất kết nối, retry, buffer khi Odoo bảo trì.</li>
+        </ul>
+        <div class="box info"><span class="box-title">Lựa chọn gateway</span>Có thể là: Node-RED, một service Python (asyncua cho OPC-UA, pymodbus cho Modbus), broker MQTT, hoặc nền tảng IIoT thương mại. Gateway gọi vào Odoo qua <strong>External API</strong> (JSON-RPC/XML-RPC) hoặc <strong>controller tùy biến</strong> (ch12).</div>
+
+        <h3 class="sec">Chiều Odoo → line (gửi lệnh xuống)</h3>
+        <p>Khi cần Odoo điều khiển/đặt tham số xuống line (vd nạp công thức cho mẻ tiếp theo): Odoo gọi API của gateway, hoặc ghi vào hàng đợi/biến mà gateway đọc. Hạn chế để Odoo điều khiển realtime trực tiếp thiết bị an toàn — đó là việc của PLC.</p>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Dữ liệu realtime &amp; xử lý bất đồng bộ</h2>
+        <p class="ch-sub">Nhận hàng nghìn bản ghi từ line mà không "giết" Odoo.</p>
+
+        <h3 class="sec">Nguyên tắc vàng</h3>
+        <ol>
+          <li><strong>Nhận nhanh, xử lý sau</strong>: endpoint chỉ lưu payload thô + trả về ngay; việc nặng đẩy sang nền.</li>
+          <li><strong>Idempotency (chống trùng)</strong>: mỗi gói có khóa duy nhất (line_ref); nhận lại thì bỏ qua — vì mạng có thể gửi lặp.</li>
+          <li><strong>Bất đồng bộ</strong>: dùng <strong>queue_job (OCA)</strong> để xử lý nền, có retry tự động.</li>
+          <li><strong>Gom lô (batching)</strong>: gateway gộp nhiều tick thành một gói; Odoo xử lý theo lô.</li>
+        </ol>
+
+        <h3 class="sec">Endpoint nhận dữ liệu (dùng Endpoint Generator)</h3>
+        <p>Bấm <strong>🏭 Endpoint Generator</strong> (góc dưới phải) để sinh khung dưới đây — controller JSON + model đệm + xử lý bất đồng bộ + chống trùng:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">controllers/line_api.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> http
+<span class="k">from</span> odoo.http <span class="k">import</span> request
+
+
+<span class="k">class</span> <span class="f">LineApiController</span>(http.Controller):
+
+    <span class="d">@http.route</span>(<span class="s">"/api/line/production"</span>, type=<span class="s">"json"</span>, auth=<span class="s">"user"</span>,
+                methods=[<span class="s">"POST"</span>], csrf=<span class="k">False</span>)
+    <span class="k">def</span> <span class="f">receive</span>(self, **payload):
+        ref = payload.get(<span class="s">"line_ref"</span>)
+        <span class="k">if</span> <span class="k">not</span> ref:
+            <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"error"</span>, <span class="s">"message"</span>: <span class="s">"thiếu line_ref"</span>}
+        Sink = request.env[<span class="s">"line.data.sink"</span>].sudo()
+        <span class="k">if</span> Sink.search_count([(<span class="s">"ref"</span>, <span class="s">"="</span>, ref)]):     <span class="c"># chống trùng</span>
+            <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"duplicate"</span>}
+        rec = Sink.create({<span class="s">"ref"</span>: ref, <span class="s">"payload"</span>: payload})
+        rec.with_delay().process()                       <span class="c"># queue_job: xử lý nền + retry</span>
+        <span class="k">return</span> {<span class="s">"status"</span>: <span class="s">"queued"</span>, <span class="s">"ref"</span>: ref}</pre>
+        </div>
+        <div class="box info"><span class="box-title">queue_job (OCA)</span><code class="ic">with_delay()</code> đẩy method vào hàng đợi, chạy nền bởi worker riêng, tự retry khi lỗi tạm thời. Cài <code class="ic">queue_job</code> từ OCA &amp; cấu hình worker. Không có queue_job? Tối thiểu dùng <code class="ic">ir.cron</code> quét bảng đệm định kỳ — vẫn theo nguyên tắc "nhận nhanh, xử lý sau".</div>
+        <div class="box warn"><span class="box-title">Đừng làm thế này</span>❌ Để gateway/PLC gọi <code class="ic">create/write</code> Odoo <em>mỗi giây mỗi cảm biến</em> theo kiểu đồng bộ → khóa DB, treo worker, lệch dữ liệu. ✅ Đệm ở gateway, gửi theo lô, Odoo xử lý nền, có idempotency &amp; retry.</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> Báo cáo vận hành &amp; OEE</h2>
+        <p class="ch-sub">Biến dữ liệu line thành chỉ số quản trị: hiệu suất, downtime, phế phẩm.</p>
+
+        <h3 class="sec">OEE — Overall Equipment Effectiveness</h3>
+        <p>Odoo tính <strong>OEE</strong> ở work center: <em>OEE = Availability × Performance × Quality</em>. Work center ghi nhận thời gian chạy/dừng (productivity), lý do downtime (loss), từ đó ra OEE. Nhập downtime thủ công, hoặc <strong>tự động từ line</strong> (máy báo dừng → tạo bản ghi loss).</p>
+        <table>
+          <thead><tr><th>Thành phần OEE</th><th>Nguồn dữ liệu</th></tr></thead>
+          <tbody>
+            <tr><td>Availability (thời gian chạy thực/kế hoạch)</td><td>Log start/stop work center, downtime từ PLC</td></tr>
+            <tr><td>Performance (tốc độ thực/lý thuyết)</td><td>Sản lượng đếm được vs công suất chuẩn</td></tr>
+            <tr><td>Quality (đạt/tổng)</td><td>Quality check, phế phẩm (scrap)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Báo cáo hiệu năng cao</h3>
+        <p>Báo cáo sản xuất chạy trên khối lượng lớn — dùng <code class="ic">read_group</code> (gộp ở SQL) thay vì lặp Python:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">report.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Sản lượng &amp; phế phẩm theo work center trong kỳ</span>
+data = self.env[<span class="s">"mrp.production"</span>].read_group(
+    [(<span class="s">"date_finished"</span>, <span class="s">"&gt;="</span>, date_from), (<span class="s">"state"</span>, <span class="s">"="</span>, <span class="s">"done"</span>)],
+    [<span class="s">"qty_produced:sum"</span>],
+    [<span class="s">"workcenter_id"</span>])     <span class="c"># gộp nhóm — nhanh hơn nhiều lần lặp</span></pre>
+        </div>
+        <div class="box tip"><span class="box-title">Dashboard realtime</span>Dùng view <code class="ic">&lt;graph&gt;</code>, <code class="ic">&lt;pivot&gt;</code>, dashboard (spreadsheet/Studio ở Enterprise) cho quản lý. Dữ liệu realtime nặng → cân nhắc <strong>materialized view phía PostgreSQL</strong> hoặc bảng tổng hợp cập nhật bằng cron, thay vì tính trực tiếp mỗi lần mở.</div>
+
+        <h3 class="sec">Quiz — Tích hợp dây chuyền</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh Phần 3</div>
+          <div class="q" data-answer="b">
+            <p>1. Vì sao không nên cho PLC ghi thẳng vào Odoo mỗi tick?</p>
+            <label class="opt" data-key="a"><input type="radio" name="p3q1" value="a"> Vì Odoo không có API</label>
+            <label class="opt" data-key="b"><input type="radio" name="p3q1" value="b"> Tần suất cao gây quá tải/khóa DB — cần gateway đệm &amp; xử lý nền</label>
+            <label class="opt" data-key="c"><input type="radio" name="p3q1" value="c"> Vì PLC không gửi được số</label>
+            <div class="explain">Đệm ở gateway, gửi theo lô, Odoo xử lý bất đồng bộ (queue_job) + idempotency.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. "Idempotency" trong nhận dữ liệu line nghĩa là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="p3q2" value="a"> Mã hóa dữ liệu</label>
+            <label class="opt" data-key="b"><input type="radio" name="p3q2" value="b"> Nén dữ liệu</label>
+            <label class="opt" data-key="c"><input type="radio" name="p3q2" value="c"> Nhận lại cùng một gói (trùng) thì không tạo hậu quả kép</label>
+            <div class="explain">Mỗi gói có khóa duy nhất; nhận trùng thì bỏ qua — an toàn khi mạng gửi lặp.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. OEE gồm 3 thành phần nào?</p>
+            <label class="opt" data-key="a"><input type="radio" name="p3q3" value="a"> Availability × Performance × Quality</label>
+            <label class="opt" data-key="b"><input type="radio" name="p3q3" value="b"> Cost × Time × Volume</label>
+            <label class="opt" data-key="c"><input type="radio" name="p3q3" value="c"> Read × Write × Delete</label>
+            <div class="explain">OEE = Availability (sẵn sàng) × Performance (hiệu suất) × Quality (chất lượng).</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== PHẦN 4 ===================== -->
+      <div class="level-divider" id="p4"><div class="line"></div><span class="tag tag-l3">Phần 4 · Vận hành quy mô lớn</span><div class="line"></div></div>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> Performance ở quy mô sản xuất</h2>
+        <p class="ch-sub">Dây chuyền sinh ra rất nhiều stock move — hệ thống phải chịu được.</p>
+
+        <p>Một nhà máy thực phẩm lớn tạo <strong>hàng chục–trăm nghìn</strong> dịch chuyển tồn kho/ngày (tiêu hao NVL, nhập thành phẩm, gắn lô). Đây là nơi code "chạy được" và code "chạy nổi ở quy mô" khác nhau.</p>
+        <div class="checklist">
+          <h4>✔️ Tối ưu trọng yếu</h4>
+          <label><input type="checkbox"><span>Xử lý <strong>theo lô</strong>: nhận dữ liệu line gom lại, <code class="ic">create([...])</code>/<code class="ic">write</code> một lần, không lặp gọi ORM.</span></label>
+          <label><input type="checkbox"><span>Đẩy việc nặng sang <strong>queue_job</strong> (nền), giữ giao dịch ngắn — tránh giữ khóa lâu.</span></label>
+          <label><input type="checkbox"><span><code class="ic">index=True</code> cho field hay lọc (line_ref, lot, date); dùng <code class="ic">read_group</code> cho báo cáo.</span></label>
+          <label><input type="checkbox"><span>Hạn chế <strong>computed store</strong> nặng phụ thuộc nhiều dòng (tính lại tốn kém khi line đổi liên tục).</span></label>
+          <label><input type="checkbox"><span>Bảng đệm dữ liệu line: <strong>dọn định kỳ</strong> (archive/xóa bản ghi đã xử lý) tránh phình.</span></label>
+          <label><input type="checkbox"><span>DB khỏe: <strong>VACUUM/autovacuum</strong>, index hợp lý, đủ RAM/IO; tách báo cáo sang <strong>read replica</strong> nếu cần.</span></label>
+          <label><input type="checkbox"><span>Cấu hình nhiều <strong>worker</strong>; worker riêng cho queue_job/cron tách khỏi worker phục vụ người dùng.</span></label>
+        </div>
+        <div class="box warn"><span class="box-title">Đo trước khi tối ưu</span>Bật log truy vấn chậm, dùng <code class="ic">--dev</code> để xem SQL, profiling. Đừng đoán — tìm đúng "điểm nóng" (thường là computed store, vòng lặp ORM, thiếu index) rồi mới sửa.</div>
+      </section>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> Kiểm thử, audit &amp; compliance</h2>
+        <p class="ch-sub">Môi trường được quản lý: dữ liệu phải đúng, có dấu vết, có thể kiểm toán.</p>
+
+        <h3 class="sec">Kiểm thử nghiêm túc</h3>
+        <ul>
+          <li><strong>Unit/integration test</strong> (TransactionCase) cho mọi logic sản xuất/lô/truy xuất — sai số tồn kho rất khó dò thủ công.</li>
+          <li>Test riêng cho <strong>idempotency</strong> &amp; xử lý dữ liệu line (gửi trùng, gửi lỗi, mất gói).</li>
+          <li>Test <strong>truy xuất</strong>: dựng kịch bản recall &amp; khẳng định tìm đúng lô/khách.</li>
+          <li>Chạy trên <strong>bản sao dữ liệu production</strong> trước khi lên thật.</li>
+        </ul>
+
+        <h3 class="sec">Audit trail &amp; phê duyệt</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">audit.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">class</span> <span class="f">MrpProduction</span>(models.Model):
+    _name = <span class="s">"mrp.production"</span>
+    _inherit = [<span class="s">"mrp.production"</span>, <span class="s">"mail.thread"</span>]   <span class="c"># thêm chatter/log</span>
+
+    qty_produced = fields.Float(tracking=<span class="k">True</span>)    <span class="c"># mọi thay đổi được ghi nhật ký</span>
+    state = fields.Selection(tracking=<span class="k">True</span>)</pre>
+        </div>
+        <div class="box food"><span class="box-title">Compliance ngành thực phẩm</span>Nhiều chuẩn (ISO 22000, BRC, FSSC, hoặc 21 CFR Part 11 nếu xuất Mỹ) yêu cầu: <strong>nhật ký không sửa được, định danh người thao tác, phê duyệt điện tử (e-signature), truy vết thay đổi</strong>. Odoo có sẵn audit log (mail.thread tracking) + phân quyền; phần e-signature/phê duyệt nhiều bước thường cần cấu hình/custom. Xác định yêu cầu compliance <em>ngay từ thiết kế</em>.</div>
+      </section>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> Deploy &amp; migration an toàn</h2>
+        <p class="ch-sub">Hệ production-critical: line không được dừng vì bản cập nhật lỗi.</p>
+
+        <div class="box danger"><span class="box-title">"Production-critical" nghĩa là gì</span>Nếu ERP dừng, <strong>dây chuyền có thể phải dừng</strong> (không in được tem, không ghi được lô). Mọi thay đổi phải có kế hoạch &amp; đường lùi (rollback).</div>
+        <div class="checklist">
+          <h4>✔️ Quy trình deploy an toàn</h4>
+          <label><input type="checkbox"><span>Môi trường tách bạch: <strong>dev → staging (bản sao prod) → production</strong>.</span></label>
+          <label><input type="checkbox"><span>Thử nâng cấp module trên <strong>bản sao DB production</strong>; chạy test; kiểm tra migration dữ liệu.</span></label>
+          <label><input type="checkbox"><span><strong>Backup</strong> DB + filestore trước mỗi lần nâng cấp; kiểm tra phục hồi được.</span></label>
+          <label><input type="checkbox"><span>Lên lịch nâng cấp vào <strong>khung giờ dừng line</strong>; chuẩn bị kế hoạch rollback rõ ràng.</span></label>
+          <label><input type="checkbox"><span>Cân nhắc <strong>HA</strong> (replica, failover) &amp; phương án "line vẫn ghi tạm được" khi ERP bảo trì (gateway đệm).</span></label>
+          <label><input type="checkbox"><span>Migration script (<code class="ic">migrations/&lt;version&gt;/</code>) cho thay đổi cấu trúc dữ liệu; version hóa module qua git.</span></label>
+        </div>
+        <div class="box tip"><span class="box-title">Đệm cứu nguy</span>Lớp gateway (ch11–12) còn một lợi ích lớn: khi Odoo bảo trì/nâng cấp, gateway <strong>vẫn nhận &amp; đệm dữ liệu line</strong>, rồi đồng bộ lại khi Odoo trở lại — line không mất dữ liệu, không phải dừng.</div>
+
+        <h3 class="sec">Quiz — Vận hành</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh Phần 4</div>
+          <div class="q" data-answer="b">
+            <p>1. Cách đúng để báo cáo trên khối lượng lớn?</p>
+            <label class="opt" data-key="a"><input type="radio" name="p4q1" value="a"> Lặp Python qua từng record</label>
+            <label class="opt" data-key="b"><input type="radio" name="p4q1" value="b"> Dùng <code>read_group</code> (gộp ở SQL) / materialized view</label>
+            <label class="opt" data-key="c"><input type="radio" name="p4q1" value="c"> Tắt index cho nhanh</label>
+            <div class="explain">read_group gộp ở tầng SQL; báo cáo nặng có thể dùng materialized view/bảng tổng hợp.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Trước khi nâng cấp module trên production cần?</p>
+            <label class="opt" data-key="a"><input type="radio" name="p4q2" value="a"> Nâng cấp thẳng cho nhanh</label>
+            <label class="opt" data-key="b"><input type="radio" name="p4q2" value="b"> Xóa backup cũ</label>
+            <label class="opt" data-key="c"><input type="radio" name="p4q2" value="c"> Test trên bản sao prod + backup + kế hoạch rollback</label>
+            <div class="explain">Staging giống prod, backup, test, có đường lùi — bắt buộc với hệ production-critical.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Lợi ích của gateway khi Odoo bảo trì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="p4q3" value="a"> Vẫn đệm dữ liệu line, đồng bộ lại sau → line không mất dữ liệu</label>
+            <label class="opt" data-key="b"><input type="radio" name="p4q3" value="b"> Tăng tốc PLC</label>
+            <label class="opt" data-key="c"><input type="radio" name="p4q3" value="c"> Thay thế PostgreSQL</label>
+            <div class="explain">Gateway đệm khi Odoo offline, giúp dây chuyền không phải dừng.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== SNIPPET LIBRARY ===================== -->
+      <section class="chapter" id="snippets">
+        <h2 class="ch-title"><span class="num">🧰</span> Thư viện snippet chuyên ngành</h2>
+        <p class="ch-sub">Các đoạn code mẫu hay dùng khi làm ERP sản xuất thực phẩm. Bấm Copy.</p>
+
+        <h3 class="sec">Hook khi mẻ hoàn thành → tạo lô + đặt hạn dùng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">snippet_mo_done.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">class</span> <span class="f">MrpProduction</span>(models.Model):
+    _inherit = <span class="s">"mrp.production"</span>
+
+    <span class="k">def</span> <span class="f">button_mark_done</span>(self):
+        res = super().button_mark_done()
+        <span class="k">for</span> mo <span class="k">in</span> self:
+            <span class="k">for</span> lot <span class="k">in</span> mo.lot_producing_id:        <span class="c"># lô thành phẩm của mẻ</span>
+                <span class="k">if</span> <span class="k">not</span> lot.expiration_date:
+                    shelf_life = mo.product_id.x_shelf_life_days <span class="k">or</span> <span class="n">180</span>
+                    lot.expiration_date = fields.Datetime.now() + \
+                        relativedelta(days=shelf_life)
+        <span class="k">return</span> res</pre>
+        </div>
+
+        <h3 class="sec">Đẩy sản lượng từ line vào MO (idempotent)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">snippet_record_output.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">def</span> <span class="f">apply_line_output</span>(self, mo_name, qty, line_ref):
+    <span class="c"># chống trùng bằng line_ref đã lưu ở bảng đệm (xem ch12)</span>
+    mo = self.env[<span class="s">"mrp.production"</span>].search([(<span class="s">"name"</span>, <span class="s">"="</span>, mo_name)], limit=<span class="n">1</span>)
+    <span class="k">if</span> <span class="k">not</span> mo:
+        <span class="k">raise</span> UserError(<span class="s">f"Không thấy MO {mo_name}"</span>)
+    mo.qty_producing = qty
+    <span class="c"># ... gọi record production theo API phiên bản Odoo của bạn ...</span>
+    <span class="k">return</span> mo</pre>
+        </div>
+
+        <h3 class="sec">Cảnh báo allergen khi đổi mẻ trên cùng line</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">snippet_allergen.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">    <span class="d">@api.onchange</span>(<span class="s">"workcenter_id"</span>, <span class="s">"product_id"</span>)
+    <span class="k">def</span> <span class="f">_warn_allergen_switch</span>(self):
+        <span class="k">if</span> self.workcenter_id <span class="k">and</span> self.product_id:
+            last = self.env[<span class="s">"mrp.production"</span>].search(
+                [(<span class="s">"workcenter_id"</span>, <span class="s">"="</span>, self.workcenter_id.id), (<span class="s">"state"</span>, <span class="s">"="</span>, <span class="s">"done"</span>)],
+                order=<span class="s">"date_finished desc"</span>, limit=<span class="n">1</span>)
+            <span class="k">if</span> last <span class="k">and</span> last.product_id.x_allergens != self.product_id.x_allergens:
+                <span class="k">return</span> {<span class="s">"warning"</span>: {<span class="s">"title"</span>: <span class="s">"Allergen khác mẻ trước"</span>,
+                    <span class="s">"message"</span>: <span class="s">"Cần vệ sinh line trước khi sản xuất để tránh nhiễm chéo."</span>}}</pre>
+        </div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards ôn tập</h2>
+        <p class="ch-sub">Bấm thẻ để lật. Lọc theo phần.</p>
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'0')">P1 MRP</button>
+          <button class="fc-filter" onclick="filterFC(this,'1')">P2 Lô/QC</button>
+          <button class="fc-filter" onclick="filterFC(this,'2')">P3 Line</button>
+          <button class="fc-filter" onclick="filterFC(this,'3')">P4 Vận hành</button>
+          <span id="fcCount" style="margin-left:auto;color:var(--gray);font-size:12.5px;align-self:center">14 thẻ</span>
+        </div>
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">P1</span><div class="fc-q">3 model MRP cốt lõi?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>mrp.bom</code> (công thức), <code>mrp.production</code> (MO), <code>mrp.workcenter</code> (+ <code>mrp.workorder</code>).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">P1</span><div class="fc-q">By-product là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">Phụ phẩm: một mẻ tạo ra nhiều sản phẩm (vd xay thịt → nạc + mỡ). Khai ở tab By-products của BoM.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">P1</span><div class="fc-q">Catch-weight?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">Theo dõi đồng thời số đơn vị &amp; trọng lượng thực (vd thùng cá). Odoo lõi không có đủ → OCA/custom.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">P2</span><div class="fc-q">FEFO là gì &amp; vì sao quan trọng?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">First-Expired-First-Out: xuất lô hết hạn trước. Chuẩn cho thực phẩm để giảm hàng quá hạn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">P2</span><div class="fc-q">Hạn dùng lưu ở đâu?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a"><code>stock.lot</code>: <code>expiration_date</code>, <code>use_date</code>, <code>removal_date</code>, <code>alert_date</code>. Cần bật Expiration Dates.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">P2</span><div class="fc-q">Truy xuất xuôi vs ngược?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Xuôi: lô NVL → đi vào mẻ/thành phẩm/khách nào. Ngược: thành phẩm → làm từ NVL/NCC nào. Dựa trên lô gắn ở move line.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">P2</span><div class="fc-q">HACCP CCP ánh xạ vào Odoo?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Quality Control Point (kiểu measure + ngưỡng) tại work order; giám sát = quality check (tay hoặc tự động từ IoT). Quality là Enterprise.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">P3</span><div class="fc-q">Vì sao cần gateway giữa PLC và Odoo?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Phiên dịch OPC-UA/Modbus→HTTP, đệm dữ liệu tần suất cao, cách ly an ninh OT/IT, retry khi Odoo offline.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">P3</span><div class="fc-q">Nguyên tắc nhận dữ liệu line?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Nhận nhanh (lưu thô, trả ngay) → xử lý nền (queue_job) → idempotency (chống trùng) → batching.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">P3</span><div class="fc-q">queue_job (OCA) dùng để?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a"><code>with_delay()</code> đẩy method ra hàng đợi chạy nền, tự retry — giữ endpoint nhẹ, chịu tải line cao.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">P3</span><div class="fc-q">OEE = ?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Availability × Performance × Quality. Odoo tính ở work center từ log chạy/dừng + sản lượng + chất lượng.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">P4</span><div class="fc-q">Chống quá tải khi line ghi nhiều?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Batching + queue_job + giao dịch ngắn + index + read_group; dọn bảng đệm; worker riêng cho job/cron.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">P4</span><div class="fc-q">Compliance thực phẩm cần gì ở hệ thống?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Audit trail không sửa được, định danh người thao tác, e-signature/phê duyệt, truy xuất đầy đủ (ISO 22000/BRC/21 CFR Part 11).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">P4</span><div class="fc-q">Deploy production-critical an toàn?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">dev→staging(bản sao prod)→prod; test + backup + rollback; nâng cấp giờ dừng line; gateway đệm khi bảo trì.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra cứu nhanh model, chiến lược &amp; mẫu tích hợp.</p>
+
+        <h3 class="sec">Model sản xuất &amp; lô</h3>
+        <table>
+          <thead><tr><th>Model</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">mrp.bom</code> / <code class="ic">mrp.bom.line</code></td><td>Công thức &amp; định mức</td></tr>
+            <tr><td><code class="ic">mrp.production</code></td><td>Lệnh sản xuất (MO)</td></tr>
+            <tr><td><code class="ic">mrp.workorder</code> / <code class="ic">mrp.workcenter</code></td><td>Công đoạn / trung tâm SX (OEE)</td></tr>
+            <tr><td><code class="ic">stock.lot</code></td><td>Lô + hạn dùng (expiration/use/removal)</td></tr>
+            <tr><td><code class="ic">stock.move.line</code></td><td>Dịch chuyển + gắn lô (gốc của truy xuất)</td></tr>
+            <tr><td><code class="ic">quality.point</code> / <code class="ic">quality.check</code></td><td>QC / HACCP (Enterprise)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Chiến lược &amp; cấu hình</h3>
+        <ul>
+          <li><strong>Removal strategy</strong>: FEFO (thực phẩm), FIFO, LIFO — đặt ở Location/Category.</li>
+          <li><strong>Tracking</strong>: by Lots; bật <strong>Expiration Dates</strong>.</li>
+          <li><strong>Truy xuất</strong>: Inventory → Reporting → Traceability.</li>
+        </ul>
+
+        <h3 class="sec">Mẫu tích hợp dây chuyền</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">integration_pattern.txt</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">PLC/SCADA --(OPC-UA/Modbus/MQTT)--> Gateway --(JSON-RPC/REST)--> Odoo
+Odoo: controller @http.route(type="json") → lưu bản ghi đệm (idempotent)
+      → with_delay().process()  (queue_job, retry)  → cập nhật MO/lô/QC
+Nguyên tắc: nhận nhanh • xử lý nền • chống trùng • gom lô • đệm khi offline</pre>
+        </div>
+
+        <div class="box tip"><span class="box-title">Hết khóa chuyên ngành! 🎉</span>Bạn đã có bức tranh đầy đủ để triển khai Odoo cho một nhà máy thực phẩm tích hợp dây chuyền: từ công thức/MRP, lô &amp; truy xuất, chất lượng/HACCP, đến kiến trúc tích hợp line &amp; vận hành quy mô lớn. Kết hợp với khóa <a class="inline" href="khoa-hoc-odoo-framework.html">🧩 Làm chủ Odoo Framework</a> để vững nền tảng. Chúc dự án thành công! 🏭</div>
+      </section>
+
+      <footer class="foot">
+        🏭 Odoo cho Sản xuất Thực phẩm &amp; Tích hợp Dây chuyền — mở rộng từ khóa <a class="inline" href="khoa-hoc-odoo-framework.html">Làm chủ Odoo Framework</a>. Tham khảo Odoo Developer Documentation &amp; OCA. Phần tích hợp PLC/SCADA tập trung kiến trúc &amp; code phía Odoo; lập trình PLC &amp; mạng OT thuộc kỹ sư tự động hóa.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== FLOATING LINE ENDPOINT GENERATOR ===== -->
+<button class="sg-fab" id="sgFab" onclick="toggleSG(true)">🏭 Endpoint Generator</button>
+<div class="sg-panel" id="sgPanel">
+  <div class="sg-head" id="sgHead">
+    <span class="sg-title">🏭 Line Integration Endpoint Generator</span>
+    <button onclick="toggleSG(false)">✕</button>
+  </div>
+  <div class="sg-body">
+    <p class="sg-hint" style="margin-bottom:6px">Sinh khung <strong>API nhận dữ liệu từ dây chuyền</strong> (controller JSON + xử lý bất đồng bộ qua queue_job + chống trùng). Điền rồi bấm Sinh code.</p>
+    <div class="sg-row">
+      <div><label class="fld">Đường dẫn endpoint</label><input id="epPath" value="/api/line/production"></div>
+      <div><label class="fld">Auth</label><input id="epAuth" value="user"><div class="sg-hint">user | public | none</div></div>
+    </div>
+    <div class="sg-row">
+      <div><label class="fld">Model đích cập nhật</label><input id="epModel" value="mrp.production"></div>
+      <div><label class="fld">Khóa chống trùng (idempotency)</label><input id="epIdem" value="line_ref"></div>
+    </div>
+    <label class="fld">Ánh xạ payload → field (mỗi dòng: payload_key:odoo_field)</label>
+    <textarea id="epFields" spellcheck="false">line_ref:x_line_ref
+qty_produced:qty_producing
+weight_kg:x_weight
+finished_at:date_finished</textarea>
+    <div class="sg-out" id="epOut">Điền thông tin rồi bấm <strong>Sinh code</strong>.</div>
+  </div>
+  <div class="sg-actions">
+    <button class="gen" onclick="genEndpoint()">🏭 Sinh code</button>
+    <button class="cpy" onclick="copySG(this)">⧉ Copy</button>
+  </div>
+</div>
+
+<script>
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll() { let cur=''; document.querySelectorAll('section[id], div[id].level-divider, div[id].hero').forEach(s=>{ if(s.getBoundingClientRect().top<150) cur=s.id; }); navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+cur)); }
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase().trim(); document.querySelectorAll('#navMenu li').forEach(li=>{ if(li.classList.contains('nav-section-title')){li.style.display='';return;} li.style.display=li.textContent.toLowerCase().includes(q)?'':'none'; }); });
+navLinks.forEach(a=>a.addEventListener('click',()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+function copyCode(btn){ const txt=btn.closest('.code-block').querySelector('pre.code').innerText; navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent='✓ Đã copy';setTimeout(()=>btn.textContent=o,1400);}); }
+function checkQuiz(btn){ btn.closest('.quiz').querySelectorAll('.q').forEach(q=>{ const c=q.dataset.answer; const ch=q.querySelector('input:checked'); q.querySelectorAll('.opt').forEach(o=>{o.classList.remove('correct','wrong'); if(o.dataset.key===c)o.classList.add('correct');}); if(ch&&ch.value!==c)ch.closest('.opt').classList.add('wrong'); const ex=q.querySelector('.explain'); if(ex)ex.classList.add('show'); }); }
+function flipCard(el){ el.classList.toggle('flipped'); }
+function filterFC(btn,cat){ document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); let n=0; document.querySelectorAll('.flashcard').forEach(c=>{const ok=(cat==='all'||c.dataset.cat===cat); c.style.display=ok?'':'none'; c.classList.remove('flipped'); if(ok)n++;}); const el=document.getElementById('fcCount'); if(el)el.textContent=n+' thẻ'; }
+
+/* ===== LINE ENDPOINT GENERATOR ===== */
+function toggleSG(open){ document.getElementById('sgPanel').classList.toggle('open',open); document.getElementById('sgFab').classList.toggle('hidden',open); }
+function gv(id){ return document.getElementById(id).value.trim(); }
+function genEndpoint(){
+  const path = gv('epPath') || '/api/line/data';
+  const auth = gv('epAuth') || 'user';
+  const model = gv('epModel') || 'mrp.production';
+  const idem = gv('epIdem') || 'ref';
+  const maps = gv('epFields').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{ const p=l.split(':'); return {key:(p[0]||'').trim(), field:(p[1]||p[0]||'').trim()}; });
+  const assigns = maps.map(m=>`            ${m.field}=payload.get(${JSON.stringify(m.key)}),`).join('\n');
+  const idemKey = (maps.find(m=>m.field===idem)||{key:idem}).key;
+
+  const code =
+`# ===== controllers/line_api.py =====
+import logging
+from odoo import http
+from odoo.http import request
+
+_logger = logging.getLogger(__name__)
+
+
+class LineApiController(http.Controller):
+
+    @http.route(${JSON.stringify(path)}, type="json", auth=${JSON.stringify(auth)}, methods=["POST"], csrf=False)
+    def receive_line_data(self, **payload):
+        """Nhận dữ liệu từ dây chuyền (gateway gửi JSON).
+        Trả nhanh, đẩy việc nặng sang hàng đợi (queue_job)."""
+        ref = payload.get(${JSON.stringify(idemKey)})
+        if not ref:
+            return {"status": "error", "message": "Thiếu khóa chống trùng (${idemKey})"}
+
+        Sink = request.env["line.data.sink"].sudo()
+        # Chống trùng: nếu ref đã nhận thì bỏ qua (idempotent)
+        if Sink.search_count([("ref", "=", ref)]):
+            return {"status": "duplicate", "ref": ref}
+
+        rec = Sink.create({"ref": ref, "payload": payload})
+        # Đẩy xử lý sang nền (cần OCA queue_job). Nếu không có, gọi trực tiếp:
+        rec.with_delay().process()      # queue_job
+        # rec.process()                 # đồng bộ (không khuyến nghị cho line tần suất cao)
+        return {"status": "queued", "ref": ref}
+
+
+# ===== models/line_data_sink.py =====
+import logging
+from odoo import models, fields, api
+from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
+
+
+class LineDataSink(models.Model):
+    _name = "line.data.sink"
+    _description = "Buffer dữ liệu dây chuyền"
+
+    ref = fields.Char(string="Mã tham chiếu", required=True, index=True)
+    payload = fields.Json(string="Payload")          # Odoo mới: fields.Json
+    state = fields.Selection([("new","Mới"),("done","Đã xử lý"),("error","Lỗi")],
+                             default="new", index=True)
+    error = fields.Text()
+
+    _sql_constraints = [("ref_uniq", "UNIQUE(ref)", "Mã tham chiếu phải duy nhất (chống trùng).")]
+
+    def process(self):
+        for rec in self:
+            try:
+                payload = rec.payload or {}
+                target = rec._find_target(payload)
+                target.write({
+${assigns}
+                })
+                rec.state = "done"
+            except Exception as e:
+                rec.state = "error"
+                rec.error = str(e)
+                _logger.exception("Lỗi xử lý dữ liệu line ref=%s", rec.ref)
+                raise                      # để queue_job retry
+
+    def _find_target(self, payload):
+        """Định vị bản ghi ${model} cần cập nhật từ payload. TÙY CHỈNH theo nghiệp vụ."""
+        rec = self.env[${JSON.stringify(model)}].search(
+            [("name", "=", payload.get("mo_name"))], limit=1)
+        if not rec:
+            raise UserError("Không tìm thấy ${model} cho payload: %s" % payload.get("mo_name"))
+        return rec`;
+  const el = document.getElementById('epOut');
+  el.innerHTML = code.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/^(# ===== .* =====)$/gm,'<b>$1</b>');
+  el.dataset.raw = code;
+}
+function copySG(btn){ const t=document.getElementById('epOut').dataset.raw||document.getElementById('epOut').innerText; navigator.clipboard.writeText(t).then(()=>{const o=btn.textContent;btn.textContent='✓ Đã copy';setTimeout(()=>btn.textContent=o,1400);}); }
+(function(){ const panel=document.getElementById('sgPanel'), head=document.getElementById('sgHead'); let d=false,ox=0,oy=0;
+  head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup',()=>d=false);
+})();
+genEndpoint();
+</script>
+</body>
+</html>

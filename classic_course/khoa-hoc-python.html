@@ -276,6 +276,60 @@
 
   footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
 
+  /* ---------- GLOBAL PYTHON PLAYGROUND ---------- */
+  .pg-fab {
+    position: fixed; right: 22px; bottom: 22px; z-index: 400;
+    background: var(--primary); color: #fff; border: none; border-radius: 999px;
+    padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit;
+    box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px;
+    transition: transform .15s, box-shadow .2s;
+  }
+  .pg-fab:hover { transform: translateY(-2px); box-shadow: 0 9px 28px rgba(0,0,0,.55); }
+  .pg-fab.hidden { display: none; }
+
+  .pg-panel {
+    position: fixed; right: 22px; bottom: 22px; z-index: 401;
+    width: min(560px, calc(100vw - 32px)); height: min(560px, calc(100vh - 40px));
+    background: var(--terminal); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden;
+  }
+  .pg-panel.open { display: flex; }
+  .pg-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: var(--card); border-bottom: 1px solid var(--border); cursor: move;
+  }
+  .pg-head .pg-title { font-weight: 800; font-size: 13px; color: var(--light-strong); display:flex; align-items:center; gap:8px; }
+  .pg-head .pg-title .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); }
+  .pg-head .pg-title.ready .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .pg-actions { display: flex; gap: 7px; }
+  .pg-actions button {
+    background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px;
+    padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; font-weight: 700;
+  }
+  .pg-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  .pg-actions button.run { color: var(--code-green); border-color: rgba(126,231,135,.4); }
+  .pg-actions button.run:hover { background: rgba(126,231,135,.12); }
+  .pg-actions button.close { padding: 4px 10px; }
+  .pg-editor {
+    flex: 1 1 auto; width: 100%; resize: none; border: none; outline: none;
+    background: var(--terminal); color: var(--light); padding: 14px 16px;
+    font-family: 'SF Mono', Consolas, 'Courier New', monospace; font-size: 13.5px; line-height: 1.6;
+    tab-size: 4;
+  }
+  .pg-editor::placeholder { color: var(--gray); }
+  .pg-output {
+    flex: 0 0 auto; max-height: 42%; overflow-y: auto; border-top: 1px dashed var(--border);
+    background: #05080d; padding: 12px 16px; font-size: 13px; color: var(--code-green);
+    white-space: pre-wrap; font-family: 'SF Mono', Consolas, monospace;
+  }
+  .pg-output:empty { display: none; }
+  .pg-output .label { color: var(--gray); font-size: 11px; display:block; margin-bottom: 4px; }
+  .pg-output .err { color: var(--code-red); }
+  .pg-hint { font-size: 11px; color: var(--gray); padding: 6px 14px; border-top: 1px solid var(--border); background: var(--card); }
+  @media (max-width: 600px) {
+    .pg-panel { width: calc(100vw - 16px); height: calc(100vh - 24px); right: 8px; bottom: 8px; }
+  }
+
   .menu-toggle { display: none; }
   @media (max-width: 980px) {
     .sidebar { transform: translateX(-100%); }
@@ -3338,6 +3392,22 @@ messages = [{<span class="s">"role"</span>: <span class="s">"user"</span>, <span
   </main>
 </div>
 
+<!-- ===== GLOBAL PYTHON PLAYGROUND ===== -->
+<button class="pg-fab" id="pgFab" onclick="togglePlayground(true)">🐍 Code &amp; Run</button>
+<div class="pg-panel" id="pgPanel">
+  <div class="pg-head" id="pgHead">
+    <span class="pg-title" id="pgTitle"><span class="dot"></span> Python Playground</span>
+    <div class="pg-actions">
+      <button class="run" onclick="runPlayground()">▶ Run</button>
+      <button onclick="clearPlayground()">Xóa</button>
+      <button class="close" onclick="togglePlayground(false)">✕</button>
+    </div>
+  </div>
+  <textarea class="pg-editor" id="pgEditor" spellcheck="false" placeholder="# Gõ code Python ở đây rồi bấm ▶ Run (hoặc Ctrl+Enter)&#10;# input() cũng hoạt động — sẽ hiện ô nhập&#10;&#10;ten = input('Tên bạn: ')&#10;print(f'Xin chào {ten}!')"></textarea>
+  <div class="pg-output" id="pgOutput"></div>
+  <div class="pg-hint">▶ Run hoặc <strong>Ctrl/⌘+Enter</strong> để chạy • Tab để thụt dòng • code được tự lưu trong trình duyệt</div>
+</div>
+
 <!-- Pyodide for in-browser Python execution -->
 <script src="https://cdn.jsdelivr.net/pyodide/v0.26.2/full/pyodide.js"></script>
 <script>
@@ -3392,6 +3462,106 @@ function copyCode(btn) {
   const code = btn.closest('.code-block').querySelector('pre.code').innerText;
   navigator.clipboard.writeText(code).then(()=>{ const o=btn.textContent; btn.textContent='✓ Đã copy'; setTimeout(()=>btn.textContent=o,1400); });
 }
+
+/* ============ GLOBAL PYTHON PLAYGROUND ============ */
+const PG_KEY = 'py_playground_code';
+let pgInputReady = false;
+
+function togglePlayground(open) {
+  const panel = document.getElementById('pgPanel');
+  const fab = document.getElementById('pgFab');
+  panel.classList.toggle('open', open);
+  fab.classList.toggle('hidden', open);
+  if (open) {
+    ensurePyodide();
+    const ed = document.getElementById('pgEditor');
+    ed.focus();
+  }
+}
+
+function clearPlayground() {
+  document.getElementById('pgEditor').value = '';
+  document.getElementById('pgOutput').innerHTML = '';
+  localStorage.removeItem(PG_KEY);
+}
+
+async function runPlayground() {
+  const ed = document.getElementById('pgEditor');
+  const out = document.getElementById('pgOutput');
+  const code = ed.value;
+  out.innerHTML = '<span class="label">OUTPUT</span><span style="color:#8b949e">⏳ Đang chạy...</span>';
+  await ensurePyodide();
+  await pyodideReady;
+  if (!window._pyodide) { out.innerHTML = '<span class="err">⚠ Python engine chưa sẵn sàng (cần internet để tải Pyodide).</span>'; return; }
+  document.getElementById('pgTitle').classList.add('ready');
+  try {
+    if (!pgInputReady) {
+      // cho phép input() hoạt động qua hộp thoại prompt của trình duyệt
+      window._pyodide.runPython(`
+import builtins
+def _js_input(prompt=''):
+    from js import window as _w
+    r = _w.prompt(str(prompt))
+    if r is None:
+        raise EOFError('input bị hủy')
+    print(str(prompt) + r)
+    return r
+builtins.input = _js_input
+`);
+      pgInputReady = true;
+    }
+    window._pyodide.runPython(`
+import sys, io
+_buf = io.StringIO()
+sys.stdout = _buf
+sys.stderr = _buf
+`);
+    window._pyodide.runPython(code);
+    const result = window._pyodide.runPython('_buf.getvalue()');
+    window._pyodide.runPython('sys.stdout = sys.__stdout__; sys.stderr = sys.__stderr__');
+    out.innerHTML = '<span class="label">OUTPUT</span>' + (result ? escapeHtml(result) : '<span style="color:#8b949e">(không có output — thử thêm print())</span>');
+  } catch (err) {
+    try { window._pyodide.runPython('sys.stdout = sys.__stdout__; sys.stderr = sys.__stderr__'); } catch(e){}
+    out.innerHTML = '<span class="label">ERROR</span><span class="err">' + escapeHtml(String(err.message || err)) + '</span>';
+  }
+}
+
+(function initPlaygroundUI() {
+  const ed = document.getElementById('pgEditor');
+  if (!ed) return;
+  // khôi phục code đã lưu
+  const saved = localStorage.getItem(PG_KEY);
+  if (saved) ed.value = saved;
+  ed.addEventListener('input', () => localStorage.setItem(PG_KEY, ed.value));
+  // Ctrl/Cmd+Enter để chạy, Tab để thụt dòng
+  ed.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); runPlayground(); }
+    else if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = ed.selectionStart, en = ed.selectionEnd;
+      ed.value = ed.value.slice(0, s) + '    ' + ed.value.slice(en);
+      ed.selectionStart = ed.selectionEnd = s + 4;
+    }
+  });
+  // kéo thả panel bằng header
+  const panel = document.getElementById('pgPanel'), head = document.getElementById('pgHead');
+  let drag = false, ox = 0, oy = 0;
+  head.addEventListener('mousedown', (e) => {
+    if (e.target.closest('button')) return;
+    drag = true;
+    const r = panel.getBoundingClientRect();
+    panel.style.right = 'auto'; panel.style.bottom = 'auto';
+    panel.style.left = r.left + 'px'; panel.style.top = r.top + 'px';
+    ox = e.clientX - r.left; oy = e.clientY - r.top;
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!drag) return;
+    panel.style.left = Math.max(0, Math.min(window.innerWidth - 60, e.clientX - ox)) + 'px';
+    panel.style.top = Math.max(0, Math.min(window.innerHeight - 40, e.clientY - oy)) + 'px';
+  });
+  window.addEventListener('mouseup', () => drag = false);
+})();
 
 /* ============ QUIZ ENGINE ============ */
 function checkQuiz(btn) {

@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Làm Chủ Odoo Framework (Python) — Từ Cơ Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #714B67;        /* odoo aubergine */
+    --primary-glow: #a87c9c;
+    --accent: #00A09D;         /* odoo teal */
+    --accent-2: #21b799;
+    --l0: #6cc644;
+    --l1: #a87c9c;
+    --l2: #00A09D;
+    --l3: #f0a32b;
+    --ok: #2ea043;
+    --warn: #d29922;
+    --danger: #f85149;
+    --info: #58a6ff;
+    --dark: #0d1117;
+    --darker: #010409;
+    --light: #c9d1d9;
+    --light-strong: #f0f6fc;
+    --gray: #8b949e;
+    --card: #161b22;
+    --card-2: #1c2128;
+    --border: #30363d;
+    --terminal: #0a0e14;
+    --code-green: #7ee787;
+    --code-yellow: #ffd43b;
+    --code-blue: #79c0ff;
+    --code-red: #ff7b72;
+    --code-purple: #d2a8ff;
+    --code-orange: #ffa657;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(113,75,103,0.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(0,160,157,0.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* ---------- SIDEBAR ---------- */
+  .sidebar { width: 340px; background: linear-gradient(180deg, var(--dark) 0%, #050810 100%); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(113,75,103,0.18); }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .o-icon { font-size: 42px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(113,75,103,0.6)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; letter-spacing: 0.3px; }
+  .logo p { font-size: 10.5px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; transition: all 0.3s; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(113,75,103,0.2); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #06121a; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--primary-glow); } .nav-l1 .badge { background: var(--l1); color:#fff;}
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(113,75,103,0.18); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* ---------- MAIN ---------- */
+  .main-content { margin-left: 340px; flex: 1; padding: 0; max-width: calc(100% - 340px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(1,4,9,0.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent); }
+  .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero { background: linear-gradient(135deg, rgba(113,75,103,0.22), rgba(0,160,157,0.10)); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero::after { content:"🧩"; position:absolute; right:6px; bottom:-26px; font-size:165px; opacity:.08; }
+  .hero h1 { font-size: 32px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 770px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(108,198,68,.14); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(168,124,156,.16); color: var(--primary-glow); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(0,160,157,.14); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(240,163,43,.14); color: var(--l3); border:1px solid var(--l3);}
+
+  h2.ch-title { font-size: 26px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 14px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space: nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; }
+  li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  .kw { color: var(--accent); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* ---------- BOXES ---------- */
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(88,166,255,.07); border-color: rgba(88,166,255,.4); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(46,160,67,.07); border-color: rgba(46,160,67,.4); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(210,153,34,.08); border-color: rgba(210,153,34,.45); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,81,73,.07); border-color: rgba(248,81,73,.4); } .box.danger::before{content:"🚫";}
+  .box.ver { background: rgba(0,160,157,.08); border-color: rgba(0,160,157,.4); } .box.ver::before{content:"🔀";}
+
+  /* ---------- CODE ---------- */
+  .code-block { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .code-head .fname { font-size: 12px; color: var(--gray); display:flex; align-items:center; gap:8px; }
+  .code-head .dots { display:flex; gap:6px; }
+  .code-head .dots i { width:11px;height:11px;border-radius:50%; display:inline-block; }
+  .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
+  .code-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: var(--light); white-space: pre; tab-size: 4; }
+  pre.code .c { color: var(--gray); font-style: italic; }
+  pre.code .s { color: var(--code-green); }
+  pre.code .k { color: var(--code-red); }
+  pre.code .n { color: var(--code-blue); }
+  pre.code .f { color: var(--code-purple); }
+  pre.code .d { color: var(--code-yellow); }
+  pre.code .t { color: var(--code-orange); }
+
+  /* ---------- CHECKLIST ---------- */
+  .checklist { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+  .checklist h4 { color: var(--primary-glow); margin-bottom: 10px; font-size: 15px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 14px; }
+  .checklist input { margin-top: 5px; accent-color: var(--primary); }
+  .checklist input:checked + span { color: var(--gray); text-decoration: line-through; }
+
+  /* ---------- EXERCISE ---------- */
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .exercise .lvl-dot { font-size: 11px; padding: 1px 8px; border-radius: 10px; background: var(--card-2); border:1px solid var(--border); color: var(--gray); }
+  details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; transition: background .2s; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content: "▸ "; }
+  details[open] summary::before { content: "▾ "; }
+  details.answer summary { background: rgba(0,160,157,.1); color: var(--accent); }
+  details .body { padding: 8px 14px 12px; }
+
+  /* ---------- QUIZ ---------- */
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; display:flex; align-items:center; gap:8px; }
+  .quiz .q { margin-bottom: 18px; }
+  .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; transition: all .15s; font-size: 14px; }
+  .quiz .opt:hover { border-color: var(--primary); }
+  .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(46,160,67,.14); border-color: var(--ok); }
+  .quiz .opt.wrong { background: rgba(248,81,73,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color:#fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  /* ---------- FLASHCARDS ---------- */
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; transition: all .2s; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 175px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); }
+  .fc-back { background: linear-gradient(135deg, rgba(113,75,103,.2), rgba(0,160,157,.12)); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(108,198,68,.18); color: var(--l0); }
+  .fc-tag.t1 { background: rgba(168,124,156,.2); color: var(--primary-glow); }
+  .fc-tag.t2 { background: rgba(0,160,157,.18); color: var(--l2); }
+  .fc-tag.t3 { background: rgba(240,163,43,.18); color: var(--l3); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; }
+  .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; }
+  .fc-a code { background: rgba(0,0,0,.25); color: var(--code-purple); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  /* ---------- FLOATING SCAFFOLD GENERATOR ---------- */
+  .sg-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--primary),var(--accent)); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .2s; }
+  .sg-fab:hover { transform: translateY(-2px); box-shadow: 0 9px 28px rgba(0,0,0,.55); }
+  .sg-fab.hidden { display: none; }
+  .sg-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: min(680px, calc(100vw - 32px)); height: min(680px, calc(100vh - 40px)); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden; }
+  .sg-panel.open { display: flex; }
+  .sg-head { display: flex; align-items: center; justify-content: space-between; padding: 11px 14px; background: linear-gradient(135deg, rgba(113,75,103,.3), rgba(0,160,157,.18)); border-bottom: 1px solid var(--border); cursor: move; }
+  .sg-head .sg-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
+  .sg-head button { background: rgba(255,255,255,.08); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 11px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
+  .sg-body { flex: 1 1 auto; overflow-y: auto; padding: 14px 16px; }
+  .sg-body label.fld { display:block; font-size: 12px; color: var(--primary-glow); font-weight: 700; margin: 10px 0 4px; }
+  .sg-body input, .sg-body textarea { width: 100%; background: var(--terminal); border: 1px solid var(--border); border-radius: 7px; color: var(--light); padding: 8px 10px; font-size: 13px; font-family: 'JetBrains Mono',monospace; }
+  .sg-body textarea { resize: vertical; min-height: 90px; }
+  .sg-body input:focus, .sg-body textarea:focus { outline:none; border-color: var(--primary); }
+  .sg-row { display:flex; gap: 10px; } .sg-row > div { flex:1; }
+  .sg-hint { font-size: 11px; color: var(--gray); margin-top: 3px; }
+  .sg-actions { display:flex; gap: 8px; padding: 10px 16px; border-top: 1px solid var(--border); background: var(--card-2); }
+  .sg-actions button { flex:1; border:none; border-radius: 8px; padding: 9px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit; }
+  .sg-actions .gen { background: linear-gradient(135deg,var(--primary),var(--accent)); color:#fff; }
+  .sg-actions .cpy { background: var(--card); color: var(--light); border:1px solid var(--border)!important; }
+  .sg-out { white-space: pre; overflow-x:auto; background: var(--terminal); border:1px dashed var(--border); border-radius: 8px; padding: 12px; margin-top: 12px; font-family: 'JetBrains Mono',monospace; font-size: 12px; color: var(--code-green); line-height:1.55; }
+  .sg-out b { color: var(--code-orange); font-weight:700; }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color:#fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; }
+    .topbar { padding-left: 66px; }
+    .sg-panel { width: calc(100vw - 16px); height: calc(100vh - 24px); right: 8px; bottom: 8px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="o-icon">🧩</div>
+      <h1>ODOO FRAMEWORK</h1>
+      <p>PYTHON · CƠ BẢN → NÂNG CAO</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; Lộ trình</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">L0</span> NỀN TẢNG</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> Odoo &amp; kiến trúc</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> Cài đặt &amp; môi trường dev</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> Cấu trúc một module</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> Module đầu tiên</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">L1</span> ORM &amp; MODELS</li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> Models</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> Fields cơ bản</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> Relational fields</a></li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> Computed, related, onchange</a></li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> ORM API &amp; recordset</a></li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> Domains &amp; search</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">L2</span> LOGIC &amp; TƯƠNG TÁC</li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> Methods &amp; decorators</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> Constraints &amp; exceptions</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> Inheritance (kế thừa)</a></li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> Security &amp; phân quyền</a></li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> Actions &amp; menus</a></li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> Views (XML)</a></li>
+      <li><a href="#ch17"><span class="chapter-num">17</span> QWeb reports</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L3</span> NÂNG CAO &amp; THỰC CHIẾN</li>
+      <li><a href="#ch18"><span class="chapter-num">18</span> Data files &amp; external ID</a></li>
+      <li><a href="#ch19"><span class="chapter-num">19</span> Wizards (TransientModel)</a></li>
+      <li><a href="#ch20"><span class="chapter-num">20</span> Cron, mail &amp; chatter</a></li>
+      <li><a href="#ch21"><span class="chapter-num">21</span> Controllers &amp; External API</a></li>
+      <li><a href="#ch22"><span class="chapter-num">22</span> Performance &amp; best practices</a></li>
+      <li><a href="#ch23"><span class="chapter-num">23</span> Testing &amp; debugging</a></li>
+      <li><a href="#ch24"><span class="chapter-num">24</span> Deploy &amp; migration</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L4</span> CHUYÊN NGÀNH</li>
+      <li><a href="#chuyen-nganh"><span class="chapter-num">🏭</span> Sản xuất Thực phẩm</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">📚</span> ÔN TẬP &amp; CÔNG CỤ</li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🧩 <b>Odoo Framework Mastery</b> — backend Python, trung lập phiên bản (ghi chú khác biệt khi cần)</div>
+      <div class="pill">Dành cho dev biết Python, mới Odoo</div>
+    </div>
+
+    <div class="content-inner">
+      <div class="hero" id="gioi-thieu">
+        <h1>Làm Chủ <span class="grad">Odoo Framework</span><br>bằng Python</h1>
+        <p>Học cách xây dựng <strong>module Odoo</strong> bài bản: ORM, models &amp; fields, business logic, kế thừa, security, views XML, reports, wizard, cron, API và best practice — từ con số 0 (đã biết Python) đến trình độ làm việc thực chiến. Khóa <strong>trung lập phiên bản</strong> (tập trung nguyên lý cốt lõi, ghi chú khác biệt Odoo 16/17/18/19 khi cần), kèm công cụ <strong>Module Scaffold Generator</strong> tự sinh khung module.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>24</b> chương · 4 cấp độ</div>
+          <div class="meta-pill"><b>Scaffold</b> sinh module tự động</div>
+          <div class="meta-pill"><b>Backend</b> Python + views XML</div>
+          <div class="meta-pill"><b>Flashcards</b> + Quiz + Cheatsheet</div>
+        </div>
+      </div>
+
+      <div class="box info"><span class="box-title">Khóa này dành cho ai</span>Bạn đã <strong>biết Python</strong> (class, decorator, list/dict...) và muốn <strong>làm chủ framework Odoo</strong> để phát triển ứng dụng/ERP. Không cần kinh nghiệm Odoo trước đó. Trọng tâm là <strong>phía Python (backend)</strong> kèm phần <strong>views XML</strong> cần thiết; không đi sâu vào frontend OWL/JavaScript.</div>
+
+      <div class="box tip"><span class="box-title">Cách dùng khóa học</span>Mỗi ô code có nút <strong>Copy</strong>. Bấm <strong>🧩 Scaffold Generator</strong> (góc dưới phải) để nhập tên module + fields và <strong>tự sinh</strong> khung file (<code class="ic">__manifest__.py</code>, model, view, security) — dán vào dự án là chạy được. Odoo không chạy trong trình duyệt (cần PostgreSQL + server) nên bạn thực hành trên máy/dự án thật.</div>
+
+      <div class="box ver"><span class="box-title">Lưu ý phiên bản</span>Odoo phát hành phiên bản mới mỗi năm. Khóa học bám <strong>nguyên lý cốt lõi ổn định</strong> qua nhiều phiên bản; chỗ nào có khác biệt quan trọng (ví dụ <code class="ic">attrs</code>/<code class="ic">states</code> bị bỏ từ Odoo 17, hay <code class="ic">&lt;tree&gt;</code> đổi tên thành <code class="ic">&lt;list&gt;</code> ở bản mới) sẽ có hộp <span style="color:var(--accent)">🔀 Khác biệt phiên bản</span> nhắc rõ.</div>
+
+      <div class="box info"><span class="box-title">Lộ trình 4 cấp độ</span>
+        <strong style="color:var(--l0)">L0 Nền tảng</strong> (ch1–4): kiến trúc, cài đặt, cấu trúc module, module đầu tiên. →
+        <strong style="color:var(--primary-glow)">L1 ORM &amp; Models</strong> (ch5–10): models, fields, quan hệ, computed, ORM API, domain. →
+        <strong style="color:var(--l2)">L2 Logic &amp; Tương tác</strong> (ch11–17): methods, constraints, kế thừa, security, actions, views, reports. →
+        <strong style="color:var(--l3)">L3 Nâng cao</strong> (ch18–24): data, wizard, cron/mail, API, performance, testing, deploy.
+      </div>
+
+      <!-- ===================== LEVEL 0 ===================== -->
+      <div class="level-divider" id="lv0"><div class="line"></div><span class="tag tag-l0">L0 · Nền tảng</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Odoo &amp; kiến trúc</h2>
+        <p class="ch-sub">Hiểu bức tranh lớn trước khi viết dòng code đầu tiên.</p>
+
+        <p><strong>Odoo</strong> vừa là một bộ <strong>ứng dụng quản trị doanh nghiệp (ERP)</strong> — Sales, Inventory, Accounting, HR, CRM... — vừa là một <strong>framework</strong> để bạn tùy biến và xây dựng ứng dụng riêng. Sức mạnh thật của Odoo nằm ở chỗ: mọi tính năng đều là <strong>module (addon)</strong> lắp ghép trên cùng một nền tảng, và bạn có thể <em>kế thừa, mở rộng</em> bất cứ phần nào mà không sửa code gốc.</p>
+
+        <h3 class="sec">Kiến trúc 3 tầng (MVC mở rộng)</h3>
+        <table>
+          <thead><tr><th>Tầng</th><th>Công nghệ</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Dữ liệu</strong></td><td>PostgreSQL</td><td>Lưu trữ. Mỗi <em>model</em> ↔ một bảng.</td></tr>
+            <tr><td><strong>Ứng dụng (server)</strong></td><td>Python + ORM</td><td>Models, business logic, security — <strong>nơi bạn làm việc chính</strong>.</td></tr>
+            <tr><td><strong>Giao diện (client)</strong></td><td>JavaScript (OWL), XML, QWeb</td><td>Web client, views render trong trình duyệt.</td></tr>
+          </tbody>
+        </table>
+        <p>Ánh xạ với MVC: <strong>Model</strong> = lớp Python (ORM) ↔ <strong>View</strong> = XML định nghĩa giao diện ↔ <strong>Controller</strong> = route HTTP. ORM của Odoo lo phần dịch giữa Python và SQL — bạn hiếm khi phải viết SQL tay.</p>
+
+        <h3 class="sec">Khái niệm cốt lõi cần nhớ</h3>
+        <table>
+          <thead><tr><th>Thuật ngữ</th><th>Là gì</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Module / Addon</strong></td><td>Một thư mục chứa code mở rộng Odoo (model, view, data...). Đơn vị cài/gỡ.</td></tr>
+            <tr><td><strong>Model</strong></td><td>Lớp Python kế thừa <code class="ic">models.Model</code>, ánh xạ tới một bảng PostgreSQL.</td></tr>
+            <tr><td><strong>Record</strong></td><td>Một dòng dữ liệu (một bản ghi của model).</td></tr>
+            <tr><td><strong>Field</strong></td><td>Một cột/thuộc tính của model (Char, Many2one...).</td></tr>
+            <tr><td><strong>Recordset</strong></td><td>Tập hợp các record cùng model — thứ bạn thao tác hằng ngày.</td></tr>
+            <tr><td><strong>Environment</strong> (<code class="ic">self.env</code>)</td><td>"Cổng" truy cập DB, model khác, user hiện tại, context.</td></tr>
+            <tr><td><strong>ORM</strong></td><td>Lớp ánh xạ đối tượng–quan hệ: thao tác DB bằng Python.</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Community vs Enterprise</h3>
+        <ul>
+          <li><strong>Community</strong> (LGPL, miễn phí): nhân framework + nhiều app cốt lõi. Đủ để học &amp; xây dựng nhiều giải pháp.</li>
+          <li><strong>Enterprise</strong> (thương mại): thêm app nâng cao (kế toán đầy đủ, studio, một số tính năng), giao diện bổ sung, hỗ trợ.</li>
+        </ul>
+        <div class="box info"><span class="box-title">Triết lý "đừng sửa core"</span>Quy tắc vàng của Odoo: <strong>không sửa trực tiếp module gốc</strong>. Thay vào đó, tạo module riêng và dùng cơ chế <strong>kế thừa</strong> (chương 13) để mở rộng. Nhờ vậy bạn nâng cấp Odoo mà không mất tùy biến.</div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Cài đặt &amp; môi trường dev</h2>
+        <p class="ch-sub">Dựng môi trường lập trình Odoo trên máy bạn.</p>
+
+        <h3 class="sec">Yêu cầu</h3>
+        <ul>
+          <li><strong>Python</strong> (phiên bản theo bản Odoo — vd Odoo 17/18 cần Python 3.10+).</li>
+          <li><strong>PostgreSQL</strong> (CSDL).</li>
+          <li><strong>wkhtmltopdf</strong> (để xuất report PDF — cài bản đúng được Odoo khuyến nghị).</li>
+        </ul>
+
+        <h3 class="sec">Cách cài cho dev: chạy từ mã nguồn</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> terminal</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># 1) Lấy mã nguồn (chọn đúng nhánh phiên bản, vd 17.0)</span>
+git clone https://github.com/odoo/odoo --depth 1 --branch 17.0 odoo
+
+<span class="c"># 2) Tạo môi trường ảo Python &amp; cài thư viện</span>
+python -m venv venv
+source venv/bin/activate        <span class="c"># Windows: venv\Scripts\activate</span>
+pip install -r odoo/requirements.txt
+
+<span class="c"># 3) Tạo user PostgreSQL cho Odoo</span>
+createuser -s odoo              <span class="c"># hoặc tạo qua psql</span>
+
+<span class="c"># 4) Chạy Odoo: tạo DB tên 'dev' và cài sẵn module base</span>
+python odoo/odoo-bin -d dev -i base --addons-path=odoo/addons,custom_addons</pre>
+        </div>
+        <p>Mở trình duyệt tại <code class="ic">http://localhost:8069</code>. Lựa chọn khác: dùng <strong>Docker</strong> (image <code class="ic">odoo</code> + <code class="ic">postgres</code>) rất tiện để cô lập môi trường.</p>
+
+        <h3 class="sec">File cấu hình odoo.conf</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">odoo.conf</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="p">[options]</span>
+addons_path = odoo/addons,custom_addons
+db_host = localhost
+db_user = odoo
+db_password = False
+http_port = 8069
+dev = all        <span class="c"># chế độ dev: tự reload, không cache QWeb...</span></pre>
+        </div>
+        <p>Chạy với cấu hình: <code class="ic">python odoo/odoo-bin -c odoo.conf</code>.</p>
+
+        <h3 class="sec">Các cờ dòng lệnh hay dùng</h3>
+        <table>
+          <thead><tr><th>Cờ</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">-d &lt;db&gt;</code></td><td>Chọn/tạo database</td></tr>
+            <tr><td><code class="ic">-i &lt;module&gt;</code></td><td>Cài (install) module</td></tr>
+            <tr><td><code class="ic">-u &lt;module&gt;</code></td><td>Nâng cấp (upgrade) module — <strong>chạy mỗi khi bạn sửa Python/XML</strong></td></tr>
+            <tr><td><code class="ic">--dev=all</code></td><td>Bật chế độ dev (auto-reload Python, không cache view)</td></tr>
+            <tr><td><code class="ic">--addons-path</code></td><td>Danh sách thư mục chứa module</td></tr>
+            <tr><td><code class="ic">--stop-after-init</code></td><td>Cài/nâng cấp xong thì thoát (hợp script/CI)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box tip"><span class="box-title">Tạo nhanh khung module</span>Odoo có sẵn lệnh scaffold: <code class="ic">python odoo-bin scaffold my_module custom_addons/</code> tạo cấu trúc mẫu. Hoặc dùng <strong>🧩 Scaffold Generator</strong> của khóa học (góc dưới phải) để sinh khung kèm fields tùy ý.</div>
+        <div class="box warn"><span class="box-title">Nhớ nâng cấp module</span>Sửa code Python/XML xong, Odoo <strong>không tự nhận</strong> mọi thay đổi (đặc biệt là dữ liệu XML). Hãy nâng cấp: <code class="ic">-u my_module</code> (hoặc bấm <em>Upgrade</em> trong giao diện Apps). Với <code class="ic">--dev=all</code>, thay đổi Python &amp; view thường được reload, nhưng đổi cấu trúc field/data thì vẫn cần <code class="ic">-u</code>.</div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Cấu trúc một module</h2>
+        <p class="ch-sub">Giải phẫu một addon: thư mục, manifest và vòng đời.</p>
+
+        <h3 class="sec">Cây thư mục chuẩn</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">my_module/</span></div>
+<pre class="code">my_module/
+├── __init__.py            <span class="c"># import các package con (models, ...)</span>
+├── __manifest__.py        <span class="c"># "khai sinh" module: tên, depends, data...</span>
+├── models/                <span class="c"># mã Python: models &amp; logic</span>
+│   ├── __init__.py
+│   └── library_book.py
+├── views/                 <span class="c"># giao diện XML: form/list/menu/action</span>
+│   └── library_book_views.xml
+├── security/              <span class="c"># phân quyền</span>
+│   ├── ir.model.access.csv
+│   └── security.xml        <span class="c"># groups &amp; record rules (tùy)</span>
+├── data/                  <span class="c"># dữ liệu khởi tạo (XML/CSV)</span>
+├── demo/                  <span class="c"># dữ liệu demo</span>
+├── wizard/                <span class="c"># TransientModel (hộp thoại)</span>
+├── report/                <span class="c"># mẫu report QWeb</span>
+├── controllers/           <span class="c"># route HTTP / API</span>
+├── static/                <span class="c"># JS, CSS, hình ảnh (frontend)</span>
+└── i18n/                  <span class="c"># file dịch .po</span></pre>
+        </div>
+
+        <h3 class="sec">__manifest__.py — trái tim của module</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">__manifest__.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">{
+    <span class="s">"name"</span>: <span class="s">"My Library"</span>,            <span class="c"># tên hiển thị</span>
+    <span class="s">"version"</span>: <span class="s">"1.0"</span>,
+    <span class="s">"summary"</span>: <span class="s">"Quản lý thư viện sách"</span>,
+    <span class="s">"author"</span>: <span class="s">"Your Name"</span>,
+    <span class="s">"category"</span>: <span class="s">"Services"</span>,
+    <span class="s">"license"</span>: <span class="s">"LGPL-3"</span>,
+    <span class="s">"depends"</span>: [<span class="s">"base"</span>],       <span class="c"># module phụ thuộc (LUÔN cần)</span>
+    <span class="s">"data"</span>: [                      <span class="c"># file XML/CSV nạp khi cài (THỨ TỰ quan trọng)</span>
+        <span class="s">"security/ir.model.access.csv"</span>,
+        <span class="s">"views/library_book_views.xml"</span>,
+    ],
+    <span class="s">"demo"</span>: [<span class="s">"demo/demo.xml"</span>],  <span class="c"># chỉ nạp khi bật demo data</span>
+    <span class="s">"application"</span>: <span class="k">True</span>,         <span class="c"># hiện như một "App" độc lập</span>
+    <span class="s">"installable"</span>: <span class="k">True</span>,
+}</pre>
+        </div>
+
+        <div class="box danger"><span class="box-title">Thứ tự trong "data" rất quan trọng</span>File được nạp <strong>theo thứ tự liệt kê</strong>. <code class="ic">security</code> phải đứng <em>trước</em> view dùng tới model đó; view tham chiếu action thì action phải nạp trước. Sai thứ tự → lỗi "External ID not found" khi cài.</div>
+
+        <h3 class="sec">Vòng đời module</h3>
+        <ul>
+          <li><strong>Install</strong> (<code class="ic">-i</code>): tạo bảng từ models, nạp file trong <code class="ic">data</code>, tạo external ID.</li>
+          <li><strong>Upgrade</strong> (<code class="ic">-u</code>): áp thay đổi cấu trúc &amp; nạp lại data (data không <code class="ic">noupdate</code>).</li>
+          <li><strong>Uninstall</strong>: gỡ bảng &amp; dữ liệu liên quan.</li>
+          <li><strong>depends</strong>: Odoo tự cài module phụ thuộc trước; thứ tự nạp tuân theo cây phụ thuộc.</li>
+        </ul>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Module đầu tiên — "Library"</h2>
+        <p class="ch-sub">Ghép mọi thứ: tạo một module chạy được với model, view, menu, security.</p>
+
+        <p>Ta xây module <code class="ic">my_library</code> quản lý sách. (Bạn có thể bấm <strong>🧩 Scaffold Generator</strong> để sinh nhanh khung này, rồi đọc giải thích bên dưới.)</p>
+
+        <h3 class="sec">Bước 1 — Model (Python)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">models/library_book.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, fields
+
+
+<span class="k">class</span> <span class="f">LibraryBook</span>(models.Model):
+    _name = <span class="s">"library.book"</span>            <span class="c"># tên kỹ thuật (→ bảng library_book)</span>
+    _description = <span class="s">"Library Book"</span>
+
+    name = fields.Char(string=<span class="s">"Tên sách"</span>, required=<span class="k">True</span>)
+    isbn = fields.Char(string=<span class="s">"ISBN"</span>)
+    price = fields.Float(string=<span class="s">"Giá"</span>)
+    active = fields.Boolean(string=<span class="s">"Đang hoạt động"</span>, default=<span class="k">True</span>)</pre>
+        </div>
+        <p>Nhớ <code class="ic">from . import library_book</code> trong <code class="ic">models/__init__.py</code> và <code class="ic">from . import models</code> trong <code class="ic">__init__.py</code> gốc.</p>
+
+        <h3 class="sec">Bước 2 — Quyền truy cập (bắt buộc)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">security/ir.model.access.csv</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_library_book,library.book,model_library_book,base.group_user,1,1,1,1</pre>
+        </div>
+        <div class="box warn"><span class="box-title">Không có quyền = không thấy gì</span>Nếu quên file access, người dùng (kể cả bạn) sẽ gặp lỗi truy cập khi mở model. Mỗi model mới <strong>phải</strong> có ít nhất một dòng phân quyền.</div>
+
+        <h3 class="sec">Bước 3 — View &amp; menu (XML)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">views/library_book_views.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="t">&lt;odoo&gt;</span>
+    <span class="t">&lt;record</span> id=<span class="s">"action_library_book"</span> model=<span class="s">"ir.actions.act_window"</span><span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Sách<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"res_model"</span><span class="t">&gt;</span>library.book<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"view_mode"</span><span class="t">&gt;</span>list,form<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;/record&gt;</span>
+
+    <span class="t">&lt;menuitem</span> id=<span class="s">"menu_library_root"</span> name=<span class="s">"Thư viện"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;menuitem</span> id=<span class="s">"menu_library_book"</span> name=<span class="s">"Sách"</span>
+              parent=<span class="s">"menu_library_root"</span> action=<span class="s">"action_library_book"</span>/<span class="t">&gt;</span>
+<span class="t">&lt;/odoo&gt;</span></pre>
+        </div>
+        <p>Chưa khai báo form/list cụ thể? Odoo <strong>tự tạo view mặc định</strong> từ các field — đủ để chạy thử. Chương 16 sẽ dạy viết view chi tiết.</p>
+
+        <div class="box ver"><span class="box-title">Khác biệt phiên bản</span>Từ các bản Odoo mới, thẻ view dạng danh sách đổi tên từ <code class="ic">&lt;tree&gt;</code> thành <code class="ic">&lt;list&gt;</code> (và <code class="ic">view_mode</code> dùng <code class="ic">list</code>). Bản cũ vẫn dùng <code class="ic">tree</code>. Hai cái cùng ý nghĩa "xem dạng danh sách".</div>
+
+        <h3 class="sec">Bước 4 — Cài &amp; chạy</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">terminal</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">python odoo-bin -d dev -i my_library --addons-path=odoo/addons,custom_addons</pre>
+        </div>
+        <p>Vào Apps (bật chế độ Developer để thấy module kỹ thuật), tìm "My Library", và menu "Thư viện → Sách" sẽ xuất hiện. 🎉</p>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 4.1 <span class="lvl-dot">dễ</span></div>
+          <p>Dùng 🧩 Scaffold Generator tạo module <code class="ic">my_inventory</code> với model <code class="ic">stock.item</code> gồm các field: <code class="ic">name</code> (char), <code class="ic">quantity</code> (integer), <code class="ic">unit_price</code> (float). Copy kết quả, đặt vào <code class="ic">custom_addons/</code>, cài và kiểm tra menu.</p>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 1 ===================== -->
+      <div class="level-divider" id="lv1"><div class="line"></div><span class="tag tag-l1">L1 · ORM &amp; Models</span><div class="line"></div></div>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Models</h2>
+        <p class="ch-sub">Lớp Python ánh xạ tới bảng dữ liệu — viên gạch nền của mọi thứ.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">models/library_book.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, fields
+
+
+<span class="k">class</span> <span class="f">LibraryBook</span>(models.Model):
+    _name = <span class="s">"library.book"</span>
+    _description = <span class="s">"Library Book"</span>      <span class="c"># bắt buộc (nếu không sẽ cảnh báo)</span>
+    _order = <span class="s">"name asc"</span>               <span class="c"># thứ tự mặc định khi truy vấn</span>
+    _rec_name = <span class="s">"name"</span>                 <span class="c"># field dùng làm "tên hiển thị" (mặc định là 'name')</span>
+
+    name = fields.Char(required=<span class="k">True</span>)</pre>
+        </div>
+
+        <h3 class="sec">Các thuộc tính _ quan trọng</h3>
+        <table>
+          <thead><tr><th>Thuộc tính</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">_name</code></td><td>Tên kỹ thuật model (dấu chấm). <code class="ic">library.book</code> → bảng <code class="ic">library_book</code>.</td></tr>
+            <tr><td><code class="ic">_description</code></td><td>Mô tả người đọc hiểu. Nên luôn có.</td></tr>
+            <tr><td><code class="ic">_order</code></td><td>Sắp xếp mặc định (vd <code class="ic">"create_date desc"</code>).</td></tr>
+            <tr><td><code class="ic">_rec_name</code></td><td>Field hiển thị thay cho tên record (mặc định <code class="ic">name</code>).</td></tr>
+            <tr><td><code class="ic">_inherit</code></td><td>Kế thừa/mở rộng model khác (chương 13).</td></tr>
+            <tr><td><code class="ic">_sql_constraints</code></td><td>Ràng buộc ở tầng DB (chương 12).</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Các loại model</h3>
+        <table>
+          <thead><tr><th>Lớp cơ sở</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">models.Model</code></td><td>Model thường — có bảng, lưu vĩnh viễn</td></tr>
+            <tr><td><code class="ic">models.TransientModel</code></td><td>Wizard/hộp thoại tạm — tự dọn định kỳ (chương 19)</td></tr>
+            <tr><td><code class="ic">models.AbstractModel</code></td><td>Model trừu tượng — không có bảng, để tái dùng logic/mixin</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Field "miễn phí" của Odoo</span>Mỗi model tự có sẵn: <code class="ic">id</code>, <code class="ic">create_date</code>, <code class="ic">create_uid</code>, <code class="ic">write_date</code>, <code class="ic">write_uid</code> (audit cơ bản) và <code class="ic">display_name</code> (tên hiển thị). Bạn không cần khai báo chúng.</div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> Fields cơ bản</h2>
+        <p class="ch-sub">Mỗi field là một cột &amp; một thuộc tính Python. Chọn đúng kiểu là chính xác dữ liệu.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">fields_demo.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">name = fields.Char(string=<span class="s">"Tên"</span>, required=<span class="k">True</span>, help=<span class="s">"Tên sách"</span>)
+description = fields.Text(string=<span class="s">"Mô tả"</span>)        <span class="c"># văn bản dài</span>
+notes = fields.Html(string=<span class="s">"Ghi chú"</span>)             <span class="c"># rich text</span>
+pages = fields.Integer(string=<span class="s">"Số trang"</span>, default=<span class="n">0</span>)
+price = fields.Float(string=<span class="s">"Giá"</span>, digits=(<span class="n">10</span>, <span class="n">2</span>))   <span class="c"># (tổng, thập phân)</span>
+active = fields.Boolean(default=<span class="k">True</span>)              <span class="c"># tên 'active' = bật/tắt ẩn record</span>
+published = fields.Date(string=<span class="s">"Ngày XB"</span>)
+created = fields.Datetime(string=<span class="s">"Thời điểm"</span>)
+cover = fields.Binary(string=<span class="s">"Ảnh bìa"</span>)
+state = fields.Selection([
+    (<span class="s">"draft"</span>, <span class="s">"Nháp"</span>),
+    (<span class="s">"available"</span>, <span class="s">"Có sẵn"</span>),
+    (<span class="s">"borrowed"</span>, <span class="s">"Đang mượn"</span>),
+], string=<span class="s">"Trạng thái"</span>, default=<span class="s">"draft"</span>)</pre>
+        </div>
+
+        <h3 class="sec">Thuộc tính field hay dùng</h3>
+        <table>
+          <thead><tr><th>Thuộc tính</th><th>Tác dụng</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">string</code></td><td>Nhãn hiển thị (mặc định suy từ tên field)</td></tr>
+            <tr><td><code class="ic">required=True</code></td><td>Bắt buộc nhập (ràng buộc NOT NULL)</td></tr>
+            <tr><td><code class="ic">default=</code></td><td>Giá trị mặc định (giá trị tĩnh hoặc hàm)</td></tr>
+            <tr><td><code class="ic">help=</code></td><td>Tooltip hướng dẫn</td></tr>
+            <tr><td><code class="ic">readonly=True</code></td><td>Chỉ đọc trên giao diện</td></tr>
+            <tr><td><code class="ic">index=True</code></td><td>Tạo index DB (tăng tốc tìm kiếm)</td></tr>
+            <tr><td><code class="ic">copy=False</code></td><td>Không sao chép khi duplicate record</td></tr>
+            <tr><td><code class="ic">groups=</code></td><td>Chỉ nhóm quyền nhất định thấy field</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box tip"><span class="box-title">Hai field tên đặc biệt</span><code class="ic">active</code> (Boolean): Odoo dùng để <strong>ẩn record</strong> thay vì xóa (archiving) — record <code class="ic">active=False</code> tự bị lọc khỏi mọi truy vấn. <code class="ic">state</code> (Selection): quy ước cho vòng đời/quy trình của record.</div>
+        <div class="box info"><span class="box-title">default bằng hàm</span><code class="ic">date_order = fields.Date(default=fields.Date.context_today)</code> hoặc <code class="ic">default=lambda self: self.env.user</code> — default có thể là hàm nhận <code class="ic">self</code>.</div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Relational fields (quan hệ)</h2>
+        <p class="ch-sub">Liên kết các model — nơi mô hình dữ liệu thật sự thành hình.</p>
+
+        <table>
+          <thead><tr><th>Field</th><th>Quan hệ</th><th>Ví dụ</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">Many2one</code></td><td>Nhiều → một (khóa ngoại)</td><td>Mỗi sách thuộc <em>một</em> tác giả</td></tr>
+            <tr><td><code class="ic">One2many</code></td><td>Một → nhiều (ảo, ngược của Many2one)</td><td>Một tác giả có <em>nhiều</em> sách</td></tr>
+            <tr><td><code class="ic">Many2many</code></td><td>Nhiều ↔ nhiều (bảng trung gian)</td><td>Sách có nhiều thể loại &amp; ngược lại</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block"><div class="code-head"><span class="fname">relations.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">class</span> <span class="f">LibraryBook</span>(models.Model):
+    _name = <span class="s">"library.book"</span>
+
+    name = fields.Char(required=<span class="k">True</span>)
+    <span class="c"># Many2one: lưu khóa ngoại tới res.partner</span>
+    author_id = fields.Many2one(<span class="s">"res.partner"</span>, string=<span class="s">"Tác giả"</span>,
+                                ondelete=<span class="s">"set null"</span>, index=<span class="k">True</span>)
+    <span class="c"># Many2many: chọn nhiều thể loại</span>
+    category_ids = fields.Many2many(<span class="s">"library.category"</span>, string=<span class="s">"Thể loại"</span>)
+
+
+<span class="k">class</span> <span class="f">LibraryAuthorMixinExample</span>(models.Model):
+    _name = <span class="s">"library.author"</span>
+
+    name = fields.Char(required=<span class="k">True</span>)
+    <span class="c"># One2many: ảo, cần trỏ ngược về field Many2one ở library.book</span>
+    book_ids = fields.One2many(<span class="s">"library.book"</span>, <span class="s">"author_id"</span>, string=<span class="s">"Sách"</span>)</pre>
+        </div>
+
+        <div class="box info"><span class="box-title">One2many là "ảo"</span>One2many <strong>không tạo cột</strong> trong DB — nó chỉ là "view ngược" của một Many2one bên model kia. Vì vậy nó cần 2 tham số: <em>model đích</em> và <em>tên field Many2one trỏ ngược lại</em> (<code class="ic">"author_id"</code>). Many2many tạo một bảng trung gian tự động.</div>
+
+        <h3 class="sec">ondelete cho Many2one</h3>
+        <ul>
+          <li><code class="ic">"set null"</code> (mặc định): xóa bản ghi cha → field thành rỗng.</li>
+          <li><code class="ic">"restrict"</code>: chặn xóa nếu còn bản ghi con tham chiếu.</li>
+          <li><code class="ic">"cascade"</code>: xóa cha → xóa luôn con. Dùng thận trọng.</li>
+        </ul>
+
+        <h3 class="sec">Command — gán giá trị cho One2many / Many2many</h3>
+        <p>Vì đây là tập record, bạn dùng "Command" để thêm/bớt/liên kết:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">commands.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> Command
+
+book.write({
+    <span class="s">"category_ids"</span>: [
+        Command.set([cat1.id, cat2.id]),   <span class="c"># thay toàn bộ bằng tập này</span>
+        <span class="c"># Command.link(id)    → liên kết thêm 1 record có sẵn</span>
+        <span class="c"># Command.unlink(id)  → bỏ liên kết (không xóa record)</span>
+        <span class="c"># Command.create({...}) → tạo mới record con &amp; liên kết</span>
+        <span class="c"># Command.clear()     → bỏ hết liên kết</span>
+    ]
+})</pre>
+        </div>
+        <div class="box ver"><span class="box-title">Khác biệt phiên bản</span>Cú pháp cũ dùng tuple số: <code class="ic">(6, 0, [ids])</code> = set, <code class="ic">(4, id)</code> = link, <code class="ic">(0, 0, {vals})</code> = create... Bản Odoo mới khuyến nghị dùng <code class="ic">Command.*</code> cho dễ đọc — cả hai vẫn chạy.</div>
+      </section>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> Computed, related &amp; onchange</h2>
+        <p class="ch-sub">Field "thông minh": tự tính, tự lấy từ quan hệ, hoặc gợi ý khi nhập liệu.</p>
+
+        <h3 class="sec">Computed field</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">computed.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, fields, api
+
+
+<span class="k">class</span> <span class="f">SaleLine</span>(models.Model):
+    _name = <span class="s">"library.loan"</span>
+
+    qty = fields.Integer(default=<span class="n">1</span>)
+    unit_price = fields.Float()
+    total = fields.Float(string=<span class="s">"Thành tiền"</span>, compute=<span class="s">"_compute_total"</span>, store=<span class="k">True</span>)
+
+    <span class="d">@api.depends</span>(<span class="s">"qty"</span>, <span class="s">"unit_price"</span>)   <span class="c"># tính lại khi 1 trong các field này đổi</span>
+    <span class="k">def</span> <span class="f">_compute_total</span>(self):
+        <span class="k">for</span> rec <span class="k">in</span> self:           <span class="c"># LUÔN lặp qua self (recordset)</span>
+            rec.total = rec.qty * rec.unit_price</pre>
+        </div>
+        <div class="box danger"><span class="box-title">3 quy tắc của computed field</span>
+          <ol style="margin-bottom:0">
+            <li>Luôn <strong>lặp <code class="ic">for rec in self</code></strong> và gán cho từng <code class="ic">rec</code> (self có thể là nhiều record).</li>
+            <li><code class="ic">@api.depends(...)</code> liệt kê <strong>mọi field</strong> mà phép tính phụ thuộc (kể cả qua quan hệ: <code class="ic">"line_ids.total"</code>).</li>
+            <li><code class="ic">store=True</code> để <strong>lưu vào DB</strong> (tìm/sắp xếp được, tính lại khi depends đổi). Không store → tính mỗi lần đọc, không search được (trừ khi viết hàm search).</li>
+          </ol>
+        </div>
+
+        <h3 class="sec">Related field — "đi tắt" qua quan hệ</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">related.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Lấy thành phố của tác giả, không cần tự viết compute</span>
+author_city = fields.Char(related=<span class="s">"author_id.city"</span>, string=<span class="s">"TP tác giả"</span>, store=<span class="k">True</span>)</pre>
+        </div>
+
+        <h3 class="sec">onchange — phản hồi tức thì trên form (chưa lưu)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">onchange.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">    <span class="d">@api.onchange</span>(<span class="s">"author_id"</span>)
+    <span class="k">def</span> <span class="f">_onchange_author</span>(self):
+        <span class="k">if</span> self.author_id:
+            self.notes = <span class="s">f"Sách của {self.author_id.name}"</span>
+            <span class="c"># có thể trả cảnh báo:</span>
+            <span class="k">return</span> {<span class="s">"warning"</span>: {<span class="s">"title"</span>: <span class="s">"Lưu ý"</span>, <span class="s">"message"</span>: <span class="s">"Đã đổi tác giả"</span>}}</pre>
+        </div>
+        <div class="box info"><span class="box-title">onchange vs computed</span><strong>onchange</strong> chỉ chạy trên form trong UI (gợi ý giá trị khi người dùng nhập, trước khi lưu). <strong>computed</strong> chạy ở tầng ORM cho mọi cách tạo/sửa (UI, import, code, API). Xu hướng hiện đại: ưu tiên <strong>computed (có inverse nếu cần sửa tay)</strong> hơn onchange vì đáng tin trên mọi luồng.</div>
+      </section>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> ORM API &amp; recordset</h2>
+        <p class="ch-sub">Thao tác dữ liệu bằng Python: tạo, đọc, sửa, xóa và "ma thuật" recordset.</p>
+
+        <h3 class="sec">Recordset là gì</h3>
+        <p>Mọi thao tác trả về một <strong>recordset</strong> — tập 0..n record cùng model. <code class="ic">self</code> trong method <em>chính là</em> một recordset. Nó hỗ trợ lặp, lọc, gộp như collection.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">crud.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">Book = self.env[<span class="s">"library.book"</span>]          <span class="c"># lấy model qua env</span>
+
+<span class="c"># CREATE — truyền dict (hoặc list dict để tạo nhiều, hiệu quả hơn)</span>
+book = Book.create({<span class="s">"name"</span>: <span class="s">"Clean Code"</span>, <span class="s">"price"</span>: <span class="n">45</span>})
+
+<span class="c"># READ / SEARCH</span>
+books = Book.search([(<span class="s">"price"</span>, <span class="s">"&gt;"</span>, <span class="n">20</span>)])     <span class="c"># trả recordset</span>
+n = Book.search_count([(<span class="s">"price"</span>, <span class="s">"&gt;"</span>, <span class="n">20</span>)])  <span class="c"># chỉ đếm</span>
+data = Book.search_read([], [<span class="s">"name"</span>, <span class="s">"price"</span>])  <span class="c"># list dict (cho API)</span>
+
+<span class="c"># WRITE — cập nhật mọi record trong recordset cùng lúc</span>
+books.write({<span class="s">"price"</span>: <span class="n">99</span>})
+
+<span class="c"># UNLINK — xóa</span>
+book.unlink()
+
+<span class="c"># BROWSE — lấy recordset từ id đã biết</span>
+rec = Book.browse(5)</pre>
+        </div>
+
+        <h3 class="sec">Duyệt &amp; biến đổi recordset</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">recordset.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">for</span> book <span class="k">in</span> books:                 <span class="c"># lặp từng record</span>
+    print(book.name)
+
+book.ensure_one()                  <span class="c"># khẳng định đúng 1 record (báo lỗi nếu khác)</span>
+names = books.mapped(<span class="s">"name"</span>)        <span class="c"># list tên → ['A','B']</span>
+authors = books.mapped(<span class="s">"author_id"</span>)  <span class="c"># recordset tác giả (đã khử trùng)</span>
+cheap = books.filtered(<span class="k">lambda</span> b: b.price &lt; <span class="n">50</span>)   <span class="c"># lọc</span>
+ordered = books.sorted(<span class="k">lambda</span> b: b.price, reverse=<span class="k">True</span>)
+first = books[:<span class="n">1</span>]                  <span class="c"># cắt như list</span>
+combined = books1 | books2         <span class="c"># hợp (union), &amp; = giao, - = hiệu</span></pre>
+        </div>
+        <div class="box danger"><span class="box-title">Bẫy hiệu năng kinh điển</span><strong>Không</strong> gọi <code class="ic">search</code>/<code class="ic">create</code>/<code class="ic">write</code> bên trong vòng lặp lớn (N+1 query). Hãy thao tác trên <em>cả recordset một lần</em>, dùng <code class="ic">mapped/filtered</code>, và tạo nhiều record bằng <code class="ic">create([{...}, {...}])</code>. Xem chương 22.</div>
+
+        <h3 class="sec">self.env — cổng vào mọi thứ</h3>
+        <table>
+          <thead><tr><th>Truy cập</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">self.env["model.name"]</code></td><td>Lấy model bất kỳ</td></tr>
+            <tr><td><code class="ic">self.env.user</code></td><td>User đang thực thi</td></tr>
+            <tr><td><code class="ic">self.env.company</code></td><td>Công ty hiện tại</td></tr>
+            <tr><td><code class="ic">self.env.context</code></td><td>Context (ngôn ngữ, giá trị mặc định...)</td></tr>
+            <tr><td><code class="ic">self.env.ref("xml_id")</code></td><td>Lấy record theo External ID</td></tr>
+            <tr><td><code class="ic">self.env.cr</code></td><td>Con trỏ DB (chạy SQL thô khi thật cần)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> Domains &amp; search</h2>
+        <p class="ch-sub">Ngôn ngữ lọc của Odoo — dùng ở search, ở view, ở record rule, ở khắp nơi.</p>
+
+        <p>Một <strong>domain</strong> là danh sách các điều kiện (tuple 3 phần: <code class="ic">(field, toán_tử, giá_trị)</code>). Mặc định các điều kiện nối bằng <strong>AND</strong>.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">domains.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># AND ngầm: giá &gt; 20 VÀ trạng thái = available</span>
+Book.search([(<span class="s">"price"</span>, <span class="s">"&gt;"</span>, <span class="n">20</span>), (<span class="s">"state"</span>, <span class="s">"="</span>, <span class="s">"available"</span>)])
+
+<span class="c"># Toán tử thường dùng</span>
+[(<span class="s">"name"</span>, <span class="s">"ilike"</span>, <span class="s">"python"</span>)]      <span class="c"># chứa (không phân biệt hoa thường)</span>
+[(<span class="s">"price"</span>, <span class="s">"in"</span>, [<span class="n">10</span>, <span class="n">20</span>, <span class="n">30</span>])]    <span class="c"># thuộc tập</span>
+[(<span class="s">"author_id"</span>, <span class="s">"!="</span>, <span class="k">False</span>)]        <span class="c"># có tác giả (khác rỗng)</span>
+[(<span class="s">"category_ids"</span>, <span class="s">"in"</span>, [cat.id])]   <span class="c"># quan hệ chứa</span>
+[(<span class="s">"author_id.city"</span>, <span class="s">"="</span>, <span class="s">"Hà Nội"</span>)]  <span class="c"># lần theo quan hệ (dotted)</span></pre>
+        </div>
+
+        <h3 class="sec">OR &amp; NOT — ký pháp Ba Lan (tiền tố)</h3>
+        <p>Toán tử logic đặt <strong>trước</strong> các toán hạng: <code class="ic">'|'</code> (OR), <code class="ic">'&amp;'</code> (AND), <code class="ic">'!'</code> (NOT).</p>
+        <div class="code-block"><div class="code-head"><span class="fname">domain_logic.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># (price &lt; 20) OR (state == 'available')</span>
+[<span class="s">"|"</span>, (<span class="s">"price"</span>, <span class="s">"&lt;"</span>, <span class="n">20</span>), (<span class="s">"state"</span>, <span class="s">"="</span>, <span class="s">"available"</span>)]
+
+<span class="c"># name chứa 'odoo' AND (giá &lt; 20 OR có tác giả)</span>
+[(<span class="s">"name"</span>, <span class="s">"ilike"</span>, <span class="s">"odoo"</span>), <span class="s">"|"</span>, (<span class="s">"price"</span>, <span class="s">"&lt;"</span>, <span class="n">20</span>), (<span class="s">"author_id"</span>, <span class="s">"!="</span>, <span class="k">False</span>)]</pre>
+        </div>
+        <div class="box info"><span class="box-title">Mẹo đọc ký pháp tiền tố</span><code class="ic">"|"</code> áp cho <strong>2 điều kiện ngay sau nó</strong>. Muốn OR 3 điều kiện: <code class="ic">"|", "|", A, B, C</code>. Khó nhớ thì gom nhóm trong đầu: mỗi <code class="ic">|</code>/<code class="ic">&amp;</code> "ăn" đúng 2 mệnh đề kế tiếp.</div>
+
+        <h3 class="sec">search với tham số hữu ích</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">search_params.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">Book.search([], order=<span class="s">"price desc"</span>, limit=<span class="n">10</span>, offset=<span class="n">0</span>)
+Book.search([(<span class="s">"active"</span>, <span class="s">"="</span>, <span class="k">False</span>)])   <span class="c"># tìm cả record đã archive</span>
+Book.name_search(<span class="s">"clean"</span>)                <span class="c"># tìm theo tên hiển thị (dùng ở Many2one)</span></pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 10.1 <span class="lvl-dot">trung bình</span></div>
+          <p>Viết domain tìm các sách: <em>giá từ 10 đến 50</em> <strong>VÀ</strong> (<em>thuộc thể loại id=3</em> <strong>HOẶC</strong> <em>tên chứa "guide"</em>).</p>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body">
+            <div class="code-block"><div class="code-head"><span class="fname">sol.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">[
+    (<span class="s">"price"</span>, <span class="s">"&gt;="</span>, <span class="n">10</span>), (<span class="s">"price"</span>, <span class="s">"&lt;="</span>, <span class="n">50</span>),
+    <span class="s">"|"</span>, (<span class="s">"category_ids"</span>, <span class="s">"in"</span>, [<span class="n">3</span>]), (<span class="s">"name"</span>, <span class="s">"ilike"</span>, <span class="s">"guide"</span>),
+]</pre>
+            </div>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 2 ===================== -->
+      <div class="level-divider" id="lv2"><div class="line"></div><span class="tag tag-l2">L2 · Logic &amp; Tương tác</span><div class="line"></div></div>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Methods &amp; decorators</h2>
+        <p class="ch-sub">Viết logic nghiệp vụ — và hiểu các decorator <code class="ic">@api</code> quyết định cách method chạy.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">methods.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> models, fields, api
+<span class="k">from</span> odoo.exceptions <span class="k">import</span> UserError
+
+
+<span class="k">class</span> <span class="f">LibraryBook</span>(models.Model):
+    _name = <span class="s">"library.book"</span>
+
+    name = fields.Char(required=<span class="k">True</span>)
+    state = fields.Selection([(<span class="s">"draft"</span>,<span class="s">"Nháp"</span>),(<span class="s">"available"</span>,<span class="s">"Có sẵn"</span>),
+                              (<span class="s">"borrowed"</span>,<span class="s">"Đang mượn"</span>)], default=<span class="s">"draft"</span>)
+
+    <span class="c"># method thường: self là recordset → lặp qua từng record</span>
+    <span class="k">def</span> <span class="f">action_borrow</span>(self):
+        <span class="k">for</span> book <span class="k">in</span> self:
+            <span class="k">if</span> book.state != <span class="s">"available"</span>:
+                <span class="k">raise</span> UserError(<span class="s">f"Sách '{book.name}' không sẵn để mượn."</span>)
+            book.state = <span class="s">"borrowed"</span>
+        <span class="k">return</span> <span class="k">True</span></pre>
+        </div>
+        <p>Method "action" như trên thường được gắn vào <strong>nút bấm</strong> trên form (chương 16): <code class="ic">&lt;button name="action_borrow" type="object"/&gt;</code>.</p>
+
+        <h3 class="sec">Các decorator @api</h3>
+        <table>
+          <thead><tr><th>Decorator</th><th>Dùng khi</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">@api.depends("a","b")</code></td><td>Method <strong>compute</strong> — tính lại khi a/b đổi</td></tr>
+            <tr><td><code class="ic">@api.onchange("x")</code></td><td>Phản hồi trên form khi x đổi (chưa lưu)</td></tr>
+            <tr><td><code class="ic">@api.constrains("x")</code></td><td>Kiểm tra hợp lệ (Python) khi tạo/sửa</td></tr>
+            <tr><td><code class="ic">@api.model</code></td><td>Method <strong>không</strong> thao tác trên record cụ thể (self = model, không record)</td></tr>
+            <tr><td><code class="ic">@api.returns(...)</code></td><td>Định kiểu trả về</td></tr>
+            <tr><td><code class="ic">@api.model_create_multi</code></td><td>Đánh dấu <code class="ic">create</code> nhận list dict (tạo hàng loạt)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Ghi đè create / write (super)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">override.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">    <span class="d">@api.model_create_multi</span>
+    <span class="k">def</span> <span class="f">create</span>(self, vals_list):
+        <span class="k">for</span> vals <span class="k">in</span> vals_list:
+            <span class="k">if</span> <span class="k">not</span> vals.get(<span class="s">"name"</span>):
+                vals[<span class="s">"name"</span>] = <span class="s">"Sách mới"</span>
+        records = super().create(vals_list)      <span class="c"># gọi logic gốc</span>
+        <span class="c"># ... việc sau khi tạo ...</span>
+        <span class="k">return</span> records
+
+    <span class="k">def</span> <span class="f">write</span>(self, vals):
+        res = super().write(vals)
+        <span class="c"># ... việc sau khi ghi ...</span>
+        <span class="k">return</span> res</pre>
+        </div>
+        <div class="box danger"><span class="box-title">Luôn gọi super()</span>Khi ghi đè <code class="ic">create</code>/<code class="ic">write</code>/<code class="ic">unlink</code>, <strong>phải</strong> gọi <code class="ic">super()</code> để giữ hành vi gốc (và để các module khác cũng ghi đè được). Quên super() = vỡ chuỗi kế thừa.</div>
+        <div class="box ver"><span class="box-title">Khác biệt phiên bản</span>Bản mới khuyến nghị <code class="ic">@api.model_create_multi</code> với <code class="ic">create(self, vals_list)</code> (nhận list). Bản cũ dùng <code class="ic">@api.model</code> + <code class="ic">create(self, vals)</code> (một dict). Viết theo kiểu list giúp tạo hàng loạt hiệu quả.</div>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Constraints &amp; exceptions</h2>
+        <p class="ch-sub">Bảo vệ tính đúng đắn của dữ liệu — và báo lỗi đúng cách.</p>
+
+        <h3 class="sec">SQL constraint (tầng DB, nhanh)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">sql_constraint.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">    _sql_constraints = [
+        (<span class="s">"isbn_unique"</span>, <span class="s">"UNIQUE(isbn)"</span>, <span class="s">"ISBN phải là duy nhất!"</span>),
+        (<span class="s">"price_positive"</span>, <span class="s">"CHECK(price &gt;= 0)"</span>, <span class="s">"Giá không được âm!"</span>),
+    ]</pre>
+        </div>
+
+        <h3 class="sec">Python constraint (linh hoạt)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">py_constraint.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo.exceptions <span class="k">import</span> ValidationError
+
+    <span class="d">@api.constrains</span>(<span class="s">"price"</span>, <span class="s">"pages"</span>)
+    <span class="k">def</span> <span class="f">_check_values</span>(self):
+        <span class="k">for</span> rec <span class="k">in</span> self:
+            <span class="k">if</span> rec.price &lt; <span class="n">0</span>:
+                <span class="k">raise</span> ValidationError(<span class="s">"Giá không được âm."</span>)
+            <span class="k">if</span> rec.pages <span class="k">and</span> rec.pages &gt; <span class="n">10000</span>:
+                <span class="k">raise</span> ValidationError(<span class="s">f"Số trang ({rec.pages}) không hợp lý."</span>)</pre>
+        </div>
+
+        <h3 class="sec">Các exception nên biết</h3>
+        <table>
+          <thead><tr><th>Exception</th><th>Dùng khi</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">ValidationError</code></td><td>Dữ liệu vi phạm ràng buộc (thường trong constrains)</td></tr>
+            <tr><td><code class="ic">UserError</code></td><td>Thao tác không cho phép — thông báo nghiệp vụ cho user</td></tr>
+            <tr><td><code class="ic">AccessError</code></td><td>Không đủ quyền</td></tr>
+            <tr><td><code class="ic">RedirectWarning</code></td><td>Báo lỗi kèm nút dẫn tới nơi xử lý</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">SQL hay Python constraint?</span><strong>SQL</strong>: nhanh, đảm bảo ở tầng DB (unique, check đơn giản) — ưu tiên khi có thể. <strong>Python</strong>: khi logic phức tạp/cần lần theo quan hệ/đa field. Lưu ý: raise exception sẽ <strong>rollback</strong> toàn bộ transaction hiện tại.</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> Inheritance (kế thừa)</h2>
+        <p class="ch-sub">Siêu năng lực của Odoo: mở rộng mọi thứ mà không sửa code gốc.</p>
+
+        <table>
+          <thead><tr><th>Kiểu</th><th>Cách dùng</th><th>Tác dụng</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Extension</strong></td><td><code class="ic">_inherit = "x"</code> (không có <code class="ic">_name</code>)</td><td>Thêm field/method vào model có sẵn</td></tr>
+            <tr><td><strong>Prototype</strong></td><td><code class="ic">_inherit = "x"</code> + <code class="ic">_name = "y"</code></td><td>Tạo model mới sao chép từ x</td></tr>
+            <tr><td><strong>Delegation</strong></td><td><code class="ic">_inherits = {"x": "x_id"}</code></td><td>Nhúng (compose) — record y "chứa" một x</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Extension — phổ biến nhất</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">extend_partner.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Thêm field "số sách đã mượn" vào res.partner có sẵn</span>
+<span class="k">class</span> <span class="f">ResPartner</span>(models.Model):
+    _inherit = <span class="s">"res.partner"</span>          <span class="c"># KHÔNG có _name → mở rộng tại chỗ</span>
+
+    book_count = fields.Integer(string=<span class="s">"Số sách"</span>, compute=<span class="s">"_compute_book_count"</span>)
+
+    <span class="k">def</span> <span class="f">_compute_book_count</span>(self):
+        <span class="k">for</span> partner <span class="k">in</span> self:
+            partner.book_count = self.env[<span class="s">"library.book"</span>].search_count(
+                [(<span class="s">"author_id"</span>, <span class="s">"="</span>, partner.id)])
+
+    <span class="c"># ghi đè method có sẵn, nhớ super()</span>
+    <span class="k">def</span> <span class="f">write</span>(self, vals):
+        <span class="k">return</span> super().write(vals)</pre>
+        </div>
+
+        <h3 class="sec">Kế thừa View (xpath)</h3>
+        <p>Để thêm field vào một form có sẵn, kế thừa view của nó và "chèn" vào đúng vị trí:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">inherit_view.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;record</span> id=<span class="s">"view_partner_form_inherit"</span> model=<span class="s">"ir.ui.view"</span><span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>res.partner.form.library<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"model"</span><span class="t">&gt;</span>res.partner<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"inherit_id"</span> ref=<span class="s">"base.view_partner_form"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"arch"</span> type=<span class="s">"xml"</span><span class="t">&gt;</span>
+        <span class="c">&lt;!-- chèn field SAU field 'phone' --&gt;</span>
+        <span class="t">&lt;xpath</span> expr=<span class="s">"//field[@name='phone']"</span> position=<span class="s">"after"</span><span class="t">&gt;</span>
+            <span class="t">&lt;field</span> name=<span class="s">"book_count"</span>/<span class="t">&gt;</span>
+        <span class="t">&lt;/xpath&gt;</span>
+    <span class="t">&lt;/field&gt;</span>
+<span class="t">&lt;/record&gt;</span></pre>
+        </div>
+        <div class="box info"><span class="box-title">position</span><code class="ic">after</code>, <code class="ic">before</code>, <code class="ic">inside</code>, <code class="ic">replace</code>, <code class="ic">attributes</code> (đổi thuộc tính). Có thể nhắm vị trí bằng tên field thay cho xpath đầy đủ: <code class="ic">&lt;field name="phone" position="after"&gt;</code>.</div>
+        <div class="box tip"><span class="box-title">Tư duy "mọi thứ kế thừa được"</span>Model, view, method, report, security... đều mở rộng được từ module riêng. Đây là lý do hệ sinh thái Odoo khổng lồ vẫn nâng cấp được: ai cũng xây "chồng" lên thay vì sửa lõi.</div>
+      </section>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> Security &amp; phân quyền</h2>
+        <p class="ch-sub">Ai được đọc/sửa/tạo/xóa gì — và thấy những record nào.</p>
+
+        <h3 class="sec">2 tầng bảo mật</h3>
+        <ol>
+          <li><strong>Access Rights</strong> (<code class="ic">ir.model.access.csv</code>): quyền CRUD theo <em>model × nhóm</em>.</li>
+          <li><strong>Record Rules</strong> (<code class="ic">ir.rule</code>): lọc <em>record nào</em> trong model mà nhóm được thấy/sửa (theo domain).</li>
+        </ol>
+
+        <div class="code-block"><div class="code-head"><span class="fname">security/ir.model.access.csv</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_book_user,library.book.user,model_library_book,base.group_user,1,0,0,0
+access_book_mgr,library.book.mgr,model_library_book,library.group_manager,1,1,1,1</pre>
+        </div>
+        <p>Cột <code class="ic">model_id:id</code> = <code class="ic">model_&lt;tên_model_gạch_dưới&gt;</code>. <code class="ic">group_id:id</code> = External ID của nhóm (để trống = mọi user).</p>
+
+        <h3 class="sec">Nhóm quyền &amp; Record rule (XML)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">security/security.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;odoo&gt;</span>
+    <span class="t">&lt;record</span> id=<span class="s">"group_manager"</span> model=<span class="s">"res.groups"</span><span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Library Manager<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;/record&gt;</span>
+
+    <span class="c">&lt;!-- User chỉ thấy sách do mình tạo --&gt;</span>
+    <span class="t">&lt;record</span> id=<span class="s">"rule_own_books"</span> model=<span class="s">"ir.rule"</span><span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Own Books Only<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"model_id"</span> ref=<span class="s">"model_library_book"</span>/<span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"domain_force"</span><span class="t">&gt;</span>[('create_uid','=',user.id)]<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"groups"</span> eval=<span class="s">"[(4, ref('base.group_user'))]"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;/record&gt;</span>
+<span class="t">&lt;/odoo&gt;</span></pre>
+        </div>
+
+        <h3 class="sec">sudo() &amp; with_user — vượt/đổi quyền có chủ đích</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">sudo.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Chạy với quyền superuser (bỏ qua kiểm tra quyền) — DÙNG THẬN TRỌNG</span>
+self.env[<span class="s">"library.book"</span>].sudo().create({...})
+
+<span class="c"># Chạy dưới danh nghĩa user khác</span>
+record.with_user(some_user).write({...})
+
+<span class="c"># Kiểm tra quyền chủ động</span>
+self.env[<span class="s">"library.book"</span>].check_access_rights(<span class="s">"write"</span>)</pre>
+        </div>
+        <div class="box danger"><span class="box-title">sudo() là con dao hai lưỡi</span><code class="ic">sudo()</code> bỏ qua mọi kiểm tra quyền &amp; record rule. Chỉ dùng khi <em>thật sự cần</em> (vd: cập nhật dữ liệu hệ thống mà user thường không có quyền) và <strong>không bao giờ</strong> dựa vào input người dùng bên trong sudo mà không kiểm tra — dễ tạo lỗ hổng bảo mật.</div>
+      </section>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> Actions &amp; menus</h2>
+        <p class="ch-sub">Kết nối menu → màn hình, và các loại action.</p>
+
+        <table>
+          <thead><tr><th>Action</th><th>Làm gì</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">ir.actions.act_window</code></td><td>Mở danh sách/form của một model (phổ biến nhất)</td></tr>
+            <tr><td><code class="ic">ir.actions.server</code></td><td>Chạy code Python phía server</td></tr>
+            <tr><td><code class="ic">ir.actions.report</code></td><td>Xuất report (chương 17)</td></tr>
+            <tr><td><code class="ic">ir.actions.act_url</code></td><td>Mở URL</td></tr>
+            <tr><td><code class="ic">ir.actions.client</code></td><td>Action phía client (JS)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block"><div class="code-head"><span class="fname">actions.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;record</span> id=<span class="s">"action_library_book"</span> model=<span class="s">"ir.actions.act_window"</span><span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Sách<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"res_model"</span><span class="t">&gt;</span>library.book<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"view_mode"</span><span class="t">&gt;</span>list,form<span class="t">&lt;/field&gt;</span>
+    <span class="c">&lt;!-- lọc &amp; giá trị mặc định khi mở --&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"domain"</span><span class="t">&gt;</span>[('state','=','available')]<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"context"</span><span class="t">&gt;</span>{'default_state': 'draft'}<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"help"</span> type=<span class="s">"html"</span><span class="t">&gt;</span>
+        <span class="t">&lt;p</span> class=<span class="s">"o_view_nocontent_smiling_face"</span><span class="t">&gt;</span>Tạo cuốn sách đầu tiên!<span class="t">&lt;/p&gt;</span>
+    <span class="t">&lt;/field&gt;</span>
+<span class="t">&lt;/record&gt;</span></pre>
+        </div>
+
+        <h3 class="sec">Menu 3 cấp &amp; trả action từ Python</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">menu_and_action.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># XML: menu cha → menu con → action</span>
+<span class="c"># &lt;menuitem id="m_root" name="Thư viện"/&gt;</span>
+<span class="c"># &lt;menuitem id="m_books" parent="m_root" action="action_library_book"/&gt;</span>
+
+<span class="c"># Python: nút mở một màn hình động (smart button)</span>
+    <span class="k">def</span> <span class="f">action_view_books</span>(self):
+        self.ensure_one()
+        <span class="k">return</span> {
+            <span class="s">"type"</span>: <span class="s">"ir.actions.act_window"</span>,
+            <span class="s">"name"</span>: <span class="s">"Sách của tác giả"</span>,
+            <span class="s">"res_model"</span>: <span class="s">"library.book"</span>,
+            <span class="s">"view_mode"</span>: <span class="s">"list,form"</span>,
+            <span class="s">"domain"</span>: [(<span class="s">"author_id"</span>, <span class="s">"="</span>, self.id)],
+            <span class="s">"context"</span>: {<span class="s">"default_author_id"</span>: self.id},
+        }</pre>
+        </div>
+        <div class="box info"><span class="box-title">context "default_"</span>Thêm <code class="ic">default_&lt;field&gt;</code> vào context để form mới <strong>tự điền sẵn</strong> field đó — mẹo cực hữu ích cho smart button &amp; quy trình.</div>
+      </section>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> Views (XML)</h2>
+        <p class="ch-sub">Form, list, search — giao diện cho người dùng cuối.</p>
+
+        <h3 class="sec">Form view</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">form_view.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;record</span> id=<span class="s">"view_book_form"</span> model=<span class="s">"ir.ui.view"</span><span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>library.book.form<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"model"</span><span class="t">&gt;</span>library.book<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"arch"</span> type=<span class="s">"xml"</span><span class="t">&gt;</span>
+        <span class="t">&lt;form&gt;</span>
+            <span class="t">&lt;header&gt;</span>
+                <span class="t">&lt;button</span> name=<span class="s">"action_borrow"</span> type=<span class="s">"object"</span>
+                        string=<span class="s">"Mượn"</span> class=<span class="s">"btn-primary"</span>
+                        invisible=<span class="s">"state != 'available'"</span>/<span class="t">&gt;</span>
+                <span class="t">&lt;field</span> name=<span class="s">"state"</span> widget=<span class="s">"statusbar"</span>/<span class="t">&gt;</span>
+            <span class="t">&lt;/header&gt;</span>
+            <span class="t">&lt;sheet&gt;</span>
+                <span class="t">&lt;group&gt;</span>
+                    <span class="t">&lt;field</span> name=<span class="s">"name"</span>/<span class="t">&gt;</span>
+                    <span class="t">&lt;field</span> name=<span class="s">"author_id"</span>/<span class="t">&gt;</span>
+                    <span class="t">&lt;field</span> name=<span class="s">"price"</span>/<span class="t">&gt;</span>
+                <span class="t">&lt;/group&gt;</span>
+                <span class="t">&lt;notebook&gt;</span>
+                    <span class="t">&lt;page</span> string=<span class="s">"Mô tả"</span><span class="t">&gt;</span><span class="t">&lt;field</span> name=<span class="s">"description"</span>/<span class="t">&gt;</span><span class="t">&lt;/page&gt;</span>
+                <span class="t">&lt;/notebook&gt;</span>
+            <span class="t">&lt;/sheet&gt;</span>
+        <span class="t">&lt;/form&gt;</span>
+    <span class="t">&lt;/field&gt;</span>
+<span class="t">&lt;/record&gt;</span></pre>
+        </div>
+
+        <h3 class="sec">List &amp; Search view</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">list_search.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c">&lt;!-- List (bản mới: &lt;list&gt;, bản cũ: &lt;tree&gt;) --&gt;</span>
+<span class="t">&lt;list&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"name"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"author_id"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"price"</span> sum=<span class="s">"Tổng"</span>/<span class="t">&gt;</span>
+<span class="t">&lt;/list&gt;</span>
+
+<span class="c">&lt;!-- Search: ô tìm kiếm + bộ lọc + group by --&gt;</span>
+<span class="t">&lt;search&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"name"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;filter</span> name=<span class="s">"available"</span> string=<span class="s">"Có sẵn"</span> domain=<span class="s">"[('state','=','available')]"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;group</span> expand=<span class="s">"0"</span> string=<span class="s">"Nhóm theo"</span><span class="t">&gt;</span>
+        <span class="t">&lt;filter</span> name=<span class="s">"by_author"</span> string=<span class="s">"Tác giả"</span> context=<span class="s">"{'group_by':'author_id'}"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;/group&gt;</span>
+<span class="t">&lt;/search&gt;</span></pre>
+        </div>
+
+        <div class="box ver"><span class="box-title">Khác biệt phiên bản: ẩn/hiện có điều kiện</span>Từ <strong>Odoo 17</strong>, <code class="ic">attrs</code> và <code class="ic">states</code> bị <strong>bỏ</strong>. Nay viết trực tiếp biểu thức Python vào thuộc tính: <code class="ic">invisible="state != 'done'"</code>, <code class="ic">readonly="..."</code>, <code class="ic">required="..."</code>. Bản cũ (≤16) dùng <code class="ic">attrs="{'invisible': [('state','!=','done')]}"</code>.</div>
+        <div class="box info"><span class="box-title">Widget hay dùng</span><code class="ic">statusbar</code> (state), <code class="ic">monetary</code> (tiền), <code class="ic">many2many_tags</code> (tag), <code class="ic">badge</code>, <code class="ic">handle</code> (kéo sắp xếp), <code class="ic">image</code>, <code class="ic">email</code>, <code class="ic">priority</code>. Đặt bằng <code class="ic">widget="..."</code> trên <code class="ic">&lt;field&gt;</code>.</div>
+      </section>
+
+      <!-- ===== CH17 ===== -->
+      <section class="chapter" id="ch17">
+        <h2 class="ch-title"><span class="num">CH 17</span> QWeb Reports (PDF)</h2>
+        <p class="ch-sub">Tạo báo cáo/hóa đơn PDF bằng template QWeb.</p>
+
+        <p>Report Odoo = một <strong>action report</strong> + một <strong>template QWeb</strong> (HTML/XML) được render rồi chuyển thành PDF (qua wkhtmltopdf).</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">report/book_report.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;odoo&gt;</span>
+    <span class="c">&lt;!-- 1) Khai báo report action --&gt;</span>
+    <span class="t">&lt;record</span> id=<span class="s">"action_report_book"</span> model=<span class="s">"ir.actions.report"</span><span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Phiếu sách<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"model"</span><span class="t">&gt;</span>library.book<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"report_type"</span><span class="t">&gt;</span>qweb-pdf<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"report_name"</span><span class="t">&gt;</span>my_library.report_book_doc<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"binding_model_id"</span> ref=<span class="s">"model_library_book"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;/record&gt;</span>
+
+    <span class="c">&lt;!-- 2) Template QWeb --&gt;</span>
+    <span class="t">&lt;template</span> id=<span class="s">"report_book_doc"</span><span class="t">&gt;</span>
+        <span class="t">&lt;t</span> t-call=<span class="s">"web.html_container"</span><span class="t">&gt;</span>
+            <span class="t">&lt;t</span> t-foreach=<span class="s">"docs"</span> t-as=<span class="s">"book"</span><span class="t">&gt;</span>
+                <span class="t">&lt;t</span> t-call=<span class="s">"web.external_layout"</span><span class="t">&gt;</span>
+                    <span class="t">&lt;div</span> class=<span class="s">"page"</span><span class="t">&gt;</span>
+                        <span class="t">&lt;h2&gt;</span><span class="t">&lt;span</span> t-field=<span class="s">"book.name"</span>/<span class="t">&gt;</span><span class="t">&lt;/h2&gt;</span>
+                        <span class="t">&lt;p&gt;</span>Giá: <span class="t">&lt;span</span> t-field=<span class="s">"book.price"</span>/<span class="t">&gt;</span><span class="t">&lt;/p&gt;</span>
+                        <span class="t">&lt;p</span> t-if=<span class="s">"book.author_id"</span><span class="t">&gt;</span>Tác giả:
+                            <span class="t">&lt;span</span> t-field=<span class="s">"book.author_id.name"</span>/<span class="t">&gt;</span><span class="t">&lt;/p&gt;</span>
+                    <span class="t">&lt;/div&gt;</span>
+                <span class="t">&lt;/t&gt;</span>
+            <span class="t">&lt;/t&gt;</span>
+        <span class="t">&lt;/t&gt;</span>
+    <span class="t">&lt;/template&gt;</span>
+<span class="t">&lt;/odoo&gt;</span></pre>
+        </div>
+
+        <h3 class="sec">Directive QWeb hay dùng</h3>
+        <table>
+          <thead><tr><th>Directive</th><th>Tác dụng</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">t-field</code></td><td>In giá trị field (tự format theo kiểu)</td></tr>
+            <tr><td><code class="ic">t-esc</code> / <code class="ic">t-out</code></td><td>In giá trị biểu thức (có escape)</td></tr>
+            <tr><td><code class="ic">t-foreach / t-as</code></td><td>Lặp</td></tr>
+            <tr><td><code class="ic">t-if / t-elif / t-else</code></td><td>Điều kiện</td></tr>
+            <tr><td><code class="ic">t-call</code></td><td>Gọi template khác (layout, header/footer)</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Biến có sẵn trong template</span><code class="ic">docs</code> = các record được in; <code class="ic">doc_ids</code>, <code class="ic">doc_model</code>; <code class="ic">user</code>, <code class="ic">company</code>. Cần dữ liệu tùy biến? Tạo một <em>report model</em> (<code class="ic">AbstractModel</code> tên <code class="ic">report.&lt;module&gt;.&lt;template&gt;</code>) với method <code class="ic">_get_report_values</code>.</div>
+
+        <h3 class="sec">Quiz cấp độ L2</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L2</div>
+          <div class="q" data-answer="b">
+            <p>1. Để <strong>thêm field vào model có sẵn</strong> (vd res.partner) mà không sửa core, dùng?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l2q1" value="a"> <code>_name = "res.partner"</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l2q1" value="b"> <code>_inherit = "res.partner"</code> (không có _name)</label>
+            <label class="opt" data-key="c"><input type="radio" name="l2q1" value="c"> sửa trực tiếp module base</label>
+            <div class="explain">Extension inheritance: <code>_inherit</code> không kèm <code>_name</code> → mở rộng tại chỗ model gốc.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Khi ghi đè <code>create()</code>, điều bắt buộc là?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l2q2" value="a"> Đặt <code>@api.depends</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l2q2" value="b"> Không trả về gì</label>
+            <label class="opt" data-key="c"><input type="radio" name="l2q2" value="c"> Gọi <code>super().create(...)</code> &amp; trả về kết quả</label>
+            <div class="explain">Phải gọi super() để giữ hành vi gốc và cho phép các module khác cùng mở rộng.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. <code>ir.model.access.csv</code> kiểm soát?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l2q3" value="a"> Quyền CRUD theo model × nhóm</label>
+            <label class="opt" data-key="b"><input type="radio" name="l2q3" value="b"> Màu sắc giao diện</label>
+            <label class="opt" data-key="c"><input type="radio" name="l2q3" value="c"> Thứ tự menu</label>
+            <div class="explain">Access rights = quyền read/write/create/unlink theo model cho từng nhóm; record rules lọc record cụ thể.</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 3 ===================== -->
+      <div class="level-divider" id="lv3"><div class="line"></div><span class="tag tag-l3">L3 · Nâng cao &amp; Thực chiến</span><div class="line"></div></div>
+
+      <!-- ===== CH18 ===== -->
+      <section class="chapter" id="ch18">
+        <h2 class="ch-title"><span class="num">CH 18</span> Data files &amp; External ID</h2>
+        <p class="ch-sub">Nạp dữ liệu khởi tạo và tham chiếu record giữa các module.</p>
+
+        <p><strong>External ID</strong> (XML ID) là "tên định danh ổn định" của một record, dạng <code class="ic">module.ten_id</code>. Nhờ nó, bạn tham chiếu record an toàn qua các lần cài/nâng cấp và giữa các module.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">data/data.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;odoo&gt;</span>
+    <span class="c">&lt;!-- record dữ liệu, id = External ID --&gt;</span>
+    <span class="t">&lt;record</span> id=<span class="s">"category_tech"</span> model=<span class="s">"library.category"</span><span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Công nghệ<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;/record&gt;</span>
+
+    <span class="c">&lt;!-- tham chiếu record khác bằng ref --&gt;</span>
+    <span class="t">&lt;record</span> id=<span class="s">"book_clean_code"</span> model=<span class="s">"library.book"</span><span class="t">&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Clean Code<span class="t">&lt;/field&gt;</span>
+        <span class="t">&lt;field</span> name=<span class="s">"category_ids"</span> eval=<span class="s">"[(4, ref('category_tech'))]"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;/record&gt;</span>
+<span class="t">&lt;/odoo&gt;</span></pre>
+        </div>
+
+        <div class="box info"><span class="box-title">noupdate</span>Bọc dữ liệu trong <code class="ic">&lt;odoo noupdate="1"&gt;</code> (hoặc <code class="ic">&lt;data noupdate="1"&gt;</code>) để Odoo <strong>chỉ tạo khi cài, không ghi đè</strong> ở các lần nâng cấp — quan trọng cho dữ liệu người dùng có thể đã chỉnh. Dữ liệu cấu hình cần đồng bộ thì để mặc định (noupdate=0).</div>
+
+        <h3 class="sec">Tham chiếu trong Python &amp; ir.sequence</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">sequence.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Lấy record theo External ID</span>
+cat = self.env.ref(<span class="s">"my_library.category_tech"</span>)
+
+<span class="c"># Sinh mã tự động (số phiếu, mã đơn...) bằng ir.sequence</span>
+    code = fields.Char(default=<span class="k">lambda</span> self: self.env[<span class="s">"ir.sequence"</span>]
+                       .next_by_code(<span class="s">"library.book.code"</span>) <span class="k">or</span> <span class="s">"NEW"</span>)</pre>
+        </div>
+        <p>Định nghĩa sequence trong data XML (model <code class="ic">ir.sequence</code>) với <code class="ic">code</code>, <code class="ic">prefix</code>, <code class="ic">padding</code>. CSV cũng dùng để nạp dữ liệu hàng loạt (đặt file <code class="ic">.csv</code> tên theo model trong <code class="ic">data</code>).</p>
+      </section>
+
+      <!-- ===== CH19 ===== -->
+      <section class="chapter" id="ch19">
+        <h2 class="ch-title"><span class="num">CH 19</span> Wizards (TransientModel)</h2>
+        <p class="ch-sub">Hộp thoại tương tác nhiều bước — nhập liệu tạm rồi xử lý.</p>
+
+        <p>Wizard là model kế thừa <code class="ic">models.TransientModel</code>: có form như model thường nhưng dữ liệu <strong>tạm thời</strong> (tự dọn). Dùng cho thao tác hàng loạt, nhập tham số, xác nhận.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname">wizard/bulk_price.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">class</span> <span class="f">BulkPriceWizard</span>(models.TransientModel):
+    _name = <span class="s">"library.bulk.price.wizard"</span>
+    _description = <span class="s">"Cập nhật giá hàng loạt"</span>
+
+    percent = fields.Float(string=<span class="s">"% thay đổi"</span>, required=<span class="k">True</span>)
+
+    <span class="k">def</span> <span class="f">action_apply</span>(self):
+        self.ensure_one()
+        <span class="c"># lấy các record được chọn từ context (active_ids)</span>
+        books = self.env[<span class="s">"library.book"</span>].browse(self.env.context.get(<span class="s">"active_ids"</span>, []))
+        <span class="k">for</span> book <span class="k">in</span> books:
+            book.price = book.price * (<span class="n">1</span> + self.percent / <span class="n">100</span>)
+        <span class="k">return</span> {<span class="s">"type"</span>: <span class="s">"ir.actions.act_window_close"</span>}</pre>
+        </div>
+        <div class="box info"><span class="box-title">active_id / active_ids / active_model</span>Khi mở wizard từ một danh sách/record, Odoo truyền các record đang chọn vào <strong>context</strong>: <code class="ic">active_ids</code> (danh sách id), <code class="ic">active_id</code> (id hiện tại), <code class="ic">active_model</code>. Đây là cách wizard "biết" nó đang xử lý gì.</div>
+        <p>View của wizard là một <code class="ic">&lt;form&gt;</code> với <code class="ic">&lt;footer&gt;</code> chứa nút gọi <code class="ic">action_apply</code>; mở bằng action <code class="ic">act_window</code> có <code class="ic">target="new"</code> (popup).</p>
+      </section>
+
+      <!-- ===== CH20 ===== -->
+      <section class="chapter" id="ch20">
+        <h2 class="ch-title"><span class="num">CH 20</span> Cron, mail &amp; chatter</h2>
+        <p class="ch-sub">Tác vụ định kỳ, gửi email, và "dòng thời gian" trao đổi trên record.</p>
+
+        <h3 class="sec">Scheduled action (ir.cron)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">data/cron.xml</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="t">&lt;record</span> id=<span class="s">"cron_check_overdue"</span> model=<span class="s">"ir.cron"</span><span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"name"</span><span class="t">&gt;</span>Kiểm tra sách quá hạn<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"model_id"</span> ref=<span class="s">"model_library_book"</span>/<span class="t">&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"state"</span><span class="t">&gt;</span>code<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"code"</span><span class="t">&gt;</span>model._cron_check_overdue()<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"interval_number"</span><span class="t">&gt;</span>1<span class="t">&lt;/field&gt;</span>
+    <span class="t">&lt;field</span> name=<span class="s">"interval_type"</span><span class="t">&gt;</span>days<span class="t">&lt;/field&gt;</span>
+<span class="t">&lt;/record&gt;</span></pre>
+        </div>
+        <p>Trong code, <code class="ic">model</code> chính là <code class="ic">self.env["library.book"]</code>. Viết method (thường tên <code class="ic">_cron_*</code>) chứa logic chạy nền.</p>
+
+        <h3 class="sec">mail.thread &amp; chatter (tracking + tin nhắn)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">mailthread.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">class</span> <span class="f">LibraryBook</span>(models.Model):
+    _name = <span class="s">"library.book"</span>
+    _inherit = [<span class="s">"mail.thread"</span>, <span class="s">"mail.activity.mixin"</span>]   <span class="c"># thêm chatter + activity</span>
+
+    name = fields.Char(required=<span class="k">True</span>, tracking=<span class="k">True</span>)   <span class="c"># tracking: log khi đổi</span>
+    state = fields.Selection([...], tracking=<span class="k">True</span>)
+
+    <span class="k">def</span> <span class="f">action_notify</span>(self):
+        self.message_post(body=<span class="s">"Sách đã được cập nhật."</span>)      <span class="c"># đăng tin lên chatter</span></pre>
+        </div>
+        <p>Thêm vào form view: <code class="ic">&lt;chatter/&gt;</code> (bản mới) hoặc khối <code class="ic">&lt;div class="oe_chatter"&gt;</code> với <code class="ic">message_ids</code>/<code class="ic">activity_ids</code>/<code class="ic">message_follower_ids</code> (bản cũ) để hiện hộp trao đổi, lịch sử thay đổi và hoạt động (activity).</p>
+        <div class="box tip"><span class="box-title">Sức mạnh "miễn phí"</span>Chỉ cần kế thừa <code class="ic">mail.thread</code> + đặt <code class="ic">tracking=True</code>, bạn có ngay: nhật ký thay đổi, hộp ghi chú/tin nhắn, người theo dõi (followers), email tự động, và lịch hoạt động (activity) — những thứ người dùng Odoo rất quen.</div>
+      </section>
+
+      <!-- ===== CH21 ===== -->
+      <section class="chapter" id="ch21">
+        <h2 class="ch-title"><span class="num">CH 21</span> Controllers &amp; External API</h2>
+        <p class="ch-sub">Tạo route HTTP/JSON và gọi Odoo từ hệ thống ngoài.</p>
+
+        <h3 class="sec">Controller — route web/HTTP</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">controllers/main.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo <span class="k">import</span> http
+<span class="k">from</span> odoo.http <span class="k">import</span> request
+
+
+<span class="k">class</span> <span class="f">LibraryController</span>(http.Controller):
+
+    <span class="d">@http.route</span>(<span class="s">"/library/books"</span>, type=<span class="s">"http"</span>, auth=<span class="s">"public"</span>, website=<span class="k">True</span>)
+    <span class="k">def</span> <span class="f">list_books</span>(self, **kw):
+        books = request.env[<span class="s">"library.book"</span>].sudo().search([])
+        <span class="k">return</span> request.render(<span class="s">"my_library.books_page"</span>, {<span class="s">"books"</span>: books})
+
+    <span class="d">@http.route</span>(<span class="s">"/api/books"</span>, type=<span class="s">"json"</span>, auth=<span class="s">"user"</span>)
+    <span class="k">def</span> <span class="f">api_books</span>(self, **kw):
+        books = request.env[<span class="s">"library.book"</span>].search_read([], [<span class="s">"name"</span>, <span class="s">"price"</span>])
+        <span class="k">return</span> {<span class="s">"books"</span>: books}</pre>
+        </div>
+        <table>
+          <thead><tr><th><code class="ic">auth</code></th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">"user"</code></td><td>Phải đăng nhập</td></tr>
+            <tr><td><code class="ic">"public"</code></td><td>Khách vãng lai (chạy dưới user public)</td></tr>
+            <tr><td><code class="ic">"none"</code></td><td>Không gắn môi trường user</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">External API — gọi Odoo từ ngoài (XML-RPC/JSON-RPC)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">client_example.py (chạy NGOÀI Odoo)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">import</span> xmlrpc.client
+
+url, db, user, pwd = <span class="s">"http://localhost:8069"</span>, <span class="s">"dev"</span>, <span class="s">"admin"</span>, <span class="s">"admin"</span>
+common = xmlrpc.client.ServerProxy(<span class="s">f"{url}/xmlrpc/2/common"</span>)
+uid = common.authenticate(db, user, pwd, {})
+
+models = xmlrpc.client.ServerProxy(<span class="s">f"{url}/xmlrpc/2/object"</span>)
+<span class="c"># gọi search_read trên library.book</span>
+books = models.execute_kw(db, uid, pwd,
+    <span class="s">"library.book"</span>, <span class="s">"search_read"</span>,
+    [[(<span class="s">"price"</span>, <span class="s">"&gt;"</span>, <span class="n">20</span>)]], {<span class="s">"fields"</span>: [<span class="s">"name"</span>, <span class="s">"price"</span>], <span class="s">"limit"</span>: <span class="n">10</span>})
+print(books)</pre>
+        </div>
+        <div class="box info"><span class="box-title">API = chính ORM</span>External API gọi đúng các method ORM bạn đã học (<code class="ic">search_read</code>, <code class="ic">create</code>, <code class="ic">write</code>, <code class="ic">unlink</code>, hay <strong>bất kỳ method public</strong> nào của model). Quyền vẫn áp theo user đăng nhập. Đây là cách tích hợp Odoo với web/app/hệ thống khác.</div>
+      </section>
+
+      <!-- ===== CH22 ===== -->
+      <section class="chapter" id="ch22">
+        <h2 class="ch-title"><span class="num">CH 22</span> Performance &amp; best practices</h2>
+        <p class="ch-sub">Viết code Odoo nhanh, sạch, "đúng kiểu Odoo".</p>
+
+        <h3 class="sec">Tránh N+1 &amp; thao tác theo lô</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">perf.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># ❌ DỞ: query/ghi trong vòng lặp (N+1)</span>
+<span class="k">for</span> book <span class="k">in</span> books:
+    book.write({<span class="s">"state"</span>: <span class="s">"done"</span>})            <span class="c"># mỗi vòng 1 lệnh ghi</span>
+    partner = self.env[<span class="s">"res.partner"</span>].search([(<span class="s">"id"</span>,<span class="s">"="</span>,book.author_id.id)])
+
+<span class="c"># ✅ TỐT: ghi cả recordset 1 lần, dùng mapped</span>
+books.write({<span class="s">"state"</span>: <span class="s">"done"</span>})
+authors = books.mapped(<span class="s">"author_id"</span>)        <span class="c"># gom 1 lần, đã prefetch</span>
+
+<span class="c"># ✅ Thống kê: read_group thay vì lặp đếm tay</span>
+data = self.env[<span class="s">"library.book"</span>].read_group(
+    [], [<span class="s">"price:sum"</span>], [<span class="s">"author_id"</span>])     <span class="c"># gộp nhóm ở tầng SQL</span></pre>
+        </div>
+
+        <h3 class="sec">Danh sách best practice</h3>
+        <div class="checklist">
+          <h4>✔️ Coding guidelines</h4>
+          <label><input type="checkbox"><span>Thao tác trên <strong>recordset</strong>, dùng <code class="ic">mapped/filtered/read_group</code> — tránh vòng lặp gọi ORM.</span></label>
+          <label><input type="checkbox"><span>Tạo nhiều record bằng <code class="ic">create([{...}, {...}])</code> (một lệnh).</span></label>
+          <label><input type="checkbox"><span>Đánh <code class="ic">index=True</code> cho field hay tìm/lọc; <code class="ic">store=True</code> cho computed cần search/sort.</span></label>
+          <label><input type="checkbox"><span>Ưu tiên ORM; chỉ dùng <code class="ic">self.env.cr.execute</code> (SQL thô) khi thật cần &amp; cẩn thận injection.</span></label>
+          <label><input type="checkbox"><span>Tên model <code class="ic">module.dotted</code>; field <code class="ic">snake_case</code>; Many2one kết thúc <code class="ic">_id</code>, x2many kết thúc <code class="ic">_ids</code>.</span></label>
+          <label><input type="checkbox"><span>Không sửa core — luôn kế thừa từ module riêng.</span></label>
+          <label><input type="checkbox"><span>Theo coding guidelines của Odoo &amp; tham khảo <strong>OCA</strong> (Odoo Community Association).</span></label>
+        </div>
+      </section>
+
+      <!-- ===== CH23 ===== -->
+      <section class="chapter" id="ch23">
+        <h2 class="ch-title"><span class="num">CH 23</span> Testing &amp; debugging</h2>
+        <p class="ch-sub">Viết test tự động và gỡ lỗi hiệu quả.</p>
+
+        <h3 class="sec">Unit test với TransactionCase</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">tests/test_book.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">from</span> odoo.tests.common <span class="k">import</span> TransactionCase
+<span class="k">from</span> odoo.exceptions <span class="k">import</span> ValidationError
+
+
+<span class="k">class</span> <span class="f">TestLibraryBook</span>(TransactionCase):
+
+    <span class="k">def</span> <span class="f">setUp</span>(self):
+        super().setUp()
+        self.Book = self.env[<span class="s">"library.book"</span>]
+
+    <span class="k">def</span> <span class="f">test_total_compute</span>(self):
+        book = self.Book.create({<span class="s">"name"</span>: <span class="s">"Test"</span>, <span class="s">"price"</span>: <span class="n">50</span>})
+        self.assertEqual(book.price, <span class="n">50</span>)
+
+    <span class="k">def</span> <span class="f">test_negative_price</span>(self):
+        <span class="k">with</span> self.assertRaises(ValidationError):
+            self.Book.create({<span class="s">"name"</span>: <span class="s">"X"</span>, <span class="s">"price"</span>: -<span class="n">10</span>})</pre>
+        </div>
+        <p>Chạy test: <code class="ic">odoo-bin -d test_db -i my_library --test-enable --stop-after-init</code>. Cần <code class="ic">from . import tests</code> trong <code class="ic">__init__.py</code> và file test bắt đầu bằng <code class="ic">test_</code>.</p>
+
+        <h3 class="sec">Debug</h3>
+        <table>
+          <thead><tr><th>Kỹ thuật</th><th>Cách dùng</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Logging</strong></td><td><code class="ic">import logging; _logger = logging.getLogger(__name__); _logger.info(...)</code></td></tr>
+            <tr><td><strong>Breakpoint</strong></td><td><code class="ic">breakpoint()</code> (hoặc <code class="ic">import pdb; pdb.set_trace()</code>)</td></tr>
+            <tr><td><strong>Developer mode</strong></td><td>Bật trong Settings → xem tên kỹ thuật, view, model qua giao diện</td></tr>
+            <tr><td><strong>--dev=all</strong></td><td>Auto-reload, hiện traceback rõ, không cache QWeb</td></tr>
+            <tr><td><strong>Shell</strong></td><td><code class="ic">odoo-bin shell -d dev</code> → gõ ORM trực tiếp như Python REPL</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">Lỗi hay gặp của người mới</span>
+          <ul style="margin-bottom:0">
+            <li><strong>"External ID not found"</strong> → sai thứ tự file trong <code class="ic">data</code>, hoặc thiếu module trong <code class="ic">depends</code>.</li>
+            <li><strong>Không thấy field/menu mới</strong> → quên nâng cấp <code class="ic">-u my_module</code>.</li>
+            <li><strong>"Access Denied"</strong> → thiếu dòng trong <code class="ic">ir.model.access.csv</code>.</li>
+            <li><strong>Computed không cập nhật</strong> → thiếu field trong <code class="ic">@api.depends</code>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ===== CH24 ===== -->
+      <section class="chapter" id="ch24">
+        <h2 class="ch-title"><span class="num">CH 24</span> Deploy &amp; migration</h2>
+        <p class="ch-sub">Đưa module lên production và sống sót qua các lần nâng cấp.</p>
+
+        <h3 class="sec">Quản lý phiên bản module</h3>
+        <ul>
+          <li><code class="ic">version</code> trong manifest theo quy ước <strong>&lt;odoo&gt;.&lt;major&gt;.&lt;minor&gt;.&lt;patch&gt;</strong> (vd <code class="ic">17.0.1.0.0</code>).</li>
+          <li>Đặt code trong <strong>git</strong>; mỗi nhánh tương ứng một phiên bản Odoo.</li>
+          <li>Tách <strong>custom addons</strong> khỏi source Odoo (thư mục riêng trong addons_path).</li>
+        </ul>
+
+        <h3 class="sec">Migration scripts (đổi cấu trúc dữ liệu)</h3>
+        <p>Khi nâng version module mà cần biến đổi dữ liệu cũ, đặt script vào thư mục <code class="ic">migrations/&lt;version&gt;/</code>:</p>
+        <div class="code-block"><div class="code-head"><span class="fname">migrations/17.0.2.0.0/pre-migrate.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">def</span> <span class="f">migrate</span>(cr, version):
+    <span class="c"># cr = con trỏ DB; chạy SQL để chuyển đổi dữ liệu cũ</span>
+    cr.execute(<span class="s">"UPDATE library_book SET state = 'available' WHERE state IS NULL"</span>)</pre>
+        </div>
+        <p><code class="ic">pre-migrate.py</code> chạy <em>trước</em> khi cập nhật schema, <code class="ic">post-migrate.py</code> chạy <em>sau</em>. Công cụ <strong>OpenUpgrade</strong> (OCA) hỗ trợ nâng cấp giữa các phiên bản Odoo lớn.</p>
+
+        <h3 class="sec">Checklist lên production</h3>
+        <div class="checklist">
+          <h4>✔️ Trước khi deploy</h4>
+          <label><input type="checkbox"><span>Test pass (<code class="ic">--test-enable</code>); thử nâng cấp trên bản sao DB production.</span></label>
+          <label><input type="checkbox"><span><strong>Backup</strong> database &amp; filestore trước khi nâng cấp.</span></label>
+          <label><input type="checkbox"><span>Bỏ <code class="ic">--dev</code>, dùng nhiều worker, đặt <code class="ic">proxy_mode</code> sau reverse proxy (nginx).</span></label>
+          <label><input type="checkbox"><span>Đặt master password, tắt list DB, dùng HTTPS.</span></label>
+          <label><input type="checkbox"><span>Nâng cấp module: <code class="ic">-u my_module --stop-after-init</code> rồi khởi động lại service.</span></label>
+        </div>
+
+        <h3 class="sec">Quiz cấp độ L3</h3>
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra nhanh L3</div>
+          <div class="q" data-answer="b">
+            <p>1. Wizard (hộp thoại tạm) kế thừa lớp nào?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q1" value="a"> <code>models.Model</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q1" value="b"> <code>models.TransientModel</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q1" value="c"> <code>models.AbstractModel</code></label>
+            <div class="explain">TransientModel lưu tạm, tự dọn — đúng cho wizard.</div>
+          </div>
+          <div class="q" data-answer="c">
+            <p>2. Cách lấy các record đang chọn khi mở wizard từ danh sách?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q2" value="a"> <code>self.ids</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q2" value="b"> <code>self.env.user</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q2" value="c"> <code>self.env.context["active_ids"]</code></label>
+            <div class="explain">Odoo truyền active_ids/active_id/active_model vào context khi mở wizard.</div>
+          </div>
+          <div class="q" data-answer="a">
+            <p>3. Để có chatter (nhật ký + tin nhắn) trên model, cần?</p>
+            <label class="opt" data-key="a"><input type="radio" name="l3q3" value="a"> <code>_inherit = ["mail.thread", "mail.activity.mixin"]</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="l3q3" value="b"> Cài thêm PostgreSQL extension</label>
+            <label class="opt" data-key="c"><input type="radio" name="l3q3" value="c"> Viết JavaScript riêng</label>
+            <div class="explain">Kế thừa mail.thread (+ activity.mixin) và đặt tracking=True là có chatter "miễn phí".</div>
+          </div>
+          <button class="check" onclick="checkQuiz(this)">Chấm điểm</button>
+        </div>
+      </section>
+
+      <!-- ===================== BRIDGE L4 CHUYÊN NGÀNH ===================== -->
+      <div class="level-divider" id="lv4"><div class="line"></div><span class="tag tag-l3">L4 · Chuyên ngành</span><div class="line"></div></div>
+      <section class="chapter" id="chuyen-nganh">
+        <h2 class="ch-title"><span class="num">🏭</span> Học tiếp: Odoo cho ngành cụ thể</h2>
+        <p class="ch-sub">Nắm vững framework rồi, bước tiếp theo là áp dụng vào nghiệp vụ thật.</p>
+        <p>Framework chỉ là nền. Mỗi ngành có lớp nghiệp vụ &amp; tích hợp riêng. Khóa chuyên ngành dưới đây xây thẳng trên kiến thức bạn vừa học:</p>
+        <div class="box info"><span class="box-title">🏭 Odoo cho Sản xuất Thực phẩm &amp; Tích hợp Dây chuyền</span>
+          Dành cho ERP nhà máy thực phẩm: <strong>MRP &amp; công thức (BoM, by-product), lô &amp; hạn dùng, FEFO, truy xuất nguồn gốc &amp; thu hồi (recall), chất lượng/HACCP</strong>, và đặc biệt <strong>tích hợp dây chuyền sản xuất</strong> (Shop Floor/MES, IoT Box, PLC/SCADA qua gateway, queue_job, OEE) ở quy mô lớn — kèm bảng Community vs Enterprise &amp; công cụ sinh API nhận dữ liệu line.
+          <div style="margin-top:12px"><a class="inline" href="khoa-hoc-odoo-thuc-pham.html" style="font-weight:700">→ Mở khóa "Odoo cho Sản xuất Thực phẩm"</a></div>
+        </div>
+        <div class="box tip"><span class="box-title">Áp dụng cho ngành khác</span>Các nguyên lý tích hợp (gateway, nhận dữ liệu bất đồng bộ, idempotency, lô &amp; truy xuất) cũng dùng được cho dược phẩm, hóa mỹ phẩm, F&amp;B, sản xuất rời rạc... — chỉ đổi lớp nghiệp vụ bên trên.</div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards ôn tập</h2>
+        <p class="ch-sub">Bấm thẻ để lật. Lọc theo cấp độ.</p>
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'0')">L0</button>
+          <button class="fc-filter" onclick="filterFC(this,'1')">L1</button>
+          <button class="fc-filter" onclick="filterFC(this,'2')">L2</button>
+          <button class="fc-filter" onclick="filterFC(this,'3')">L3</button>
+          <span id="fcCount" style="margin-left:auto;color:var(--gray);font-size:12.5px;align-self:center">16 thẻ</span>
+        </div>
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Module Odoo gồm những file cốt lõi nào?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>__manifest__.py</code> (khai báo) + <code>__init__.py</code> (import) + thư mục models/views/security...</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">3 tầng kiến trúc Odoo?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">PostgreSQL (data) ↔ Server Python + ORM (logic) ↔ Client JS/OWL (giao diện).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Cờ <code>-u</code> và <code>-i</code> khác gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a"><code>-i</code> install (cài lần đầu), <code>-u</code> upgrade (áp thay đổi sau khi sửa code/XML).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Triết lý "đừng sửa core" nghĩa là?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t0">ĐÁP ÁN</span><div class="fc-a">Không sửa module gốc; tạo module riêng &amp; dùng kế thừa để mở rộng → nâng cấp không mất tùy biến.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Recordset là gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Tập 0..n record cùng model. <code>self</code> là recordset; hỗ trợ lặp, <code>mapped</code>, <code>filtered</code>, phép tập hợp.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">One2many có tạo cột DB không?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Không — nó "ảo", là view ngược của một Many2one. Cần 2 tham số: model đích + tên field Many2one trỏ ngược.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">3 quy tắc của computed field?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Lặp <code>for rec in self</code>; khai <code>@api.depends(...)</code> đủ; <code>store=True</code> nếu cần search/sort.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">OR trong domain viết thế nào?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t1">ĐÁP ÁN</span><div class="fc-a">Ký pháp tiền tố: <code>['|', (A), (B)]</code>. <code>'|'</code> áp cho 2 điều kiện ngay sau nó.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Extension inheritance khai báo ra sao?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a"><code>_inherit = "model"</code> <strong>không kèm</strong> <code>_name</code> → thêm field/method vào model có sẵn.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Khi ghi đè create/write phải nhớ gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Gọi <code>super()</code> và trả về kết quả của nó — giữ hành vi gốc &amp; chuỗi kế thừa.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">2 tầng bảo mật của Odoo?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Access Rights (CRUD theo model×nhóm, csv) + Record Rules (lọc record theo domain, ir.rule).</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Ẩn field theo điều kiện ở Odoo 17+?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t2">ĐÁP ÁN</span><div class="fc-a">Viết trực tiếp biểu thức: <code>invisible="state != 'done'"</code>. (Bản ≤16 dùng <code>attrs</code>, đã bỏ.)</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">External ID (XML ID) để làm gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Định danh ổn định (<code>module.id</code>) để tham chiếu record an toàn qua nâng cấp &amp; giữa module. Lấy bằng <code>env.ref()</code>.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Chống N+1 trong Odoo?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Thao tác cả recordset 1 lần; dùng <code>mapped/filtered/read_group</code>; <code>create([...])</code> hàng loạt; không gọi ORM trong vòng lặp.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">External API gọi Odoo qua gì?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">XML-RPC/JSON-RPC → gọi <code>execute_kw</code> với các method ORM (search_read, create...). Quyền áp theo user.</div></div>
+          </div></div>
+          <div class="flashcard" data-cat="3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">"External ID not found" khi cài — vì sao?</div></div>
+            <div class="fc-face fc-back"><span class="fc-tag t3">ĐÁP ÁN</span><div class="fc-a">Sai thứ tự file trong <code>data</code> (tham chiếu trước khi tạo) hoặc thiếu module trong <code>depends</code>.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra cứu nhanh: field, decorator, ORM, view, CLI.</p>
+
+        <h3 class="sec">Field types</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">fields.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">fields.Char / Text / Html / Boolean / Integer / Float / Monetary
+fields.Date / Datetime / Selection / Binary
+fields.Many2one(<span class="s">"model"</span>, ondelete=<span class="s">"set null"</span>)
+fields.One2many(<span class="s">"model"</span>, <span class="s">"inverse_field"</span>)
+fields.Many2many(<span class="s">"model"</span>)
+<span class="c"># attrs: string, required, default, help, readonly, index, copy, groups, tracking</span></pre>
+        </div>
+
+        <h3 class="sec">Decorators</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">decorators.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="d">@api.depends</span>(<span class="s">"a"</span>, <span class="s">"b"</span>)        <span class="c"># computed</span>
+<span class="d">@api.onchange</span>(<span class="s">"x"</span>)            <span class="c"># gợi ý trên form</span>
+<span class="d">@api.constrains</span>(<span class="s">"x"</span>)         <span class="c"># validate (raise ValidationError)</span>
+<span class="d">@api.model</span>                  <span class="c"># không thao tác record cụ thể</span>
+<span class="d">@api.model_create_multi</span>     <span class="c"># create nhận list dict</span></pre>
+        </div>
+
+        <h3 class="sec">ORM</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">orm.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">env[<span class="s">"m"</span>].create({...}) / .create([{...},{...}])
+env[<span class="s">"m"</span>].search(domain, order=, limit=, offset=)
+env[<span class="s">"m"</span>].search_count(domain) / .search_read(domain, fields)
+env[<span class="s">"m"</span>].browse(ids) / rec.unlink() / recs.write({...})
+recs.mapped(<span class="s">"f"</span>) / recs.filtered(<span class="k">lambda</span> r: ...) / recs.sorted(key)
+rec.ensure_one() / env.ref(<span class="s">"xmlid"</span>) / rec.sudo() / rec.with_user(u)
+env.user / env.company / env.context / env.cr</pre>
+        </div>
+
+        <h3 class="sec">Domain</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">domain.py</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">[(<span class="s">"field"</span>, <span class="s">"="</span>, val)]                <span class="c"># =, !=, &gt;, &gt;=, &lt;, &lt;=</span>
+[(<span class="s">"name"</span>, <span class="s">"ilike"</span>, <span class="s">"x"</span>)]            <span class="c"># like, ilike, =like</span>
+[(<span class="s">"id"</span>, <span class="s">"in"</span>, [1,2])]              <span class="c"># in, not in</span>
+[<span class="s">"|"</span>, (A), (B)]   <span class="c"># OR</span>   [<span class="s">"!"</span>, (A)]  <span class="c"># NOT</span>
+[(<span class="s">"rel_id.field"</span>, <span class="s">"="</span>, v)]         <span class="c"># lần theo quan hệ</span></pre>
+        </div>
+
+        <h3 class="sec">CLI &amp; view</h3>
+        <div class="code-block"><div class="code-head"><span class="fname">cli.txt</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">odoo-bin -d DB -i module --addons-path=...     <span class="c"># cài</span>
+odoo-bin -d DB -u module                        <span class="c"># nâng cấp</span>
+odoo-bin -d DB --test-enable --stop-after-init  <span class="c"># test</span>
+odoo-bin shell -d DB                            <span class="c"># REPL ORM</span>
+odoo-bin scaffold my_module addons/             <span class="c"># tạo khung</span>
+
+<span class="c"># View: &lt;form&gt; &lt;list&gt; &lt;search&gt; &lt;kanban&gt; &lt;pivot&gt; &lt;graph&gt; &lt;calendar&gt;</span>
+<span class="c"># Nút: &lt;button name="method" type="object"/&gt;  (type: object|action)</span>
+<span class="c"># Ẩn/hiện (v17+): invisible="expr" readonly="expr" required="expr"</span></pre>
+        </div>
+
+        <div class="box tip"><span class="box-title">Hết khóa học! 🎉</span>Bạn đã đi qua 24 chương từ kiến trúc đến deploy. Cách học tốt nhất: <strong>tự xây một module hoàn chỉnh</strong> (vd quản lý mượn sách) áp dụng đủ ORM, view, security, report, wizard. Dùng <strong>🧩 Scaffold Generator</strong> để khởi tạo nhanh, đọc <a class="inline" href="https://www.odoo.com/documentation" target="_blank">tài liệu chính thức</a> và tham khảo code <strong>OCA</strong> để học best practice. Chúc bạn làm chủ Odoo! 🧩</div>
+      </section>
+
+      <footer class="foot">
+        🧩 Làm chủ Odoo Framework (Python) — nội dung tham khảo tài liệu chính thức <a class="inline" href="https://www.odoo.com/documentation" target="_blank">Odoo Developer Documentation</a>. Odoo là phần mềm mã nguồn mở (Community) &amp; thương mại (Enterprise) của Odoo S.A.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== FLOATING MODULE SCAFFOLD GENERATOR ===== -->
+<button class="sg-fab" id="sgFab" onclick="toggleSG(true)">🧩 Scaffold Generator</button>
+<div class="sg-panel" id="sgPanel">
+  <div class="sg-head" id="sgHead">
+    <span class="sg-title">🧩 Module Scaffold Generator</span>
+    <button onclick="toggleSG(false)">✕</button>
+  </div>
+  <div class="sg-body">
+    <div class="sg-row">
+      <div><label class="fld">Tên kỹ thuật module</label><input id="sgModule" value="my_library" placeholder="my_library"><div class="sg-hint">snake_case, không dấu cách</div></div>
+      <div><label class="fld">Tên hiển thị</label><input id="sgName" value="My Library" placeholder="My Library"></div>
+    </div>
+    <div class="sg-row">
+      <div><label class="fld">Tên model</label><input id="sgModel" value="library.book" placeholder="library.book"><div class="sg-hint">dùng dấu chấm</div></div>
+      <div><label class="fld">Mô tả model</label><input id="sgModelDesc" value="Library Book" placeholder="Library Book"></div>
+    </div>
+    <label class="fld">Tên menu gốc</label><input id="sgMenu" value="Library" placeholder="Library">
+    <label class="fld">Fields (mỗi dòng: ten:kieu:Nhãn[:comodel])</label>
+    <textarea id="sgFields" spellcheck="false">name:char:Tên sách
+isbn:char:ISBN
+price:float:Giá
+active:boolean:Đang hoạt động
+published_date:date:Ngày xuất bản
+author_id:many2one:Tác giả:res.partner
+description:text:Mô tả</textarea>
+    <div class="sg-hint">Kiểu hỗ trợ: char, text, integer, float, boolean, date, datetime, selection, html, many2one, one2many, many2many. Với quan hệ thêm comodel ở cuối (vd <code class="ic">author_id:many2one:Tác giả:res.partner</code>).</div>
+    <div class="sg-out" id="sgOut">Điền thông tin rồi bấm <strong>Sinh module</strong>. Toàn bộ khung file sẽ hiện ở đây để bạn copy vào dự án.</div>
+  </div>
+  <div class="sg-actions">
+    <button class="gen" onclick="genModule()">🧩 Sinh module</button>
+    <button class="cpy" onclick="copySG(this)">⧉ Copy tất cả</button>
+  </div>
+</div>
+
+<script>
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll() {
+  let cur = '';
+  document.querySelectorAll('section[id], div[id].level-divider, div[id].hero').forEach(s => { if (s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+cur));
+}
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li => {
+    if (li.classList.contains('nav-section-title')) { li.style.display=''; return; }
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a => a.addEventListener('click', () => { if (window.innerWidth <= 980) document.querySelector('.sidebar').classList.remove('open'); }));
+
+/* ===== COPY CODE ===== */
+function copyCode(btn) {
+  const txt = btn.closest('.code-block').querySelector('pre.code').innerText;
+  navigator.clipboard.writeText(txt).then(()=>{ const o=btn.textContent; btn.textContent='✓ Đã copy'; setTimeout(()=>btn.textContent=o,1400); });
+}
+/* ===== QUIZ ===== */
+function checkQuiz(btn) {
+  btn.closest('.quiz').querySelectorAll('.q').forEach(q => {
+    const correct = q.dataset.answer;
+    const chosen = q.querySelector('input:checked');
+    q.querySelectorAll('.opt').forEach(o => { o.classList.remove('correct','wrong'); if (o.dataset.key === correct) o.classList.add('correct'); });
+    if (chosen && chosen.value !== correct) chosen.closest('.opt').classList.add('wrong');
+    const ex = q.querySelector('.explain'); if (ex) ex.classList.add('show');
+  });
+}
+/* ===== FLASHCARDS ===== */
+function flipCard(el) { el.classList.toggle('flipped'); }
+function filterFC(btn, cat) {
+  document.querySelectorAll('.fc-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  let shown = 0;
+  document.querySelectorAll('.flashcard').forEach(c => { const ok=(cat==='all'||c.dataset.cat===cat); c.style.display=ok?'':'none'; c.classList.remove('flipped'); if(ok) shown++; });
+  const cnt = document.getElementById('fcCount'); if (cnt) cnt.textContent = shown + ' thẻ';
+}
+
+/* ===== MODULE SCAFFOLD GENERATOR ===== */
+function toggleSG(open){ document.getElementById('sgPanel').classList.toggle('open',open); document.getElementById('sgFab').classList.toggle('hidden',open); }
+function v(id){ return document.getElementById(id).value.trim(); }
+function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+function snake(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,''); }
+const PYTYPE = { char:'Char', text:'Text', integer:'Integer', float:'Float', boolean:'Boolean', date:'Date', datetime:'Datetime', selection:'Selection', html:'Html', binary:'Binary', many2one:'Many2one', one2many:'One2many', many2many:'Many2many' };
+function parseFields(raw){
+  return raw.split('\n').map(l=>l.trim()).filter(Boolean).map(line=>{
+    const p = line.split(':').map(x=>x.trim());
+    const name = snake(p[0]||'field');
+    const type = (p[1]||'char').toLowerCase();
+    const label = p[2] || cap(name.replace(/_/g,' '));
+    const comodel = p[3] || (type==='many2one'?'res.partner':'');
+    return { name, type, label, comodel };
+  });
+}
+function pyField(f){
+  const T = PYTYPE[f.type] || 'Char';
+  const lbl = f.label.replace(/"/g,'\\"');
+  if (f.type==='many2one') return `    ${f.name} = fields.Many2one("${f.comodel||'res.partner'}", string="${lbl}")`;
+  if (f.type==='one2many') return `    ${f.name} = fields.One2many("${f.comodel||'related.model'}", "INVERSE_FIELD", string="${lbl}")`;
+  if (f.type==='many2many') return `    ${f.name} = fields.Many2many("${f.comodel||'res.partner'}", string="${lbl}")`;
+  if (f.type==='selection') return `    ${f.name} = fields.Selection([("draft","Draft"),("done","Done")], string="${lbl}", default="draft")`;
+  if (f.name==='active' && f.type==='boolean') return `    active = fields.Boolean(string="${lbl}", default=True)`;
+  return `    ${f.name} = fields.${T}(string="${lbl}")`;
+}
+function genModule(){
+  const mod = snake(v('sgModule')) || 'my_module';
+  const name = v('sgName') || 'My Module';
+  const model = (v('sgModel')||'my.model').toLowerCase().replace(/[^a-z0-9._]/g,'');
+  const desc = v('sgModelDesc') || name;
+  const cls = model.split('.').map(cap).join('');
+  const fbase = model.replace(/\./g,'_');
+  const menu = v('sgMenu') || name;
+  const fields = parseFields(v('sgFields'));
+  const recName = (fields.find(f=>f.name==='name')||fields[0]||{name:'id'}).name;
+  // list/form view fields (skip text/html/one2many in list)
+  const listFields = fields.filter(f=>!['text','html','one2many','many2many','binary'].includes(f.type));
+
+  const manifest =
+`{
+    "name": "${name}",
+    "version": "1.0",
+    "summary": "${name}",
+    "author": "Your Name",
+    "category": "Uncategorized",
+    "license": "LGPL-3",
+    "depends": ["base"],
+    "data": [
+        "security/ir.model.access.csv",
+        "views/${fbase}_views.xml",
+    ],
+    "installable": True,
+    "application": True,
+}`;
+  const modelPy =
+`from odoo import models, fields, api
+
+
+class ${cls}(models.Model):
+    _name = "${model}"
+    _description = "${desc}"
+    _order = "${recName} asc"
+
+${fields.map(pyField).join('\n')}`;
+  const access =
+`id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_${fbase}_user,${model}.user,model_${fbase},base.group_user,1,1,1,1`;
+  const viewXml =
+`<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List view -->
+    <record id="view_${fbase}_list" model="ir.ui.view">
+        <field name="name">${model}.list</field>
+        <field name="model">${model}</field>
+        <field name="arch" type="xml">
+            <list>
+${listFields.map(f=>`                <field name="${f.name}"/>`).join('\n')}
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_${fbase}_form" model="ir.ui.view">
+        <field name="name">${model}.form</field>
+        <field name="model">${model}</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+${fields.map(f=>`                        <field name="${f.name}"/>`).join('\n')}
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_${fbase}" model="ir.actions.act_window">
+        <field name="name">${menu}</field>
+        <field name="res_model">${model}</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_${fbase}_root" name="${menu}"/>
+    <menuitem id="menu_${fbase}" name="${menu}" parent="menu_${fbase}_root" action="action_${fbase}"/>
+</odoo>`;
+
+  const out =
+`# ===== Cấu trúc thư mục =====
+${mod}/
+├── __init__.py
+├── __manifest__.py
+├── models/
+│   ├── __init__.py
+│   └── ${fbase}.py
+├── security/
+│   └── ir.model.access.csv
+└── views/
+    └── ${fbase}_views.xml
+
+
+# ===== ${mod}/__init__.py =====
+from . import models
+
+
+# ===== ${mod}/__manifest__.py =====
+${manifest}
+
+
+# ===== ${mod}/models/__init__.py =====
+from . import ${fbase}
+
+
+# ===== ${mod}/models/${fbase}.py =====
+${modelPy}
+
+
+# ===== ${mod}/security/ir.model.access.csv =====
+${access}
+
+
+# ===== ${mod}/views/${fbase}_views.xml =====
+${viewXml}`;
+  // render with bold file headers
+  const el = document.getElementById('sgOut');
+  el.innerHTML = out.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^(# ===== .* =====)$/gm,'<b>$1</b>');
+  el.dataset.raw = out;
+}
+function copySG(btn){
+  const t = document.getElementById('sgOut').dataset.raw || document.getElementById('sgOut').innerText;
+  navigator.clipboard.writeText(t).then(()=>{ const o=btn.textContent; btn.textContent='✓ Đã copy'; setTimeout(()=>btn.textContent=o,1400); });
+}
+/* kéo thả panel */
+(function(){ const panel=document.getElementById('sgPanel'), head=document.getElementById('sgHead'); let d=false,ox=0,oy=0;
+  head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup',()=>d=false);
+})();
+genModule();
+</script>
+</body>
+</html>
