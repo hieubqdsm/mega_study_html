@@ -9,17 +9,18 @@
   :root {
     --bg: #0a0c10; --bg2: #0d1117; --card: #161b22; --card2: #1c2128;
     --border: #30363d; --text: #c9d1d9; --strong: #f0f6fc; --gray: #8b949e;
-    --accent: #4B8BBE; --accent2: #FFD43B; --green: #6cc644; --purple: #b07cff; --orange: #ff7043;
+    --accent: #4B8BBE; --accent2: #FFD43B; --green: #6cc644; --purple: #b07cff; --orange: #ff7043; --pink: #f472b6;
   }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: var(--text);
-    line-height: 1.7; min-height: 100vh;
+    line-height: 1.7; min-height: 100vh; overflow-x: hidden;
     background-image: radial-gradient(circle at 15% 20%, rgba(75,139,190,.08) 0%, transparent 45%),
                       radial-gradient(circle at 85% 75%, rgba(255,212,59,.05) 0%, transparent 45%);
     background-attachment: fixed;
   }
   .wrap { max-width: 1150px; margin: 0 auto; padding: 0 22px; }
-  header { text-align: center; padding: 60px 22px 30px; }
+  header { text-align: center; padding: 60px 22px 24px; }
   header .logo { font-size: 56px; filter: drop-shadow(0 0 22px rgba(255,212,59,.35)); }
   header h1 {
     font-size: 38px; margin: 12px 0 8px; font-weight: 900;
@@ -31,178 +32,356 @@
   .stat b { display: block; font-size: 30px; color: var(--accent2); font-weight: 900; }
   .stat span { font-size: 12px; color: var(--gray); letter-spacing: 1px; text-transform: uppercase; }
 
-  .section-title { font-size: 20px; color: var(--strong); margin: 46px 0 16px; display: flex; align-items: center; gap: 10px; }
-  .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  /* CATEGORY TABS */
+  .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 9px; margin: 30px 0 8px; }
+  .tab {
+    background: var(--card); color: var(--text); border: 1px solid var(--border);
+    padding: 8px 18px; border-radius: 22px; cursor: pointer; font-size: 13.5px;
+    font-family: inherit; transition: all .2s; white-space: nowrap;
+  }
+  .tab:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .tab.active { background: linear-gradient(135deg, var(--accent), var(--purple)); border-color: transparent; color: #fff; font-weight: 700; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .section-title { font-size: 19px; color: var(--strong); margin: 40px 0 14px; display: flex; align-items: center; gap: 10px; scroll-margin-top: 16px; }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .section.hide { display: none; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
   .card {
     background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 22px;
     text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: all .22s; position: relative; overflow: hidden;
   }
   .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 10px 34px rgba(0,0,0,.4); }
   .card .ic { font-size: 32px; margin-bottom: 12px; }
-  .card h3 { font-size: 17px; color: var(--strong); margin-bottom: 7px; }
+  .card h3 { font-size: 16.5px; color: var(--strong); margin-bottom: 7px; line-height: 1.35; }
   .card p { font-size: 13.5px; color: var(--gray); flex: 1; }
   .card .tag { font-size: 10px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; align-self: flex-start; margin-bottom: 12px; }
-  .t-course { background: rgba(75,139,190,.18); color: #5fa8e0; }
-  .t-tech { background: rgba(108,198,68,.16); color: var(--green); }
-  .t-creative { background: rgba(176,124,255,.16); color: var(--purple); }
-  .t-ref { background: rgba(255,112,67,.16); color: var(--orange); }
-  .card .go { margin-top: 14px; font-size: 13px; color: var(--accent); font-weight: 600; }
-
-  .featured {
-    background: linear-gradient(135deg, rgba(75,139,190,.16), rgba(255,212,59,.07));
-    border: 1px solid var(--accent); grid-column: 1 / -1;
-    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 22px;
-  }
-  .featured .ic { font-size: 46px; margin: 0; }
-  .featured .badge { position: absolute; top: 14px; right: 16px; font-size: 10px; background: var(--accent2); color: #06121a; padding: 3px 11px; border-radius: 20px; font-weight: 900; }
-  .featured .meta { display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
-  .featured .meta span { font-size: 12px; color: var(--text); background: var(--card2); border: 1px solid var(--border); padding: 4px 11px; border-radius: 8px; }
-  .featured .btns { display: flex; flex-direction: column; gap: 8px; }
-  .featured .btn { text-decoration: none; text-align: center; padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .t-prog { background: rgba(75,139,190,.18); color: #5fa8e0; }
+  .t-ai   { background: rgba(176,124,255,.16); color: var(--purple); }
+  .t-game { background: rgba(108,198,68,.16); color: var(--green); }
+  .t-create { background: rgba(244,114,182,.16); color: var(--pink); }
+  .t-biz  { background: rgba(255,212,59,.16); color: var(--accent2); }
+  .t-ref  { background: rgba(255,112,67,.16); color: var(--orange); }
+  .card .meta { display: flex; gap: 8px; margin: 10px 0 0; flex-wrap: wrap; }
+  .card .meta span { font-size: 11px; color: var(--text); background: var(--card2); border: 1px solid var(--border); padding: 3px 9px; border-radius: 7px; }
+  .btns { display: flex; gap: 8px; margin-top: 16px; }
+  .btn { text-decoration: none; text-align: center; padding: 9px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 700; white-space: nowrap; flex: 1; transition: all .2s; }
   .btn-primary { background: var(--accent); color: #fff; }
-  .btn-secondary { background: var(--card2); color: var(--text); border: 1px solid var(--border); }
-  @media (max-width: 640px) { .featured { grid-template-columns: 1fr; text-align: center; } .featured .btns { flex-direction: row; justify-content: center; } }
+  .btn-primary:hover { filter: brightness(1.1); }
+  .btn-secondary { background: var(--card2); color: var(--text); border: 1px solid var(--border); flex: 0 0 auto; }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .card.feat { border-color: var(--accent); background: linear-gradient(135deg, rgba(75,139,190,.16), rgba(255,212,59,.07)); }
+  .card .badge { position: absolute; top: 14px; right: 14px; font-size: 10px; background: var(--accent2); color: #06121a; padding: 3px 11px; border-radius: 20px; font-weight: 900; }
 
   footer { text-align: center; color: var(--gray); font-size: 13px; padding: 50px 22px 40px; border-top: 1px solid var(--border); margin-top: 56px; }
+  footer a { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    header { padding: 40px 18px 18px; }
+    header h1 { font-size: 30px; }
+    header .logo { font-size: 46px; }
+    .stats { gap: 22px; }
+    .stat b { font-size: 24px; }
+    .grid { grid-template-columns: 1fr; }
+    .wrap { padding: 0 16px; }
+    .tab { padding: 7px 14px; font-size: 12.5px; }
+  }
 </style>
 </head>
 <body>
 <header>
   <div class="logo">📚</div>
   <h1>Mega Study</h1>
-  <p>Thư viện tài liệu &amp; khóa học toàn diện — từ lập trình, kỹ thuật đến sáng tạo &amp; tham khảo. Mỗi tài liệu là một trang HTML tương tác, đọc trực tiếp trên trình duyệt.</p>
+  <p>Thư viện tài liệu &amp; khóa học toàn diện — lập trình, AI, game, sáng tạo, kinh doanh &amp; tham khảo. Mỗi tài liệu là một trang HTML tương tác, đọc trực tiếp trên trình duyệt, thân thiện cả trên điện thoại.</p>
   <div class="stats">
-    <div class="stat"><b>2</b><span>Bộ khóa học</span></div>
-    <div class="stat"><b>9</b><span>Tài liệu chuyên đề</span></div>
+    <div class="stat"><b>30+</b><span>Khóa &amp; tài liệu</span></div>
+    <div class="stat"><b>6</b><span>Chủ đề</span></div>
     <div class="stat"><b>∞</b><span>Kiến thức</span></div>
   </div>
 </header>
 
 <div class="wrap">
 
-  <h2 class="section-title">⭐ Nổi bật</h2>
-  <div class="grid">
-    <a class="card featured" href="classic_course/khoa-hoc-python.html">
-      <span class="badge">MỚI</span>
-      <div class="ic">🐍</div>
-      <div>
-        <span class="tag t-course">Khóa học · Interactive</span>
-        <h3>Khóa Học Python — Từ Newbie Đến Early Senior</h3>
-        <p>37 chương theo 4 cấp độ + chuyên đề Data/ML &amp; Agentic AI, flashcards, ngân hàng bài tập &amp; 3 đề thi mô phỏng phỏng vấn. Chạy code Python trực tiếp trong trình duyệt (Pyodide).</p>
-        <div class="meta"><span>🟢 Newbie → 🟠 Early Senior</span><span>🤖 Agentic AI</span><span>📝 3 đề thi PV</span><span>🃏 38 flashcards</span></div>
-      </div>
-      <div class="btns">
-        <span class="btn btn-primary">🌐 Mở khóa học</span>
-        <a class="btn btn-secondary" href="classic_course/khoa-hoc-python.md">📄 Bản MD</a>
-      </div>
-    </a>
-
-    <a class="card featured" href="classic_course/khoa-hoc-regex.html" style="border-color:#2dd4bf;background:linear-gradient(135deg,rgba(45,212,191,.14),rgba(244,114,182,.06))">
-      <span class="badge" style="background:#2dd4bf">MỚI</span>
-      <div class="ic">🔤</div>
-      <div>
-        <span class="tag t-course" style="background:rgba(45,212,191,.18);color:#5eead4">Khóa học · Interactive</span>
-        <h3>Khóa Học Regex — Từ Căn Bản Đến Nâng Cao</h3>
-        <p>13 chương / 3 phần làm chủ biểu thức chính quy. Có <strong>Regex Playground</strong> kiểm thử trực tiếp &amp; <strong>bài tập tự chấm</strong> theo test case — chạy offline ngay trong trình duyệt, không cần internet.</p>
-        <div class="meta"><span>🧪 Playground live</span><span>✅ 18 bài tự chấm</span><span>📋 Thư viện pattern</span><span>📑 Cheatsheet</span></div>
-      </div>
-      <div class="btns">
-        <span class="btn btn-primary" style="background:#2dd4bf;color:#04141a">🌐 Mở khóa học</span>
-        <a class="btn btn-secondary" href="classic_course/khoa-hoc-regex.md">📄 Bản MD</a>
-      </div>
-    </a>
+  <div class="tabs">
+    <button class="tab active" data-filter="all">🌟 Tất cả</button>
+    <button class="tab" data-filter="prog">🛠️ Lập trình</button>
+    <button class="tab" data-filter="ai">🤖 AI</button>
+    <button class="tab" data-filter="game">🎮 Game</button>
+    <button class="tab" data-filter="create">🎨 Sáng tạo</button>
+    <button class="tab" data-filter="biz">💼 Kinh doanh</button>
+    <button class="tab" data-filter="ref">📖 Tham khảo</button>
   </div>
 
-  <h2 class="section-title">🎓 Bộ khóa học</h2>
-  <div class="grid">
-    <a class="card" href="classic_course/index.html">
-      <span class="tag t-course">8 khóa học</span>
-      <div class="ic">📂</div>
-      <h3>Classic Courses</h3>
-      <p>Tuyển tập khóa học bài bản: Python, In 3D, Game Design, Viết cốt truyện game, Kịch bản phim, Tester/QA, Sale &amp; Marketing ĐMT, Content Engine. Mỗi khóa có bản HTML + Markdown.</p>
-      <div class="go">Mở thư viện →</div>
-    </a>
-    <a class="card" href="claude-course/index.html">
-      <span class="tag t-course">Chuyên đề AI</span>
-      <div class="ic">🤖</div>
-      <h3>Claude Course</h3>
-      <p>Khóa học về Claude &amp; ứng dụng AI: foundations, coding, marketing, growth hacking, data, content engine.</p>
-      <div class="go">Mở thư viện →</div>
-    </a>
-  </div>
+  <!-- ===== LẬP TRÌNH ===== -->
+  <section class="section" data-cat="prog">
+    <h2 class="section-title">🛠️ Lập trình &amp; Dữ liệu</h2>
+    <div class="grid">
+      <a class="card feat" href="lap-trinh/khoa-hoc-python.html">
+        <span class="badge">NỔI BẬT</span>
+        <div class="ic">🐍</div>
+        <span class="tag t-prog">Interactive · chạy code</span>
+        <h3>Python — Từ Newbie Đến Early Senior</h3>
+        <p>37 chương / 4 cấp độ + chuyên đề Data/ML &amp; Agentic AI, flashcards, ngân hàng bài tập &amp; 3 đề thi mô phỏng phỏng vấn. Chạy Python trực tiếp trong trình duyệt (Pyodide).</p>
+        <div class="meta"><span>📖 37 chương</span><span>🤖 Agentic AI</span><span>📝 3 đề PV</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-python.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-postgresql.html">
+        <div class="ic">🐘</div>
+        <span class="tag t-prog">Interactive · chạy SQL</span>
+        <h3>PostgreSQL — Cơ Bản Đến Nâng Cao</h3>
+        <p>29 chương / 4 cấp độ — JOIN, CTE, window, JSONB, index, PL/pgSQL, MVCC, replication. SQL Playground chạy PostgreSQL thật (PGlite/WASM) &amp; so sánh 5+ DB.</p>
+        <div class="meta"><span>📖 29 chương</span><span>🐘 Chạy SQL</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-postgresql.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-regex.html">
+        <div class="ic">🔤</div>
+        <span class="tag t-prog">Interactive · playground</span>
+        <h3>Regex — Căn Bản Đến Nâng Cao</h3>
+        <p>13 chương / 3 phần làm chủ biểu thức chính quy. Regex Playground kiểm thử trực tiếp &amp; 18 bài tập tự chấm theo test case — chạy offline.</p>
+        <div class="meta"><span>📖 13 chương</span><span>🧪 Playground</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-regex.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-git.html">
+        <div class="ic">🔀</div>
+        <span class="tag t-prog">Kỹ thuật</span>
+        <h3>Git — Quản Lý Phiên Bản</h3>
+        <p>Làm chủ Git từ cơ bản đến nâng cao: commit, branch, merge, rebase, workflow nhóm &amp; xử lý xung đột. Sidebar điều hướng + ví dụ lệnh thực chiến.</p>
+        <div class="meta"><span>🔀 Version control</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-git.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-design-pattern.html">
+        <div class="ic">◇</div>
+        <span class="tag t-prog">PHP · C · Python</span>
+        <h3>Design Patterns — Nhận Diện &amp; Áp Dụng</h3>
+        <p>23 mẫu thiết kế GoF (Creational/Structural/Behavioral). Trọng tâm NHẬN DIỆN pattern: code 3 ngôn ngữ bấm đổi &amp; trò chơi Pattern Detector tự chấm.</p>
+        <div class="meta"><span>📖 23 pattern</span><span>🕵️ Detector</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-design-pattern.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-odoo-framework.html">
+        <div class="ic">🧩</div>
+        <span class="tag t-prog">Backend · Python</span>
+        <h3>Làm Chủ Odoo Framework</h3>
+        <p>24 chương xây module Odoo: ORM, fields, quan hệ, business logic, kế thừa, security, views XML, QWeb, wizard, cron, API, testing &amp; deploy. Kèm Module Scaffold Generator.</p>
+        <div class="meta"><span>📖 24 chương</span><span>🧩 Scaffold</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-odoo-framework.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-odoo-thuc-pham.html">
+        <div class="ic">🏭</div>
+        <span class="tag t-prog">Chuyên ngành</span>
+        <h3>Odoo cho Sản Xuất Thực Phẩm</h3>
+        <p>16 chương nối tiếp Odoo Framework: MRP &amp; công thức, lô &amp; hạn dùng, FEFO, truy xuất nguồn gốc &amp; thu hồi, HACCP, tích hợp dây chuyền (MES/IoT/PLC/SCADA).</p>
+        <div class="meta"><span>📖 16 chương</span><span>🏭 IoT/PLC/MES</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-odoo-thuc-pham.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="lap-trinh/khoa-hoc-tester-qa.html">
+        <div class="ic">🐛</div>
+        <span class="tag t-prog">QA &amp; Automation</span>
+        <h3>Tester / QA</h3>
+        <p>Từ Manual Tester đến Automation Engineer &amp; QA Lead — Manual, Selenium, API (Postman), Performance (JMeter), Security, Mobile, AI testing &amp; ISTQB.</p>
+        <div class="meta"><span>📖 24 chương</span><span>💡 100+ concepts</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="lap-trinh/khoa-hoc-tester-qa.md">📄 MD</a></div>
+      </a>
+    </div>
+  </section>
 
-  <h2 class="section-title">🛠️ Kỹ thuật &amp; Lập trình</h2>
-  <div class="grid">
-    <a class="card" href="autocad-lsp-dictionary_v2.html">
-      <span class="tag t-tech">Tham khảo</span>
-      <div class="ic">📐</div>
-      <h3>Từ điển LSP AutoCAD <small style="color:var(--gray);font-weight:400">(v2)</small></h3>
-      <p>Từ điển hàm AutoLISP cho AutoCAD — tra cứu cú pháp &amp; ví dụ lập trình tự động hóa bản vẽ.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-    <a class="card" href="aec-domain-knowledge.html">
-      <span class="tag t-tech">Kỹ thuật</span>
-      <div class="ic">🏗️</div>
-      <h3>AEC Domain Knowledge</h3>
-      <p>Kiến thức ngành Kiến trúc — Kỹ thuật — Xây dựng (AEC) cho lập trình &amp; tự động hóa.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-    <a class="card" href="security-glossary.html">
-      <span class="tag t-tech">Bảo mật</span>
-      <div class="ic">🔐</div>
-      <h3>Từ điển Bảo mật</h3>
-      <p>Thuật ngữ an ninh mạng &amp; bảo mật thông tin — nền tảng cho security &amp; pentest.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-    <a class="card" href="unity_glossary.html">
-      <span class="tag t-tech">Game Dev</span>
-      <div class="ic">🎮</div>
-      <h3>Unity RPG Glossary</h3>
-      <p>Từ điển thuật ngữ Unity tập trung phát triển game RPG.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-    <a class="card" href="godot-hackslash-rpg-guide.html">
-      <span class="tag t-tech">Game Dev</span>
-      <div class="ic">🗡️</div>
-      <h3>Godot 4 — Hack &amp; Slash Isometric RPG</h3>
-      <p>Hướng dẫn xây dựng game RPG hành động góc nhìn isometric bằng Godot 4.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-  </div>
+  <!-- ===== AI ===== -->
+  <section class="section" data-cat="ai">
+    <h2 class="section-title">🤖 Trí tuệ nhân tạo</h2>
+    <div class="grid">
+      <a class="card" href="ai/claude-course/index.html">
+        <div class="ic">✦</div>
+        <span class="tag t-ai">Bộ 6 khóa</span>
+        <h3>Claude Course — Ứng Dụng AI</h3>
+        <p>Bộ khóa học về Claude &amp; ứng dụng AI: foundations, coding, marketing, growth hacking, data &amp; content engine. Mở thư viện con để xem từng khóa.</p>
+        <div class="meta"><span>📂 6 khóa</span><span>🤖 Claude</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở thư viện →</span></div>
+      </a>
+      <a class="card" href="ai/khoa-hoc-gemini-pro.html">
+        <div class="ic">✦</div>
+        <span class="tag t-ai">Không cần code</span>
+        <h3>Gemini Pro cho Nghiên Cứu &amp; Dữ Liệu</h3>
+        <p>19 chương khai thác Gemini Pro cho team nghiên cứu: database, SPSS, Excel, báo cáo. Phủ Gemini app, Google Workspace, NotebookLM &amp; AI Studio. Có Prompt Builder.</p>
+        <div class="meta"><span>📖 19 chương</span><span>✦ Prompt Builder</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="ai/khoa-hoc-gemini-pro.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="ai/giao_trinh_agentic_ai.html">
+        <div class="ic">🧠</div>
+        <span class="tag t-ai">Giáo trình</span>
+        <h3>Giáo Trình Agentic AI</h3>
+        <p>Giáo trình về AI tác tử (agentic AI) — kiến trúc agent, công cụ, vòng lặp suy luận &amp; ứng dụng tự động hóa.</p>
+        <div class="meta"><span>🧠 Agent</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+    </div>
+  </section>
 
-  <h2 class="section-title">🎨 Sáng tạo &amp; Tham khảo</h2>
-  <div class="grid">
-    <a class="card" href="lo-trinh-hoc-ve.html">
-      <span class="tag t-creative">Lộ trình</span>
-      <div class="ic">✏️</div>
-      <h3>Lộ trình học vẽ</h3>
-      <p>Lộ trình học vẽ từ cơ bản đến nâng cao — nền tảng, kỹ thuật &amp; thực hành.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-    <a class="card" href="procreate-guide.html">
-      <span class="tag t-creative">Digital Art</span>
-      <div class="ic">🖌️</div>
-      <h3>Từ điển thuật ngữ Procreate</h3>
-      <p>Tra cứu công cụ &amp; thuật ngữ trong app vẽ Procreate.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-    <a class="card" href="tu-dien-nhac-ly.html">
-      <span class="tag t-creative">Âm nhạc</span>
-      <div class="ic">🎵</div>
-      <h3>Từ Điển Nhạc Lý — Piano &amp; Violin</h3>
-      <p>Thuật ngữ nhạc lý dành cho người học Piano &amp; Violin.</p>
-      <div class="go">Mở tài liệu →</div>
-    </a>
-  </div>
+  <!-- ===== GAME ===== -->
+  <section class="section" data-cat="game">
+    <h2 class="section-title">🎮 Game Development</h2>
+    <div class="grid">
+      <a class="card" href="game-dev/khoa-hoc-godot-2d-physics.html">
+        <div class="ic">🤖</div>
+        <span class="tag t-game">Godot 4 · mobile</span>
+        <h3>Godot 2D Physics — Slinky &amp; Xuất Bản Mobile</h3>
+        <p>24 chương làm game 2D vật lý trong Godot 4: scene/node, GDScript, RigidBody/Area, joints, mô phỏng lò xo Slinky. Có Slinky Lab sống, mini-game chơi ngay, export Android/iOS + Ads.</p>
+        <div class="meta"><span>📖 24 chương</span><span>📱 Android/iOS</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="game-dev/khoa-hoc-godot-2d-physics.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="game-dev/khoa-hoc-game-design.html">
+        <div class="ic">🎮</div>
+        <span class="tag t-game">Thiết kế</span>
+        <h3>Game Design Toàn Diện</h3>
+        <p>Thiết kế game từ cơ bản đến nâng cao — cơ chế gameplay, level design, narrative, balancing, monetization &amp; quy trình sản xuất game.</p>
+        <div class="meta"><span>📖 20+ chương</span><span>🎮 Đa nền tảng</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="game-dev/khoa-hoc-game-design.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="game-dev/godot-hackslash-rpg-guide.html">
+        <div class="ic">🗡️</div>
+        <span class="tag t-game">Godot 4</span>
+        <h3>Godot 4 — Hack &amp; Slash Isometric RPG</h3>
+        <p>Hướng dẫn xây dựng game RPG hành động góc nhìn isometric bằng Godot 4.</p>
+        <div class="meta"><span>🗡️ Isometric RPG</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+      <a class="card" href="game-dev/unity_glossary.html">
+        <div class="ic">🎮</div>
+        <span class="tag t-game">Tham khảo</span>
+        <h3>Unity RPG Glossary</h3>
+        <p>Từ điển thuật ngữ Unity tập trung phát triển game RPG.</p>
+        <div class="meta"><span>📖 Glossary</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== SÁNG TẠO ===== -->
+  <section class="section" data-cat="create">
+    <h2 class="section-title">🎨 Sáng tạo nội dung</h2>
+    <div class="grid">
+      <a class="card" href="sang-tao/khoa-hoc-viet-cot-truyen-game.html">
+        <div class="ic">📖</div>
+        <span class="tag t-create">Narrative</span>
+        <h3>Viết Cốt Truyện Cho Game</h3>
+        <p>Chuyên sâu Game Narrative Design — xây dựng thế giới, nhân vật, cốt truyện phân nhánh, hội thoại, environmental storytelling.</p>
+        <div class="meta"><span>📖 20+ chương</span><span>✍️ Narrative</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="sang-tao/khoa-hoc-viet-cot-truyen-game.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="sang-tao/khoa-hoc-sang-tac-kich-ban-phim.html">
+        <div class="ic">🎬</div>
+        <span class="tag t-create">Biên kịch</span>
+        <h3>Sáng Tác Kịch Bản Phim</h3>
+        <p>Biên kịch phim từ cơ bản đến nâng cao — cấu trúc 3 hồi, phát triển nhân vật, hội thoại, định dạng kịch bản chuyên nghiệp.</p>
+        <div class="meta"><span>📖 20+ chương</span><span>🎥 Film</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="sang-tao/khoa-hoc-sang-tac-kich-ban-phim.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="sang-tao/lo-trinh-hoc-ve.html">
+        <div class="ic">✏️</div>
+        <span class="tag t-create">Lộ trình</span>
+        <h3>Lộ Trình Học Vẽ</h3>
+        <p>Lộ trình học vẽ từ cơ bản đến nâng cao — nền tảng, kỹ thuật &amp; thực hành.</p>
+        <div class="meta"><span>✏️ Roadmap</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+      <a class="card" href="sang-tao/procreate-guide.html">
+        <div class="ic">🖌️</div>
+        <span class="tag t-create">Digital Art</span>
+        <h3>Từ Điển Thuật Ngữ Procreate</h3>
+        <p>Tra cứu công cụ &amp; thuật ngữ trong app vẽ Procreate.</p>
+        <div class="meta"><span>🖌️ Procreate</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+      <a class="card" href="sang-tao/tu-dien-nhac-ly.html">
+        <div class="ic">🎵</div>
+        <span class="tag t-create">Âm nhạc</span>
+        <h3>Từ Điển Nhạc Lý — Piano &amp; Violin</h3>
+        <p>Thuật ngữ nhạc lý dành cho người học Piano &amp; Violin.</p>
+        <div class="meta"><span>🎵 Nhạc lý</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== KINH DOANH ===== -->
+  <section class="section" data-cat="biz">
+    <h2 class="section-title">💼 Kinh doanh &amp; Marketing</h2>
+    <div class="grid">
+      <a class="card" href="kinh-doanh/khoa-hoc-sale-dien-mat-troi.html">
+        <div class="ic">☀️</div>
+        <span class="tag t-biz">Sale · Marketing</span>
+        <h3>Sale &amp; Marketing — Điện Mặt Trời</h3>
+        <p>Huấn luyện chuyên ngành Sale &amp; Marketing lĩnh vực Điện Mặt Trời — tư vấn khách hàng, tính ROI, chốt đơn, quản lý dự án.</p>
+        <div class="meta"><span>💼 Sale</span><span>📈 Marketing</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="kinh-doanh/khoa-hoc-sale-dien-mat-troi.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="kinh-doanh/content-engine-dien-mat-troi.html">
+        <div class="ic">📣</div>
+        <span class="tag t-biz">App content</span>
+        <h3>Content Engine — Điện Mặt Trời</h3>
+        <p>Hệ thống tạo content marketing chuyên ngành ĐMT — 200+ ý tưởng, 60+ hook templates, 40+ post templates, lịch đăng &amp; A/B tester.</p>
+        <div class="meta"><span>💡 200+ ý tưởng</span><span>⚡ App</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="kinh-doanh/content-engine-dien-mat-troi.md">📄 MD</a></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== THAM KHẢO ===== -->
+  <section class="section" data-cat="ref">
+    <h2 class="section-title">📖 Kỹ thuật &amp; Tham khảo</h2>
+    <div class="grid">
+      <a class="card" href="tham-khao/khoa-hoc-in-3d.html">
+        <div class="ic">🖨️</div>
+        <span class="tag t-ref">Khóa học</span>
+        <h3>In 3D Toàn Diện</h3>
+        <p>Từ cơ bản đến nâng cao — công nghệ in 3D, vật liệu, slicer, kỹ thuật in, hậu kỳ, an toàn &amp; kinh doanh với in 3D.</p>
+        <div class="meta"><span>📖 17 chương</span><span>💡 100+ khái niệm</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở</span><a class="btn btn-secondary" href="tham-khao/khoa-hoc-in-3d.md">📄 MD</a></div>
+      </a>
+      <a class="card" href="tham-khao/autocad-lsp-dictionary_v2.html">
+        <div class="ic">📐</div>
+        <span class="tag t-ref">Tham khảo</span>
+        <h3>Từ Điển LSP AutoCAD <small style="color:var(--gray);font-weight:400">(v2)</small></h3>
+        <p>Từ điển hàm AutoLISP cho AutoCAD — tra cứu cú pháp &amp; ví dụ lập trình tự động hóa bản vẽ.</p>
+        <div class="meta"><span>📐 AutoLISP</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở (v2)</span><a class="btn btn-secondary" href="tham-khao/autocad-lsp-dictionary.html">v1</a></div>
+      </a>
+      <a class="card" href="tham-khao/aec-domain-knowledge.html">
+        <div class="ic">🏗️</div>
+        <span class="tag t-ref">Kỹ thuật</span>
+        <h3>AEC Domain Knowledge</h3>
+        <p>Kiến thức ngành Kiến trúc — Kỹ thuật — Xây dựng (AEC) cho lập trình &amp; tự động hóa.</p>
+        <div class="meta"><span>🏗️ AEC</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+      <a class="card" href="tham-khao/security-glossary.html">
+        <div class="ic">🔐</div>
+        <span class="tag t-ref">Bảo mật</span>
+        <h3>Từ Điển Bảo Mật</h3>
+        <p>Thuật ngữ an ninh mạng &amp; bảo mật thông tin — nền tảng cho security &amp; pentest.</p>
+        <div class="meta"><span>🔐 Security</span></div>
+        <div class="btns"><span class="btn btn-primary">🌐 Mở tài liệu →</span></div>
+      </a>
+    </div>
+  </section>
 
 </div>
 
 <footer>
   📚 <strong>Mega Study</strong> — Thư viện tài liệu học tập · Tất cả là HTML tĩnh, mở trực tiếp trên trình duyệt.<br>
-  📖 Hướng dẫn &amp; cấu trúc repo: <a href="README.md" style="color:var(--accent)">README.md</a> ·
-  💡 Khóa có "chạy code" (Python): nếu nút Run không chạy khi mở bằng <code>file://</code>, chạy <code>python -m http.server</code> rồi mở <code>localhost:8000</code>.
+  📖 Hướng dẫn &amp; cấu trúc repo: <a href="README.md">README.md</a> ·
+  💡 Khóa "chạy code" (Python/SQL): nếu nút Run không chạy khi mở bằng <code>file://</code>, chạy <code>python -m http.server</code> rồi mở <code>localhost:8000</code>.
 </footer>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const sections = document.querySelectorAll('.section');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const f = tab.dataset.filter;
+      sections.forEach(s => s.classList.toggle('hide', !(f === 'all' || s.dataset.cat === f)));
+    });
+  });
+</script>
 </body>
 </html>

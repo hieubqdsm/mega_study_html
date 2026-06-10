@@ -14,46 +14,56 @@ Lộ trình Python toàn diện theo 4 cấp độ năng lực + chuyên đề D
 - Chuyên đề **Data/ML & Agentic AI** (agent loop, tool calling, RAG, MCP, multi-agent)
 - **Chạy code Python trực tiếp** trong trình duyệt (Pyodide/WebAssembly)
 - 38 flashcards · ngân hàng bài tập · **3 đề thi mô phỏng phỏng vấn** (Junior/Mid/Senior) · rubric chấm điểm
-- 📂 [`classic_course/khoa-hoc-python.html`](classic_course/khoa-hoc-python.html) · [bản Markdown](classic_course/khoa-hoc-python.md)
+- 📂 [`lap-trinh/khoa-hoc-python.html`](lap-trinh/khoa-hoc-python.html) · [bản Markdown](lap-trinh/khoa-hoc-python.md)
 
 ### 🔤 Khóa Học Regex — Từ Căn Bản Đến Nâng Cao
 Làm chủ biểu thức chính quy với công cụ thực hành ngay.
 - 3 phần: Căn bản → Trung cấp → Nâng cao
 - **Regex Playground** — kiểm thử pattern trực tiếp, highlight match theo thời gian thực
 - **Bài tập tại chỗ tự chấm** — gõ pattern, bấm kiểm tra, máy chấm theo test case
-- 📂 [`classic_course/khoa-hoc-regex.html`](classic_course/khoa-hoc-regex.html) · [bản Markdown](classic_course/khoa-hoc-regex.md)
+- 📂 [`lap-trinh/khoa-hoc-regex.html`](lap-trinh/khoa-hoc-regex.html) · [bản Markdown](lap-trinh/khoa-hoc-regex.md)
 
 ---
 
 ## 🗂️ Cấu trúc thư mục
 
+Các khóa được gom theo **6 thư mục chủ đề** để trang chủ gọn gàng; trang chủ `index.html` có bộ lọc theo chủ đề.
+
 ```
 mega_study_html/
-├── index.html                    # 🏠 Trang chủ tổng hợp
+├── index.html                    # 🏠 Trang chủ tổng hợp (lọc theo chủ đề)
 ├── README.md                     # File này
 │
-├── classic_course/               # Bộ khóa học bài bản (HTML + Markdown)
-│   ├── index.html                # Mục lục bộ classic_course
-│   ├── INDEX.md
-│   ├── khoa-hoc-python.html/.md  # 🐍 Python (interactive)
-│   ├── khoa-hoc-regex.html/.md   # 🔤 Regex (interactive)
-│   ├── khoa-hoc-in-3d.*          # In 3D
-│   ├── khoa-hoc-game-design.*    # Game Design
-│   ├── khoa-hoc-tester-qa.*      # Tester / QA
-│   └── ...                       # các khóa khác
+├── lap-trinh/                    # 🛠️ Lập trình & Dữ liệu (HTML + Markdown)
+│   ├── khoa-hoc-python.*         # 🐍 Python (interactive)
+│   ├── khoa-hoc-postgresql.*     # 🐘 PostgreSQL (chạy SQL)
+│   ├── khoa-hoc-regex.*          # 🔤 Regex (interactive)
+│   ├── khoa-hoc-git.*            # 🔀 Git
+│   ├── khoa-hoc-design-pattern.* # ◇ Design Patterns
+│   ├── khoa-hoc-odoo-framework.* · khoa-hoc-odoo-thuc-pham.*
+│   └── khoa-hoc-tester-qa.*      # 🐛 Tester / QA
 │
-├── claude-course/                # Chuyên đề Claude & ứng dụng AI
-│   └── index.html, foundations.html, coding.html, ...
+├── ai/                           # 🤖 Trí tuệ nhân tạo
+│   ├── claude-course/            # Bộ khóa Claude (index.html, foundations, coding, ...)
+│   ├── khoa-hoc-gemini-pro.*     # ✦ Gemini Pro
+│   └── giao_trinh_agentic_ai.html
 │
-└── *.html                        # Tài liệu chuyên đề rời:
-    ├── aec-domain-knowledge.html       # Kiến thức ngành AEC
-    ├── autocad-lsp-dictionary_v2.html  # Từ điển LSP AutoCAD
-    ├── security-glossary.html          # Từ điển Bảo mật
-    ├── unity_glossary.html             # Unity RPG Glossary
-    ├── godot-hackslash-rpg-guide.html  # Godot 4 RPG
-    ├── lo-trinh-hoc-ve.html            # Lộ trình học vẽ
-    ├── procreate-guide.html            # Thuật ngữ Procreate
-    └── tu-dien-nhac-ly.html            # Nhạc lý Piano & Violin
+├── game-dev/                     # 🎮 Game Development
+│   ├── khoa-hoc-godot-2d-physics.* · khoa-hoc-game-design.*
+│   ├── godot-hackslash-rpg-guide.html · unity_glossary.html
+│
+├── sang-tao/                     # 🎨 Sáng tạo nội dung
+│   ├── khoa-hoc-viet-cot-truyen-game.* · khoa-hoc-sang-tac-kich-ban-phim.*
+│   └── lo-trinh-hoc-ve.html · procreate-guide.html · tu-dien-nhac-ly.html
+│
+├── kinh-doanh/                   # 💼 Kinh doanh & Marketing
+│   └── khoa-hoc-sale-dien-mat-troi.* · content-engine-dien-mat-troi.*
+│
+└── tham-khao/                    # 📖 Kỹ thuật & Tham khảo
+    ├── khoa-hoc-in-3d.*               # In 3D
+    ├── autocad-lsp-dictionary_v2.html · autocad-lsp-dictionary.html
+    ├── aec-domain-knowledge.html      # Kiến thức ngành AEC
+    └── security-glossary.html         # Từ điển Bảo mật
 ```
 
 ---
@@ -90,7 +100,7 @@ Rồi mở trình duyệt tới: **http://localhost:8000** → trang chủ hiệ
 ## 📝 Ghi chú
 
 - Tất cả là **HTML tĩnh** — không backend, không build step, không phụ thuộc cài đặt.
-- Mỗi khóa trong `classic_course/` có **2 bản**: HTML (giao diện tương tác) và Markdown (đọc trên editor/GitHub).
-- Nội dung bằng **tiếng Việt**.
+- Hầu hết khóa học có **2 bản**: HTML (giao diện tương tác) và Markdown (đọc trên editor/GitHub).
+- Nội dung bằng **tiếng Việt**. Tất cả trang đều **thân thiện mobile** (responsive).
 
-*Cập nhật: 2026-06-06*
+*Cập nhật: 2026-06-10*
