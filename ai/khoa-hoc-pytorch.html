@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học PyTorch — Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #EE4C2C;        /* PyTorch red-orange */
+    --primary-glow: #ff7a5c;
+    --accent: #f59e0b;
+    --accent-2: #fbbf24;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #1a0c08; --darker: #0d0604;
+    --light: #ecd9d2; --light-strong: #fff5f2; --gray: #b89a90;
+    --card: #1f110c; --card-2: #2a1812; --border: #45261d; --terminal: #140905;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #9a7d72;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(238,76,44,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(245,158,11,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #060302 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(238,76,44,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(238,76,44,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(238,76,44,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#1a0c08; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(238,76,44,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(13,6,4,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(238,76,44,.16), rgba(245,158,11,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🔥"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(238,76,44,.08); border-color: rgba(238,76,44,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(238,76,44,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#fff; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* MODEL BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(238,76,44,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:8px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .builder input { width:90px; }
+  .layer-list { list-style:none; margin:6px 0 12px; padding:0; }
+  .layer-list li { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:7px 12px; margin-bottom:6px; font-size:13px; font-family:monospace; display:flex; justify-content:space-between; align-items:center; }
+  .layer-list .rm { cursor:pointer; color:var(--danger); font-weight:800; border:none; background:none; font-size:15px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#fff; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🔥</div>
+      <h1>PyTorch</h1>
+      <div class="sub">TỪ CĂN BẢN ĐẾN NÂNG CAO</div>
+      <div class="pat">import torch</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> PyTorch là gì &amp; cài đặt</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Tensor: shape, dtype, device</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Autograd: backward()</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Cơ bản</li>
+      <li><a href="#c4"><span class="cn">4</span> nn.Module — model đầu tiên</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Vòng lặp huấn luyện chuẩn</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Dataset &amp; DataLoader</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Loss, Optimizer, Scheduler</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Trung cấp</li>
+      <li><a href="#c8"><span class="cn">8</span> CNN cho ảnh</a></li>
+      <li><a href="#c9"><span class="cn">9</span> Transfer learning</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Lưu/Load, GPU, eval()</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Regularization</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Custom Dataset &amp; loss</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Nâng cao &amp; triển khai</li>
+      <li><a href="#c13"><span class="cn">13</span> RNN/LSTM &amp; NLP</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Mixed precision &amp; đa GPU</a></li>
+      <li><a href="#c15"><span class="cn">15</span> TorchScript / ONNX / mobile</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án thực chiến</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> nn.Module Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🔥 Khóa học · <b id="crumb">PyTorch</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">PyTorch</span> — từ tensor đầu tiên đến model triển khai thật</h1>
+        <p>16 chương theo 4 cấp độ. Phong cách "Pythonic, tường minh": bạn tự viết vòng lặp huấn luyện và thấy rõ từng bước. Mỗi chương có code chạy được (Colab/local), <strong>bài tập tự chấm</strong>, quiz và flashcard. Đi từ tensor → <code class="ic">nn.Module</code> → CNN/RNN → transfer learning → xuất TorchScript/ONNX/mobile.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>nn.Module Builder</b></span>
+          <span class="meta-pill">🐍 PyTorch <b>2.x</b></span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chạy code ở đâu?</span> Cách nhanh nhất: <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> (có sẵn PyTorch + GPU) hoặc cài local <code class="ic">pip install torch torchvision</code>. Bài tập trong khóa <b>tự chấm offline</b> bằng cách kiểm tra "dấu hiệu" trong code bạn gõ.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> PyTorch là gì &amp; cài đặt</h2>
+        <div class="ch-sub">Vì sao PyTorch thống trị giới nghiên cứu &amp; ngày càng mạnh ở production.</div>
+
+        <p><strong>PyTorch</strong> (Meta AI) là thư viện học sâu dựa trên tensor với <strong>autograd động</strong> (define-by-run): đồ thị tính toán dựng <em>khi chạy</em>, nên debug bằng <code class="ic">print</code>/breakpoint như Python thường. Đó là lý do nó được giới nghiên cứu &amp; phần lớn dự án LLM ưa chuộng.</p>
+
+        <table>
+          <tr><th>Thành phần</th><th>Dùng để</th></tr>
+          <tr><td><code class="ic">torch</code></td><td>Tensor, phép toán, autograd</td></tr>
+          <tr><td><code class="ic">torch.nn</code></td><td>Lớp, model, hàm mất mát</td></tr>
+          <tr><td><code class="ic">torch.optim</code></td><td>Thuật toán tối ưu (SGD, Adam)</td></tr>
+          <tr><td><code class="ic">torch.utils.data</code></td><td>Dataset &amp; DataLoader</td></tr>
+          <tr><td><code class="ic">torchvision</code></td><td>Ảnh: dataset, model dựng sẵn, transform</td></tr>
+        </table>
+
+        <div class="code-block"><div class="cbhead"><span>bash · cài đặt</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Xem lệnh đúng cho CUDA của bạn tại pytorch.org/get-started</span>
+pip install torch torchvision
+
+python -c <span class="st">"import torch; print(torch.__version__, torch.cuda.is_available())"</span></pre></div>
+        <div class="box tip"><span class="bt">PyTorch vs TensorFlow</span> Khác biệt lớn nhất: ở PyTorch <em>bạn</em> viết vòng lặp huấn luyện (tường minh); ở Keras <code class="ic">model.fit</code> làm hộ (ngắn gọn). Hiểu PyTorch giúp bạn nắm rõ <b>bên trong</b> mọi framework.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. "Define-by-run" của PyTorch nghĩa là gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Đồ thị tính toán dựng khi chạy → dễ debug</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Phải khai báo graph trước khi chạy</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Chỉ chạy được trên GPU</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Không hỗ trợ autograd</button>
+            </div>
+            <div class="qexp">✅ Đồ thị động dựng theo từng lệnh Python khi thực thi, nên bạn debug như code thường.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Tensor: shape, dtype, device</h2>
+        <div class="ch-sub">Giống NumPy nhưng chạy được trên GPU &amp; có autograd.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> torch
+
+a = torch.tensor([[1., 2.], [3., 4.]])
+print(a.shape, a.dtype)         <span class="cm"># torch.Size([2, 2]) torch.float32</span>
+
+b = torch.tensor([[10.], [20.]])
+print(a @ b)                    <span class="cm"># nhân ma trận</span>
+print(a.mean(), a.sum(dim=0))   <span class="cm"># trung bình; tổng theo cột</span>
+print(a.view(4))                <span class="cm"># reshape → vector 4 (như tf.reshape)</span>
+
+<span class="cm"># Chuyển sang GPU nếu có</span>
+device = <span class="st">'cuda'</span> <span class="kw">if</span> torch.cuda.is_available() <span class="kw">else</span> <span class="st">'cpu'</span>
+a = a.to(device)                <span class="cm"># mọi tensor cùng phép toán phải cùng device</span>
+
+<span class="cm"># Qua lại với NumPy</span>
+import numpy as np
+n = a.cpu().numpy()             <span class="cm"># tensor → numpy</span>
+t = torch.from_numpy(np.ones(3))</pre></div>
+        <div class="box warn"><span class="bt">Lỗi kinh điển</span> <code class="ic">RuntimeError: Expected all tensors to be on the same device</code> — bạn quên <code class="ic">.to(device)</code> cho dữ liệu hoặc model. Quy tắc: <b>model và batch phải ở cùng device</b>.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Tạo &amp; biến đổi tensor</div>
+          <div class="etask">Tạo tensor <code>x</code> shape <code>(3, 4)</code> toàn số 1 bằng <code>torch.ones</code>, rồi tính <strong>tổng theo trục cột</strong> bằng <code>x.sum(dim=0)</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">import torch
+
+x =
+col_sum =
+print(col_sum)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">x = torch.ones(3, 4)
+col_sum = x.sum(dim=0)   <span class="cm"># → tensor([3., 3., 3., 3.])</span>
+print(col_sum)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Autograd: backward()</h2>
+        <div class="ch-sub">Tự động tính đạo hàm — nền tảng của huấn luyện.</div>
+
+        <p>Đặt <code class="ic">requires_grad=True</code> cho tensor cần đạo hàm. Sau khi tính ra một scalar (loss), gọi <code class="ic">.backward()</code> để PyTorch lan truyền ngược &amp; điền <code class="ic">.grad</code>.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">w = torch.tensor(3.0, requires_grad=<span class="kw">True</span>)
+y = w ** 2                 <span class="cm"># y = w²</span>
+y.backward()               <span class="cm"># tính dy/dw</span>
+print(w.grad)              <span class="cm"># 2w = 6.0</span>
+
+<span class="cm"># Một bước cập nhật thủ công (không theo dõi gradient)</span>
+<span class="kw">with</span> torch.no_grad():
+    w -= 0.1 * w.grad
+w.grad.zero_()             <span class="cm"># XÓA grad trước bước sau (grad bị cộng dồn!)</span></pre></div>
+        <div class="box danger"><span class="bt">Gradient bị cộng dồn</span> PyTorch <em>cộng dồn</em> <code class="ic">.grad</code> qua mỗi <code class="ic">backward()</code>. Vì vậy mỗi vòng lặp phải gọi <code class="ic">optimizer.zero_grad()</code> (hoặc <code class="ic">.grad.zero_()</code>) — quên bước này là lỗi thầm lặng phổ biến nhất.</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tính gradient</div>
+          <div class="etask">Cho <code>x = torch.tensor(2.0, requires_grad=True)</code>. Tính <code>y = x**3 + 2*x</code>, gọi <code>y.backward()</code> rồi in <code>x.grad</code> (đúng = 14).</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">import torch
+x = torch.tensor(2.0, requires_grad=True)
+
+y =
+            # gọi backward
+print(x.grad)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">y = x**3 + 2*x
+y.backward()
+print(x.grad)   <span class="cm"># 3x² + 2 = 14.0</span></pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Cơ bản</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> nn.Module — model đầu tiên</h2>
+        <div class="ch-sub">Mọi model PyTorch là một lớp kế thừa nn.Module.</div>
+
+        <p>Định nghĩa lớp con của <code class="ic">nn.Module</code>: khai báo các lớp trong <code class="ic">__init__</code>, mô tả luồng dữ liệu trong <code class="ic">forward</code>.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · MLP cho MNIST</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
+
+<span class="kw">class</span> <span class="fn">Net</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__()
+        self.fc1 = nn.Linear(784, 128)
+        self.drop = nn.Dropout(0.2)
+        self.fc2 = nn.Linear(128, 10)
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x = x.view(x.size(0), -1)    <span class="cm"># phẳng ảnh → (batch, 784)</span>
+        x = F.relu(self.fc1(x))
+        x = self.drop(x)
+        <span class="kw">return</span> self.fc2(x)              <span class="cm"># trả logits (chưa softmax)</span>
+
+model = Net()</pre></div>
+        <div class="box info"><span class="bt">Quy ước</span> <code class="ic">forward</code> thường trả về <b>logits</b> thô. Hàm <code class="ic">nn.CrossEntropyLoss</code> đã gộp sẵn softmax + log + NLL, nên <b>không</b> thêm softmax ở cuối khi phân loại.</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Định nghĩa nn.Module</div>
+          <div class="etask">Viết lớp <code>MLP(nn.Module)</code>: trong <code>__init__</code> tạo <code>self.fc1 = nn.Linear(64, 32)</code> và <code>self.fc2 = nn.Linear(32, 1)</code>; trong <code>forward</code> trả về <code>self.fc2(F.relu(self.fc1(x)))</code>. Nhớ gọi <code>super().__init__()</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">import torch.nn as nn
+import torch.nn.functional as F
+
+class MLP(nn.Module):
+    def __init__(self):
+
+    def forward(self, x):
+</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(64, 32)
+        self.fc2 = nn.Linear(32, 1)
+    def forward(self, x):
+        return self.fc2(F.relu(self.fc1(x)))</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Vòng lặp huấn luyện chuẩn</h2>
+        <div class="ch-sub">5 dòng "thần chú" bạn sẽ viết cả nghìn lần.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · training loop</span><span class="dot">●</span></div><pre class="code">model = Net().to(device)
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+
+<span class="kw">for</span> epoch <span class="kw">in</span> range(EPOCHS):
+    model.train()                        <span class="cm"># bật dropout/batchnorm</span>
+    <span class="kw">for</span> X, y <span class="kw">in</span> train_loader:
+        X, y = X.to(device), y.to(device)
+        optimizer.zero_grad()            <span class="cm"># 1. xóa grad cũ</span>
+        out = model(X)                   <span class="cm"># 2. forward</span>
+        loss = criterion(out, y)         <span class="cm"># 3. tính loss</span>
+        loss.backward()                  <span class="cm"># 4. backward (tính grad)</span>
+        optimizer.step()                 <span class="cm"># 5. cập nhật trọng số</span></pre></div>
+        <div class="box pro"><span class="bt">Học thuộc 5 bước</span> <code class="ic">zero_grad → forward → loss → backward → step</code>. Đây là khác biệt cốt lõi với Keras: bạn thấy &amp; kiểm soát từng bước.</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Hoàn thiện 5 bước</div>
+          <div class="etask">Điền thân vòng lặp: <code>optimizer.zero_grad()</code>, <code>out = model(X)</code>, <code>loss = criterion(out, y)</code>, <code>loss.backward()</code>, <code>optimizer.step()</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">for X, y in train_loader:
+    # 5 bước chuẩn:
+
+</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">    optimizer.zero_grad()
+    out = model(X)
+    loss = criterion(out, y)
+    loss.backward()
+    optimizer.step()</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Dataset &amp; DataLoader</h2>
+        <div class="ch-sub">Nạp dữ liệu theo lô, xáo trộn, song song.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> torch.utils.data <span class="kw">import</span> DataLoader
+<span class="kw">from</span> torchvision <span class="kw">import</span> datasets, transforms
+
+tf = transforms.Compose([
+    transforms.ToTensor(),                       <span class="cm"># [0,255] → [0,1], HWC→CHW</span>
+    transforms.Normalize((0.5,), (0.5,)),
+])
+train_ds = datasets.MNIST(<span class="st">'.'</span>, train=<span class="kw">True</span>, download=<span class="kw">True</span>, transform=tf)
+train_loader = DataLoader(train_ds, batch_size=64, shuffle=<span class="kw">True</span>, num_workers=2)
+
+<span class="kw">for</span> X, y <span class="kw">in</span> train_loader:
+    print(X.shape)    <span class="cm"># torch.Size([64, 1, 28, 28])</span>
+    <span class="kw">break</span></pre></div>
+        <div class="box info"><span class="bt">CHW không phải HWC</span> PyTorch để channel <b>trước</b>: <code class="ic">(batch, channels, height, width)</code>. Khác với TensorFlow (channels-last). <code class="ic">ToTensor()</code> tự lo việc hoán vị này.</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Tạo DataLoader</div>
+          <div class="etask">Tạo <code>train_loader = DataLoader(train_ds, ...)</code> với <code>batch_size=64</code> và <code>shuffle=True</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">from torch.utils.data import DataLoader
+
+train_loader = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">train_loader = DataLoader(train_ds, batch_size=64, shuffle=True)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Loss, Optimizer, Scheduler</h2>
+        <div class="ch-sub">Chọn đúng "la bàn" và "động cơ" cho việc học.</div>
+
+        <table>
+          <tr><th>Bài toán</th><th>Loss</th><th>Lưu ý</th></tr>
+          <tr><td>Phân loại nhiều lớp</td><td><code class="ic">nn.CrossEntropyLoss</code></td><td>Nhận logits (đã gồm softmax)</td></tr>
+          <tr><td>Phân loại nhị phân</td><td><code class="ic">nn.BCEWithLogitsLoss</code></td><td>Nhận logits (gồm sigmoid)</td></tr>
+          <tr><td>Hồi quy</td><td><code class="ic">nn.MSELoss</code> / <code class="ic">nn.L1Loss</code></td><td>—</td></tr>
+        </table>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+
+<span class="kw">for</span> epoch <span class="kw">in</span> range(EPOCHS):
+    train_one_epoch(...)
+    scheduler.step()          <span class="cm"># giảm learning rate theo lịch</span></pre></div>
+        <div class="box tip"><span class="bt">weight_decay = L2 regularization</span> Tham số <code class="ic">weight_decay</code> trong optimizer chính là phạt L2 lên trọng số — cách chống overfit gọn nhất.</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — Loss + Optimizer</div>
+          <div class="etask">Cho bài phân loại nhiều lớp: tạo <code>criterion = nn.CrossEntropyLoss()</code> và <code>optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">import torch
+import torch.nn as nn
+
+criterion =
+optimizer = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Trung cấp</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> CNN cho ảnh</h2>
+        <div class="ch-sub">nn.Conv2d, pooling, và quy luật giảm kích thước.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · CIFAR-10</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">CNN</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, 3, padding=1)
+        self.pool  = nn.MaxPool2d(2)
+        self.fc    = nn.Linear(64 * 8 * 8, 10)
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x = self.pool(F.relu(self.conv1(x)))   <span class="cm"># 32x32 → 16x16</span>
+        x = self.pool(F.relu(self.conv2(x)))   <span class="cm"># 16x16 → 8x8</span>
+        x = torch.flatten(x, 1)
+        <span class="kw">return</span> self.fc(x)</pre></div>
+        <div class="box warn"><span class="bt">Tính kích thước Flatten</span> Phải tự tính số chiều vào <code class="ic">nn.Linear</code>: sau 2 lần pool, 32×32 → 8×8, với 64 kênh ⇒ <code class="ic">64*8*8</code>. Sai số này gây lỗi shape khi forward — mẹo: dùng <code class="ic">nn.LazyLinear</code> để PyTorch tự suy.</div>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — Lớp tích chập</div>
+          <div class="etask">Khai báo <code>self.conv = nn.Conv2d(3, 16, 3, padding=1)</code> và <code>self.pool = nn.MaxPool2d(2)</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false">self.conv =
+self.pool = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">self.conv = nn.Conv2d(3, 16, 3, padding=1)
+self.pool = nn.MaxPool2d(2)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Transfer learning</h2>
+        <div class="ch-sub">Dùng ResNet đã học ImageNet cho bài toán của bạn.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> torchvision <span class="kw">import</span> models
+
+model = models.resnet18(weights=<span class="st">'IMAGENET1K_V1'</span>)
+<span class="kw">for</span> p <span class="kw">in</span> model.parameters():
+    p.requires_grad = <span class="kw">False</span>           <span class="cm"># đóng băng backbone</span>
+
+model.fc = nn.Linear(model.fc.in_features, 5)   <span class="cm"># thay đầu phân loại 5 lớp</span>
+<span class="cm"># Chỉ tham số của model.fc sẽ được học</span>
+optimizer = torch.optim.Adam(model.fc.parameters(), lr=1e-3)</pre></div>
+        <div class="box pro"><span class="bt">Mẫu fine-tune</span> (1) Đóng băng + train đầu mới. (2) Mở băng vài block cuối với <code class="ic">lr</code> nhỏ. Thay <code class="ic">model.fc</code> tự động bật <code class="ic">requires_grad=True</code> cho lớp mới.</div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Lưu/Load, GPU, eval()</h2>
+        <div class="ch-sub">Giữ trọng số &amp; chuyển đúng chế độ khi suy luận.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Khuyến nghị: lưu state_dict (chỉ trọng số), KHÔNG lưu cả object</span>
+torch.save(model.state_dict(), <span class="st">'model.pth'</span>)
+
+model = Net()
+model.load_state_dict(torch.load(<span class="st">'model.pth'</span>))
+model.eval()                 <span class="cm"># TẮT dropout & dùng BN ở chế độ inference</span>
+
+<span class="kw">with</span> torch.no_grad():        <span class="cm"># không tính grad khi suy luận → nhanh, ít RAM</span>
+    preds = model(X.to(device))</pre></div>
+        <div class="box danger"><span class="bt">Quên model.eval()</span> Nếu quên, dropout vẫn bật &amp; BatchNorm dùng thống kê batch → kết quả suy luận sai lệch, không ổn định. Luôn cặp đôi <code class="ic">model.eval()</code> + <code class="ic">torch.no_grad()</code> khi đánh giá/triển khai.</div>
+
+        <div class="exercise" data-ex="ex8">
+          <div class="eh">✍️ Bài tập 8 — Lưu &amp; nạp trọng số</div>
+          <div class="etask">Lưu bằng <code>torch.save(model.state_dict(), 'm.pth')</code>; nạp bằng <code>model.load_state_dict(torch.load('m.pth'))</code> rồi gọi <code>model.eval()</code>.</div>
+          <textarea class="codepad" id="ex8" spellcheck="false"># lưu
+torch.save(
+# nạp
+model.load_state_dict(
+model.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex8')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex8')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex8"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">torch.save(model.state_dict(), 'm.pth')
+model.load_state_dict(torch.load('m.pth'))
+model.eval()</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Regularization</h2>
+        <div class="ch-sub">Dropout, BatchNorm, weight decay, dừng sớm.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">self.block = nn.Sequential(
+    nn.Linear(256, 128),
+    nn.BatchNorm1d(128),     <span class="cm"># ổn định &amp; tăng tốc học</span>
+    nn.ReLU(),
+    nn.Dropout(0.3),         <span class="cm"># tắt ngẫu nhiên 30% nơ-ron khi train</span>
+)</pre></div>
+        <p>PyTorch không có <code class="ic">EarlyStopping</code> sẵn — ta tự cài: theo dõi <code class="ic">val_loss</code>, lưu trọng số tốt nhất, dừng khi không cải thiện sau <code class="ic">patience</code> epoch.</p>
+        <div class="code-block"><div class="cbhead"><span>python · early stopping thủ công</span><span class="dot">●</span></div><pre class="code">best, wait = float(<span class="st">'inf'</span>), 0
+<span class="kw">for</span> epoch <span class="kw">in</span> range(100):
+    val = validate(model, val_loader)
+    <span class="kw">if</span> val &lt; best:
+        best, wait = val, 0
+        torch.save(model.state_dict(), <span class="st">'best.pth'</span>)
+    <span class="kw">else</span>:
+        wait += 1
+        <span class="kw">if</span> wait &gt;= 3: <span class="kw">break</span>      <span class="cm"># dừng sớm</span></pre></div>
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. <code>model.eval()</code> ảnh hưởng lớp nào?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Dropout &amp; BatchNorm</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Linear &amp; Conv2d</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Optimizer</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">DataLoader</button>
+            </div>
+            <div class="qexp">✅ <code>eval()</code> tắt Dropout và chuyển BatchNorm sang dùng thống kê running (inference).</div>
+          </div>
+          <div class="qitem">
+            <div class="qq">2. weight_decay trong optimizer tương đương?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">L2 regularization</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Tăng learning rate</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Data augmentation</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Early stopping</button>
+            </div>
+            <div class="qexp">✅ <code>weight_decay</code> phạt độ lớn trọng số = L2 regularization.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Custom Dataset &amp; loss</h2>
+        <div class="ch-sub">Khi dữ liệu của bạn không có sẵn loader.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · Dataset tùy biến</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> torch.utils.data <span class="kw">import</span> Dataset
+
+<span class="kw">class</span> <span class="fn">MyDataset</span>(Dataset):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, X, y):
+        self.X, self.y = X, y
+    <span class="kw">def</span> <span class="fn">__len__</span>(self):
+        <span class="kw">return</span> len(self.X)
+    <span class="kw">def</span> <span class="fn">__getitem__</span>(self, i):
+        <span class="kw">return</span> self.X[i], self.y[i]   <span class="cm"># trả 1 mẫu</span></pre></div>
+        <div class="box info"><span class="bt">3 method bắt buộc</span> <code class="ic">__init__</code>, <code class="ic">__len__</code>, <code class="ic">__getitem__</code>. DataLoader sẽ tự gọi <code class="ic">__getitem__</code> &amp; gộp batch. Loss tùy biến chỉ là một hàm nhận <code class="ic">(pred, target)</code> trả về scalar có thể <code class="ic">backward()</code>.</div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Nâng cao &amp; triển khai</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> RNN/LSTM &amp; NLP</h2>
+        <div class="ch-sub">Xử lý chuỗi: văn bản, thời gian.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · phân loại cảm xúc</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">TextClassifier</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, vocab, emb=128, hid=64):
+        super().__init__()
+        self.emb = nn.Embedding(vocab, emb)
+        self.lstm = nn.LSTM(emb, hid, batch_first=<span class="kw">True</span>, bidirectional=<span class="kw">True</span>)
+        self.fc = nn.Linear(hid * 2, 1)
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        x = self.emb(x)
+        _, (h, _) = self.lstm(x)          <span class="cm"># lấy hidden state cuối</span>
+        h = torch.cat([h[-2], h[-1]], dim=1)  <span class="cm"># ghép 2 chiều</span>
+        <span class="kw">return</span> self.fc(h)</pre></div>
+        <div class="box info"><span class="bt">batch_first=True</span> Cho input shape <code class="ic">(batch, seq, feature)</code> thay vì mặc định <code class="ic">(seq, batch, feature)</code> — dễ đọc hơn nhiều. Dùng <code class="ic">nn.utils.rnn.pad_sequence</code> cho câu dài ngắn khác nhau.</div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Mixed precision &amp; đa GPU</h2>
+        <div class="ch-sub">Nhanh hơn, tiết kiệm VRAM, mở rộng quy mô.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · AMP (automatic mixed precision)</span><span class="dot">●</span></div><pre class="code">scaler = torch.cuda.amp.GradScaler()
+<span class="kw">for</span> X, y <span class="kw">in</span> loader:
+    optimizer.zero_grad()
+    <span class="kw">with</span> torch.autocast(device_type=<span class="st">'cuda'</span>):   <span class="cm"># tự dùng float16 chỗ an toàn</span>
+        loss = criterion(model(X), y)
+    scaler.scale(loss).backward()
+    scaler.step(optimizer)
+    scaler.update()</pre></div>
+        <table>
+          <tr><th>Kỹ thuật</th><th>Lợi ích</th></tr>
+          <tr><td>AMP (autocast + GradScaler)</td><td>Nhanh ~2-3x, ít VRAM</td></tr>
+          <tr><td><code class="ic">torch.compile(model)</code></td><td>Biên dịch (PyTorch 2.x) → tăng tốc</td></tr>
+          <tr><td><code class="ic">DistributedDataParallel</code></td><td>Huấn luyện đa GPU/đa máy (chuẩn)</td></tr>
+          <tr><td><code class="ic">pin_memory=True</code></td><td>Chuyển CPU→GPU nhanh hơn</td></tr>
+        </table>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> TorchScript / ONNX / mobile</h2>
+        <div class="ch-sub">Tách model khỏi Python để triển khai.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="cm"># 1) TorchScript: chạy không cần mã nguồn Python gốc</span>
+scripted = torch.jit.script(model)
+scripted.save(<span class="st">'model.pt'</span>)
+
+<span class="cm"># 2) ONNX: định dạng chung, chạy bằng ONNX Runtime / nhiều nền tảng</span>
+torch.onnx.export(model, sample_input, <span class="st">'model.onnx'</span>)</pre></div>
+        <table>
+          <tr><th>Đích</th><th>Công cụ</th><th>Khi nào</th></tr>
+          <tr><td>Server C++/Python</td><td>TorchScript / <code class="ic">torch.export</code></td><td>Production không phụ thuộc mã Python</td></tr>
+          <tr><td>Đa nền tảng</td><td>ONNX + ONNX Runtime</td><td>Chạy trên .NET, Java, web, edge</td></tr>
+          <tr><td>Điện thoại</td><td>ExecuTorch / LiteRT</td><td>On-device iOS/Android</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">script vs trace</span> <code class="ic">torch.jit.trace</code> ghi lại một lần chạy (mất nhánh if/loop động); <code class="ic">torch.jit.script</code> phân tích cả luồng điều khiển. Có rẽ nhánh phụ thuộc dữ liệu → dùng <code class="ic">script</code>.</div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án thực chiến tổng hợp</h2>
+        <div class="ch-sub">Phân loại ảnh 5 lớp end-to-end bằng transfer learning.</div>
+
+        <ol>
+          <li><strong>Dữ liệu:</strong> <code class="ic">datasets.ImageFolder</code> + transform (resize, augment, normalize) → <code class="ic">DataLoader</code> train/val.</li>
+          <li><strong>Model:</strong> <code class="ic">resnet18(weights=...)</code>, đóng băng backbone, thay <code class="ic">model.fc</code> = <code class="ic">Linear(..., 5)</code>.</li>
+          <li><strong>Loss/Opt:</strong> <code class="ic">CrossEntropyLoss</code> + <code class="ic">Adam(model.fc.parameters())</code>.</li>
+          <li><strong>Train:</strong> vòng lặp 5 bước + early stopping thủ công, chuyển <code class="ic">.to(device)</code>.</li>
+          <li><strong>Đánh giá:</strong> <code class="ic">model.eval()</code> + <code class="ic">torch.no_grad()</code>, tính accuracy.</li>
+          <li><strong>Triển khai:</strong> xuất ONNX hoặc TorchScript.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex9">
+          <div class="eh">✍️ Bài tập 9 — Vòng đánh giá đúng chuẩn</div>
+          <div class="etask">Viết phần đánh giá: gọi <code>model.eval()</code>, bọc <code>with torch.no_grad():</code> rồi forward <code>out = model(X)</code>.</div>
+          <textarea class="codepad" id="ex9" spellcheck="false">model.
+with                      :
+    for X, y in val_loader:
+        out = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex9')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex9')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex9"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model.eval()
+with torch.no_grad():
+    for X, y in val_loader:
+        out = model(X)</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã đi từ tensor → triển khai. Bước tiếp: làm lại với dữ liệu của <em>bạn</em>, thử <code class="ic">torch.compile</code>, và đối chiếu với khóa <a href="khoa-hoc-tensorflow.html" style="color:var(--primary-glow)">TensorFlow &amp; Keras</a> để thấy hai trường phái giải cùng bài toán.</div>
+      </section>
+
+      <!-- ============ MODEL BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> nn.Module Builder</h2>
+        <div class="ch-sub">Chọn lớp → sinh class <code>nn.Module</code> sẵn sàng copy.</div>
+        <div class="builder">
+          <div class="bh">🔧 Dựng model bằng cách bấm</div>
+          <div class="brow">
+            <select id="bLayer">
+              <option value="Linear">Linear (out_features)</option>
+              <option value="Conv2d">Conv2d (out_channels)</option>
+              <option value="MaxPool2d">MaxPool2d</option>
+              <option value="ReLU">ReLU</option>
+              <option value="Dropout">Dropout (p)</option>
+              <option value="BatchNorm1d">BatchNorm1d (num_features)</option>
+              <option value="LSTM">LSTM (hidden)</option>
+              <option value="Flatten">Flatten</option>
+            </select>
+            <input id="bParam" type="text" placeholder="tham số" value="128">
+            <button class="ebtn" onclick="addLayer()">+ Thêm lớp</button>
+            <button class="ebtn ghost" onclick="clearLayers()">Xóa hết</button>
+          </div>
+          <ul class="layer-list" id="layerList"></ul>
+          <div class="out" id="builderOut"># Thêm lớp để sinh code...</div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">5 bước huấn luyện</div>
+            <table style="margin:0"><tr><td><code class="ic">optimizer.zero_grad()</code></td><td>Xóa grad</td></tr>
+            <tr><td><code class="ic">out = model(X)</code></td><td>Forward</td></tr>
+            <tr><td><code class="ic">loss = criterion(out, y)</code></td><td>Tính loss</td></tr>
+            <tr><td><code class="ic">loss.backward()</code></td><td>Backward</td></tr>
+            <tr><td><code class="ic">optimizer.step()</code></td><td>Cập nhật</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Lớp &amp; loss</div>
+            <table style="margin:0"><tr><td><code class="ic">nn.Linear / Conv2d</code></td><td>Lớp cơ bản</td></tr>
+            <tr><td><code class="ic">nn.LSTM / Embedding</code></td><td>Chuỗi/NLP</td></tr>
+            <tr><td><code class="ic">CrossEntropyLoss</code></td><td>Phân loại</td></tr>
+            <tr><td><code class="ic">MSELoss</code></td><td>Hồi quy</td></tr>
+            <tr><td><code class="ic">Adam(params, lr)</code></td><td>Optimizer</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Suy luận &amp; triển khai</div>
+            <table style="margin:0"><tr><td><code class="ic">model.eval()</code></td><td>Chế độ inference</td></tr>
+            <tr><td><code class="ic">torch.no_grad()</code></td><td>Tắt autograd</td></tr>
+            <tr><td><code class="ic">state_dict()</code></td><td>Lưu trọng số</td></tr>
+            <tr><td><code class="ic">torch.jit.script</code></td><td>TorchScript</td></tr>
+            <tr><td><code class="ic">torch.onnx.export</code></td><td>ONNX</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🔥 <strong>Khóa Học PyTorch</strong> — một phần của <a href="../index.html">Mega Study</a>. Code minh họa cho PyTorch 2.x.<br>
+        Thực hành trên <a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> hoặc local. Học kèm khóa <a href="khoa-hoc-tensorflow.html">TensorFlow &amp; Keras</a> để so sánh.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/torch\.ones\s*\(\s*3\s*,\s*4/, label:"torch.ones(3, 4)"},
+    {re:/\.sum\s*\(\s*dim\s*=\s*0\s*\)/, label:"sum(dim=0)"},
+  ],
+  ex2: [
+    {re:/x\s*\*\*\s*3/, label:"Có x**3"},
+    {re:/2\s*\*\s*x/, label:"Có 2*x"},
+    {re:/\.backward\s*\(\s*\)/, label:"Gọi y.backward()"},
+  ],
+  ex3: [
+    {re:/super\s*\(\s*\)\s*\.\s*__init__\s*\(\s*\)/, label:"Gọi super().__init__()"},
+    {re:/nn\.Linear\s*\(\s*64\s*,\s*32/, label:"nn.Linear(64, 32)"},
+    {re:/nn\.Linear\s*\(\s*32\s*,\s*1/, label:"nn.Linear(32, 1)"},
+    {re:/F\.relu\s*\(\s*self\.fc1/, label:"forward dùng F.relu(self.fc1(x))"},
+  ],
+  ex4: [
+    {re:/optimizer\.zero_grad\s*\(\s*\)/, label:"optimizer.zero_grad()"},
+    {re:/model\s*\(\s*X\s*\)/, label:"out = model(X)"},
+    {re:/criterion\s*\(\s*out\s*,\s*y\s*\)/, label:"criterion(out, y)"},
+    {re:/loss\.backward\s*\(\s*\)/, label:"loss.backward()"},
+    {re:/optimizer\.step\s*\(\s*\)/, label:"optimizer.step()"},
+  ],
+  ex5: [
+    {re:/DataLoader\s*\(\s*train_ds/, label:"DataLoader(train_ds, ...)"},
+    {re:/batch_size\s*=\s*64/, label:"batch_size=64"},
+    {re:/shuffle\s*=\s*True/, label:"shuffle=True"},
+  ],
+  ex6: [
+    {re:/nn\.CrossEntropyLoss\s*\(\s*\)/, label:"nn.CrossEntropyLoss()"},
+    {re:/torch\.optim\.Adam\s*\(\s*model\.parameters\s*\(\s*\)/, label:"Adam(model.parameters(), ...)"},
+    {re:/lr\s*=/, label:"Có đặt lr"},
+  ],
+  ex7: [
+    {re:/nn\.Conv2d\s*\(\s*3\s*,\s*16\s*,\s*3/, label:"nn.Conv2d(3, 16, 3, ...)"},
+    {re:/nn\.MaxPool2d\s*\(\s*2\s*\)/, label:"nn.MaxPool2d(2)"},
+  ],
+  ex8: [
+    {re:/torch\.save\s*\(\s*model\.state_dict\s*\(\s*\)/, label:"save(model.state_dict(), ...)"},
+    {re:/load_state_dict\s*\(\s*torch\.load/, label:"load_state_dict(torch.load(...))"},
+    {re:/model\.eval\s*\(\s*\)/, label:"model.eval()"},
+  ],
+  ex9: [
+    {re:/model\.eval\s*\(\s*\)/, label:"model.eval()"},
+    {re:/torch\.no_grad\s*\(\s*\)/, label:"with torch.no_grad()"},
+    {re:/model\s*\(\s*X\s*\)/, label:"out = model(X)"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"Tensor PyTorch khác NumPy?", a:"Chạy được trên GPU (.to('cuda')) và hỗ trợ autograd (requires_grad)."},
+  {q:"requires_grad=True để làm gì?", a:"Đánh dấu tensor cần theo dõi để tính đạo hàm qua .backward()."},
+  {q:"Vì sao phải zero_grad mỗi vòng?", a:"PyTorch cộng dồn .grad; không xóa thì gradient các batch bị cộng chồng → sai."},
+  {q:"5 bước training loop?", a:"zero_grad → forward → loss → backward → optimizer.step()."},
+  {q:"nn.Module cần override gì?", a:"__init__ (khai báo lớp) và forward (luồng dữ liệu)."},
+  {q:"CrossEntropyLoss nhận gì?", a:"Logits thô (không softmax trước) + nhãn số nguyên — nó gộp softmax+NLL."},
+  {q:"CHW hay HWC?", a:"PyTorch dùng CHW: (batch, channels, H, W). ToTensor tự hoán vị."},
+  {q:"model.eval() ảnh hưởng gì?", a:"Tắt Dropout, BatchNorm dùng thống kê running — chế độ suy luận."},
+  {q:"torch.no_grad() để?", a:"Tắt autograd khi suy luận → nhanh hơn & tiết kiệm bộ nhớ."},
+  {q:"Lưu model nên dùng?", a:"state_dict() (chỉ trọng số) + load_state_dict, không pickle cả object."},
+  {q:"weight_decay là?", a:"L2 regularization tích hợp trong optimizer."},
+  {q:"Xuất model đa nền tảng?", a:"TorchScript (torch.jit.script) hoặc ONNX (torch.onnx.export)."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== MODEL BUILDER (nn.Module) ===== */
+let layers = [];
+const NEEDS = {Linear:'out', Conv2d:'out_ch', Dropout:'p', BatchNorm1d:'features', LSTM:'hidden'};
+function addLayer(){
+  const type = document.getElementById('bLayer').value;
+  const p = document.getElementById('bParam').value.trim();
+  layers.push({type, p});
+  renderLayers();
+}
+function clearLayers(){ layers = []; renderLayers(); }
+function rmLayer(i){ layers.splice(i,1); renderLayers(); }
+function layerCode(l){
+  switch(l.type){
+    case 'Linear': return `nn.Linear(IN, ${l.p||128})`;
+    case 'Conv2d': return `nn.Conv2d(IN, ${l.p||32}, 3, padding=1)`;
+    case 'MaxPool2d': return `nn.MaxPool2d(2)`;
+    case 'ReLU': return `nn.ReLU()`;
+    case 'Dropout': return `nn.Dropout(${l.p||0.3})`;
+    case 'BatchNorm1d': return `nn.BatchNorm1d(${l.p||128})`;
+    case 'LSTM': return `nn.LSTM(IN, ${l.p||64}, batch_first=True)`;
+    case 'Flatten': return `nn.Flatten()`;
+    default: return '';
+  }
+}
+function renderLayers(){
+  document.getElementById('layerList').innerHTML = layers.map((l,i)=>
+    `<li><span>${l.type}${NEEDS[l.type]?` (${NEEDS[l.type]}=${l.p||'?'})`:''}</span><button class="rm" onclick="rmLayer(${i})">✕</button></li>`).join('');
+  const out = document.getElementById('builderOut');
+  if(!layers.length){ out.textContent = '# Thêm lớp để sinh code...'; return; }
+  out.textContent = 'import torch.nn as nn\n\nclass MyModel(nn.Module):\n    def __init__(self):\n        super().__init__()\n        self.net = nn.Sequential(\n'
+    + layers.map(l=>'            '+layerCode(l)+',').join('\n')
+    + '\n        )\n    def forward(self, x):\n        return self.net(x)\n\n# Thay IN bằng số chiều đầu vào phù hợp.';
+}
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

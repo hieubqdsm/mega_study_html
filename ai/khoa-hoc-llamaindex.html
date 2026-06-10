@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học LlamaIndex — RAG &amp; Data Framework Cho LLM</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #A855F7;        /* LlamaIndex purple */
+    --primary-glow: #c084fc;
+    --accent: #ec4899;         /* pink */
+    --accent-2: #f9a8d4;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #150a22; --darker: #0b0514;
+    --light: #ddd2ec; --light-strong: #f7f2ff; --gray: #9a8cb0;
+    --card: #1b0f2b; --card-2: #261538; --border: #3a2456; --terminal: #100720;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #897a9e;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(168,85,247,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(236,72,153,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #07030e 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(168,85,247,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(168,85,247,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(168,85,247,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#150a22; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(168,85,247,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(11,5,20,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(168,85,247,.16), rgba(236,72,153,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🦙"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(168,85,247,.08); border-color: rgba(168,85,247,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(168,85,247,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#fff; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(168,85,247,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:8px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .layer-list { list-style:none; margin:6px 0 12px; padding:0; }
+  .layer-list li { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:7px 12px; margin-bottom:6px; font-size:13px; font-family:monospace; display:flex; justify-content:space-between; align-items:center; }
+  .layer-list .rm { cursor:pointer; color:var(--danger); font-weight:800; border:none; background:none; font-size:15px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#fff; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🦙</div>
+      <h1>LlamaIndex</h1>
+      <div class="sub">RAG &amp; DATA FRAMEWORK · CƠ BẢN → NÂNG CAO</div>
+      <div class="pat">index → query_engine</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> LlamaIndex là gì &amp; cài đặt</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Document &amp; Node</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Settings (LLM &amp; embedding)</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> RAG cơ bản</li>
+      <li><a href="#c4"><span class="cn">4</span> VectorStoreIndex</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Query engine</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Nạp dữ liệu (Reader)</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Lưu &amp; nạp lại index</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Tùy chỉnh RAG</li>
+      <li><a href="#c8"><span class="cn">8</span> Node parser / chunking</a></li>
+      <li><a href="#c9"><span class="cn">9</span> Retriever &amp; chế độ</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Response synthesizer</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Metadata &amp; lọc</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Chat engine</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Agent &amp; nâng cao</li>
+      <li><a href="#c13"><span class="cn">13</span> Agents &amp; tools</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Workflows</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Đánh giá &amp; quan sát</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án thực chiến</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> RAG Pipeline Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🦙 Khóa học · <b id="crumb">LlamaIndex</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">LlamaIndex</span> — khung dữ liệu cho RAG &amp; ứng dụng LLM</h1>
+        <p>16 chương theo 4 cấp độ. LlamaIndex chuyên về <strong>kết nối LLM với dữ liệu của bạn</strong>: nạp → đánh chỉ mục → truy vấn. Trọng tâm RAG, nhưng cũng có agent &amp; workflow. Mỗi chương có code chạy được, <strong>bài tập tự chấm</strong>, quiz, flashcard. Đi từ <code class="ic">VectorStoreIndex</code> 3 dòng → tùy chỉnh retriever/synthesizer → chat engine → agent.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>RAG Builder</b></span>
+          <span class="meta-pill">🐍 llama-index <b>0.11+</b></span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Cài <code class="ic">pip install llama-index</code> (gồm core + tích hợp OpenAI mặc định) hoặc thêm <code class="ic">llama-index-llms-anthropic</code> để dùng Claude. Đặt API key tương ứng. Bài tập <b>tự chấm offline</b> bằng cách kiểm tra "dấu hiệu" trong code bạn gõ.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> LlamaIndex là gì &amp; cài đặt</h2>
+        <div class="ch-sub">Khung dữ liệu chuyên cho RAG.</div>
+
+        <p><strong>LlamaIndex</strong> là framework tập trung vào <strong>dữ liệu cho LLM</strong>: nạp tài liệu từ trăm nguồn, đánh chỉ mục (index) để tìm theo ngữ nghĩa, rồi truy vấn bằng ngôn ngữ tự nhiên. So với LangChain (đa năng, dàn dựng), LlamaIndex <em>chuyên sâu &amp; tối giản cho RAG</em> — thường ít dòng code hơn cho cùng một pipeline hỏi-đáp tài liệu.</p>
+
+        <table>
+          <tr><th>Khái niệm</th><th>Vai trò</th></tr>
+          <tr><td><strong>Reader / Loader</strong></td><td>Nạp dữ liệu (PDF, web, Notion, SQL...) → Document</td></tr>
+          <tr><td><strong>Node</strong></td><td>Đoạn nhỏ (chunk) của Document, đơn vị truy hồi</td></tr>
+          <tr><td><strong>Index</strong></td><td>Cấu trúc tra cứu (VectorStoreIndex, SummaryIndex...)</td></tr>
+          <tr><td><strong>Retriever</strong></td><td>Lấy Node liên quan đến câu hỏi</td></tr>
+          <tr><td><strong>Query / Chat engine</strong></td><td>Giao diện hỏi-đáp end-to-end</td></tr>
+        </table>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. LlamaIndex mạnh nhất ở mảng nào?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">RAG — kết nối LLM với dữ liệu của bạn</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Huấn luyện LLM</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Vẽ giao diện web</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Quản lý GPU</button>
+            </div>
+            <div class="qexp">✅ LlamaIndex là "data framework": nạp → index → truy vấn dữ liệu của bạn bằng LLM.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Document &amp; Node</h2>
+        <div class="ch-sub">Hai đơn vị dữ liệu nền tảng.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core <span class="kw">import</span> Document
+
+doc = Document(
+    text=<span class="st">"LlamaIndex giúp xây RAG nhanh chóng."</span>,
+    metadata={<span class="st">"nguon"</span>: <span class="st">"sotay.pdf"</span>, <span class="st">"trang"</span>: 1},
+)
+<span class="cm"># Document được cắt thành các Node khi đánh index</span></pre></div>
+        <div class="box info"><span class="bt">Document → Node</span> Một <code class="ic">Document</code> là cả tài liệu/trang; khi index, nó được <strong>node parser</strong> cắt thành các <code class="ic">Node</code> (đoạn nhỏ kèm metadata &amp; quan hệ). Node là thứ thực sự được nhúng &amp; truy hồi.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Tạo Document</div>
+          <div class="etask">Tạo một <code>Document</code> với <code>text="Xin chào"</code> và <code>metadata={"nguon": "test"}</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">from llama_index.core import Document
+
+doc = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">doc = Document(text="Xin chào", metadata={"nguon": "test"})</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Settings (LLM &amp; embedding)</h2>
+        <div class="ch-sub">Cấu hình toàn cục: dùng model nào.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core <span class="kw">import</span> Settings
+<span class="kw">from</span> llama_index.llms.anthropic <span class="kw">import</span> Anthropic
+<span class="kw">from</span> llama_index.embeddings.openai <span class="kw">import</span> OpenAIEmbedding
+
+Settings.llm = Anthropic(model=<span class="st">"claude-sonnet-4-6"</span>)
+Settings.embed_model = OpenAIEmbedding(model=<span class="st">"text-embedding-3-small"</span>)
+Settings.chunk_size = 512</pre></div>
+        <div class="box tip"><span class="bt">Settings = mặc định toàn cục</span> Đặt một lần, mọi index/engine dùng theo. Vẫn có thể ghi đè cục bộ cho từng đối tượng. Embedding model quyết định chất lượng truy hồi; LLM quyết định chất lượng câu trả lời.</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Cấu hình Settings</div>
+          <div class="etask">Đặt <code>Settings.llm = Anthropic(model="claude-sonnet-4-6")</code> và <code>Settings.chunk_size = 512</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">from llama_index.core import Settings
+from llama_index.llms.anthropic import Anthropic
+
+Settings.llm =
+Settings.chunk_size = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">Settings.llm = Anthropic(model="claude-sonnet-4-6")
+Settings.chunk_size = 512</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · RAG cơ bản</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> VectorStoreIndex — RAG trong 5 dòng</h2>
+        <div class="ch-sub">Sức mạnh "tối giản" của LlamaIndex.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · RAG tối thiểu</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core <span class="kw">import</span> VectorStoreIndex, SimpleDirectoryReader
+
+documents = SimpleDirectoryReader(<span class="st">"data"</span>).load_data()   <span class="cm"># nạp cả thư mục</span>
+index = VectorStoreIndex.from_documents(documents)        <span class="cm"># cắt + nhúng + lưu</span>
+query_engine = index.as_query_engine()
+print(query_engine.query(<span class="st">"Tài liệu nói gì về bảo hành?"</span>))</pre></div>
+        <div class="box pro"><span class="bt">5 dòng = RAG hoàn chỉnh</span> <code class="ic">from_documents</code> tự lo cắt Node, gọi embedding, dựng vector index. <code class="ic">as_query_engine</code> gói luôn retriever + synthesizer. Đây là lý do LlamaIndex nổi tiếng "RAG nhanh".</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Dựng index</div>
+          <div class="etask">Tạo <code>index = VectorStoreIndex.from_documents(documents)</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">from llama_index.core import VectorStoreIndex
+
+index = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">index = VectorStoreIndex.from_documents(documents)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Query engine</h2>
+        <div class="ch-sub">Giao diện hỏi-đáp một lượt.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">qe = index.as_query_engine(similarity_top_k=4)   <span class="cm"># lấy 4 Node liên quan</span>
+resp = qe.query(<span class="st">"Chính sách đổi trả?"</span>)
+print(resp)                  <span class="cm"># câu trả lời</span>
+print(resp.source_nodes)     <span class="cm"># các Node nguồn (để dẫn nguồn/kiểm chứng)</span></pre></div>
+        <div class="box info"><span class="bt">source_nodes = dẫn nguồn</span> Luôn kiểm <code class="ic">resp.source_nodes</code> để biết câu trả lời dựa trên đoạn nào — vừa minh bạch, vừa giúp debug khi model trả lời sai (thường do truy hồi nhầm).</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Query engine</div>
+          <div class="etask">Tạo <code>query_engine = index.as_query_engine(similarity_top_k=3)</code> rồi gọi <code>.query("...")</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">query_engine =
+resp = query_engine.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">query_engine = index.as_query_engine(similarity_top_k=3)
+resp = query_engine.query("Chính sách bảo hành?")</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Nạp dữ liệu (Reader)</h2>
+        <div class="ch-sub">Hàng trăm nguồn qua LlamaHub.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core <span class="kw">import</span> SimpleDirectoryReader
+
+<span class="cm"># Nạp mọi file trong thư mục (pdf, docx, md, txt...)</span>
+docs = SimpleDirectoryReader(<span class="st">"data"</span>, recursive=<span class="kw">True</span>).load_data()
+
+<span class="cm"># Reader chuyên dụng từ LlamaHub, vd web:</span>
+<span class="cm"># from llama_index.readers.web import SimpleWebPageReader</span>
+<span class="cm"># docs = SimpleWebPageReader().load_data(["https://..."])</span></pre></div>
+        <div class="box tip"><span class="bt">LlamaHub</span> Kho hàng trăm <em>reader</em> &amp; <em>tool</em> cộng đồng: Notion, Slack, Google Drive, SQL, GitHub, web... Cài gói tương ứng <code class="ic">llama-index-readers-*</code> rồi <code class="ic">load_data()</code>.</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Nạp thư mục</div>
+          <div class="etask">Nạp dữ liệu: <code>SimpleDirectoryReader("data").load_data()</code> gán vào <code>documents</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">from llama_index.core import SimpleDirectoryReader
+
+documents = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">documents = SimpleDirectoryReader("data").load_data()</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Lưu &amp; nạp lại index</h2>
+        <div class="ch-sub">Đừng nhúng lại mỗi lần chạy — tốn tiền &amp; thời gian.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core <span class="kw">import</span> StorageContext, load_index_from_storage
+
+index.storage_context.persist(persist_dir=<span class="st">"./storage"</span>)   <span class="cm"># lưu xuống đĩa</span>
+
+<span class="cm"># Lần sau: nạp lại, KHÔNG cần embedding lại</span>
+ctx = StorageContext.from_defaults(persist_dir=<span class="st">"./storage"</span>)
+index = load_index_from_storage(ctx)</pre></div>
+        <div class="box warn"><span class="bt">Tiết kiệm chi phí</span> Mỗi lần <code class="ic">from_documents</code> đều gọi API embedding (mất tiền). Production nên dùng <strong>vector DB</strong> thật (Chroma, Qdrant, pgvector) qua <code class="ic">StorageContext</code> thay vì lưu file mặc định.</div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Tùy chỉnh RAG</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Node parser / chunking</h2>
+        <div class="ch-sub">Cắt thông minh = truy hồi tốt.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core.node_parser <span class="kw">import</span> SentenceSplitter
+
+splitter = SentenceSplitter(chunk_size=512, chunk_overlap=50)
+nodes = splitter.get_nodes_from_documents(documents)
+index = VectorStoreIndex(nodes)        <span class="cm"># dựng index từ Node có sẵn</span></pre></div>
+        <div class="box info"><span class="bt">Các parser hữu ích</span> <code class="ic">SentenceSplitter</code> (cắt theo câu, mặc định tốt), <code class="ic">SentenceWindowNodeParser</code> (truy hồi câu + ngữ cảnh xung quanh), <code class="ic">SemanticSplitter</code> (cắt theo điểm đổi chủ đề), <code class="ic">MarkdownNodeParser</code> (theo cấu trúc heading).</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — Cắt Node</div>
+          <div class="etask">Tạo <code>SentenceSplitter(chunk_size=256, chunk_overlap=20)</code> rồi <code>.get_nodes_from_documents(documents)</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">from llama_index.core.node_parser import SentenceSplitter
+
+splitter =
+nodes = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">splitter = SentenceSplitter(chunk_size=256, chunk_overlap=20)
+nodes = splitter.get_nodes_from_documents(documents)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Retriever &amp; chế độ</h2>
+        <div class="ch-sub">Tách riêng bước "lấy tài liệu" để tùy biến.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">retriever = index.as_retriever(similarity_top_k=5)
+nodes = retriever.retrieve(<span class="st">"câu hỏi"</span>)     <span class="cm"># list[NodeWithScore]</span>
+
+<span class="cm"># Tự lắp query engine từ retriever + postprocessor</span>
+<span class="kw">from</span> llama_index.core.query_engine <span class="kw">import</span> RetrieverQueryEngine
+<span class="kw">from</span> llama_index.core.postprocessor <span class="kw">import</span> SimilarityPostprocessor
+qe = RetrieverQueryEngine.from_args(
+    retriever, node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.7)])</pre></div>
+        <div class="box pro"><span class="bt">Postprocessor</span> Lọc/sắp xếp lại Node sau truy hồi: cắt theo ngưỡng điểm, <strong>rerank</strong> bằng model chuyên dụng (Cohere/LLM), hay mở rộng ngữ cảnh. Rerank thường tăng chất lượng RAG đáng kể.</div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Response synthesizer</h2>
+        <div class="ch-sub">Cách "tổng hợp" câu trả lời từ nhiều Node.</div>
+
+        <table>
+          <tr><th>response_mode</th><th>Cách hoạt động</th><th>Dùng khi</th></tr>
+          <tr><td><code class="ic">compact</code> (mặc định)</td><td>Nhồi tối đa Node vào 1 lần gọi</td><td>Nhanh, rẻ, đa số trường hợp</td></tr>
+          <tr><td><code class="ic">refine</code></td><td>Lặp qua từng Node, tinh chỉnh dần</td><td>Câu trả lời cần đầy đủ, nhiều nguồn</td></tr>
+          <tr><td><code class="ic">tree_summarize</code></td><td>Tóm tắt phân cấp</td><td>Tổng hợp/summary tài liệu lớn</td></tr>
+        </table>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">qe = index.as_query_engine(response_mode=<span class="st">"tree_summarize"</span>)</pre></div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Metadata &amp; lọc</h2>
+        <div class="ch-sub">Truy vấn chính xác hơn nhờ siêu dữ liệu.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core.vector_stores <span class="kw">import</span> MetadataFilters, ExactMatchFilter
+
+filters = MetadataFilters(filters=[ExactMatchFilter(key=<span class="st">"nam"</span>, value=2026)])
+qe = index.as_query_engine(filters=filters)   <span class="cm"># chỉ tìm trong tài liệu năm 2026</span></pre></div>
+        <div class="box tip"><span class="bt">Kết hợp vector + metadata</span> Lọc theo metadata (tác giả, năm, phòng ban, quyền truy cập) <em>trước</em> rồi mới tìm ngữ nghĩa → vừa chính xác vừa an toàn (phân quyền). Gắn metadata giàu khi nạp Document để khai thác sau.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Chat engine</h2>
+        <div class="ch-sub">RAG có trí nhớ hội thoại nhiều lượt.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">chat_engine = index.as_chat_engine(chat_mode=<span class="st">"condense_plus_context"</span>)
+print(chat_engine.chat(<span class="st">"Sản phẩm bảo hành bao lâu?"</span>))
+print(chat_engine.chat(<span class="st">"Thế còn đổi trả?"</span>))   <span class="cm"># hiểu "thế còn" nhờ nhớ lượt trước</span></pre></div>
+        <div class="box info"><span class="bt">Query vs Chat engine</span> <code class="ic">query_engine</code> = hỏi-đáp một lượt (không nhớ). <code class="ic">chat_engine</code> = có lịch sử, biết "viết lại" câu hỏi theo ngữ cảnh hội thoại (<code class="ic">condense_plus_context</code> là chế độ cân bằng tốt cho RAG).</div>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — Chat engine</div>
+          <div class="etask">Tạo <code>chat_engine = index.as_chat_engine(chat_mode="condense_plus_context")</code> rồi <code>.chat("...")</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false">chat_engine =
+resp = chat_engine.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">chat_engine = index.as_chat_engine(chat_mode="condense_plus_context")
+resp = chat_engine.chat("Sản phẩm bảo hành bao lâu?")</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Agent &amp; nâng cao</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Agents &amp; tools</h2>
+        <div class="ch-sub">LLM tự chọn tool — kể cả "tool là một query engine".</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core.tools <span class="kw">import</span> FunctionTool, QueryEngineTool
+<span class="kw">from</span> llama_index.core.agent <span class="kw">import</span> ReActAgent
+
+<span class="kw">def</span> <span class="fn">nhan</span>(a: int, b: int) -> int:
+    <span class="st">"""Nhân hai số."""</span>
+    <span class="kw">return</span> a * b
+
+tools = [
+    FunctionTool.from_defaults(fn=nhan),
+    QueryEngineTool.from_defaults(query_engine, name=<span class="st">"tai_lieu"</span>,
+        description=<span class="st">"Trả lời câu hỏi về tài liệu công ty"</span>),
+]
+agent = ReActAgent.from_tools(tools, verbose=<span class="kw">True</span>)
+agent.chat(<span class="st">"Bảo hành mấy năm, nhân với 12 ra mấy tháng?"</span>)</pre></div>
+        <div class="box pro"><span class="bt">QueryEngineTool</span> Biến một RAG index thành một <em>tool</em> để agent gọi khi cần tra cứu — nền tảng của <strong>multi-document agent</strong> (mỗi tài liệu/chủ đề một query engine riêng, agent định tuyến).</div>
+
+        <div class="exercise" data-ex="ex8">
+          <div class="eh">✍️ Bài tập 8 — Tạo tool &amp; agent</div>
+          <div class="etask">Tạo <code>FunctionTool.from_defaults(fn=nhan)</code> rồi <code>ReActAgent.from_tools(tools)</code>.</div>
+          <textarea class="codepad" id="ex8" spellcheck="false">from llama_index.core.tools import FunctionTool
+from llama_index.core.agent import ReActAgent
+
+tools = [FunctionTool.from_defaults(
+agent = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex8')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex8')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex8"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">tools = [FunctionTool.from_defaults(fn=nhan)]
+agent = ReActAgent.from_tools(tools, verbose=True)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Workflows</h2>
+        <div class="ch-sub">Pipeline phức tạp theo sự kiện (event-driven).</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core.workflow <span class="kw">import</span> Workflow, step, StartEvent, StopEvent
+
+<span class="kw">class</span> <span class="fn">RAGFlow</span>(Workflow):
+    <span class="nb">@step</span>
+    <span class="kw">async</span> <span class="kw">def</span> <span class="fn">run</span>(self, ev: StartEvent) -> StopEvent:
+        ans = query_engine.query(ev.query)
+        <span class="kw">return</span> StopEvent(result=str(ans))</pre></div>
+        <div class="box info"><span class="bt">Workflows</span> Cách hiện đại của LlamaIndex để dựng pipeline nhiều bước có rẽ nhánh/vòng lặp (thay cho Query Pipeline cũ). Mỗi <code class="ic">@step</code> nhận &amp; phát ra <em>event</em>; phù hợp cho RAG nâng cao, agent tự sửa, multi-step reasoning.</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Đánh giá &amp; quan sát</h2>
+        <div class="ch-sub">RAG "có vẻ đúng" ≠ đúng. Phải đo.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> llama_index.core.evaluation <span class="kw">import</span> FaithfulnessEvaluator, RelevancyEvaluator
+
+faith = FaithfulnessEvaluator()      <span class="cm"># trả lời có bám nguồn không (chống bịa)?</span>
+rel = RelevancyEvaluator()           <span class="cm"># trả lời có liên quan câu hỏi không?</span>
+result = faith.evaluate_response(response=qe.query(<span class="st">"..."</span>))
+print(result.passing)</pre></div>
+        <table>
+          <tr><th>Đo gì</th><th>Công cụ</th></tr>
+          <tr><td>Bịa đặt (hallucination)</td><td><code class="ic">FaithfulnessEvaluator</code></td></tr>
+          <tr><td>Độ liên quan</td><td><code class="ic">RelevancyEvaluator</code></td></tr>
+          <tr><td>Chất lượng truy hồi</td><td>hit-rate, MRR (RetrieverEvaluator)</td></tr>
+          <tr><td>Quan sát/tracing</td><td>LlamaTrace, Arize Phoenix, LangSmith</td></tr>
+        </table>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án thực chiến: Hỏi-đáp tài liệu công ty</h2>
+        <div class="ch-sub">Ghép toàn bộ thành trợ lý nội bộ.</div>
+
+        <ol>
+          <li><strong>Nạp:</strong> <code class="ic">SimpleDirectoryReader("docs", recursive=True)</code> (PDF/docx/md).</li>
+          <li><strong>Cắt:</strong> <code class="ic">SentenceSplitter</code> + gắn metadata (phòng ban, ngày).</li>
+          <li><strong>Index + lưu:</strong> <code class="ic">VectorStoreIndex</code> vào vector DB (Qdrant), <code class="ic">persist</code>.</li>
+          <li><strong>Truy vấn:</strong> retriever (top_k) + rerank + <code class="ic">response_mode</code> phù hợp; lọc metadata theo quyền.</li>
+          <li><strong>Hội thoại:</strong> <code class="ic">as_chat_engine</code> để hỏi nhiều lượt; trả kèm <code class="ic">source_nodes</code>.</li>
+          <li><strong>Đánh giá &amp; UI:</strong> Faithfulness/Relevancy + Streamlit + tracing.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex9">
+          <div class="eh">✍️ Bài tập 9 — RAG end-to-end</div>
+          <div class="etask">Ghép 3 dòng: <code>load_data()</code> → <code>VectorStoreIndex.from_documents(...)</code> → <code>as_query_engine().query("...")</code>.</div>
+          <textarea class="codepad" id="ex9" spellcheck="false">from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
+
+documents =
+index =
+resp = index.as_query_engine().</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex9')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex9')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex9"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">documents = SimpleDirectoryReader("data").load_data()
+index = VectorStoreIndex.from_documents(documents)
+resp = index.as_query_engine().query("Câu hỏi của bạn?")</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã đi từ index 5 dòng đến RAG production có agent &amp; đánh giá. Bước tiếp: thử rerank, multi-document agent, và đối chiếu khóa <a href="khoa-hoc-langchain.html" style="color:var(--primary-glow)">LangChain</a> — nhiều dự án dùng <em>cả hai</em>: LlamaIndex cho tầng dữ liệu/RAG, LangChain/LangGraph cho dàn dựng agent.</div>
+      </section>
+
+      <!-- ============ BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> RAG Pipeline Builder</h2>
+        <div class="ch-sub">Chọn các bước → sinh code pipeline LlamaIndex.</div>
+        <div class="builder">
+          <div class="bh">🔧 Dựng pipeline bằng cách bấm</div>
+          <div class="brow">
+            <select id="bLayer">
+              <option value="reader">Reader (SimpleDirectoryReader)</option>
+              <option value="splitter">Node parser (SentenceSplitter)</option>
+              <option value="index">VectorStoreIndex</option>
+              <option value="persist">Persist (lưu đĩa)</option>
+              <option value="retriever">Retriever (top_k)</option>
+              <option value="rerank">Rerank postprocessor</option>
+              <option value="query">Query engine</option>
+              <option value="chat">Chat engine</option>
+            </select>
+            <button class="ebtn" onclick="addLayer()">+ Thêm bước</button>
+            <button class="ebtn ghost" onclick="clearLayers()">Xóa hết</button>
+          </div>
+          <ul class="layer-list" id="layerList"></ul>
+          <div class="out" id="builderOut"># Thêm bước để sinh code...</div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">RAG 5 dòng</div>
+            <table style="margin:0"><tr><td><code class="ic">SimpleDirectoryReader</code></td><td>Nạp</td></tr>
+            <tr><td><code class="ic">VectorStoreIndex.from_documents</code></td><td>Index</td></tr>
+            <tr><td><code class="ic">as_query_engine()</code></td><td>Hỏi-đáp</td></tr>
+            <tr><td><code class="ic">.query("...")</code></td><td>Truy vấn</td></tr>
+            <tr><td><code class="ic">resp.source_nodes</code></td><td>Dẫn nguồn</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Tùy chỉnh</div>
+            <table style="margin:0"><tr><td><code class="ic">Settings.llm / embed_model</code></td><td>Cấu hình</td></tr>
+            <tr><td><code class="ic">SentenceSplitter</code></td><td>Chunking</td></tr>
+            <tr><td><code class="ic">as_retriever(top_k)</code></td><td>Truy hồi</td></tr>
+            <tr><td><code class="ic">response_mode</code></td><td>compact/refine/tree</td></tr>
+            <tr><td><code class="ic">persist / load_index</code></td><td>Lưu/nạp</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Nâng cao</div>
+            <table style="margin:0"><tr><td><code class="ic">as_chat_engine()</code></td><td>Hội thoại</td></tr>
+            <tr><td><code class="ic">FunctionTool / QueryEngineTool</code></td><td>Tool</td></tr>
+            <tr><td><code class="ic">ReActAgent</code></td><td>Agent</td></tr>
+            <tr><td><code class="ic">Workflow / @step</code></td><td>Pipeline</td></tr>
+            <tr><td><code class="ic">FaithfulnessEvaluator</code></td><td>Đánh giá</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🦙 <strong>Khóa Học LlamaIndex</strong> — một phần của <a href="../index.html">Mega Study</a>. Code cho llama-index 0.11+.<br>
+        Thực hành local (cần API key) hoặc <a href="https://colab.research.google.com" target="_blank" rel="noopener">Colab</a>. Học kèm <a href="khoa-hoc-langchain.html">LangChain</a> &amp; khóa <a href="giao_trinh_agentic_ai.html">Agentic AI</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/Document\s*\(/, label:"Gọi Document(...)"},
+    {re:/text\s*=\s*["']Xin chào["']/, label:'text="Xin chào"'},
+    {re:/metadata\s*=\s*\{[^}]*["']nguon["']\s*:\s*["']test["']/, label:'metadata={"nguon": "test"}'},
+  ],
+  ex2: [
+    {re:/Settings\.llm\s*=\s*Anthropic\s*\(\s*model\s*=/, label:"Settings.llm = Anthropic(model=...)"},
+    {re:/Settings\.chunk_size\s*=\s*512/, label:"Settings.chunk_size = 512"},
+  ],
+  ex3: [
+    {re:/VectorStoreIndex\.from_documents\s*\(\s*documents/, label:"VectorStoreIndex.from_documents(documents)"},
+  ],
+  ex4: [
+    {re:/index\.as_query_engine\s*\(/, label:"index.as_query_engine(...)"},
+    {re:/similarity_top_k\s*=\s*3/, label:"similarity_top_k=3"},
+    {re:/\.query\s*\(/, label:"gọi .query(...)"},
+  ],
+  ex5: [
+    {re:/SimpleDirectoryReader\s*\(\s*["']data["']\s*\)/, label:'SimpleDirectoryReader("data")'},
+    {re:/\.load_data\s*\(\s*\)/, label:"load_data()"},
+  ],
+  ex6: [
+    {re:/SentenceSplitter\s*\(/, label:"SentenceSplitter(...)"},
+    {re:/chunk_size\s*=\s*256/, label:"chunk_size=256"},
+    {re:/chunk_overlap\s*=\s*20/, label:"chunk_overlap=20"},
+    {re:/\.get_nodes_from_documents\s*\(\s*documents/, label:"get_nodes_from_documents(documents)"},
+  ],
+  ex7: [
+    {re:/index\.as_chat_engine\s*\(/, label:"index.as_chat_engine(...)"},
+    {re:/chat_mode\s*=\s*["']condense_plus_context["']/, label:'chat_mode="condense_plus_context"'},
+    {re:/\.chat\s*\(/, label:"gọi .chat(...)"},
+  ],
+  ex8: [
+    {re:/FunctionTool\.from_defaults\s*\(\s*fn\s*=\s*nhan/, label:"FunctionTool.from_defaults(fn=nhan)"},
+    {re:/ReActAgent\.from_tools\s*\(\s*tools/, label:"ReActAgent.from_tools(tools)"},
+  ],
+  ex9: [
+    {re:/SimpleDirectoryReader\s*\([^)]*\)\s*\.load_data\s*\(\s*\)/, label:"SimpleDirectoryReader(...).load_data()"},
+    {re:/VectorStoreIndex\.from_documents\s*\(/, label:"VectorStoreIndex.from_documents(...)"},
+    {re:/as_query_engine\s*\(\s*\)\s*\.query\s*\(/, label:"as_query_engine().query(...)"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"LlamaIndex chuyên gì?", a:"Data framework cho RAG: nạp → index → truy vấn dữ liệu của bạn bằng LLM."},
+  {q:"Document vs Node?", a:"Document = cả tài liệu; Node = đoạn nhỏ (chunk) được nhúng & truy hồi."},
+  {q:"RAG tối thiểu mấy dòng?", a:"~5: load_data → VectorStoreIndex.from_documents → as_query_engine → query."},
+  {q:"Settings dùng để?", a:"Đặt LLM, embed_model, chunk_size... mặc định toàn cục."},
+  {q:"source_nodes là gì?", a:"Các Node nguồn của câu trả lời — để dẫn nguồn & debug."},
+  {q:"Vì sao persist index?", a:"Tránh embedding lại (tốn tiền & thời gian) mỗi lần chạy."},
+  {q:"similarity_top_k?", a:"Số Node liên quan nhất được lấy ra khi truy hồi."},
+  {q:"response_mode compact vs refine?", a:"compact nhồi nhiều Node 1 lần (nhanh); refine lặp tinh chỉnh (đầy đủ)."},
+  {q:"Query vs Chat engine?", a:"Query: hỏi 1 lượt không nhớ. Chat: có lịch sử, hiểu ngữ cảnh hội thoại."},
+  {q:"QueryEngineTool?", a:"Biến một RAG index thành tool để agent gọi — nền multi-document agent."},
+  {q:"Faithfulness đo gì?", a:"Câu trả lời có bám vào nguồn không (chống bịa/hallucination)."},
+  {q:"LlamaIndex vs LangChain?", a:"LlamaIndex chuyên RAG/data; LangChain đa năng dàn dựng. Nhiều dự án dùng cả hai."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== RAG PIPELINE BUILDER ===== */
+let steps = [];
+const SNIPPET = {
+  reader: 'documents = SimpleDirectoryReader("data").load_data()',
+  splitter: 'nodes = SentenceSplitter(chunk_size=512, chunk_overlap=50).get_nodes_from_documents(documents)',
+  index: 'index = VectorStoreIndex.from_documents(documents)',
+  persist: 'index.storage_context.persist("./storage")',
+  retriever: 'retriever = index.as_retriever(similarity_top_k=4)',
+  rerank: 'from llama_index.core.postprocessor import SimilarityPostprocessor\npostproc = [SimilarityPostprocessor(similarity_cutoff=0.7)]',
+  query: 'qe = index.as_query_engine(similarity_top_k=4)\nprint(qe.query("câu hỏi của bạn"))',
+  chat: 'chat = index.as_chat_engine(chat_mode="condense_plus_context")\nprint(chat.chat("câu hỏi của bạn"))',
+};
+function addLayer(){ steps.push(document.getElementById('bLayer').value); renderLayers(); }
+function clearLayers(){ steps = []; renderLayers(); }
+function rmLayer(i){ steps.splice(i,1); renderLayers(); }
+function renderLayers(){
+  document.getElementById('layerList').innerHTML = steps.map((s,i)=>
+    `<li><span>${s}</span><button class="rm" onclick="rmLayer(${i})">✕</button></li>`).join('');
+  const out = document.getElementById('builderOut');
+  if(!steps.length){ out.textContent = '# Thêm bước để sinh code...'; return; }
+  const head = 'from llama_index.core import (VectorStoreIndex, SimpleDirectoryReader,\n    StorageContext)\nfrom llama_index.core.node_parser import SentenceSplitter\n\n';
+  out.textContent = head + steps.map(s => SNIPPET[s]).join('\n');
+}
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

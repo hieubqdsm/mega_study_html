@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học LangChain — Xây Ứng Dụng LLM Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #1FA968;        /* LangChain green */
+    --primary-glow: #4ade80;
+    --accent: #14b8a6;         /* teal */
+    --accent-2: #5eead4;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #07140d; --darker: #030a06;
+    --light: #cfe6d9; --light-strong: #f0fff7; --gray: #8aa99a;
+    --card: #0d1c14; --card-2: #14291d; --border: #1f3d2c; --terminal: #051009;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f8a7a;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(31,169,104,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(20,184,166,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #020805 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(31,169,104,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(31,169,104,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(31,169,104,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#07140d; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(31,169,104,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(3,10,6,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(31,169,104,.16), rgba(20,184,166,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🦜"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(31,169,104,.08); border-color: rgba(31,169,104,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(31,169,104,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#04140b; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(31,169,104,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:8px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .layer-list { list-style:none; margin:6px 0 12px; padding:0; }
+  .layer-list li { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:7px 12px; margin-bottom:6px; font-size:13px; font-family:monospace; display:flex; justify-content:space-between; align-items:center; }
+  .layer-list .rm { cursor:pointer; color:var(--danger); font-weight:800; border:none; background:none; font-size:15px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#04140b; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🦜</div>
+      <h1>LangChain</h1>
+      <div class="sub">XÂY ỨNG DỤNG LLM · CƠ BẢN → NÂNG CAO</div>
+      <div class="pat">prompt | model | parser</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> LangChain là gì &amp; cài đặt</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Chat models &amp; messages</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Prompt templates</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> LCEL &amp; Chains</li>
+      <li><a href="#c4"><span class="cn">4</span> Output parsers</a></li>
+      <li><a href="#c5"><span class="cn">5</span> LCEL: nối bằng |</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Runnable &amp; rẽ nhánh</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Memory / lịch sử hội thoại</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> RAG</li>
+      <li><a href="#c8"><span class="cn">8</span> Loader &amp; text splitter</a></li>
+      <li><a href="#c9"><span class="cn">9</span> Embeddings &amp; vector store</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Retriever</a></li>
+      <li><a href="#c11"><span class="cn">11</span> RAG chain hoàn chỉnh</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Tools &amp; function calling</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Agents &amp; triển khai</li>
+      <li><a href="#c13"><span class="cn">13</span> Agents</a></li>
+      <li><a href="#c14"><span class="cn">14</span> LangGraph</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Streaming &amp; LangSmith</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án: RAG chatbot</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> LCEL Chain Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🦜 Khóa học · <b id="crumb">LangChain</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">LangChain</span> — khung sườn xây ứng dụng LLM &amp; RAG</h1>
+        <p>16 chương theo 4 cấp độ. LangChain ghép các thành phần (model, prompt, parser, retriever, tool) thành <strong>chuỗi</strong> để xây chatbot, RAG, agent. Mỗi chương có code chạy được, <strong>bài tập tự chấm</strong>, quiz, flashcard. Đi từ <code class="ic">prompt | model | parser</code> → RAG → agent → LangGraph → triển khai.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>LCEL Builder</b></span>
+          <span class="meta-pill">🐍 langchain <b>0.3+</b></span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Cài <code class="ic">pip install langchain langchain-anthropic langchain-community langchain-chroma</code> và đặt API key (vd <code class="ic">ANTHROPIC_API_KEY</code>). Ví dụ dùng Claude (<code class="ic">claude-sonnet-4-6</code>) nhưng đổi sang OpenAI/Gemini chỉ là thay lớp model. Bài tập <b>tự chấm offline</b> bằng cách kiểm tra "dấu hiệu" trong code bạn gõ.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> LangChain là gì &amp; cài đặt</h2>
+        <div class="ch-sub">Vì sao cần một "khung sườn" cho ứng dụng LLM.</div>
+
+        <p><strong>LangChain</strong> là framework giúp ghép LLM với dữ liệu &amp; công cụ bên ngoài thành ứng dụng thật: chatbot có kiến thức riêng (RAG), agent biết gọi tool, pipeline xử lý nhiều bước. Thay vì tự viết glue code, bạn lắp ráp các <strong>thành phần chuẩn hóa</strong>.</p>
+
+        <table>
+          <tr><th>Gói</th><th>Vai trò</th></tr>
+          <tr><td><code class="ic">langchain-core</code></td><td>Trừu tượng nền (Runnable, messages, prompts)</td></tr>
+          <tr><td><code class="ic">langchain</code></td><td>Chains, agents, retrieval cấp cao</td></tr>
+          <tr><td><code class="ic">langchain-anthropic</code> / <code class="ic">-openai</code></td><td>Tích hợp nhà cung cấp model</td></tr>
+          <tr><td><code class="ic">langchain-community</code></td><td>Loader, vector store, tool cộng đồng</td></tr>
+          <tr><td><strong>LangGraph</strong></td><td>Đồ thị trạng thái cho agent phức tạp</td></tr>
+          <tr><td><strong>LangSmith</strong></td><td>Theo dõi, debug, đánh giá (tracing)</td></tr>
+        </table>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. LangChain chủ yếu giải quyết việc gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Ghép LLM + dữ liệu + tool thành ứng dụng</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Huấn luyện model từ đầu</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Thay thế GPU</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Vẽ biểu đồ dữ liệu</button>
+            </div>
+            <div class="qexp">✅ LangChain là lớp dàn dựng (orchestration) — nó không huấn luyện model, mà lắp ráp chúng thành app.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Chat models &amp; messages</h2>
+        <div class="ch-sub">Đơn vị giao tiếp cơ bản với LLM.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_anthropic <span class="kw">import</span> ChatAnthropic
+<span class="kw">from</span> langchain_core.messages <span class="kw">import</span> SystemMessage, HumanMessage
+
+llm = ChatAnthropic(model=<span class="st">"claude-sonnet-4-6"</span>, temperature=0)
+
+resp = llm.invoke([
+    SystemMessage(<span class="st">"Bạn là trợ lý súc tích."</span>),
+    HumanMessage(<span class="st">"Thủ đô Việt Nam là gì?"</span>),
+])
+print(resp.content)        <span class="cm"># "Hà Nội."</span></pre></div>
+        <div class="box info"><span class="bt">3 loại message</span> <code class="ic">SystemMessage</code> (đặt vai trò/luật), <code class="ic">HumanMessage</code> (người dùng), <code class="ic">AIMessage</code> (model trả lời). <code class="ic">invoke</code> nhận list message (hoặc 1 chuỗi) → trả về <code class="ic">AIMessage</code>; lấy nội dung qua <code class="ic">.content</code>.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Gọi model</div>
+          <div class="etask">Khởi tạo <code>ChatAnthropic(model="claude-sonnet-4-6")</code> rồi <code>.invoke("Xin chào")</code>, in <code>.content</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">from langchain_anthropic import ChatAnthropic
+
+llm =
+resp =
+print(resp.content)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">llm = ChatAnthropic(model="claude-sonnet-4-6")
+resp = llm.invoke("Xin chào")
+print(resp.content)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Prompt templates</h2>
+        <div class="ch-sub">Tách prompt khỏi code, điền biến lúc chạy.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> ChatPromptTemplate
+
+prompt = ChatPromptTemplate.from_messages([
+    (<span class="st">"system"</span>, <span class="st">"Bạn là chuyên gia {linh_vuc}."</span>),
+    (<span class="st">"human"</span>, <span class="st">"Giải thích {khai_niem} trong 2 câu."</span>),
+])
+msgs = prompt.invoke({<span class="st">"linh_vuc"</span>: <span class="st">"vật lý"</span>, <span class="st">"khai_niem"</span>: <span class="st">"entropy"</span>})</pre></div>
+        <div class="box tip"><span class="bt">Vì sao dùng template</span> Tái sử dụng, dễ test, tránh nối chuỗi thủ công. <code class="ic">{biến}</code> được điền qua <code class="ic">invoke(dict)</code>. Template là một <strong>Runnable</strong> → ghép thẳng vào chuỗi (chương 5).</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tạo prompt template</div>
+          <div class="etask">Tạo <code>ChatPromptTemplate.from_messages</code> với 1 dòng <code>"system"</code> và 1 dòng <code>"human"</code> chứa biến <code>{cau_hoi}</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">from langchain_core.prompts import ChatPromptTemplate
+
+prompt = ChatPromptTemplate.from_messages([
+
+])</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">prompt = ChatPromptTemplate.from_messages([
+    ("system", "Bạn là trợ lý hữu ích."),
+    ("human", "{cau_hoi}"),
+])</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · LCEL &amp; Chains</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Output parsers</h2>
+        <div class="ch-sub">Biến text thô của LLM thành dữ liệu dùng được.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> StrOutputParser
+parser = StrOutputParser()          <span class="cm"># AIMessage → str</span>
+
+<span class="cm"># Structured output: ép model trả đúng schema (Pydantic)</span>
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+<span class="kw">class</span> <span class="fn">Phim</span>(BaseModel):
+    ten: str
+    nam: int
+structured = llm.with_structured_output(Phim)
+structured.invoke(<span class="st">"Phim Inception ra năm nào?"</span>)   <span class="cm"># Phim(ten='Inception', nam=2010)</span></pre></div>
+        <div class="box pro"><span class="bt">with_structured_output</span> Cách hiện đại &amp; tin cậy nhất để lấy JSON/đối tượng từ LLM — model dùng tool-calling để điền đúng schema, không cần parse chuỗi mong manh.</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Structured output</div>
+          <div class="etask">Định nghĩa Pydantic <code>class Sach(BaseModel)</code> với <code>tieu_de: str</code>; tạo <code>llm.with_structured_output(Sach)</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">from pydantic import BaseModel
+
+class Sach(BaseModel):
+
+structured = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">class Sach(BaseModel):
+    tieu_de: str
+structured = llm.with_structured_output(Sach)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> LCEL: nối bằng <code>|</code></h2>
+        <div class="ch-sub">LangChain Expression Language — trái tim của LangChain hiện đại.</div>
+
+        <p>Mọi thành phần là một <strong>Runnable</strong> và nối được bằng toán tử <code class="ic">|</code> (như pipe trong shell). Output của bước này là input của bước sau.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · chuỗi kinh điển</span><span class="dot">●</span></div><pre class="code">chain = prompt | llm | StrOutputParser()
+
+chain.invoke({<span class="st">"linh_vuc"</span>: <span class="st">"sinh học"</span>, <span class="st">"khai_niem"</span>: <span class="st">"ADN"</span>})
+<span class="cm"># prompt điền biến → llm sinh → parser lấy text. Trả về str.</span>
+
+chain.batch([{...}, {...}])     <span class="cm"># chạy song song nhiều input</span>
+<span class="kw">for</span> chunk <span class="kw">in</span> chain.stream({...}): print(chunk, end=<span class="st">""</span>)   <span class="cm"># streaming</span></pre></div>
+        <div class="box info"><span class="bt">3 method chuẩn của mọi Runnable</span> <code class="ic">invoke</code> (1 input), <code class="ic">batch</code> (nhiều input song song), <code class="ic">stream</code> (trả từng phần). Ghép bằng <code class="ic">|</code> tự động truyền dữ liệu.</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Dựng chuỗi LCEL</div>
+          <div class="etask">Nối <code>prompt</code>, <code>llm</code>, <code>StrOutputParser()</code> thành <code>chain</code> bằng toán tử <code>|</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">from langchain_core.output_parsers import StrOutputParser
+
+chain = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">chain = prompt | llm | StrOutputParser()</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Runnable &amp; rẽ nhánh</h2>
+        <div class="ch-sub">Truyền song song, biến đổi, chèn dữ liệu vào chuỗi.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_core.runnables <span class="kw">import</span> RunnablePassthrough, RunnableLambda
+
+<span class="cm"># Chạy song song & gom thành dict (rất hay dùng trong RAG)</span>
+chain = (
+    {<span class="st">"context"</span>: retriever, <span class="st">"question"</span>: RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
+)
+
+upper = RunnableLambda(<span class="kw">lambda</span> x: x.upper())   <span class="cm"># bọc hàm Python bất kỳ</span></pre></div>
+        <div class="box tip"><span class="bt">RunnablePassthrough</span> chuyển input nguyên vẹn sang nhánh — kết hợp với một dict để vừa giữ câu hỏi gốc vừa thêm context truy hồi. Đây là khuôn mẫu RAG bạn sẽ gặp ở chương 11.</div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Memory / lịch sử hội thoại</h2>
+        <div class="ch-sub">Cho chatbot "nhớ" các lượt trước.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_core.prompts <span class="kw">import</span> MessagesPlaceholder
+<span class="kw">from</span> langchain_core.chat_history <span class="kw">import</span> InMemoryChatMessageHistory
+<span class="kw">from</span> langchain_core.runnables.history <span class="kw">import</span> RunnableWithMessageHistory
+
+prompt = ChatPromptTemplate.from_messages([
+    (<span class="st">"system"</span>, <span class="st">"Bạn là trợ lý."</span>),
+    MessagesPlaceholder(<span class="st">"history"</span>),     <span class="cm"># chèn lịch sử vào đây</span>
+    (<span class="st">"human"</span>, <span class="st">"{input}"</span>),
+])
+store = {}
+get_hist = <span class="kw">lambda</span> sid: store.setdefault(sid, InMemoryChatMessageHistory())
+chat = RunnableWithMessageHistory(prompt | llm, get_hist,
+        input_messages_key=<span class="st">"input"</span>, history_messages_key=<span class="st">"history"</span>)
+chat.invoke({<span class="st">"input"</span>: <span class="st">"Tôi tên An"</span>}, config={<span class="st">"configurable"</span>: {<span class="st">"session_id"</span>: <span class="st">"u1"</span>}})</pre></div>
+        <div class="box info"><span class="bt">MessagesPlaceholder</span> là "chỗ trống" để LangChain tự chèn toàn bộ lịch sử hội thoại theo <code class="ic">session_id</code>. Mỗi phiên có history riêng.</div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · RAG (Retrieval-Augmented Generation)</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Loader &amp; text splitter</h2>
+        <div class="ch-sub">Nạp tài liệu &amp; cắt thành đoạn vừa ngữ cảnh.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_community.document_loaders <span class="kw">import</span> PyPDFLoader
+<span class="kw">from</span> langchain_text_splitters <span class="kw">import</span> RecursiveCharacterTextSplitter
+
+docs = PyPDFLoader(<span class="st">"tai-lieu.pdf"</span>).load()    <span class="cm"># list[Document]</span>
+splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+chunks = splitter.split_documents(docs)</pre></div>
+        <div class="box warn"><span class="bt">chunk_size &amp; overlap</span> Đoạn quá lớn → loãng ngữ cảnh &amp; tốn token; quá nhỏ → mất mạch. <code class="ic">chunk_overlap</code> giữ vài câu gối đầu để không cắt mất ý ở ranh giới. Khởi đầu hợp lý: 1000 / 200.</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Cắt văn bản</div>
+          <div class="etask">Tạo <code>RecursiveCharacterTextSplitter</code> với <code>chunk_size=500</code>, <code>chunk_overlap=50</code>, rồi <code>.split_documents(docs)</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+splitter =
+chunks = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+chunks = splitter.split_documents(docs)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Embeddings &amp; vector store</h2>
+        <div class="ch-sub">Biến văn bản thành vector để tìm theo ngữ nghĩa.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_openai <span class="kw">import</span> OpenAIEmbeddings
+<span class="kw">from</span> langchain_chroma <span class="kw">import</span> Chroma
+
+emb = OpenAIEmbeddings()       <span class="cm"># hoặc HuggingFaceEmbeddings (offline)</span>
+vectorstore = Chroma.from_documents(chunks, embedding=emb)
+vectorstore.similarity_search(<span class="st">"câu hỏi"</span>, k=4)   <span class="cm"># 4 đoạn gần nhất</span></pre></div>
+        <div class="box info"><span class="bt">Embedding = "tọa độ ngữ nghĩa"</span> Câu gần nghĩa → vector gần nhau. Vector store (Chroma, FAISS, pgvector...) lưu vector &amp; tìm "hàng xóm gần nhất" cực nhanh. Đây là bộ nhớ tri thức của RAG.</div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Retriever</h2>
+        <div class="ch-sub">Giao diện chuẩn để "lấy tài liệu liên quan".</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">retriever = vectorstore.as_retriever(search_kwargs={<span class="st">"k"</span>: 4})
+docs = retriever.invoke(<span class="st">"LangChain là gì?"</span>)    <span class="cm"># list[Document]</span></pre></div>
+        <div class="box pro"><span class="bt">Retriever là Runnable</span> Nên ghép thẳng vào chuỗi LCEL bằng <code class="ic">|</code>. Có nhiều loại: vector, BM25 (từ khóa), MultiQuery, hoặc kết hợp (hybrid) để tăng độ phủ.</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — Tạo retriever</div>
+          <div class="etask">Từ <code>vectorstore</code>, tạo <code>retriever = vectorstore.as_retriever(search_kwargs={"k": 3})</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">retriever = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">retriever = vectorstore.as_retriever(search_kwargs={"k": 3})</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> RAG chain hoàn chỉnh</h2>
+        <div class="ch-sub">Ghép mọi mảnh: hỏi → truy hồi → trả lời có dẫn nguồn.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · RAG bằng LCEL</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_core.runnables <span class="kw">import</span> RunnablePassthrough
+<span class="kw">from</span> langchain_core.output_parsers <span class="kw">import</span> StrOutputParser
+
+prompt = ChatPromptTemplate.from_messages([
+    (<span class="st">"system"</span>, <span class="st">"Trả lời CHỈ dựa vào ngữ cảnh:\n\n{context}"</span>),
+    (<span class="st">"human"</span>, <span class="st">"{question}"</span>),
+])
+<span class="kw">def</span> <span class="fn">format_docs</span>(docs): <span class="kw">return</span> <span class="st">"\n\n"</span>.join(d.page_content <span class="kw">for</span> d <span class="kw">in</span> docs)
+
+rag = (
+    {<span class="st">"context"</span>: retriever | format_docs, <span class="st">"question"</span>: RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
+)
+rag.invoke(<span class="st">"Chính sách bảo hành bao lâu?"</span>)</pre></div>
+        <div class="box pro"><span class="bt">Khuôn mẫu RAG</span> (1) câu hỏi vào cả 2 nhánh; (2) nhánh <code class="ic">context</code> = retriever lấy đoạn rồi format; (3) prompt nhồi context + câu hỏi; (4) llm trả lời. Buộc "chỉ dựa vào ngữ cảnh" để giảm bịa (hallucination).</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Tools &amp; function calling</h2>
+        <div class="ch-sub">Cho LLM gọi hàm Python để làm việc thật.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_core.tools <span class="kw">import</span> tool
+
+<span class="nb">@tool</span>
+<span class="kw">def</span> <span class="fn">cong</span>(a: int, b: int) -> int:
+    <span class="st">"""Cộng hai số nguyên."""</span>     <span class="cm"># docstring = mô tả cho LLM</span>
+    <span class="kw">return</span> a + b
+
+llm_tools = llm.bind_tools([cong])           <span class="cm"># cho model "biết" tool</span>
+ai = llm_tools.invoke(<span class="st">"2 cộng 3 bằng mấy?"</span>)
+print(ai.tool_calls)   <span class="cm"># [{'name': 'cong', 'args': {'a': 2, 'b': 3}, ...}]</span></pre></div>
+        <div class="box info"><span class="bt">Tool = hàm + mô tả</span> Decorator <code class="ic">@tool</code> biến hàm Python thành tool; LLM đọc tên + docstring + kiểu tham số để quyết định khi nào &amp; gọi với args gì. Bạn vẫn phải thực thi tool rồi đưa kết quả lại cho model (agent ở chương 13 tự động hóa vòng này).</div>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — Định nghĩa tool</div>
+          <div class="etask">Dùng decorator <code>@tool</code> cho hàm <code>def nhan(a: int, b: int) -> int</code> có docstring; rồi <code>llm.bind_tools([nhan])</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false">from langchain_core.tools import tool
+
+@tool
+def nhan(a: int, b: int) -> int:
+
+
+llm_tools = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">@tool
+def nhan(a: int, b: int) -> int:
+    """Nhân hai số nguyên."""
+    return a * b
+llm_tools = llm.bind_tools([nhan])</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Agents &amp; triển khai</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Agents</h2>
+        <div class="ch-sub">LLM tự quyết định gọi tool nào, lặp đến khi xong.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · agent bằng LangGraph</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langgraph.prebuilt <span class="kw">import</span> create_react_agent
+
+agent = create_react_agent(llm, tools=[cong, nhan, search_tool])
+result = agent.invoke({<span class="st">"messages"</span>: [(<span class="st">"user"</span>, <span class="st">"Giá BTC giờ rồi nhân 2?"</span>)]})
+print(result[<span class="st">"messages"</span>][-1].content)</pre></div>
+        <div class="box info"><span class="bt">Vòng lặp ReAct</span> Agent = LLM + tools + vòng lặp: model suy luận → gọi tool → đọc kết quả → suy luận tiếp → ... → trả lời cuối. <code class="ic">create_react_agent</code> (LangGraph) là cách chuẩn hiện nay thay cho <code class="ic">AgentExecutor</code> cũ.</div>
+
+        <div class="exercise" data-ex="ex8">
+          <div class="eh">✍️ Bài tập 8 — Tạo agent</div>
+          <div class="etask">Dùng <code>create_react_agent(llm, tools=[cong, nhan])</code> rồi <code>.invoke({"messages": [("user", "...")]})</code>.</div>
+          <textarea class="codepad" id="ex8" spellcheck="false">from langgraph.prebuilt import create_react_agent
+
+agent =
+result = agent.invoke(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex8')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex8')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex8"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">agent = create_react_agent(llm, tools=[cong, nhan])
+result = agent.invoke({"messages": [("user", "2 cộng 3 rồi nhân 4?")]})</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> LangGraph</h2>
+        <div class="ch-sub">Khi agent cần trạng thái, vòng lặp &amp; phân nhánh có kiểm soát.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph, START, END
+<span class="kw">from</span> typing <span class="kw">import</span> TypedDict
+
+<span class="kw">class</span> <span class="fn">State</span>(TypedDict):
+    input: str
+    output: str
+
+<span class="kw">def</span> <span class="fn">node_llm</span>(state): <span class="kw">return</span> {<span class="st">"output"</span>: llm.invoke(state[<span class="st">"input"</span>]).content}
+
+g = StateGraph(State)
+g.add_node(<span class="st">"llm"</span>, node_llm)
+g.add_edge(START, <span class="st">"llm"</span>); g.add_edge(<span class="st">"llm"</span>, END)
+app = g.compile()</pre></div>
+        <div class="box pro"><span class="bt">Vì sao LangGraph</span> LCEL là chuỗi <em>thẳng</em>; LangGraph là <strong>đồ thị</strong> có trạng thái, cho phép vòng lặp, điều kiện, human-in-the-loop, checkpoint — cần thiết cho agent sản xuất phức tạp.</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Streaming &amp; LangSmith</h2>
+        <div class="ch-sub">Trải nghiệm mượt &amp; quan sát được.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">for</span> chunk <span class="kw">in</span> chain.stream({<span class="st">"question"</span>: <span class="st">"..."</span>}):
+    print(chunk, end=<span class="st">""</span>, flush=<span class="kw">True</span>)   <span class="cm"># in dần như ChatGPT</span>
+
+<span class="cm"># LangSmith: chỉ cần đặt biến môi trường là có trace đầy đủ</span>
+<span class="cm"># LANGSMITH_TRACING=true ; LANGSMITH_API_KEY=...</span></pre></div>
+        <div class="box tip"><span class="bt">LangSmith</span> Bật tracing để xem từng bước chuỗi/agent: prompt thực tế, token, độ trễ, chi phí, lỗi. Cực kỳ quan trọng khi debug RAG "trả lời sai" — thường do retriever lấy nhầm đoạn.</div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án: RAG chatbot trên tài liệu của bạn</h2>
+        <div class="ch-sub">Ghép toàn bộ thành ứng dụng hỏi-đáp tài liệu.</div>
+
+        <ol>
+          <li><strong>Nạp:</strong> <code class="ic">DirectoryLoader</code>/<code class="ic">PyPDFLoader</code> → <code class="ic">RecursiveCharacterTextSplitter</code>.</li>
+          <li><strong>Index:</strong> <code class="ic">Chroma.from_documents(chunks, emb)</code> (lưu xuống đĩa với <code class="ic">persist_directory</code>).</li>
+          <li><strong>Retriever:</strong> <code class="ic">as_retriever(k=4)</code> (cân nhắc hybrid + rerank).</li>
+          <li><strong>RAG chain:</strong> context+question → prompt → llm → parser; buộc dẫn nguồn.</li>
+          <li><strong>Lịch sử:</strong> bọc bằng <code class="ic">RunnableWithMessageHistory</code> cho hội thoại nhiều lượt.</li>
+          <li><strong>UI &amp; quan sát:</strong> Streamlit/FastAPI + <code class="ic">stream</code> + LangSmith tracing.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex9">
+          <div class="eh">✍️ Bài tập 9 — Mảnh ghép RAG</div>
+          <div class="etask">Dựng chuỗi: <code>{"context": retriever, "question": RunnablePassthrough()} | prompt | llm | StrOutputParser()</code>.</div>
+          <textarea class="codepad" id="ex9" spellcheck="false">from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
+
+rag = (
+)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex9')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex9')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex9"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">rag = (
+    {"context": retriever, "question": RunnablePassthrough()}
+    | prompt | llm | StrOutputParser()
+)</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã đi từ <code class="ic">invoke</code> đến RAG chatbot &amp; agent. Bước tiếp: thêm rerank, đánh giá bằng LangSmith, và đối chiếu với khóa <a href="khoa-hoc-llamaindex.html" style="color:var(--primary-glow)">LlamaIndex</a> (chuyên RAG/data) để chọn đúng công cụ.</div>
+      </section>
+
+      <!-- ============ BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> LCEL Chain Builder</h2>
+        <div class="ch-sub">Chọn thành phần → sinh code chuỗi <code>a | b | c</code>.</div>
+        <div class="builder">
+          <div class="bh">🔧 Dựng chuỗi bằng cách bấm</div>
+          <div class="brow">
+            <select id="bLayer">
+              <option value="retriever">retriever (RAG context)</option>
+              <option value="prompt">prompt (ChatPromptTemplate)</option>
+              <option value="llm">llm (ChatAnthropic)</option>
+              <option value="StrOutputParser()">StrOutputParser()</option>
+              <option value="JsonOutputParser()">JsonOutputParser()</option>
+              <option value="RunnableLambda(fn)">RunnableLambda(fn)</option>
+            </select>
+            <button class="ebtn" onclick="addLayer()">+ Thêm bước</button>
+            <button class="ebtn ghost" onclick="clearLayers()">Xóa hết</button>
+          </div>
+          <ul class="layer-list" id="layerList"></ul>
+          <div class="out" id="builderOut"># Thêm bước để sinh code...</div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Nền tảng</div>
+            <table style="margin:0"><tr><td><code class="ic">ChatAnthropic / ChatOpenAI</code></td><td>Model</td></tr>
+            <tr><td><code class="ic">ChatPromptTemplate</code></td><td>Prompt</td></tr>
+            <tr><td><code class="ic">StrOutputParser</code></td><td>Lấy text</td></tr>
+            <tr><td><code class="ic">with_structured_output</code></td><td>JSON/Pydantic</td></tr>
+            <tr><td><code class="ic">a | b | c</code></td><td>Nối LCEL</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">RAG</div>
+            <table style="margin:0"><tr><td><code class="ic">TextSplitter</code></td><td>Cắt đoạn</td></tr>
+            <tr><td><code class="ic">Embeddings</code></td><td>Vector hóa</td></tr>
+            <tr><td><code class="ic">Chroma / FAISS</code></td><td>Vector store</td></tr>
+            <tr><td><code class="ic">as_retriever()</code></td><td>Truy hồi</td></tr>
+            <tr><td><code class="ic">RunnablePassthrough</code></td><td>Giữ input</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Agent &amp; vận hành</div>
+            <table style="margin:0"><tr><td><code class="ic">@tool</code></td><td>Định nghĩa tool</td></tr>
+            <tr><td><code class="ic">bind_tools()</code></td><td>Gắn tool</td></tr>
+            <tr><td><code class="ic">create_react_agent</code></td><td>Agent</td></tr>
+            <tr><td><code class="ic">.stream()</code></td><td>Streaming</td></tr>
+            <tr><td>LangSmith</td><td>Tracing</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🦜 <strong>Khóa Học LangChain</strong> — một phần của <a href="../index.html">Mega Study</a>. Code cho langchain 0.3+.<br>
+        Thực hành local (cần API key) hoặc <a href="https://colab.research.google.com" target="_blank" rel="noopener">Colab</a>. Học kèm <a href="khoa-hoc-llamaindex.html">LlamaIndex</a> &amp; khóa <a href="giao_trinh_agentic_ai.html">Agentic AI</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/ChatAnthropic\s*\(\s*model\s*=/, label:"ChatAnthropic(model=...)"},
+    {re:/\.invoke\s*\(/, label:"Gọi .invoke(...)"},
+    {re:/\.content/, label:"In resp.content"},
+  ],
+  ex2: [
+    {re:/ChatPromptTemplate\.from_messages\s*\(\s*\[/, label:"from_messages([...])"},
+    {re:/["']system["']\s*,/, label:"Có dòng 'system'"},
+    {re:/["']human["']\s*,[^]]*\{cau_hoi\}/, label:"Dòng 'human' chứa {cau_hoi}"},
+  ],
+  ex3: [
+    {re:/class\s+Sach\s*\(\s*BaseModel\s*\)/, label:"class Sach(BaseModel)"},
+    {re:/tieu_de\s*:\s*str/, label:"tieu_de: str"},
+    {re:/with_structured_output\s*\(\s*Sach\s*\)/, label:"with_structured_output(Sach)"},
+  ],
+  ex4: [
+    {re:/prompt\s*\|\s*llm\s*\|\s*StrOutputParser\s*\(\s*\)/, label:"prompt | llm | StrOutputParser()"},
+  ],
+  ex5: [
+    {re:/RecursiveCharacterTextSplitter\s*\(/, label:"RecursiveCharacterTextSplitter(...)"},
+    {re:/chunk_size\s*=\s*500/, label:"chunk_size=500"},
+    {re:/chunk_overlap\s*=\s*50/, label:"chunk_overlap=50"},
+    {re:/\.split_documents\s*\(\s*docs/, label:"split_documents(docs)"},
+  ],
+  ex6: [
+    {re:/vectorstore\.as_retriever\s*\(/, label:"vectorstore.as_retriever(...)"},
+    {re:/["']k["']\s*:\s*3/, label:'search_kwargs k=3'},
+  ],
+  ex7: [
+    {re:/@tool/, label:"Decorator @tool"},
+    {re:/def\s+nhan\s*\(\s*a\s*:\s*int\s*,\s*b\s*:\s*int/, label:"def nhan(a: int, b: int)"},
+    {re:/""".*?"""|'''.*?'''/s, label:"Có docstring"},
+    {re:/bind_tools\s*\(\s*\[\s*nhan/, label:"llm.bind_tools([nhan])"},
+  ],
+  ex8: [
+    {re:/create_react_agent\s*\(\s*llm\s*,\s*tools\s*=/, label:"create_react_agent(llm, tools=...)"},
+    {re:/\.invoke\s*\(\s*\{[^}]*["']messages["']/, label:'invoke({"messages": ...})'},
+  ],
+  ex9: [
+    {re:/["']context["']\s*:\s*retriever/, label:'"context": retriever'},
+    {re:/["']question["']\s*:\s*RunnablePassthrough\s*\(\s*\)/, label:'"question": RunnablePassthrough()'},
+    {re:/\|\s*prompt\s*\|\s*llm\s*\|\s*StrOutputParser/, label:"| prompt | llm | StrOutputParser()"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"LangChain giải quyết gì?", a:"Dàn dựng (orchestrate) LLM + dữ liệu + tool thành ứng dụng — không huấn luyện model."},
+  {q:"3 loại message?", a:"SystemMessage (vai trò), HumanMessage (người dùng), AIMessage (model)."},
+  {q:"LCEL là gì?", a:"LangChain Expression Language — nối Runnable bằng | (prompt | llm | parser)."},
+  {q:"3 method của Runnable?", a:"invoke (1 input), batch (song song), stream (từng phần)."},
+  {q:"with_structured_output?", a:"Ép LLM trả về đúng schema Pydantic qua tool-calling, khỏi parse chuỗi."},
+  {q:"RunnablePassthrough?", a:"Truyền input nguyên vẹn sang nhánh — dùng để giữ câu hỏi gốc trong RAG."},
+  {q:"chunk_overlap để làm gì?", a:"Giữ vài câu gối đầu giữa các đoạn để không cắt mất ý ở ranh giới."},
+  {q:"Embedding + vector store?", a:"Văn bản → vector ngữ nghĩa; store tìm hàng xóm gần nhất = bộ nhớ tri thức RAG."},
+  {q:"Khuôn mẫu RAG?", a:"{context: retriever, question: passthrough} | prompt | llm | parser."},
+  {q:"@tool là gì?", a:"Biến hàm Python (+docstring) thành tool để LLM gọi qua bind_tools."},
+  {q:"Agent ReAct?", a:"LLM + tools + vòng lặp suy luận→gọi tool→đọc kết quả→... (create_react_agent)."},
+  {q:"LangGraph vs LCEL?", a:"LCEL chuỗi thẳng; LangGraph đồ thị có trạng thái, vòng lặp, điều kiện."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== LCEL CHAIN BUILDER ===== */
+let steps = [];
+function addLayer(){ steps.push(document.getElementById('bLayer').value); renderLayers(); }
+function clearLayers(){ steps = []; renderLayers(); }
+function rmLayer(i){ steps.splice(i,1); renderLayers(); }
+function renderLayers(){
+  document.getElementById('layerList').innerHTML = steps.map((s,i)=>
+    `<li><span>${s}</span><button class="rm" onclick="rmLayer(${i})">✕</button></li>`).join('');
+  const out = document.getElementById('builderOut');
+  if(!steps.length){ out.textContent = '# Thêm bước để sinh code...'; return; }
+  const hasRet = steps.includes('retriever');
+  let head = '# pip install langchain langchain-anthropic\nchain = ';
+  let body = steps.join('\n    | ');
+  if(hasRet && steps[0]==='retriever'){
+    out.textContent = head + '(\n    {"context": retriever, "question": RunnablePassthrough()}\n    | '
+      + steps.slice(1).join('\n    | ') + '\n)\nchain.invoke("câu hỏi của bạn")';
+  } else {
+    out.textContent = head + body + '\nchain.invoke({...})';
+  }
+}
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

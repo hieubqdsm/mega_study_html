@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học scikit-learn — Machine Learning Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #3499CD;        /* sklearn blue */
+    --primary-glow: #5bb8e8;
+    --accent: #F89939;         /* sklearn orange */
+    --accent-2: #ffb45f;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #08131c; --darker: #040a0f;
+    --light: #cfe0ec; --light-strong: #f0f8ff; --gray: #8aa0b3;
+    --card: #0f1c28; --card-2: #16283a; --border: #244055; --terminal: #06101a;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f8597;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(52,153,205,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(248,153,57,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #03070b 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(52,153,205,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(52,153,205,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(52,153,205,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#08131c; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(52,153,205,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(4,10,15,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(52,153,205,.16), rgba(248,153,57,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"📊"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(52,153,205,.08); border-color: rgba(52,153,205,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(52,153,205,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#04121c; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(52,153,205,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:8px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .layer-list { list-style:none; margin:6px 0 12px; padding:0; }
+  .layer-list li { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:7px 12px; margin-bottom:6px; font-size:13px; font-family:monospace; display:flex; justify-content:space-between; align-items:center; }
+  .layer-list .rm { cursor:pointer; color:var(--danger); font-weight:800; border:none; background:none; font-size:15px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#04121c; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">📊</div>
+      <h1>scikit-learn</h1>
+      <div class="sub">MACHINE LEARNING CƠ BẢN → NÂNG CAO</div>
+      <div class="pat">from sklearn import ...</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> ML &amp; scikit-learn là gì</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Estimator API: fit/predict</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Dữ liệu &amp; train_test_split</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Học có giám sát</li>
+      <li><a href="#c4"><span class="cn">4</span> Hồi quy tuyến tính</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Phân loại: Logistic &amp; KNN</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Đánh giá model</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Tiền xử lý &amp; Pipeline</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Trung cấp</li>
+      <li><a href="#c8"><span class="cn">8</span> Cây &amp; Random Forest</a></li>
+      <li><a href="#c9"><span class="cn">9</span> SVM</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Gradient Boosting</a></li>
+      <li><a href="#c11"><span class="cn">11</span> ColumnTransformer</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Tinh chỉnh: GridSearchCV</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Nâng cao</li>
+      <li><a href="#c13"><span class="cn">13</span> Học không giám sát: KMeans/PCA</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Mất cân bằng &amp; feature selection</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Lưu model &amp; triển khai</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án thực chiến</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> Pipeline Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">📊 Khóa học · <b id="crumb">scikit-learn</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">scikit-learn</span> — Machine Learning cổ điển từ A đến Z</h1>
+        <p>16 chương theo 4 cấp độ. scikit-learn là thư viện ML "kinh điển" cho dữ liệu bảng: hồi quy, phân loại, gom cụm, giảm chiều — với một API <code class="ic">fit/predict</code> đồng nhất tuyệt đẹp. Mỗi chương có code chạy được, <strong>bài tập tự chấm</strong>, quiz và flashcard. Đi từ <code class="ic">train_test_split</code> → Pipeline → Random Forest/Boosting → GridSearchCV → triển khai.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>Pipeline Builder</b></span>
+          <span class="meta-pill">🐍 scikit-learn <b>1.x</b></span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chạy code ở đâu?</span> scikit-learn nhẹ — cài <code class="ic">pip install scikit-learn pandas</code> chạy local trên CPU là đủ (không cần GPU), hoặc dùng <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a>. Bài tập trong khóa <b>tự chấm offline</b> bằng cách kiểm tra "dấu hiệu" trong code bạn gõ.</div>
+        <div class="box pro"><span class="bt">Khi nào dùng scikit-learn thay vì deep learning?</span> Với <b>dữ liệu bảng</b> (CSV, cột số/hạng mục) vài nghìn–vài triệu dòng, các model như Random Forest / Gradient Boosting của sklearn thường <em>thắng</em> deep learning về cả độ chính xác lẫn công sức. Học kèm <a href="khoa-hoc-tensorflow.html" style="color:var(--primary-glow)">TensorFlow</a>/<a href="khoa-hoc-pytorch.html" style="color:var(--primary-glow)">PyTorch</a> để biết chọn đúng công cụ.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> ML &amp; scikit-learn là gì</h2>
+        <div class="ch-sub">Bức tranh tổng thể &amp; quy trình một dự án ML.</div>
+
+        <p><strong>scikit-learn</strong> (sklearn) là thư viện machine learning phổ biến nhất cho Python, xây trên NumPy/SciPy. Nó cung cấp hàng trăm thuật toán ML cổ điển với một <strong>API đồng nhất</strong>, cùng công cụ tiền xử lý, đánh giá &amp; chọn model.</p>
+
+        <h3 class="sec">Ba loại bài toán</h3>
+        <table>
+          <tr><th>Loại</th><th>Mục tiêu</th><th>Ví dụ thuật toán</th></tr>
+          <tr><td>Hồi quy (regression)</td><td>Dự đoán số liên tục</td><td>LinearRegression, RandomForestRegressor</td></tr>
+          <tr><td>Phân loại (classification)</td><td>Dự đoán nhãn rời rạc</td><td>LogisticRegression, SVC, RandomForestClassifier</td></tr>
+          <tr><td>Không giám sát</td><td>Tìm cấu trúc (không nhãn)</td><td>KMeans, PCA</td></tr>
+        </table>
+
+        <h3 class="sec">Quy trình ML chuẩn</h3>
+        <ol>
+          <li>Thu thập &amp; khám phá dữ liệu (EDA)</li>
+          <li>Chia train/test</li>
+          <li>Tiền xử lý (scaling, encoding) — <em>fit trên train</em></li>
+          <li>Huấn luyện model (<code class="ic">fit</code>)</li>
+          <li>Đánh giá (cross-validation, metrics)</li>
+          <li>Tinh chỉnh siêu tham số</li>
+          <li>Triển khai</li>
+        </ol>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. Dự đoán giá nhà (số tiền) là bài toán?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Hồi quy (regression)</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Phân loại</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Gom cụm</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Giảm chiều</button>
+            </div>
+            <div class="qexp">✅ Đầu ra là số liên tục → hồi quy. Nếu là "đắt/rẻ" (nhãn) thì mới là phân loại.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Estimator API: fit / predict</h2>
+        <div class="ch-sub">Một API duy nhất cho mọi model — vẻ đẹp của sklearn.</div>
+
+        <p>Mọi model trong sklearn là một <strong>estimator</strong> tuân theo cùng giao diện: <code class="ic">.fit(X, y)</code> để học, <code class="ic">.predict(X)</code> để dự đoán. Bộ biến đổi (transformer) thêm <code class="ic">.transform(X)</code>.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+
+model = LogisticRegression()       <span class="cm"># 1. khởi tạo (đặt siêu tham số)</span>
+model.fit(X_train, y_train)        <span class="cm"># 2. học từ dữ liệu</span>
+y_pred = model.predict(X_test)     <span class="cm"># 3. dự đoán</span>
+proba  = model.predict_proba(X_test)   <span class="cm"># xác suất từng lớp</span>
+score  = model.score(X_test, y_test)   <span class="cm"># accuracy (mặc định)</span></pre></div>
+
+        <div class="box info"><span class="bt">X là 2D, y là 1D</span> sklearn luôn mong <code class="ic">X</code> có shape <code class="ic">(n_samples, n_features)</code> — kể cả một đặc trưng cũng phải là cột: <code class="ic">X.reshape(-1, 1)</code>. <code class="ic">y</code> là vector <code class="ic">(n_samples,)</code>.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Method nào để model "học" từ dữ liệu?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">.fit(X, y)</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">.predict(X)</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">.score()</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">.transform()</button>
+            </div>
+            <div class="qexp">✅ <code>fit</code> ước lượng tham số từ dữ liệu; <code>predict</code> dùng tham số đó để dự đoán.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Dữ liệu &amp; train_test_split</h2>
+        <div class="ch-sub">Quy tắc vàng: không bao giờ đánh giá trên dữ liệu đã train.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_iris
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+
+X, y = load_iris(return_X_y=<span class="kw">True</span>)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)   <span class="cm"># giữ tỉ lệ lớp</span>
+
+print(X_train.shape, X_test.shape)   <span class="cm"># (120, 4) (30, 4)</span></pre></div>
+        <div class="box warn"><span class="bt">Data leakage</span> Nếu bạn scale/encode <em>trước</em> khi chia, thông tin từ test rò vào train → điểm số ảo cao. Luôn: chia trước, rồi <code class="ic">fit</code> bộ tiền xử lý <b>chỉ trên train</b> (Pipeline giải quyết tự động — chương 7).</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Chia dữ liệu</div>
+          <div class="etask">Chia <code>X, y</code> thành train/test với <code>test_size=0.2</code> và <code>random_state=42</code> bằng <code>train_test_split</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Học có giám sát</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Hồi quy tuyến tính</h2>
+        <div class="ch-sub">Mô hình đơn giản nhất — và là chuẩn so sánh (baseline).</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> mean_squared_error, r2_score
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+
+print(<span class="st">'RMSE:'</span>, mean_squared_error(y_test, pred) ** 0.5)
+print(<span class="st">'R²  :'</span>, r2_score(y_test, pred))
+print(model.coef_, model.intercept_)   <span class="cm"># hệ số &amp; chặn</span></pre></div>
+        <div class="box info"><span class="bt">R² (hệ số xác định)</span> đo phần phương sai được giải thích: 1.0 hoàn hảo, 0 = bằng đoán trung bình, &lt;0 = tệ hơn cả đoán trung bình. <code class="ic">Ridge</code>/<code class="ic">Lasso</code> là bản hồi quy có regularization (L2/L1) chống overfit.</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Huấn luyện LinearRegression</div>
+          <div class="etask">Khởi tạo <code>LinearRegression()</code>, gọi <code>.fit(X_train, y_train)</code> rồi <code>.predict(X_test)</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">from sklearn.linear_model import LinearRegression
+
+model =
+            # fit
+pred = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model = LinearRegression()
+model.fit(X_train, y_train)
+pred = model.predict(X_test)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Phân loại: Logistic &amp; KNN</h2>
+        <div class="ch-sub">Hai model phân loại nền tảng.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+<span class="kw">from</span> sklearn.neighbors <span class="kw">import</span> KNeighborsClassifier
+
+logreg = LogisticRegression(max_iter=1000).fit(X_train, y_train)
+knn = KNeighborsClassifier(n_neighbors=5).fit(X_train, y_train)
+
+print(logreg.score(X_test, y_test))
+print(knn.score(X_test, y_test))</pre></div>
+        <div class="box tip"><span class="bt">Tên gây hiểu lầm</span> "Logistic <em>Regression</em>" thực ra là model <b>phân loại</b> (dự đoán xác suất lớp). KNN phân loại theo "k hàng xóm gần nhất" — đơn giản nhưng nhạy với scaling (bắt buộc chuẩn hóa trước).</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — KNN với k=3</div>
+          <div class="etask">Tạo <code>KNeighborsClassifier</code> với <code>n_neighbors=3</code>, <code>.fit(X_train, y_train)</code>, rồi <code>pred = .predict(X_test)</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">from sklearn.neighbors import KNeighborsClassifier
+
+knn =
+            # fit
+pred = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
+pred = knn.predict(X_test)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Đánh giá model</h2>
+        <div class="ch-sub">Accuracy không phải lúc nào cũng đủ.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> (accuracy_score, classification_report,
+                             confusion_matrix)
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+
+print(accuracy_score(y_test, pred))
+print(classification_report(y_test, pred))   <span class="cm"># precision, recall, F1 mỗi lớp</span>
+print(confusion_matrix(y_test, pred))
+
+<span class="cm"># Cross-validation: đáng tin hơn 1 lần chia</span>
+scores = cross_val_score(model, X, y, cv=5, scoring=<span class="st">'accuracy'</span>)
+print(scores.mean(), scores.std())</pre></div>
+        <table>
+          <tr><th>Metric</th><th>Ý nghĩa</th><th>Dùng khi</th></tr>
+          <tr><td>Accuracy</td><td>% đúng</td><td>Lớp cân bằng</td></tr>
+          <tr><td>Precision</td><td>Dự đoán "dương" đúng bao nhiêu</td><td>Chi phí báo nhầm cao (spam)</td></tr>
+          <tr><td>Recall</td><td>Bắt được bao nhiêu ca "dương" thật</td><td>Bỏ sót nguy hiểm (ung thư)</td></tr>
+          <tr><td>F1</td><td>Trung hòa precision &amp; recall</td><td>Lớp mất cân bằng</td></tr>
+        </table>
+        <div class="box danger"><span class="bt">Bẫy accuracy</span> Dữ liệu 99% lớp A: model "luôn đoán A" đạt 99% accuracy nhưng vô dụng. Lúc này nhìn <b>recall/F1</b> của lớp hiếm.</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — In báo cáo phân loại</div>
+          <div class="etask">In <code>accuracy_score(y_test, pred)</code> và <code>classification_report(y_test, pred)</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">from sklearn.metrics import accuracy_score, classification_report
+
+print(
+print(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">print(accuracy_score(y_test, pred))
+print(classification_report(y_test, pred))</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Tiền xử lý &amp; Pipeline</h2>
+        <div class="ch-sub">Đóng gói tiền xử lý + model thành một khối duy nhất.</div>
+
+        <p><strong>Pipeline</strong> ghép các bước biến đổi + model cuối. Khi gọi <code class="ic">fit</code>, nó tự <code class="ic">fit_transform</code> từng bước trên train; khi <code class="ic">predict</code>, tự <code class="ic">transform</code> — <b>không rò rỉ dữ liệu</b>, không lặp code.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+
+pipe = Pipeline([
+    (<span class="st">'scaler'</span>, StandardScaler()),       <span class="cm"># chuẩn hóa</span>
+    (<span class="st">'clf'</span>, LogisticRegression()),       <span class="cm"># model</span>
+])
+pipe.fit(X_train, y_train)               <span class="cm"># scale + train trong 1 lệnh</span>
+pipe.score(X_test, y_test)</pre></div>
+        <div class="box pro"><span class="bt">Tiền xử lý hay gặp</span> <code class="ic">StandardScaler</code> (chuẩn hóa mean 0 / std 1), <code class="ic">MinMaxScaler</code> (về [0,1]), <code class="ic">OneHotEncoder</code> (biến hạng mục → cột nhị phân), <code class="ic">SimpleImputer</code> (điền giá trị thiếu).</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Dựng Pipeline</div>
+          <div class="etask">Tạo <code>Pipeline</code> gồm bước <code>'scaler'</code> = <code>StandardScaler()</code> và bước <code>'clf'</code> = <code>LogisticRegression()</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+pipe = Pipeline([
+
+])</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('clf', LogisticRegression()),
+])</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Trung cấp</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Cây quyết định &amp; Random Forest</h2>
+        <div class="ch-sub">Vua của dữ liệu bảng.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+rf = RandomForestClassifier(n_estimators=200, max_depth=<span class="kw">None</span>,
+                            random_state=42, n_jobs=-1)
+rf.fit(X_train, y_train)
+print(rf.score(X_test, y_test))
+print(rf.feature_importances_)   <span class="cm"># đặc trưng nào quan trọng</span></pre></div>
+        <div class="box info"><span class="bt">Vì sao Random Forest mạnh</span> Nó là <b>ensemble</b> nhiều cây quyết định trên các mẫu/đặc trưng ngẫu nhiên rồi lấy số đông → giảm overfit của cây đơn. Ít cần scaling, xử lý tốt quan hệ phi tuyến &amp; tương tác đặc trưng. Là baseline tuyệt vời cho dữ liệu bảng.</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — Random Forest</div>
+          <div class="etask">Tạo <code>RandomForestClassifier</code> với <code>n_estimators=100</code> và <code>random_state=42</code>, rồi <code>.fit(X_train, y_train)</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">from sklearn.ensemble import RandomForestClassifier
+
+rf =
+            # fit</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> SVM (Support Vector Machine)</h2>
+        <div class="ch-sub">Tìm ranh giới phân tách "rộng" nhất.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.svm <span class="kw">import</span> SVC
+<span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> make_pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+
+<span class="cm"># SVM RẤT nhạy scale → luôn bọc trong pipeline có scaler</span>
+svm = make_pipeline(StandardScaler(), SVC(kernel=<span class="st">'rbf'</span>, C=1.0, gamma=<span class="st">'scale'</span>))
+svm.fit(X_train, y_train)</pre></div>
+        <div class="box warn"><span class="bt">SVM &amp; scaling</span> SVM dựa trên khoảng cách → bắt buộc chuẩn hóa. <code class="ic">C</code> điều chỉnh phạt lỗi (lớn = ít khoan dung, dễ overfit); <code class="ic">kernel='rbf'</code> cho ranh giới phi tuyến. SVM tốt cho dữ liệu cỡ vừa, nhiều chiều.</div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Gradient Boosting</h2>
+        <div class="ch-sub">Thường là model "thắng giải" cho dữ liệu bảng.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> HistGradientBoostingClassifier
+
+hgb = HistGradientBoostingClassifier(max_iter=300, learning_rate=0.1)
+hgb.fit(X_train, y_train)        <span class="cm"># nhanh, xử lý cả NaN, mạnh ngang XGBoost/LightGBM</span></pre></div>
+        <div class="box info"><span class="bt">Boosting vs Bagging</span> Random Forest (bagging) dựng cây <em>song song độc lập</em>. Gradient Boosting dựng cây <em>tuần tự</em>, mỗi cây sửa lỗi cây trước → thường chính xác hơn nhưng dễ overfit hơn, cần tinh chỉnh <code class="ic">learning_rate</code> &amp; số cây. <code class="ic">HistGradientBoosting</code> của sklearn nhanh &amp; mạnh; ngoài ra có XGBoost/LightGBM/CatBoost (thư viện riêng, API tương thích sklearn).</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Model nào dựng cây tuần tự, mỗi cây sửa lỗi cây trước?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" onclick="pickOpt(this,0)">Random Forest</button>
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Gradient Boosting</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">KNN</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">LinearRegression</button>
+            </div>
+            <div class="qexp">✅ Boosting tuần tự; Random Forest (bagging) dựng cây độc lập song song.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> ColumnTransformer</h2>
+        <div class="ch-sub">Xử lý cột số &amp; cột hạng mục khác nhau trong cùng pipeline.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.compose <span class="kw">import</span> ColumnTransformer
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, OneHotEncoder
+
+pre = ColumnTransformer([
+    (<span class="st">'num'</span>, StandardScaler(), [<span class="st">'age'</span>, <span class="st">'income'</span>]),          <span class="cm"># cột số</span>
+    (<span class="st">'cat'</span>, OneHotEncoder(handle_unknown=<span class="st">'ignore'</span>), [<span class="st">'city'</span>]),  <span class="cm"># cột hạng mục</span>
+])
+full = Pipeline([(<span class="st">'pre'</span>, pre), (<span class="st">'clf'</span>, RandomForestClassifier())])
+full.fit(X_train, y_train)</pre></div>
+        <div class="box tip"><span class="bt">Mẫu chuẩn production</span> <code class="ic">ColumnTransformer</code> (số → scale, hạng mục → one-hot, thiếu → impute) + model, tất cả trong một <code class="ic">Pipeline</code>. Lưu nguyên pipeline = lưu cả tiền xử lý, triển khai chỉ cần <code class="ic">.predict(df_thô)</code>.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Tinh chỉnh: GridSearchCV</h2>
+        <div class="ch-sub">Tìm siêu tham số tốt nhất một cách tự động &amp; có kiểm định chéo.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> GridSearchCV
+
+param_grid = {
+    <span class="st">'n_estimators'</span>: [100, 300],
+    <span class="st">'max_depth'</span>: [<span class="kw">None</span>, 10, 20],
+}
+grid = GridSearchCV(RandomForestClassifier(random_state=42),
+                    param_grid, cv=5, scoring=<span class="st">'f1_macro'</span>, n_jobs=-1)
+grid.fit(X_train, y_train)
+print(grid.best_params_, grid.best_score_)
+best = grid.best_estimator_      <span class="cm"># model tốt nhất, đã train lại trên toàn train</span></pre></div>
+        <div class="box pro"><span class="bt">Grid vs Randomized</span> <code class="ic">GridSearchCV</code> thử mọi tổ hợp (tốn nếu nhiều tham số). <code class="ic">RandomizedSearchCV</code> lấy mẫu ngẫu nhiên — hiệu quả hơn khi không gian lớn. Khi tinh chỉnh, dùng Pipeline để key dạng <code class="ic">'clf__n_estimators'</code>.</div>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — GridSearchCV</div>
+          <div class="etask">Tạo <code>GridSearchCV(estimator, param_grid, cv=5)</code> rồi <code>.fit(X_train, y_train)</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false">from sklearn.model_selection import GridSearchCV
+
+grid =
+            # fit</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">grid = GridSearchCV(estimator, param_grid, cv=5)
+grid.fit(X_train, y_train)</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Nâng cao</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Học không giám sát: KMeans &amp; PCA</h2>
+        <div class="ch-sub">Tìm cấu trúc khi không có nhãn.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.cluster <span class="kw">import</span> KMeans
+<span class="kw">from</span> sklearn.decomposition <span class="kw">import</span> PCA
+
+<span class="cm"># Gom cụm: chia dữ liệu thành 3 nhóm</span>
+km = KMeans(n_clusters=3, random_state=42, n_init=<span class="st">'auto'</span>)
+labels = km.fit_predict(X)
+
+<span class="cm"># Giảm chiều xuống 2D để vẽ / nén</span>
+pca = PCA(n_components=2)
+X2 = pca.fit_transform(X)
+print(pca.explained_variance_ratio_)   <span class="cm"># % thông tin giữ lại</span></pre></div>
+        <div class="box info"><span class="bt">KMeans &amp; PCA</span> <code class="ic">KMeans</code> gom dữ liệu thành <code class="ic">k</code> cụm theo khoảng cách (chọn k bằng "elbow"/silhouette). <code class="ic">PCA</code> chiếu dữ liệu xuống ít chiều nhất mà giữ nhiều phương sai nhất — để trực quan hóa hoặc tăng tốc model. Cả hai nhạy scale → chuẩn hóa trước.</div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Mất cân bằng &amp; feature selection</h2>
+        <div class="ch-sub">Tinh chỉnh khi dữ liệu "khó".</div>
+
+        <table>
+          <tr><th>Vấn đề</th><th>Giải pháp trong/ngoài sklearn</th></tr>
+          <tr><td>Lớp mất cân bằng</td><td><code class="ic">class_weight='balanced'</code>; SMOTE (imbalanced-learn)</td></tr>
+          <tr><td>Quá nhiều đặc trưng</td><td><code class="ic">SelectKBest</code>, <code class="ic">RFE</code>, importance của cây</td></tr>
+          <tr><td>Chẩn đoán under/overfit</td><td><code class="ic">learning_curve</code>, <code class="ic">validation_curve</code></td></tr>
+          <tr><td>Giá trị thiếu</td><td><code class="ic">SimpleImputer</code>, <code class="ic">KNNImputer</code></td></tr>
+        </table>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.feature_selection <span class="kw">import</span> SelectKBest, f_classif
+
+sel = SelectKBest(f_classif, k=10)       <span class="cm"># giữ 10 đặc trưng tốt nhất</span>
+X_new = sel.fit_transform(X, y)</pre></div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Lưu model &amp; triển khai</h2>
+        <div class="ch-sub">Đưa pipeline ra production.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> joblib
+
+<span class="cm"># Lưu CẢ pipeline (gồm tiền xử lý) — đây là điểm mạnh lớn</span>
+joblib.dump(pipe, <span class="st">'model.joblib'</span>)
+
+<span class="cm"># Khi phục vụ:</span>
+loaded = joblib.load(<span class="st">'model.joblib'</span>)
+pred = loaded.predict(new_raw_data)      <span class="cm"># tiền xử lý chạy tự động</span></pre></div>
+        <div class="box danger"><span class="bt">Tương thích phiên bản</span> Model joblib chỉ đảm bảo nạp được trên <b>cùng phiên bản</b> sklearn/Python. Ghim version (requirements.txt) khi triển khai; với liên thông đa nền tảng, cân nhắc xuất ONNX qua <code class="ic">skl2onnx</code>.</div>
+
+        <div class="exercise" data-ex="ex8">
+          <div class="eh">✍️ Bài tập 8 — Lưu &amp; nạp model</div>
+          <div class="etask">Lưu pipeline bằng <code>joblib.dump(pipe, 'model.joblib')</code>; nạp lại bằng <code>joblib.load('model.joblib')</code>.</div>
+          <textarea class="codepad" id="ex8" spellcheck="false">import joblib
+
+# lưu
+joblib.
+# nạp
+loaded = joblib.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex8')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex8')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex8"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">joblib.dump(pipe, 'model.joblib')
+loaded = joblib.load('model.joblib')</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án thực chiến tổng hợp</h2>
+        <div class="ch-sub">Dự đoán khách rời bỏ (churn) end-to-end từ CSV.</div>
+
+        <ol>
+          <li><strong>Đọc dữ liệu:</strong> <code class="ic">pandas.read_csv</code>, tách <code class="ic">X</code> (cột số + hạng mục) &amp; <code class="ic">y</code>.</li>
+          <li><strong>Chia:</strong> <code class="ic">train_test_split(..., stratify=y)</code>.</li>
+          <li><strong>Tiền xử lý:</strong> <code class="ic">ColumnTransformer</code> (impute+scale số, one-hot hạng mục).</li>
+          <li><strong>Model:</strong> Pipeline = pre + <code class="ic">HistGradientBoostingClassifier</code>.</li>
+          <li><strong>Tinh chỉnh:</strong> <code class="ic">GridSearchCV(cv=5, scoring='f1')</code>.</li>
+          <li><strong>Đánh giá:</strong> <code class="ic">classification_report</code> + confusion matrix trên test.</li>
+          <li><strong>Lưu:</strong> <code class="ic">joblib.dump(best_pipeline, ...)</code>.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex9">
+          <div class="eh">✍️ Bài tập 9 — Ghép Pipeline + đánh giá chéo</div>
+          <div class="etask">Tạo <code>pipe = Pipeline([('pre', pre), ('clf', HistGradientBoostingClassifier())])</code> rồi tính <code>cross_val_score(pipe, X, y, cv=5)</code>.</div>
+          <textarea class="codepad" id="ex9" spellcheck="false">from sklearn.pipeline import Pipeline
+from sklearn.ensemble import HistGradientBoostingClassifier
+from sklearn.model_selection import cross_val_score
+
+pipe =
+scores = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex9')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex9')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex9"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">pipe = Pipeline([('pre', pre), ('clf', HistGradientBoostingClassifier())])
+scores = cross_val_score(pipe, X, y, cv=5)</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã nắm trọn quy trình ML cổ điển. Bước tiếp: thi Kaggle với dữ liệu bảng (sklearn + Gradient Boosting là combo vô địch), và khi gặp ảnh/văn bản/âm thanh thì chuyển sang <a href="khoa-hoc-tensorflow.html" style="color:var(--primary-glow)">TensorFlow</a>/<a href="khoa-hoc-pytorch.html" style="color:var(--primary-glow)">PyTorch</a>.</div>
+      </section>
+
+      <!-- ============ PIPELINE BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> Pipeline Builder</h2>
+        <div class="ch-sub">Chọn bước tiền xử lý + model → sinh code <code>Pipeline</code>.</div>
+        <div class="builder">
+          <div class="bh">🔧 Dựng Pipeline bằng cách bấm</div>
+          <div class="brow">
+            <select id="bLayer">
+              <option value="StandardScaler">StandardScaler (tiền xử lý)</option>
+              <option value="MinMaxScaler">MinMaxScaler (tiền xử lý)</option>
+              <option value="OneHotEncoder">OneHotEncoder (tiền xử lý)</option>
+              <option value="SimpleImputer">SimpleImputer (tiền xử lý)</option>
+              <option value="PCA">PCA (giảm chiều)</option>
+              <option value="SelectKBest">SelectKBest (chọn đặc trưng)</option>
+              <option value="LogisticRegression">LogisticRegression (model)</option>
+              <option value="RandomForestClassifier">RandomForestClassifier (model)</option>
+              <option value="HistGradientBoostingClassifier">HistGradientBoosting (model)</option>
+              <option value="SVC">SVC (model)</option>
+              <option value="KMeans">KMeans (không giám sát)</option>
+            </select>
+            <button class="ebtn" onclick="addLayer()">+ Thêm bước</button>
+            <button class="ebtn ghost" onclick="clearLayers()">Xóa hết</button>
+          </div>
+          <ul class="layer-list" id="layerList"></ul>
+          <div class="out" id="builderOut"># Thêm bước để sinh code...</div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Quy trình &amp; API</div>
+            <table style="margin:0"><tr><td><code class="ic">train_test_split</code></td><td>Chia train/test</td></tr>
+            <tr><td><code class="ic">.fit(X, y)</code></td><td>Học</td></tr>
+            <tr><td><code class="ic">.predict(X)</code></td><td>Dự đoán</td></tr>
+            <tr><td><code class="ic">.transform(X)</code></td><td>Biến đổi</td></tr>
+            <tr><td><code class="ic">cross_val_score</code></td><td>Kiểm định chéo</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Model hay dùng</div>
+            <table style="margin:0"><tr><td><code class="ic">LinearRegression</code></td><td>Hồi quy</td></tr>
+            <tr><td><code class="ic">LogisticRegression</code></td><td>Phân loại tuyến tính</td></tr>
+            <tr><td><code class="ic">RandomForest*</code></td><td>Cây ensemble</td></tr>
+            <tr><td><code class="ic">HistGradientBoosting*</code></td><td>Boosting mạnh</td></tr>
+            <tr><td><code class="ic">KMeans / PCA</code></td><td>Không giám sát</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Pipeline &amp; tinh chỉnh</div>
+            <table style="margin:0"><tr><td><code class="ic">Pipeline</code></td><td>Ghép bước</td></tr>
+            <tr><td><code class="ic">ColumnTransformer</code></td><td>Số vs hạng mục</td></tr>
+            <tr><td><code class="ic">StandardScaler</code></td><td>Chuẩn hóa</td></tr>
+            <tr><td><code class="ic">GridSearchCV</code></td><td>Tinh chỉnh</td></tr>
+            <tr><td><code class="ic">joblib.dump</code></td><td>Lưu model</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        📊 <strong>Khóa Học scikit-learn</strong> — một phần của <a href="../index.html">Mega Study</a>. Code minh họa cho scikit-learn 1.x.<br>
+        Thực hành local (<code>pip install scikit-learn</code>) hoặc <a href="https://colab.research.google.com" target="_blank" rel="noopener">Colab</a>. Học kèm <a href="khoa-hoc-tensorflow.html">TensorFlow</a> &amp; <a href="khoa-hoc-pytorch.html">PyTorch</a> cho deep learning.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/train_test_split\s*\(/, label:"Gọi train_test_split(...)"},
+    {re:/test_size\s*=\s*0\.2/, label:"test_size=0.2"},
+    {re:/random_state\s*=\s*42/, label:"random_state=42"},
+  ],
+  ex2: [
+    {re:/LinearRegression\s*\(\s*\)/, label:"LinearRegression()"},
+    {re:/\.fit\s*\(\s*X_train\s*,\s*y_train/, label:"fit(X_train, y_train)"},
+    {re:/\.predict\s*\(\s*X_test/, label:"predict(X_test)"},
+  ],
+  ex3: [
+    {re:/KNeighborsClassifier\s*\(\s*n_neighbors\s*=\s*3/, label:"KNeighborsClassifier(n_neighbors=3)"},
+    {re:/\.fit\s*\(\s*X_train\s*,\s*y_train/, label:"fit(X_train, y_train)"},
+    {re:/\.predict\s*\(\s*X_test/, label:"predict(X_test)"},
+  ],
+  ex4: [
+    {re:/accuracy_score\s*\(\s*y_test\s*,\s*pred/, label:"accuracy_score(y_test, pred)"},
+    {re:/classification_report\s*\(\s*y_test\s*,\s*pred/, label:"classification_report(y_test, pred)"},
+  ],
+  ex5: [
+    {re:/Pipeline\s*\(\s*\[/, label:"Dùng Pipeline([...])"},
+    {re:/['"]scaler['"]\s*,\s*StandardScaler\s*\(\s*\)/, label:"('scaler', StandardScaler())"},
+    {re:/['"]clf['"]\s*,\s*LogisticRegression\s*\(/, label:"('clf', LogisticRegression())"},
+  ],
+  ex6: [
+    {re:/RandomForestClassifier\s*\(/, label:"RandomForestClassifier(...)"},
+    {re:/n_estimators\s*=\s*100/, label:"n_estimators=100"},
+    {re:/random_state\s*=\s*42/, label:"random_state=42"},
+    {re:/\.fit\s*\(\s*X_train\s*,\s*y_train/, label:"fit(X_train, y_train)"},
+  ],
+  ex7: [
+    {re:/GridSearchCV\s*\(/, label:"GridSearchCV(...)"},
+    {re:/cv\s*=\s*5/, label:"cv=5"},
+    {re:/\.fit\s*\(\s*X_train\s*,\s*y_train/, label:"fit(X_train, y_train)"},
+  ],
+  ex8: [
+    {re:/joblib\.dump\s*\(\s*pipe\s*,/, label:"joblib.dump(pipe, ...)"},
+    {re:/joblib\.load\s*\(/, label:"joblib.load(...)"},
+  ],
+  ex9: [
+    {re:/Pipeline\s*\(\s*\[/, label:"Dùng Pipeline([...])"},
+    {re:/HistGradientBoostingClassifier\s*\(/, label:"HistGradientBoostingClassifier()"},
+    {re:/cross_val_score\s*\(\s*pipe\s*,\s*X\s*,\s*y/, label:"cross_val_score(pipe, X, y, ...)"},
+    {re:/cv\s*=\s*5/, label:"cv=5"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"scikit-learn mạnh nhất ở đâu?", a:"Machine learning cổ điển cho dữ liệu bảng (tabular): hồi quy, phân loại, gom cụm."},
+  {q:"API chung của mọi estimator?", a:"fit(X, y) để học, predict(X) để dự đoán; transformer thêm transform(X)."},
+  {q:"Vì sao cần train_test_split?", a:"Để đánh giá khái quát hóa trên dữ liệu chưa thấy — không đánh giá trên tập đã train."},
+  {q:"Data leakage là gì?", a:"Thông tin từ test rò vào train (vd scale trước khi chia) → điểm ảo. Pipeline ngăn được."},
+  {q:"Khi nào dùng F1 thay accuracy?", a:"Khi lớp mất cân bằng — accuracy đánh lừa, F1 cân bằng precision & recall."},
+  {q:"Pipeline để làm gì?", a:"Ghép tiền xử lý + model thành 1 khối; fit/predict tự chạy đúng, chống leakage."},
+  {q:"Random Forest vs Gradient Boosting?", a:"RF: nhiều cây song song độc lập (bagging). GB: cây tuần tự sửa lỗi cây trước (boosting)."},
+  {q:"Model nào nhạy scaling?", a:"KNN, SVM, hồi quy có regularization, KMeans, PCA — cần StandardScaler trước."},
+  {q:"ColumnTransformer giải quyết gì?", a:"Áp tiền xử lý khác nhau cho cột số (scale) và cột hạng mục (one-hot)."},
+  {q:"GridSearchCV làm gì?", a:"Thử các tổ hợp siêu tham số với cross-validation, chọn cấu hình tốt nhất."},
+  {q:"KMeans vs PCA?", a:"KMeans gom dữ liệu thành k cụm; PCA giảm chiều giữ phương sai lớn nhất."},
+  {q:"Lưu model sklearn bằng?", a:"joblib.dump(pipeline, ...) — lưu cả tiền xử lý lẫn model."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== PIPELINE BUILDER ===== */
+let steps = [];
+const IMPORTS = {
+  StandardScaler:'from sklearn.preprocessing import StandardScaler',
+  MinMaxScaler:'from sklearn.preprocessing import MinMaxScaler',
+  OneHotEncoder:'from sklearn.preprocessing import OneHotEncoder',
+  SimpleImputer:'from sklearn.impute import SimpleImputer',
+  PCA:'from sklearn.decomposition import PCA',
+  SelectKBest:'from sklearn.feature_selection import SelectKBest',
+  LogisticRegression:'from sklearn.linear_model import LogisticRegression',
+  RandomForestClassifier:'from sklearn.ensemble import RandomForestClassifier',
+  HistGradientBoostingClassifier:'from sklearn.ensemble import HistGradientBoostingClassifier',
+  SVC:'from sklearn.svm import SVC',
+  KMeans:'from sklearn.cluster import KMeans',
+};
+const KEY = {
+  StandardScaler:'scaler', MinMaxScaler:'scaler', OneHotEncoder:'encoder', SimpleImputer:'imputer',
+  PCA:'pca', SelectKBest:'select', LogisticRegression:'clf', RandomForestClassifier:'clf',
+  HistGradientBoostingClassifier:'clf', SVC:'clf', KMeans:'cluster',
+};
+function addLayer(){ steps.push(document.getElementById('bLayer').value); renderLayers(); }
+function clearLayers(){ steps = []; renderLayers(); }
+function rmLayer(i){ steps.splice(i,1); renderLayers(); }
+function renderLayers(){
+  document.getElementById('layerList').innerHTML = steps.map((s,i)=>
+    `<li><span>${KEY[s]} → ${s}()</span><button class="rm" onclick="rmLayer(${i})">✕</button></li>`).join('');
+  const out = document.getElementById('builderOut');
+  if(!steps.length){ out.textContent = '# Thêm bước để sinh code...'; return; }
+  const imp = [...new Set(steps.map(s=>IMPORTS[s]))].join('\n');
+  const body = steps.map(s=>`    ('${KEY[s]}', ${s}()),`).join('\n');
+  out.textContent = imp + '\nfrom sklearn.pipeline import Pipeline\n\npipe = Pipeline([\n' + body + '\n])\npipe.fit(X_train, y_train)';
+}
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

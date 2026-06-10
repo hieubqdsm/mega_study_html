@@ -44,6 +44,11 @@ mega_study_html/
 │   └── khoa-hoc-tester-qa.*      # 🐛 Tester / QA
 │
 ├── ai/                           # 🤖 Trí tuệ nhân tạo
+│   ├── khoa-hoc-tensorflow.*     # 🔶 TensorFlow & Keras (bài tập tự chấm, HTML+MD)
+│   ├── khoa-hoc-pytorch.*        # 🔥 PyTorch (bài tập tự chấm, HTML+MD)
+│   ├── khoa-hoc-scikit-learn.*   # 📊 scikit-learn (ML dữ liệu bảng, HTML+MD)
+│   ├── khoa-hoc-langchain.*      # 🦜 LangChain (ứng dụng LLM/RAG/agent, HTML+MD)
+│   ├── khoa-hoc-llamaindex.*     # 🦙 LlamaIndex (RAG/data framework, HTML+MD)
 │   ├── claude-course/            # Bộ khóa Claude (index.html, foundations, coding, ...)
 │   ├── khoa-hoc-gemini-pro.*     # ✦ Gemini Pro
 │   └── giao_trinh_agentic_ai.html

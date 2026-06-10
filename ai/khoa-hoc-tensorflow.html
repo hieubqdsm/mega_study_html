@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học TensorFlow &amp; Keras — Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #FF6F00;        /* TF orange */
+    --primary-glow: #ffa040;
+    --accent: #FFC107;         /* amber */
+    --accent-2: #ffd54f;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #1a1206; --darker: #0d0a05;
+    --light: #e7d8c4; --light-strong: #fff7ed; --gray: #b39e84;
+    --card: #1f1810; --card-2: #2a2014; --border: #43331f; --terminal: #140d05;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #94816a;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(255,111,0,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(255,193,7,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #060402 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(255,111,0,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(255,111,0,.5)); }
+  .logo h1 { font-size: 19px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,111,0,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#1a1206; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(255,111,0,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(13,10,5,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(255,111,0,.16), rgba(255,193,7,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🔶"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(255,111,0,.08); border-color: rgba(255,111,0,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE (self-grading) */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(255,111,0,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#160e02; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* MODEL BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(255,111,0,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:8px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .builder input { width:90px; }
+  .layer-list { list-style:none; margin:6px 0 12px; padding:0; }
+  .layer-list li { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:7px 12px; margin-bottom:6px; font-size:13px; font-family:monospace; display:flex; justify-content:space-between; align-items:center; }
+  .layer-list .rm { cursor:pointer; color:var(--danger); font-weight:800; border:none; background:none; font-size:15px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#160e02; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🔶</div>
+      <h1>TensorFlow &amp; Keras</h1>
+      <div class="sub">TỪ CĂN BẢN ĐẾN NÂNG CAO</div>
+      <div class="pat">import tensorflow as tf</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> TensorFlow là gì &amp; cài đặt</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Tensor: shape, dtype, phép toán</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Autograd với GradientTape</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Keras cơ bản</li>
+      <li><a href="#c4"><span class="cn">4</span> Mạng đầu tiên (Sequential)</a></li>
+      <li><a href="#c5"><span class="cn">5</span> compile / fit / evaluate</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Dữ liệu với tf.data</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Overfitting &amp; callbacks</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Trung cấp</li>
+      <li><a href="#c8"><span class="cn">8</span> Functional API</a></li>
+      <li><a href="#c9"><span class="cn">9</span> CNN cho ảnh</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Transfer learning</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Lưu/Load &amp; TensorBoard</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Custom loop &amp; subclass</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Nâng cao &amp; triển khai</li>
+      <li><a href="#c13"><span class="cn">13</span> RNN/LSTM &amp; văn bản</a></li>
+      <li><a href="#c14"><span class="cn">14</span> tf.function &amp; hiệu năng</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Triển khai: Lite / Serving / JS</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án thực chiến</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> Keras Model Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🔶 Khóa học · <b id="crumb">TensorFlow &amp; Keras</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">TensorFlow &amp; Keras</span> — từ tensor đầu tiên đến mô hình triển khai thật</h1>
+        <p>16 chương theo 4 cấp độ. Mỗi chương có code chạy được (Colab/local), <strong>bài tập tự chấm</strong> ngay trong trình duyệt, quiz và flashcard. Bạn sẽ đi từ phép toán tensor → mạng nơ-ron → CNN/RNN → transfer learning → xuất bản TF Lite/Serving/JS.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>Model Builder</b></span>
+          <span class="meta-pill">🐍 TensorFlow <b>2.x</b> / Keras 3</span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chạy code ở đâu?</span> Code không chạy trong trình duyệt (TensorFlow quá nặng cho WASM). Cách nhanh nhất để thực hành: mở <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> (miễn phí, có sẵn TF + GPU) hoặc cài local <code class="ic">pip install tensorflow</code>. Bài tập trong khóa <b>tự chấm offline</b> bằng cách kiểm tra các "dấu hiệu" trong code bạn gõ.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> TensorFlow là gì &amp; cài đặt</h2>
+        <div class="ch-sub">Bức tranh tổng thể, hệ sinh thái và cách dựng môi trường.</div>
+
+        <p><strong>TensorFlow</strong> là thư viện mã nguồn mở của Google cho học máy &amp; học sâu. Nó cho phép định nghĩa các phép tính trên <strong>tensor</strong> (mảng nhiều chiều), tự động tính đạo hàm (autograd), chạy trên CPU/GPU/TPU, và triển khai mô hình ra nhiều nền tảng.</p>
+        <p><strong>Keras</strong> là API cấp cao <em>nằm trong</em> TensorFlow (<code class="ic">tf.keras</code>) — cách chính thức &amp; dễ nhất để xây mô hình. Trong khóa này ta dùng Keras làm mặc định và "hạ xuống" tầng thấp khi cần.</p>
+
+        <h3 class="sec">Hệ sinh thái</h3>
+        <table>
+          <tr><th>Thành phần</th><th>Dùng để</th></tr>
+          <tr><td><code class="ic">tf.keras</code></td><td>Xây &amp; huấn luyện model (API chính)</td></tr>
+          <tr><td><code class="ic">tf.data</code></td><td>Pipeline dữ liệu hiệu năng cao</td></tr>
+          <tr><td><code class="ic">tf.function</code></td><td>Biên dịch Python → graph để chạy nhanh</td></tr>
+          <tr><td>TF Lite / LiteRT</td><td>Chạy model trên mobile/edge</td></tr>
+          <tr><td>TF Serving</td><td>Phục vụ model qua API ở production</td></tr>
+          <tr><td>TensorFlow.js</td><td>Chạy model trong trình duyệt</td></tr>
+        </table>
+
+        <h3 class="sec">Cài đặt</h3>
+        <div class="code-block"><div class="cbhead"><span>bash · terminal</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Local (khuyên dùng môi trường ảo)</span>
+python -m venv .venv &amp;&amp; source .venv/bin/activate   <span class="cm"># Windows: .venv\Scripts\activate</span>
+pip install tensorflow            <span class="cm"># bản CPU+GPU hợp nhất (Linux)</span>
+
+<span class="cm"># Kiểm tra</span>
+python -c <span class="st">"import tensorflow as tf; print(tf.__version__)"</span></pre></div>
+        <div class="box tip"><span class="bt">Mẹo Colab</span> Vào <b>Runtime → Change runtime type → GPU</b> để có GPU miễn phí. TensorFlow đã cài sẵn, chỉ cần <code class="ic">import tensorflow as tf</code>.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. Keras quan hệ thế nào với TensorFlow?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" onclick="pickOpt(this,0)">Một thư viện đối thủ, tách rời</button>
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">API cấp cao nằm trong TF (tf.keras)</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Chỉ dùng để vẽ biểu đồ</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Trình quản lý GPU</button>
+            </div>
+            <div class="qexp">✅ Keras là API cấp cao chính thức của TensorFlow, truy cập qua <code>tf.keras</code>.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Tensor: shape, dtype, phép toán</h2>
+        <div class="ch-sub">Đơn vị dữ liệu nền tảng của mọi thứ trong TensorFlow.</div>
+
+        <p>Một <strong>tensor</strong> là mảng nhiều chiều có kiểu (dtype) đồng nhất. Vô hướng là tensor 0 chiều, vector là 1 chiều, ma trận 2 chiều, ảnh RGB là 3 chiều, một batch ảnh là 4 chiều <code class="ic">(batch, height, width, channels)</code>.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+
+a = tf.constant([[1, 2], [3, 4]], dtype=tf.float32)
+print(a.shape, a.dtype)        <span class="cm"># (2, 2) float32</span>
+
+b = tf.constant([[10.0], [20.0]])
+print(a @ b)                   <span class="cm"># nhân ma trận → shape (2,1)</span>
+print(tf.reduce_mean(a))       <span class="cm"># trung bình tất cả phần tử</span>
+print(tf.reshape(a, [4]))      <span class="cm"># đổi shape → vector 4 phần tử</span>
+
+<span class="cm"># Variable: tensor có thể thay đổi (dùng cho trọng số)</span>
+w = tf.Variable([[0.5, 0.5]])
+w.assign_add([[0.1, 0.1]])     <span class="cm"># cập nhật tại chỗ</span></pre></div>
+
+        <div class="box info"><span class="bt">Broadcasting</span> Khi shape không khớp, TF tự "nong" chiều có kích thước 1 cho khớp: <code class="ic">tf.constant([1,2,3]) + 10</code> → <code class="ic">[11,12,13]</code>. Hiểu broadcasting giúp tránh 80% lỗi shape.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Tạo &amp; biến đổi tensor</div>
+          <div class="etask">Viết code: tạo tensor <code>x</code> kiểu <code>float32</code> shape <code>(3, 4)</code> toàn số 1 bằng <code>tf.ones</code>, rồi tính <strong>tổng theo trục cột</strong> (axis=0) bằng <code>tf.reduce_sum</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">import tensorflow as tf
+
+x =
+col_sum =
+print(col_sum)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">x = tf.ones([3, 4], dtype=tf.float32)
+col_sum = tf.reduce_sum(x, axis=0)   <span class="cm"># → [3., 3., 3., 3.]</span>
+print(col_sum)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Autograd với GradientTape</h2>
+        <div class="ch-sub">Cơ chế tự động tính đạo hàm — trái tim của việc huấn luyện.</div>
+
+        <p>Huấn luyện = giảm hàm mất mát bằng <strong>gradient descent</strong>. TensorFlow ghi lại các phép tính trong một <code class="ic">tf.GradientTape</code> rồi tính đạo hàm của output theo các biến.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">w = tf.Variable(3.0)
+
+<span class="kw">with</span> tf.GradientTape() <span class="kw">as</span> tape:
+    y = w ** 2            <span class="cm"># y = w²</span>
+
+dy_dw = tape.gradient(y, w)   <span class="cm"># dy/dw = 2w = 6.0</span>
+print(dy_dw)                  <span class="cm"># tf.Tensor(6.0)</span>
+
+<span class="cm"># Một bước "học" thủ công: kéo w về phía giảm y</span>
+lr = 0.1
+w.assign_sub(lr * dy_dw)      <span class="cm"># w = 3 - 0.1*6 = 2.4</span></pre></div>
+
+        <div class="box pro"><span class="bt">Vì sao quan trọng</span> Mọi optimizer của Keras (SGD, Adam...) đều dùng cơ chế này bên dưới. Khi bạn cần <em>vòng lặp huấn luyện tùy biến</em> (chương 12), bạn sẽ tự viết <code class="ic">GradientTape</code>.</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tính gradient</div>
+          <div class="etask">Cho <code>x = tf.Variable(2.0)</code>. Dùng <code>tf.GradientTape</code> tính đạo hàm của <code>y = x**3 + 2*x</code> theo <code>x</code> (kết quả đúng = 14). Gọi <code>tape.gradient(...)</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">import tensorflow as tf
+x = tf.Variable(2.0)
+
+with tf.GradientTape() as tape:
+    y =
+
+grad =
+print(grad)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">with tf.GradientTape() as tape:
+    y = x**3 + 2*x
+grad = tape.gradient(y, x)   <span class="cm"># 3x² + 2 = 14.0</span>
+print(grad)</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Keras cơ bản</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Mạng nơ-ron đầu tiên (Sequential)</h2>
+        <div class="ch-sub">Phân loại chữ số viết tay MNIST trong ~15 dòng.</div>
+
+        <p><code class="ic">keras.Sequential</code> xếp chồng các lớp tuyến tính. Đây là cách nhanh nhất cho mạng "một đầu vào, một đầu ra".</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · MNIST</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+<span class="kw">from</span> tensorflow <span class="kw">import</span> keras
+
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0   <span class="cm"># chuẩn hóa về [0,1]</span>
+
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=(28, 28)),     <span class="cm"># ảnh 28x28 → vector 784</span>
+    keras.layers.Dense(128, activation=<span class="st">'relu'</span>),   <span class="cm"># lớp ẩn</span>
+    keras.layers.Dropout(0.2),
+    keras.layers.Dense(10, activation=<span class="st">'softmax'</span>)  <span class="cm"># 10 lớp đầu ra</span>
+])
+model.summary()</pre></div>
+
+        <div class="box info"><span class="bt">Các activation hay gặp</span> <code class="ic">relu</code> cho lớp ẩn; <code class="ic">softmax</code> cho phân loại nhiều lớp (đầu ra là xác suất); <code class="ic">sigmoid</code> cho phân loại nhị phân; không activation (linear) cho hồi quy.</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Dựng Sequential</div>
+          <div class="etask">Tạo một <code>keras.Sequential</code> cho bài hồi quy: đầu vào 8 đặc trưng → <code>Dense(64, relu)</code> → <code>Dense(64, relu)</code> → <code>Dense(1)</code> (không activation). Phải dùng <code>keras.Sequential</code> và <code>layers.Dense</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">from tensorflow import keras
+from tensorflow.keras import layers
+
+model = keras.Sequential([
+
+])</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model = keras.Sequential([
+    layers.Input(shape=(8,)),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(1)
+])</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> compile / fit / evaluate / predict</h2>
+        <div class="ch-sub">Vòng đời huấn luyện chuẩn của Keras.</div>
+
+        <p>Sau khi dựng model, ta cần 3 thứ trong <code class="ic">compile</code>: <strong>optimizer</strong> (cách cập nhật trọng số), <strong>loss</strong> (đo sai số), <strong>metrics</strong> (theo dõi).</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">model.compile(
+    optimizer=<span class="st">'adam'</span>,
+    loss=<span class="st">'sparse_categorical_crossentropy'</span>,   <span class="cm"># nhãn là số nguyên 0..9</span>
+    metrics=[<span class="st">'accuracy'</span>]
+)
+
+history = model.fit(x_train, y_train,
+                    epochs=5, batch_size=32,
+                    validation_split=0.1)        <span class="cm"># giữ 10% để kiểm định</span>
+
+test_loss, test_acc = model.evaluate(x_test, y_test)
+preds = model.predict(x_test[:3])                <span class="cm"># xác suất 10 lớp</span></pre></div>
+
+        <table>
+          <tr><th>Bài toán</th><th>Loss thường dùng</th><th>Activation cuối</th></tr>
+          <tr><td>Phân loại nhiều lớp (nhãn số)</td><td><code class="ic">sparse_categorical_crossentropy</code></td><td>softmax</td></tr>
+          <tr><td>Phân loại nhiều lớp (one-hot)</td><td><code class="ic">categorical_crossentropy</code></td><td>softmax</td></tr>
+          <tr><td>Phân loại nhị phân</td><td><code class="ic">binary_crossentropy</code></td><td>sigmoid</td></tr>
+          <tr><td>Hồi quy</td><td><code class="ic">mse</code> / <code class="ic">mae</code></td><td>linear</td></tr>
+        </table>
+
+        <div class="box warn"><span class="bt">Bẫy thường gặp</span> Chọn nhầm cặp loss/activation → model "học" nhưng accuracy đứng yên. Ví dụ dùng <code class="ic">categorical_crossentropy</code> với nhãn dạng số nguyên (phải dùng bản <code class="ic">sparse_</code>).</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Compile cho phân loại nhị phân</div>
+          <div class="etask">Gọi <code>model.compile(...)</code> cho bài <strong>phân loại nhị phân</strong>: optimizer <code>'adam'</code>, loss <code>'binary_crossentropy'</code>, theo dõi <code>'accuracy'</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">model.compile(
+
+)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Dữ liệu với tf.data</h2>
+        <div class="ch-sub">Pipeline dữ liệu nhanh, không nghẽn GPU.</div>
+
+        <p><code class="ic">tf.data.Dataset</code> giúp nạp, xáo trộn, gộp batch và nạp trước dữ liệu hiệu quả — đặc biệt khi dữ liệu lớn hơn RAM.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">ds = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+ds = (ds
+      .shuffle(10_000)          <span class="cm"># xáo trộn</span>
+      .batch(32)                <span class="cm"># gộp lô 32 mẫu</span>
+      .prefetch(tf.data.AUTOTUNE))   <span class="cm"># nạp trước lô kế trong khi GPU bận</span>
+
+model.fit(ds, epochs=5)         <span class="cm"># truyền thẳng Dataset vào fit</span></pre></div>
+        <div class="box tip"><span class="bt">Thứ tự vàng</span> <code class="ic">map → cache → shuffle → batch → prefetch</code>. Đặt <code class="ic">cache()</code> sau bước tiền xử lý tốn kém để chỉ tính một lần.</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Dựng pipeline tf.data</div>
+          <div class="etask">Từ <code>ds = tf.data.Dataset.from_tensor_slices((X, y))</code>, hãy nối chuỗi: <code>shuffle(1000)</code>, <code>batch(64)</code>, <code>prefetch(tf.data.AUTOTUNE)</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">ds = tf.data.Dataset.from_tensor_slices((X, y))
+ds = ds</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">ds = ds.shuffle(1000).batch(64).prefetch(tf.data.AUTOTUNE)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Overfitting &amp; callbacks</h2>
+        <div class="ch-sub">Khi model học thuộc lòng thay vì khái quát hóa.</div>
+
+        <p><strong>Overfitting</strong>: loss train giảm nhưng loss validation tăng. Vũ khí: nhiều dữ liệu hơn, <strong>Dropout</strong>, <strong>regularization</strong> L1/L2, và dừng sớm.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · callbacks</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> tensorflow.keras <span class="kw">import</span> callbacks
+
+cbs = [
+    callbacks.EarlyStopping(monitor=<span class="st">'val_loss'</span>, patience=3,
+                            restore_best_weights=<span class="kw">True</span>),
+    callbacks.ModelCheckpoint(<span class="st">'best.keras'</span>, save_best_only=<span class="kw">True</span>),
+    callbacks.ReduceLROnPlateau(monitor=<span class="st">'val_loss'</span>, factor=0.5, patience=2),
+]
+model.fit(x_train, y_train, epochs=100,
+          validation_split=0.2, callbacks=cbs)</pre></div>
+        <div class="box pro"><span class="bt">EarlyStopping</span> Đặt <code class="ic">epochs</code> lớn rồi để EarlyStopping tự dừng khi <code class="ic">val_loss</code> ngừng cải thiện sau <code class="ic">patience</code> epoch — vừa nhanh vừa tránh overfit.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Dấu hiệu rõ nhất của overfitting là gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" onclick="pickOpt(this,0)">Loss train tăng dần</button>
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Loss train giảm nhưng loss val tăng</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Accuracy train thấp</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Model chạy chậm</button>
+            </div>
+            <div class="qexp">✅ Khoảng cách train/val nới rộng = model học thuộc nhiễu của tập train.</div>
+          </div>
+          <div class="qitem">
+            <div class="qq">2. Callback nào tự dừng huấn luyện khi không cải thiện?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">EarlyStopping</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">ModelCheckpoint</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">TensorBoard</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Flatten</button>
+            </div>
+            <div class="qexp">✅ <code>EarlyStopping</code> theo dõi một metric và dừng khi hết kiên nhẫn (<code>patience</code>).</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Trung cấp</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Functional API</h2>
+        <div class="ch-sub">Khi Sequential không đủ: nhiều input/output, nhánh, chia sẻ lớp.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">inputs = keras.Input(shape=(784,))
+x = keras.layers.Dense(128, activation=<span class="st">'relu'</span>)(inputs)
+x = keras.layers.Dense(64, activation=<span class="st">'relu'</span>)(x)
+outputs = keras.layers.Dense(10, activation=<span class="st">'softmax'</span>)(x)
+
+model = keras.Model(inputs=inputs, outputs=outputs)   <span class="cm"># nối input→output</span></pre></div>
+        <div class="box info"><span class="bt">Tư duy đồ thị</span> Mỗi lớp là một hàm: <code class="ic">y = Layer(...)(x)</code>. Bạn nối các tensor lại thành đồ thị tùy ý, rồi gói bằng <code class="ic">keras.Model</code>. Đây là cách dựng ResNet, U-Net, model 2 nhánh...</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — Functional API</div>
+          <div class="etask">Dựng model Functional: <code>Input(shape=(32,))</code> → <code>Dense(16, relu)</code> → <code>Dense(1, sigmoid)</code>, rồi gói bằng <code>keras.Model</code>. Dùng <code>keras.Input</code> và <code>keras.Model</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">inputs =
+x =
+outputs =
+model = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">inputs = keras.Input(shape=(32,))
+x = keras.layers.Dense(16, activation='relu')(inputs)
+outputs = keras.layers.Dense(1, activation='sigmoid')(x)
+model = keras.Model(inputs, outputs)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> CNN cho ảnh</h2>
+        <div class="ch-sub">Convolutional Neural Network — chuẩn vàng cho thị giác máy tính.</div>
+
+        <p>Lớp <code class="ic">Conv2D</code> quét bộ lọc trên ảnh để học đặc trưng cục bộ (cạnh, góc, texture); <code class="ic">MaxPooling2D</code> giảm kích thước &amp; tăng bất biến dịch chuyển.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · CIFAR-10</span><span class="dot">●</span></div><pre class="code">model = keras.Sequential([
+    keras.layers.Input(shape=(32, 32, 3)),
+    keras.layers.Conv2D(32, 3, activation=<span class="st">'relu'</span>),
+    keras.layers.MaxPooling2D(),
+    keras.layers.Conv2D(64, 3, activation=<span class="st">'relu'</span>),
+    keras.layers.MaxPooling2D(),
+    keras.layers.Flatten(),
+    keras.layers.Dense(64, activation=<span class="st">'relu'</span>),
+    keras.layers.Dense(10, activation=<span class="st">'softmax'</span>),
+])</pre></div>
+        <div class="box tip"><span class="bt">Quy luật kiến trúc</span> Càng sâu, số filter càng tăng (32 → 64 → 128) trong khi không gian (H×W) giảm dần qua pooling. Kết thúc bằng <code class="ic">Flatten</code> + <code class="ic">Dense</code> để ra quyết định.</div>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — Khối CNN</div>
+          <div class="etask">Thêm vào danh sách lớp một khối: <code>Conv2D(64, 3, relu)</code> theo sau là <code>MaxPooling2D()</code>. Dùng đúng tên lớp <code>Conv2D</code> và <code>MaxPooling2D</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false">layers_list = [
+    keras.layers.Input(shape=(64, 64, 3)),
+    # thêm khối CNN ở đây:
+
+]</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">    keras.layers.Conv2D(64, 3, activation='relu'),
+    keras.layers.MaxPooling2D(),</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Transfer learning &amp; augmentation</h2>
+        <div class="ch-sub">Đứng trên vai người khổng lồ: dùng lại model đã huấn luyện.</div>
+
+        <p>Thay vì huấn luyện từ đầu (cần triệu ảnh), ta lấy một model mạnh đã học trên ImageNet (MobileNetV2, EfficientNet), <strong>đóng băng</strong> phần backbone và chỉ huấn luyện "đầu" phân loại mới.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">base = keras.applications.MobileNetV2(
+    input_shape=(160, 160, 3), include_top=<span class="kw">False</span>, weights=<span class="st">'imagenet'</span>)
+base.trainable = <span class="kw">False</span>          <span class="cm"># đóng băng backbone</span>
+
+model = keras.Sequential([
+    keras.layers.RandomFlip(<span class="st">'horizontal'</span>),   <span class="cm"># augmentation</span>
+    keras.layers.RandomRotation(0.1),
+    base,
+    keras.layers.GlobalAveragePooling2D(),
+    keras.layers.Dropout(0.2),
+    keras.layers.Dense(5, activation=<span class="st">'softmax'</span>),   <span class="cm"># 5 lớp mới</span>
+])</pre></div>
+        <div class="box pro"><span class="bt">Fine-tuning 2 pha</span> (1) Huấn luyện đầu mới với backbone đóng băng. (2) Mở băng vài lớp cuối của backbone với <code class="ic">learning_rate</code> rất nhỏ để tinh chỉnh. Đảo thứ tự sẽ phá hỏng trọng số đã học.</div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Lưu/Load &amp; TensorBoard</h2>
+        <div class="ch-sub">Giữ lại thành quả &amp; quan sát quá trình học.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Lưu toàn bộ model (kiến trúc + trọng số + optimizer)</span>
+model.save(<span class="st">'my_model.keras'</span>)
+model = keras.models.load_model(<span class="st">'my_model.keras'</span>)
+
+<span class="cm"># Chỉ lưu trọng số</span>
+model.save_weights(<span class="st">'w.weights.h5'</span>)
+model.load_weights(<span class="st">'w.weights.h5'</span>)
+
+<span class="cm"># TensorBoard: theo dõi loss/accuracy theo thời gian thực</span>
+tb = keras.callbacks.TensorBoard(log_dir=<span class="st">'./logs'</span>)
+model.fit(..., callbacks=[tb])
+<span class="cm"># Terminal: tensorboard --logdir ./logs</span></pre></div>
+        <div class="box info"><span class="bt">Định dạng</span> <code class="ic">.keras</code> là chuẩn mới (một file, gọn). <code class="ic">SavedModel</code> (thư mục) dùng khi triển khai TF Serving. Tránh định dạng HDF5 <code class="ic">.h5</code> cũ cho model đầy đủ.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Custom loop &amp; subclass</h2>
+        <div class="ch-sub">Khi bạn cần toàn quyền kiểm soát.</div>
+
+        <p>Với GAN, RL, hay loss phức tạp, <code class="ic">model.fit</code> không đủ. Ta tự viết vòng lặp bằng <code class="ic">GradientTape</code>.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · custom training loop</span><span class="dot">●</span></div><pre class="code">opt = keras.optimizers.Adam()
+loss_fn = keras.losses.SparseCategoricalCrossentropy()
+
+<span class="kw">for</span> epoch <span class="kw">in</span> range(EPOCHS):
+    <span class="kw">for</span> x_batch, y_batch <span class="kw">in</span> train_ds:
+        <span class="kw">with</span> tf.GradientTape() <span class="kw">as</span> tape:
+            logits = model(x_batch, training=<span class="kw">True</span>)
+            loss = loss_fn(y_batch, logits)
+        grads = tape.gradient(loss, model.trainable_variables)
+        opt.apply_gradients(zip(grads, model.trainable_variables))</pre></div>
+
+        <div class="code-block"><div class="cbhead"><span>python · subclass Model</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">MyModel</span>(keras.Model):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        super().__init__()
+        self.d1 = keras.layers.Dense(64, activation=<span class="st">'relu'</span>)
+        self.out = keras.layers.Dense(10)
+    <span class="kw">def</span> <span class="fn">call</span>(self, x):
+        <span class="kw">return</span> self.out(self.d1(x))</pre></div>
+
+        <div class="exercise" data-ex="ex8">
+          <div class="eh">✍️ Bài tập 8 — Một bước cập nhật thủ công</div>
+          <div class="etask">Trong vòng lặp: tính <code>grads = tape.gradient(loss, model.trainable_variables)</code> rồi <code>opt.apply_gradients(zip(grads, model.trainable_variables))</code>.</div>
+          <textarea class="codepad" id="ex8" spellcheck="false">with tf.GradientTape() as tape:
+    logits = model(x_batch, training=True)
+    loss = loss_fn(y_batch, logits)
+
+grads =
+opt.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex8')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex8')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex8"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">grads = tape.gradient(loss, model.trainable_variables)
+opt.apply_gradients(zip(grads, model.trainable_variables))</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Nâng cao &amp; triển khai</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> RNN/LSTM &amp; văn bản</h2>
+        <div class="ch-sub">Dữ liệu tuần tự: câu chữ, chuỗi thời gian.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · phân loại cảm xúc</span><span class="dot">●</span></div><pre class="code">vectorizer = keras.layers.TextVectorization(max_tokens=20000, output_sequence_length=200)
+vectorizer.adapt(train_texts)          <span class="cm"># học từ vựng từ dữ liệu</span>
+
+model = keras.Sequential([
+    vectorizer,
+    keras.layers.Embedding(20000, 128),    <span class="cm"># từ → vector</span>
+    keras.layers.Bidirectional(keras.layers.LSTM(64)),
+    keras.layers.Dense(1, activation=<span class="st">'sigmoid'</span>),
+])</pre></div>
+        <div class="box info"><span class="bt">Embedding</span> Biến mỗi token (số nguyên) thành vector dày học được — nắm bắt ngữ nghĩa. <code class="ic">LSTM</code>/<code class="ic">GRU</code> xử lý thứ tự &amp; phụ thuộc xa; <code class="ic">Bidirectional</code> đọc câu theo cả hai chiều.</div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> tf.function &amp; hiệu năng</h2>
+        <div class="ch-sub">Tăng tốc và tiết kiệm bộ nhớ.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="nb">@tf.function</span>            <span class="cm"># biên dịch Python → graph, chạy nhanh hơn nhiều</span>
+<span class="kw">def</span> <span class="fn">train_step</span>(x, y):
+    <span class="kw">with</span> tf.GradientTape() <span class="kw">as</span> tape:
+        loss = loss_fn(y, model(x, training=<span class="kw">True</span>))
+    grads = tape.gradient(loss, model.trainable_variables)
+    opt.apply_gradients(zip(grads, model.trainable_variables))
+    <span class="kw">return</span> loss
+
+<span class="cm"># Mixed precision: nhanh hơn ~2-3x trên GPU mới</span>
+keras.mixed_precision.set_global_policy(<span class="st">'mixed_float16'</span>)</pre></div>
+        <table>
+          <tr><th>Kỹ thuật</th><th>Lợi ích</th></tr>
+          <tr><td><code class="ic">@tf.function</code></td><td>Biên dịch graph → nhanh hơn, tối ưu tự động</td></tr>
+          <tr><td>Mixed precision</td><td>Dùng float16 → nhanh &amp; ít VRAM</td></tr>
+          <tr><td><code class="ic">tf.distribute.MirroredStrategy</code></td><td>Huấn luyện đa GPU</td></tr>
+          <tr><td><code class="ic">prefetch</code> + <code class="ic">cache</code></td><td>Không để GPU "đói" dữ liệu</td></tr>
+        </table>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Triển khai: Lite / Serving / JS</h2>
+        <div class="ch-sub">Đưa model ra thế giới thật.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · TF Lite (mobile/edge)</span><span class="dot">●</span></div><pre class="code">converter = tf.lite.TFLiteConverter.from_keras_model(model)
+converter.optimizations = [tf.lite.Optimize.DEFAULT]   <span class="cm"># lượng tử hóa</span>
+tflite_model = converter.convert()
+open(<span class="st">'model.tflite'</span>, <span class="st">'wb'</span>).write(tflite_model)</pre></div>
+
+        <table>
+          <tr><th>Đích</th><th>Công cụ</th><th>Khi nào</th></tr>
+          <tr><td>Điện thoại / IoT</td><td>TF Lite / LiteRT</td><td>Chạy on-device, offline, nhẹ</td></tr>
+          <tr><td>Server / API</td><td>TF Serving (SavedModel)</td><td>Phục vụ quy mô lớn, versioning</td></tr>
+          <tr><td>Trình duyệt</td><td>TensorFlow.js</td><td>Chạy ngay trong web, không cần server</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">Lượng tử hóa (quantization)</span> Giảm trọng số từ float32 → int8 làm model nhỏ ~4 lần &amp; nhanh hơn trên CPU/mobile, đổi lại sai số rất nhỏ.</div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án thực chiến tổng hợp</h2>
+        <div class="ch-sub">Ghép mọi mảnh: phân loại ảnh hoa 5 lớp end-to-end.</div>
+
+        <ol>
+          <li><strong>Dữ liệu:</strong> <code class="ic">keras.utils.image_dataset_from_directory</code> → train/val Dataset, <code class="ic">batch</code> + <code class="ic">prefetch</code>.</li>
+          <li><strong>Model:</strong> augmentation + MobileNetV2 đóng băng + <code class="ic">GlobalAveragePooling2D</code> + <code class="ic">Dense(5, softmax)</code>.</li>
+          <li><strong>Compile:</strong> Adam, <code class="ic">sparse_categorical_crossentropy</code>, accuracy.</li>
+          <li><strong>Train:</strong> <code class="ic">EarlyStopping</code> + <code class="ic">ModelCheckpoint</code>; rồi fine-tune vài lớp cuối.</li>
+          <li><strong>Đánh giá:</strong> confusion matrix, <code class="ic">evaluate</code> trên test.</li>
+          <li><strong>Triển khai:</strong> xuất <code class="ic">.tflite</code> để chạy trên điện thoại.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex9">
+          <div class="eh">✍️ Bài tập 9 — Mảnh ghép cuối: train với callbacks</div>
+          <div class="etask">Gọi <code>model.fit</code> với <code>train_ds</code>, <code>validation_data=val_ds</code>, <code>epochs=20</code> và truyền danh sách <code>callbacks=[early_stop]</code>.</div>
+          <textarea class="codepad" id="ex9" spellcheck="false">early_stop = keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True)
+
+history = model.fit(
+
+)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex9')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex9')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex9"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">history = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    epochs=20,
+    callbacks=[early_stop]
+)</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã đi hết từ tensor → triển khai. Bước tiếp: làm lại dự án với dữ liệu của <em>bạn</em>, đọc Keras docs cho các lớp mới, và so sánh tư duy với khóa <a href="khoa-hoc-pytorch.html" style="color:var(--primary-glow)">PyTorch</a> để hiểu sâu hơn cả hai.</div>
+      </section>
+
+      <!-- ============ MODEL BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> Keras Model Builder</h2>
+        <div class="ch-sub">Chọn lớp → sinh code <code>keras.Sequential</code> sẵn sàng copy.</div>
+        <div class="builder">
+          <div class="bh">🔧 Dựng model bằng cách bấm</div>
+          <div class="brow">
+            <select id="bLayer">
+              <option value="Dense">Dense (units)</option>
+              <option value="Conv2D">Conv2D (filters)</option>
+              <option value="MaxPooling2D">MaxPooling2D</option>
+              <option value="Flatten">Flatten</option>
+              <option value="Dropout">Dropout (rate)</option>
+              <option value="LSTM">LSTM (units)</option>
+              <option value="Embedding">Embedding (dim)</option>
+              <option value="GlobalAveragePooling2D">GlobalAveragePooling2D</option>
+            </select>
+            <input id="bParam" type="text" placeholder="tham số" value="64">
+            <button class="ebtn" onclick="addLayer()">+ Thêm lớp</button>
+            <button class="ebtn ghost" onclick="clearLayers()">Xóa hết</button>
+          </div>
+          <ul class="layer-list" id="layerList"></ul>
+          <div class="out" id="builderOut"># Thêm lớp để sinh code...</div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Dựng &amp; huấn luyện</div>
+            <table style="margin:0"><tr><td><code class="ic">keras.Sequential([...])</code></td><td>Xếp chồng lớp</td></tr>
+            <tr><td><code class="ic">model.compile(...)</code></td><td>Chọn optimizer/loss</td></tr>
+            <tr><td><code class="ic">model.fit(...)</code></td><td>Huấn luyện</td></tr>
+            <tr><td><code class="ic">model.evaluate()</code></td><td>Đánh giá</td></tr>
+            <tr><td><code class="ic">model.predict()</code></td><td>Suy luận</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Lớp hay dùng</div>
+            <table style="margin:0"><tr><td><code class="ic">Dense</code></td><td>Lớp kết nối đầy đủ</td></tr>
+            <tr><td><code class="ic">Conv2D / MaxPooling2D</code></td><td>Thị giác</td></tr>
+            <tr><td><code class="ic">LSTM / Embedding</code></td><td>Văn bản/chuỗi</td></tr>
+            <tr><td><code class="ic">Dropout</code></td><td>Chống overfit</td></tr>
+            <tr><td><code class="ic">Flatten</code></td><td>3D → 1D</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Triển khai &amp; tốc độ</div>
+            <table style="margin:0"><tr><td><code class="ic">model.save('m.keras')</code></td><td>Lưu model</td></tr>
+            <tr><td><code class="ic">TFLiteConverter</code></td><td>Mobile</td></tr>
+            <tr><td><code class="ic">@tf.function</code></td><td>Biên dịch graph</td></tr>
+            <tr><td><code class="ic">prefetch(AUTOTUNE)</code></td><td>Pipeline nhanh</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🔶 <strong>Khóa Học TensorFlow &amp; Keras</strong> — một phần của <a href="../index.html">Mega Study</a>. Code minh họa cho TensorFlow 2.x / Keras 3.<br>
+        Thực hành trên <a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> hoặc local. Học kèm khóa <a href="khoa-hoc-pytorch.html">PyTorch</a> để so sánh.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/tf\.ones\s*\(\s*[\[(]\s*3\s*,\s*4/, label:"Dùng tf.ones với shape (3, 4)"},
+    {re:/float32/, label:"dtype float32"},
+    {re:/tf\.reduce_sum\s*\([^)]*axis\s*=\s*0/, label:"reduce_sum với axis=0"},
+  ],
+  ex2: [
+    {re:/x\s*\*\*\s*3/, label:"Có x**3"},
+    {re:/2\s*\*\s*x/, label:"Có 2*x"},
+    {re:/tape\.gradient\s*\(\s*y\s*,\s*x\s*\)/, label:"tape.gradient(y, x)"},
+  ],
+  ex3: [
+    {re:/keras\.Sequential/, label:"Dùng keras.Sequential"},
+    {re:/Dense\s*\(\s*64[^)]*relu/, label:"Hai lớp Dense(64, relu)", count:2, countRe:/Dense\s*\(\s*64[^)]*relu/g},
+    {re:/Dense\s*\(\s*1\s*\)/, label:"Lớp đầu ra Dense(1)"},
+  ],
+  ex4: [
+    {re:/optimizer\s*=\s*['"]adam['"]/, label:"optimizer='adam'"},
+    {re:/loss\s*=\s*['"]binary_crossentropy['"]/, label:"loss='binary_crossentropy'"},
+    {re:/metrics\s*=\s*\[\s*['"]accuracy['"]/, label:"metrics=['accuracy']"},
+  ],
+  ex5: [
+    {re:/\.shuffle\s*\(\s*1000/, label:"shuffle(1000)"},
+    {re:/\.batch\s*\(\s*64/, label:"batch(64)"},
+    {re:/\.prefetch\s*\(\s*tf\.data\.AUTOTUNE/, label:"prefetch(tf.data.AUTOTUNE)"},
+  ],
+  ex6: [
+    {re:/keras\.Input\s*\(\s*shape\s*=\s*\(\s*32/, label:"keras.Input(shape=(32,))"},
+    {re:/Dense\s*\(\s*16[^)]*relu/, label:"Dense(16, relu)"},
+    {re:/Dense\s*\(\s*1[^)]*sigmoid/, label:"Dense(1, sigmoid)"},
+    {re:/keras\.Model\s*\(/, label:"Gói bằng keras.Model(...)"},
+  ],
+  ex7: [
+    {re:/Conv2D\s*\(\s*64\s*,\s*3[^)]*relu/, label:"Conv2D(64, 3, relu)"},
+    {re:/MaxPooling2D\s*\(/, label:"MaxPooling2D()"},
+  ],
+  ex8: [
+    {re:/tape\.gradient\s*\(\s*loss\s*,\s*model\.trainable_variables/, label:"gradient(loss, model.trainable_variables)"},
+    {re:/apply_gradients\s*\(\s*zip\s*\(\s*grads\s*,\s*model\.trainable_variables/, label:"apply_gradients(zip(grads, ...))"},
+  ],
+  ex9: [
+    {re:/train_ds/, label:"Truyền train_ds"},
+    {re:/validation_data\s*=\s*val_ds/, label:"validation_data=val_ds"},
+    {re:/epochs\s*=\s*20/, label:"epochs=20"},
+    {re:/callbacks\s*=\s*\[\s*early_stop/, label:"callbacks=[early_stop]"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    let ok;
+    if(c.count){ ok = (code.match(c.countRe)||[]).length >= c.count; }
+    else { ok = c.re.test(code); }
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"Tensor là gì?", a:"Mảng nhiều chiều có dtype đồng nhất — đơn vị dữ liệu của TF (0D vô hướng, 1D vector, 2D ma trận...)."},
+  {q:"tf.Variable khác tf.constant?", a:"Variable thay đổi được (dùng cho trọng số), constant thì cố định."},
+  {q:"GradientTape dùng để?", a:"Ghi lại phép tính rồi tự động tính đạo hàm (autograd) cho gradient descent."},
+  {q:"3 thứ trong model.compile?", a:"optimizer, loss, metrics."},
+  {q:"Activation cuối cho phân loại nhiều lớp?", a:"softmax (kèm loss categorical/sparse_categorical_crossentropy)."},
+  {q:"Sequential vs Functional API?", a:"Sequential: xếp chồng tuyến tính. Functional: đồ thị tùy ý, nhiều input/output."},
+  {q:"Conv2D + MaxPooling2D để làm gì?", a:"Conv2D học đặc trưng cục bộ; MaxPooling giảm kích thước & tăng bất biến dịch."},
+  {q:"Transfer learning là gì?", a:"Dùng lại model đã huấn luyện (ImageNet), đóng băng backbone, chỉ train đầu mới."},
+  {q:"Dấu hiệu overfitting?", a:"Loss train giảm nhưng loss validation tăng."},
+  {q:"EarlyStopping làm gì?", a:"Dừng huấn luyện khi metric theo dõi ngừng cải thiện sau 'patience' epoch."},
+  {q:"@tf.function có tác dụng?", a:"Biên dịch hàm Python thành graph → chạy nhanh hơn, tối ưu tự động."},
+  {q:"Xuất model cho điện thoại?", a:"TFLiteConverter → file .tflite (thường kèm lượng tử hóa int8)."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== MODEL BUILDER ===== */
+let layers = [];
+const NEEDS_PARAM = {Dense:'units', Conv2D:'filters', Dropout:'rate', LSTM:'units', Embedding:'input_dim'};
+function addLayer(){
+  const type = document.getElementById('bLayer').value;
+  const p = document.getElementById('bParam').value.trim();
+  layers.push({type, p});
+  renderLayers();
+}
+function clearLayers(){ layers = []; renderLayers(); }
+function rmLayer(i){ layers.splice(i,1); renderLayers(); }
+function layerCode(l){
+  switch(l.type){
+    case 'Dense': return `keras.layers.Dense(${l.p||64}, activation='relu')`;
+    case 'Conv2D': return `keras.layers.Conv2D(${l.p||32}, 3, activation='relu')`;
+    case 'MaxPooling2D': return `keras.layers.MaxPooling2D()`;
+    case 'Flatten': return `keras.layers.Flatten()`;
+    case 'Dropout': return `keras.layers.Dropout(${l.p||0.2})`;
+    case 'LSTM': return `keras.layers.LSTM(${l.p||64})`;
+    case 'Embedding': return `keras.layers.Embedding(${l.p||10000}, 128)`;
+    case 'GlobalAveragePooling2D': return `keras.layers.GlobalAveragePooling2D()`;
+    default: return '';
+  }
+}
+function renderLayers(){
+  document.getElementById('layerList').innerHTML = layers.map((l,i)=>
+    `<li><span>${l.type}${NEEDS_PARAM[l.type]?` (${NEEDS_PARAM[l.type]}=${l.p||'?'})`:''}</span><button class="rm" onclick="rmLayer(${i})">✕</button></li>`).join('');
+  const out = document.getElementById('builderOut');
+  if(!layers.length){ out.textContent = '# Thêm lớp để sinh code...'; return; }
+  out.textContent = 'from tensorflow import keras\n\nmodel = keras.Sequential([\n'
+    + layers.map(l=>'    '+layerCode(l)+',').join('\n')
+    + '\n])\nmodel.summary()';
+}
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>
