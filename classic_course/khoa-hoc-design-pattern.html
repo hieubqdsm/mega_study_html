@@ -1,0 +1,2144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Design Pattern - Nhận Diện &amp; Áp Dụng (PHP · C · Python)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #818cf8;        /* indigo */
+    --primary-glow: #a5b4fc;
+    --accent: #22d3ee;         /* cyan */
+    --accent-2: #67e8f9;
+    --p1: #34d399;             /* Creational - green */
+    --p2: #fbbf24;             /* Structural - amber */
+    --p3: #f472b6;             /* Behavioral - pink */
+    --ok: #34d399;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --info: #60a5fa;
+    --dark: #0b1220;
+    --darker: #060912;
+    --light: #cbd5e1;
+    --light-strong: #f1f5f9;
+    --gray: #94a3b8;
+    --card: #131c2b;
+    --card-2: #1a2536;
+    --border: #2a3852;
+    --terminal: #08111f;
+    --code-green: #86efac;
+    --code-yellow: #fcd34d;
+    --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4;
+    --code-red: #fca5a5;
+    --code-purple: #c4b5fd;
+    --code-gray: #64748b;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(129,140,248,.08) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(34,211,238,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #04060c 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(129,140,248,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(129,140,248,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(129,140,248,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#04101a; }
+  .np0 { color: var(--accent); } .np0 .badge { background: var(--accent); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(129,140,248,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,9,18,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .lang-global { display:flex; gap:6px; align-items:center; }
+  .topbar .lang-global .lbl { font-size:11px; color:var(--gray); }
+  .glang { font-family:inherit; font-size:12px; padding:5px 12px; border-radius:7px; cursor:pointer; border:1px solid var(--border); background:var(--card); color:var(--gray); }
+  .glang.active { border-color: var(--primary); color: var(--primary-glow); background: rgba(129,140,248,.12); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(129,140,248,.14), rgba(34,211,238,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"◇"; position:absolute; right:26px; bottom:-30px; font-size:200px; opacity:.05; color:var(--accent); }
+  .hero h1 { font-size: 32px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 720px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(34,211,238,.14); color: var(--accent); border:1px solid var(--accent); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 25px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  h2.ch-title .cat { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 800; letter-spacing:.5px; }
+  .cat.c-cr { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .cat.c-st { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .cat.c-be { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(34,211,238,.07); border-color: rgba(34,211,238,.4);} .box.pro::before{content:"🎯";}
+
+  /* RECOGNITION SIGN BOX */
+  .sign { background: linear-gradient(135deg, rgba(129,140,248,.10), rgba(34,211,238,.05)); border: 1px solid var(--primary); border-left: 4px solid var(--primary); border-radius: 10px; padding: 15px 18px; margin: 18px 0; }
+  .sign .sh { font-weight: 800; color: var(--primary-glow); margin-bottom: 8px; display:flex; align-items:center; gap:8px; font-size: 15px; }
+  .sign ul { margin: 4px 0 0 4px; list-style:none; }
+  .sign li { padding-left: 24px; position: relative; margin-bottom: 7px; font-size: 13.7px; }
+  .sign li::before { content:"🔎"; position:absolute; left:0; top:0; font-size:13px; }
+  .sign li b { color: var(--code-yellow); }
+  .sign code { background: var(--terminal); color: var(--code-yellow); padding: 1px 6px; border-radius:4px; font-family:monospace; font-size:12.5px; }
+
+  /* INTENT line */
+  .intent { display:flex; gap:10px; align-items:flex-start; background: var(--card); border:1px solid var(--border); border-radius:9px; padding:12px 15px; margin:14px 0; font-size:14px; }
+  .intent .k { color: var(--accent-2); font-weight:800; white-space:nowrap; }
+
+  /* CODE BLOCK with language tabs */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-tabs { display:flex; gap:4px; background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 9px 0; flex-wrap:wrap; }
+  .lang-btn { font-family:inherit; font-size:12px; padding:6px 15px; border-radius:7px 7px 0 0; cursor:pointer; border:1px solid transparent; border-bottom:none; background:transparent; color:var(--gray); display:flex; align-items:center; gap:6px; }
+  .lang-btn:hover { color: var(--light); }
+  .lang-btn.active { background: var(--terminal); color: var(--primary-glow); border-color: var(--border); position:relative; top:1px; }
+  .code-pane { display:none; }
+  .code-pane.active { display:block; }
+  .code-pane pre { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  .code-pane pre .cm { color: var(--code-gray); font-style:italic; }
+  .code-pane pre .kw { color: var(--code-purple); }
+  .code-pane pre .st { color: var(--code-green); }
+  .code-pane pre .fn { color: var(--code-blue); }
+  .code-pane pre .ty { color: var(--code-yellow); }
+  .code-pane::-webkit-scrollbar, .code-pane pre::-webkit-scrollbar { height:8px; }
+  .code-pane pre::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* PATTERN DETECTOR (signature interactive) */
+  .detector { background: var(--card); border: 1px solid var(--primary); border-radius: 14px; padding: 20px 22px; margin: 18px 0; box-shadow: 0 0 26px rgba(129,140,248,.1); }
+  .detector .dhead { font-weight: 800; color: var(--primary-glow); margin-bottom: 6px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .detector .dprog { font-size:12px; color:var(--gray); margin-bottom:12px; }
+  .detect-q { display:none; }
+  .detect-q.active { display:block; }
+  .detect-q .qcode { background: var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.5px; line-height:1.6; white-space:pre; overflow-x:auto; color:var(--light); margin-bottom:14px; }
+  .detect-q .qcode .cm { color: var(--code-gray); font-style:italic; }
+  .detect-q .qcode .kw { color: var(--code-purple); }
+  .detect-q .qask { font-weight:700; margin-bottom:12px; color:var(--light-strong); }
+  .opt-grid { display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.5px; padding:11px 15px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.85; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .detect-result { margin-top:14px; font-size:13.5px; display:none; }
+  .detect-result.show { display:block; }
+  .detect-result .verdict { font-weight:800; margin-bottom:6px; }
+  .detect-result .explain { background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:10px 13px; color:var(--light); }
+  .detect-result .explain code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; }
+  .detect-nav { display:flex; justify-content:space-between; align-items:center; margin-top:16px; gap:10px; }
+  .dbtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#0a0f1e; }
+  .dbtn:hover { background:var(--primary-glow); }
+  .dbtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .dbtn:disabled { opacity:.4; cursor:default; }
+  .dscore { font-size:13px; color:var(--accent-2); font-weight:700; }
+  .signlist { margin:6px 0 14px 4px; list-style:none; }
+  .signlist li { padding-left:24px; position:relative; margin-bottom:8px; font-size:13.7px; color:var(--light); }
+  .signlist li::before { content:"🔎"; position:absolute; left:0; top:0; font-size:13px; }
+  .codepad { width:100%; min-height:160px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; margin:8px 0 12px; white-space:pre; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(129,140,248,.13); }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+  details .body code { background: var(--terminal); color: var(--code-yellow); padding: 1px 6px; border-radius:4px; }
+
+  /* compact pattern cards */
+  .mini-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap:14px; margin:16px 0; }
+  .mini-card { background: var(--card); border:1px solid var(--border); border-radius:11px; padding:15px 17px; }
+  .mini-card h4 { font-size:15px; color:var(--light-strong); margin-bottom:4px; display:flex; align-items:center; gap:7px; }
+  .mini-card .mc-cat { font-size:9px; padding:2px 7px; border-radius:10px; font-weight:800; }
+  .mini-card .mi { color:var(--gray); font-size:12.5px; margin-bottom:8px; }
+  .mini-card .sg { font-size:12.5px; color:var(--light); }
+  .mini-card .sg b { color:var(--code-yellow); }
+
+  /* CHEATSHEET */
+  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; margin: 16px 0; }
+  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .cheat-card h4 { color: var(--primary-glow); font-size: 14px; margin-bottom: 8px; }
+  .cheat-card table { margin: 0; font-size: 12.5px; }
+  .cheat-card td { padding: 5px 8px; border: none; border-bottom: 1px solid var(--border); }
+  .cheat-card td:first-child { color: var(--code-yellow); font-family: monospace; white-space: nowrap; width: 42%; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#0a0f1e; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left:18px; padding-right:18px; } .topbar { padding-left:66px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .topbar .lang-global .lbl { display:none; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">◇</div>
+      <h1>DESIGN PATTERNS</h1>
+      <div class="sub">NHẬN DIỆN &amp; ÁP DỤNG</div>
+      <div class="pat">PHP · C · Python</div>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm pattern..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="cn">★</span> Giới thiệu</a></li>
+      <li><a href="#detector"><span class="cn">🕵️</span> Pattern Detector</a></li>
+
+      <li class="nav-section-title np0"><span class="badge">L0</span> NỀN TẢNG</li>
+      <li><a href="#ch1"><span class="cn">1</span> Design pattern là gì?</a></li>
+      <li><a href="#ch2"><span class="cn">2</span> 3 nhóm pattern &amp; UML</a></li>
+      <li><a href="#ch3"><span class="cn">3</span> Quy trình nhận diện</a></li>
+
+      <li class="nav-section-title np1"><span class="badge">CR</span> KHỞI TẠO</li>
+      <li><a href="#singleton"><span class="cn">4</span> Singleton</a></li>
+      <li><a href="#factory-method"><span class="cn">5</span> Factory Method</a></li>
+      <li><a href="#abstract-factory"><span class="cn">6</span> Abstract Factory</a></li>
+      <li><a href="#builder"><span class="cn">7</span> Builder</a></li>
+      <li><a href="#prototype"><span class="cn">8</span> Prototype</a></li>
+
+      <li class="nav-section-title np2"><span class="badge">ST</span> CẤU TRÚC</li>
+      <li><a href="#adapter"><span class="cn">9</span> Adapter</a></li>
+      <li><a href="#decorator"><span class="cn">10</span> Decorator</a></li>
+      <li><a href="#facade"><span class="cn">11</span> Facade</a></li>
+      <li><a href="#composite"><span class="cn">12</span> Composite</a></li>
+      <li><a href="#proxy"><span class="cn">13</span> Proxy</a></li>
+      <li><a href="#struct-rest"><span class="cn">+</span> Bridge · Flyweight</a></li>
+
+      <li class="nav-section-title np3"><span class="badge">BE</span> HÀNH VI</li>
+      <li><a href="#strategy"><span class="cn">14</span> Strategy</a></li>
+      <li><a href="#observer"><span class="cn">15</span> Observer</a></li>
+      <li><a href="#command"><span class="cn">16</span> Command</a></li>
+      <li><a href="#state"><span class="cn">17</span> State</a></li>
+      <li><a href="#template-method"><span class="cn">18</span> Template Method</a></li>
+      <li><a href="#iterator"><span class="cn">19</span> Iterator</a></li>
+      <li><a href="#chain"><span class="cn">20</span> Chain of Responsibility</a></li>
+      <li><a href="#behave-rest"><span class="cn">+</span> Mediator · Memento ...</a></li>
+
+      <li class="nav-section-title np0"><span class="badge">+</span> TỔNG HỢP</li>
+      <li><a href="#anti"><span class="cn">⛔</span> Anti-pattern &amp; nhầm lẫn</a></li>
+      <li><a href="#challenge"><span class="cn">🎲</span> Thử thách ngẫu nhiên</a></li>
+      <li><a href="#cheatsheet"><span class="cn">📑</span> Cheatsheet nhận diện</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">◇ <b>Design Patterns</b> — Nhận diện &amp; áp dụng</div>
+      <div class="lang-global">
+        <span class="lbl">Ngôn ngữ code:</span>
+        <button class="glang active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+        <button class="glang" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+        <button class="glang" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+      </div>
+    </div>
+    <div class="content-inner" id="content">
+      <!-- INTRO -->
+      <section class="chapter" id="gioi-thieu">
+        <div class="hero">
+          <h1><span class="g">Design Patterns</span><br>Nhận diện &amp; áp dụng — bằng PHP, C và Python</h1>
+          <p>Design pattern là <strong>những lời giải đã được kiểm chứng</strong> cho các bài toán thiết kế phần mềm lặp đi lặp lại. Khóa học này không bắt bạn học thuộc lòng — mục tiêu số một là dạy bạn <strong>NHẬN DIỆN</strong>: nhìn một đoạn code lạ và nói ngay "à, đây là Strategy", "chỗ này là Observer". Mỗi pattern đều có hộp <strong>"Dấu hiệu nhận biết"</strong>, code <strong>3 ngôn ngữ</strong> bấm để đổi (PHP · C · Python), và trò chơi <strong>Pattern Detector</strong> để luyện mắt.</p>
+          <div class="meta-row">
+            <div class="meta-pill"><b>23</b> pattern GoF</div>
+            <div class="meta-pill"><b>3</b> nhóm</div>
+            <div class="meta-pill"><b>🕵️</b> Pattern Detector</div>
+            <div class="meta-pill"><b>🐘⚙️🐍</b> 3 ngôn ngữ</div>
+            <div class="meta-pill"><b>🔎</b> Dấu hiệu nhận biết</div>
+          </div>
+        </div>
+        <div class="box tip"><span class="bt">Cách học khóa này</span>Mỗi pattern đọc theo thứ tự: <strong>① Ý đồ</strong> (giải quyết việc gì) → <strong>② Dấu hiệu nhận biết</strong> (nhìn vào đâu để biết) → <strong>③ Code 3 ngôn ngữ</strong> (bấm tab 🐘/⚙️/🐍 ở góc trên để đổi) → <strong>④ Khi nào dùng / nhầm với pattern nào</strong>. Sau mỗi nhóm, quay lại <strong>🕵️ Pattern Detector</strong> luyện nhận diện.</div>
+        <div class="box info"><span class="bt">Đổi ngôn ngữ một phát đổi cả trang</span>Nút <code class="ic">🐘 PHP / ⚙️ C / 🐍 Python</code> trên thanh trên cùng đổi <strong>toàn bộ</strong> ví dụ code trong trang sang ngôn ngữ đó (lưu lại lựa chọn). C không có <code class="ic">class</code> nên pattern được mô phỏng bằng <strong>struct + con trỏ hàm</strong> — chính cách GTK, Linux kernel, Git làm OOP trong C.</div>
+        <div class="box pro"><span class="bt">Vì sao học pattern lại quan trọng?</span>Pattern là <strong>từ vựng chung</strong> của lập trình viên. Nói "dùng Factory ở đây" nhanh và rõ hơn mô tả 5 câu. Nhận diện được pattern trong code người khác = đọc hiểu codebase nhanh gấp nhiều lần, và tránh "phát minh lại bánh xe".</div>
+      </section>
+
+      <!-- PATTERN DETECTOR -->
+      <section class="chapter" id="detector">
+        <h2 class="ch-title"><span class="num">🕵️</span> Pattern Detector — luyện nhận diện</h2>
+        <p class="ch-sub">Đọc đoạn code, đoán xem nó là pattern nào. Bấm đáp án → xem giải thích. Đây là kỹ năng quan trọng nhất của khóa.</p>
+        <div class="detector" id="detectorBox">
+          <div class="dhead" style="justify-content:space-between"><span>🕵️ Đố vui: đây là pattern gì?</span><button class="dbtn ghost" style="font-size:12px;padding:6px 12px" onclick="detectShuffle()">🎲 Trộn lại</button></div>
+          <div class="dprog" id="detectProg">Câu 1 / 8</div>
+          <div id="detectQuestions"><!-- questions injected by JS --></div>
+          <div class="detect-nav">
+            <button class="dbtn ghost" id="detectPrev" onclick="detectMove(-1)">← Trước</button>
+            <span class="dscore" id="detectScore">Điểm: 0 / 0</span>
+            <button class="dbtn" id="detectNext" onclick="detectMove(1)">Sau →</button>
+          </div>
+        </div>
+        <div class="box info"><span class="bt">Gợi ý làm bài</span>Nếu chưa học hết, cứ đoán theo <strong>dấu hiệu</strong>: thấy <code class="ic">getInstance()</code> + biến static → Singleton; thấy danh sách "subscriber" được gọi vòng lặp khi có sự kiện → Observer; thấy một interface với nhiều cách làm có thể hoán đổi lúc chạy → Strategy. Quay lại đây sau mỗi phần nhé.</div>
+      </section>
+
+      <!-- ============ PART 0 ============ -->
+      <div class="part-divider" id="part0"><div class="line"></div><span class="tag tp0">L0 · Nền tảng</span><div class="line"></div></div>
+
+      <!-- CH1 -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Design pattern là gì &amp; KHÔNG là gì?</h2>
+        <p class="ch-sub">Hiểu đúng bản chất trước khi đi vào từng pattern.</p>
+        <p>Một <strong>design pattern</strong> là <strong>khuôn mẫu giải pháp</strong> cho một vấn đề thiết kế thường gặp — không phải đoạn code copy-paste, mà là <em>cách tổ chức các lớp/đối tượng và quan hệ giữa chúng</em>. Cuốn kinh điển "Design Patterns" (1994) của nhóm <strong>Gang of Four (GoF)</strong> mô tả 23 pattern, đến nay vẫn là nền tảng.</p>
+        <h3 class="sec">Pattern LÀ gì</h3>
+        <ul>
+          <li><strong>Từ vựng chung:</strong> "ở đây dùng Adapter" — ai cũng hiểu ngay cấu trúc.</li>
+          <li><strong>Giải pháp đã kiểm chứng:</strong> tránh tự mò ra cách dở.</li>
+          <li><strong>Độc lập ngôn ngữ:</strong> ý tưởng giống nhau ở PHP, C, Python, Java...</li>
+        </ul>
+        <h3 class="sec">Pattern KHÔNG phải là gì</h3>
+        <ul>
+          <li><strong>Không</strong> phải thư viện hay framework để cài đặt — nó là <em>ý tưởng thiết kế</em>.</li>
+          <li><strong>Không</strong> phải "càng nhiều càng tốt" — lạm dụng pattern (over-engineering) làm code rối hơn.</li>
+          <li><strong>Không</strong> phải luật cứng — đôi khi một <code class="ic">if/else</code> đơn giản tốt hơn cả một Strategy.</li>
+        </ul>
+        <div class="box warn"><span class="bt">Sai lầm người mới</span>Học xong hay có xu hướng "nhét pattern vào mọi chỗ". Pattern chỉ đáng dùng khi <strong>vấn đề nó giải quyết thực sự xuất hiện</strong> (code đang khó mở rộng, lặp lại, khó test). Nhận diện <em>khi nào KHÔNG cần</em> cũng quan trọng như biết pattern.</div>
+        <div class="box info"><span class="bt">SOLID — nền của hầu hết pattern</span>Đa số pattern là cách hiện thực các nguyên tắc SOLID, đặc biệt: <strong>O</strong> (Open/Closed — mở để mở rộng, đóng để sửa) và <strong>D</strong> (Dependency Inversion — phụ thuộc vào abstraction, không vào implementation). Khi thấy code "lập trình theo interface, không theo lớp cụ thể" — đó là dấu hiệu có pattern.</div>
+      </section>
+
+      <!-- CH2 -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Ba nhóm pattern &amp; cách đọc sơ đồ</h2>
+        <p class="ch-sub">23 pattern GoF chia làm 3 nhóm theo <em>mục đích</em>. Biết nhóm giúp khoanh vùng khi nhận diện.</p>
+        <table>
+          <tr><th>Nhóm</th><th>Trả lời câu hỏi</th><th>Gồm các pattern</th></tr>
+          <tr><td><b style="color:var(--p1)">Creational</b><br>(Khởi tạo)</td><td>"Tạo đối tượng <em>như thế nào</em>?"</td><td>Singleton, Factory Method, Abstract Factory, Builder, Prototype</td></tr>
+          <tr><td><b style="color:var(--p2)">Structural</b><br>(Cấu trúc)</td><td>"Ghép các đối tượng thành cấu trúc lớn <em>ra sao</em>?"</td><td>Adapter, Decorator, Facade, Composite, Proxy, Bridge, Flyweight</td></tr>
+          <tr><td><b style="color:var(--p3)">Behavioral</b><br>(Hành vi)</td><td>"Các đối tượng <em>giao tiếp &amp; phân chia trách nhiệm</em> thế nào?"</td><td>Strategy, Observer, Command, State, Template Method, Iterator, Chain of Responsibility, Mediator, Memento, Visitor, Interpreter</td></tr>
+        </table>
+        <h3 class="sec">Mẹo khoanh vùng nhanh khi nhận diện</h3>
+        <div class="sign">
+          <div class="sh">🧭 Hỏi 3 câu để biết thuộc nhóm nào</div>
+          <ul>
+            <li>Code đang bận tâm việc <b>tạo / new đối tượng</b> (giấu <code>new</code>, tái dùng instance)? → <b>Creational</b>.</li>
+            <li>Code đang <b>bọc / ghép / chuyển đổi</b> một đối tượng để nó hợp với chỗ khác? → <b>Structural</b>.</li>
+            <li>Code đang bận tâm <b>luồng xử lý, ai gọi ai, thuật toán nào chạy</b>? → <b>Behavioral</b>.</li>
+          </ul>
+        </div>
+        <div class="box info"><span class="bt">Đọc sơ đồ UML tối giản</span>Trong khóa này: <code class="ic">A ──▷ B</code> nghĩa là "A kế thừa / hiện thực B"; <code class="ic">A ──&gt; B</code> nghĩa là "A giữ tham chiếu tới B (composition)". Hầu hết pattern = <strong>một interface</strong> + <strong>vài lớp hiện thực</strong> + <strong>một lớp "client" giữ tham chiếu qua interface</strong>. Nhận ra bộ ba này là nhận ra 80% pattern.</div>
+      </section>
+
+      <!-- CH3 -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Quy trình nhận diện một pattern</h2>
+        <p class="ch-sub">Checklist 4 bước áp dụng cho bất kỳ đoạn code lạ nào.</p>
+        <div class="sign">
+          <div class="sh">🔬 Checklist nhận diện</div>
+          <ul>
+            <li><b>Bước 1 — Tên gọi:</b> tên class/file/method có "rò rỉ" pattern không? <code>XxxFactory</code>, <code>XxxBuilder</code>, <code>XxxStrategy</code>, <code>XxxObserver</code>, <code>getInstance</code>, <code>subscribe/notify</code>...</li>
+            <li><b>Bước 2 — Cấu trúc:</b> có một interface/abstract + nhiều lớp con hoán đổi được không? Có lớp "bọc" lớp khác cùng interface không?</li>
+            <li><b>Bước 3 — Ý đồ:</b> code đang cố đạt điều gì? (giấu việc khởi tạo? thêm hành vi mà không sửa lớp gốc? cho phép đổi thuật toán lúc chạy?)</li>
+            <li><b>Bước 4 — Đối chiếu:</b> so với "Dấu hiệu nhận biết" của từng pattern trong khóa để chốt.</li>
+          </ul>
+        </div>
+        <div class="box pro"><span class="bt">Quy tắc ngón tay cái</span>Nhiều pattern <em>trông giống nhau về cấu trúc</em> (Strategy, State, Command, Adapter, Decorator đều là "một lớp giữ tham chiếu tới interface"). Phân biệt chúng bằng <strong>Ý ĐỒ</strong>, không bằng sơ đồ. Ví dụ: Strategy &amp; State cấu trúc gần như y hệt — khác ở <em>mục đích</em> (đổi thuật toán vs. đổi trạng thái).</div>
+        <div class="box tip"><span class="bt">Sẵn sàng vào pattern</span>Từ đây mỗi chương là một pattern. Nhớ: đọc <strong>Dấu hiệu nhận biết</strong> kỹ nhất — đó là phần luyện "con mắt" của bạn.</div>
+      </section>
+
+      <!-- ============ PART 1: CREATIONAL ============ -->
+      <div class="part-divider" id="part1"><div class="line"></div><span class="tag tp1">CR · Khởi tạo (Creational)</span><div class="line"></div></div>
+      <div class="box info"><span class="bt">Nhóm Creational</span>Tất cả nói về <strong>cách tạo đối tượng</strong>: giấu toán tử <code class="ic">new</code>, kiểm soát số lượng instance, hoặc dựng object phức tạp từng bước. Dấu hiệu chung: code <strong>không gọi <code class="ic">new</code> trực tiếp</strong> mà thông qua một method/đối tượng trung gian.</div>
+
+      <!-- SINGLETON -->
+      <section class="chapter" id="singleton">
+        <h2 class="ch-title"><span class="num">CH 4</span> Singleton <span class="cat c-cr">Creational</span></h2>
+        <p class="ch-sub">Đảm bảo một lớp chỉ có <strong>đúng một</strong> instance, và cung cấp điểm truy cập toàn cục tới nó.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>"Chỉ được tồn tại một". Dùng cho thứ <em>vốn dĩ chỉ nên có một</em>: connection pool, config, logger, cache.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Singleton</div>
+          <ul>
+            <li>Có method tĩnh <code>getInstance()</code> / <code>instance()</code> / <code>shared()</code>.</li>
+            <li>Một biến <b>static</b> giữ instance, khởi tạo <b>lười</b> (chỉ tạo lần đầu).</li>
+            <li>Constructor bị <b>private</b> (PHP/Java) hoặc <code>__new__</code> bị ghi đè (Python) — chặn <code>new</code> từ ngoài.</li>
+            <li>Mọi nơi trong code gọi <code>X::getInstance()</code> thay vì <code>new X()</code>.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+class Database {
+    private static ?Database $instance = null;   <span class="cm">// ô nhớ giữ instance duy nhất</span>
+    private function __construct() {}             <span class="cm">// chặn `new Database()` từ bên ngoài</span>
+
+    public static function getInstance(): Database {
+        if (self::$instance === null) {          <span class="cm">// lần đầu mới tạo (lazy)</span>
+            self::$instance = new Database();
+        }
+        return self::$instance;                  <span class="cm">// các lần sau trả lại y chang</span>
+    }
+    public function query(string $sql) { <span class="cm">/* ... */</span> }
+}
+
+$a = Database::getInstance();
+$b = Database::getInstance();
+<span class="cm">// $a === $b  -> TRUE, cùng một đối tượng</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre><span class="cm">// C không có class -> dùng hàm + biến static trong hàm</span>
+typedef struct { int conn; } Database;
+
+Database *db_instance(void) {
+    static Database inst;            <span class="cm">// sống suốt vòng đời chương trình</span>
+    static int ready = 0;
+    if (!ready) {                    <span class="cm">// khởi tạo lười, đúng 1 lần</span>
+        inst.conn = open_connection();
+        ready = 1;
+    }
+    return &amp;inst;                    <span class="cm">// mọi lời gọi trả CÙNG địa chỉ</span>
+}
+
+Database *a = db_instance();
+Database *b = db_instance();
+<span class="cm">// a == b  -> cùng con trỏ</span></pre></div>
+          <div class="code-pane" data-lang="py"><pre>class Database:
+    _instance = None                      <span class="cm"># biến lớp giữ instance</span>
+
+    def __new__(cls):                     <span class="cm"># ghi đè bước tạo object</span>
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def query(self, sql): ...
+
+a = Database()
+b = Database()
+print(a is b)   <span class="cm"># True - cùng một object</span></pre></div>
+        </div>
+        <div class="box warn"><span class="bt">Mặt trái — vì sao nhiều người ghét Singleton</span>Nó là <strong>biến toàn cục trá hình</strong>: gây phụ thuộc ngầm, khó test (khó thay mock), khó chạy song song (đa luồng cần khóa). Nay người ta thường thay bằng <strong>Dependency Injection</strong> (truyền instance vào thay vì gọi <code class="ic">getInstance()</code>). Nhận diện được nó để biết "ồ chỗ này khó test vì Singleton".</div>
+        <div class="box pro"><span class="bt">Nhầm với...</span>Một class chỉ tình cờ được tạo 1 lần <em>không phải</em> Singleton — Singleton là khi lớp <strong>tự ép buộc</strong> chỉ có một. Khác <strong>Factory</strong>: Factory tạo ra <em>nhiều</em> đối tượng mới; Singleton tái dùng <em>một</em>.</div>
+      </section>
+
+      <!-- FACTORY METHOD -->
+      <section class="chapter" id="factory-method">
+        <h2 class="ch-title"><span class="num">CH 5</span> Factory Method <span class="cat c-cr">Creational</span></h2>
+        <p class="ch-sub">Định nghĩa một method để tạo đối tượng, nhưng <strong>để lớp con quyết định</strong> tạo lớp cụ thể nào.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Giấu việc <code class="ic">new</code> đằng sau một method, để thêm loại sản phẩm mới mà không sửa code gọi.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Factory Method</div>
+          <ul>
+            <li>Có method tên <code>create*()</code> / <code>make*()</code> trả về một <b>interface/abstract</b>, không trả lớp cụ thể.</li>
+            <li>Bên trong là một <code>switch</code>/<code>if</code> trên "kiểu" để quyết định <code>new</code> lớp nào.</li>
+            <li>Code client chỉ làm việc với <b>kiểu trừu tượng</b> (<code>Shape</code>), không biết lớp thật (<code>Circle</code>).</li>
+            <li>Thêm sản phẩm mới = thêm một nhánh / một lớp con, <b>không đụng</b> client.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Shape { public function area(): float; }
+class Circle implements Shape { <span class="cm">/*...*/</span> public function area(): float { return 3.14; } }
+class Square implements Shape { <span class="cm">/*...*/</span> public function area(): float { return 4.0; } }
+
+class ShapeFactory {
+    public static function create(string $type): Shape {   <span class="cm">// FACTORY METHOD</span>
+        return match($type) {
+            'circle' =&gt; new Circle(),
+            'square' =&gt; new Square(),
+            default  =&gt; throw new InvalidArgumentException($type),
+        };
+    }
+}
+$s = ShapeFactory::create('circle');   <span class="cm">// client KHÔNG gọi `new Circle`</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct { float (*area)(void); } Shape;   <span class="cm">// "interface" = struct con trỏ hàm</span>
+
+static float circle_area(void){ return 3.14f; }
+static float square_area(void){ return 4.0f;  }
+
+Shape make_shape(const char *type) {             <span class="cm">// FACTORY METHOD</span>
+    Shape s;
+    if (strcmp(type,"circle")==0) s.area = circle_area;
+    else                          s.area = square_area;
+    return s;
+}
+Shape s = make_shape("circle");
+float a = s.area();   <span class="cm">// gọi qua con trỏ hàm, không biết loại cụ thể</span></pre></div>
+          <div class="code-pane" data-lang="py"><pre>from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self): ...
+
+class Circle(Shape):
+    def area(self): return 3.14
+class Square(Shape):
+    def area(self): return 4.0
+
+def make_shape(kind: str) -&gt; Shape:      <span class="cm"># FACTORY METHOD</span>
+    return {'circle': Circle, 'square': Square}[kind]()
+
+s = make_shape('circle')   <span class="cm"># client không gọi Circle() trực tiếp</span></pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Nhầm với Abstract Factory</span>Factory Method tạo <strong>một loại</strong> sản phẩm. Abstract Factory (CH6) tạo <strong>cả một bộ</strong> sản phẩm liên quan. Nếu chỉ thấy một <code class="ic">create()</code> trả một interface → Factory Method.</div>
+      </section>
+
+      <!-- ABSTRACT FACTORY -->
+      <section class="chapter" id="abstract-factory">
+        <h2 class="ch-title"><span class="num">CH 6</span> Abstract Factory <span class="cat c-cr">Creational</span></h2>
+        <p class="ch-sub">Tạo ra <strong>các họ đối tượng liên quan</strong> mà không chỉ rõ lớp cụ thể — đảm bảo chúng "ăn khớp" nhau.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Một factory tạo nhiều sản phẩm cùng "phong cách" (vd toàn bộ UI theo theme Dark, hoặc theme Light), không lẫn lộn.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Abstract Factory</div>
+          <ul>
+            <li>Một interface factory có <b>nhiều method create</b>: <code>createButton()</code>, <code>createCheckbox()</code>...</li>
+            <li>Có <b>nhiều factory cụ thể</b> (DarkFactory, LightFactory), mỗi cái tạo ra một bộ sản phẩm khớp nhau.</li>
+            <li>Client nhận <b>một factory</b> rồi gọi các create — không bao giờ trộn sản phẩm của 2 họ.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Button   { public function render(): string; }
+interface Checkbox { public function render(): string; }
+
+interface GUIFactory {                       <span class="cm">// ABSTRACT FACTORY</span>
+    public function createButton(): Button;
+    public function createCheckbox(): Checkbox;
+}
+class DarkFactory implements GUIFactory {    <span class="cm">// một "họ" sản phẩm</span>
+    public function createButton(): Button   { return new DarkButton(); }
+    public function createCheckbox(): Checkbox{ return new DarkCheckbox(); }
+}
+<span class="cm">// LightFactory tương tự -> toàn bộ UI nhất quán theo theme</span>
+function buildUI(GUIFactory $f) {
+    echo $f->createButton()->render();
+    echo $f->createCheckbox()->render();
+}</pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct { char* (*render)(void); } Button;
+typedef struct { char* (*render)(void); } Checkbox;
+
+typedef struct {                         <span class="cm">// ABSTRACT FACTORY = struct các con trỏ hàm</span>
+    Button   (*create_button)(void);
+    Checkbox (*create_checkbox)(void);
+} GUIFactory;
+
+static Button dark_button(void){ Button b={dark_btn_render}; return b; }
+static Checkbox dark_checkbox(void){ Checkbox c={dark_chk_render}; return c; }
+
+GUIFactory dark_factory(void){            <span class="cm">// một họ sản phẩm</span>
+    GUIFactory f = { dark_button, dark_checkbox };
+    return f;
+}
+void build_ui(GUIFactory f){ f.create_button(); f.create_checkbox(); }</pre></div>
+          <div class="code-pane" data-lang="py"><pre>from abc import ABC, abstractmethod
+
+class GUIFactory(ABC):                    <span class="cm"># ABSTRACT FACTORY</span>
+    @abstractmethod
+    def create_button(self): ...
+    @abstractmethod
+    def create_checkbox(self): ...
+
+class DarkFactory(GUIFactory):            <span class="cm"># một họ sản phẩm nhất quán</span>
+    def create_button(self):   return DarkButton()
+    def create_checkbox(self): return DarkCheckbox()
+
+def build_ui(factory: GUIFactory):
+    factory.create_button().render()
+    factory.create_checkbox().render()</pre></div>
+        </div>
+        <div class="box info"><span class="bt">Phân biệt nhanh</span>Thấy <strong>một</strong> method create → Factory Method. Thấy <strong>nhiều</strong> method create gom trong một interface, và có nhiều "họ" → Abstract Factory.</div>
+      </section>
+
+      <!-- BUILDER -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">CH 7</span> Builder <span class="cat c-cr">Creational</span></h2>
+        <p class="ch-sub">Dựng một đối tượng phức tạp <strong>từng bước</strong>, tách quá trình xây khỏi biểu diễn cuối.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Tránh constructor "khủng long" 15 tham số. Cho phép cấu hình dần rồi <code class="ic">build()</code>.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Builder</div>
+          <ul>
+            <li>Chuỗi method trả về <code>$this</code>/<code>self</code> để gọi nối nhau (<b>fluent / method chaining</b>): <code>->setX()->setY()->build()</code>.</li>
+            <li>Một method <code>build()</code> / <code>getResult()</code> ở cuối trả ra sản phẩm hoàn chỉnh.</li>
+            <li>Đối tượng có <b>nhiều phần tùy chọn</b>; thay cho constructor quá nhiều tham số.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+class PizzaBuilder {
+    private array $toppings = [];
+    private string $size = 'M';
+    public function size(string $s): static { $this->size = $s; return $this; }  <span class="cm">// return $this -> nối chuỗi</span>
+    public function add(string $t): static   { $this->toppings[] = $t; return $this; }
+    public function build(): Pizza           { return new Pizza($this->size, $this->toppings); }
+}
+$pizza = (new PizzaBuilder())
+    ->size('L')->add('cheese')->add('mushroom')   <span class="cm">// fluent</span>
+    ->build();</pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct { char size; const char* toppings[8]; int n; } Pizza;
+
+typedef struct { Pizza p; } PizzaBuilder;
+PizzaBuilder* pb_size(PizzaBuilder* b, char s){ b->p.size = s; return b; }   <span class="cm">// trả con trỏ -> nối chuỗi</span>
+PizzaBuilder* pb_add (PizzaBuilder* b, const char* t){ b->p.toppings[b->p.n++]=t; return b; }
+Pizza pb_build(PizzaBuilder* b){ return b->p; }
+
+PizzaBuilder b = {0};
+Pizza pizza = pb_build( pb_add( pb_add( pb_size(&amp;b,'L'), "cheese"), "mushroom") );</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class PizzaBuilder:
+    def __init__(self):
+        self.size, self.toppings = 'M', []
+    def set_size(self, s):                 <span class="cm"># trả self -> method chaining</span>
+        self.size = s; return self
+    def add(self, t):
+        self.toppings.append(t); return self
+    def build(self):
+        return Pizza(self.size, self.toppings)
+
+pizza = (PizzaBuilder()
+         .set_size('L').add('cheese').add('mushroom')
+         .build())</pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Mẹo Pythonic</span>Trong Python nhiều khi <strong>không cần</strong> Builder — dùng tham số mặc định / keyword args hoặc <code class="ic">@dataclass</code> là đủ. Builder sáng giá khi việc dựng có <em>nhiều bước có thứ tự/điều kiện</em>.</div>
+      </section>
+
+      <!-- PROTOTYPE -->
+      <section class="chapter" id="prototype">
+        <h2 class="ch-title"><span class="num">CH 8</span> Prototype <span class="cat c-cr">Creational</span></h2>
+        <p class="ch-sub">Tạo đối tượng mới bằng cách <strong>sao chép (clone)</strong> một đối tượng mẫu có sẵn, thay vì <code class="ic">new</code> từ đầu.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Khi khởi tạo tốn kém hoặc cấu hình phức tạp — copy một bản mẫu rồi chỉnh vài chỗ.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Prototype</div>
+          <ul>
+            <li>Có method <code>clone()</code> / <code>copy()</code> trả về bản sao cùng kiểu.</li>
+            <li>Tạo object mới bằng <b>sao chép</b> object có sẵn, không gọi constructor đầy đủ.</li>
+            <li>Hay gặp khi cần nhiều object gần giống nhau (game entity, cấu hình mặc định).</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+class Enemy {
+    public function __construct(public int $hp, public array $skills) {}
+    public function clone(): Enemy {                <span class="cm">// PROTOTYPE: tự nhân bản</span>
+        return new Enemy($this->hp, $this->skills); <span class="cm">// copy giá trị</span>
+    }
+}
+$orc = new Enemy(100, ['slash']);
+$orc2 = $orc->clone();   <span class="cm">// clone rồi chỉnh, khỏi dựng lại từ đầu</span>
+<span class="cm">// PHP còn có từ khoá `clone $orc` + __clone() để deep copy</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct { int hp; int skills[8]; int n; } Enemy;
+
+Enemy enemy_clone(const Enemy* src) {   <span class="cm">// PROTOTYPE: copy struct</span>
+    Enemy dst = *src;                   <span class="cm">// sao chép từng byte (shallow)</span>
+    return dst;                         <span class="cm">// con trỏ bên trong thì cần copy sâu thủ công</span>
+}
+Enemy orc = { 100, {1}, 1 };
+Enemy orc2 = enemy_clone(&amp;orc);</pre></div>
+          <div class="code-pane" data-lang="py"><pre>import copy
+
+class Enemy:
+    def __init__(self, hp, skills):
+        self.hp, self.skills = hp, skills
+
+orc  = Enemy(100, ['slash'])
+orc2 = copy.deepcopy(orc)    <span class="cm"># PROTOTYPE: clone sâu, kể cả list bên trong</span>
+orc2.hp = 80                 <span class="cm"># chỉnh bản sao, bản gốc không đổi</span></pre></div>
+        </div>
+        <div class="box warn"><span class="bt">Bẫy shallow vs deep copy</span>Copy "nông" (shallow) chỉ sao tham chiếu — sửa list trong bản sao làm hỏng cả bản gốc. Khi nhận diện Prototype, để ý nó dùng <strong>deep copy</strong> hay không (PHP <code class="ic">__clone()</code>, Python <code class="ic">copy.deepcopy</code>, C phải copy con trỏ thủ công).</div>
+      </section>
+
+      <!-- ============ PART 2: STRUCTURAL ============ -->
+      <div class="part-divider" id="part2"><div class="line"></div><span class="tag tp2">ST · Cấu trúc (Structural)</span><div class="line"></div></div>
+      <div class="box info"><span class="bt">Nhóm Structural</span>Tất cả nói về <strong>cách ghép đối tượng thành cấu trúc lớn hơn</strong>. Dấu hiệu chung: có một lớp <strong>"bọc" (wrap)</strong> lớp khác — giữ tham chiếu tới đối tượng được bọc và chuyển tiếp/biến đổi lời gọi. Khác nhau ở <em>mục đích</em> của việc bọc.</div>
+
+      <!-- ADAPTER -->
+      <section class="chapter" id="adapter">
+        <h2 class="ch-title"><span class="num">CH 9</span> Adapter <span class="cat c-st">Structural</span></h2>
+        <p class="ch-sub">Bọc một lớp có giao diện "lệch" để nó <strong>khớp với interface</strong> mà code của bạn mong đợi.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>"Ổ cắm chuyển đổi". Cho hai thứ vốn không khớp nhau làm việc cùng nhau — thường để xài thư viện ngoài/legacy.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Adapter</div>
+          <ul>
+            <li>Một lớp <code>XxxAdapter</code> implements interface bạn cần, bên trong <b>gọi xuống</b> một đối tượng có API khác.</li>
+            <li>Method của adapter chủ yếu là <b>dịch tên/định dạng</b>: <code>request()</code> gọi <code>legacy.specificRequest()</code>.</li>
+            <li>Mục đích: <b>tái dùng code có sẵn</b> mà không sửa nó, hoặc đổi cách gọi cho thống nhất.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Logger { public function log(string $msg): void; }
+
+class ThirdPartyLib {                         <span class="cm">// thư viện ngoài, API "lệch"</span>
+    public function writeLine(string $text) { <span class="cm">/* ... */</span> }
+}
+class LibAdapter implements Logger {          <span class="cm">// ADAPTER</span>
+    public function __construct(private ThirdPartyLib $lib) {}
+    public function log(string $msg): void {
+        $this->lib->writeLine("[LOG] $msg");  <span class="cm">// dịch log() -> writeLine()</span>
+    }
+}
+function run(Logger $l){ $l->log("hi"); }     <span class="cm">// code chỉ biết interface Logger</span>
+run(new LibAdapter(new ThirdPartyLib()));</pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct { void (*log)(void*, const char*); void* self; } Logger;   <span class="cm">// interface mong đợi</span>
+
+void thirdparty_writeline(void* lib, const char* text){ <span class="cm">/* ... */</span> }
+
+<span class="cm">// ADAPTER: hàm khớp chữ ký Logger, bên trong gọi API "lệch"</span>
+static void adapter_log(void* lib, const char* msg){
+    char buf[256]; snprintf(buf,sizeof buf,"[LOG] %s",msg);
+    thirdparty_writeline(lib, buf);          <span class="cm">// dịch log -> writeline</span>
+}
+Logger make_adapter(void* lib){ Logger l = { adapter_log, lib }; return l; }</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class ThirdPartyLib:                  <span class="cm"># API "lệch"</span>
+    def write_line(self, text): ...
+
+class LibAdapter:                     <span class="cm"># ADAPTER</span>
+    def __init__(self, lib):
+        self._lib = lib
+    def log(self, msg):               <span class="cm"># interface mà code ta mong đợi</span>
+        self._lib.write_line(f"[LOG] {msg}")   <span class="cm"># dịch log -> write_line</span>
+
+def run(logger):                      <span class="cm"># duck typing: chỉ cần có .log()</span>
+    logger.log("hi")
+run(LibAdapter(ThirdPartyLib()))</pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Adapter vs Decorator vs Proxy</span>Cả ba đều "bọc". Khác ở ý đồ: <strong>Adapter</strong> đổi <em>giao diện</em> (cho khớp); <strong>Decorator</strong> giữ nguyên giao diện nhưng <em>thêm hành vi</em>; <strong>Proxy</strong> giữ nguyên giao diện và <em>kiểm soát truy cập</em> (lazy, cache, quyền). Nhìn "vì sao bọc" để phân biệt.</div>
+      </section>
+
+      <!-- DECORATOR -->
+      <section class="chapter" id="decorator">
+        <h2 class="ch-title"><span class="num">CH 10</span> Decorator <span class="cat c-st">Structural</span></h2>
+        <p class="ch-sub">Bọc một đối tượng để <strong>thêm hành vi</strong> mà <strong>không sửa</strong> lớp gốc — và có thể bọc chồng nhiều lớp.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Thêm tính năng linh hoạt lúc chạy bằng cách "lồng" các lớp cùng interface vào nhau (như mặc nhiều áo).</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Decorator</div>
+          <ul>
+            <li>Lớp decorator <b>cùng interface</b> với đối tượng nó bọc, và <b>giữ một tham chiếu</b> tới đối tượng đó.</li>
+            <li>Method gọi <code>$inner->op()</code> rồi <b>thêm thắt trước/sau</b> (thêm dữ liệu, ghi log, nén...).</li>
+            <li>Có thể <b>bọc chồng</b>: <code>new Gzip(new Encrypt(new File()))</code>.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Coffee { public function cost(): int; }
+class Espresso implements Coffee { public function cost(): int { return 20; } }
+
+abstract class CoffeeDecorator implements Coffee {     <span class="cm">// DECORATOR base</span>
+    public function __construct(protected Coffee $inner) {}  <span class="cm">// giữ đối tượng bị bọc</span>
+}
+class WithMilk extends CoffeeDecorator {
+    public function cost(): int { return $this->inner->cost() + 5; }  <span class="cm">// thêm hành vi</span>
+}
+class WithSugar extends CoffeeDecorator {
+    public function cost(): int { return $this->inner->cost() + 2; }
+}
+$c = new WithSugar(new WithMilk(new Espresso()));  <span class="cm">// bọc chồng -> 27</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct Coffee { int (*cost)(struct Coffee*); struct Coffee* inner; } Coffee;
+
+int espresso_cost(Coffee* c){ return 20; }
+int milk_cost(Coffee* c){ return c->inner->cost(c->inner) + 5; }   <span class="cm">// gọi inner rồi +5</span>
+int sugar_cost(Coffee* c){ return c->inner->cost(c->inner) + 2; }
+
+Coffee espresso = { espresso_cost, NULL };
+Coffee milk     = { milk_cost,  &amp;espresso };   <span class="cm">// DECORATOR: bọc espresso</span>
+Coffee sugar    = { sugar_cost, &amp;milk };       <span class="cm">// bọc chồng -> 27</span></pre></div>
+          <div class="code-pane" data-lang="py"><pre>class Espresso:
+    def cost(self): return 20
+
+class CoffeeDecorator:                 <span class="cm"># DECORATOR</span>
+    def __init__(self, inner):
+        self._inner = inner            <span class="cm"># giữ đối tượng bị bọc</span>
+
+class WithMilk(CoffeeDecorator):
+    def cost(self): return self._inner.cost() + 5
+class WithSugar(CoffeeDecorator):
+    def cost(self): return self._inner.cost() + 2
+
+c = WithSugar(WithMilk(Espresso()))    <span class="cm"># bọc chồng -> 27</span></pre></div>
+        </div>
+        <div class="box info"><span class="bt">Lưu ý "decorator" của Python</span>Cú pháp <code class="ic">@my_decorator</code> trong Python <em>cũng</em> là hiện thân của pattern này (bọc một hàm để thêm hành vi) — nhưng ở cấp hàm, không phải đối tượng. Cùng ý tưởng "bọc thêm hành vi".</div>
+      </section>
+
+      <!-- FACADE -->
+      <section class="chapter" id="facade">
+        <h2 class="ch-title"><span class="num">CH 11</span> Facade <span class="cat c-st">Structural</span></h2>
+        <p class="ch-sub">Cung cấp <strong>một giao diện đơn giản</strong> che giấu cả một hệ thống con phức tạp phía sau.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>"Một nút bấm" cho khách hàng. Gom nhiều bước/nhiều lớp con thành một method dễ dùng.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Facade</div>
+          <ul>
+            <li>Một lớp "cổng" với <b>method đơn giản</b> (<code>placeOrder()</code>) bên trong <b>điều phối nhiều lớp con</b>.</li>
+            <li>Client chỉ nói chuyện với facade, <b>không đụng</b> các lớp con bên dưới.</li>
+            <li>Facade <b>không thêm hành vi mới</b>, chỉ <b>đơn giản hoá &amp; sắp xếp</b> lời gọi.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+class OrderFacade {                        <span class="cm">// FACADE</span>
+    public function __construct(
+        private Inventory $inv,
+        private Payment $pay,
+        private Shipping $ship
+    ) {}
+    public function placeOrder(int $item, int $qty): void {  <span class="cm">// 1 method giấu 3 hệ thống con</span>
+        $this->inv->reserve($item, $qty);
+        $this->pay->charge($item * $qty);
+        $this->ship->schedule($item, $qty);
+    }
+}
+$order->placeOrder(42, 2);   <span class="cm">// client không cần biết Inventory/Payment/Shipping</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre><span class="cm">// FACADE: một hàm gom các hệ con</span>
+void place_order(Inventory* inv, Payment* pay, Shipping* ship,
+                 int item, int qty) {
+    inventory_reserve(inv, item, qty);
+    payment_charge(pay, item * qty);
+    shipping_schedule(ship, item, qty);
+}
+<span class="cm">// caller chỉ gọi place_order(...), không cần biết 3 module bên trong</span></pre></div>
+          <div class="code-pane" data-lang="py"><pre>class OrderFacade:                    <span class="cm"># FACADE</span>
+    def __init__(self, inv, pay, ship):
+        self.inv, self.pay, self.ship = inv, pay, ship
+    def place_order(self, item, qty):  <span class="cm"># 1 method giấu nhiều hệ con</span>
+        self.inv.reserve(item, qty)
+        self.pay.charge(item * qty)
+        self.ship.schedule(item, qty)
+
+order.place_order(42, 2)   <span class="cm"># client không cần biết bên trong</span></pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Facade vs Adapter</span>Cả hai đơn giản hoá việc gọi. Khác: Adapter làm cho <em>một</em> lớp khớp <em>một</em> interface cụ thể; Facade gom <em>nhiều</em> lớp thành một API tiện lợi <em>mới</em> (không nhằm khớp interface có sẵn nào).</div>
+      </section>
+
+      <!-- COMPOSITE -->
+      <section class="chapter" id="composite">
+        <h2 class="ch-title"><span class="num">CH 12</span> Composite <span class="cat c-st">Structural</span></h2>
+        <p class="ch-sub">Cho phép xử lý <strong>đối tượng đơn lẻ và nhóm đối tượng giống hệt nhau</strong> — cấu trúc cây.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>"Lá" và "cành" có cùng interface, nên client duyệt cây mà không cần phân biệt. Vd: file/thư mục, menu/menu con.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Composite</div>
+          <ul>
+            <li>Một interface chung cho cả <b>phần tử lá</b> và <b>phần tử chứa</b> (group).</li>
+            <li>Phần tử chứa có <b>danh sách con</b> cùng kiểu, và method của nó <b>đệ quy gọi xuống con</b>.</li>
+            <li>Client gọi <code>render()</code>/<code>size()</code> lên gốc mà không cần biết là lá hay nhóm.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Node { public function size(): int; }
+
+class File implements Node {                 <span class="cm">// LÁ</span>
+    public function __construct(private int $bytes) {}
+    public function size(): int { return $this->bytes; }
+}
+class Folder implements Node {               <span class="cm">// COMPOSITE (cành)</span>
+    private array $children = [];
+    public function add(Node $n): void { $this->children[] = $n; }
+    public function size(): int {
+        return array_sum(array_map(fn($c) =&gt; $c->size(), $this->children));  <span class="cm">// đệ quy</span>
+    }
+}
+<span class="cm">// folder->size() cộng dồn cả cây, không cần phân biệt file hay folder</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct Node { int (*size)(struct Node*); } Node;
+
+typedef struct { Node base; int bytes; } File;
+int file_size(Node* n){ return ((File*)n)->bytes; }    <span class="cm">// LÁ</span>
+
+typedef struct { Node base; Node* kids[16]; int n; } Folder;
+int folder_size(Node* n){                               <span class="cm">// COMPOSITE</span>
+    Folder* f = (Folder*)n; int total = 0;
+    for (int i=0;i&lt;f->n;i++) total += f->kids[i]->size(f->kids[i]);  <span class="cm">// đệ quy</span>
+    return total;
+}</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class File:                          <span class="cm"># LÁ</span>
+    def __init__(self, bytes_): self.bytes = bytes_
+    def size(self): return self.bytes
+
+class Folder:                        <span class="cm"># COMPOSITE</span>
+    def __init__(self): self.children = []
+    def add(self, node): self.children.append(node)
+    def size(self):
+        return sum(c.size() for c in self.children)   <span class="cm"># đệ quy xuống con</span>
+
+<span class="cm"># root.size() duyệt cả cây như nhau, không phân biệt lá/nhóm</span></pre></div>
+        </div>
+      </section>
+
+      <!-- PROXY -->
+      <section class="chapter" id="proxy">
+        <h2 class="ch-title"><span class="num">CH 13</span> Proxy <span class="cat c-st">Structural</span></h2>
+        <p class="ch-sub">Một "người đại diện" cùng interface, đứng trước đối tượng thật để <strong>kiểm soát truy cập</strong>.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Chèn logic trước/sau khi chạm vào đối tượng thật: tải lười (lazy), cache, kiểm tra quyền, ghi log, gọi từ xa.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Proxy</div>
+          <ul>
+            <li>Lớp <code>XxxProxy</code> <b>cùng interface</b> với đối tượng thật, giữ tham chiếu (hoặc tạo lười) tới nó.</li>
+            <li>Trước khi chuyển tiếp lời gọi, nó làm thêm việc: <b>kiểm tra quyền / cache / khởi tạo lười / log</b>.</li>
+            <li>Khác Decorator: Proxy <b>quản lý vòng đời/truy cập</b> chứ không "thêm tính năng nghiệp vụ".</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Image { public function display(): void; }
+
+class RealImage implements Image {           <span class="cm">// đối tượng thật, tải nặng</span>
+    public function __construct(private string $file) { $this->load(); }
+    private function load(): void { <span class="cm">/* đọc đĩa, tốn kém */</span> }
+    public function display(): void { <span class="cm">/* ... */</span> }
+}
+class ImageProxy implements Image {          <span class="cm">// PROXY tải lười</span>
+    private ?RealImage $real = null;
+    public function __construct(private string $file) {}
+    public function display(): void {
+        $this->real ??= new RealImage($this->file);  <span class="cm">// chỉ tải khi thật sự cần</span>
+        $this->real->display();
+    }
+}</pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct { void (*display)(void*); void* self; } Image;
+
+typedef struct { const char* file; RealImage* real; } ImageProxy;   <span class="cm">// PROXY</span>
+void proxy_display(void* p_){
+    ImageProxy* p = p_;
+    if (!p->real)                          <span class="cm">// tải lười: tạo lần đầu</span>
+        p->real = real_image_load(p->file);
+    real_image_display(p->real);           <span class="cm">// rồi mới uỷ quyền cho đối tượng thật</span>
+}</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class RealImage:                       <span class="cm"># đối tượng thật, tải nặng</span>
+    def __init__(self, file):
+        self.file = file; self._load()
+    def _load(self): ...               <span class="cm"># đọc đĩa, tốn kém</span>
+    def display(self): ...
+
+class ImageProxy:                      <span class="cm"># PROXY tải lười</span>
+    def __init__(self, file):
+        self.file, self._real = file, None
+    def display(self):
+        if self._real is None:         <span class="cm"># chỉ tải khi cần</span>
+            self._real = RealImage(self.file)
+        self._real.display()</pre></div>
+        </div>
+        <div class="box info"><span class="bt">Proxy ngoài đời</span>ORM "lazy loading" (Doctrine, SQLAlchemy), <code class="ic">@property</code> cache, Cloudflare đứng trước web server, RPC stub gọi service từ xa — đều là Proxy. Thấy "một lớp trung gian kiểm soát truy cập tới thứ thật" là nó.</div>
+      </section>
+
+      <!-- BRIDGE + FLYWEIGHT (compact) -->
+      <section class="chapter" id="struct-rest">
+        <h2 class="ch-title"><span class="num">CH 13+</span> Bridge &amp; Flyweight <span class="cat c-st">Structural</span></h2>
+        <p class="ch-sub">Hai pattern cấu trúc ít gặp hơn — nắm dấu hiệu để nhận ra khi gặp.</p>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <h4>🌉 Bridge <span class="mc-cat" style="background:rgba(251,191,36,.16);color:var(--p2)">ST</span></h4>
+            <div class="mi">Tách <b>abstraction</b> khỏi <b>implementation</b> để hai phía biến đổi độc lập.</div>
+            <div class="sg"><b>Dấu hiệu:</b> một lớp "trừu tượng" (Remote) giữ tham chiếu tới một interface "hiện thực" (Device) và <b>uỷ quyền</b> sang đó. Tránh bùng nổ tổ hợp lớp con (TV+Sony, TV+LG, Radio+Sony...) bằng cách ghép 2 trục qua composition thay vì kế thừa.</div>
+          </div>
+          <div class="mini-card">
+            <h4>🪶 Flyweight <span class="mc-cat" style="background:rgba(251,191,36,.16);color:var(--p2)">ST</span></h4>
+            <div class="mi">Chia sẻ phần dữ liệu <b>chung (intrinsic)</b> giữa nhiều đối tượng để tiết kiệm bộ nhớ.</div>
+            <div class="sg"><b>Dấu hiệu:</b> có một <b>factory/cache</b> trả về object dùng chung thay vì tạo mới; trạng thái được tách thành phần "chung được chia sẻ" và phần "riêng truyền vào lúc gọi". Vd: glyph của font, tile của map game, đối tượng màu sắc.</div>
+          </div>
+        </div>
+        <div class="box pro"><span class="bt">Nhận diện nhanh</span>Thấy "một <code class="ic">getX()</code> trả về object đã tồn tại trong pool/cache thay vì <code class="ic">new</code>" → Flyweight. Thấy "hai phân cấp song song nối nhau bằng một tham chiếu interface" → Bridge.</div>
+      </section>
+
+      <!-- ============ PART 3: BEHAVIORAL ============ -->
+      <div class="part-divider" id="part3"><div class="line"></div><span class="tag tp3">BE · Hành vi (Behavioral)</span><div class="line"></div></div>
+      <div class="box info"><span class="bt">Nhóm Behavioral</span>Tất cả nói về <strong>cách các đối tượng giao tiếp &amp; phân chia trách nhiệm</strong>: ai gọi ai, thuật toán nào chạy, sự kiện lan truyền ra sao. Đây là nhóm dễ nhầm nhất vì nhiều pattern có cấu trúc giống nhau — phân biệt bằng <strong>ý đồ</strong>.</div>
+
+      <!-- STRATEGY -->
+      <section class="chapter" id="strategy">
+        <h2 class="ch-title"><span class="num">CH 14</span> Strategy <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Đóng gói <strong>nhiều thuật toán</strong> thành các lớp hoán đổi được, chọn lúc chạy.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>"Cùng một việc, nhiều cách làm". Thay <code class="ic">if/else</code> chọn thuật toán bằng các đối tượng strategy cắm vào.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Strategy</div>
+          <ul>
+            <li>Một interface với <b>một method</b> (vd <code>execute()</code>, <code>sort()</code>, <code>pay()</code>) và nhiều lớp hiện thực khác nhau.</li>
+            <li>Một lớp "context" giữ tham chiếu strategy và <b>cho phép đổi nó lúc chạy</b> (<code>setStrategy()</code>).</li>
+            <li>Thường thay thế một chuỗi <code>if/switch</code> chọn cách xử lý.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface PayStrategy { public function pay(int $amount): void; }   <span class="cm">// 1 method, nhiều cách</span>
+class PayPal  implements PayStrategy { public function pay(int $a): void { <span class="cm">/*...*/</span> } }
+class Crypto  implements PayStrategy { public function pay(int $a): void { <span class="cm">/*...*/</span> } }
+
+class Checkout {                              <span class="cm">// CONTEXT</span>
+    public function __construct(private PayStrategy $strategy) {}
+    public function setStrategy(PayStrategy $s): void { $this->strategy = $s; }  <span class="cm">// đổi lúc chạy</span>
+    public function process(int $amount): void { $this->strategy->pay($amount); }
+}
+$c = new Checkout(new PayPal());
+$c->setStrategy(new Crypto());   <span class="cm">// hoán đổi thuật toán mà không sửa Checkout</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre><span class="cm">// STRATEGY trong C = một con trỏ hàm</span>
+typedef void (*PayStrategy)(int amount);
+
+void pay_paypal(int a){ <span class="cm">/* ... */</span> }
+void pay_crypto(int a){ <span class="cm">/* ... */</span> }
+
+typedef struct { PayStrategy pay; } Checkout;     <span class="cm">// CONTEXT giữ strategy</span>
+void checkout_process(Checkout* c, int amount){ c->pay(amount); }
+
+Checkout c = { pay_paypal };
+c.pay = pay_crypto;          <span class="cm">// đổi thuật toán lúc chạy</span>
+checkout_process(&amp;c, 100);</pre></div>
+          <div class="code-pane" data-lang="py"><pre><span class="cm"># Python: strategy thường chỉ là một hàm (first-class function)</span>
+def pay_paypal(amount): ...
+def pay_crypto(amount): ...
+
+class Checkout:                       <span class="cm"># CONTEXT</span>
+    def __init__(self, strategy):
+        self.strategy = strategy
+    def process(self, amount):
+        self.strategy(amount)         <span class="cm"># gọi strategy đang cắm</span>
+
+c = Checkout(pay_paypal)
+c.strategy = pay_crypto               <span class="cm"># hoán đổi lúc chạy</span>
+c.process(100)</pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Strategy vs State — cặp song sinh</span>Cấu trúc gần như giống hệt. Khác ở <strong>ý đồ</strong>: Strategy = client <em>chủ động chọn</em> một cách làm và nó thường không tự đổi; State = đối tượng <em>tự chuyển</em> trạng thái khiến hành vi đổi theo. Xem CH17.</div>
+      </section>
+
+      <!-- OBSERVER -->
+      <section class="chapter" id="observer">
+        <h2 class="ch-title"><span class="num">CH 15</span> Observer <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Khi một đối tượng đổi trạng thái, <strong>tự động thông báo</strong> cho mọi đối tượng đăng ký theo dõi.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Quan hệ "một-tới-nhiều": publisher không cần biết ai nghe, chỉ <code class="ic">notify()</code>. Nền tảng của event/pub-sub.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Observer</div>
+          <ul>
+            <li>Có <code>subscribe()/attach()/on()</code> và <code>notify()/emit()</code>; một <b>danh sách observer</b>.</li>
+            <li><code>notify()</code> <b>lặp qua danh sách</b> gọi <code>update()</code> trên từng observer.</li>
+            <li>Publisher (subject) <b>không biết lớp cụ thể</b> của observer — chỉ biết interface.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Observer { public function update(string $event): void; }
+
+class Subject {                               <span class="cm">// PUBLISHER</span>
+    private array $observers = [];
+    public function subscribe(Observer $o): void { $this->observers[] = $o; }   <span class="cm">// đăng ký</span>
+    public function notify(string $event): void {
+        foreach ($this->observers as $o) $o->update($event);   <span class="cm">// lặp & báo cho tất cả</span>
+    }
+}
+class EmailAlert implements Observer {
+    public function update(string $e): void { <span class="cm">/* gửi mail */</span> }
+}
+$s = new Subject();
+$s->subscribe(new EmailAlert());
+$s->notify('order.created');   <span class="cm">// mọi observer được gọi</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef void (*Observer)(const char* event);
+
+typedef struct { Observer list[16]; int n; } Subject;   <span class="cm">// PUBLISHER</span>
+void subscribe(Subject* s, Observer o){ s->list[s->n++] = o; }
+void notify(Subject* s, const char* event){
+    for (int i=0;i&lt;s->n;i++) s->list[i](event);   <span class="cm">// báo cho tất cả</span>
+}
+void email_alert(const char* e){ <span class="cm">/* gửi mail */</span> }
+
+Subject s = {0};
+subscribe(&amp;s, email_alert);
+notify(&amp;s, "order.created");</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class Subject:                        <span class="cm"># PUBLISHER</span>
+    def __init__(self):
+        self._observers = []
+    def subscribe(self, fn):          <span class="cm"># observer có thể chỉ là callback</span>
+        self._observers.append(fn)
+    def notify(self, event):
+        for obs in self._observers:   <span class="cm"># lặp & báo cho tất cả</span>
+            obs(event)
+
+s = Subject()
+s.subscribe(lambda e: print("mail:", e))
+s.notify("order.created")</pre></div>
+        </div>
+        <div class="box info"><span class="bt">Observer ở khắp nơi</span>Event listener của JS/DOM, signal của Qt/Godot, Laravel Events, Django signals, hệ thống pub/sub (Redis, Kafka ở mức ý tưởng) — đều là Observer. Thấy "đăng ký rồi được gọi lại khi có chuyện" là nó.</div>
+      </section>
+
+      <!-- COMMAND -->
+      <section class="chapter" id="command">
+        <h2 class="ch-title"><span class="num">CH 16</span> Command <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Đóng gói một <strong>yêu cầu/hành động thành đối tượng</strong> — để xếp hàng, ghi log, undo/redo.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Biến "lời gọi method" thành object có thể truyền đi, lưu lại, hoàn tác. Tách <em>người ra lệnh</em> khỏi <em>người thực hiện</em>.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Command</div>
+          <ul>
+            <li>Một interface với method <code>execute()</code> (và thường <code>undo()</code>); mỗi hành động là một lớp command.</li>
+            <li>Có nơi <b>lưu/xếp hàng/lặp lại</b> các command (history stack, queue).</li>
+            <li>Đối tượng command <b>giữ sẵn tham số &amp; receiver</b> để chạy sau, không chạy ngay.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface Command { public function execute(): void; public function undo(): void; }
+
+class AddText implements Command {            <span class="cm">// 1 hành động = 1 object</span>
+    public function __construct(private Editor $ed, private string $text) {}
+    public function execute(): void { $this->ed->append($this->text); }
+    public function undo(): void    { $this->ed->removeLast($this->text); }
+}
+class History {                               <span class="cm">// xếp hàng để undo</span>
+    private array $stack = [];
+    public function run(Command $c): void { $c->execute(); $this->stack[] = $c; }
+    public function undo(): void { (array_pop($this->stack))?->undo(); }
+}</pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct Command {
+    void (*execute)(struct Command*);
+    void (*undo)(struct Command*);
+    void* receiver; const char* arg;          <span class="cm">// giữ sẵn dữ liệu để chạy sau</span>
+} Command;
+
+typedef struct { Command* stack[64]; int n; } History;
+void history_run(History* h, Command* c){ c->execute(c); h->stack[h->n++] = c; }
+void history_undo(History* h){ if(h->n){ Command* c=h->stack[--h->n]; c->undo(c); } }</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class AddText:                        <span class="cm"># 1 hành động = 1 object</span>
+    def __init__(self, editor, text):
+        self.editor, self.text = editor, text
+    def execute(self): self.editor.append(self.text)
+    def undo(self):    self.editor.remove_last(self.text)
+
+class History:                        <span class="cm"># stack để undo</span>
+    def __init__(self): self.stack = []
+    def run(self, cmd):
+        cmd.execute(); self.stack.append(cmd)
+    def undo(self):
+        if self.stack: self.stack.pop().undo()</pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Nhận ra Command khi...</span>thấy nút Undo/Redo, hàng đợi job (queue worker), macro/replay, hay "menu item nào cũng có một object hành động gắn vào". Khác Strategy: Strategy = <em>cách làm một việc</em>; Command = <em>một yêu cầu đã đóng gói</em> (kèm dữ liệu, để chạy/hoãn/hoàn tác).</div>
+      </section>
+
+      <!-- STATE -->
+      <section class="chapter" id="state">
+        <h2 class="ch-title"><span class="num">CH 17</span> State <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Đối tượng <strong>thay đổi hành vi khi trạng thái nội bộ đổi</strong> — như thể đổi sang lớp khác.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Thay khối <code class="ic">if (state == ...)</code> khổng lồ bằng các lớp trạng thái; mỗi trạng thái tự xử lý &amp; tự quyết chuyển sang trạng thái nào.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết State</div>
+          <ul>
+            <li>Một interface State với các method hành vi; nhiều lớp trạng thái cụ thể (<code>DraftState</code>, <code>PublishedState</code>).</li>
+            <li>Context giữ <b>trạng thái hiện tại</b> và uỷ quyền cho nó; <b>chính state tự gọi <code>context.setState(...)</code></b> để chuyển.</li>
+            <li>Bản chất là một <b>máy trạng thái (FSM)</b> được object-hoá.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+interface State { public function next(Doc $d): void; public function name(): string; }
+
+class Draft implements State {
+    public function next(Doc $d): void { $d->setState(new Published()); }  <span class="cm">// state TỰ chuyển tiếp</span>
+    public function name(): string { return 'draft'; }
+}
+class Published implements State {
+    public function next(Doc $d): void { <span class="cm">/* đã cuối, không đổi */</span> }
+    public function name(): string { return 'published'; }
+}
+class Doc {                                   <span class="cm">// CONTEXT</span>
+    private State $state;
+    public function __construct(){ $this->state = new Draft(); }
+    public function setState(State $s): void { $this->state = $s; }
+    public function publish(): void { $this->state->next($this); }  <span class="cm">// hành vi đổi theo state</span>
+}</pre></div>
+          <div class="code-pane" data-lang="c"><pre>struct Doc;
+typedef struct { void (*next)(struct Doc*); const char* name; } State;
+
+void draft_next(struct Doc* d);
+void published_next(struct Doc* d){ <span class="cm">/* cuối, không đổi */</span> }
+State DRAFT     = { draft_next, "draft" };
+State PUBLISHED = { published_next, "published" };
+
+typedef struct Doc { State* state; } Doc;     <span class="cm">// CONTEXT</span>
+void draft_next(Doc* d){ d->state = &amp;PUBLISHED; }   <span class="cm">// state tự chuyển</span>
+void doc_publish(Doc* d){ d->state->next(d); }</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class Draft:
+    def next(self, doc): doc.state = Published()   <span class="cm"># state tự chuyển tiếp</span>
+    name = 'draft'
+class Published:
+    def next(self, doc): pass                      <span class="cm"># trạng thái cuối</span>
+    name = 'published'
+
+class Doc:                            <span class="cm"># CONTEXT</span>
+    def __init__(self): self.state = Draft()
+    def publish(self): self.state.next(self)   <span class="cm"># hành vi đổi theo state</span></pre></div>
+        </div>
+        <div class="box warn"><span class="bt">State vs Strategy — cách phân biệt dứt khoát</span>Nhìn <strong>ai đổi và vì sao</strong>: nếu các "cách làm" <em>không biết về nhau</em> và do client chọn → <strong>Strategy</strong>. Nếu các lớp <em>tự chuyển sang nhau</em> theo luồng (A→B→C) và mô tả "trạng thái" → <strong>State</strong>.</div>
+      </section>
+
+      <!-- TEMPLATE METHOD -->
+      <section class="chapter" id="template-method">
+        <h2 class="ch-title"><span class="num">CH 18</span> Template Method <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Lớp cha định <strong>khung thuật toán</strong>, để lớp con <strong>điền vào vài bước</strong> cụ thể.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>"Bộ xương cố định, vài chỗ trống cho lớp con". Tái dùng cấu trúc chung, tuỳ biến chi tiết.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Template Method</div>
+          <ul>
+            <li>Một method <b>không-abstract ở lớp cha</b> gọi tuần tự nhiều bước, trong đó <b>vài bước là abstract</b>.</li>
+            <li>Lớp con <b>chỉ override các bước</b>, <b>không đổi</b> trình tự tổng thể.</li>
+            <li>Dựa trên <b>kế thừa</b> (khác Strategy dùng composition).</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+abstract class DataExporter {
+    public final function export(): void {     <span class="cm">// TEMPLATE METHOD: khung cố định</span>
+        $data = $this->fetch();                 <span class="cm">// bước chung</span>
+        $out  = $this->format($data);           <span class="cm">// bước do lớp con quyết</span>
+        $this->save($out);                      <span class="cm">// bước chung</span>
+    }
+    protected function fetch(): array { return [1,2,3]; }
+    abstract protected function format(array $d): string;   <span class="cm">// "chỗ trống"</span>
+    protected function save(string $o): void { <span class="cm">/* ghi file */</span> }
+}
+class CsvExporter extends DataExporter {
+    protected function format(array $d): string { return implode(',', $d); }  <span class="cm">// chỉ điền 1 bước</span>
+}</pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct Exporter {
+    const char* (*format)(struct Exporter*, int* data, int n);   <span class="cm">// "chỗ trống" (hook)</span>
+} Exporter;
+
+void export_run(Exporter* e){                  <span class="cm">// TEMPLATE METHOD: khung cố định</span>
+    int data[] = {1,2,3};
+    const char* out = e->format(e, data, 3);    <span class="cm">// gọi bước tuỳ biến</span>
+    save_to_file(out);                          <span class="cm">// bước chung</span>
+}
+const char* csv_format(Exporter* e, int* d, int n){ <span class="cm">/* "1,2,3" */</span> return "1,2,3"; }
+Exporter csv = { csv_format };</pre></div>
+          <div class="code-pane" data-lang="py"><pre>from abc import ABC, abstractmethod
+
+class DataExporter(ABC):
+    def export(self):                 <span class="cm"># TEMPLATE METHOD: khung cố định</span>
+        data = self.fetch()
+        out  = self.format(data)      <span class="cm"># bước do lớp con quyết</span>
+        self.save(out)
+    def fetch(self): return [1, 2, 3]
+    @abstractmethod
+    def format(self, data): ...       <span class="cm"># "chỗ trống"</span>
+    def save(self, out): ...
+
+class CsvExporter(DataExporter):
+    def format(self, data):           <span class="cm"># chỉ override 1 bước</span>
+        return ",".join(map(str, data))</pre></div>
+        </div>
+        <div class="box pro"><span class="bt">Template Method vs Strategy</span>Cùng mục tiêu "tuỳ biến một phần thuật toán". Template Method dùng <strong>kế thừa</strong> (cố định lúc biên dịch, override bước); Strategy dùng <strong>composition</strong> (đổi cả thuật toán lúc chạy). Thấy <code class="ic">abstract</code> + lớp con override vài bước → Template Method.</div>
+      </section>
+
+      <!-- ITERATOR -->
+      <section class="chapter" id="iterator">
+        <h2 class="ch-title"><span class="num">CH 19</span> Iterator <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Duyệt lần lượt các phần tử của một tập hợp <strong>mà không lộ cấu trúc bên trong</strong>.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Tách "cách duyệt" khỏi "cách lưu trữ". Cho phép <code class="ic">foreach</code>/<code class="ic">for..in</code> trên cấu trúc tuỳ ý.</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Iterator</div>
+          <ul>
+            <li>Có cặp <code>hasNext()/next()</code> hoặc method tạo iterator (<code>__iter__</code>, <code>IteratorAggregate</code>).</li>
+            <li>Cho phép <b>duyệt nhiều lần / nhiều kiểu duyệt</b> trên cùng tập hợp mà không phơi mảng nội bộ.</li>
+            <li>Trong PHP/Python/Java thường là <b>tích hợp ngôn ngữ</b> (interface chuẩn) hơn là tự viết.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+class NumberCollection implements IteratorAggregate {   <span class="cm">// interface chuẩn của PHP</span>
+    private array $items = [];
+    public function add(int $n): void { $this->items[] = $n; }
+    public function getIterator(): Iterator {
+        return new ArrayIterator($this->items);   <span class="cm">// trả iterator, giấu mảng</span>
+    }
+}
+$c = new NumberCollection();
+$c->add(1); $c->add(2);
+foreach ($c as $n) { <span class="cm">/* duyệt mà không chạm mảng nội bộ */</span> }</pre></div>
+          <div class="code-pane" data-lang="c"><pre><span class="cm">// C: iterator = struct giữ vị trí + hàm next</span>
+typedef struct { int* data; int n; int pos; } Iter;
+int  iter_has_next(Iter* it){ return it->pos &lt; it->n; }
+int  iter_next(Iter* it){ return it->data[it->pos++]; }
+
+int nums[] = {1,2,3};
+Iter it = { nums, 3, 0 };
+while (iter_has_next(&amp;it)) {
+    int v = iter_next(&amp;it);   <span class="cm">// duyệt qua interface, không cần biết "data" là mảng</span>
+}</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class NumberCollection:
+    def __init__(self): self._items = []
+    def add(self, n): self._items.append(n)
+    def __iter__(self):               <span class="cm"># giao thức iterator của Python</span>
+        return iter(self._items)      <span class="cm"># giấu cấu trúc nội bộ</span>
+
+c = NumberCollection(); c.add(1); c.add(2)
+for n in c:                           <span class="cm"># for..in dùng __iter__</span>
+    ...
+<span class="cm"># generator cũng là Iterator: def gen(): yield 1; yield 2</span></pre></div>
+        </div>
+        <div class="box info"><span class="bt">Bạn đã dùng nó hằng ngày</span><code class="ic">foreach</code> (PHP), <code class="ic">for..in</code> + generator (Python), <code class="ic">Iterator</code> (Java/STL) — đều là pattern Iterator được ngôn ngữ chuẩn hoá. Hiếm khi cần tự viết, nhưng nhận ra nó giúp hiểu vì sao mọi tập hợp đều duyệt được như nhau.</div>
+      </section>
+
+      <!-- CHAIN OF RESPONSIBILITY -->
+      <section class="chapter" id="chain">
+        <h2 class="ch-title"><span class="num">CH 20</span> Chain of Responsibility <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Chuyền một yêu cầu qua <strong>chuỗi các handler</strong>; mỗi handler xử lý hoặc đẩy tiếp.</p>
+        <div class="intent"><span class="k">🎯 Ý đồ:</span><span>Tách người gửi khỏi người xử lý; nhiều handler có cơ hội xử lý theo thứ tự (vd middleware, validation, escalation).</span></div>
+        <div class="sign">
+          <div class="sh">🔎 Dấu hiệu nhận biết Chain of Responsibility</div>
+          <ul>
+            <li>Mỗi handler giữ tham chiếu tới <b><code>next</code></b> handler, và quyết định <b>tự xử lý hay chuyển tiếp</b>.</li>
+            <li>Yêu cầu "đi xuyên qua" một danh sách/chuỗi cho tới khi ai đó xử lý (hoặc hết chuỗi).</li>
+            <li>Hay gặp ở <b>middleware</b> (HTTP), pipeline xử lý, bộ lọc, hệ thống duyệt nhiều cấp.</li>
+          </ul>
+        </div>
+        <div class="code-block">
+          <div class="code-tabs">
+            <button class="lang-btn active" data-lang="php" onclick="setLang('php')">🐘 PHP</button>
+            <button class="lang-btn" data-lang="c" onclick="setLang('c')">⚙️ C</button>
+            <button class="lang-btn" data-lang="py" onclick="setLang('py')">🐍 Python</button>
+          </div>
+          <div class="code-pane active" data-lang="php"><pre>&lt;?php
+abstract class Handler {
+    private ?Handler $next = null;
+    public function setNext(Handler $h): Handler { $this->next = $h; return $h; }
+    public function handle(int $level): void {
+        if (!$this->process($level) &amp;&amp; $this->next)   <span class="cm">// không xử lý được -> đẩy tiếp</span>
+            $this->next->handle($level);
+    }
+    abstract protected function process(int $level): bool;
+}
+class Support extends Handler {
+    protected function process(int $l): bool { return $l &lt;= 1; }   <span class="cm">// chỉ lo cấp thấp</span>
+}
+class Manager extends Handler {
+    protected function process(int $l): bool { return $l &lt;= 3; }
+}
+$support = new Support();
+$support->setNext(new Manager());     <span class="cm">// dựng chuỗi</span>
+$support->handle(3);                   <span class="cm">// Support bỏ qua -> Manager xử lý</span></pre></div>
+          <div class="code-pane" data-lang="c"><pre>typedef struct Handler {
+    int (*process)(int level);
+    struct Handler* next;             <span class="cm">// con trỏ tới handler kế tiếp</span>
+} Handler;
+
+void handle(Handler* h, int level){
+    if (h->process(level)) return;    <span class="cm">// xử lý được thì dừng</span>
+    if (h->next) handle(h->next, level);   <span class="cm">// không thì đẩy tiếp</span>
+}
+int support_proc(int l){ return l &lt;= 1; }
+int manager_proc(int l){ return l &lt;= 3; }
+Handler manager = { manager_proc, NULL };
+Handler support = { support_proc, &amp;manager };
+handle(&amp;support, 3);</pre></div>
+          <div class="code-pane" data-lang="py"><pre>class Handler:
+    def __init__(self): self._next = None
+    def set_next(self, h):
+        self._next = h; return h
+    def handle(self, level):
+        if not self.process(level) and self._next:   <span class="cm"># không xử lý -> đẩy tiếp</span>
+            self._next.handle(level)
+
+class Support(Handler):
+    def process(self, l): return l &lt;= 1
+class Manager(Handler):
+    def process(self, l): return l &lt;= 3
+
+support = Support(); support.set_next(Manager())
+support.handle(3)                     <span class="cm"># Support bỏ qua -> Manager xử lý</span></pre></div>
+        </div>
+        <div class="box info"><span class="bt">Nhận ra qua "middleware"</span>Express.js, Laravel middleware, Django middleware, ASP.NET pipeline — tất cả là Chain of Responsibility: request đi qua từng lớp, mỗi lớp xử lý phần của mình rồi gọi <code class="ic">next()</code>.</div>
+      </section>
+
+      <!-- REST OF BEHAVIORAL (compact) -->
+      <section class="chapter" id="behave-rest">
+        <h2 class="ch-title"><span class="num">CH 20+</span> Mediator · Memento · Visitor · Interpreter <span class="cat c-be">Behavioral</span></h2>
+        <p class="ch-sub">Bốn pattern hành vi còn lại — học dấu hiệu để nhận ra khi gặp.</p>
+        <div class="mini-grid">
+          <div class="mini-card">
+            <h4>🛫 Mediator <span class="mc-cat" style="background:rgba(244,114,182,.16);color:var(--p3)">BE</span></h4>
+            <div class="mi">Một đối tượng trung tâm điều phối giao tiếp giữa nhiều đối tượng, để chúng <b>không tham chiếu thẳng</b> tới nhau.</div>
+            <div class="sg"><b>Dấu hiệu:</b> các component gọi <code>mediator.notify(this, event)</code> thay vì gọi nhau; logic "ai phản ứng với ai" nằm tập trung ở mediator. Vd: chat room, air traffic control, dialog form điều phối các widget.</div>
+          </div>
+          <div class="mini-card">
+            <h4>💾 Memento <span class="mc-cat" style="background:rgba(244,114,182,.16);color:var(--p3)">BE</span></h4>
+            <div class="mi">Lưu &amp; khôi phục trạng thái nội bộ của một đối tượng mà <b>không phá vỡ đóng gói</b>.</div>
+            <div class="sg"><b>Dấu hiệu:</b> có <code>save()</code> trả về một "snapshot" mờ đục và <code>restore(snapshot)</code>. Lõi của <b>undo/redo</b>, save game, checkpoint. (Thường đi cùng Command.)</div>
+          </div>
+          <div class="mini-card">
+            <h4>🧳 Visitor <span class="mc-cat" style="background:rgba(244,114,182,.16);color:var(--p3)">BE</span></h4>
+            <div class="mi">Thêm thao tác mới lên một cây đối tượng <b>mà không sửa các lớp</b> trong cây.</div>
+            <div class="sg"><b>Dấu hiệu:</b> các phần tử có <code>accept(visitor)</code> rồi gọi ngược <code>visitor.visitX(this)</code> (double dispatch). Vd: trình duyệt AST của compiler, xuất nhiều định dạng từ một cấu trúc.</div>
+          </div>
+          <div class="mini-card">
+            <h4>📜 Interpreter <span class="mc-cat" style="background:rgba(244,114,182,.16);color:var(--p3)">BE</span></h4>
+            <div class="mi">Biểu diễn ngữ pháp của một ngôn ngữ nhỏ thành cây lớp, mỗi lớp tự <code>interpret()</code>.</div>
+            <div class="sg"><b>Dấu hiệu:</b> mỗi luật ngữ pháp = một lớp với <code>interpret(context)</code>; cây biểu thức tự tính kết quả. Vd: máy tính biểu thức, bộ lọc rule, regex engine (ý tưởng).</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ ANTI-PATTERNS ============ -->
+      <div class="part-divider" id="part-end"><div class="line"></div><span class="tag tp0">+ · Tổng hợp</span><div class="line"></div></div>
+
+      <section class="chapter" id="anti">
+        <h2 class="ch-title"><span class="num">⛔</span> Anti-pattern &amp; những nhầm lẫn thường gặp</h2>
+        <p class="ch-sub">Nhận diện pattern dùng SAI cũng quan trọng như nhận diện pattern dùng đúng.</p>
+        <h3 class="sec">Anti-pattern hay gặp</h3>
+        <table>
+          <tr><th>Anti-pattern</th><th>Dấu hiệu</th><th>Hệ quả &amp; cách chữa</th></tr>
+          <tr><td><b>God Object</b></td><td>Một lớp "biết tuốt", hàng nghìn dòng, làm mọi việc.</td><td>Khó test/sửa. Tách trách nhiệm (SRP), dùng Facade/Mediator hợp lý.</td></tr>
+          <tr><td><b>Singleton lạm dụng</b></td><td>Mọi thứ đều <code class="ic">getInstance()</code>; state toàn cục khắp nơi.</td><td>Khó test, phụ thuộc ngầm. Chuyển sang Dependency Injection.</td></tr>
+          <tr><td><b>Over-engineering</b></td><td>Factory + Strategy + Abstract Factory cho một việc lẽ ra 5 dòng.</td><td>Code rối, khó đọc. Áp dụng YAGNI — chỉ thêm pattern khi thật sự cần.</td></tr>
+          <tr><td><b>Poltergeist</b></td><td>Lớp "ma" chỉ tồn tại để chuyển lời gọi rồi biến mất.</td><td>Thừa tầng. Gọi thẳng đối tượng đích.</td></tr>
+          <tr><td><b>Golden Hammer</b></td><td>Thích một pattern rồi nhét vào mọi bài toán.</td><td>Sai công cụ. Chọn pattern theo vấn đề, không theo sở thích.</td></tr>
+        </table>
+        <div class="box danger"><span class="bt">Quy tắc vàng</span>Đừng bắt đầu bằng "dùng pattern nào?". Bắt đầu bằng <strong>"vấn đề thực tế là gì?"</strong> — code đang lặp lại? khó mở rộng? khó test? Khi <em>nỗi đau</em> rõ ràng, pattern phù hợp thường tự lộ ra. Pattern là <em>thuốc chữa bệnh</em>, không phải <em>vitamin uống cho vui</em>.</div>
+
+        <h3 class="sec">Bảng phân biệt các cặp dễ nhầm</h3>
+        <table>
+          <tr><th>Cặp</th><th>Giống</th><th>Khác (ý đồ)</th></tr>
+          <tr><td>Strategy ↔ State</td><td>Đều: context giữ 1 đối tượng interface.</td><td>Strategy: client chọn cách làm. State: đối tượng tự chuyển trạng thái (A→B→C).</td></tr>
+          <tr><td>Adapter ↔ Decorator</td><td>Đều bọc 1 đối tượng.</td><td>Adapter: đổi <em>giao diện</em> cho khớp. Decorator: giữ giao diện, <em>thêm hành vi</em>.</td></tr>
+          <tr><td>Decorator ↔ Proxy</td><td>Đều bọc, cùng interface.</td><td>Decorator: thêm tính năng. Proxy: kiểm soát truy cập (lazy/cache/quyền).</td></tr>
+          <tr><td>Facade ↔ Adapter</td><td>Đều đơn giản hoá việc gọi.</td><td>Facade: gom <em>nhiều</em> lớp thành API mới. Adapter: khớp <em>một</em> lớp vào interface có sẵn.</td></tr>
+          <tr><td>Factory Method ↔ Abstract Factory</td><td>Đều giấu <code class="ic">new</code>.</td><td>FM: tạo 1 loại sản phẩm. AF: tạo cả 1 họ sản phẩm khớp nhau.</td></tr>
+          <tr><td>Strategy ↔ Template Method</td><td>Đều tuỳ biến thuật toán.</td><td>Strategy: composition, đổi lúc chạy. Template: kế thừa, override bước.</td></tr>
+          <tr><td>Command ↔ Strategy</td><td>Đều đóng gói hành động.</td><td>Command: 1 yêu cầu kèm dữ liệu, để hoãn/undo. Strategy: 1 cách làm việc.</td></tr>
+        </table>
+      </section>
+
+      <!-- ============ CHALLENGES (random) ============ -->
+      <section class="chapter" id="challenge">
+        <h2 class="ch-title"><span class="num">🎲</span> Thử thách ngẫu nhiên</h2>
+        <p class="ch-sub">Hai trò chơi <strong>vô hạn</strong> để luyện phản xạ — bấm 🎲 là ra đề mới. Cày tới khi nhận diện thành bản năng!</p>
+
+        <!-- GAME 1: signs -> pattern -->
+        <div class="detector">
+          <div class="dhead" style="justify-content:space-between"><span>🎯 Dấu hiệu → Pattern</span><span class="dscore" id="signScore">Đúng: 0 / 0</span></div>
+          <div class="dprog">Chuỗi đúng liên tiếp: <b id="signStreak" style="color:var(--ok)">0</b> · Kỷ lục: <b id="signBest" style="color:var(--accent-2)">0</b></div>
+          <div id="signBox"></div>
+          <div class="detect-nav">
+            <span style="font-size:12px;color:var(--gray)">Đọc dấu hiệu, chọn đúng pattern.</span>
+            <button class="dbtn" onclick="signNew()">🎲 Câu khác</button>
+          </div>
+        </div>
+
+        <!-- GAME 2: code signature self-grade -->
+        <div class="detector">
+          <div class="dhead" style="justify-content:space-between"><span>✍️ Code Challenge — tự chấm theo dấu hiệu</span><span class="dscore" id="codeScore">Đã đạt: 0 đề</span></div>
+          <div class="dprog" id="codeProg"></div>
+          <div id="codeTask"></div>
+          <textarea class="codepad" id="codePad" spellcheck="false"></textarea>
+          <div class="detect-nav">
+            <button class="dbtn" onclick="codeCheck()">✅ Kiểm tra</button>
+            <button class="dbtn ghost" onclick="codeNew()">🎲 Đổi đề</button>
+            <span style="font-size:12px;color:var(--gray)">Đủ dấu hiệu là đạt — không cần chạy hoàn hảo.</span>
+          </div>
+          <div class="detect-result" id="codeResult"></div>
+        </div>
+        <div class="box info"><span class="bt">Cách "tự chấm" hoạt động</span>Bài Code Challenge chấm bằng cách <strong>dò các dấu hiệu đặc trưng</strong> của pattern trong code bạn gõ (vd Singleton phải có biến static + chặn <code class="ic">new</code>). Mục tiêu là <em>tái tạo đúng cấu trúc nhận diện</em>, nên cứ tập trung vào "khung xương" của pattern. Bí thì mở <strong>Đáp án mẫu</strong>.</div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📑</span> Cheatsheet nhận diện — tra cứu nhanh</h2>
+        <p class="ch-sub">Một dòng dấu hiệu cho mỗi pattern. Bookmark để nhận diện tức thì.</p>
+        <div class="cheat-grid">
+          <div class="cheat-card"><h4 style="color:var(--p1)">Creational — Khởi tạo</h4><table>
+            <tr><td>Singleton</td><td><code>getInstance()</code> + static, 1 instance</td></tr>
+            <tr><td>Factory Method</td><td><code>create()</code> trả interface, giấu <code>new</code></td></tr>
+            <tr><td>Abstract Factory</td><td>nhiều <code>createX()</code>, nhiều "họ"</td></tr>
+            <tr><td>Builder</td><td>chuỗi <code>.setX()...build()</code></td></tr>
+            <tr><td>Prototype</td><td><code>clone()</code> / deep copy</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4 style="color:var(--p2)">Structural — Cấu trúc</h4><table>
+            <tr><td>Adapter</td><td>bọc để đổi giao diện cho khớp</td></tr>
+            <tr><td>Decorator</td><td>bọc cùng interface + thêm hành vi</td></tr>
+            <tr><td>Facade</td><td>1 API đơn giản gom nhiều lớp con</td></tr>
+            <tr><td>Composite</td><td>cây lá/nhóm cùng interface, đệ quy</td></tr>
+            <tr><td>Proxy</td><td>bọc để kiểm soát truy cập (lazy/cache)</td></tr>
+            <tr><td>Bridge</td><td>abstraction giữ tham chiếu implementation</td></tr>
+            <tr><td>Flyweight</td><td>pool/cache chia sẻ object</td></tr>
+          </table></div>
+          <div class="cheat-card"><h4 style="color:var(--p3)">Behavioral — Hành vi</h4><table>
+            <tr><td>Strategy</td><td>interface 1 method, hoán đổi cách làm</td></tr>
+            <tr><td>Observer</td><td><code>subscribe</code> + <code>notify</code> lặp danh sách</td></tr>
+            <tr><td>Command</td><td><code>execute()</code>/<code>undo()</code> đóng gói hành động</td></tr>
+            <tr><td>State</td><td>lớp trạng thái tự chuyển A→B→C</td></tr>
+            <tr><td>Template Method</td><td>khung ở cha, override bước ở con</td></tr>
+            <tr><td>Iterator</td><td><code>hasNext/next</code>, <code>__iter__</code></td></tr>
+            <tr><td>Chain of Resp.</td><td>handler có <code>next</code>, đẩy tiếp</td></tr>
+            <tr><td>Mediator</td><td>trung tâm điều phối, component không gọi nhau</td></tr>
+            <tr><td>Memento</td><td><code>save()/restore()</code> snapshot</td></tr>
+            <tr><td>Visitor</td><td><code>accept(visitor)</code> double-dispatch</td></tr>
+          </table></div>
+        </div>
+        <div class="box pro"><span class="bt">Lời khuyên cuối</span>Đừng học thuộc 23 pattern. Hãy <strong>luyện con mắt</strong>: mỗi lần đọc code thư viện/framework, tự hỏi "đây là pattern gì, vì sao họ chọn nó?". Quay lại <strong>🕵️ Pattern Detector</strong> để kiểm tra mình. Khi nhận diện thành phản xạ, bạn vừa đọc code nhanh hơn, vừa viết thiết kế tốt hơn — và biết cả <em>khi nào KHÔNG cần</em> pattern. Chúc bạn "bắt" pattern thành thạo! ◇✨</div>
+      </section>
+
+      <!-- CONTENT-MARKER -->
+    </div>
+    <footer class="foot">
+      ◇ <b>Design Patterns — Nhận diện &amp; Áp dụng</b> · Khóa học mẫu thiết kế từ căn bản đến nâng cao (PHP · C · Python) · thuộc bộ Studies ·
+      Pattern Detector &amp; bộ đổi ngôn ngữ chạy offline trong trình duyệt.
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ============ HELPERS ============ */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ============ LANGUAGE SWITCH (global) ============ */
+function setLang(lang){
+  document.querySelectorAll('.code-pane').forEach(p=> p.classList.toggle('active', p.dataset.lang===lang));
+  document.querySelectorAll('.lang-btn').forEach(b=> b.classList.toggle('active', b.dataset.lang===lang));
+  document.querySelectorAll('.glang').forEach(b=> b.classList.toggle('active', b.dataset.lang===lang));
+  try { localStorage.setItem('dp_lang', lang); } catch(e){}
+}
+
+/* ============ PATTERN DETECTOR (random) ============ */
+let DETECT_ACTIVE = [];
+let detectIdx = 0, detectAnswered = [], detectScore = 0;
+function renderDetector(){
+  DETECT_ACTIVE = shuffle(DETECT_Q.slice()).map(q=> Object.assign({}, q, { options: shuffle(q.options.slice()) }));
+  detectScore = 0;
+  const wrap = document.getElementById('detectQuestions');
+  wrap.innerHTML = DETECT_ACTIVE.map((q,i)=>{
+    const opts = q.options.map((o)=>
+      `<button class="opt-btn" data-correct="${o.correct?1:0}" onclick="detectAnswer(this,${i})">${esc(o.t)}</button>`
+    ).join('');
+    return `<div class="detect-q" data-i="${i}">
+      <div class="qcode">${q.code}</div>
+      <div class="qask">❓ ${esc(q.ask||'Đoạn code trên minh hoạ pattern nào?')}</div>
+      <div class="opt-grid">${opts}</div>
+      <div class="detect-result"><div class="verdict"></div><div class="explain">${q.explain}</div></div>
+    </div>`;
+  }).join('');
+  detectAnswered = DETECT_ACTIVE.map(()=>false);
+  document.getElementById('detectScore').textContent = 'Điểm: 0 / 0';
+  showDetect(0);
+}
+function showDetect(i){
+  detectIdx = i;
+  document.querySelectorAll('.detect-q').forEach(q=> q.classList.toggle('active', +q.dataset.i===i));
+  document.getElementById('detectProg').textContent = `Câu ${i+1} / ${DETECT_ACTIVE.length}`;
+  document.getElementById('detectPrev').disabled = (i===0);
+  document.getElementById('detectNext').disabled = (i===DETECT_ACTIVE.length-1);
+}
+function detectMove(d){
+  const n = DETECT_ACTIVE.length;
+  showDetect(Math.min(n-1, Math.max(0, detectIdx + d)));
+}
+function detectShuffle(){ renderDetector(); }
+function detectAnswer(btn, qi){
+  if(detectAnswered[qi]) return;
+  detectAnswered[qi] = true;
+  const card = btn.closest('.detect-q');
+  const correct = btn.dataset.correct==='1';
+  card.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.correct==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  if(correct) detectScore++;
+  const res = card.querySelector('.detect-result');
+  res.classList.add('show');
+  res.querySelector('.verdict').innerHTML = correct
+    ? '<span style="color:var(--ok)">✅ Chính xác!</span>'
+    : '<span style="color:var(--danger)">❌ Chưa đúng.</span> Đáp án đúng được tô xanh.';
+  const answeredCount = detectAnswered.filter(Boolean).length;
+  document.getElementById('detectScore').textContent = `Điểm: ${detectScore} / ${answeredCount}`;
+}
+
+/* ============ NAV ============ */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+window.addEventListener('scroll', () => {
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 140) cur = s.id; });
+  navLinks.forEach(a=> a.classList.toggle('active', a.getAttribute('href')==='#'+cur));
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')){ li.style.display=''; return; }
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+
+window.addEventListener('load', ()=>{
+  let saved = 'php';
+  try { saved = localStorage.getItem('dp_lang') || 'php'; } catch(e){}
+  setLang(saved);
+  renderDetector();
+});
+</script>
+<script>
+/* ============ DETECTOR QUESTIONS DATA ============ */
+const DETECT_Q = [
+  {
+    code: `class Config {
+  private static \$instance = null;
+  private function __construct() {}      <span class="cm">// chặn new</span>
+  static function get() {
+    if (self::\$instance == null)
+      self::\$instance = new Config();   <span class="cm">// tạo lười 1 lần</span>
+    return self::\$instance;
+  }
+}`,
+    options: [
+      { t: 'Factory Method', correct: false },
+      { t: 'Singleton', correct: true },
+      { t: 'Builder', correct: false },
+      { t: 'Proxy', correct: false },
+    ],
+    explain: 'Biến <code>static $instance</code> + constructor <code>private</code> + method <code>get()</code> trả về một instance duy nhất khởi tạo lười → <b>Singleton</b> kinh điển.'
+  },
+  {
+    code: `class Subject {
+  observers = []
+  def subscribe(self, fn): self.observers.append(fn)
+  def notify(self, ev):
+      for o in self.observers:   <span class="cm"># lặp & gọi tất cả</span>
+          o(ev)`,
+    options: [
+      { t: 'Observer', correct: true },
+      { t: 'Chain of Responsibility', correct: false },
+      { t: 'Mediator', correct: false },
+      { t: 'Command', correct: false },
+    ],
+    explain: '<code>subscribe()</code> thêm vào danh sách + <code>notify()</code> lặp qua danh sách gọi từng cái → quan hệ một-tới-nhiều = <b>Observer</b>.'
+  },
+  {
+    code: `interface Sorter { function sort(a); }
+class QuickSort implements Sorter { ... }
+class BubbleSort implements Sorter { ... }
+
+class Context {
+  function setSorter(Sorter s) { this.s = s; }  <span class="cm">// đổi lúc chạy</span>
+  function run(a) { return this.s.sort(a); }
+}`,
+    options: [
+      { t: 'Template Method', correct: false },
+      { t: 'State', correct: false },
+      { t: 'Strategy', correct: true },
+      { t: 'Adapter', correct: false },
+    ],
+    explain: 'Một interface 1 method (<code>sort</code>), nhiều hiện thực hoán đổi được qua <code>setSorter()</code> lúc chạy, do client chọn → <b>Strategy</b>. (Nếu các lớp tự chuyển sang nhau thì mới là State.)'
+  },
+  {
+    code: `pizza = (PizzaBuilder()
+    .size("L")
+    .add("cheese")
+    .add("mushroom")
+    .build())`,
+    options: [
+      { t: 'Builder', correct: true },
+      { t: 'Prototype', correct: false },
+      { t: 'Abstract Factory', correct: false },
+      { t: 'Decorator', correct: false },
+    ],
+    explain: 'Chuỗi method nối nhau (fluent, mỗi method trả <code>self</code>) kết thúc bằng <code>build()</code> trả sản phẩm → <b>Builder</b>.'
+  },
+  {
+    code: `class WithMilk implements Coffee {
+  constructor(inner) { this.inner = inner; }  <span class="cm">// cùng interface, giữ inner</span>
+  cost() { return this.inner.cost() + 5; }    <span class="cm">// gọi inner rồi thêm</span>
+}
+c = new WithMilk(new WithSugar(new Espresso()));`,
+    options: [
+      { t: 'Proxy', correct: false },
+      { t: 'Adapter', correct: false },
+      { t: 'Decorator', correct: true },
+      { t: 'Composite', correct: false },
+    ],
+    explain: 'Lớp <b>cùng interface</b> với thứ nó bọc, gọi <code>inner.cost()</code> rồi <b>thêm hành vi</b> (+5), và <b>bọc chồng</b> được → <b>Decorator</b>. (Proxy thì kiểm soát truy cập chứ không thêm nghiệp vụ.)'
+  },
+  {
+    code: `void handle(Handler* h, int lvl) {
+  if (h->process(lvl)) return;      <span class="cm">// tự xử lý được thì dừng</span>
+  if (h->next) handle(h->next, lvl); <span class="cm">// không thì đẩy tiếp</span>
+}`,
+    options: [
+      { t: 'Observer', correct: false },
+      { t: 'Chain of Responsibility', correct: true },
+      { t: 'Decorator', correct: false },
+      { t: 'Iterator', correct: false },
+    ],
+    explain: 'Mỗi handler giữ con trỏ <code>next</code> và quyết định <b>tự xử lý hay chuyển tiếp</b> → <b>Chain of Responsibility</b> (chính là cách middleware hoạt động).'
+  },
+  {
+    code: `function make_shape(type) {
+  switch(type) {
+    case "circle": return new Circle();  <span class="cm">// trả về interface Shape</span>
+    case "square": return new Square();
+  }
+}
+s = make_shape("circle");  <span class="cm">// client không new trực tiếp</span>`,
+    options: [
+      { t: 'Builder', correct: false },
+      { t: 'Singleton', correct: false },
+      { t: 'Abstract Factory', correct: false },
+      { t: 'Factory Method', correct: true },
+    ],
+    explain: 'Một method tạo đối tượng, chọn lớp cụ thể theo "type", trả về <b>kiểu trừu tượng</b> (<code>Shape</code>), giấu <code>new</code> khỏi client → <b>Factory Method</b>. (Abstract Factory sẽ có nhiều method create cho cả một họ.)'
+  },
+  {
+    code: `import copy
+orc  = Enemy(100, ["slash"])
+orc2 = copy.deepcopy(orc)   <span class="cm"># tạo mới bằng sao chép mẫu</span>
+orc2.hp = 80`,
+    options: [
+      { t: 'Prototype', correct: true },
+      { t: 'Flyweight', correct: false },
+      { t: 'Builder', correct: false },
+      { t: 'Memento', correct: false },
+    ],
+    explain: 'Tạo đối tượng mới bằng cách <b>sao chép (clone/deepcopy)</b> một mẫu có sẵn thay vì dựng từ đầu → <b>Prototype</b>. (Memento cũng lưu trạng thái nhưng để khôi phục, không để tạo object mới.)'
+  },
+  {
+    code: `class OrderFacade {
+  placeOrder(item, qty) {
+    this.inventory.reserve(item, qty);   <span class="cm">// gom nhiều hệ con</span>
+    this.payment.charge(item * qty);
+    this.shipping.schedule(item, qty);
+  }
+}
+order.placeOrder(42, 2);  <span class="cm">// client không đụng 3 module bên trong</span>`,
+    options: [
+      { t: 'Mediator', correct: false },
+      { t: 'Facade', correct: true },
+      { t: 'Composite', correct: false },
+      { t: 'Command', correct: false },
+    ],
+    explain: 'Một lớp "cổng" với method đơn giản gom &amp; điều phối nhiều hệ thống con, client không đụng lớp con → <b>Facade</b>.'
+  },
+  {
+    code: `class Folder {
+  size() {
+    let total = 0;
+    for (const child of this.children)   <span class="cm">// con cũng có .size()</span>
+      total += child.size();             <span class="cm">// đệ quy lá lẫn nhóm</span>
+    return total;
+  }
+}`,
+    options: [
+      { t: 'Iterator', correct: false },
+      { t: 'Decorator', correct: false },
+      { t: 'Composite', correct: true },
+      { t: 'Chain of Responsibility', correct: false },
+    ],
+    explain: 'Phần tử nhóm chứa danh sách con cùng interface và <b>đệ quy gọi xuống con</b> (lá và nhóm xử lý như nhau) → <b>Composite</b> (cây file/thư mục).'
+  },
+  {
+    code: `class ImageProxy {
+  display() {
+    if (this.real == null)               <span class="cm">// tải lười</span>
+      this.real = new RealImage(this.file);
+    this.real.display();                 <span class="cm">// rồi uỷ quyền</span>
+  }
+}`,
+    options: [
+      { t: 'Decorator', correct: false },
+      { t: 'Adapter', correct: false },
+      { t: 'Proxy', correct: true },
+      { t: 'Facade', correct: false },
+    ],
+    explain: 'Cùng interface với đối tượng thật, <b>kiểm soát truy cập</b> (khởi tạo lười) rồi mới uỷ quyền → <b>Proxy</b>. Nó <i>quản lý truy cập</i> chứ không thêm nghiệp vụ như Decorator.'
+  },
+  {
+    code: `interface GUIFactory {
+  createButton();     <span class="cm">// NHIỀU method create</span>
+  createCheckbox();
+}
+class DarkFactory implements GUIFactory { ... }   <span class="cm">// một "họ"</span>
+class LightFactory implements GUIFactory { ... }`,
+    options: [
+      { t: 'Factory Method', correct: false },
+      { t: 'Abstract Factory', correct: true },
+      { t: 'Builder', correct: false },
+      { t: 'Prototype', correct: false },
+    ],
+    explain: 'Một interface factory có <b>nhiều</b> method create, và nhiều factory cụ thể tạo cả một <b>họ</b> sản phẩm khớp nhau → <b>Abstract Factory</b>. (Một create đơn lẻ mới là Factory Method.)'
+  },
+  {
+    code: `class Draft {
+  next(doc) { doc.state = new Published(); }  <span class="cm">// TỰ chuyển sang trạng thái khác</span>
+}
+class Published {
+  next(doc) { /* trạng thái cuối */ }
+}`,
+    options: [
+      { t: 'Strategy', correct: false },
+      { t: 'State', correct: true },
+      { t: 'Observer', correct: false },
+      { t: 'Template Method', correct: false },
+    ],
+    explain: 'Các lớp đại diện trạng thái và <b>tự chuyển</b> context sang trạng thái khác (Draft→Published) → <b>State</b>. Strategy thì do client chọn và không tự chuyển.'
+  },
+  {
+    code: `class History {
+  run(cmd) { cmd.execute(); this.stack.push(cmd); }  <span class="cm">// lưu lại để undo</span>
+  undo()   { this.stack.pop().undo(); }
+}`,
+    options: [
+      { t: 'Memento', correct: false },
+      { t: 'Strategy', correct: false },
+      { t: 'Command', correct: true },
+      { t: 'Observer', correct: false },
+    ],
+    explain: 'Hành động được đóng gói thành object có <code>execute()</code>/<code>undo()</code>, được <b>lưu vào stack</b> để hoàn tác → <b>Command</b>.'
+  },
+  {
+    code: `abstract class Exporter {
+  export() {                 <span class="cm">// khung cố định ở lớp CHA</span>
+    const d = this.fetch();
+    const o = this.format(d); <span class="cm">// bước abstract, con override</span>
+    this.save(o);
+  }
+  abstract format(d);
+}`,
+    options: [
+      { t: 'Strategy', correct: false },
+      { t: 'Template Method', correct: true },
+      { t: 'Builder', correct: false },
+      { t: 'Decorator', correct: false },
+    ],
+    explain: 'Lớp cha định <b>khung thuật toán</b> (export) và để lớp con override <b>vài bước</b> abstract (format), dựa trên <b>kế thừa</b> → <b>Template Method</b>.'
+  },
+  {
+    code: `class Logger implements Target {
+  log(msg) {
+    this.legacyLib.writeLine("[LOG] " + msg);  <span class="cm">// dịch log() -> writeLine()</span>
+  }
+}`,
+    options: [
+      { t: 'Adapter', correct: true },
+      { t: 'Decorator', correct: false },
+      { t: 'Facade', correct: false },
+      { t: 'Proxy', correct: false },
+    ],
+    explain: 'Lớp implements interface ta cần (<code>Target.log</code>) nhưng bên trong <b>dịch sang API lệch</b> của thư viện (<code>writeLine</code>) → <b>Adapter</b>.'
+  }
+];
+</script>
+<script>
+/* ============ GAME 1: SIGNS -> PATTERN (random, infinite) ============ */
+const PATTERNS = [
+  {n:'Singleton', g:'cr', s:['Có method static getInstance()/instance() trả về cùng một đối tượng','Constructor private (hoặc __new__ ghi đè) để chặn new từ ngoài','Một biến static giữ instance, khởi tạo lười']},
+  {n:'Factory Method', g:'cr', s:['Một method create() trả về interface, không trả lớp cụ thể','Bên trong có switch/if chọn lớp để new','Client không gọi new trực tiếp']},
+  {n:'Abstract Factory', g:'cr', s:['Một interface factory có NHIỀU method createX()','Nhiều factory cụ thể, mỗi cái tạo một họ sản phẩm khớp nhau']},
+  {n:'Builder', g:'cr', s:['Chuỗi method trả về this/self để gọi nối nhau (fluent)','Có method build()/getResult() ở cuối trả sản phẩm','Thay cho constructor quá nhiều tham số']},
+  {n:'Prototype', g:'cr', s:['Có method clone()/copy() trả bản sao cùng kiểu','Tạo object mới bằng sao chép mẫu thay vì new từ đầu']},
+  {n:'Adapter', g:'st', s:['Một lớp implements interface ta cần, bên trong gọi xuống API khác','Method chủ yếu dịch tên/định dạng lời gọi','Mục đích: tái dùng code/thư viện có API lệch']},
+  {n:'Decorator', g:'st', s:['Lớp CÙNG interface với đối tượng nó bọc và giữ tham chiếu tới nó','Gọi inner.op() rồi thêm hành vi trước/sau','Có thể bọc chồng nhiều lớp']},
+  {n:'Facade', g:'st', s:['Một lớp cổng với method đơn giản điều phối nhiều lớp con','Client chỉ nói chuyện với facade, không đụng lớp con','Không thêm hành vi mới, chỉ đơn giản hoá']},
+  {n:'Composite', g:'st', s:['Interface chung cho cả phần tử lá và phần tử nhóm','Phần tử nhóm có danh sách con cùng kiểu và đệ quy gọi xuống con']},
+  {n:'Proxy', g:'st', s:['Lớp cùng interface với đối tượng thật, kiểm soát truy cập','Làm thêm việc (lazy/cache/quyền) trước khi chuyển tiếp lời gọi']},
+  {n:'Strategy', g:'be', s:['Interface 1 method với nhiều hiện thực hoán đổi được','Context có setStrategy() đổi cách làm lúc chạy','Thường thay cho if/switch chọn thuật toán']},
+  {n:'Observer', g:'be', s:['Có subscribe()/attach() và notify()/emit()','notify() lặp qua danh sách gọi update() trên từng observer','Publisher không biết lớp cụ thể của observer']},
+  {n:'Command', g:'be', s:['Interface execute() (và thường undo())','Có nơi lưu/xếp hàng các command (history/queue)','Command giữ sẵn dữ liệu & receiver để chạy sau']},
+  {n:'State', g:'be', s:['Nhiều lớp trạng thái cụ thể','Chính state tự gọi context.setState() để chuyển A→B→C']},
+  {n:'Template Method', g:'be', s:['Method ở lớp cha gọi tuần tự nhiều bước, vài bước là abstract','Lớp con chỉ override các bước, không đổi trình tự','Dựa trên kế thừa']},
+  {n:'Iterator', g:'be', s:['Có hasNext()/next() hoặc __iter__/getIterator()','Duyệt tập hợp mà không lộ cấu trúc bên trong']},
+  {n:'Chain of Responsibility', g:'be', s:['Mỗi handler giữ tham chiếu tới next','Mỗi handler quyết định tự xử lý hay chuyển tiếp']},
+];
+const GROUP_NAME = { cr:'Creational (Khởi tạo)', st:'Structural (Cấu trúc)', be:'Behavioral (Hành vi)' };
+let signStreak=0, signBest=0, signRight=0, signTotal=0, signCur=null, signDone=false;
+function signNew(){
+  signDone = false;
+  const p = PATTERNS[Math.floor(Math.random()*PATTERNS.length)];
+  signCur = p;
+  const signs = shuffle(p.s.slice()).slice(0, Math.min(2, p.s.length));
+  const pool = PATTERNS.filter(x=>x.n!==p.n);
+  const same  = shuffle(pool.filter(x=>x.g===p.g));
+  const other = shuffle(pool.filter(x=>x.g!==p.g));
+  const distract = same.concat(other).slice(0,3);
+  const opts = shuffle([p].concat(distract));
+  document.getElementById('signBox').innerHTML =
+    '<div class="qask">🔎 Pattern nào có những dấu hiệu sau?</div>'
+    + '<ul class="signlist">' + signs.map(s=>'<li>'+esc(s)+'</li>').join('') + '</ul>'
+    + '<div class="opt-grid">' + opts.map(o=>'<button class="opt-btn" data-correct="'+(o.n===p.n?1:0)+'" onclick="signAnswer(this)">'+esc(o.n)+'</button>').join('') + '</div>'
+    + '<div class="detect-result" id="signRes"></div>';
+}
+function signAnswer(btn){
+  if(signDone) return;
+  signDone = true;
+  const box = document.getElementById('signBox');
+  const correct = btn.dataset.correct==='1';
+  box.querySelectorAll('.opt-btn').forEach(b=>{ b.disabled=true; if(b.dataset.correct==='1') b.classList.add('right'); });
+  if(!correct) btn.classList.add('wrong');
+  signTotal++;
+  if(correct){ signRight++; signStreak++; signBest=Math.max(signBest, signStreak); } else { signStreak=0; }
+  document.getElementById('signStreak').textContent = signStreak;
+  document.getElementById('signBest').textContent = signBest;
+  document.getElementById('signScore').textContent = 'Đúng: '+signRight+' / '+signTotal;
+  const res = document.getElementById('signRes');
+  res.classList.add('show');
+  res.innerHTML = '<div class="explain">'
+    + (correct ? '<b style="color:var(--ok)">✅ Chuẩn!</b> ' : '<b style="color:var(--danger)">❌ Chưa đúng.</b> Đáp án: <b>'+esc(signCur.n)+'</b>. ')
+    + 'Thuộc nhóm <b>'+GROUP_NAME[signCur.g]+'</b>. Bấm 🎲 để qua câu khác.</div>';
+}
+
+/* ============ GAME 2: CODE SIGNATURE SELF-GRADE (random) ============ */
+const CHALLENGES = [
+  {
+    pat:'Singleton', lang:'Python',
+    task:'Viết lớp Singleton sao cho Database() luôn trả về cùng một object.',
+    starter:'class Database:\n    _instance = None\n\n    def __new__(cls):\n        # viết tiếp ở đây\n        pass\n',
+    must:[
+      {re:/_instance/i, l:'Có biến lớp giữ instance (vd _instance)'},
+      {re:/__new__/i, l:'Ghi đè __new__ để kiểm soát việc tạo'},
+      {re:/return\s+cls\._instance/i, l:'Trả về cùng instance đã lưu'},
+    ],
+    sol:'class Database:\n    _instance = None\n    def __new__(cls):\n        if cls._instance is None:\n            cls._instance = super().__new__(cls)\n        return cls._instance'
+  },
+  {
+    pat:'Singleton', lang:'PHP',
+    task:'Viết Singleton Config trong PHP (getInstance + chặn new).',
+    starter:'<?php\nclass Config {\n    // viết ở đây\n}\n',
+    must:[
+      {re:/static/i, l:'Có thuộc tính static giữ instance'},
+      {re:/function\s+getInstance/i, l:'Có method static getInstance()'},
+      {re:/private\s+function\s+__construct/i, l:'Constructor private để chặn new từ ngoài'},
+    ],
+    sol:'<?php\nclass Config {\n    private static ?Config $instance = null;\n    private function __construct() {}\n    public static function getInstance(): Config {\n        return self::$instance ??= new Config();\n    }\n}'
+  },
+  {
+    pat:'Strategy', lang:'Python',
+    task:'Viết Context giữ một strategy và gọi nó (có thể đổi lúc chạy).',
+    starter:'class Checkout:\n    def __init__(self, strategy):\n        self.strategy = strategy\n    # viết method process(...)\n',
+    must:[
+      {re:/self\.\w*strateg/i, l:'Lưu strategy trong context (self.strategy)'},
+      {re:/def\s+\w+\(self/i, l:'Có method nhận self'},
+      {re:/\w*strateg\w*\(/i, l:'Gọi strategy(...) để thực thi'},
+    ],
+    sol:'class Checkout:\n    def __init__(self, strategy):\n        self.strategy = strategy\n    def process(self, amount):\n        return self.strategy(amount)   # gọi strategy đang cắm'
+  },
+  {
+    pat:'Observer', lang:'Python',
+    task:'Viết Subject có subscribe() và notify() báo cho mọi observer.',
+    starter:'class Subject:\n    def __init__(self):\n        self._observers = []\n    # subscribe() + notify()\n',
+    must:[
+      {re:/def\s+subscribe|append/i, l:'Đăng ký observer vào danh sách'},
+      {re:/def\s+notify/i, l:'Có method notify()'},
+      {re:/for\s+\w+\s+in/i, l:'Lặp qua danh sách gọi từng observer'},
+    ],
+    sol:'class Subject:\n    def __init__(self):\n        self._observers = []\n    def subscribe(self, fn):\n        self._observers.append(fn)\n    def notify(self, ev):\n        for o in self._observers:\n            o(ev)'
+  },
+  {
+    pat:'Factory Method', lang:'PHP',
+    task:'Viết ShapeFactory::create($type) trả về Shape tuỳ loại.',
+    starter:'<?php\nclass ShapeFactory {\n    // public static function create(...) { ... }\n}\n',
+    must:[
+      {re:/function\s+create/i, l:'Có method create()'},
+      {re:/\bnew\s+\w/i, l:'Tạo (new) lớp cụ thể bên trong'},
+      {re:/match|switch|if/i, l:'Chọn lớp theo "type" (match/switch/if)'},
+    ],
+    sol:'<?php\nclass ShapeFactory {\n    public static function create(string $type): Shape {\n        return match($type) {\n            "circle" => new Circle(),\n            "square" => new Square(),\n        };\n    }\n}'
+  },
+  {
+    pat:'Builder', lang:'Python',
+    task:'Viết PizzaBuilder fluent: set_size()/add() trả self, build() trả sản phẩm.',
+    starter:'class PizzaBuilder:\n    def __init__(self):\n        self.size, self.toppings = "M", []\n    # set_size, add, build\n',
+    must:[
+      {re:/return\s+self/i, l:'Method trả về self để nối chuỗi (fluent)'},
+      {re:/def\s+build/i, l:'Có method build() trả sản phẩm'},
+    ],
+    sol:'class PizzaBuilder:\n    def __init__(self):\n        self.size, self.toppings = "M", []\n    def set_size(self, s):\n        self.size = s; return self\n    def add(self, t):\n        self.toppings.append(t); return self\n    def build(self):\n        return Pizza(self.size, self.toppings)'
+  },
+  {
+    pat:'Decorator', lang:'Python',
+    task:'Viết WithMilk bọc một Coffee (giữ inner) và cộng thêm chi phí.',
+    starter:'class WithMilk:\n    def __init__(self, inner):\n        self._inner = inner\n    # def cost(self): ...\n',
+    must:[
+      {re:/inner/i, l:'Giữ tham chiếu tới đối tượng bị bọc (inner)'},
+      {re:/inner\.\w+/i, l:'Gọi method của đối tượng inner'},
+      {re:/\+|wrap|append/i, l:'Thêm hành vi (vd cộng thêm)'},
+    ],
+    sol:'class WithMilk:\n    def __init__(self, inner):\n        self._inner = inner\n    def cost(self):\n        return self._inner.cost() + 5   # gọi inner rồi thêm'
+  },
+  {
+    pat:'Command', lang:'Python',
+    task:'Viết một Command có execute() và undo().',
+    starter:'class AddText:\n    def __init__(self, editor, text):\n        self.editor, self.text = editor, text\n    # execute() + undo()\n',
+    must:[
+      {re:/def\s+execute/i, l:'Có method execute()'},
+      {re:/def\s+undo/i, l:'Có method undo() để hoàn tác'},
+    ],
+    sol:'class AddText:\n    def __init__(self, editor, text):\n        self.editor, self.text = editor, text\n    def execute(self):\n        self.editor.append(self.text)\n    def undo(self):\n        self.editor.remove_last(self.text)'
+  },
+  {
+    pat:'Chain of Responsibility', lang:'Python',
+    task:'Viết Handler giữ next và đẩy tiếp khi không tự xử lý được.',
+    starter:'class Handler:\n    def __init__(self):\n        self._next = None\n    # set_next() + handle()\n',
+    must:[
+      {re:/next/i, l:'Giữ tham chiếu tới handler kế tiếp (next)'},
+      {re:/def\s+handle/i, l:'Có method handle()'},
+      {re:/\.handle\(/i, l:'Đẩy tiếp bằng next.handle(...)'},
+    ],
+    sol:'class Handler:\n    def __init__(self):\n        self._next = None\n    def set_next(self, h):\n        self._next = h; return h\n    def handle(self, req):\n        if not self.process(req) and self._next:\n            self._next.handle(req)'
+  },
+  {
+    pat:'State', lang:'Python',
+    task:'Viết lớp trạng thái Draft tự chuyển context sang Published.',
+    starter:'class Draft:\n    # def next(self, doc): ...\n    name = "draft"\n',
+    must:[
+      {re:/def\s+next/i, l:'Mỗi state có method next()'},
+      {re:/\.state\s*=|set_?state/i, l:'State tự chuyển context sang trạng thái khác'},
+    ],
+    sol:'class Draft:\n    name = "draft"\n    def next(self, doc):\n        doc.state = Published()   # state TỰ chuyển tiếp'
+  },
+];
+let codeCur=null, codeSolved=0; const codeDone=new Set();
+function codeNew(){
+  codeCur = CHALLENGES[Math.floor(Math.random()*CHALLENGES.length)];
+  document.getElementById('codeProg').innerHTML =
+    'Đề ngẫu nhiên · Pattern: <b style="color:var(--primary-glow)">'+esc(codeCur.pat)+'</b> · Gợi ý ngôn ngữ: <b>'+esc(codeCur.lang)+'</b>';
+  document.getElementById('codeTask').innerHTML =
+    '<div class="qask">✍️ '+esc(codeCur.task)+'</div>'
+    + '<details class="answer"><summary>Đáp án mẫu</summary><div class="body"><pre style="white-space:pre;overflow-x:auto;font-size:12.5px;color:var(--code-green);margin:0">'+esc(codeCur.sol)+'</pre></div></details>';
+  document.getElementById('codePad').value = codeCur.starter;
+  const res = document.getElementById('codeResult');
+  res.classList.remove('show'); res.innerHTML = '';
+}
+function codeCheck(){
+  if(!codeCur) return;
+  const code = document.getElementById('codePad').value;
+  let all=true, rows='';
+  codeCur.must.forEach(m=>{
+    const ok = m.re.test(code);
+    if(!ok) all=false;
+    rows += '<div class="chk-row" style="color:'+(ok?'var(--ok)':'var(--danger)')+'">'+(ok?'✓':'✗')+' '+esc(m.l)+'</div>';
+  });
+  const res = document.getElementById('codeResult');
+  res.classList.add('show');
+  res.innerHTML = '<div class="verdict" style="color:'+(all?'var(--ok)':'var(--danger)')+'">'
+    + (all ? '🎉 Đạt! Code có đủ dấu hiệu của '+esc(codeCur.pat)+'.' : '❌ Còn thiếu dấu hiệu — xem danh sách:')
+    + '</div><div class="explain">'+rows+'</div>';
+  if(all){
+    const key = codeCur.pat+'|'+codeCur.lang;
+    if(!codeDone.has(key)){ codeDone.add(key); codeSolved++; document.getElementById('codeScore').textContent = 'Đã đạt: '+codeSolved+' đề'; }
+  }
+}
+
+window.addEventListener('load', ()=>{ signNew(); codeNew(); });
+</script>
+</body>
+</html>
