@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học Hugging Face — Transformers, Datasets &amp; Hub Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #FFD21E;        /* HF yellow */
+    --primary-glow: #ffe066;
+    --accent: #FF9D00;         /* orange */
+    --accent-2: #ffb84d;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #1a1606; --darker: #0e0b03;
+    --light: #e8dfc4; --light-strong: #fffbe8; --gray: #b3a578;
+    --card: #1f1a0c; --card-2: #2a2312; --border: #44391c; --terminal: #120e04;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #948663;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(255,210,30,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(255,157,0,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #080601 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(255,210,30,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(255,210,30,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,210,30,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#1a1606; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(255,210,30,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(14,11,3,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(255,210,30,.16), rgba(255,157,0,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🤗"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(255,210,30,.08); border-color: rgba(255,210,30,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(255,210,30,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#1a1500; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(255,210,30,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:8px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .builder input { width:200px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#1a1500; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🤗</div>
+      <h1>Hugging Face</h1>
+      <div class="sub">TRANSFORMERS · DATASETS · HUB</div>
+      <div class="pat">from transformers import ...</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> Hệ sinh thái HF &amp; cài đặt</a></li>
+      <li><a href="#c2"><span class="cn">2</span> pipeline() — suy luận 1 dòng</a></li>
+      <li><a href="#c3"><span class="cn">3</span> The Hub &amp; from_pretrained</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Lõi transformers</li>
+      <li><a href="#c4"><span class="cn">4</span> Tokenizer</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Model &amp; AutoModel</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Thư viện Datasets</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Suy luận đúng cách</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Fine-tuning</li>
+      <li><a href="#c8"><span class="cn">8</span> Trainer &amp; TrainingArguments</a></li>
+      <li><a href="#c9"><span class="cn">9</span> Data collator &amp; metrics</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Fine-tune phân loại</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Push to Hub &amp; model card</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Sinh văn bản (generate)</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Nâng cao</li>
+      <li><a href="#c13"><span class="cn">13</span> Accelerate</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Lượng tử hóa (bitsandbytes)</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Spaces &amp; triển khai</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án thực chiến</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> Pipeline Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🤗 Khóa học · <b id="crumb">Hugging Face</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">Hugging Face</span> — transformers, datasets &amp; the Hub</h1>
+        <p>16 chương theo 4 cấp độ. Hugging Face là "GitHub của AI": hàng triệu model &amp; dataset mở + thư viện <code class="ic">transformers</code> để tải, suy luận &amp; fine-tune chỉ vài dòng. Mỗi chương có code chạy được, <strong>bài tập tự chấm</strong>, quiz, flashcard. Đi từ <code class="ic">pipeline()</code> 1 dòng → tokenizer/model → <code class="ic">Trainer</code> fine-tune → lượng tử hóa → đưa lên Hub.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>Pipeline Builder</b></span>
+          <span class="meta-pill">🐍 transformers <b>4.x</b></span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Cài <code class="ic">pip install transformers datasets accelerate</code> (thêm <code class="ic">torch</code>). Model &amp; dataset tải tự động từ Hub. Nhiều model cần đăng nhập (<code class="ic">huggingface-cli login</code>) hoặc xin quyền (vd Llama). Bài tập <b>tự chấm offline</b> bằng cách kiểm tra "dấu hiệu" trong code bạn gõ.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> Hệ sinh thái HF &amp; cài đặt</h2>
+        <div class="ch-sub">"GitHub của Machine Learning".</div>
+
+        <p>Hugging Face là nền tảng &amp; bộ thư viện mã nguồn mở giúp dùng lại các model AI tiên tiến. Trung tâm là <strong>the Hub</strong> — kho hàng triệu model, dataset &amp; demo (Spaces) — cùng các thư viện Python để tải &amp; chạy chúng.</p>
+
+        <table>
+          <tr><th>Thư viện</th><th>Vai trò</th></tr>
+          <tr><td><code class="ic">transformers</code></td><td>Tải &amp; chạy model (NLP, vision, audio, multimodal)</td></tr>
+          <tr><td><code class="ic">datasets</code></td><td>Tải &amp; xử lý dữ liệu hiệu quả (streaming, memory-map)</td></tr>
+          <tr><td><code class="ic">tokenizers</code></td><td>Tokenizer nhanh (Rust)</td></tr>
+          <tr><td><code class="ic">accelerate</code></td><td>Chạy đa GPU/mixed precision dễ dàng</td></tr>
+          <tr><td><code class="ic">peft</code></td><td>Fine-tune tiết kiệm (LoRA/QLoRA)</td></tr>
+          <tr><td><code class="ic">huggingface_hub</code></td><td>Tải lên/xuống model, dataset</td></tr>
+        </table>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. "The Hub" của Hugging Face là gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Kho model, dataset &amp; demo mở</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Một GPU đám mây</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Trình biên dịch Python</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Một mô hình ngôn ngữ</button>
+            </div>
+            <div class="qexp">✅ Hub là nơi chia sẻ model/dataset/Spaces — tải về bằng <code>from_pretrained</code>.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> pipeline() — suy luận 1 dòng</h2>
+        <div class="ch-sub">Cách nhanh nhất để chạy một model AI.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+
+clf = pipeline(<span class="st">"sentiment-analysis"</span>)        <span class="cm"># tự tải model mặc định</span>
+clf(<span class="st">"Khóa học này tuyệt vời!"</span>)
+<span class="cm"># [{'label': 'POSITIVE', 'score': 0.99}]</span>
+
+gen = pipeline(<span class="st">"text-generation"</span>, model=<span class="st">"gpt2"</span>)
+qa  = pipeline(<span class="st">"question-answering"</span>)
+asr = pipeline(<span class="st">"automatic-speech-recognition"</span>)   <span class="cm"># âm thanh → chữ</span></pre></div>
+        <div class="box info"><span class="bt">pipeline = tokenizer + model + hậu xử lý</span> Một lệnh lo trọn: tiền xử lý input, chạy model, giải mã output. Có cho mọi tác vụ: phân loại, NER, tóm tắt, dịch, sinh ảnh-văn bản, ASR... Chỉ định <code class="ic">model="..."</code> để chọn model cụ thể từ Hub.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Tạo pipeline</div>
+          <div class="etask">Tạo <code>pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")</code> rồi gọi nó với một câu.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">from transformers import pipeline
+
+clf =
+print(clf("I love this!"))</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">clf = pipeline("text-classification",
+               model="distilbert-base-uncased-finetuned-sst-2-english")</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> The Hub &amp; from_pretrained</h2>
+        <div class="ch-sub">Tải bất kỳ model nào về máy bạn.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> AutoTokenizer, AutoModel
+
+name = <span class="st">"bert-base-uncased"</span>
+tokenizer = AutoTokenizer.from_pretrained(name)
+model = AutoModel.from_pretrained(name)        <span class="cm"># tải &amp; cache trọng số</span>
+
+<span class="cm"># Cache mặc định ~/.cache/huggingface ; dùng lại ở lần sau</span></pre></div>
+        <div class="box tip"><span class="bt">Quy ước "Auto"</span> Các lớp <code class="ic">AutoTokenizer</code>/<code class="ic">AutoModel</code> tự nhận diện kiến trúc đúng từ tên model — bạn không cần biết model đó là BERT, GPT hay T5. <code class="ic">from_pretrained</code> tải từ Hub (hoặc đường dẫn local).</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tải model &amp; tokenizer</div>
+          <div class="etask">Tải <code>AutoTokenizer</code> và <code>AutoModel</code> từ <code>"distilbert-base-uncased"</code> bằng <code>from_pretrained</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">from transformers import AutoTokenizer, AutoModel
+
+tokenizer =
+model = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+model = AutoModel.from_pretrained("distilbert-base-uncased")</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Lõi transformers</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Tokenizer</h2>
+        <div class="ch-sub">Văn bản → số (token id) mà model hiểu.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">enc = tokenizer(<span class="st">"Hello world"</span>, return_tensors=<span class="st">"pt"</span>)
+print(enc[<span class="st">"input_ids"</span>])        <span class="cm"># tensor các token id</span>
+print(tokenizer.decode(enc[<span class="st">"input_ids"</span>][0]))   <span class="cm"># giải mã ngược</span>
+
+<span class="cm"># Theo lô: padding để cùng độ dài, truncation để cắt câu dài</span>
+batch = tokenizer([<span class="st">"câu 1"</span>, <span class="st">"câu dài hơn..."</span>],
+                  padding=<span class="kw">True</span>, truncation=<span class="kw">True</span>, return_tensors=<span class="st">"pt"</span>)</pre></div>
+        <div class="box info"><span class="bt">Subword tokenization</span> Tokenizer cắt từ thành "mảnh" (subword) để xử lý từ lạ. Trả về <code class="ic">input_ids</code> (số) + <code class="ic">attention_mask</code> (1=token thật, 0=padding). <code class="ic">return_tensors="pt"</code> cho PyTorch tensor.</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Token hóa theo lô</div>
+          <div class="etask">Gọi <code>tokenizer(texts, padding=True, truncation=True, return_tensors="pt")</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">texts = ["Xin chào", "Một câu dài hơn để minh hoạ"]
+enc = tokenizer(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">enc = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Model &amp; AutoModel</h2>
+        <div class="ch-sub">Chọn đúng "đầu" model cho tác vụ.</div>
+
+        <table>
+          <tr><th>Lớp</th><th>Dùng cho</th></tr>
+          <tr><td><code class="ic">AutoModel</code></td><td>Lấy embedding/hidden states thô</td></tr>
+          <tr><td><code class="ic">AutoModelForSequenceClassification</code></td><td>Phân loại câu</td></tr>
+          <tr><td><code class="ic">AutoModelForTokenClassification</code></td><td>NER, gán nhãn token</td></tr>
+          <tr><td><code class="ic">AutoModelForCausalLM</code></td><td>Sinh văn bản (GPT, Llama)</td></tr>
+          <tr><td><code class="ic">AutoModelForSeq2SeqLM</code></td><td>Dịch, tóm tắt (T5, BART)</td></tr>
+        </table>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForSequenceClassification
+<span class="kw">import</span> torch
+
+model = AutoModelForSequenceClassification.from_pretrained(name, num_labels=2)
+<span class="kw">with</span> torch.no_grad():
+    logits = model(**enc).logits      <span class="cm"># điểm thô từng lớp</span>
+probs = logits.softmax(dim=-1)        <span class="cm"># → xác suất</span></pre></div>
+        <div class="box warn"><span class="bt">logits ≠ xác suất</span> Model trả <code class="ic">logits</code> (số thực, chưa chuẩn hóa). Áp <code class="ic">softmax</code> để ra xác suất, <code class="ic">argmax</code> để ra nhãn dự đoán.</div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Thư viện Datasets</h2>
+        <div class="ch-sub">Nạp &amp; xử lý dữ liệu ở quy mô lớn.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> datasets <span class="kw">import</span> load_dataset
+
+ds = load_dataset(<span class="st">"imdb"</span>)            <span class="cm"># tải từ Hub → DatasetDict(train/test)</span>
+ds[<span class="st">"train"</span>][0]                       <span class="cm"># {'text': ..., 'label': 1}</span>
+
+<span class="kw">def</span> <span class="fn">tok</span>(batch): <span class="kw">return</span> tokenizer(batch[<span class="st">"text"</span>], truncation=<span class="kw">True</span>)
+ds_tok = ds.map(tok, batched=<span class="kw">True</span>)    <span class="cm"># áp tokenizer cho cả dataset</span></pre></div>
+        <div class="box tip"><span class="bt">map(batched=True)</span> Xử lý theo lô, song song, memory-mapped (không nạp hết vào RAM) → cực nhanh với dữ liệu lớn. Dùng <code class="ic">streaming=True</code> để duyệt dataset khổng lồ mà không tải hết.</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Nạp &amp; token hóa dataset</div>
+          <div class="etask">Tải <code>load_dataset("imdb")</code> rồi áp tokenizer bằng <code>ds.map(tok, batched=True)</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">from datasets import load_dataset
+
+ds =
+def tok(b): return tokenizer(b["text"], truncation=True)
+ds_tok = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">ds = load_dataset("imdb")
+ds_tok = ds.map(tok, batched=True)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Suy luận đúng cách</h2>
+        <div class="ch-sub">Nhanh, đúng device, không rò bộ nhớ.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">device = <span class="st">"cuda"</span> <span class="kw">if</span> torch.cuda.is_available() <span class="kw">else</span> <span class="st">"cpu"</span>
+model.to(device).eval()                       <span class="cm"># chế độ suy luận</span>
+enc = {k: v.to(device) <span class="kw">for</span> k, v <span class="kw">in</span> enc.items()}
+<span class="kw">with</span> torch.no_grad():
+    out = model(**enc)
+pred = out.logits.argmax(-1)                  <span class="cm"># nhãn dự đoán</span></pre></div>
+        <div class="box danger"><span class="bt">3 thứ luôn nhớ khi suy luận</span> <code class="ic">.eval()</code> (tắt dropout), <code class="ic">torch.no_grad()</code> (không tính grad → nhanh, ít RAM), và đưa cả model lẫn input về <em>cùng device</em>.</div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Fine-tuning</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Trainer &amp; TrainingArguments</h2>
+        <div class="ch-sub">Vòng lặp huấn luyện "pin sẵn" của HF.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> TrainingArguments, Trainer
+
+args = TrainingArguments(
+    output_dir=<span class="st">"out"</span>, learning_rate=2e-5,
+    per_device_train_batch_size=16, num_train_epochs=3,
+    eval_strategy=<span class="st">"epoch"</span>, save_strategy=<span class="st">"epoch"</span>,
+)
+trainer = Trainer(model=model, args=args,
+    train_dataset=ds_tok[<span class="st">"train"</span>], eval_dataset=ds_tok[<span class="st">"test"</span>],
+    tokenizer=tokenizer)
+trainer.train()</pre></div>
+        <div class="box info"><span class="bt">Trainer lo hết</span> Vòng lặp, backward, optimizer, scheduler, logging, lưu checkpoint, đánh giá, đa GPU — không cần tự viết. Tùy biến qua <code class="ic">TrainingArguments</code> (hàng trăm tham số) hoặc override method của Trainer.</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Cấu hình huấn luyện</div>
+          <div class="etask">Tạo <code>TrainingArguments(output_dir="out", num_train_epochs=3, per_device_train_batch_size=16)</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">from transformers import TrainingArguments
+
+args = TrainingArguments(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">args = TrainingArguments(output_dir="out", num_train_epochs=3,
+                         per_device_train_batch_size=16)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Data collator &amp; metrics</h2>
+        <div class="ch-sub">Gộp lô động &amp; đo chất lượng.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> DataCollatorWithPadding
+<span class="kw">import</span> evaluate, numpy <span class="kw">as</span> np
+
+collator = DataCollatorWithPadding(tokenizer)   <span class="cm"># padding theo lô (hiệu quả hơn)</span>
+acc = evaluate.load(<span class="st">"accuracy"</span>)
+<span class="kw">def</span> <span class="fn">compute_metrics</span>(p):
+    preds = np.argmax(p.predictions, axis=-1)
+    <span class="kw">return</span> acc.compute(predictions=preds, references=p.label_ids)</pre></div>
+        <div class="box tip"><span class="bt">Dynamic padding</span> <code class="ic">DataCollatorWithPadding</code> chỉ pad đến câu dài nhất <em>trong từng lô</em> (thay vì pad toàn bộ đến max) → nhanh hơn nhiều. Truyền <code class="ic">data_collator</code> &amp; <code class="ic">compute_metrics</code> vào Trainer.</div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Fine-tune phân loại (end-to-end)</h2>
+        <div class="ch-sub">Ghép mọi mảnh thành một quy trình hoàn chỉnh.</div>
+
+        <ol>
+          <li><strong>Dữ liệu:</strong> <code class="ic">load_dataset</code> → <code class="ic">map(tok, batched=True)</code>.</li>
+          <li><strong>Model:</strong> <code class="ic">AutoModelForSequenceClassification(..., num_labels=N)</code>.</li>
+          <li><strong>Cấu hình:</strong> <code class="ic">TrainingArguments</code> + <code class="ic">DataCollatorWithPadding</code> + <code class="ic">compute_metrics</code>.</li>
+          <li><strong>Huấn luyện:</strong> <code class="ic">Trainer(...).train()</code>.</li>
+          <li><strong>Đánh giá:</strong> <code class="ic">trainer.evaluate()</code>.</li>
+        </ol>
+        <div class="box pro"><span class="bt">Mẹo</span> Bắt đầu với model nhỏ (<code class="ic">distilbert</code>) &amp; tập con dữ liệu để chạy thử nhanh, rồi mới mở rộng. Đặt <code class="ic">fp16=True</code> (hoặc <code class="ic">bf16=True</code>) trong TrainingArguments để train nhanh hơn trên GPU.</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — Ráp Trainer</div>
+          <div class="etask">Tạo <code>Trainer(model=model, args=args, train_dataset=ds_tok["train"], eval_dataset=ds_tok["test"])</code> rồi <code>.train()</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">from transformers import Trainer
+
+trainer = Trainer(
+)
+trainer.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">trainer = Trainer(model=model, args=args,
+    train_dataset=ds_tok["train"], eval_dataset=ds_tok["test"])
+trainer.train()</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Push to Hub &amp; model card</h2>
+        <div class="ch-sub">Chia sẻ model của bạn cho thế giới.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Đăng nhập: huggingface-cli login</span>
+model.push_to_hub(<span class="st">"ten-cua-ban/model-cua-toi"</span>)
+tokenizer.push_to_hub(<span class="st">"ten-cua-ban/model-cua-toi"</span>)
+<span class="cm"># Hoặc đặt push_to_hub=True trong TrainingArguments để tự đẩy khi train</span></pre></div>
+        <div class="box info"><span class="bt">Model card (README.md)</span> Mô tả model: dữ liệu, cách dùng, giới hạn, license. Là chuẩn mực minh bạch của cộng đồng — luôn viết khi chia sẻ. Repo trên Hub dùng git + git-lfs cho file trọng số lớn.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Sinh văn bản (generate)</h2>
+        <div class="ch-sub">Điều khiển cách LLM tạo chữ.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM
+lm = AutoModelForCausalLM.from_pretrained(<span class="st">"gpt2"</span>)
+ids = tokenizer(<span class="st">"Once upon a time"</span>, return_tensors=<span class="st">"pt"</span>).input_ids
+out = lm.generate(ids, max_new_tokens=50, do_sample=<span class="kw">True</span>,
+                  temperature=0.8, top_p=0.95)
+print(tokenizer.decode(out[0], skip_special_tokens=<span class="kw">True</span>))</pre></div>
+        <table>
+          <tr><th>Tham số</th><th>Tác dụng</th></tr>
+          <tr><td><code class="ic">max_new_tokens</code></td><td>Độ dài sinh thêm</td></tr>
+          <tr><td><code class="ic">do_sample=True</code></td><td>Lấy mẫu ngẫu nhiên (sáng tạo) vs greedy</td></tr>
+          <tr><td><code class="ic">temperature</code></td><td>Cao = ngẫu nhiên/sáng tạo hơn</td></tr>
+          <tr><td><code class="ic">top_p</code> / <code class="ic">top_k</code></td><td>Giới hạn tập token được chọn</td></tr>
+        </table>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Nâng cao &amp; triển khai</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Accelerate</h2>
+        <div class="ch-sub">Đa GPU &amp; mixed precision không cần viết lại code.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> accelerate <span class="kw">import</span> Accelerator
+accelerator = Accelerator()
+model, optimizer, dataloader = accelerator.prepare(model, optimizer, dataloader)
+<span class="kw">for</span> batch <span class="kw">in</span> dataloader:
+    loss = model(**batch).loss
+    accelerator.backward(loss)     <span class="cm"># thay loss.backward()</span>
+    optimizer.step(); optimizer.zero_grad()
+<span class="cm"># Chạy: accelerate launch train.py (tự lo đa GPU/TPU/mixed precision)</span></pre></div>
+        <div class="box info"><span class="bt">Accelerate</span> Viết vòng lặp PyTorch <em>một lần</em>, chạy được trên CPU, 1 GPU, đa GPU, TPU mà gần như không đổi code. Trainer dùng Accelerate bên dưới.</div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Lượng tử hóa (bitsandbytes)</h2>
+        <div class="ch-sub">Nhét model lớn vào GPU nhỏ.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · tải model 4-bit</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM, BitsAndBytesConfig
+<span class="kw">import</span> torch
+
+bnb = BitsAndBytesConfig(load_in_4bit=<span class="kw">True</span>,
+        bnb_4bit_quant_type=<span class="st">"nf4"</span>, bnb_4bit_compute_dtype=torch.bfloat16)
+model = AutoModelForCausalLM.from_pretrained(
+        <span class="st">"mistralai/Mistral-7B-v0.1"</span>, quantization_config=bnb, device_map=<span class="st">"auto"</span>)</pre></div>
+        <div class="box pro"><span class="bt">4-bit = chạy 7B trên ~6GB VRAM</span> Lượng tử hóa nén trọng số (float16 → 4-bit) giúp model khổng lồ vừa GPU phổ thông, đổi lại sai số nhỏ. Đây chính là nền của <strong>QLoRA</strong> — fine-tune model lớn trên 1 GPU (xem khóa <a href="khoa-hoc-peft-lora.html" style="color:var(--primary-glow)">PEFT &amp; LoRA</a>).</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Spaces &amp; triển khai</h2>
+        <div class="ch-sub">Từ model → demo/web/API.</div>
+
+        <table>
+          <tr><th>Cách</th><th>Dùng khi</th></tr>
+          <tr><td><strong>Spaces</strong> (Gradio/Streamlit)</td><td>Demo tương tác miễn phí, chia sẻ link</td></tr>
+          <tr><td><strong>Inference Endpoints</strong></td><td>API production có autoscale</td></tr>
+          <tr><td><strong>Serverless Inference API</strong></td><td>Thử nhanh model qua HTTP</td></tr>
+          <tr><td><code class="ic">optimum</code> + ONNX/TensorRT</td><td>Tối ưu tốc độ suy luận</td></tr>
+        </table>
+        <div class="code-block"><div class="cbhead"><span>python · Gradio demo</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> gradio <span class="kw">as</span> gr
+gr.Interface(fn=<span class="kw">lambda</span> t: clf(t), inputs=<span class="st">"text"</span>, outputs=<span class="st">"label"</span>).launch()</pre></div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án thực chiến</h2>
+        <div class="ch-sub">Phân loại review tiếng Việt end-to-end + đưa lên Hub.</div>
+
+        <ol>
+          <li><strong>Dữ liệu:</strong> <code class="ic">load_dataset</code> (hoặc CSV của bạn) → <code class="ic">map</code> tokenize.</li>
+          <li><strong>Model:</strong> <code class="ic">AutoModelForSequenceClassification</code> từ một checkpoint đa ngữ (vd <code class="ic">xlm-roberta-base</code>).</li>
+          <li><strong>Train:</strong> <code class="ic">Trainer</code> + metrics (accuracy/F1) + <code class="ic">fp16</code>.</li>
+          <li><strong>Đánh giá:</strong> confusion matrix, lỗi điển hình.</li>
+          <li><strong>Chia sẻ:</strong> <code class="ic">push_to_hub</code> + model card + Gradio Space.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — Đẩy model lên Hub</div>
+          <div class="etask">Đẩy model &amp; tokenizer: <code>model.push_to_hub("me/my-model")</code> và <code>tokenizer.push_to_hub("me/my-model")</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false"># sau huggingface-cli login
+model.push_to_hub(
+tokenizer.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model.push_to_hub("me/my-model")
+tokenizer.push_to_hub("me/my-model")</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã nắm trọn vòng đời: tải → suy luận → fine-tune → chia sẻ. Bước tiếp: học <a href="khoa-hoc-peft-lora.html" style="color:var(--primary-glow)">PEFT &amp; LoRA</a> để fine-tune model lớn rẻ &amp; nhanh, và ôn nền tảng ở <a href="khoa-hoc-pytorch.html" style="color:var(--primary-glow)">PyTorch</a>.</div>
+      </section>
+
+      <!-- ============ BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> Pipeline Builder</h2>
+        <div class="ch-sub">Chọn tác vụ → sinh code <code>pipeline()</code> hoặc <code>AutoModel</code>.</div>
+        <div class="builder">
+          <div class="bh">🔧 Sinh code nhanh</div>
+          <div class="brow">
+            <select id="bTask">
+              <option value="sentiment-analysis">sentiment-analysis</option>
+              <option value="text-classification">text-classification</option>
+              <option value="ner|token-classification">ner (token-classification)</option>
+              <option value="question-answering">question-answering</option>
+              <option value="summarization">summarization</option>
+              <option value="translation">translation</option>
+              <option value="text-generation">text-generation</option>
+              <option value="zero-shot-classification">zero-shot-classification</option>
+              <option value="automatic-speech-recognition">automatic-speech-recognition</option>
+              <option value="image-classification">image-classification</option>
+            </select>
+            <input id="bModel" type="text" placeholder="model (tuỳ chọn, vd gpt2)">
+          </div>
+          <div class="out" id="builderOut"></div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Tải &amp; chạy</div>
+            <table style="margin:0"><tr><td><code class="ic">pipeline("task")</code></td><td>Suy luận 1 dòng</td></tr>
+            <tr><td><code class="ic">AutoTokenizer.from_pretrained</code></td><td>Tokenizer</td></tr>
+            <tr><td><code class="ic">AutoModelFor*.from_pretrained</code></td><td>Model theo tác vụ</td></tr>
+            <tr><td><code class="ic">.generate(...)</code></td><td>Sinh văn bản</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Dữ liệu &amp; train</div>
+            <table style="margin:0"><tr><td><code class="ic">load_dataset</code></td><td>Tải data</td></tr>
+            <tr><td><code class="ic">ds.map(batched=True)</code></td><td>Token hóa</td></tr>
+            <tr><td><code class="ic">TrainingArguments</code></td><td>Cấu hình</td></tr>
+            <tr><td><code class="ic">Trainer(...).train()</code></td><td>Huấn luyện</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Quy mô &amp; chia sẻ</div>
+            <table style="margin:0"><tr><td><code class="ic">Accelerator</code></td><td>Đa GPU</td></tr>
+            <tr><td><code class="ic">BitsAndBytesConfig</code></td><td>4-bit/8-bit</td></tr>
+            <tr><td><code class="ic">push_to_hub</code></td><td>Đăng Hub</td></tr>
+            <tr><td>Spaces / Endpoints</td><td>Demo / API</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🤗 <strong>Khóa Học Hugging Face</strong> — một phần của <a href="../index.html">Mega Study</a>. Code cho transformers 4.x.<br>
+        Học kèm <a href="khoa-hoc-peft-lora.html">PEFT &amp; LoRA</a> (fine-tune rẻ) &amp; <a href="khoa-hoc-pytorch.html">PyTorch</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/pipeline\s*\(\s*["'](text-classification|sentiment-analysis)["']/, label:'pipeline("text-classification", ...)'},
+    {re:/model\s*=\s*["']distilbert-base-uncased-finetuned-sst-2-english["']/, label:"model=distilbert...sst-2"},
+  ],
+  ex2: [
+    {re:/AutoTokenizer\.from_pretrained\s*\(\s*["']distilbert-base-uncased["']/, label:"AutoTokenizer.from_pretrained(...)"},
+    {re:/AutoModel\.from_pretrained\s*\(\s*["']distilbert-base-uncased["']/, label:"AutoModel.from_pretrained(...)"},
+  ],
+  ex3: [
+    {re:/tokenizer\s*\(\s*texts/, label:"tokenizer(texts, ...)"},
+    {re:/padding\s*=\s*True/, label:"padding=True"},
+    {re:/truncation\s*=\s*True/, label:"truncation=True"},
+    {re:/return_tensors\s*=\s*["']pt["']/, label:'return_tensors="pt"'},
+  ],
+  ex4: [
+    {re:/load_dataset\s*\(\s*["']imdb["']/, label:'load_dataset("imdb")'},
+    {re:/ds\.map\s*\(\s*tok\s*,\s*batched\s*=\s*True/, label:"ds.map(tok, batched=True)"},
+  ],
+  ex5: [
+    {re:/TrainingArguments\s*\(/, label:"TrainingArguments(...)"},
+    {re:/output_dir\s*=\s*["']out["']/, label:'output_dir="out"'},
+    {re:/num_train_epochs\s*=\s*3/, label:"num_train_epochs=3"},
+    {re:/per_device_train_batch_size\s*=\s*16/, label:"per_device_train_batch_size=16"},
+  ],
+  ex6: [
+    {re:/Trainer\s*\(/, label:"Trainer(...)"},
+    {re:/model\s*=\s*model/, label:"model=model"},
+    {re:/train_dataset\s*=\s*ds_tok\s*\[\s*["']train["']/, label:'train_dataset=ds_tok["train"]'},
+    {re:/\.train\s*\(\s*\)/, label:"trainer.train()"},
+  ],
+  ex7: [
+    {re:/model\.push_to_hub\s*\(\s*["']me\/my-model["']/, label:'model.push_to_hub("me/my-model")'},
+    {re:/tokenizer\.push_to_hub\s*\(\s*["']me\/my-model["']/, label:'tokenizer.push_to_hub("me/my-model")'},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"The Hub là gì?", a:"Kho hàng triệu model, dataset & demo (Spaces) mở — tải bằng from_pretrained."},
+  {q:"pipeline() làm gì?", a:"Gói tokenizer + model + hậu xử lý → suy luận 1 dòng cho mọi tác vụ."},
+  {q:"Quy ước Auto*?", a:"AutoTokenizer/AutoModel tự nhận kiến trúc đúng từ tên model."},
+  {q:"Tokenizer trả về gì?", a:"input_ids (số) + attention_mask (1=token thật, 0=padding)."},
+  {q:"AutoModelForCausalLM vs Seq2SeqLM?", a:"CausalLM: sinh văn bản (GPT/Llama); Seq2Seq: dịch/tóm tắt (T5/BART)."},
+  {q:"logits là gì?", a:"Điểm thô chưa chuẩn hóa; softmax → xác suất, argmax → nhãn."},
+  {q:"map(batched=True) lợi gì?", a:"Xử lý theo lô, song song, memory-mapped → nhanh với data lớn."},
+  {q:"Trainer lo gì?", a:"Vòng lặp, backward, optimizer, scheduler, logging, checkpoint, eval, đa GPU."},
+  {q:"Dynamic padding?", a:"DataCollatorWithPadding pad đến câu dài nhất trong mỗi lô → nhanh hơn."},
+  {q:"Accelerate dùng để?", a:"Viết loop 1 lần, chạy CPU/đa GPU/TPU + mixed precision không đổi code."},
+  {q:"Lượng tử hóa 4-bit?", a:"Nén trọng số (BitsAndBytesConfig) → model 7B vừa GPU ~6GB. Nền của QLoRA."},
+  {q:"3 thứ khi suy luận?", a:".eval(), torch.no_grad(), model & input cùng device."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== PIPELINE BUILDER ===== */
+function renderBuilder(){
+  const raw = document.getElementById('bTask').value;
+  const task = raw.split('|')[0];
+  const model = document.getElementById('bModel').value.trim();
+  const modelArg = model ? `, model="${model}"` : '';
+  document.getElementById('builderOut').textContent =
+    'from transformers import pipeline\n\n'
+    + `pipe = pipeline("${task}"${modelArg})\n`
+    + `result = pipe("nhập input của bạn ở đây")\n`
+    + 'print(result)';
+}
+document.getElementById('bTask').addEventListener('change', renderBuilder);
+document.getElementById('bModel').addEventListener('input', renderBuilder);
+renderBuilder();
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

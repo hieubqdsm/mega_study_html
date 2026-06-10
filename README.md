@@ -49,6 +49,8 @@ mega_study_html/
 │   ├── khoa-hoc-scikit-learn.*   # 📊 scikit-learn (ML dữ liệu bảng, HTML+MD)
 │   ├── khoa-hoc-langchain.*      # 🦜 LangChain (ứng dụng LLM/RAG/agent, HTML+MD)
 │   ├── khoa-hoc-llamaindex.*     # 🦙 LlamaIndex (RAG/data framework, HTML+MD)
+│   ├── khoa-hoc-hugging-face.*   # 🤗 Hugging Face (transformers/datasets/Hub, HTML+MD)
+│   ├── khoa-hoc-peft-lora.*      # 🧩 PEFT & LoRA (fine-tune LLM tiết kiệm, HTML+MD)
 │   ├── claude-course/            # Bộ khóa Claude (index.html, foundations, coding, ...)
 │   ├── khoa-hoc-gemini-pro.*     # ✦ Gemini Pro
 │   └── giao_trinh_agentic_ai.html

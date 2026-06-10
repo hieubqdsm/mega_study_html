@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học PEFT &amp; LoRA — Fine-Tune LLM Tiết Kiệm Từ Căn Bản Đến Nâng Cao</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #06B6D4;        /* cyan */
+    --primary-glow: #22d3ee;
+    --accent: #818cf8;         /* indigo */
+    --accent-2: #a5b4fc;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #061518; --darker: #030b0d;
+    --light: #cce6ec; --light-strong: #f0fdff; --gray: #84a3ac;
+    --card: #0c1d22; --card-2: #122a30; --border: #1d3f48; --terminal: #041013;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6c8b93;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(6,182,212,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(129,140,248,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #02080a 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(6,182,212,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(6,182,212,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(6,182,212,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#061518; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(6,182,212,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(3,11,13,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(6,182,212,.16), rgba(129,140,248,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🧩"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(6,182,212,.08); border-color: rgba(6,182,212,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(6,182,212,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#03131a; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(6,182,212,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder label { font-size:12.5px; color:var(--gray); display:flex; flex-direction:column; gap:4px; }
+  .builder select, .builder input { font-family:inherit; font-size:13px; padding:7px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .builder input[type=range] { padding:0; width:130px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#03131a; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🧩</div>
+      <h1>PEFT &amp; LoRA</h1>
+      <div class="sub">FINE-TUNE LLM TIẾT KIỆM</div>
+      <div class="pat">W + B·A·(α/r)</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> Vì sao cần PEFT</a></li>
+      <li><a href="#c2"><span class="cn">2</span> LoRA là gì (trực giác)</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Siêu tham số: r, α, dropout</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> LoRA với HF peft</li>
+      <li><a href="#c4"><span class="cn">4</span> LoraConfig &amp; get_peft_model</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Train LoRA bằng Trainer</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Lưu/load adapter</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Merge adapter</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> QLoRA &amp; thực chiến</li>
+      <li><a href="#c8"><span class="cn">8</span> QLoRA (4-bit)</a></li>
+      <li><a href="#c9"><span class="cn">9</span> target_modules</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Nhiều adapter</a></li>
+      <li><a href="#c11"><span class="cn">11</span> PEFT theo tác vụ</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Inference &amp; deploy</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Nâng cao</li>
+      <li><a href="#c13"><span class="cn">13</span> Phương pháp PEFT khác</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Mẹo &amp; lỗi thường gặp</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Đánh giá &amp; so sánh</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án: QLoRA một LLM</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> LoRA Config Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🧩 Khóa học · <b id="crumb">PEFT &amp; LoRA</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">PEFT &amp; LoRA</span> — fine-tune LLM lớn trên 1 GPU</h1>
+        <p>16 chương theo 4 cấp độ. PEFT (Parameter-Efficient Fine-Tuning) chỉ huấn luyện <strong>một phần rất nhỏ</strong> tham số thay vì cả model. LoRA là phương pháp phổ biến nhất; QLoRA cho phép fine-tune model 7B–70B trên GPU phổ thông. Mỗi chương có code chạy được, <strong>bài tập tự chấm</strong>, quiz, flashcard. Xây trên thư viện <code class="ic">peft</code> của Hugging Face.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>LoRA Config Builder</b></span>
+          <span class="meta-pill">🧩 LoRA · QLoRA · DoRA</span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Cài <code class="ic">pip install peft transformers datasets accelerate bitsandbytes</code>. Nên có GPU (Colab T4 đủ cho QLoRA model ~7B). Khóa này nối tiếp <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="khoa-hoc-hugging-face.html">Hugging Face</a> — nên học HF trước. Bài tập <b>tự chấm offline</b>.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> Vì sao cần PEFT</h2>
+        <div class="ch-sub">Full fine-tuning quá đắt.</div>
+
+        <p>Fine-tune <em>toàn bộ</em> một LLM 7B nghĩa là cập nhật 7 tỉ tham số: cần ~14GB chỉ cho trọng số + gấp 2–4 lần cho gradient &amp; optimizer state (Adam) → hàng chục/trăm GB VRAM. <strong>PEFT</strong> đóng băng model gốc &amp; chỉ train một lượng nhỏ tham số thêm vào → giảm VRAM &amp; dung lượng lưu hàng trăm lần, với chất lượng gần như tương đương.</p>
+
+        <table>
+          <tr><th>Tiêu chí</th><th>Full fine-tune</th><th>LoRA / PEFT</th></tr>
+          <tr><td>Tham số train</td><td>100%</td><td>~0.1–1%</td></tr>
+          <tr><td>VRAM</td><td>Rất lớn</td><td>Nhỏ (QLoRA: 1 GPU)</td></tr>
+          <tr><td>Dung lượng lưu</td><td>Cả model (GB)</td><td>Adapter (vài MB)</td></tr>
+          <tr><td>Nhiều tác vụ</td><td>Mỗi tác vụ 1 model</td><td>1 model + nhiều adapter nhỏ</td></tr>
+        </table>
+
+        <div class="code-block"><div class="cbhead"><span>bash</span><span class="dot">●</span></div><pre class="code">pip install peft transformers datasets accelerate bitsandbytes</pre></div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. PEFT giảm chi phí bằng cách nào?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Đóng băng model gốc, chỉ train ít tham số thêm</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Xóa bớt lớp của model</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Giảm số lượng dữ liệu</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Dùng CPU thay GPU</button>
+            </div>
+            <div class="qexp">✅ PEFT freeze trọng số gốc &amp; chỉ huấn luyện một phần nhỏ tham số (vd ma trận LoRA).</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> LoRA là gì (trực giác)</h2>
+        <div class="ch-sub">Low-Rank Adaptation — ý tưởng đẹp &amp; đơn giản.</div>
+
+        <p>Thay vì cập nhật ma trận trọng số <code class="ic">W</code> (rất lớn), LoRA giữ <code class="ic">W</code> <strong>đóng băng</strong> và học một "phần điều chỉnh" <code class="ic">ΔW</code> dưới dạng tích <strong>hai ma trận nhỏ</strong>: <code class="ic">ΔW = B · A</code>, với <code class="ic">A</code> kích thước <code class="ic">r×d</code> và <code class="ic">B</code> kích thước <code class="ic">d×r</code>, <code class="ic">r</code> rất nhỏ (4–64).</p>
+
+        <div class="code-block"><div class="cbhead"><span>toán · trực giác</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Lớp gốc:        h = W x            (W: d×d, đóng băng)</span>
+<span class="cm"># LoRA thêm:      h = W x + (α/r)·B·A·x</span>
+<span class="cm">#   A: r×d  (khởi tạo ngẫu nhiên)</span>
+<span class="cm">#   B: d×r  (khởi tạo = 0  → lúc đầu ΔW=0, không phá model)</span>
+<span class="cm"># Chỉ train A và B → số tham số ~ 2·r·d  (nhỏ hơn d² rất nhiều)</span></pre></div>
+        <div class="box pro"><span class="bt">Vì sao "low-rank" hiệu quả</span> Nghiên cứu cho thấy phần thay đổi cần thiết khi thích ứng một tác vụ mới có "hạng nội tại" thấp — tức nằm gọn trong một không gian nhỏ. Nên một <code class="ic">r</code> nhỏ đã đủ nắm bắt. <code class="ic">B</code> khởi tạo 0 đảm bảo bắt đầu giống hệt model gốc.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. LoRA huấn luyện cái gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Hai ma trận nhỏ A, B (ΔW = B·A)</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Toàn bộ ma trận W</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Chỉ lớp embedding</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Tokenizer</button>
+            </div>
+            <div class="qexp">✅ W đóng băng; chỉ A, B (hạng r nhỏ) được học, nên cực ít tham số.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Siêu tham số: r, α, dropout</h2>
+        <div class="ch-sub">Ba núm vặn quan trọng nhất.</div>
+
+        <table>
+          <tr><th>Tham số</th><th>Ý nghĩa</th><th>Khởi đầu hợp lý</th></tr>
+          <tr><td><code class="ic">r</code> (rank)</td><td>"Dung lượng" của adapter — lớn = học được nhiều hơn nhưng nhiều tham số hơn</td><td>8 hoặc 16</td></tr>
+          <tr><td><code class="ic">lora_alpha</code></td><td>Hệ số scale (ΔW nhân α/r) — điều chỉnh "độ mạnh"</td><td>16–32 (thường = 2·r)</td></tr>
+          <tr><td><code class="ic">lora_dropout</code></td><td>Dropout trên nhánh LoRA, chống overfit</td><td>0.05–0.1</td></tr>
+          <tr><td><code class="ic">target_modules</code></td><td>Lớp nào được gắn LoRA (chương 9)</td><td>q_proj, v_proj (hoặc "all-linear")</td></tr>
+        </table>
+        <div class="box info"><span class="bt">α/r là tỉ lệ then chốt</span> Hiệu lực thực tế của LoRA tỉ lệ với <code class="ic">alpha/r</code>. Nhiều người giữ tỉ lệ này cố định (vd alpha = 2r). Tăng <code class="ic">r</code> mà giữ alpha = 2r là cách scale an toàn.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Đặt siêu tham số</div>
+          <div class="etask">Viết một dict <code>cfg</code> với <code>r=16</code>, <code>lora_alpha=32</code>, <code>lora_dropout=0.05</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">cfg = {
+}</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">cfg = {"r": 16, "lora_alpha": 32, "lora_dropout": 0.05}</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · LoRA với HF peft</span><div class="line"></div></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> LoraConfig &amp; get_peft_model</h2>
+        <div class="ch-sub">Bọc một model thường thành model PEFT trong vài dòng.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM
+<span class="kw">from</span> peft <span class="kw">import</span> LoraConfig, get_peft_model, TaskType
+
+base = AutoModelForCausalLM.from_pretrained(<span class="st">"meta-llama/Llama-3.2-1B"</span>)
+
+config = LoraConfig(
+    r=16, lora_alpha=32, lora_dropout=0.05,
+    target_modules=[<span class="st">"q_proj"</span>, <span class="st">"v_proj"</span>],
+    task_type=TaskType.CAUSAL_LM,
+)
+model = get_peft_model(base, config)
+model.print_trainable_parameters()
+<span class="cm"># trainable params: 1.1M || all params: 1.2B || trainable%: 0.09</span></pre></div>
+        <div class="box pro"><span class="bt">0.09% tham số!</span> <code class="ic">print_trainable_parameters()</code> cho thấy chỉ một phần cực nhỏ được train. Đó là toàn bộ phép màu của LoRA — phần còn lại đóng băng.</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tạo LoraConfig</div>
+          <div class="etask">Tạo <code>LoraConfig(r=8, lora_alpha=16, target_modules=["q_proj","v_proj"], task_type=TaskType.CAUSAL_LM)</code> rồi bọc bằng <code>get_peft_model</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">from peft import LoraConfig, get_peft_model, TaskType
+
+config = LoraConfig(
+)
+model = get_peft_model(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">config = LoraConfig(r=8, lora_alpha=16,
+    target_modules=["q_proj", "v_proj"], task_type=TaskType.CAUSAL_LM)
+model = get_peft_model(base, config)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Train LoRA bằng Trainer</h2>
+        <div class="ch-sub">Model PEFT dùng được với HF Trainer như bình thường.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> Trainer, TrainingArguments
+
+args = TrainingArguments(
+    output_dir=<span class="st">"lora-out"</span>, per_device_train_batch_size=4,
+    gradient_accumulation_steps=4, learning_rate=2e-4,   <span class="cm"># LoRA dùng LR cao hơn full FT</span>
+    num_train_epochs=3, fp16=<span class="kw">True</span>, logging_steps=10,
+)
+Trainer(model=model, args=args, train_dataset=ds_tok).train()</pre></div>
+        <div class="box tip"><span class="bt">LR cao hơn full FT</span> Vì chỉ train ít tham số mới (khởi tạo từ 0), LoRA thường dùng <code class="ic">learning_rate</code> ~1e-4 đến 3e-4 (cao hơn ~2e-5 của full fine-tune). Dùng <code class="ic">gradient_accumulation_steps</code> để có batch hiệu dụng lớn trên GPU nhỏ.</div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Lưu/load adapter</h2>
+        <div class="ch-sub">Adapter chỉ vài MB — dễ chia sẻ.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">model.save_pretrained(<span class="st">"my-adapter"</span>)        <span class="cm"># CHỈ lưu trọng số LoRA (vài MB)</span>
+
+<span class="cm"># Nạp lại: model gốc + adapter</span>
+<span class="kw">from</span> peft <span class="kw">import</span> PeftModel
+base = AutoModelForCausalLM.from_pretrained(<span class="st">"meta-llama/Llama-3.2-1B"</span>)
+model = PeftModel.from_pretrained(base, <span class="st">"my-adapter"</span>)</pre></div>
+        <div class="box info"><span class="bt">Adapter ≠ model</span> File lưu chỉ chứa A, B (không chứa model gốc). Khi nạp phải có cùng model gốc. Có thể đẩy adapter lên Hub (<code class="ic">push_to_hub</code>) — người khác tải về dùng với model gốc của họ.</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Lưu &amp; nạp adapter</div>
+          <div class="etask">Lưu bằng <code>model.save_pretrained("my-adapter")</code>; nạp bằng <code>PeftModel.from_pretrained(base, "my-adapter")</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">from peft import PeftModel
+
+# lưu
+model.save_pretrained(
+# nạp
+model = PeftModel.from_pretrained(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model.save_pretrained("my-adapter")
+model = PeftModel.from_pretrained(base, "my-adapter")</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Merge adapter</h2>
+        <div class="ch-sub">Gộp LoRA vào model gốc để suy luận nhanh hơn.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">merged = model.merge_and_unload()     <span class="cm"># W ← W + (α/r)·B·A, bỏ nhánh LoRA</span>
+merged.save_pretrained(<span class="st">"merged-model"</span>)   <span class="cm"># giờ là model thường, đầy đủ</span></pre></div>
+        <div class="box warn"><span class="bt">Merge: lợi &amp; hại</span> Merge xóa overhead của nhánh LoRA → suy luận nhanh như model gốc, dễ export (GGUF, ONNX). NHƯNG model merge có dung lượng đầy đủ (mất lợi thế "adapter vài MB") &amp; không hoán đổi tác vụ được nữa. Giữ adapter riêng nếu cần nhiều tác vụ; merge khi triển khai một tác vụ cố định.</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Merge adapter</div>
+          <div class="etask">Gộp adapter vào model gốc bằng <code>model.merge_and_unload()</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">merged = model.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">merged = model.merge_and_unload()</pre></div></div></details>
+        </div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · QLoRA &amp; thực chiến</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> QLoRA (4-bit)</h2>
+        <div class="ch-sub">Fine-tune model 7B–70B trên một GPU.</div>
+
+        <p><strong>QLoRA</strong> = lượng tử hóa model gốc xuống <strong>4-bit</strong> (đóng băng) + huấn luyện adapter LoRA (ở độ chính xác cao) lên trên. Trọng số gốc nén 4× → vừa GPU nhỏ, mà chất lượng gần như full fine-tune.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python · QLoRA</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> transformers <span class="kw">import</span> AutoModelForCausalLM, BitsAndBytesConfig
+<span class="kw">from</span> peft <span class="kw">import</span> LoraConfig, get_peft_model, prepare_model_for_kbit_training
+<span class="kw">import</span> torch
+
+bnb = BitsAndBytesConfig(load_in_4bit=<span class="kw">True</span>, bnb_4bit_quant_type=<span class="st">"nf4"</span>,
+        bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_use_double_quant=<span class="kw">True</span>)
+base = AutoModelForCausalLM.from_pretrained(
+        <span class="st">"mistralai/Mistral-7B-v0.1"</span>, quantization_config=bnb, device_map=<span class="st">"auto"</span>)
+base = prepare_model_for_kbit_training(base)      <span class="cm"># bật gradient checkpointing, ...</span>
+model = get_peft_model(base, LoraConfig(r=16, lora_alpha=32,
+        target_modules=<span class="st">"all-linear"</span>, task_type=<span class="st">"CAUSAL_LM"</span>))</pre></div>
+        <div class="box pro"><span class="bt">nf4 + double quant</span> <code class="ic">nf4</code> (NormalFloat4) là kiểu 4-bit tối ưu cho trọng số phân phối chuẩn; <code class="ic">double_quant</code> nén thêm cả hằng số lượng tử hóa. Đây là công thức QLoRA gốc giúp fine-tune model 65B trên 1 GPU 48GB.</div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Cấu hình 4-bit</div>
+          <div class="etask">Tạo <code>BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4")</code> rồi gọi <code>prepare_model_for_kbit_training(base)</code>.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">from transformers import BitsAndBytesConfig
+from peft import prepare_model_for_kbit_training
+
+bnb = BitsAndBytesConfig(
+base = prepare_model_for_kbit_training(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4")
+base = prepare_model_for_kbit_training(base)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> target_modules — gắn LoRA vào đâu</h2>
+        <div class="ch-sub">Chọn lớp để thêm adapter.</div>
+
+        <table>
+          <tr><th>Lựa chọn</th><th>Hiệu quả</th></tr>
+          <tr><td><code class="ic">["q_proj", "v_proj"]</code></td><td>LoRA gốc — ít tham số, đủ tốt cho nhiều việc</td></tr>
+          <tr><td>+ <code class="ic">k_proj, o_proj</code></td><td>Phủ toàn bộ attention</td></tr>
+          <tr><td>+ MLP (<code class="ic">gate/up/down_proj</code>)</td><td>Mạnh hơn cho tác vụ khó, nhiều tham số hơn</td></tr>
+          <tr><td><code class="ic">"all-linear"</code></td><td>Gắn vào MỌI lớp tuyến tính — mặc định mạnh, khuyên dùng cho QLoRA</td></tr>
+        </table>
+        <div class="box info"><span class="bt">Tên lớp khác nhau theo model</span> <code class="ic">q_proj/v_proj</code> đúng cho Llama/Mistral; model khác có thể là <code class="ic">query/value</code> hay <code class="ic">c_attn</code>. Dùng <code class="ic">"all-linear"</code> để khỏi đoán, hoặc in <code class="ic">model</code> ra xem tên các lớp <code class="ic">nn.Linear</code>.</div>
+
+        <div class="exercise" data-ex="ex6">
+          <div class="eh">✍️ Bài tập 6 — target_modules toàn bộ</div>
+          <div class="etask">Tạo <code>LoraConfig(r=16, lora_alpha=32, target_modules="all-linear", task_type="CAUSAL_LM")</code>.</div>
+          <textarea class="codepad" id="ex6" spellcheck="false">from peft import LoraConfig
+
+config = LoraConfig(</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex6')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex6')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex6"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">config = LoraConfig(r=16, lora_alpha=32,
+    target_modules="all-linear", task_type="CAUSAL_LM")</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Nhiều adapter</h2>
+        <div class="ch-sub">Một model gốc, nhiều "tính cách".</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">model.load_adapter(<span class="st">"adapter-dich"</span>, adapter_name=<span class="st">"dich"</span>)
+model.load_adapter(<span class="st">"adapter-tomtat"</span>, adapter_name=<span class="st">"tomtat"</span>)
+model.set_adapter(<span class="st">"dich"</span>)        <span class="cm"># bật adapter dịch</span>
+<span class="cm"># ... suy luận ...</span>
+model.set_adapter(<span class="st">"tomtat"</span>)     <span class="cm"># đổi sang adapter tóm tắt — không tải lại model gốc</span></pre></div>
+        <div class="box pro"><span class="bt">Tiết kiệm khổng lồ ở production</span> Phục vụ N tác vụ chỉ cần <em>1</em> bản model gốc (chục GB) + N adapter (mỗi cái vài MB), hoán đổi trong tích tắc. Đây là lý do LoRA thống trị triển khai LLM nhiều tác vụ.</div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> PEFT theo tác vụ</h2>
+        <div class="ch-sub">task_type quyết định "đầu" nào được xử lý đúng.</div>
+
+        <table>
+          <tr><th>task_type</th><th>Dùng cho</th></tr>
+          <tr><td><code class="ic">CAUSAL_LM</code></td><td>Sinh văn bản / chat (Llama, Mistral, GPT)</td></tr>
+          <tr><td><code class="ic">SEQ_2_SEQ_LM</code></td><td>Dịch, tóm tắt (T5, BART)</td></tr>
+          <tr><td><code class="ic">SEQ_CLS</code></td><td>Phân loại câu</td></tr>
+          <tr><td><code class="ic">TOKEN_CLS</code></td><td>NER, gán nhãn token</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">Đặt đúng task_type</span> giúp PEFT xử lý đúng các lớp đặc thù (vd lớp phân loại không nên bị đóng băng). Với instruction-tuning LLM, dùng <code class="ic">SFTTrainer</code> của thư viện <code class="ic">trl</code> kết hợp PEFT để tiện hơn.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Inference &amp; deploy</h2>
+        <div class="ch-sub">Đưa adapter ra dùng thật.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> peft <span class="kw">import</span> PeftModel
+base = AutoModelForCausalLM.from_pretrained(<span class="st">"mistralai/Mistral-7B-v0.1"</span>, device_map=<span class="st">"auto"</span>)
+model = PeftModel.from_pretrained(base, <span class="st">"me/my-lora-adapter"</span>).eval()
+ids = tokenizer(<span class="st">"Tóm tắt: ..."</span>, return_tensors=<span class="st">"pt"</span>).to(model.device)
+print(tokenizer.decode(model.generate(**ids, max_new_tokens=128)[0]))</pre></div>
+        <div class="box info"><span class="bt">Phục vụ tốc độ cao</span> Các engine như <strong>vLLM</strong> hỗ trợ nạp nhiều LoRA adapter động (multi-LoRA serving). Hoặc <code class="ic">merge_and_unload()</code> rồi export GGUF (llama.cpp) / ONNX cho suy luận một tác vụ tối ưu.</div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Nâng cao</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Các phương pháp PEFT khác</h2>
+        <div class="ch-sub">LoRA không phải lựa chọn duy nhất.</div>
+
+        <table>
+          <tr><th>Phương pháp</th><th>Ý tưởng</th><th>Khi nào</th></tr>
+          <tr><td><strong>QLoRA</strong></td><td>LoRA + base 4-bit</td><td>Model lớn, GPU nhỏ (mặc định ngày nay)</td></tr>
+          <tr><td><strong>DoRA</strong></td><td>Tách độ lớn &amp; hướng của trọng số</td><td>Chất lượng cao hơn LoRA, thêm chút chi phí (<code class="ic">use_dora=True</code>)</td></tr>
+          <tr><td><strong>AdaLoRA</strong></td><td>Phân bổ rank động theo tầm quan trọng</td><td>Tối ưu ngân sách tham số</td></tr>
+          <tr><td><strong>Prompt/Prefix tuning</strong></td><td>Học vài "soft token" đặt trước input</td><td>Rất ít tham số, tác vụ nhẹ</td></tr>
+          <tr><td><strong>IA³</strong></td><td>Học vector nhân vào activation</td><td>Cực nhẹ, ít tham số hơn cả LoRA</td></tr>
+        </table>
+        <div class="box info"><span class="bt">Bật DoRA dễ dàng</span> Trong <code class="ic">peft</code>, chỉ cần thêm <code class="ic">use_dora=True</code> vào <code class="ic">LoraConfig</code> là có DoRA — thường nhỉnh hơn LoRA ở rank thấp.</div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Mẹo &amp; lỗi thường gặp</h2>
+        <div class="ch-sub">Tránh những cái bẫy phổ biến.</div>
+
+        <ul>
+          <li><strong>Loss không giảm:</strong> <code class="ic">learning_rate</code> quá thấp (LoRA cần ~1e-4–3e-4), hoặc <code class="ic">target_modules</code> sai (không gắn vào lớp nào) → kiểm <code class="ic">print_trainable_parameters()</code> &gt; 0.</li>
+          <li><strong>Hết VRAM:</strong> bật <code class="ic">gradient_checkpointing</code>, giảm batch + tăng <code class="ic">gradient_accumulation_steps</code>, dùng QLoRA 4-bit.</li>
+          <li><strong>Overfit:</strong> tăng <code class="ic">lora_dropout</code>, giảm epoch, giảm <code class="ic">r</code>.</li>
+          <li><strong>Học kém:</strong> tăng <code class="ic">r</code> &amp; mở rộng <code class="ic">target_modules</code> (thêm MLP / "all-linear").</li>
+          <li><strong>Quên padding token:</strong> đặt <code class="ic">tokenizer.pad_token = tokenizer.eos_token</code> cho LLM decoder-only.</li>
+        </ul>
+        <div class="box danger"><span class="bt">Bẫy "trainable 0%"</span> Nếu <code class="ic">print_trainable_parameters()</code> báo 0 tham số train → <code class="ic">target_modules</code> không khớp tên lớp nào trong model. Đổi sang <code class="ic">"all-linear"</code> hoặc in model ra để lấy đúng tên.</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Đánh giá &amp; so sánh</h2>
+        <div class="ch-sub">LoRA tốt đến đâu so với full fine-tune?</div>
+
+        <table>
+          <tr><th></th><th>Full FT</th><th>LoRA</th><th>QLoRA</th></tr>
+          <tr><td>Chất lượng</td><td>★★★★★</td><td>★★★★☆ (gần bằng)</td><td>★★★★☆</td></tr>
+          <tr><td>VRAM</td><td>Rất cao</td><td>Trung bình</td><td>Thấp (1 GPU)</td></tr>
+          <tr><td>Tốc độ train</td><td>Chậm</td><td>Nhanh</td><td>Trung bình</td></tr>
+          <tr><td>Lưu trữ</td><td>Cả model</td><td>Adapter vài MB</td><td>Adapter vài MB</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">Đo trên tác vụ thật</span> Đừng chỉ nhìn loss — đánh giá trên tập test bằng metric của tác vụ (accuracy/F1/BLEU/ROUGE) hoặc dùng <code class="ic">lm-eval-harness</code> cho LLM. Với <code class="ic">r</code> hợp lý, LoRA/QLoRA thường đạt 95–100% chất lượng full FT.</div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án: QLoRA một LLM nhỏ</h2>
+        <div class="ch-sub">Instruction-tune một model 1–7B trên Colab.</div>
+
+        <ol>
+          <li><strong>Dữ liệu:</strong> <code class="ic">load_dataset</code> một bộ instruction (vd định dạng {instruction, output}), format theo chat template.</li>
+          <li><strong>Model 4-bit:</strong> <code class="ic">BitsAndBytesConfig(nf4)</code> + <code class="ic">prepare_model_for_kbit_training</code>.</li>
+          <li><strong>LoRA:</strong> <code class="ic">LoraConfig(r=16, alpha=32, target_modules="all-linear")</code> + <code class="ic">get_peft_model</code>.</li>
+          <li><strong>Train:</strong> <code class="ic">SFTTrainer</code> (trl) hoặc <code class="ic">Trainer</code>, LR 2e-4, fp16/bf16, gradient checkpointing.</li>
+          <li><strong>Lưu &amp; thử:</strong> <code class="ic">save_pretrained</code> adapter → nạp <code class="ic">PeftModel</code> → <code class="ic">generate</code> kiểm thử.</li>
+          <li><strong>Triển khai:</strong> giữ adapter (multi-task) hoặc <code class="ic">merge_and_unload</code> + export.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex7">
+          <div class="eh">✍️ Bài tập 7 — Ráp pipeline QLoRA</div>
+          <div class="etask">Bọc model 4-bit thành PEFT: gọi <code>get_peft_model(base, LoraConfig(r=16, lora_alpha=32, target_modules="all-linear", task_type="CAUSAL_LM"))</code>.</div>
+          <textarea class="codepad" id="ex7" spellcheck="false">from peft import get_peft_model, LoraConfig
+
+model = get_peft_model(
+)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex7')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex7')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex7"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model = get_peft_model(base, LoraConfig(
+    r=16, lora_alpha=32, target_modules="all-linear", task_type="CAUSAL_LM"))</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã làm chủ LoRA/QLoRA — kỹ năng cốt lõi để tùy biến LLM mà không tốn kém. Bước tiếp: thử DoRA, multi-LoRA serving với vLLM, và ôn nền ở <a href="khoa-hoc-hugging-face.html" style="color:var(--primary-glow)">Hugging Face</a> / <a href="khoa-hoc-pytorch.html" style="color:var(--primary-glow)">PyTorch</a>.</div>
+      </section>
+
+      <!-- ============ BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> LoRA Config Builder</h2>
+        <div class="ch-sub">Chỉnh siêu tham số → sinh code <code>LoraConfig</code> sẵn copy.</div>
+        <div class="builder">
+          <div class="bh">🔧 Cấu hình LoRA</div>
+          <div class="brow">
+            <label>rank r: <b id="rVal">16</b><input id="bR" type="range" min="2" max="128" step="2" value="16"></label>
+            <label>alpha: <b id="aVal">32</b><input id="bA" type="range" min="2" max="256" step="2" value="32"></label>
+            <label>dropout: <b id="dVal">0.05</b><input id="bD" type="range" min="0" max="0.3" step="0.01" value="0.05"></label>
+          </div>
+          <div class="brow">
+            <label>target_modules<select id="bT">
+              <option value="all-linear">all-linear</option>
+              <option value="qv">q_proj, v_proj</option>
+              <option value="attn">q,k,v,o_proj</option>
+            </select></label>
+            <label>task<select id="bTask">
+              <option value="CAUSAL_LM">CAUSAL_LM</option>
+              <option value="SEQ_2_SEQ_LM">SEQ_2_SEQ_LM</option>
+              <option value="SEQ_CLS">SEQ_CLS</option>
+              <option value="TOKEN_CLS">TOKEN_CLS</option>
+            </select></label>
+            <label>QLoRA 4-bit?<select id="bQ"><option value="no">không</option><option value="yes">có</option></select></label>
+            <label>DoRA?<select id="bDora"><option value="no">không</option><option value="yes">có</option></select></label>
+          </div>
+          <div class="out" id="builderOut"></div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Khái niệm</div>
+            <table style="margin:0"><tr><td>PEFT</td><td>Train ít tham số, freeze gốc</td></tr>
+            <tr><td>LoRA</td><td>ΔW = (α/r)·B·A</td></tr>
+            <tr><td>r / alpha</td><td>Dung lượng / độ mạnh</td></tr>
+            <tr><td>QLoRA</td><td>LoRA + base 4-bit</td></tr>
+            <tr><td>Adapter</td><td>File A,B vài MB</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">API peft</div>
+            <table style="margin:0"><tr><td><code class="ic">LoraConfig</code></td><td>Cấu hình</td></tr>
+            <tr><td><code class="ic">get_peft_model</code></td><td>Bọc model</td></tr>
+            <tr><td><code class="ic">print_trainable_parameters</code></td><td>Kiểm tra %</td></tr>
+            <tr><td><code class="ic">save_pretrained</code></td><td>Lưu adapter</td></tr>
+            <tr><td><code class="ic">PeftModel.from_pretrained</code></td><td>Nạp adapter</td></tr>
+            <tr><td><code class="ic">merge_and_unload</code></td><td>Gộp vào gốc</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Khởi đầu hợp lý</div>
+            <table style="margin:0"><tr><td>r</td><td>8–16</td></tr>
+            <tr><td>alpha</td><td>2·r (16–32)</td></tr>
+            <tr><td>dropout</td><td>0.05</td></tr>
+            <tr><td>target_modules</td><td>all-linear</td></tr>
+            <tr><td>learning_rate</td><td>2e-4</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🧩 <strong>Khóa Học PEFT &amp; LoRA</strong> — một phần của <a href="../index.html">Mega Study</a>. Code cho thư viện peft (Hugging Face).<br>
+        Nối tiếp <a href="khoa-hoc-hugging-face.html">Hugging Face</a>; nền tảng ở <a href="khoa-hoc-pytorch.html">PyTorch</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/["']?r["']?\s*[:=]\s*16/, label:"r = 16"},
+    {re:/["']?lora_alpha["']?\s*[:=]\s*32/, label:"lora_alpha = 32"},
+    {re:/["']?lora_dropout["']?\s*[:=]\s*0\.05/, label:"lora_dropout = 0.05"},
+  ],
+  ex2: [
+    {re:/LoraConfig\s*\(/, label:"LoraConfig(...)"},
+    {re:/r\s*=\s*8/, label:"r=8"},
+    {re:/lora_alpha\s*=\s*16/, label:"lora_alpha=16"},
+    {re:/target_modules\s*=\s*\[\s*["']q_proj["']/, label:'target_modules=["q_proj",...]'},
+    {re:/get_peft_model\s*\(/, label:"get_peft_model(...)"},
+  ],
+  ex3: [
+    {re:/\.save_pretrained\s*\(\s*["']my-adapter["']/, label:'save_pretrained("my-adapter")'},
+    {re:/PeftModel\.from_pretrained\s*\(\s*base\s*,\s*["']my-adapter["']/, label:'PeftModel.from_pretrained(base, "my-adapter")'},
+  ],
+  ex4: [
+    {re:/\.merge_and_unload\s*\(\s*\)/, label:"merge_and_unload()"},
+  ],
+  ex5: [
+    {re:/BitsAndBytesConfig\s*\(/, label:"BitsAndBytesConfig(...)"},
+    {re:/load_in_4bit\s*=\s*True/, label:"load_in_4bit=True"},
+    {re:/bnb_4bit_quant_type\s*=\s*["']nf4["']/, label:'bnb_4bit_quant_type="nf4"'},
+    {re:/prepare_model_for_kbit_training\s*\(/, label:"prepare_model_for_kbit_training(...)"},
+  ],
+  ex6: [
+    {re:/LoraConfig\s*\(/, label:"LoraConfig(...)"},
+    {re:/r\s*=\s*16/, label:"r=16"},
+    {re:/lora_alpha\s*=\s*32/, label:"lora_alpha=32"},
+    {re:/target_modules\s*=\s*["']all-linear["']/, label:'target_modules="all-linear"'},
+  ],
+  ex7: [
+    {re:/get_peft_model\s*\(\s*base/, label:"get_peft_model(base, ...)"},
+    {re:/LoraConfig\s*\(/, label:"LoraConfig(...)"},
+    {re:/target_modules\s*=\s*["']all-linear["']/, label:'target_modules="all-linear"'},
+    {re:/task_type\s*=\s*["']CAUSAL_LM["']/, label:'task_type="CAUSAL_LM"'},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"PEFT là gì?", a:"Parameter-Efficient Fine-Tuning: freeze model gốc, chỉ train ít tham số thêm."},
+  {q:"Công thức LoRA?", a:"h = Wx + (α/r)·B·A·x ; chỉ train A (r×d) và B (d×r), W đóng băng."},
+  {q:"Vì sao B khởi tạo 0?", a:"Để ΔW=0 lúc đầu → model bắt đầu giống hệt bản gốc, không phá."},
+  {q:"r và alpha?", a:"r = dung lượng adapter; alpha = scale (hiệu lực ∝ alpha/r). Thường alpha=2r."},
+  {q:"get_peft_model làm gì?", a:"Bọc model thường + LoraConfig → model PEFT, chỉ ~0.1–1% tham số train."},
+  {q:"Adapter lưu gì?", a:"Chỉ A,B (vài MB), KHÔNG chứa model gốc — nạp cần cùng base."},
+  {q:"merge_and_unload?", a:"Gộp LoRA vào W gốc → model thường, suy luận nhanh nhưng mất tính hoán đổi."},
+  {q:"QLoRA?", a:"Base lượng tử 4-bit (nf4) + LoRA adapter → fine-tune model lớn trên 1 GPU."},
+  {q:"target_modules?", a:"Lớp được gắn LoRA. 'all-linear' an toàn; q_proj/v_proj là tối thiểu."},
+  {q:"Nhiều adapter?", a:"1 model gốc + N adapter nhỏ, set_adapter() để hoán đổi tác vụ tức thì."},
+  {q:"LR cho LoRA?", a:"Cao hơn full FT — khoảng 1e-4 đến 3e-4 (vd 2e-4)."},
+  {q:"DoRA?", a:"Biến thể LoRA tách độ lớn & hướng; bật bằng use_dora=True, tốt hơn ở rank thấp."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== LORA CONFIG BUILDER ===== */
+const TM = { 'all-linear': '"all-linear"', 'qv': '["q_proj", "v_proj"]', 'attn': '["q_proj", "k_proj", "v_proj", "o_proj"]' };
+function renderBuilder(){
+  const r = document.getElementById('bR').value;
+  const a = document.getElementById('bA').value;
+  const d = document.getElementById('bD').value;
+  const t = document.getElementById('bT').value;
+  const task = document.getElementById('bTask').value;
+  const q = document.getElementById('bQ').value === 'yes';
+  const dora = document.getElementById('bDora').value === 'yes';
+  document.getElementById('rVal').textContent = r;
+  document.getElementById('aVal').textContent = a;
+  document.getElementById('dVal').textContent = d;
+  let code = 'from peft import LoraConfig, get_peft_model';
+  if(q) code += ', prepare_model_for_kbit_training';
+  code += '\nfrom transformers import AutoModelForCausalLM';
+  if(q) code += ', BitsAndBytesConfig\nimport torch';
+  code += '\n\n';
+  if(q){
+    code += 'bnb = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_quant_type="nf4",\n'
+          + '        bnb_4bit_compute_dtype=torch.bfloat16, bnb_4bit_use_double_quant=True)\n'
+          + 'base = AutoModelForCausalLM.from_pretrained(MODEL, quantization_config=bnb, device_map="auto")\n'
+          + 'base = prepare_model_for_kbit_training(base)\n\n';
+  } else {
+    code += 'base = AutoModelForCausalLM.from_pretrained(MODEL)\n\n';
+  }
+  code += 'config = LoraConfig(\n'
+        + `    r=${r}, lora_alpha=${a}, lora_dropout=${d},\n`
+        + `    target_modules=${TM[t]},\n`
+        + (dora ? '    use_dora=True,\n' : '')
+        + `    task_type="${task}",\n)\n`
+        + 'model = get_peft_model(base, config)\n'
+        + 'model.print_trainable_parameters()';
+  document.getElementById('builderOut').textContent = code;
+}
+['bR','bA','bD','bT','bTask','bQ','bDora'].forEach(id =>
+  document.getElementById(id).addEventListener('input', renderBuilder));
+renderBuilder();
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>
