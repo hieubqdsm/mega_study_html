@@ -3518,6 +3518,155 @@ function renderM9Exams(){
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s9">M9 LLMOps</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 10 — PHÁP LÝ & ĐẠO ĐỨC AI (6 buổi + đề thi)
+   ============================================================ */
+const M10_NAME = 'M10 Pháp lý AI';
+EX.m10b2 = [{re:/mask_pii|re\.sub/,label:"re.sub mask"},{re:/EMAIL|PHONE/,label:"mask EMAIL/PHONE"}];
+
+LESSON_DETAIL['s10-b1'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M10 · BUỔI 1</span><h1>🤫 PII &amp; quyền riêng tư</h1><div class="ch-sub">Dữ liệu cá nhân không được đưa thoải mái vào LLM bên thứ 3.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu M10</div><div class="tdesc">Pháp lý + đạo đức. Liên hệ M8.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> PII</div><div class="tdesc">Loại, rủi ro, mask/ẩn danh.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Mask PII</div><div class="tdesc">Regex ẩn email/phone/CCCD.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về bản quyền.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">PII &amp; mask (40 phút)</h3>
+<p>Tên, email, sđt, CCCD, dữ liệu y tế... không được đưa thoải mái vào LLM bên thứ 3 (mỗi lần gọi API = gửi dữ liệu ra ngoài). Xử lý: <strong>mask/ẩn danh</strong> trước khi gửi; chọn provider có cam kết <em>zero-retention</em> cho dữ liệu nhạy cảm.</p>
+${PAGER('s10',1,6,M10_NAME)}` };
+
+LESSON_DETAIL['s10-b2'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M10 · BUỔI 2 · có KT15'</span><h1>©️ Bản quyền đầu ra AI</h1><div class="ch-sub">Đầu ra LLM có thể trùng văn bản bản quyền → rủi ro thương mại.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Bản quyền.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Bản quyền AI</div><div class="tdesc">Trùng lặp, train trên data bản quyền.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Mask + check trùng</div><div class="tdesc">Mask PII trước API.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: GDPR/NĐ-13.</div></div></div>
+</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m10b2">
+  <div class="eh">✍️ Bài thực hành — Mask PII</div>
+  <div class="etask">Hàm <code>mask_pii(text)</code>: thay email → [EMAIL], phone (9-11 số) → [PHONE] bằng regex.</div>
+  <textarea class="codepad" id="m10b2" spellcheck="false">import re
+def mask_pii(t):
+    t = re.sub(r"\b[\w.-]+@[\w.-]+\.\w+\b", "[EMAIL]", t)
+    t =
+
+
+
+    return t</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m10b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m10b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m10b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">t = re.sub(<span class="st">r"\b\d{9,11}\b"</span>, <span class="st">"[PHONE]"</span>, t)</pre></div></div></details>
+</div>
+${PAGER('s10',2,6,M10_NAME)}` };
+
+LESSON_DETAIL['s10-b3'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M10 · BUỔI 3</span><h1>⚖️ GDPR &amp; NĐ-13 Việt Nam</h1><div class="ch-sub">Khung pháp lý bảo vệ dữ liệu cá nhân.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bản quyền</div><div class="tdesc">Trả KT15', nhận xét.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> GDPR/NĐ-13</div><div class="tdesc">Quyền người dùng, quyền bị quên.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Checklist tuân thủ</div><div class="tdesc">Viết checklist cho dự án.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: thiên lệch.</div></div></div>
+</div>
+<div class="box danger"><span class="bt">Checklist tuân thủ (đại cương, không thay thế tư vấn pháp lý)</span> · Đồng ý người dùng về xử lý dữ liệu? · Dữ liệu nhạy cảm mask/ẩn danh? · Provider có chính sách phù hợp? · Kiểm tra trùng bản quyền trước dùng thương mại? · Cơ chế xóa dữ liệu (quyền bị quên)? <em>Luôn tham vấn pháp lý chuyên ngành.</em></div>
+${PAGER('s10',3,6,M10_NAME)}` };
+
+LESSON_DETAIL['s10-b4'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M10 · BUỔI 4</span><h1>⚖️ Thiên lệch &amp; công bằng</h1><div class="ch-sub">AI có thể kế thừa/khuếch đại thiên lệch trong dữ liệu.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra GDPR</div><div class="tdesc">Hỏi: quyền bị quên?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Thiên lệch</div><div class="tdesc">Nguồn, phát hiện, giảm.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Đo thiên lệch</div><div class="tdesc">Phân tích fairness trên tập dự đoán.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B5: đạo đức.</div></div></div>
+</div>
+<div class="box warn"><span class="bt">⚠️ Thiên lệch trong AI</span> Dữ liệu lịch sử chứa định kiến → AI học &amp; khuếch đại. Ví dụ: CV screener ưu tiên nam nếu train trên dữ liệu tuyển dụng quá khứ. Cần đo fairness theo nhóm dân số &amp; giảm (resampling, reweighting, fairness constraint).</div>
+${PAGER('s10',4,6,M10_NAME)}` };
+
+LESSON_DETAIL['s10-b5'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 5'), html: `
+<div class="page-head"><span class="kicker k-lesson">M10 · BUỔI 5</span><h1>🌟 Đạo đức AI</h1><div class="ch-sub">Trách nhiệm xã hội của kỹ sư AI.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra thiên lệch</div><div class="tdesc">Hỏi: nguồn thiên lệch?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Đạo đức AI</div><div class="tdesc">Minh bạch, trách nhiệm, an toàn.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thảo luận</span> Case study đạo đức</div><div class="tdesc">Phân tích tình huống thực.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: CK tiểu luận.</div></div></div>
+</div>
+<div class="box info"><span class="bt">📌 Nguyên tắc đạo đức</span> Minh bạch (ai biết AI dùng ở đâu), trách nhiệm (có người accountable), an toàn (không gây hại), công bằng (không phân biệt đối xử), quyền riêng tư. Kỹ sư AI không chỉ "làm cho chạy" — còn chịu trách nhiệm xã hội.</div>
+${PAGER('s10',5,6,M10_NAME)}` };
+
+LESSON_DETAIL['s10-b6'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 6 · CK'), html: `
+<div class="page-head"><span class="kicker k-exam">M10 · BUỔI 6 · CUỐI KÌ (tiểu luận)</span><h1>📋 Kiểm tra Cuối kì — Tiểu luận chính sách</h1><div class="ch-sub">Viết chính sách dữ liệu + đánh giá rủi ro pháp lý cho một hệ thống AI.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–175'</div><div class="tl-act"><div class="tname">📝 Viết tiểu luận</div><div class="tdesc">Chính sách dữ liệu + phân tích rủi ro.</div></div></div>
+</div>
+<div class="exam" style="margin-top:16px">
+  <div class="eh">📝 ĐỀ CUỐI KÌ MÔN (tiểu luận) <span class="et">B6</span></div>
+  <div class="emeta"><span>⏱ <b>cả buổi</b></span><span>Trọng số: <b>60%</b></span></div>
+  <div class="q"><div class="qn">Phần 1 — Chính sách dữ liệu (5đ).</div><div class="qp">Cho 1 kịch bản hệ thống AI (vd: agent tư vấn tài chính khách hàng). Viết chính sách: loại dữ liệu thu thập, cách mask, thời gian lưu, quyền người dùng, xóa dữ liệu.</div></div>
+  <div class="q"><div class="qn">Phần 2 — Đánh giá rủi ro pháp lý (3đ).</div><div class="qp">Liệt kê 5 rủi ro pháp lý (PII, bản quyền, thiên lệch, GDPR/NĐ-13, trách nhiệm). Mỗi rủi ro: mức độ + biện pháp giảm.</div></div>
+  <div class="q"><div class="qn">Phần 3 — Đạo đức (2đ).</div><div class="qp">Phân tích 1 dilemma đạo đức (vd: AI phát hiện gian lận但有 sai số → giao dịch hợp lệ bị khóa). Đề xuất giải pháp cân bằng.</div></div>
+  <details class="answer"><summary>✅ Hướng dẫn chấm</summary><div class="body"><div class="rubric"><span class="rt">Rubric CK tiểu luận</span>9-10: Chính sách cụ thể, đầy đủ PII/bản quyền/fairness, có cấp độ ưu tiên · 7-8: Đầy đủ nhưng thiếu sâu · 5-6: Liệt kê được nhưng chung chung · &lt;5: Thiếu các phần bắt buộc.</div></div></details>
+</div>
+${PAGER('s10',6,6,M10_NAME)}` };
+
+/* ===== M10: ĐỀ THI (5 đề) ===== */
+function renderM10Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M10 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — Pháp lý &amp; Đạo đức AI</h1>
+      <div class="ch-sub">5 đề: 15', 45', GK (90'), CK tiểu luận, dự án.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' <span class="et">B2 · Bản quyền</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>10%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Trước khi gửi dữ liệu khách hàng vào LLM API, bước an toàn thiết yếu?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Đầu ra LLM có thể vi phạm bản quyền thế nào?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Nêu 3 loại PII cần mask.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Mask/ẩn danh PII + chọn provider zero-retention. <b>C2:</b> Trùng văn bản bản quyền trong training; train trên data bản quyền không có quyền. <b>C3:</b> Email, phone, CCCD/CMND (hoặc y tế, địa chỉ...).</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B5</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>20%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">Hàm mask_pii(text) ẩn email + phone + CCCD (9-12 số).</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Đo fairness: cho y_pred, y_true, group → tính accuracy mỗi nhóm, chênh lệch.</div></div>
+      <div class="q"><div class="qn">B3 (4đ).</div><div class="qp">Viết checklist tuân thủ (10 mục) cho hệ thống agent xử lý dữ liệu bệnh nhân.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">def</span> <span class="fn">fairness</span>(y_pred, y_true, group):
+    <span class="kw">for</span> g <span class="kw">in</span> <span class="nb">set</span>(group):
+        m = [i <span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(<span class="nb">len</span>(group)) <span class="kw">if</span> group[i]==g]
+        acc = <span class="nb">sum</span>(y_pred[i]==y_true[i] <span class="kw">for</span> i <span class="kw">in</span> m)/<span class="nb">len</span>(m)
+        <span class="nb">print</span>(g, acc)</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span></div>
+      <div class="q"><div class="qn">Phần 1 — Lý thuyết (5đ).</div><div class="qp">(a) PII &amp; mask (1đ). (b) Bản quyền đầu ra AI (1đ). (c) GDPR/NĐ-13: 3 quyền người dùng (1đ). (d) Thiên lệch &amp; nguồn (1đ). (e) 5 nguyên tắc đạo đức AI (1đ).</div></div>
+      <div class="q"><div class="qn">Phần 2 — Ứng dụng (5đ).</div><div class="qp">Phân tích 1 case study (agent tuyển dụng): rủi ro pháp lý + đạo đức + đề xuất kỹ thuật giảm.</div></div>
+      <details class="answer"><summary>✅ Hướng dẫn chấm</summary><div class="body"><div class="rubric"><span class="rt">Rubric</span>8.5-10: Phân tích sâu, có kỹ thuật cụ thể · 7-8.4: Đầy đủ · 5.5-6.9: Chung chung · &lt;5.5: Thiếu.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ (tiểu luận chính sách) <span class="et">B6</span></div>
+      <div class="emeta"><span>⏱ <b>cả buổi</b></span><span>Trọng số: <b>30%</b></span></div>
+      <div class="q"><div class="qn">P1 (5đ).</div><div class="qp">Chính sách dữ liệu cho hệ thống AI (chọn kịch bản): dữ liệu, mask, lưu, quyền user, xóa.</div></div>
+      <div class="q"><div class="qn">P2 (3đ).</div><div class="qp">5 rủi ro pháp lý + mức độ + biện pháp.</div></div>
+      <div class="q"><div class="qn">P3 (2đ).</div><div class="qp">1 dilemma đạo đức + giải pháp.</div></div>
+      <details class="answer"><summary>✅ Hướng dẫn chấm</summary><div class="body"><div class="rubric"><span class="rt">Rubric CK</span>9-10: Chính sách cụ thể đầy đủ · 7-8: Đầy đủ thiếu sâu · 5-6: Chung chung · &lt;5: Thiếu phần.</div></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s10/b6"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 6</div></a>
+      <a class="next" href="#/s11"><div class="pl">Môn cuối →</div><div class="pt">M11 ĐATN</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s10">M10 Pháp lý AI</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -3558,6 +3707,7 @@ function renderExams(sid){
   if(sid === 's7'){ renderM7Exams(); return; }
   if(sid === 's8'){ renderM8Exams(); return; }
   if(sid === 's9'){ renderM9Exams(); return; }
+  if(sid === 's10'){ renderM10Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
