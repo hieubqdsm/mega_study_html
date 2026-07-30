@@ -1,0 +1,340 @@
+/* ============================================================
+   Procreate Handbook (tiếng Việt) — CSS chung
+   Dark-first, có chế độ sáng, sidebar + topbar sticky
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Light theme (MẶC ĐỊNH — đồng bộ với site gốc Procreate) */
+  --bg: #ffffff;
+  --bg-elev: #ffffff;
+  --bg-soft: #f5f5f7;
+  --bg-hover: #ececf0;
+  --text: #242424;
+  --text-dim: #55555f;
+  --text-faint: #8a8a96;
+  --accent: #ff3b6b;            /* hồng Procreate */
+  --accent-2: #e0245a;
+  --accent-soft: rgba(255, 59, 107, 0.08);
+  --link: #1d6fff;
+  --border: #e6e6ea;
+  --border-soft: #f0f0f3;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --sidebar-w: 300px;
+  --topbar-h: 52px;
+  --max-content: 820px;
+  --radius: 10px;
+  --topbar-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* Dark theme (bật qua nút toggle) */
+html[data-theme="dark"] {
+  --bg: #15151a;
+  --bg-elev: #1e1e25;
+  --bg-soft: #26262e;
+  --bg-hover: #2e2e37;
+  --text: #ececf1;
+  --text-dim: #9b9ba8;
+  --text-faint: #6b6b78;
+  --accent: #ff3b6b;
+  --accent-2: #ff7aa8;
+  --accent-soft: rgba(255, 59, 107, 0.12);
+  --link: #6ab8ff;
+  --border: #2f2f38;
+  --border-soft: #242429;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --topbar-bg: rgba(21, 21, 26, 0.85);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.layout { display: flex; min-height: 100vh; }
+.main-wrap { flex: 1; min-width: 0; margin-left: var(--sidebar-w); display: flex; flex-direction: column; }
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 200;
+  transition: transform 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+.sidebar::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+.sidebar-head {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+  background: var(--bg-elev);
+  z-index: 2;
+}
+.brand {
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; color: var(--text);
+  font-size: 1.05rem; font-weight: 500;
+}
+.brand:hover { color: var(--accent); }
+.brand-ic { font-size: 1.3rem; }
+.brand b { color: var(--accent); font-weight: 800; }
+
+.nav { list-style: none; padding: 8px 0; flex: 1; }
+
+/* Mục Home */
+.nav-home a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 20px;
+  color: var(--text-dim); text-decoration: none;
+  font-weight: 600; font-size: 0.92rem;
+  border-left: 3px solid transparent;
+}
+.nav-home a:hover { color: var(--text); background: var(--bg-soft); }
+.nav-home a.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-soft); }
+
+/* Chương */
+.nav-chapter > details > summary {
+  list-style: none; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 20px 8px 17px;
+  color: var(--text); font-weight: 600; font-size: 0.92rem;
+  border-left: 3px solid transparent;
+  user-select: none;
+}
+.nav-chapter > details > summary::-webkit-details-marker { display: none; }
+.nav-chapter > details > summary:hover { background: var(--bg-soft); }
+.nav-chapter > details[open] > summary { border-left-color: var(--accent); background: var(--accent-soft); }
+.nav-ic { font-size: 1.05rem; width: 1.4em; text-align: center; flex-shrink: 0; }
+.nav-label { flex: 1; }
+.nav-count {
+  font-size: 0.7rem; color: var(--text-faint);
+  background: var(--bg-soft); border: 1px solid var(--border);
+  padding: 1px 7px; border-radius: 10px; font-weight: 600;
+}
+
+/* Sub-pages */
+.nav-sub { list-style: none; padding: 2px 0 6px; }
+.nav-sub a {
+  display: block; padding: 6px 20px 6px 48px;
+  color: var(--text-dim); text-decoration: none;
+  font-size: 0.87rem; line-height: 1.4;
+  position: relative;
+}
+.nav-sub a::before {
+  content: ""; position: absolute; left: 38px; top: 0; bottom: 0;
+  width: 1px; background: var(--border);
+}
+.nav-sub a:hover { color: var(--text); background: var(--bg-soft); }
+.nav-sub a.active {
+  color: var(--accent-2); font-weight: 600;
+  background: var(--accent-soft);
+}
+.nav-sub a.active::before { background: var(--accent); width: 2px; }
+
+.sidebar-foot {
+  margin-top: auto; padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 0.74rem; color: var(--text-faint); line-height: 1.5;
+}
+
+/* ============================================================
+   Topbar (sticky)
+   ============================================================ */
+.topbar {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--topbar-h);
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 24px;
+  background: var(--topbar-bg);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.breadcrumb {
+  flex: 1; font-size: 0.82rem; color: var(--text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.breadcrumb a { color: var(--text-dim); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { margin: 0 6px; color: var(--text-faint); }
+.breadcrumb .crumb-current { color: var(--text); font-weight: 600; }
+
+.menu-toggle, .theme-toggle {
+  background: var(--bg-soft); border: 1px solid var(--border);
+  color: var(--text); width: 36px; height: 36px;
+  border-radius: 8px; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.menu-toggle { display: none; }
+.menu-toggle:hover, .theme-toggle:hover { background: var(--bg-hover); border-color: var(--accent); }
+
+/* ============================================================
+   Content
+   ============================================================ */
+.content {
+  flex: 1;
+  padding: 40px 32px 80px;
+}
+.content article { max-width: var(--max-content); margin: 0 auto; }
+
+.lang-note {
+  background: var(--accent-soft); border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  color: var(--text-dim);
+  padding: 11px 15px; border-radius: 8px;
+  font-size: 0.84rem; margin-bottom: 26px;
+}
+
+.content h1 {
+  font-size: 2.15rem; font-weight: 800; margin-bottom: 16px;
+  color: var(--text); letter-spacing: -0.025em; line-height: 1.2;
+}
+.content h2 {
+  font-size: 1.4rem; font-weight: 750; margin: 42px 0 14px;
+  padding-bottom: 9px; border-bottom: 1px solid var(--border);
+  color: var(--text); scroll-margin-top: calc(var(--topbar-h) + 20px);
+}
+/* H2 chua POI: bo gach duoi (giong goc), giam font */
+.content h2:has(.poi-num) {
+  border-bottom: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 34px;
+  padding-bottom: 0;
+}
+/* Points of Interest: pill chua text + vong tron so truoc (design goc Procreate) */
+.content .poi-num {
+  display: inline-flex; align-items: center;
+  position: relative;
+  background: var(--bg-soft);
+  color: var(--text);
+  border-radius: 9999px;
+  padding: 7px 14px 7px 20px;   /* padding-left them cho chua so */
+  font-size: 0.92rem;
+  font-weight: 600;
+  margin-left: 33px;            /* de chua vong tron ::before dung ra ngoai */
+  line-height: 1;
+}
+.content .poi-num::before {
+  content: attr(data-num);
+  position: absolute;
+  left: -33px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.content h3 {
+  font-size: 1.12rem; font-weight: 700; margin: 26px 0 8px;
+  color: var(--accent-2); scroll-margin-top: calc(var(--topbar-h) + 20px);
+}
+.content p { margin: 13px 0; color: var(--text); }
+.content strong { color: var(--text); font-weight: 700; }
+.content em { color: var(--text-dim); }
+.content a { color: var(--link); text-decoration: none; border-bottom: 1px solid rgba(106, 184, 255, 0.3); }
+.content a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.content ul, .content ol { margin: 13px 0 13px 22px; }
+.content li { margin: 6px 0; }
+.content img {
+  max-width: 100%; height: auto;
+  border-radius: var(--radius);
+  margin: 18px 0;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+}
+.content img[data-missing] { display: none; }
+.content code {
+  background: var(--bg-soft); padding: 2px 6px; border-radius: 4px;
+  font-family: "SF Mono", "Cascadia Code", Consolas, Menlo, monospace;
+  font-size: 0.88em; color: var(--accent-2);
+}
+.content pre {
+  background: var(--bg-elev); border: 1px solid var(--border);
+  padding: 14px 16px; border-radius: var(--radius);
+  overflow-x: auto; margin: 16px 0;
+}
+.content pre code { background: none; padding: 0; color: var(--text); }
+.content hr { border: none; border-top: 1px solid var(--border); margin: 34px 0; }
+.content blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 6px 16px; margin: 16px 0;
+  color: var(--text-dim); background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+}
+
+/* ============================================================
+   Pager
+   ============================================================ */
+.pager {
+  max-width: var(--max-content); margin: 56px auto 0;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding-top: 22px; border-top: 1px solid var(--border);
+}
+.pager a, .pager span {
+  font-size: 0.92rem; padding: 9px 16px; border-radius: 8px;
+  text-decoration: none; border-bottom: none;
+}
+.pager a { background: var(--bg-elev); color: var(--text); border: 1px solid var(--border); transition: border-color 0.15s, color 0.15s; }
+.pager a:hover { border-color: var(--accent); color: var(--accent); }
+.pager .muted { color: var(--text-faint); }
+.pager-title { color: var(--text-dim); font-weight: 600; font-size: 0.82rem; text-align: center; }
+
+/* ============================================================
+   Back-to-top
+   ============================================================ */
+.to-top {
+  position: fixed; bottom: 28px; right: 28px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  border: none; font-size: 1.3rem; cursor: pointer;
+  box-shadow: var(--shadow);
+  opacity: 0; visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+  z-index: 150;
+}
+.to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.to-top:hover { background: var(--accent-2); }
+
+/* ============================================================
+   Mobile
+   ============================================================ */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0, 0, 0, 0.5); z-index: 150;
+}
+.overlay.show { display: block; }
+
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); box-shadow: var(--shadow); }
+  .sidebar.open { transform: translateX(0); }
+  .main-wrap { margin-left: 0; }
+  .menu-toggle { display: flex; }
+  .content { padding: 30px 18px 60px; }
+  .content h1 { font-size: 1.7rem; }
+}

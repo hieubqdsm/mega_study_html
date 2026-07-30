@@ -1,0 +1,57 @@
+/* ============================================================
+   native.css — layout cho trang native (content gốc + sidebar Việt)
+   KHÔNG đụng tới class Tailwind gốc trong content (POI, layout nội dung).
+   Chỉ style: body, layout flex, sidebar, content wrapper, note.
+   ============================================================ */
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #fff;
+  color: #242424;
+  margin: 0;
+  /* base theo gốc Procreate */
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Layout: sidebar trái + content phải */
+.layout { display: flex; min-height: 100vh; }
+.main-wrap {
+  flex: 1; min-width: 0;
+  margin-left: var(--sidebar-w);
+  display: flex; flex-direction: column;
+}
+
+/* Content native: căn giữa, max-width cho dễ đọc.
+   Quan trọng: KHÔNG ghi đè class Tailwind bên trong (.native-content chỉ set
+   max-width + padding cho vỏ ngoài, content gốc giữ style Procreate). */
+.native-content {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+  width: 100%;
+}
+.native-content > main,
+.native-content > div {
+  /* content gốc có thể bọc trong <main> hoặc div — bỏ float/margin thừa */
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* Lang note */
+.lang-note {
+  background: #fff5f7; border-left: 3px solid #ff3b6b; color: #b03050;
+  padding: 11px 15px; border-radius: 0 8px 8px 0;
+  font-size: 0.85rem; margin: 0 0 24px;
+}
+
+/* Ẩn template Alpine */
+template { display: none !important; }
+
+/* Responsive: mobile ẩn sidebar */
+@media (max-width: 900px) {
+  .main-wrap { margin-left: 0; }
+  .native-content { padding: 30px 18px 60px; }
+}
