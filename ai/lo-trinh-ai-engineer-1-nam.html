@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sổ Giáo Án — Kỹ Sư AI Thực Chiến 1 Năm</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #6366f1; --primary-glow: #818cf8;
+    --accent: #f59e0b; --accent-2: #fbbf24;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --hk1: #34d399; --hk2: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #0d0f1a; --darker: #06070d;
+    --light: #cdd3e0; --light-strong: #f3f5fa; --gray: #8a92a6;
+    --card: #141826; --card-2: #1c2233; --border: #2a3146; --terminal: #080b14;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f7891;
+    --sidebar-w: 286px; --sidebar-w-collapsed: 0px;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.78; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(99,102,241,.11) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(245,158,11,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+
+  /* ===== LAYOUT: sidebar (collapsible) + content ===== */
+  .app { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: var(--sidebar-w); background: linear-gradient(180deg, var(--dark) 0%, #04060c 100%);
+    position: fixed; height: 100vh; overflow-y: auto; overflow-x: hidden;
+    border-right: 2px solid var(--primary); z-index: 100; transition: width .25s, transform .25s; box-shadow: 4px 0 30px rgba(99,102,241,.14);
+  }
+  .sidebar.collapsed { width: 0; border-right: none; box-shadow: none; }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .main { flex: 1; margin-left: var(--sidebar-w); transition: margin-left .25s; }
+  body.sb-collapsed { --sidebar-w: 0px; }
+  body.sb-collapsed .main { margin-left: 0; }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar-inner { min-width: 286px; padding: 22px 0 60px; }
+  .logo { text-align: center; padding: 0 18px 18px; border-bottom: 2px solid var(--border); margin-bottom: 12px; }
+  .logo .ic { font-size: 38px; margin-bottom: 4px; filter: drop-shadow(0 0 14px rgba(99,102,241,.55)); }
+  .logo h1 { font-size: 16px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 10px; color: var(--gray); margin-top: 5px; letter-spacing: 1.2px; }
+  .sidebar-search { padding: 10px 16px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+  .sidebar-search input { width: 100%; padding: 8px 11px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 12.5px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); }
+  .nav-menu { list-style: none; padding: 0 10px; }
+  .nav-menu li { margin-bottom: 1px; }
+  .nav-h { font-size: 9.5px; text-transform: uppercase; letter-spacing: 1.3px; padding: 12px 10px 5px; font-weight: 800; display:flex; align-items:center; gap:7px; cursor: pointer; }
+  .nav-h .badge { font-size: 8.5px; padding: 2px 6px; border-radius: 8px; font-weight: 900; color:#06070d; }
+  .nav-h .chev { margin-left:auto; font-size:11px; transition: transform .2s; color: var(--gray); }
+  .nav-h.open .chev { transform: rotate(90deg); }
+  .nhk1 { color: var(--hk1); } .nhk1 .badge { background: var(--hk1); }
+  .nhk2 { color: var(--hk2); } .nhk2 .badge { background: var(--hk2); }
+  .nav-group { display: none; }
+  .nav-h.open + .nav-group { display: block; }
+  .nav-subject { padding: 6px 8px 4px; }
+  .nav-subject > .ns-head { display:flex; align-items:center; gap:8px; padding: 6px 8px; color: var(--light-strong); font-size: 12.5px; font-weight: 700; border-radius: 6px; cursor: pointer; }
+  .nav-subject > .ns-head:hover { background: var(--card); }
+  .nav-subject > .ns-head .ns-ic { font-size: 15px; }
+  .nav-subject > .ns-head .ns-chev { margin-left:auto; font-size:10px; color: var(--gray); transition: transform .2s; }
+  .nav-subject.open > .ns-head .ns-chev { transform: rotate(90deg); }
+  .nav-subject > .ns-head.active { color: var(--primary-glow); }
+  .nav-subject > .ns-list { display: none; list-style: none; margin: 2px 0 6px; padding: 0 0 0 22px; border-left: 1px dashed var(--border); }
+  .nav-subject.open > .ns-list { display: block; }
+  .nav-subject > .ns-list a { display:flex; align-items:center; gap:7px; padding: 5px 9px; color: var(--gray); text-decoration: none; border-radius: 5px; transition: all .15s; font-size: 12px; border-left: 2px solid transparent; }
+  .nav-subject > .ns-list a:hover { color: var(--light); background: var(--card); }
+  .nav-subject > .ns-list a.active { color: var(--primary-glow); border-left-color: var(--primary); background: rgba(99,102,241,.1); }
+  .nav-subject > .ns-list a .ln { font-size: 10px; font-weight: 800; color: var(--gray); min-width: 16px; }
+  .nav-subject > .ns-list a.active .ln { color: var(--primary-glow); }
+  .nav-plain { padding: 2px 8px; }
+  .nav-plain a { display:flex; align-items:center; gap:8px; padding: 7px 10px; color: var(--gray); text-decoration: none; border-radius: 6px; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-plain a:hover, .nav-plain a.active { color: var(--primary-glow); border-left-color: var(--primary); background: rgba(99,102,241,.1); }
+
+  /* ===== TOPBAR ===== */
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,7,13,.85); border-bottom: 1px solid var(--border); padding: 10px 18px 10px 16px; display:flex; align-items:center; gap:12px; }
+  .sb-toggle { background: var(--card); border:1px solid var(--border); color: var(--light); width: 38px; height: 38px; border-radius: 9px; cursor: pointer; font-size: 18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition: all .2s; }
+  .sb-toggle:hover { border-color: var(--primary); color: var(--primary-glow); }
+  .crumb { font-size: 13px; color: var(--gray); flex: 1; }
+  .crumb b { color: var(--accent-2); }
+  .crumb .sep { color: var(--border); margin: 0 6px; }
+  .crumb a { color: var(--gray); text-decoration: none; }
+  .crumb a:hover { color: var(--primary-glow); }
+  .home-link { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:6px 12px; border-radius:7px; white-space:nowrap; }
+  .home-link:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content { padding: 32px 44px 60px; max-width: 1080px; }
+  @media (max-width: 980px){ .content { padding: 22px 16px 50px; } }
+
+  /* ===== PAGE (1 trang tại 1 thời điểm) ===== */
+  .page { display: none; }
+  .page.active { display: block; animation: fade .25s; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to { opacity:1; transform:none; } }
+
+  /* ===== HERO ===== */
+  .hero { background: linear-gradient(135deg, rgba(99,102,241,.16), rgba(245,158,11,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 34px; margin-bottom: 24px; position: relative; overflow: hidden; }
+  .hero::after { content:"👨‍🏫"; position:absolute; right:26px; bottom:-20px; font-size:170px; opacity:.06; }
+  .hero h1 { font-size: 28px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 800px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 18px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  /* ===== SUBJECT INFO CARD ===== */
+  .subj-info { display:grid; grid-template-columns: repeat(auto-fit, minmax(170px,1fr)); gap: 10px; margin: 16px 0; }
+  .subj-info .ii { background: var(--card-2); border:1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+  .subj-info .ii .ik { font-size: 10.5px; color: var(--gray); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; }
+  .subj-info .ii .iv { font-size: 14px; color: var(--light-strong); font-weight: 700; }
+  .subj-info .ii .iv b { color: var(--accent-2); }
+  .goals { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .goals .gblk { background: var(--card-2); border:1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .goals .gblk h4 { color: var(--primary-glow); font-size: 14.5px; margin-bottom: 8px; }
+  .goals .gblk ul { margin: 6px 0 0 18px; font-size: 13.2px; } .goals .gblk li { margin-bottom: 5px; }
+
+  /* ===== LESSON / EXAM HEADER ===== */
+  .page-head { margin-bottom: 20px; }
+  .page-head .kicker { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; display:inline-block; margin-bottom: 12px; }
+  .kicker.k-info { background: rgba(96,165,250,.16); color: var(--info); }
+  .kicker.k-lesson { background: rgba(99,102,241,.16); color: var(--primary-glow); }
+  .kicker.k-exam { background: rgba(245,158,11,.16); color: var(--accent-2); }
+  .page-head h1 { font-size: 26px; color: var(--light-strong); line-height: 1.25; }
+  .page-head .ch-sub { color: var(--gray); font-size: 14px; margin-top: 8px; }
+
+  /* ===== TIMELINE phút-by-phút ===== */
+  .timeline { background: var(--card-2); border:1px solid var(--border); border-radius: 12px; padding: 6px; margin: 16px 0; }
+  .tl-row { display:grid; grid-template-columns: 88px 1fr; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--border); align-items: start; }
+  .tl-row:last-child { border-bottom: none; }
+  .tl-time { font-family: monospace; font-size: 12.5px; color: var(--accent-2); font-weight: 700; white-space: nowrap; padding-top: 2px; }
+  .tl-act .tname { font-weight: 700; color: var(--light-strong); font-size: 14px; display:flex; align-items:center; gap:8px; }
+  .pill { font-size: 10px; padding: 2px 8px; border-radius: 12px; font-weight: 800; letter-spacing: .5px; }
+  .pill.old { background: rgba(248,113,113,.16); color: var(--danger); }
+  .pill.warm { background: rgba(251,191,36,.16); color: var(--warn); }
+  .pill.teach { background: rgba(96,165,250,.16); color: var(--info); }
+  .pill.prac { background: rgba(52,211,153,.16); color: var(--ok); }
+  .pill.wrap { background: rgba(176,124,255,.16); color: var(--code-purple); }
+  .tl-act .tdesc { font-size: 13px; color: var(--gray); margin-top: 4px; }
+
+  h2.sec { font-size: 18px; color: var(--accent-2); margin: 24px 0 10px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h3.mini { font-size: 14.5px; color: var(--primary-glow); margin: 16px 0 7px; }
+  h4.mini { font-size: 14.5px; color: var(--primary-glow); margin: 18px 0 8px; }
+  p { margin-bottom: 11px; }
+  ul, ol { margin: 0 0 12px 22px; } li { margin-bottom: 5px; }
+  strong { color: var(--light-strong); }
+  em { color: var(--accent-2); font-style: normal; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* ===== BOXES ===== */
+  .box { border-radius: 10px; padding: 14px 18px 14px 44px; margin: 16px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(99,102,241,.08); border-color: rgba(99,102,241,.4);} .box.pro::before{content:"🎯";}
+
+  /* ===== CODE BLOCK ===== */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:14px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:14px 16px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* ===== BÀI CŨ TRA BÀI ===== */
+  .ask-list { background: var(--card); border:1px solid var(--border); border-left:4px solid var(--danger); border-radius: 10px; padding: 14px 18px; margin: 14px 0; }
+  .ask-list .ah { font-weight: 800; color: var(--danger); margin-bottom: 8px; display:flex; align-items:center; gap:8px; font-size: 14.5px; }
+  .ask-list ol { margin: 4px 0 0 22px; } .ask-list li { margin-bottom: 6px; font-size: 13.3px; }
+  .ask-list .ans { color: var(--gray); font-size: 12.5px; display:block; margin-top: 3px; }
+  .ask-list .ans::before { content:"→ "; color: var(--ok); }
+
+  /* ===== EXERCISE ===== */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:16px 19px; margin:18px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15px; }
+  .exercise .etask { font-size:13.8px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:140px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:11px 13px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#06070d; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:11px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:3px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+  details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details.answer summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; background: rgba(52,211,153,.08); color: var(--ok); }
+  details.answer summary::-webkit-details-marker { display:none; }
+  details.answer summary::before { content:"▸ "; } details.answer[open] summary::before { content:"▾ "; }
+  details.answer .body { padding: 8px 13px 12px; font-size: 13.3px; }
+
+  /* ===== QUIZ ===== */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 19px; margin:18px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:15px; }
+  .qitem { margin-bottom:16px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:8px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13px; padding:9px 13px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:8px; font-size:12.8px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:8px 11px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* ===== ĐỀ THI ===== */
+  .exam { background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(99,102,241,.05)); border:1px solid var(--accent); border-radius:14px; padding:20px 22px; margin:20px 0; }
+  .exam .eh { font-weight:900; color: var(--accent-2); margin-bottom:6px; display:flex; align-items:center; gap:10px; font-size:16px; flex-wrap:wrap; }
+  .exam .eh .et { font-size:10.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase; background:var(--accent); color:#1a1206; padding:3px 10px; border-radius:20px; }
+  .exam .emeta { display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--gray); margin: 6px 0 12px; }
+  .exam .emeta b { color: var(--light-strong); }
+  .exam .q { background: var(--card); border:1px solid var(--border); border-radius:10px; padding:13px 16px; margin:10px 0; }
+  .exam .q .qn { font-weight:800; color:var(--accent-2); margin-bottom:5px; font-size:13.8px; }
+  .exam .q .qp { font-size:13.8px; color: var(--light); }
+  .exam .q .qp code { background:var(--terminal); color:var(--code-green); padding:1px 5px; border-radius:4px; font-size:12.5px; }
+  .exam .rubric { background: rgba(52,211,153,.06); border:1px solid rgba(52,211,153,.4); border-radius:10px; padding:13px 16px; margin-top:14px; }
+  .exam .rubric .rt { font-weight:800; color: var(--ok); display:block; margin-bottom:6px; font-size:13.5px; }
+
+  /* ===== PAGER ===== */
+  .pager { display:flex; justify-content:space-between; gap: 12px; margin: 36px 0 8px; }
+  .pager a { flex: 1; max-width: 48%; background: var(--card); border:1px solid var(--border); border-radius: 12px; padding: 14px 18px; text-decoration:none; color: var(--light); transition: all .2s; }
+  .pager a:hover { border-color: var(--primary); transform: translateY(-2px); }
+  .pager a .pl { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+  .pager a .pt { font-size: 14px; color: var(--light-strong); font-weight: 700; margin-top: 3px; }
+  .pager a.next { text-align: right; }
+
+  /* ===== FLASHCARDS / CHEATSHEET / PROGRESS ===== */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:14px 0; }
+  .flashcard { perspective:1000px; height:140px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:6px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.6px; }
+  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap:14px; }
+  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .cheat-card h4 { color: var(--primary-glow); font-size:14.5px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .cheat-card .ci { background: var(--terminal); border:1px solid var(--border); border-radius:8px; padding:9px 11px; font-size:12px; color:var(--code-green); white-space:pre; overflow-x:auto; margin-bottom:8px; }
+  .progress-wrap { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:18px 0; }
+  .progress-wrap .pt { font-weight:800; color:var(--light-strong); margin-bottom:10px; }
+  .progress-bar { height:10px; background: var(--card-2); border-radius:6px; overflow:hidden; margin-bottom:8px; }
+  .progress-fill { height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width:0%; transition: width .6s; border-radius:6px; }
+  .progress-wrap .ps { font-size:12px; color:var(--gray); }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 24px 44px; color: var(--gray); font-size: 12.5px; }
+  footer.foot a { color: var(--primary-glow); }
+
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); width: 286px; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .main { margin-left: 0; }
+    body.sb-collapsed { --sidebar-w: 0px; }
+    .content { padding: 22px 16px 50px; }
+    .hero { padding:22px 18px; } .hero h1 { font-size:22px; }
+    .goals { grid-template-columns: 1fr; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .tl-row { grid-template-columns: 76px 1fr; gap: 8px; }
+    footer.foot { padding: 22px 16px; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:20px; } .page-head h1 { font-size: 22px; }
+    .meta-pill { font-size:12px; }
+    .subj-info { grid-template-columns: 1fr 1fr; }
+    .pager { flex-direction: column; } .pager a.next { text-align: left; }
+  }
+</style>
+</head>
+<body class="sb-collapsed-mobile">
+<div class="app">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="logo">
+        <div class="ic">👨‍🏫</div>
+        <h1>Sổ Giáo Án AI 1 Năm</h1>
+        <div class="sub">11 MÔN · 2 HỌC KÌ</div>
+      </div>
+      <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm môn / buổi..."></div>
+      <ul class="nav-menu" id="navMenu">
+        <li class="nav-plain"><a href="#/overview" data-page="overview">🏠 Tổng quan &amp; thời khóa biểu</a></li>
+
+        <li class="nav-h nhk1 open" onclick="this.classList.toggle('open')"><span class="badge">HK1</span> 5 môn · Mô hình hóa <span class="chev">▶</span></li>
+        <li class="nav-group">
+          <div class="nav-subject open" data-sid="s1">
+            <div class="ns-head" onclick="toggleNavSubject('s1')"><span class="ns-ic">📐</span> M1 · Toán cho AI <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s1" data-page="s1"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s1/b1" data-page="s1-b1"><span class="ln">B1</span> Ôn đại số &amp; giới thiệu</a></li>
+              <li><a href="#/s1/b2" data-page="s1-b2"><span class="ln">B2</span> Đạo hàm &amp; Gradient (KT15')</a></li>
+              <li><a href="#/s1/b3" data-page="s1-b3"><span class="ln">B3</span> NumPy &amp; vector hóa</a></li>
+              <li><a href="#/s1/b4" data-page="s1-b4"><span class="ln">B4</span> Xác suất &amp; Bayes</a></li>
+              <li><a href="#/s1/b5" data-page="s1-b5"><span class="ln">B5</span> Ứng dụng Toán (KT15')</a></li>
+              <li><a href="#/s1/b6" data-page="s1-b6"><span class="ln">B6</span> Ôn giữa kì</a></li>
+              <li><a href="#/s1/b7" data-page="s1-b7"><span class="ln">B7</span> 📋 Giữa kì môn</a></li>
+              <li><a href="#/s1/b8" data-page="s1-b8"><span class="ln">B8</span> Bài tập lớn + ôn CK</a></li>
+              <li><a href="#/s1/exams" data-page="s1-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s2">
+            <div class="ns-head" onclick="toggleNavSubject('s2')"><span class="ns-ic">🐍</span> M2 · Python &amp; Dữ liệu <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s2" data-page="s2"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s2/b1" data-page="s2-b1"><span class="ln">B1</span> Môi trường &amp; Python</a></li>
+              <li><a href="#/s2/b2" data-page="s2-b2"><span class="ln">B2</span> OOP (KT15')</a></li>
+              <li><a href="#/s2/b3" data-page="s2-b3"><span class="ln">B3</span> NumPy</a></li>
+              <li><a href="#/s2/b4" data-page="s2-b4"><span class="ln">B4</span> Pandas</a></li>
+              <li><a href="#/s2/b5" data-page="s2-b5"><span class="ln">B5</span> Làm sạch (KT15')</a></li>
+              <li><a href="#/s2/b6" data-page="s2-b6"><span class="ln">B6</span> Ôn GK</a></li>
+              <li><a href="#/s2/b7" data-page="s2-b7"><span class="ln">B7</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s2/b8" data-page="s2-b8"><span class="ln">B8</span> Mini-project EDA</a></li>
+              <li><a href="#/s2/exams" data-page="s2-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s3">
+            <div class="ns-head" onclick="toggleNavSubject('s3')"><span class="ns-ic">📊</span> M3 · Machine Learning <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s3" data-page="s3"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s3/b1" data-page="s3-b1"><span class="ln">B1</span> ML &amp; scikit-learn</a></li>
+              <li><a href="#/s3/b2" data-page="s3-b2"><span class="ln">B2</span> Linear/Logistic (KT15')</a></li>
+              <li><a href="#/s3/b3" data-page="s3-b3"><span class="ln">B3</span> Đánh giá model</a></li>
+              <li><a href="#/s3/b4" data-page="s3-b4"><span class="ln">B4</span> Tree &amp; Random Forest</a></li>
+              <li><a href="#/s3/b5" data-page="s3-b5"><span class="ln">B5</span> XGBoost (KT15')</a></li>
+              <li><a href="#/s3/b6" data-page="s3-b6"><span class="ln">B6</span> K-Means &amp; PCA</a></li>
+              <li><a href="#/s3/b7" data-page="s3-b7"><span class="ln">B7</span> CV &amp; Pipeline</a></li>
+              <li><a href="#/s3/b8" data-page="s3-b8"><span class="ln">B8</span> GridSearch + ôn</a></li>
+              <li><a href="#/s3/b9" data-page="s3-b9"><span class="ln">B9</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s3/b10" data-page="s3-b10"><span class="ln">B10</span> 🏆 Mid-term Project</a></li>
+              <li><a href="#/s3/exams" data-page="s3-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s4">
+            <div class="ns-head" onclick="toggleNavSubject('s4')"><span class="ns-ic">🔥</span> M4 · Deep Learning &amp; CV <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s4" data-page="s4"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s4/b1" data-page="s4-b1"><span class="ln">B1</span> ANN &amp; PyTorch</a></li>
+              <li><a href="#/s4/b2" data-page="s4-b2"><span class="ln">B2</span> Kích hoạt &amp; loss (KT15')</a></li>
+              <li><a href="#/s4/b3" data-page="s4-b3"><span class="ln">B3</span> Dataset/DataLoader</a></li>
+              <li><a href="#/s4/b4" data-page="s4-b4"><span class="ln">B4</span> Training loop</a></li>
+              <li><a href="#/s4/b5" data-page="s4-b5"><span class="ln">B5</span> CNN (KT15')</a></li>
+              <li><a href="#/s4/b6" data-page="s4-b6"><span class="ln">B6</span> Pooling &amp; MNIST</a></li>
+              <li><a href="#/s4/b7" data-page="s4-b7"><span class="ln">B7</span> Object detection</a></li>
+              <li><a href="#/s4/b8" data-page="s4-b8"><span class="ln">B8</span> YOLO train</a></li>
+              <li><a href="#/s4/b9" data-page="s4-b9"><span class="ln">B9</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s4/b10" data-page="s4-b10"><span class="ln">B10</span> 🏆 Project YOLO</a></li>
+              <li><a href="#/s4/exams" data-page="s4-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s5">
+            <div class="ns-head" onclick="toggleNavSubject('s5')"><span class="ns-ic">🧠</span> M5 · NLP &amp; LLM <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s5" data-page="s5"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s5/b1" data-page="s5-b1"><span class="ln">B1</span> NLP cốt lõi</a></li>
+              <li><a href="#/s5/b2" data-page="s5-b2"><span class="ln">B2</span> Word2Vec (KT15')</a></li>
+              <li><a href="#/s5/b3" data-page="s5-b3"><span class="ln">B3</span> RNN/LSTM</a></li>
+              <li><a href="#/s5/b4" data-page="s5-b4"><span class="ln">B4</span> Self-Attention</a></li>
+              <li><a href="#/s5/b5" data-page="s5-b5"><span class="ln">B5</span> Transformer (KT15')</a></li>
+              <li><a href="#/s5/b6" data-page="s5-b6"><span class="ln">B6</span> Gọi LLM API</a></li>
+              <li><a href="#/s5/b7" data-page="s5-b7"><span class="ln">B7</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s5/b8" data-page="s5-b8"><span class="ln">B8</span> 🏆 Final HK1</a></li>
+              <li><a href="#/s5/exams" data-page="s5-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-h nhk2" onclick="this.classList.toggle('open')"><span class="badge">HK2</span> 6 môn · Hệ thống <span class="chev">▶</span></li>
+        <li class="nav-group">
+          <div class="nav-subject" data-sid="s6"><div class="ns-head" onclick="toggleNavSubject('s6')"><span class="ns-ic">🧩</span> M6 · AI Agent <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s6" data-page="s6"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s6/b1" data-page="s6-b1"><span class="ln">B1</span> Agent &amp; Context</a></li>
+              <li><a href="#/s6/b2" data-page="s6-b2"><span class="ln">B2</span> RAG (KT15')</a></li>
+              <li><a href="#/s6/b3" data-page="s6-b3"><span class="ln">B3</span> Chunking</a></li>
+              <li><a href="#/s6/b4" data-page="s6-b4"><span class="ln">B4</span> Tool calling</a></li>
+              <li><a href="#/s6/b5" data-page="s6-b5"><span class="ln">B5</span> ReAct (KT15')</a></li>
+              <li><a href="#/s6/b6" data-page="s6-b6"><span class="ln">B6</span> Memory</a></li>
+              <li><a href="#/s6/b7" data-page="s6-b7"><span class="ln">B7</span> State</a></li>
+              <li><a href="#/s6/b8" data-page="s6-b8"><span class="ln">B8</span> Ôn GK</a></li>
+              <li><a href="#/s6/b9" data-page="s6-b9"><span class="ln">B9</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s6/b10" data-page="s6-b10"><span class="ln">B10</span> 🏆 Project Agent</a></li>
+              <li><a href="#/s6/exams" data-page="s6-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s7"><div class="ns-head" onclick="toggleNavSubject('s7')"><span class="ns-ic">🕸️</span> M7 · Multi-Agent <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s7" data-page="s7"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s7/b1" data-page="s7-b1"><span class="ln">B1</span> Orchestration</a></li>
+              <li><a href="#/s7/b2" data-page="s7-b2"><span class="ln">B2</span> LangGraph (KT15')</a></li>
+              <li><a href="#/s7/b3" data-page="s7-b3"><span class="ln">B3</span> Workflow 3 agent</a></li>
+              <li><a href="#/s7/b4" data-page="s7-b4"><span class="ln">B4</span> Route model</a></li>
+              <li><a href="#/s7/b5" data-page="s7-b5"><span class="ln">B5</span> Eval (KT15')</a></li>
+              <li><a href="#/s7/b6" data-page="s7-b6"><span class="ln">B6</span> LLM-as-judge</a></li>
+              <li><a href="#/s7/b7" data-page="s7-b7"><span class="ln">B7</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s7/b8" data-page="s7-b8"><span class="ln">B8</span> 🏆 Mid-term HK2</a></li>
+              <li><a href="#/s7/exams" data-page="s7-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s8"><div class="ns-head" onclick="toggleNavSubject('s8')"><span class="ns-ic">🔐</span> M8 · Security &amp; Gov <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s8" data-page="s8"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s8/b1" data-page="s8-b1"><span class="ln">B1</span> Threat model</a></li>
+              <li><a href="#/s8/b2" data-page="s8-b2"><span class="ln">B2</span> Prompt injection (KT15')</a></li>
+              <li><a href="#/s8/b3" data-page="s8-b3"><span class="ln">B3</span> Tool abuse</a></li>
+              <li><a href="#/s8/b4" data-page="s8-b4"><span class="ln">B4</span> RBAC, allow-list</a></li>
+              <li><a href="#/s8/b5" data-page="s8-b5"><span class="ln">B5</span> Quản lý key (KT15')</a></li>
+              <li><a href="#/s8/b6" data-page="s8-b6"><span class="ln">B6</span> Audit &amp; RACI</a></li>
+              <li><a href="#/s8/b7" data-page="s8-b7"><span class="ln">B7</span> 📋 Giữa kì</a></li>
+              <li><a href="#/s8/b8" data-page="s8-b8"><span class="ln">B8</span> 🏆 Project bảo mật</a></li>
+              <li><a href="#/s8/exams" data-page="s8-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s9"><div class="ns-head" onclick="toggleNavSubject('s9')"><span class="ns-ic">🚀</span> M9 · LLMOps <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s9" data-page="s9"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s9/b1" data-page="s9-b1"><span class="ln">B1</span> FastAPI</a></li>
+              <li><a href="#/s9/b2" data-page="s9-b2"><span class="ln">B2</span> Queue (KT15')</a></li>
+              <li><a href="#/s9/b3" data-page="s9-b3"><span class="ln">B3</span> Vector DB prod</a></li>
+              <li><a href="#/s9/b4" data-page="s9-b4"><span class="ln">B4</span> CI/CD eval</a></li>
+              <li><a href="#/s9/b5" data-page="s9-b5"><span class="ln">B5</span> Observability (KT15')</a></li>
+              <li><a href="#/s9/b6" data-page="s9-b6"><span class="ln">B6</span> Metrics &amp; alert</a></li>
+              <li><a href="#/s9/b7" data-page="s9-b7"><span class="ln">B7</span> Tối ưu chi phí</a></li>
+              <li><a href="#/s9/b8" data-page="s9-b8"><span class="ln">B8</span> 📋 Cuối kì</a></li>
+              <li><a href="#/s9/exams" data-page="s9-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s10"><div class="ns-head" onclick="toggleNavSubject('s10')"><span class="ns-ic">⚖️</span> M10 · Pháp lý AI <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s10" data-page="s10"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s10/b1" data-page="s10-b1"><span class="ln">B1</span> PII &amp; riêng tư</a></li>
+              <li><a href="#/s10/b2" data-page="s10-b2"><span class="ln">B2</span> Bản quyền (KT15')</a></li>
+              <li><a href="#/s10/b3" data-page="s10-b3"><span class="ln">B3</span> GDPR/NĐ-13</a></li>
+              <li><a href="#/s10/b4" data-page="s10-b4"><span class="ln">B4</span> Thiên lệch</a></li>
+              <li><a href="#/s10/b5" data-page="s10-b5"><span class="ln">B5</span> Đạo đức AI</a></li>
+              <li><a href="#/s10/b6" data-page="s10-b6"><span class="ln">B6</span> 📋 CK tiểu luận</a></li>
+              <li><a href="#/s10/exams" data-page="s10-exams"><span class="ln">📝</span> Đề thi môn</a></li>
+            </ul>
+          </div>
+          <div class="nav-subject" data-sid="s11"><div class="ns-head" onclick="toggleNavSubject('s11')"><span class="ns-ic">🎓</span> M11 · ĐATN <span class="ns-chev">▶</span></div>
+            <ul class="ns-list">
+              <li><a href="#/s11" data-page="s11"><span class="ln">i</span> Thông tin môn</a></li>
+              <li><a href="#/s11/b1" data-page="s11-b1"><span class="ln">B1</span> Chọn đề tài</a></li>
+              <li><a href="#/s11/b2" data-page="s11-b2"><span class="ln">B2</span> Đặc tả</a></li>
+              <li><a href="#/s11/b3" data-page="s11-b3"><span class="ln">B3</span> Dữ liệu</a></li>
+              <li><a href="#/s11/b4" data-page="s11-b4"><span class="ln">B4</span> Build mô hình</a></li>
+              <li><a href="#/s11/b5" data-page="s11-b5"><span class="ln">B5</span> Mid-review</a></li>
+              <li><a href="#/s11/b6" data-page="s11-b6"><span class="ln">B6</span> Bọc bảo mật</a></li>
+              <li><a href="#/s11/b7" data-page="s11-b7"><span class="ln">B7</span> Deploy</a></li>
+              <li><a href="#/s11/b8" data-page="s11-b8"><span class="ln">B8</span> Eval &amp; giám sát</a></li>
+              <li><a href="#/s11/b9" data-page="s11-b9"><span class="ln">B9</span> Tài liệu + video</a></li>
+              <li><a href="#/s11/b10" data-page="s11-b10"><span class="ln">B10</span> 🎓 Bảo vệ ĐATN</a></li>
+              <li><a href="#/s11/exams" data-page="s11-exams"><span class="ln">📝</span> Tiêu chí chấm</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="nav-h nhk1" onclick="this.classList.toggle('open')"><span class="badge">★</span> Công cụ <span class="chev">▶</span></li>
+        <li class="nav-group">
+          <div class="nav-plain"><a href="#/progress" data-page="progress">📊 Bảng điểm &amp; tiến độ</a></div>
+          <div class="nav-plain"><a href="#/cards" data-page="cards">🃏 Flashcards</a></div>
+          <div class="nav-plain"><a href="#/cheat" data-page="cheat">📋 Cheatsheet</a></div>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="main">
+    <div class="topbar">
+      <button class="sb-toggle" id="sbToggle" onclick="toggleSidebar()">☰</button>
+      <div class="crumb" id="crumb">Đang tải...</div>
+      <a class="home-link" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content" id="content">
+      <!-- CÁC PAGE SẼ ĐƯỢC CHÈN Ở ĐÂY -->
+    </div>
+
+    <!-- ===== TEMPLATE: PAGE OVERVIEW ===== -->
+    <template id="tpl-overview">
+      <div class="hero">
+        <h1>Sổ Giáo Án — <span class="g">Kỹ Sư AI Thực Chiến 1 Năm</span></h1>
+        <p>Tài liệu này là một <strong>sổ giáo án đứng lớp thực sự</strong>: mỗi môn 2 buổi/tuần, mỗi buổi là giáo án <strong>phút-by-phút</strong> (bài cũ → khởi động → giảng → thực hành → dặn dò). Mỗi môn có đủ hệ thống kiểm tra: đề 15', 45', giữa kì, cuối kì kèm đáp án &amp; thang điểm. Tổng cộng <strong>11 môn</strong> trên 2 học kì. Dùng cho hình thức "học kèm với giáo viên".</p>
+        <div class="meta-row">
+          <span class="meta-pill">📚 <b>11</b> môn</span>
+          <span class="meta-pill">📅 <b>~100</b> buổi</span>
+          <span class="meta-pill">📝 <b>40+</b> đề thi</span>
+          <span class="meta-pill">⏱ <b>2 buổi/tuần</b>/môn</span>
+          <span class="meta-pill">🎓 <b>2</b> học kì</span>
+        </div>
+        <div class="box info" style="margin-top:20px"><span class="bt">Cách dùng</span> Chọn <strong>môn</strong> ở sidebar trái (mở rộng ra thấy danh sách <strong>buổi</strong>). Mỗi lần chỉ xem <strong>một buổi</strong> — không cuộn hết cả năm. Mỗi buổi có timeline phút, bài cũ tra bài, nội dung giảng cặn kẽ, bài tập tự chấm, BTCN. Bấm <strong>☰</strong> góc trên để thu/mở sidebar.</div>
+        <div class="box pro"><span class="bt">Triết lý</span> <strong>Bottom-Up + Project-Based</strong>: lý thuyết đi đôi với code ra sản phẩm. HK1 đúc "động cơ AI", HK2 lắp vào hệ thống doanh nghiệp.</div>
+      </div>
+      <h2 class="sec">📅 Thời khóa biểu cả năm — 11 môn</h2>
+      <table>
+        <tr><th>Mã</th><th>Tên môn</th><th>HK</th><th>Buổi</th><th>Tiền quyết</th><th>Đầu ra</th></tr>
+        <tr><td>M1</td><td>Toán cho AI</td><td>1</td><td>8</td><td>—</td><td>Nắm gốc Toán của AI</td></tr>
+        <tr><td>M2</td><td>Python &amp; Dữ liệu</td><td>1</td><td>8</td><td>—</td><td>Xử lý dữ liệu thuần thục</td></tr>
+        <tr><td>M3</td><td>Machine Learning</td><td>1</td><td>10</td><td>M1,M2</td><td>Train mô hình ML bảng</td></tr>
+        <tr><td>M4</td><td>Deep Learning &amp; CV</td><td>1</td><td>10</td><td>M1,M2,M3</td><td>Train CNN/YOLO</td></tr>
+        <tr><td>M5</td><td>NLP &amp; LLM</td><td>1</td><td>8</td><td>M4</td><td>Hiểu Transformer, gọi LLM</td></tr>
+        <tr><td>M6</td><td>AI Agent</td><td>2</td><td>10</td><td>M5</td><td>Xây Agent hoàn chỉnh</td></tr>
+        <tr><td>M7</td><td>Multi-Agent</td><td>2</td><td>8</td><td>M6</td><td>Điều phối đa Agent</td></tr>
+        <tr><td>M8</td><td>Security &amp; Governance</td><td>2</td><td>8</td><td>M6</td><td>Bọc bảo mật hệ thống</td></tr>
+        <tr><td>M9</td><td>LLMOps</td><td>2</td><td>8</td><td>M6,M7</td><td>Deploy production</td></tr>
+        <tr><td>M10</td><td>Pháp lý AI</td><td>2</td><td>6</td><td>M8</td><td>Tuân thủ pháp lý</td></tr>
+        <tr><td>M11</td><td>ĐATN (Capstone)</td><td>2</td><td>10</td><td>Tất cả</td><td>Sản phẩm end-to-end</td></tr>
+      </table>
+      <div class="pager">
+        <a class="next" href="#/s1"><div class="pl">Bắt đầu →</div><div class="pt">MÔN 1 — Toán cho AI</div></a>
+      </div>
+    </template>
+
+    <!-- ===== JS DATA + ROUTING ===== -->
+    <script>
+    /* Dữ liệu môn học (info) + skeleton buổi cho các môn chưa viết dày */
+    const SUBJECTS = {
+      s1: { code:'M1', name:'Toán cho AI', icon:'📐', hk:1, tc:3, buoi:8, tien:'—', dg:'15\'×2 · 45\' · GK · CK',
+            goal:['Hiểu vector/ma trận — ngôn ngữ của AI','Nắm đạo hàm &amp; gradient descent','Nắm xác suất &amp; định lý Bayes','Dùng NumPy tính toán hiệu quả'],
+            out:['Tính nhân ma trận, biết quy tắc shape','Code gradient descent tay','Giải Bayes, hiểu phân phối chuẩn','Vector hóa thay for'] },
+      s2: { code:'M2', name:'Python &amp; Dữ liệu', icon:'🐍', hk:1, tc:3, buoi:8, tien:'— (song song M1)', dg:'15\'×2 · 45\' · GK · CK',
+            goal:['Cài môi trường đúng (Conda)','Nắm 4 cấu trúc dữ liệu Python','Viết class theo interface ML','Dùng NumPy &amp; Pandas'],
+            out:['Tự tạo env, chạy Jupyter','Code OOP có cấu trúc','Vector hóa thay for','Làm sạch DataFrame'] },
+      s3: { code:'M3', name:'Machine Learning', icon:'📊', hk:1, tc:4, buoi:10, tien:'M1, M2', dg:'15\'×2 · 45\' · GK · CK + Mid-term',
+            goal:['Hiểu bài toán hồi quy &amp; phân loại','Nắm Linear/Logistic, sigmoid','Tree, RF, XGBoost','K-Means, PCA; metrics; CV'],
+            out:['Train mô hình ML bảng','Chọn đúng thuật toán','Đánh giá trung thực','Mid-term HK1'] },
+      s4: { code:'M4', name:'Deep Learning &amp; CV', icon:'🔥', hk:1, tc:4, buoi:10, tien:'M1, M2, M3', dg:'15\'×2 · 45\' · GK · CK + Project YOLO',
+            goal:['Chuyển sklearn → PyTorch','Tự viết training loop','Xây CNN, hiểu conv/pooling','Train YOLO'],
+            out:['Train CNN trên MNIST/CIFAR','Train YOLO nhận diện','Auto-labeling','Project tháng 3'] },
+      s5: { code:'M5', name:'NLP &amp; LLM', icon:'🧠', hk:1, tc:3, buoi:8, tien:'M4', dg:'15\'×2 · 45\' · GK · CK + Final HK1',
+            goal:['Hiểu token hóa &amp; embedding','RNN/LSTM &amp; giới hạn','Self-Attention &amp; Transformer','Gọi API LLM'],
+            out:['Code attention tay','Gọi OpenAI/Claude','Few-shot prompting','Final HK1 (Web App)'] },
+      s6: { code:'M6', name:'AI Agent', icon:'🧩', hk:2, tc:4, buoi:10, tien:'M5', dg:'15\'×2 · 45\' · GK · CK + Project',
+            goal:['Hiểu RAG &amp; chunking','Function calling, ReAct','3 loại memory, state','LLM quyết định – code thực thi'],
+            out:['Agent tra cứu nội bộ','Tool gọi đúng lúc','Memory đa lượt','Project tháng 5'] },
+      s7: { code:'M7', name:'Multi-Agent', icon:'🕸️', hk:2, tc:3, buoi:8, tien:'M6', dg:'15\'×2 · 45\' · GK · CK + Mid-term HK2',
+            goal:['3 mô hình điều phối','LangGraph','Khi nào tách agent','Eval set + LLM-as-judge'],
+            out:['Pipeline đa Agent','Đánh giá khách quan','Mid-term HK2'] },
+      s8: { code:'M8', name:'Security &amp; Governance', icon:'🔐', hk:2, tc:3, buoi:8, tien:'M6', dg:'15\'×2 · 45\' · GK · CK + Project',
+            goal:['Hiểu prompt injection','RBAC, allow-list, fail closed','Audit log, RACI','Quản lý key an toàn'],
+            out:['Bọc bảo mật + governance','Chặn injection','Mask PII','Project tháng 7'] },
+      s9: { code:'M9', name:'LLMOps', icon:'🚀', hk:2, tc:3, buoi:8, tien:'M6, M7', dg:'15\'×2 · 45\' · GK · CK',
+            goal:['Đóng gói agent thành API','Queue tác vụ lâu','Trace vòng lặp agent','Tối ưu chi phí'],
+            out:['Deploy production','Có giám sát + alert','Giảm chi phí LLM'] },
+      s10: { code:'M10', name:'Pháp lý AI', icon:'⚖️', hk:2, tc:2, buoi:6, tien:'M8', dg:'15\' · 45\' · CK (tiểu luận)',
+            goal:['Hiểu PII &amp; mask','Bản quyền đầu ra AI','GDPR/NĐ-13','Thiên lệch &amp; đạo đức'],
+            out:['Checklist tuân thủ','Viết chính sách dữ liệu','Đánh giá rủi ro pháp lý'] },
+      s11: { code:'M11', name:'ĐATN (Capstone)', icon:'🎓', hk:2, tc:6, buoi:10, tien:'Tất cả', dg:'Đồ án + Bảo vệ hội đồng',
+            goal:['Tổng hợp HK1 + HK2','Làm sản phẩm AI thật','Triển khai production','Bảo vệ hội đồng'],
+            out:['Hệ thống end-to-end công khai','Có eval + bảo mật + giám sát','Video demo + tài liệu'] },
+    };
+    </script>
+    <footer class="foot">
+      👨‍🏫 <strong>Sổ Giáo Án Kỹ Sư AI 1 năm</strong> — 11 môn / 2 học kì / 2 buổi/tuần mỗi môn. Mỗi lần chỉ xem 1 buổi. · Thuộc thư viện <a href="../index.html">Mega Study</a>
+    </footer>
+  </div>
+</div>
+
+<script>
+/* ===== KHAI BÁO TOÀN CỤC (phải trước mọi gán) ===== */
+const EX = {};        /* quy tắc chấm bài tập */
+const DEFAULTS = {};  /* nội dung gốc của codepad */
+
+/* ===== SIDEBAR COLLAPSE ===== */
+function toggleSidebar(){
+  const sb = document.getElementById('sidebar');
+  if(window.innerWidth <= 980){ sb.classList.toggle('mobile-open'); }
+  else { document.body.classList.toggle('sb-collapsed'); sb.classList.toggle('collapsed'); }
+}
+function toggleNavSubject(sid){
+  document.querySelector(`.nav-subject[data-sid="${sid}"]`).classList.toggle('open');
+}
+
+/* ===== ROUTING (hash-based, 1 page tại 1 thời điểm) ===== */
+const $content = document.getElementById('content');
+const $crumb = document.getElementById('crumb');
+
+function setPage(html, crumbText){
+  $content.innerHTML = html;
+  $crumb.innerHTML = crumbText;
+  $content.querySelectorAll('.codepad').forEach(t => { if(!(t.id in DEFAULTS)) DEFAULTS[t.id] = t.value; });
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  highlightNav();
+}
+
+function highlightNav(){
+  const hash = location.hash.replace('#/','');
+  document.querySelectorAll('#navMenu a[data-page]').forEach(a=>{
+    const p = a.dataset.page;
+    const on = hash === p || (hash.startsWith(p+'/') ) || (p!=='overview' && hash===p);
+    a.classList.toggle('active', hash === p);
+  });
+  // mở nhóm HK + môn tương ứng
+  const sid = hash.split('/')[0];
+  if(sid.startsWith('s')){
+    const subj = document.querySelector(`.nav-subject[data-sid="${sid}"]`);
+    if(subj){ subj.classList.add('open'); const hk = subj.closest('.nav-group'); if(hk) hk.previousElementSibling.classList.add('open'); }
+  }
+}
+
+function route(){
+  const h = location.hash.replace('#/','') || 'overview';
+  const parts = h.split('/');
+  if(h === 'overview' || h === '') renderOverview();
+  else if(parts[0].startsWith('s') && parts.length === 1) renderSubject(parts[0]);
+  else if(parts[0].startsWith('s') && parts.length === 2) {
+    if(parts[1] === 'exams') renderExams(parts[0]);
+    else renderLesson(parts[0], parts[1]);
+  }
+  else if(h === 'progress') renderProgress();
+  else if(h === 'cards') renderCards();
+  else if(h === 'cheat') renderCheat();
+  else renderOverview();
+}
+
+function crumbHTML(...segs){ return segs.map((s,i)=> i<segs.length-1 ? `<a href="#">${s}</a><span class="sep">›</span>` : `<b>${s}</b>`).join(''); }
+
+/* ===== RENDER: OVERVIEW ===== */
+function renderOverview(){
+  const tpl = document.getElementById('tpl-overview');
+  setPage(tpl.innerHTML, crumbHTML('Tổng quan'));
+}
+
+/* ===== RENDER: SUBJECT INFO ===== */
+function renderSubject(sid){
+  const s = SUBJECTS[sid];
+  if(!s){ renderOverview(); return; }
+  const firstLesson = sid+'-b1';
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-info">${s.code} · HỌC KÌ ${s.hk}</span>
+      <h1>${s.icon} ${s.name}</h1>
+      <div class="ch-sub">${s.buoi} buổi × 3 giờ · 2 buổi/tuần</div>
+    </div>
+    <div class="subj-info">
+      <div class="ii"><div class="ik">Mã / TC</div><div class="iv">${s.code} · <b>${s.tc}</b> TC</div></div>
+      <div class="ii"><div class="ik">Thời lượng</div><div class="iv"><b>${s.buoi}</b> buổi × 3h</div></div>
+      <div class="ii"><div class="ik">Tiên quyết</div><div class="iv">${s.tien}</div></div>
+      <div class="ii"><div class="ik">Đánh giá</div><div class="iv">${s.dg}</div></div>
+    </div>
+    <div class="goals">
+      <div class="gblk"><h4>🎯 Mục tiêu môn</h4><ul>${s.goal.map(g=>`<li>${g}</li>`).join('')}</ul></div>
+      <div class="gblk"><h4>🏆 Đầu ra</h4><ul>${s.out.map(g=>`<li>${g}</li>`).join('')}</ul></div>
+    </div>
+    <div class="box info"><span class="bt">Chọn buổi để bắt đầu</span> Bấm một buổi ở sidebar trái (mở rộng môn ${s.code}), hoặc nút "Buổi tiếp theo" bên dưới. Mỗi buổi có timeline phút-by-phút + nội dung giảng + bài tập/quiz.</div>
+    <div class="pager">
+      <a href="#/overview"><div class="pl">← Quay lại</div><div class="pt">Tổng quan</div></a>
+      <a class="next" href="#/${firstLesson}"><div class="pl">Bắt đầu →</div><div class="pt">Buổi 1</div></a>
+    </div>`;
+  setPage(html, crumbHTML(`<a href="#/overview">Tổng quan</a>`, s.name));
+  fixCrumbLink(sid, s.name);
+}
+function fixCrumbLink(sid, name){
+  $crumb.innerHTML = `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/${sid}">${name}</a>`;
+}
+
+    /* ===== RENDER: LESSON (skeleton cho các buổi chưa viết dày) ===== */
+const LESSON_DETAIL = {}; /* sẽ chứa nội dung đặc thù cho các buổi đã viết (M1 B1-B4) */
+
+/* ===== NỘI DUNG CHI TIẾT MÔN 1 (B1–B4 + đề thi) ===== */
+EX.ex1 = [
+  {re:/z\s*=\s*X\s*@/, label:"z = X @ W"},
+  {re:/\+\s*b|b\s*\+/, label:"+ bias"},
+  {re:/\.shape/, label:"in .shape"},
+];
+EX.ex2 = [
+  {re:/dx\s*=\s*2\s*\*\s*x/, label:"dx = 2*x (∂f/∂x)"},
+  {re:/dy\s*=\s*8\s*\*\s*y/, label:"dy = 8*y (∂f/∂y)"},
+  {re:/x\s*=\s*x\s*-\s*lr\s*\*\s*dx/, label:"cập nhật x"},
+  {re:/y\s*=\s*y\s*-\s*lr\s*\*\s*dy/, label:"cập nhật y"},
+];
+EX.ex3 = [
+  {re:/np\.maximum\s*\(\s*0\s*,\s*x\s*\)/, label:"np.maximum(0, x)"},
+  {re:/return\s+np\.maximum|return\s*np\.maximum/, label:"return np.maximum(...)"},
+];
+EX.ex4 = [
+  {re:/P_pos\s*=\s*P_disease/, label:"P_pos = P_disease*..."},
+  {re:/1\s*-\s*P_disease/, label:"(1-P_disease) cho người khỏe"},
+  {re:/P_dis_given_pos\s*=.*\/\s*P_pos/, label:"Bayes: /P_pos"},
+];
+
+const PAGER_M1 = (sid, bnum) => {
+  const prev = bnum>1 ? `<a href="#/${sid}/b${bnum-1}"><div class="pl">← Buổi trước</div><div class="pt">Buổi ${bnum-1}</div></a>` : `<a href="#/${sid}"><div class="pl">← Quay lại</div><div class="pt">M1 thông tin</div></a>`;
+  const next = `<a class="next" href="#/${sid}/b${bnum+1}"><div class="pl">Tiếp →</div><div class="pt">Buổi ${bnum+1}</div></a>`;
+  return `<div class="pager">${prev}${next}</div>`;
+};
+const CRUMB_M1 = (b) => `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s1">M1 Toán cho AI</a> <span class="sep">›</span> <b>Buổi ${b}</b>`;
+
+LESSON_DETAIL['s1-b1'] = { crumb: CRUMB_M1(1), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 1</span><h1>📐 Giới thiệu môn &amp; Ôn Đại số tuyến tính</h1><div class="ch-sub">Mục tiêu: hiểu vì sao Toán là nền AI, ôn vector/ma trận, làm quen NumPy.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu môn</div><div class="tdesc">Nêu mục tiêu môn, cách chấm điểm, lịch kiểm tra. Hỏi: "AI dùng toán gì?"</div></div></div>
+  <div class="tl-row"><div class="tl-time">10–25'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Không có (buổi đầu)</div><div class="tdesc">Khảo sát đầu vào 5 câu trắc nghiệm nền toán.</div></div></div>
+  <div class="tl-row"><div class="tl-time">25–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Vì sao AI cần Toán</div><div class="tdesc">Ảnh = tensor số; mạng nơ-ron = nhân ma trận; học = tối ưu; dự đoán = xác suất.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–90'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Vector &amp; ma trận</div><div class="tdesc">Quy tắc nhân A(m,n)@B(n,p)→(m,p). Nhiều ví dụ shape.</div></div></div>
+  <div class="tl-row"><div class="tl-time">90–100'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">100–150'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> NumPy nhân ma trận</div><div class="tdesc">Tạo mảng, tính @, kiểm tra .shape.</div></div></div>
+  <div class="tl-row"><div class="tl-time">150–170'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT15'</div><div class="tdesc">Giao 3 bài tập. Đầu buổi 2: KT15' về nhân ma trận.</div></div></div>
+</div>
+<h2 class="sec">📝 Bài cũ tra bài (đầu buổi sau)</h2>
+<div class="ask-list"><div class="ah">❓ Chuẩn bị phát biểu</div><ol>
+  <li>Cho A(3,2) và B(2,4). Tích A@B có shape gì? Có tính được B@A không?<span class="ans">(3,4). B@A không được (cột 4≠dòng 3).</span></li>
+  <li>Đạo hàm f(x)=x² tại x=3?<span class="ans">f'=2x, tại x=3 → 6.</span></li>
+  <li>y=x·W+b đại diện gì trong mạng nơ-ron?<span class="ans">Lớp fully-connected.</span></li>
+</ol></div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Vì sao AI cần Đại số tuyến tính (25 phút)</h3>
+<p>Câu hỏi của người mới: "Em học Python, sao phải đau đầu với ma trận?" Trả lời: <strong>máy tính không hiểu thế giới — nó chỉ hiểu số</strong>. Khi AI nhận ảnh con mèo, nó không "nhìn thấy" lông hay tai, chỉ nhận một khối số khổng lồ: mỗi pixel là 3 con số 0–255 (RGB). Một ảnh 224×224 là khối 3×224×224 = 150.528 con số. Toàn bộ "nhận thức" của AI là thao tác toán trên khối số này.</p>
+<p>Khối số nhiều chiều đó gọi là <strong>tensor</strong>. Đại số tuyến tính là ngôn ngữ thao tác trên tensor. Khi nghe "nhân trọng số", "tích chập", "attention" — tất cả là đại số tuyến tính cải trang. Nắm 3 phép cốt lõi (cộng, nhân, chuyển vị) = nắm 80% nền toán của deep learning.</p>
+<div class="box info"><span class="bt">📌 Giáo viên nhấn mạnh</span> Đừng học đại số tuyến tính như Toán đại cương thuần lý thuyết. Hãy học như <em>công cụ</em>: mỗi khái niệm có ứng dụng AI trực tiếp. Thấy lớp mạng → nghĩ "đây chỉ là nhân ma trận" — sự "phép màu" mất đi, thay vào là hiểu biết.</div>
+<h3 class="mini">Phần 2 — Vector là gì, thật ra (15 phút)</h3>
+<p><strong>Vector</strong> đơn giản là một <em>dãy số có thứ tự</em>: v = [1, 2, 3]. Hiểu 2 cách đều đúng và đều quan trọng cho AI:</p>
+<ul>
+  <li><strong>Cách hình học:</strong> vector là <em>mũi tên</em> từ gốc tọa độ. Nhân vô hướng (dot product) đo "độ giống nhau" về hướng — cơ chế của embedding.</li>
+  <li><strong>Cách dữ liệu:</strong> vector là một <em>hàng đặc trưng</em> của mẫu. Khách hàng tuổi=25, thu nhập=1200, đơn=3 → [25,1200,3]. Dataset là chồng nhiều vector = ma trận.</li>
+</ul>
+<p><strong>Shape (kích thước)</strong> là khái niệm sinh tử. Vector [1,2,3] có shape (3,). Quy tắc vàng khi code: luôn in .shape trước &amp; sau mỗi phép toán khi chưa chắc.</p>
+<h3 class="mini">Phần 3 — Ma trận: chồng nhiều vector (15 phút)</h3>
+<p><strong>Ma trận</strong> là <em>bảng số</em> 2 chiều — danh sách các vector xếp thành hàng. Ma trận A(m,n): m = số hàng (mẫu), n = số cột (đặc trưng).</p>
+<div class="code-block"><div class="cbhead"><span>python · numpy</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> numpy <span class="kw">as</span> np
+v = np.array([1, 2, 3])
+<span class="nb">print</span>(v.shape)            <span class="cm"># (3,)</span>
+A = np.array([[1,2],[3,4],[5,6]])
+<span class="nb">print</span>(A.shape)             <span class="cm"># (3, 2)</span></pre></div>
+<p><strong>Chuyển vị</strong> A.T lật hàng thành cột: (3,2) → (2,3). Phép toán bạn sẽ gọi hàng nghìn lần: XᵀX, attention Q·Kᵀ.</p>
+<h3 class="mini">Phần 4 — Phép nhân ma trận: trái tim mạng nơ-ron (20 phút)</h3>
+<p>Một lớp fully-connected tính <code class="ic">y = x · W + b</code>: vector x nhân ma trận trọng số W, cộng bias b. Toàn bộ "trí tuệ" của một lớp mạng nằm trong W — máy học cách điền W bằng gradient descent (Buổi 2).</p>
+<p><strong>Quy tắc nhân — thuộc lòng!</strong> Để nhân A @ B: số cột A <em>phải bằng</em> số dòng B. Kết quả (số hàng A, số cột B): <code class="ic">A(m,n) @ B(n,p) → (m,p)</code>.</p>
+<table>
+  <tr><th>Phép</th><th>A</th><th>B</th><th>Kết quả</th><th>Tính?</th></tr>
+  <tr><td>A @ B</td><td>(3, <strong>2</strong>)</td><td>(<strong>2</strong>, 4)</td><td>(3, 4)</td><td>✅</td></tr>
+  <tr><td>B @ A</td><td>(2, <strong>4</strong>)</td><td>(<strong>3</strong>, 2)</td><td>—</td><td>❌</td></tr>
+  <tr><td>A @ A.T</td><td>(3, <strong>2</strong>)</td><td>(<strong>2</strong>, 3)</td><td>(3, 3)</td><td>✅</td></tr>
+</table>
+<div class="box warn"><span class="bt">⚠️ Lỗi #1 của người mới</span> Tưởng "nhân hai ma trận thì cứ nhân" → báo <code class="ic">ValueError: shapes not aligned</code>. <strong>Nguyên tắc dạy:</strong> vẽ 4 ví dụ lên bảng, cho học viên đoán trước khi công bố. 90% bug Toán nằm ở đây.</div>
+<p><strong>Vì sao GPU là trái tim AI?</strong> GPU có hàng nghìn lõi, mỗi lõi giỏi <em>nhân ma trận</em>. Train mạng = nhân ma trận hàng triệu lần/giây. GPU nhanh hơn CPU 10–100 lần — không phải vì "thông minh" mà vì giỏi nhân ma trận.</p>
+<div class="box tip"><span class="bt">🎯 Tổng kết buổi</span> 4 ý: (1) AI thao tác trên tensor số; (2) vector = một hàng đặc trưng; (3) ma trận = nhiều mẫu; (4) y=x·W+b là trái tim mạng. Nếu chỉ nhớ một điều: <strong>(m,n)@(n,p)→(m,p)</strong>.</div>
+<h2 class="sec">🛠️ Thực hành trên lớp</h2>
+<div class="exercise" data-ex="ex1">
+  <div class="eh">✍️ Bài thực hành 1 — Tích ma trận &amp; shape</div>
+  <div class="etask">Cho X(4,3), W(3,2), b(2,). Tính <code>z = X @ W + b</code>, in z.shape (phải (4,2)).</div>
+  <textarea class="codepad" id="ex1" spellcheck="false">import numpy as np
+X = np.random.rand(4, 3)
+W = np.random.rand(3, 2)
+b = np.array([0.5, -0.5])
+
+# tính z và in shape</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button></div>
+  <div class="echk" id="res-ex1"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">z = X @ W + b
+<span class="nb">print</span>(z.shape)   <span class="cm"># (4, 2)</span></pre></div></div></details>
+</div>
+<h2 class="sec">🏠 Bài về nhà</h2>
+<div class="box tip"><span class="bt">BTCN</span><ol style="margin-top:6px">
+  <li>Cho A(2,3), B(3,4), C(4,2). Tính (A@B)@C, in shape từng bước.</li>
+  <li>Viết hàm is_multipliable(A,B) trả True/False.</li>
+  <li>Đọc trước: đạo hàm &amp; gradient (chuẩn bị B2).</li>
+</ol></div>
+<div class="box warn"><span class="bt">📢 Thông báo</span> Đầu <strong>buổi 2</strong>: <strong>KT 15 phút</strong> — 5 câu về nhân ma trận &amp; shape. Mang giấy làm.
+${PAGER_M1('s1',1)}
+</div></div>` };
+
+LESSON_DETAIL['s1-b2'] = { crumb: CRUMB_M1(2), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 2 · có KT15'</span><h1>📉 Đạo hàm &amp; Gradient Descent</h1><div class="ch-sub">Hiểu đạo hàm đo độ dốc, gradient chỉ hướng tăng nhanh nhất, gradient descent là cách máy "tự học".</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Phát đề (xem trang Đề thi môn). Thu chấm, trả cuối buổi.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Đạo hàm = độ dốc</div><div class="tdesc">Vẽ parabol y=x². Hỏi: "Đỉnh dốc thế nào?" → 0.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–70'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Đạo hàm &amp; gradient</div><div class="tdesc">Quy tắc đạo hàm, đạo hàm riêng, gradient = la bàn hướng tăng.</div></div></div>
+  <div class="tl-row"><div class="tl-time">70–80'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">80–110'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Gradient Descent</div><div class="tdesc">4 bước: khởi tạo → tính gradient → cập nhật ngược → lặp. Code 1 biến.</div></div></div>
+  <div class="tl-row"><div class="tl-time">110–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Code GD 2 biến</div><div class="tdesc">Học viên code cho f(x,y)=x²+4y², kết quả ≈ (0,0).</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Trả bài 15' + tổng kết</div><div class="tdesc">Giao BTCN. Chuẩn bị B3: NumPy.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Đạo hàm là gì? Đo độ dốc (25 phút)</h3>
+<p>Hình ảnh đời thường: bạn đi trên con dốc. Đoạn dốc đứng → cảm giác mạnh; thoai thoải → nhẹ; chỗ bằng → không dốc. <strong>Đạo hàm f'(x)</strong> chính là số đo <em>độ dốc</em> đó.</p>
+<table>
+  <tr><th>Dấu đạo hàm</th><th>Ý nghĩa</th><th>Ví dụ</th></tr>
+  <tr><td>f'(x) &gt; 0</td><td>Hàm đang <strong>tăng</strong></td><td>Đi lên dốc</td></tr>
+  <tr><td>f'(x) &lt; 0</td><td>Hàm đang <strong>giảm</strong></td><td>Đi xuống dốc</td></tr>
+  <tr><td>f'(x) = 0</td><td><strong>Cực trị</strong> (đỉnh/đáy)</td><td>Mặt đất bằng</td></tr>
+</table>
+<p><strong>Quy tắc đạo hàm cơ bản:</strong></p>
+<table>
+  <tr><th>f(x)</th><th>f'(x)</th><th>Ghi nhớ</th></tr>
+  <tr><td>xⁿ</td><td>n·xⁿ⁻¹</td><td>"Hạ n xuống, giảm mũ đi 1"</td></tr>
+  <tr><td>x²</td><td>2x</td><td>2·x¹</td></tr>
+  <tr><td>3x²+2x</td><td>6x+2</td><td>Đạo hàm từng số hạng</td></tr>
+</table>
+<p><strong>Ví dụ số:</strong> f(x)=x². Tại x=3: f'(3)=6 (tăng mạnh). Tại x=−2: f'(−2)=−4 (giảm). Tại x=0: f'(0)=0 — <em>đáy thung lũng</em>, điểm thấp nhất.</p>
+<div class="box info"><span class="bt">📌 Tại sao đạo hàm=0 là mục tiêu?</span> AI muốn sai số nhỏ nhất. Sai số thấp nhất ở điểm đạo hàm=0 (đáy thung lũng). Gradient descent tìm điểm đó.</div>
+<h3 class="mini">Phần 2 — Hàm nhiều biến &amp; Gradient (15 phút)</h3>
+<p>Trong AI, hàm lỗi phụ thuộc <em>hàng nghìn biến</em>. Ta dùng <strong>đạo hàm riêng</strong> — đạo hàm theo từng biến. Gộp lại thành <strong>gradient ∇f</strong> — vector chỉ hướng hàm <em>tăng nhanh nhất</em>. f(x,y)=x²+y² → ∇f=(2x,2y).</p>
+<div class="box tip"><span class="bt">✅ Trực giác la bàn</span> Gradient = la bàn chỉ hướng <em>đi lên</em> nhanh nhất. Muốn <em>xuống đáy</em> (tìm điểm nhỏ nhất)? Đi <strong>ngược la bàn</strong>. Đó là toàn bộ gradient descent.</div>
+<h3 class="mini">Phần 3 — Gradient Descent: cách máy "tự học" (30 phút)</h3>
+<p>Ý tưởng 1 câu: đứng ở điểm hiện tại, tính độ dốc, bước nhỏ ngược dốc, lặp đến khi dốc≈0.</p>
+<ol>
+  <li><strong>Khởi tạo</strong> tham số (ngẫu nhiên) — điểm xuất phát.</li>
+  <li><strong>Tính gradient</strong> hàm lỗi — đo độ dốc.</li>
+  <li><strong>Cập nhật</strong>: x = x − lr·gradient — bước ngược dốc.</li>
+  <li><strong>Lặp</strong> 2–3 đến khi gradient≈0.</li>
+</ol>
+<p>Công thức duy nhất cần nhớ: <code class="ic">x ← x − lr · ∇f</code>.</p>
+<div class="code-block"><div class="cbhead"><span>python · GD 1 biến</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Tìm cực tiểu f(x)=(x+1)². Đáy thật ở x=-1.</span>
+x = 5.0; lr = 0.1
+<span class="kw">for</span> step <span class="kw">in</span> <span class="nb">range</span>(50):
+    g = 2*x + 2          <span class="cm"># đạo hàm f'=2x+2</span>
+    x = x - lr * g       <span class="cm"># bước ngược gradient</span>
+<span class="nb">print</span>(<span class="nb">round</span>(x, 4))        <span class="cm"># ≈ -1.0 ✓ máy tự tìm đáy!</span></pre></div>
+<p>Theo dõi: x giảm 5 → 4.2 → 2.9 → 1.3 → −1.0. Máy <em>không ai chỉ</em>, tự đi xuống đáy. Đó là "học".</p>
+<h3 class="mini">Phần 4 — Learning rate: tham số sinh tử (15 phút)</h3>
+<table>
+  <tr><th>lr</th><th>Hiện tượng</th><th>Xử lý</th></tr>
+  <tr><td><strong>Quá lớn</strong> (1.0)</td><td>Bước vượt đáy, dao động/phân kỳ</td><td>Giảm lr ngay</td></tr>
+  <tr><td><strong>Quá nhỏ</strong> (0.001)</td><td>Bước li ti, chậm</td><td>Tăng lr</td></tr>
+  <tr><td><strong>Vừa</strong> (0.1)</td><td>Hội tụ êm</td><td>✅ Giữ</td></tr>
+</table>
+<div class="box warn"><span class="bt">⚠️ Lỗi #1: lr quá lớn</span> Dấu hiệu: loss <em>tăng</em> hoặc thành NaN. Nguyên nhân: bước quá lớn, nhảy qua lại xa dần → phân kỳ. Xử lý đầu tiên khi train hỏng: <strong>giảm lr 10 lần</strong>.</div>
+<h3 class="mini">Phần 5 — Cạm bẫy: cực tiểu địa phương (10 phút)</h3>
+<p>Đồi nhiều thung lũng → GD có thể kẹt ở thung lũng nông. Tin tốt: trong mạng sâu, cực tiểu địa phương vẫn đủ tốt. Kỹ thuật thoát: momentum, Adam, khởi tạo tốt, mini-batch (gặp lại B9 PyTorch).</p>
+<div class="box pro"><span class="bt">🎯 Tổng kết</span> 5 ý: đạo hàm=độ dốc; đạo hàm=0 ở cực trị; gradient chỉ hướng tăng nhanh nhất; GD: x←x−lr·∇f; lr sinh tử. Nếu chỉ nhớ 1 công thức: <code>x = x - lr * df(x)</code>.</div>
+<h2 class="sec">🛠️ Thực hành trên lớp</h2>
+<div class="exercise" data-ex="ex2">
+  <div class="eh">✍️ Bài thực hành 2 — Gradient descent 2 biến</div>
+  <div class="etask">f(x,y)=x²+4y² (cực tiểu (0,0)). ∂f/∂x=2x, ∂f/∂y=8y. 30 bước, lr=0.1. Kết quả ≈ (0,0).</div>
+  <textarea class="codepad" id="ex2" spellcheck="false">x, y = 3.0, 3.0
+lr = 0.1
+for step in range(30):
+    # đạo hàm riêng
+
+
+    # cập nhật
+
+
+print(round(x,4), round(y,4))</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button></div>
+  <div class="echk" id="res-ex2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">dx = 2*x; dy = 8*y
+x = x - lr*dx; y = y - lr*dy</pre></div></div></details>
+</div>
+<h2 class="sec">🏠 Bài về nhà</h2>
+<div class="box tip"><span class="bt">BTCN</span><ol style="margin-top:6px">
+  <li>GD cho f(x)=x²+2x+1, x0=5, lr=0.1, 100 bước. In kết quả + nhận xét.</li>
+  <li>Thử lr=1.0 cho x²+4y² → quan sát phân kỳ, viết nhận xét.</li>
+  <li>Ôn vector hóa NumPy (chuẩn bị B3).</li>
+</ol></div>
+${PAGER_M1('s1',2)}` };
+
+LESSON_DETAIL['s1-b3'] = { crumb: CRUMB_M1(3), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 3</span><h1>⚡ NumPy nâng cao &amp; Vector hóa</h1><div class="ch-sub">Bỏ vòng for, dùng vector hóa nhanh 100–1000×. Hiểu cạm bẫy broadcasting.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra GD</div><div class="tdesc">2 học viên lên bảng trình bày bài lr=1.0 phân kỳ.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Benchmark</div><div class="tdesc">Demo: 1 triệu phần tử, for vs np.dot. Cả lớp thấy chênh lệch.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–70'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Vector hóa</div><div class="tdesc">NumPy chạy trên C+SIMD. Quy tắc: không for khi vector được.</div></div></div>
+  <div class="tl-row"><div class="tl-time">70–80'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">80–110'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Broadcasting</div><div class="tdesc">Tự trải mảng nhỏ. Quy tắc trục. Cạm bẫy A(3,2)+c(3,).</div></div></div>
+  <div class="tl-row"><div class="tl-time">110–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> ReLU + lớp mạng</div><div class="tdesc">Viết relu bằng np.maximum. Viết y=relu(X@W+b).</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Tổng kết</div><div class="tdesc">Nhấn: maximum≠max. Chuẩn bị B4: xác suất.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Vì sao for là "tội ác" trong AI (20 phút)</h3>
+<p>Trong Python thường, for bình thường. Trong AI, for trên dữ liệu lớn là "tội ác" hiệu năng. Khi viết <code class="ic">for i in range(1000000): s += a[i]*b[i]</code>, Python làm <em>một triệu lần</em>: gọi interpreter, kiểm tra kiểu, lấy phần tử, nhân, cộng. Python là ngôn ngữ <strong>thông dịch</strong> — chậm hơn C 50–100× ở mỗi thao tác.</p>
+<p>Giải pháp: <strong>vector hóa</strong> — bảo NumPy "làm phép này trên toàn mảng cùng lúc". NumPy đẩy việc xuống <strong>C/Fortran đã biên dịch</strong> + dùng <strong>SIMD</strong> (Single Instruction, Multiple Data — xử lý nhiều số trong 1 lệnh). Kết quả: nhanh hơn <strong>100–1000×</strong>.</p>
+<div class="code-block"><div class="cbhead"><span>python · benchmark</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> time, numpy <span class="kw">as</span> np
+N = 1_000_000
+a, b = np.random.rand(N), np.random.rand(N)
+t=time.time(); s1=<span class="nb">sum</span>(a[i]*b[i] <span class="kw">for</span> i <span class="kw">in</span> <span class="nb">range</span>(N)); <span class="nb">print</span>(<span class="st">"for:"</span>,time.time()-t)
+t=time.time(); s2=np.dot(a,b);                       <span class="nb">print</span>(<span class="st">"vec:"</span>,time.time()-t)</pre></div>
+<p>Trên máy điển hình: for ~0.3s, vector ~0.001s — <strong>nhanh 300×</strong>. Trong DL: for → 10 giờ/epoch; vector → 2 phút. Khác biệt "chạy được" vs "không chạy được".</p>
+<div class="box info"><span class="bt">📌 Quy tắc vàng</span> Trong AI: <strong>không bao giờ dùng for khi có thể dùng numpy trên cả mảng</strong>. Khi thấy mình viết for trên numpy, dừng và nghĩ: "Có cách làm cả mảng không?" Hầu như luôn có.</div>
+<h3 class="mini">Phần 2 — Các phép numpy thiết yếu (15 phút)</h3>
+<table>
+  <tr><th>Phép</th><th>Ví dụ</th><th>Tác dụng</th></tr>
+  <tr><td>Số học từng phần tử</td><td>a+b, a*2</td><td>Giữ shape</td></tr>
+  <tr><td>Tích vô hướng</td><td>np.dot(a,b)</td><td>Σ aᵢ·bᵢ — 1 số</td></tr>
+  <tr><td>Nhân ma trận</td><td>X @ W</td><td>Lớp fully-connected</td></tr>
+  <tr><td>Cực trị từng phần tử</td><td>np.maximum(0,x)</td><td>ReLU — giữ shape</td></tr>
+  <tr><td>Cực trị tổng</td><td>np.max(x)</td><td>1 số lớn nhất</td></tr>
+</table>
+<div class="box danger"><span class="bt">🚫 Cạm bẫy #1: nhầm maximum với max</span> Tên na ná nhưng khác hoàn toàn. <code class="ic">np.maximum(0,x)</code> so từng phần tử → <strong>trả mảng cùng shape</strong> (dùng cho ReLU). <code class="ic">np.max(x)</code> trả <strong>1 số</strong>. Nhầm mà code vẫn chạy → kết quả sai rất khó debug. Nhớ: <em>maximum giữ shape, max phẳng hóa</em>.</div>
+<h3 class="mini">Phần 3 — Broadcasting: phép thuật &amp; cạm bẫy (20 phút)</h3>
+<p><strong>Broadcasting</strong>: cộng mảng lớn với mảng nhỏ, NumPy tự <em>trải</em> mảng nhỏ ra. A(3,2) + b(2,) → b cộng vào mỗi hàng. Code gọn, chạy nhanh. Đây là cơ chế cộng bias vào lớp mạng.</p>
+<div class="code-block"><div class="cbhead"><span>python · broadcasting đúng</span><span class="dot">●</span></div><pre class="code">A = np.array([[1,2],[3,4],[5,6]])   <span class="cm"># (3,2)</span>
+b = np.array([10, 20])               <span class="cm"># (2,)</span>
+<span class="nb">print</span>(A + b)
+<span class="cm"># [[11 22] [13 24] [15 26]]  ← b vào mỗi hàng</span></pre></div>
+<p>Quy tắc khắt khe: so khớp <em>từ trục cuối</em>. Hai trục khớp nếu bằng nhau, hoặc một cái = 1.</p>
+<table>
+  <tr><th>Phép</th><th>A</th><th>B</th><th>Kết quả</th><th>Vì sao</th></tr>
+  <tr><td>A+b</td><td>(3, <strong>2</strong>)</td><td>(<strong>2</strong>,)</td><td>(3,2) ✅</td><td>2=2</td></tr>
+  <tr><td>A+c</td><td>(3, <strong>2</strong>)</td><td>(<strong>3</strong>,)</td><td>❌</td><td>2≠3</td></tr>
+</table>
+<div class="box warn"><span class="bt">⚠️ Debug broadcasting</span> Gặp lỗi <code class="ic">could not be broadcast together</code>: in A.shape và b.shape; so trục cuối — phải bằng nhau (hoặc 1 cái=1). 90% lỗi ở trục cuối không khớp. Thói quen: <strong>in shape trước mọi phép cộng/nhân khi chưa chắc</strong>.</div>
+<h3 class="mini">Phần 4 — Viết lớp mạng thủ công (10 phút)</h3>
+<p>Kết hợp: một lớp fully-connected chỉ 3 dòng numpy. (PyTorch nn.Linear ở B9, nhưng biết bên trong là nền tảng.)</p>
+<div class="code-block"><div class="cbhead"><span>python · lớp mạng</span><span class="dot">●</span></div><pre class="code">X = np.random.rand(4, 3)         <span class="cm"># 4 mẫu, 3 đặc trưng</span>
+W = np.random.rand(3, 2) * 0.1   <span class="cm"># trọng số</span>
+b = np.array([0.5, -0.5])
+z = X @ W + b                    <span class="cm"># nhân + broadcasting bias</span>
+y = np.maximum(0, z)             <span class="cm"># ReLU</span>
+<span class="nb">print</span>(y.shape)                  <span class="cm"># (4, 2)</span></pre></div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> 4 ý: for là "tội ác"; vector hóa đẩy xuống C+SIMD nhanh 100–1000×; broadcasting có quy tắc trục khắt khe; lớp mạng = X@W+b + ReLU. Thói quen quan trọng: <strong>in .shape khi debug</strong>.</div>
+<div class="exercise" data-ex="ex3">
+  <div class="eh">✍️ Bài thực hành 3 — Hàm ReLU</div>
+  <div class="etask">Viết relu(x) dùng np.maximum (KHÔNG phải np.max). Ép âm về 0, giữ shape.</div>
+  <textarea class="codepad" id="ex3" spellcheck="false">import numpy as np
+def relu(x):
+
+
+print(relu(np.array([-3, -1, 0, 2, 5])))   # [0 0 0 2 5]</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button></div>
+  <div class="echk" id="res-ex3"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">def</span> <span class="fn">relu</span>(x):
+    <span class="kw">return</span> np.maximum(0, x)</pre></div></div></details>
+</div>
+<h2 class="sec">📝 Bài cũ tra (đầu B4)</h2>
+<div class="ask-list"><div class="ah">❓ Chuẩn bị phát biểu</div><ol>
+  <li>Vì sao vector hóa nhanh hơn for?<span class="ans">Chạy trên C/Fortran+SIMD, tránh overhead Python.</span></li>
+  <li>np.maximum vs np.max?<span class="ans">maximum giữ shape; max phẳng thành 1 số.</span></li>
+</ol></div>
+${PAGER_M1('s1',3)}` };
+
+LESSON_DETAIL['s1-b4'] = { crumb: CRUMB_M1(4), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 4</span><h1>🎲 Xác suất &amp; Định lý Bayes</h1><div class="ch-sub">Xác suất là ngôn ngữ của dự đoán trong bất định. Bayes qua ví dụ gây bất ngờ.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra vector hóa</div><div class="tdesc">2 câu tra bài. Sửa nhanh ReLU BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Câu đố xác suất</div><div class="tdesc">Ví dụ test bệnh (dương tính nhưng chỉ 16% bệnh). Học viên đoán trước.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–75'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Xác suất &amp; Bayes</div><div class="tdesc">Xác suất có điều kiện. Công thức Bayes. Giải bài test bệnh từng bước.</div></div></div>
+  <div class="tl-row"><div class="tl-time">75–85'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">85–120'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Liên hệ AI</div><div class="tdesc">Phân loại = P(nhãn|đặc trưng). Sigmoid → xác suất. Naive Bayes.</div></div></div>
+  <div class="tl-row"><div class="tl-time">120–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Code Bayes</div><div class="tdesc">Code tính P(bệnh|dương) với các tham số khác nhau.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Tổng kết + thông báo KT</div><div class="tdesc">B5: KT15' về Bayes.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Xác suất: ngôn ngữ bất định (15 phút)</h3>
+<p>AI không bao giờ chắc 100%. Khi mô hình nói "đây là mèo", thực ra nó nói "tôi <em>97% chắc</em>". Toàn bộ AI là nghệ thuật <strong>đo lường sự bất định</strong> — ngôn ngữ là <strong>xác suất</strong>.</p>
+<p><strong>Xác suất có điều kiện</strong> P(A|B) = "xác suất A, biết B đã xảy ra". P(ung thư|dương tính) — điều bác sĩ cần biết. Bayes cho phép <em>đảo</em> điều kiện.</p>
+<h3 class="mini">Phần 2 — Định lý Bayes (25 phút)</h3>
+<p><strong>Bayes</strong> cho <em>cập nhật niềm tin</em> khi có bằng chứng mới:</p>
+<div class="code-block"><div class="cbhead"><span>toán</span><span class="dot">●</span></div><pre class="code">P(A|B) = P(B|A) · P(A) / P(B)
+<span class="cm"># P(A)    = niềm tin TRƯỚC (prior)</span>
+<span class="cm"># P(B|A)  = sức mạnh bằng chứng (likelihood)</span>
+<span class="cm"># P(A|B)  = niềm tin SAU (posterior)</span></pre></div>
+<p>Đọc bằng lời: <em>"Niềm tin mới = niềm tin cũ × sức mạnh bằng chứng, chuẩn hóa lại."</em></p>
+<p><strong>Ví dụ gây bất ngờ</strong> (GV giảng chậm): tỷ lệ bệnh X = 1%. Test nhạy 99%, dương giả 5%. Câu hỏi: test dương → xác suất thật sự bệnh? Trực giác nói 99%. Đáp án Bayes: chỉ <strong>≈ 16%</strong>! Vì bệnh quá hiếm: trong 100 dương tính, ~5 người khỏe bị dương giả vs ~1 người bệnh thật.</p>
+<div class="code-block"><div class="cbhead"><span>python · Bayes</span><span class="dot">●</span></div><pre class="code">P_disease = 0.01; P_pos_given_dis = 0.99; P_pos_given_ok = 0.05
+P_pos = P_disease*P_pos_given_dis + (1-P_disease)*P_pos_given_ok
+P_dis_given_pos = P_pos_given_dis*P_disease / P_pos
+<span class="nb">print</span>(<span class="nb">round</span>(P_dis_given_pos, 3))   <span class="cm"># ≈ 0.167</span></pre></div>
+<div class="box info"><span class="bt">📌 Bài học cho AI</span> Đây là gốc của <em>hiện tượng tỷ lệ cơ sở</em>: sự kiện hiếm, dù detector "chính xác", phần lớn cảnh báo vẫn giả. Ứng dụng: phát hiện gian lận, xâm nhập, spam — sự kiện hiếm → cảnh báo sai nhiều. Vì sao Precision quan trọng (M3).</div>
+<div class="box warn"><span class="bt">⚠️ Cạm bẫy tư duy</span> Người mới hay tin "mô hình bảo 99% → chắc 99% đúng". Sai. Lớp hiếm → độ tin thấp hơn nhiều. Luôn hỏi: "Tỷ lệ cơ sở?"</div>
+<h3 class="mini">Phần 3 — Phân phối chuẩn &amp; chuẩn hóa (15 phút)</h3>
+<p>Nhiều hiện tượng (chiều cao, sai số, nhiễu) tuân <strong>phân phối chuẩn (Gaussian)</strong>: hình chuông quanh trung bình. Vì sao <em>chuẩn hóa</em> (StandardScaler: trung bình 0, độ lệch 1) phổ biến? Nhiều thuật toán (Naive Bayes, GMM, PCA) <em>giả định</em> chuẩn. Đặc trưng lớn (doanh thu triệu) trộn nhỏ (tuổi) → thuật toán khoảng cách bị áp đảo. Chuẩn hóa → mọi đặc trưng công bằng.</p>
+<h3 class="mini">Phần 4 — Liên hệ AI: phân loại = đo xác suất (10 phút)</h3>
+<p>Thuật toán phân loại không "chốt" nhãn — nó ước lượng <code class="ic">P(nhãn|đặc trưng)</code>, chọn nhãn xác suất cao nhất. <strong>Sigmoid</strong> σ(z)=1/(1+e⁻ᶻ) kẹp đầu ra về [0,1]. Naive Bayes áp dụng trực tiếp Bayes. Hiểu Bayes → hiểu vì sao mô hình "tự tin"/"do dự".</p>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> 4 ý: AI đo bất định bằng xác suất; Bayes cập nhật niềm tin; tỷ lệ cơ sở quan trọng; phân loại = P(nhãn|đặc trưng). Nếu nhớ 1 điều: <strong>đừng tin "99% chính xác" nếu không biết tỷ lệ cơ sở</strong>.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="ex4">
+  <div class="eh">✍️ Bài thực hành 4 — Tính Bayes</div>
+  <div class="etask">Hoàn thiện code tính P_dis_given_pos theo công thức Bayes.</div>
+  <textarea class="codepad" id="ex4" spellcheck="false">P_disease = 0.01
+P_pos_given_dis = 0.99
+P_pos_given_ok  = 0.05
+# P_pos = tổng xác suất dương tính
+
+
+# P(bệnh | dương)
+
+
+print(round(P_dis_given_pos, 3))   # mong đợi 0.167</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button></div>
+  <div class="echk" id="res-ex4"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">P_pos = P_disease*P_pos_given_dis + (1-P_disease)*P_pos_given_ok
+P_dis_given_pos = P_pos_given_dis*P_disease / P_pos
+<span class="nb">print</span>(<span class="nb">round</span>(P_dis_given_pos, 3))   <span class="cm"># 0.167</span></pre></div></div></details>
+</div>
+${PAGER_M1('s1',4)}` };
+
+/* Override renderExams cho M1 để hiện 5 đề đầy đủ */
+const M1_EXAMS_OVERRIDE = true;
+
+
+function renderLesson(sid, bid){
+  const s = SUBJECTS[sid];
+  if(!s){ renderOverview(); return; }
+  const bnum = parseInt(bid.replace('b',''));
+  const detail = LESSON_DETAIL[sid+'-'+bid];
+  if(detail){ /* có nội dung đầy đủ */
+    setPage(detail.html, detail.crumb);
+    return;
+  }
+  /* skeleton cho buổi chưa viết dày */
+  const prevB = bnum > 1 ? `${sid}/b${bnum-1}` : null;
+  const nextB = bnum < s.buoi ? `${sid}/b${bnum+1}` : `${sid}/exams`;
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-lesson">${s.code} · BUỔI ${bnum}</span>
+      <h1>${s.icon} Buổi ${bnum} — ${s.name}</h1>
+      <div class="ch-sub">Giáo án chi tiết buổi này đang được hoàn thiện theo cùng khuôn mẫu như M1 B1–B4.</div>
+    </div>
+    <div class="box pro"><span class="bt">📋 Đang hoàn thiện</span> Buổi này sẽ có: timeline phút-by-phút (bài cũ → warm-up → giảng → thực hành → dặn dò), nội dung giảng cặn kẽ kiểu sách giáo khoa, bài tập code tự chấm, quiz, BTCN. Nội dung được viết theo <em>cùng độ sâu</em> như 4 buổi đầu của Môn 1 (đã hoàn thiện).<br><br>Hãy xem <a href="#/s1/b1" style="color:var(--primary-glow)">M1 Buổi 1</a> để cảm nhận độ sâu mục tiêu.</div>
+    <div class="pager">
+      ${prevB ? `<a href="#/${prevB}"><div class="pl">← Buổi trước</div><div class="pt">Buổi ${bnum-1}</div></a>` : `<a href="#/${sid}"><div class="pl">← Quay lại</div><div class="pt">${s.code} thông tin</div></a>`}
+      <a class="next" href="#/${nextB}"><div class="pl">Tiếp →</div><div class="pt">${nextB.endsWith('exams') ? 'Đề thi môn' : 'Buổi '+(bnum+1)}</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/${sid}">${s.name}</a> <span class="sep">›</span> <b>Buổi ${bnum}</b>`);
+}
+
+/* ===== RENDER: EXAMS (skeleton; M1 có override đầy đủ) ===== */
+function renderExams(sid){
+  const s = SUBJECTS[sid];
+  if(!s){ renderOverview(); return; }
+  if(sid === 's1'){ renderM1Exams(); return; }
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — ${s.name}</h1>
+      <div class="ch-sub">Đề 15' × 2, đề 45', đề giữa kì, đề cuối kì môn. Mỗi đề có đáp án + thang điểm.</div>
+    </div>
+    <div class="box pro"><span class="bt">📋 Đang hoàn thiện</span> Bộ đề đầy đủ đang được viết theo khuôn mẫu <a href="#/s1/exams" style="color:var(--primary-glow)">M1 (đã có 5 đề hoàn chỉnh)</a>: đề 15' (5 câu), đề 45' (code+lt), đề GK 90' (3 phần + thang điểm A/B/C/D), đề CK 120' (5 câu).</div>
+    <div class="pager">
+      <a href="#/${sid}/b${s.buoi}"><div class="pl">← Buổi cuối</div><div class="pt">Buổi ${s.buoi}</div></a>
+      <a class="next" href="#/overview"><div class="pl">Về tổng quan →</div><div class="pt">Thời khóa biểu</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/${sid}">${s.name}</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
+/* ===== M1: 5 ĐỀ THI ĐẦY ĐỦ ===== */
+function renderM1Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M1 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — Toán cho AI</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', giữa kì (90'), cuối kì (120'). Mỗi đề có đáp án + thang điểm.</div>
+    </div>
+
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KIỂM TRA 15 PHÚT #1 <span class="et">Bài cũ · Buổi 2</span></div>
+      <div class="emeta"><span>⏱ <b>15 phút</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span><span>Tài liệu: <b>không</b></span></div>
+      <div class="q"><div class="qn">Câu 1 (2đ).</div><div class="qp">Cho A(3,2) và B(2,5). Tích A@B có shape gì?</div></div>
+      <div class="q"><div class="qn">Câu 2 (2đ).</div><div class="qp">Cho M(4,3). Có nhân được M@M không? Vì sao?</div></div>
+      <div class="q"><div class="qn">Câu 3 (2đ).</div><div class="qp">Đạo hàm f(x)=3x²+2x. Tính f'(2).</div></div>
+      <div class="q"><div class="qn">Câu 4 (2đ).</div><div class="qp">Ảnh RGB 2×2 pixel có shape gì? Bao nhiêu số?</div></div>
+      <div class="q"><div class="qn">Câu 5 (2đ).</div><div class="qp">Gradient f(x,y)=x²+y² tại (1,1) chỉ hướng nào?</div></div>
+      <details class="answer"><summary>✅ Đáp án &amp; thang điểm</summary><div class="body">
+        <p><b>C1:</b> (3,5). <b>C2:</b> Không — cột 3≠dòng 4. <b>C3:</b> f'=6x+2; f'(2)=14. <b>C4:</b> (3,2,2); 12 số. <b>C5:</b> (2x,2y)=(2,2) chỉ hướng tăng nhanh nhất.</p>
+        <div class="rubric"><span class="rt">Thang điểm</span>9–10: Xuất sắc · 7–8: Khá · 5–6: Đạt, ôn đạo hàm · &lt;5: Học lại B1–B2.</div>
+      </div></details>
+    </div>
+
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KIỂM TRA 15 PHÚT #2 <span class="et">Bài cũ · Buổi 5</span></div>
+      <div class="emeta"><span>⏱ <b>15 phút</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span><span>Không tài liệu</span></div>
+      <div class="q"><div class="qn">Câu 1 (2.5đ).</div><div class="qp">Phát biểu định lý Bayes. P(A|B) nghĩa là gì?</div></div>
+      <div class="q"><div class="qn">Câu 2 (3đ).</div><div class="qp">Test bệnh: P(bệnh)=0.02, nhạy 99%, dương giả 8%. Tính P(bệnh|dương).</div></div>
+      <div class="q"><div class="qn">Câu 3 (2.5đ).</div><div class="qp">Vì sao đi ngược gradient thì hàm giảm? 1 câu.</div></div>
+      <div class="q"><div class="qn">Câu 4 (2đ).</div><div class="qp">np.maximum(0,x) vs np.max(x): cái nào giữ shape?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body">
+        <p><b>C1:</b> P(A|B)=P(B|A)·P(A)/P(B); = xs A biết B xảy ra. <b>C2:</b> P_pos=0.02·0.99+0.98·0.08=0.0982; P(bệnh|dương)=0.0198/0.0982≈<b>0.202</b>. <b>C3:</b> Gradient chỉ hướng tăng nhanh nhất → ngược là giảm nhanh nhất. <b>C4:</b> np.maximum.</p>
+      </div></details>
+    </div>
+
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KIỂM TRA 45 PHÚT <span class="et">Sau buổi 6</span></div>
+      <div class="emeta"><span>⏱ <b>45 phút</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy + NumPy</span></div>
+      <div class="q"><div class="qn">Bài 1 (3đ — code).</div><div class="qp">Viết linear_layer(X,W,b) trả X@W+b. X(5,3),W(3,4),b(4,). In shape.</div></div>
+      <div class="q"><div class="qn">Bài 2 (3đ — code).</div><div class="qp">Viết gradient_descent(f,df,x0,lr,n) cho hàm 1 biến. Chạy f=x², x0=10, lr=0.1, n=50.</div></div>
+      <div class="q"><div class="qn">Bài 3 (2đ — lt).</div><div class="qp">A(2,3), B(3,2). A@B và B@A có cùng shape không? Vì sao?</div></div>
+      <div class="q"><div class="qn">Bài 4 (2đ — lt).</div><div class="qp">Vì sao lr=2.0 làm GD phân kỳ trong bài x²?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body">
+        <div class="code-block"><pre class="code"><span class="kw">def</span> <span class="fn">linear_layer</span>(X,W,b): <span class="kw">return</span> X@W+b   <span class="cm"># (5,4)</span>
+<span class="kw">def</span> <span class="fn">gradient_descent</span>(f,df,x0,lr,n):
+    x=x0
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="nb">range</span>(n): x = x - lr*df(x)
+    <span class="kw">return</span> x</pre></div>
+        <p><b>Bài 3:</b> Khác. A@B:(2,2), B@A:(3,3). <b>Bài 4:</b> lr=2 → bước 2·2x=4x vượt cực tiểu (0) sang bên kia xa hơn → dao động tăng dần → phân kỳ.</p>
+      </div></details>
+    </div>
+
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">Buổi 7</span></div>
+      <div class="emeta"><span>⏱ <b>90 phút</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy + NumPy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) Quy tắc nhân ma trận + ví dụ shape (1đ). (b) Gradient chỉ hướng nào? Vì sao cập nhật ngược? (1đ). (c) Phát biểu Bayes, giải thích số hạng (1đ). (d) Vì sao vector hóa nhanh hơn for? (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Tính toán (3đ).</div><div class="qp">(a) X(4,3),W(3,2),b(2,). Shape z=X@W+b và relu(z)? (1đ). (b) f(x,y)=3x²+2xy+y², gradient tại (1,2)? (1đ). (c) P(A)=0.1, P(B|A)=0.8, P(B|¬A)=0.2 → P(A|B)? (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 3 — Code (3đ).</div><div class="qp">(a) Tạo X(100,3),W(3,1),b. Tính y=X@W+b (1đ). (b) ReLU (0.5đ). (c) GD khớp w cho y≈w·x đơn biến (1.5đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body">
+        <p><b>P2a:</b> (4,2). <b>P2b:</b> ∇f=(6x+2y,2x+2y); tại (1,2)=(10,6). <b>P2c:</b> P(B)=0.1·0.8+0.9·0.2=0.26; P(A|B)=0.08/0.26≈<b>0.308</b>.</p>
+        <div class="code-block"><pre class="code">X=np.random.rand(100,3); W=np.random.rand(3,1); b=0.5; y=X@W+b
+<span class="kw">def</span> <span class="fn">relu</span>(z): <span class="kw">return</span> np.maximum(0,z)
+<span class="cm"># GD đơn biến: w = w - lr*2*mean((w*x-y)*x)</span></pre></div>
+        <div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A, sẵn sàng M3 · 7–8.4: B · 5.5–6.9: C, ôn đạo hàm · &lt;5.5: D/F, học lại.</div>
+      </div></details>
+    </div>
+
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">Cuối HK1</span></div>
+      <div class="emeta"><span>⏱ <b>120 phút</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy + NumPy</span></div>
+      <div class="q"><div class="qn">Câu 1 (1.5đ).</div><div class="qp">A(3,4), B(4,2), C(2,3). Shape ((A@B)@C) và A@(B@C)? Bằng nhau không?</div></div>
+      <div class="q"><div class="qn">Câu 2 (2đ).</div><div class="qp">f(x,y,z)=x²+2y²+3z²+xy. Gradient? Điểm cực tiểu?</div></div>
+      <div class="q"><div class="qn">Câu 3 (2đ).</div><div class="qp">Code GD 3 biến cho câu 2, (3,3,3), lr=0.05, 100 bước. In kết quả.</div></div>
+      <div class="q"><div class="qn">Câu 4 (1.5đ).</div><div class="qp">Bayes: tăng độ nhạy test vs giảm dương tính giả — cái nào hiệu quả hơn khi bệnh hiếm?</div></div>
+      <div class="q"><div class="qn">Câu 5 (3đ — code).</div><div class="qp">Lớp mạng: X(200,4), W1(4,8), W2(8,1). y=relu(X@W1+b1)@W2+b2. In shape. Tính MSE.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body">
+        <p><b>C1:</b> Cả hai (3,3), bằng nhau (nhân ma trận có tính kết hợp). <b>C2:</b> ∇f=(2x+y,4y+x,6z); cực tiểu (0,0,0). <b>C3:</b> GD 3 biến ≈ (0,0,0). <b>C4:</b> Giảm dương tính giả hiệu quả hơn — bệnh hiếm thì người khỏe bị dương giả áp đảo.</p>
+        <div class="code-block"><pre class="code">X=np.random.rand(200,4); W1=np.random.rand(4,8)*0.1; W2=np.random.rand(8,1)*0.1
+h=relu(X@W1); y=h@W2
+mse=np.mean((y-np.random.rand(200,1))**2)</pre></div>
+      </div></details>
+    </div>
+
+    <div class="pager">
+      <a href="#/s1/b8"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 8</div></a>
+      <a class="next" href="#/s2"><div class="pl">Môn tiếp →</div><div class="pt">M2 Python &amp; Dữ liệu</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s1">M1 Toán cho AI</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
+/* ===== RENDER: TOOLS ===== */
+function renderProgress(){
+  setPage(`<div class="page-head"><span class="kicker k-info">CÔNG CỤ</span><h1>📊 Bảng điểm &amp; tiến độ</h1><div class="ch-sub">Theo dõi bài tập + quiz đã hoàn thành (lưu trong trình duyệt).</div></div>
+    <div class="progress-wrap"><div class="pt">🎯 Tiến độ tổng thể <span id="progressTxt" style="color:var(--accent-2)"></span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="ps" id="progressSub"></div></div>`, crumbHTML('Tiến độ'));
+  renderProgressData();
+}
+function renderCards(){
+  setPage(`<div class="page-head"><span class="kicker k-info">CÔNG CỤ</span><h1>🃏 Flashcards</h1><div class="ch-sub">Bấm thẻ để lật. Ôn tập khái niệm then chốt.</div></div>
+    <div class="fc-grid" id="fcGrid"></div>`, crumbHTML('Flashcards'));
+  renderCardsData();
+}
+function renderCheat(){
+  setPage(`<div class="page-head"><span class="kicker k-info">CÔNG CỤ</span><h1>📋 Cheatsheet</h1><div class="ch-sub">Lệnh &amp; mẫu code thiết yếu.</div></div>
+    <div class="cheat-grid" id="cheatGrid"></div>`, crumbHTML('Cheatsheet'));
+  renderCheatData();
+}
+
+window.addEventListener('hashchange', route);
+window.addEventListener('DOMContentLoaded', ()=>{ route(); });
+
+/* ===== EXERCISE GRADING + DEFAULTS ===== */
+/* (EX và DEFAULTS đã khai báo ở script đầu file) */
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = checks.length > 0 && passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý/lời giải.`) + '</div>';
+  box.classList.add('show');
+  if(all) markDone(id);
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{ b.disabled = true; if(b.dataset.c==='1') b.classList.add('right'); });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+  if(correct) markDone('quiz-'+Math.random().toString(36).slice(2,7));
+}
+
+/* ===== PROGRESS ===== */
+const PROGRESS_KEY = 'ai_eng_lesson_v4';
+function loadProgress(){ try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch(e){ return {}; } }
+function markDone(id){ const p = loadProgress(); p[id]=true; localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); }
+function renderProgressData(){
+  const p = loadProgress();
+  const exDone = Object.keys(p).filter(k=>!k.startsWith('quiz-')).length;
+  const qDone = Object.keys(p).filter(k=>k.startsWith('quiz-')).length;
+  const total = exDone + qDone;
+  const fill = document.getElementById('progressFill');
+  if(fill){
+    document.getElementById('progressTxt').textContent = `${total} mục đã hoàn thành`;
+    fill.style.width = Math.min(100, total*3) + '%';
+    document.getElementById('progressSub').textContent = `Bài tập: ${exDone} · Quiz: ${qDone}. Tiến độ lưu trong trình duyệt.`;
+  }
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"Triết lý đào tạo?", a:"Bottom-Up + Project-Based: học Toán/thuật toán đến đâu, code ra sản phẩm đến đó."},
+  {q:"Quy tắc nhân ma trận?", a:"A(m,n)@B(n,p)→(m,p). Số cột A = số dòng B."},
+  {q:"Gradient chỉ hướng nào?", a:"Hướng TĂNG nhanh nhất → đi ngược để giảm."},
+  {q:"Learning rate quá lớn?", a:"Loss dao động/phân kỳ (NaN)."},
+  {q:"np.maximum vs np.max?", a:"maximum giữ shape (ReLU); max phẳng thành 1 số."},
+  {q:"Định lý Bayes?", a:"P(A|B)=P(B|A)·P(A)/P(B) — cập nhật niềm tin."},
+  {q:"Tỷ lệ cơ sở (base rate)?", a:"Sự kiện hiếm → detector 'chính xác' vẫn báo sai nhiều."},
+  {q:"Vì sao vector hóa nhanh?", a:"Chạy trên C/Fortran + SIMD, tránh overhead Python."},
+];
+function renderCardsData(){
+  const g = document.getElementById('fcGrid');
+  if(!g) return;
+  g.innerHTML = FC.map(c=>`<div class="flashcard" onclick="this.classList.toggle('flipped')"><div class="fc-inner">
+    <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+    <div class="fc-face fc-back">${c.a}</div></div></div>`).join('');
+}
+
+/* ===== CHEATSHEET ===== */
+const CHEAT = [
+  {ic:"🐍", t:"Môi trường", c:"conda create -n ai python=3.11 -y\nconda activate ai\npip install numpy matplotlib"},
+  {ic:"➗", t:"Nhân ma trận", c:"z = X @ W + b   # (m,n)@(n,p)=(m,p)\nnp.dot(a,b), A.T, A.shape"},
+  {ic:"📉", t:"Gradient Descent", c:"for _ in range(n):\n    x = x - lr * df(x)"},
+  {ic:"💡", t:"Bayes", c:"P(A|B) = P(B|A)*P(A) / P(B)"},
+  {ic:"🔥", t:"ReLU", c:"def relu(x): return np.maximum(0, x)"},
+  {ic:"👨‍🏫", t:"Timeline buổi", c:"0-15' Bài cũ (KT15')\n15-35' Warm-up\n35-75' Giảng\n75-85' Nghỉ\n85-145' Thực hành\n145-175' Dặn dò"},
+];
+function renderCheatData(){
+  const g = document.getElementById('cheatGrid');
+  if(!g) return;
+  g.innerHTML = CHEAT.map(c=>`<div class="cheat-card"><h4>${c.ic} ${c.t}</h4><div class="ci">${c.c}</div></div>`).join('');
+}
+
+/* ===== NAV SEARCH ===== */
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu a[data-page]').forEach(a=>{
+    const li = a.closest('li') || a.closest('.nav-subject');
+    const match = a.textContent.toLowerCase().includes(q);
+    if(li && !li.classList.contains('nav-h')) li.style.display = match ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>
