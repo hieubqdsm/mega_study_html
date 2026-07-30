@@ -265,6 +265,35 @@
   .progress-fill { height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width:0%; transition: width .6s; border-radius:6px; }
   .progress-wrap .ps { font-size:12px; color:var(--gray); }
 
+  /* ===== ĐỀ ÁN ĐỀ XUẤT (Capstone ideas) ===== */
+  .idea-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(330px,1fr)); gap:16px; margin:16px 0; }
+  .idea { background: var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 20px; position:relative; overflow:hidden; transition: all .2s; }
+  .idea:hover { border-color: var(--primary); transform: translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,.3); }
+  .idea::before { content:""; position:absolute; left:0; top:0; bottom:0; width:4px; }
+  .idea.t-cv::before { background: var(--p2); }       /* Computer Vision - vàng */
+  .idea.t-ml::before { background: var(--p0); }       /* ML bảng - xanh dương */
+  .idea.t-agent::before { background: var(--p1); }    /* Agent - xanh lá */
+  .idea.t-multi::before { background: var(--p3); }    /* Multi-agent - hồng */
+  .idea.t-nlp::before { background: var(--code-purple); } /* NLP - tím */
+  .idea .ih { display:flex; align-items:center; gap:9px; margin-bottom:8px; }
+  .idea .ih .ic { font-size:22px; }
+  .idea .ih h4 { font-size:15px; color:var(--light-strong); flex:1; }
+  .idea .ih .difficulty { font-size:10px; font-weight:900; padding:3px 9px; border-radius:12px; letter-spacing:.5px; white-space:nowrap; }
+  .diff-easy { background: rgba(52,211,153,.16); color: var(--ok); }
+  .diff-mid { background: rgba(251,191,36,.16); color: var(--warn); }
+  .diff-hard { background: rgba(248,113,113,.16); color: var(--danger); }
+  .idea .desc { font-size:13px; color:var(--light); margin-bottom:10px; }
+  .idea .row-kv { display:grid; grid-template-columns: 70px 1fr; gap:4px 10px; font-size:12.3px; margin-bottom:8px; }
+  .idea .row-kv .k { color:var(--gray); }
+  .idea .row-kv .v { color:var(--light); }
+  .idea .row-kv .v code { background:var(--terminal); color:var(--code-green); padding:1px 5px; border-radius:4px; font-size:11.5px; }
+  .idea .out { background: var(--card-2); border:1px solid var(--border); border-radius:8px; padding:8px 11px; font-size:12.3px; margin-top:8px; }
+  .idea .out b { color: var(--accent-2); }
+  .ideas-filter { display:flex; gap:8px; flex-wrap:wrap; margin: 14px 0 4px; }
+  .ideas-filter .chip { font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--gray); cursor:pointer; transition:all .15s; }
+  .ideas-filter .chip:hover { border-color:var(--primary); color:var(--light); }
+  .ideas-filter .chip.active { background: var(--primary); color:#06070d; border-color:var(--primary); font-weight:700; }
+
   footer.foot { border-top: 1px solid var(--border); padding: 24px 44px; color: var(--gray); font-size: 12.5px; }
   footer.foot a { color: var(--primary-glow); }
 
@@ -3691,6 +3720,106 @@ const CAPSTONE_CRITERIA = `
     <b>&lt;5 (Chưa đạt):</b> Bảo vệ lại — thiếu thành phần cốt lõi.</div>
 </div>`;
 
+/* ===== ĐỀ ÁN TỐT NGHIỆP ĐỀ XUẤT (Capstone project ideas) ===== */
+const PROJECT_IDEAS = [
+  { ic:'📐', t:'Đọc & trích xuất thông tin bản vẽ kỹ thuật (PDF)', type:'cv', diff:'hard',
+    cat:'CV + Agent', desc:'Pipeline end-to-end: YOLO nhận diện ký hiệu (Bơm/Van/Bình khí) trên bản vẽ PDF kỹ thuật, kèm Agent trả lời câu hỏi về bản vẽ ("van nào áp suất cao nhất?"). Kết hợp HK1 (YOLO) + HK2 (Agent/RAG).',
+    stack:'YOLOv8 · PyTorch · LangChain · FAISS · Streamlit',
+    data:'200-500 ảnh bản vẽ PDF (raster 300 DPI), gán nhãn CVAT',
+    out:'App upload PDF → bbox + bảng thống kê ký hiệu + chat Q&amp;A về bản vẽ' },
+  { ic:'🛒', t:'Dự đoán churn & gợi ý hành động giữ chân khách hàng', type:'ml', diff:'mid',
+    cat:'ML bảng + Agent', desc:'Mô hình ML bảng dự đoán khách hàng sắp rời (churn), kèm Agent giải thích lý do + gợi ý hành động (gửi mã giảm giá, gọi điện). Đi từ dự đoán → hành động nghiệp vụ.',
+    stack:'XGBoost · scikit-learn · SHAP · LangChain · FastAPI',
+    data:'Telco Churn / Kaggle customer churn (dữ liệu bảng)',
+    out:'Dashboard: top khách hàng rủi ro cao + lý do (SHAP) + gợi ý hành động từng người' },
+  { ic:'📄', t:'Agent pháp lý — trả lời câu hỏi hợp đồng', type:'agent', diff:'hard',
+    cat:'RAG + Governance', desc:'Agent đọc hợp đồng PDF, trả lời câu hỏi ("điều khoản chấm dứt là gì?", "có phạt vi phạm không?") kèm <strong>trích dẫn điều khoản chính xác</strong>. Áp dụng đầy đủ bảo mật (mask PII) + governance (audit, RBAC).',
+    stack:'LangChain · FAISS/pgvector · OpenAI · PyMuPDF · FastAPI',
+    data:'50-100 hợp đồng mẫu (NDA, lao động, thương mại)',
+    out:'Web app: upload hợp đồng → chat Q&amp;A trích nguồn + audit log' },
+  { ic:'🏭', t:'Kiểm tra chất lượng sản phẩm bằng camera', type:'cv', diff:'mid',
+    cat:'Computer Vision', desc:'YOLO phát hiện lỗi sản phẩm (trầy xước, méo mó, thiếu linh kiện) trên băng chuyền. Có dashboard giám sát real-time + cảnh báo khi tỷ lệ lỗi tăng.',
+    stack:'YOLOv8 · OpenCV · FastAPI · WebSocket · Chart.js',
+    data:'Ảnh sản phẩm tốt/lỗi (tự chụp hoặc Kaggle manufacturing defect)',
+    out:'App camera/stream → bbox lỗi + biểu đồ tỷ lệ lỗi real-time + alert' },
+  { ic:'💬', t:'Chatbot CSKH đa ngôn ngữ + escaler', type:'multi', diff:'hard',
+    cat:'Multi-Agent', desc:'Hệ thống đa Agent: Agent phân loại ý định → Agent trả lời FAQ → Agent escaler sang người khi phức tạp. Đánh giá tự động (LLM-as-judge) + giám sát.',
+    stack:'LangGraph · LangSmith · OpenAI · Redis · FastAPI',
+    data:'Tập FAQ + lịch sử chat CSKH (scrub PII)',
+    out:'Web chat: trả lời tự động + escaler + dashboard chất lượng' },
+  { ic:'🏥', t:'Agent tổng hợp hồ sơ bệnh án', type:'agent', diff:'hard',
+    cat:'RAG y tế + Bảo mật', desc:'Agent đọc hồ sơ bệnh án (lưu ý PII), tóm tắt, trả lời câu hỏi bác sĩ ("bệnh nhân dị ứng gì?", "lịch sử thuốc?"). Bảo mật nghiêm ngặt (mask, RBAC, audit) — dữ liệu y tế cực nhạy cảm.',
+    stack:'LangChain · pgvector · spaCy (NER mask) · OpenAI zero-retention · FastAPI',
+    data:'M150 hoặc synthetic EHR (đã ẩn danh)',
+    out:'App portal bác sĩ: truy vấn hồ sơ + tóm tắt + audit đầy đủ' },
+  { ic:'🎬', t:'Sinh video ngắn từ kịch bản', type:'nlp', diff:'mid',
+    cat:'NLP + LLM', desc:'Pipeline: kịch bản → Agent chia cảnh → chọn ảnh/đọc thoại (TTS) → ghép video. Ứng dụng marketing nội dung.',
+    stack:'GPT/Claude · DALL-E/SD · TTS (gTTS/edge-tts) · MoviePy',
+    data:'Kịch bản mẫu + kho ảnh/t nhạc free',
+    out:'App: nhập kịch bản → video MP4 hoàn chỉnh + preview' },
+  { ic:'🌾', t:'Dự báo năng suất & bệnh cây trồng', type:'ml', diff:'mid',
+    cat:'ML bảng + CV', desc:'Kết hợp dữ liệu thời tiết/đất (ML bảng) + ảnh lá cây (CNN) để dự báo năng suất và phát hiện bệnh. Hỗ trợ nông dân ra quyết định.',
+    stack:'XGBoost · PyTorch (CNN) · scikit-learn · Streamlit',
+    data:'PlantVillage (ảnh bệnh) + dữ liệu thời tiết/đất Kaggle',
+    out:'App: nhập điều kiện + upload ảnh lá → dự báo + chẩn đoán bệnh' },
+  { ic:'💼', t:'Agent tuyển dụng — sàng lọc CV', type:'multi', diff:'hard',
+    cat:'Multi-Agent + Governance', desc:'Hệ thống: Agent JD → Agent chấm điểm CV → Agent phỏng vấn. <strong>Trọng tâm: phát hiện & giảm thiên lệch</strong> (gender/bias) + governance rõ ràng. Áp dụng M10.',
+    stack:'LangGraph · spaCy · OpenAI · fairness metrics · FastAPI',
+    data:'Kaggle resume dataset + JD mẫu',
+    out:'Dashboard HR: xếp hạng CV + điểm + phân tích fairness' },
+  { ic:'🛡️', t:'Hệ thống phát hiện gian lận giao dịch', type:'ml', diff:'hard',
+    cat:'ML + LLMOps', desc:'Phát hiện giao dịch gian lận (rất hiếm → base rate thấp, áp dụng M1 Bayes). Deploy full production: API real-time + giám sát + eval CI + tối ưu chi phí.',
+    stack:'XGBoost/LightGBM · FastAPI · Redis · Langfuse · Docker',
+    data:'Kaggle Credit Card Fraud (284k giao dịch)',
+    out:'API scoring real-time + dashboard giám sát + alert' },
+  { ic:'📚', t:'Gia sư AI cá nhân hóa', type:'agent', diff:'mid',
+    cat:'Agent + Memory', desc:'Agent hỏi trình độ học viên → gợi ý bài học → ra bài tập → chấm → điều chỉnh lộ trình. Có memory dài hạn (theo dõi tiến độ). Ứng dụng giáo dục.',
+    stack:'LangChain · FAISS · OpenAI · Streamlit · localStorage',
+    data:'Nội dung bài học + ngân hàng câu hỏi (theo môn)',
+    out:'App học: lộ trình cá nhân + bài tập + tiến độ' },
+  { ic:'📰', t:'Tổng hợp báo cáo tin tức đa nguồn', type:'multi', diff:'mid',
+    cat:'Multi-Agent', desc:'Pipeline: Agent thu thập tin (RSS/web) → Agent tóm tắt → Agent biên soạn báo cáo hằng ngày. Human checkpoint trước khi xuất bản. Ứng dụng phòng truyền thông.',
+    stack:'LangGraph · newspaper3k · OpenAI · Streamlit · cron',
+    data:'Nguồn RSS báo điện tử (VnExpress, Tuổi Trẻ...)',
+    out:'Báo cáo tin tức hằng ngày tự động + email/Slack' },
+  { ic:'🔊', t:'Chuyển giọng nói thành văn bản + tóm tắt họp', type:'nlp', diff:'mid',
+    cat:'NLP + LLM', desc:'Pipeline: audio họp → Speech-to-Text → tóm tắt (quyết định, action items, người phụ trách) → gửi email. Ứng dụng doanh nghiệp.',
+    stack:'Whisper · GPT/Claude · pyannote (speaker diarization) · FastAPI',
+    data:'Audio họp mẫu (public meeting recordings)',
+    out:'App upload audio → bản tóm tắt họp + action items' },
+  { ic:'🛒', t:'Gợi ý sản phẩm cá nhân hóa cho e-commerce', type:'ml', diff:'mid',
+    cat:'ML + Agent', desc:'Hệ thống recommendation: Collaborative filtering + content-based + Agent giải thích ("vì sao gợi ý?"). Deploy + A/B test framework.',
+    stack:'LightFM/surprise · XGBoost · FastAPI · Streamlit',
+    data:'Kaggle E-Commerce (Amazon, TMDb ratings)',
+    out:'API recommend + dashboard giải thích + A/B metrics' },
+];
+
+function renderProjectIdeas(){
+  const cats = [...new Set(PROJECT_IDEAS.map(p=>p.cat))];
+  const filterChips = `<div class="ideas-filter"><span class="chip active" onclick="filterIdeas(this,'')">Tất cả (${PROJECT_IDEAS.length})</span>`
+    + cats.map(c=>`<span class="chip" onclick="filterIdeas(this,'${c}')">${c}</span>`).join('') + `</div>`;
+  const cards = PROJECT_IDEAS.map((p,i)=>`
+    <div class="idea t-${p.type}" data-cat="${p.cat}">
+      <div class="ih"><span class="ic">${p.ic}</span><h4>${p.t}</h4><span class="difficulty diff-${p.diff}">${p.diff==='easy'?'Dễ':p.diff==='mid'?'Trung bình':'Khó'}</span></div>
+      <div class="desc">${p.desc}</div>
+      <div class="row-kv">
+        <span class="k">Hướng</span><span class="v">${p.cat}</span>
+        <span class="k">Tech</span><span class="v"><code>${p.stack}</code></span>
+        <span class="k">Dữ liệu</span><span class="v">${p.data}</span>
+      </div>
+      <div class="out"><b>🎯 Đầu ra:</b> ${p.out}</div>
+    </div>`).join('');
+  return `<div class="box info" style="margin-top:8px"><span class="bt">💡 ${PROJECT_IDEAS.length} đề án gợi ý</span> Chọn 1 hoặc lấy cảm hứng. Mỗi đề án đều <strong>tổng hợp được nhiều môn</strong> (HK1+HK2). Ưu tiên đề có bài toán thật, dữ liệu thực. Nhóm có thể tự đề xuất đề riêng — phải được mentor phê duyệt ở B2.</div>`
+    + filterChips + `<div class="idea-grid" id="ideaGrid">${cards}</div>`;
+}
+function filterIdeas(chip, cat){
+  chip.parentElement.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  document.querySelectorAll('#ideaGrid .idea').forEach(card=>{
+    card.style.display = (cat==='' || card.dataset.cat===cat) ? '' : 'none';
+  });
+}
+
 const capTL = (n, title, sub, acts) => ({ crumb: CRUMB('s11',M11_NAME,`Buổi ${n}`), html: `
 <div class="page-head"><span class="kicker k-lesson">M11 · BUỔI ${n}</span><h1>🎓 ${title}</h1><div class="ch-sub">${sub}</div></div>
 <div class="timeline">${acts}</div>
@@ -3699,8 +3828,10 @@ ${PAGER('s11',n,10,M11_NAME)}` });
 
 const tl = (time, pill, name, desc) => `<div class="tl-row"><div class="tl-time">${time}</div><div class="tl-act"><div class="tname"><span class="pill ${pill}">${name}</span></div><div class="tdesc">${desc}</div></div></div>`;
 
-LESSON_DETAIL['s11-b1'] = capTL(1, 'Chọn đề tài &amp; Pitch', 'Xác định bài toán thật, pitch ý tưởng trước lớp.',
+LESSON_DETAIL['s11-b1'] = capTL(1, 'Chọn đề tài &amp; Pitch', 'Xác định bài toán thật, pitch ý tưởng trước lớp. Tham khảo danh sách đề án gợi ý bên dưới.',
   tl('0-30','warm','Pitch','Mỗi nhóm 5\' pitch ý tưởng.') + tl('30-90','teach','Phản biện','Giáo viên + lớp phản biện tính khả thi.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Chốt đề','Chốt đề tài, viết problem statement.') + tl('160-175','wrap','Dặn dò','Phê duyệt đề, chuẩn bị B2.'));
+LESSON_DETAIL['s11-b1'].html = LESSON_DETAIL['s11-b1'].html.replace('<div class="pager">',
+  '<h2 class="sec">💡 Đề án tốt nghiệp gợi ý</h2>' + renderProjectIdeas() + '<div class="pager">');
 
 LESSON_DETAIL['s11-b2'] = capTL(2, 'Đặc tả &amp; Kiến trúc', 'Đặc tả yêu cầu, vẽ kiến trúc tổng thể.',
   tl('0-30','old','Tra bài','Giáo viên xét problem statement.') + tl('30-90','teach','Kiến trúc','Vẽ diagram: mô hình + agent + API + DB.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Viết đặc tả','Đặc tả kỹ thuật + MVP scope.') + tl('160-175','wrap','Dặn dò','Phê duyệt đặc tả.'));
@@ -3745,6 +3876,8 @@ function renderM11Exams(){
       <div class="ch-sub">ĐATN chấm theo rubric hội đồng, không có đề thi giấy.</div>
     </div>
     ${CAPSTONE_CRITERIA}
+    <h2 class="sec">💡 Đề án tốt nghiệp gợi ý</h2>
+    ${renderProjectIdeas()}
     <div class="pager">
       <a href="#/s11/b10"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 10</div></a>
       <a class="next" href="#/overview"><div class="pl">Hoàn thành →</div><div class="pt">Về tổng quan</div></a>
