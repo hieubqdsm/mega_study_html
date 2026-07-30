@@ -165,6 +165,21 @@ def rewrite_urls_in_html(html_text):
                 if os.path.exists(os.path.join(PHB, "assets", "orig", base)):
                     tag[attr] = "../assets/orig/" + base
 
+    # 3. Link handbook noi bo -> link local
+    # VD: https://help.procreate.com/procreate/handbook/layers/layers-interface
+    #     -> ../layers/layers-interface.html (trang nam o <chapter>/<slug>.html)
+    # VD: .../handbook/layers -> ../layers/index.html
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        m = re.search(r"/procreate/handbook/([^/?#]+)(?:/([^/?#]+))?", href)
+        if m:
+            chapter = m.group(1)
+            slug = m.group(2)
+            if slug:
+                a["href"] = f"../{chapter}/{slug}.html"
+            else:
+                a["href"] = f"../{chapter}/index.html"
+
     return str(soup)
 
 
