@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học — AI + Excel cho Data Analyst (Dữ Liệu Lớn)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #217346;          /* Excel green */
+    --primary-glow: #2e8b57;
+    --accent: #185C37;           /* dark green */
+    --accent-2: #4fd17a;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #0c1512; --darker: #060a08;
+    --light: #c7d6cc; --light-strong: #ecf6ef; --gray: #84a391;
+    --card: #0f1c14; --card-2: #16291d; --border: #1f3d2a; --terminal: #060f0a;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f8597;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(33,115,70,.12) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(79,209,122,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #03070a 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(33,115,70,.14);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(33,115,70,.55)); }
+  .logo h1 { font-size: 19px; background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 10.5px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .logo .pat { font-family: monospace; font-size: 11.5px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(33,115,70,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#06070d; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(33,115,70,.1); color: var(--accent-2); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--accent-2); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,10,8,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--accent-2); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1040px; }
+
+  .hero { background: linear-gradient(135deg, rgba(33,115,70,.16), rgba(79,209,122,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"📊"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--accent-2); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.mini { font-size: 15px; color: var(--primary-glow); margin: 18px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  em { color: var(--accent-2); font-style: normal; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--accent-2); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(33,115,70,.08); border-color: rgba(33,115,70,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  .code-block .cbhead .copy { cursor:pointer; color: var(--gray); transition: color .2s; }
+  .code-block .cbhead .copy:hover { color: var(--accent-2); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* PROMPT CARD (copy-paste ready) */
+  .prompt { background: linear-gradient(135deg, rgba(33,115,70,.10), rgba(79,209,122,.05)); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:16px 18px; margin:18px 0; }
+  .prompt .ph { font-weight:800; color: var(--accent-2); margin-bottom:8px; display:flex; align-items:center; gap:8px; font-size:14.5px; }
+  .prompt .ptag { font-size:10px; font-weight:900; letter-spacing:1px; background:var(--primary); color:#06070d; padding:3px 9px; border-radius:20px; }
+  .prompt .pbody { background: var(--terminal); border:1px solid var(--border); border-radius:9px; padding:12px 14px; font-size:13px; color:var(--code-green); white-space:pre-wrap; line-height:1.7; font-family:'JetBrains Mono','Consolas',monospace; }
+  .prompt .pbtns { display:flex; gap:8px; margin-top:9px; }
+  .prompt .cpbtn { font-family:inherit; font-size:12px; font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; border:none; background:var(--primary); color:#06070d; transition: all .2s; }
+  .prompt .cpbtn:hover { background:var(--accent-2); }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--accent-2); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* CHEATSHEET */
+  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap:14px; }
+  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .cheat-card h4 { color: var(--accent-2); font-size:14.5px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .cheat-card .ci { background: var(--terminal); border:1px solid var(--border); border-radius:8px; padding:9px 11px; font-size:12px; color:var(--code-green); white-space:pre; overflow-x:auto; margin-bottom:8px; }
+
+  /* PROGRESS */
+  .progress-wrap { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:22px 0; }
+  .progress-wrap .pt { font-weight:800; color:var(--light-strong); margin-bottom:10px; }
+  .progress-bar { height:10px; background: var(--card-2); border-radius:6px; overflow:hidden; margin-bottom:8px; }
+  .progress-fill { height:100%; background: linear-gradient(90deg, var(--primary), var(--accent-2)); width:0%; transition: width .6s; border-radius:6px; }
+  .progress-wrap .ps { font-size:12px; color:var(--gray); }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--accent-2); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#06070d; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:23px; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">📊</div>
+      <h1>AI + Excel cho Data Analyst</h1>
+      <div class="sub">DỮ LIỆU LỚN · CÔNG THỨC · PROMPT AI</div>
+      <div class="pat">=AI.PROMPT(...)</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">P1</span> Nền tảng Excel</li>
+      <li><a href="#c1"><span class="cn">1</span> Tổng quan: AI + Excel cho Data Analyst</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Làm chủ dữ liệu lớn trong Excel</a></li>
+
+      <li class="nav-section-title np1"><span class="badge">P2</span> Công thức cốt lõi</li>
+      <li><a href="#c3"><span class="cn">3</span> VLOOKUP / XLOOKUP / INDEX-MATCH</a></li>
+      <li><a href="#c4"><span class="cn">4</span> SUMIFS / COUNTIFS &amp; công thức điều kiện</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Text, Date &amp; công thức làm sạch</a></li>
+
+      <li class="nav-section-title np2"><span class="badge">P3</span> Phân tích nâng cao</li>
+      <li><a href="#c6"><span class="cn">6</span> Pivot Table &amp; bảng động</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Power Query &amp; Power Pivot (DAX)</a></li>
+
+      <li class="nav-section-title np3"><span class="badge">P4</span> AI ứng dụng thực chiến</li>
+      <li><a href="#c8"><span class="cn">8</span> Prompt chuẩn: AI viết công thức Excel</a></li>
+      <li><a href="#c9"><span class="cn">9</span> Prompt phân tích dữ liệu &amp; insight</a></li>
+      <li><a href="#c10"><span class="cn">10</span> AI + VBA: tự động hóa &amp; macro</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Workflow end-to-end: AI trợ lý Excel</a></li>
+
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#library"><span class="cn">📋</span> Thư viện Prompt</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📐</span> Cheatsheet công thức</a></li>
+      <li><a href="#progress"><span class="cn">📊</span> Tiến độ</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">📊 Khóa học · <b id="crumb">AI + Excel cho DA</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">AI + Excel</span> cho Data Analyst (dữ liệu lớn)</h1>
+        <p>Khóa học dành cho <strong>người xử lý dữ liệu</strong> — kế toán, phân tích kinh doanh, vận hành, sale — muốn dùng AI (ChatGPT/Gemini/Claude) để <em>làm Excel nhanh gấp nhiều lần</em>. Trọng tâm: <strong>công thức thực chiến</strong> (VLOOKUP, XLOOKUP, SUMIFS, INDEX-MATCH, Pivot, Power Query), <strong>concept khi nào dùng gì</strong>, và một <strong>thư viện Prompt chuẩn copy-paste</strong> để AI viết công thức, phân tích dữ liệu, sinh macro cho bạn. Không cần biết code. Mỗi chương có công thức + bảng so sánh + prompt dùng ngay.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>11</b> chương</span>
+          <span class="meta-pill">📋 <b>30+</b> prompt chuẩn</span>
+          <span class="meta-pill">📐 <b>50+</b> công thức</span>
+          <span class="meta-pill">🎯 Dành cho DA</span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Đối tượng &amp; mục tiêu</span> Bạn làm việc với Excel mỗi ngày nhưng hay "kẹt" ở công thức dài, dữ liệu lớn nặng, lặp lại. Sau khóa học: bạn dùng AI như một <em>trợ lý Excel</em> — mô tả yêu cầu bằng tiếng Việt → AI đưa công thức, sửa lỗi <code class="ic">#N/A</code>, sinh VBA, tóm tắt insight. Tiết kiệm hàng giờ mỗi tuần.</div>
+        <div class="box pro"><span class="bt">Cần chuẩn bị gì?</span> Excel 2016+ (hoặc Microsoft 365 để có XLOOKUP, Power Query). Một tài khoản AI (ChatGPT, Gemini, hoặc Claude — miễn phí cũng dùng được). File Excel dữ liệu của bạn để thực hành. <strong>Không cần biết lập trình.</strong></div>
+      </div>
+
+      <!-- ============ P1 ============ -->
+      <div class="part-divider" id="P1"><div class="line"></div><span class="tag tp0">P1 · NỀN TẢNG EXCEL</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> Tổng quan: AI + Excel cho Data Analyst</h2>
+        <div class="ch-sub">Vì sao AI thay đổi cách bạn làm Excel — và cách nghĩ về dữ liệu.</div>
+
+        <h3 class="sec">1. Vấn đề: Excel "đau" ở đâu?</h3>
+        <p>Nếu bạn từng: viết công thức <code class="ic">VLOOKUP</code> 5 lớp lồng nhau rồi quên đóng ngoặc; chờ 10 phút để một Pivot Table tính xong trên file 500MB dòng; copy-paste 20 file CSV mỗi sáng; debug lỗi <code class="ic">#VALUE!</code> cả giờ — bạn đang gặp đúng "nỗi đau" mà AI giải quyết. AI không thay Excel, nó làm bạn <em>dùng Excel nhanh &amp; đúng hơn rất nhiều</em>.</p>
+        <table>
+          <tr><th>Công việc cũ (chậm, dễ sai)</th><th>Với AI (nhanh, chính xác)</th></tr>
+          <tr><td>Google "công thức đếm theo 2 điều kiện" → đọc 5 bài → thử</td><td>Mô tả: "đếm đơn cột A, điều kiện B=HN và C&gt;100" → AI đưa <code class="ic">COUNTIFS</code> ngay</td></tr>
+          <tr><td>Sửa <code class="ic">#N/A</code> bằng cách soi từng ô</td><td>Dán công thức lỗi vào AI → AI chỉ nguyên nhân + cách sửa</td></tr>
+          <tr><td>Viết macro thủ công (cần biết VBA)</td><td>"Tạo macro xóa dòng trống, lưu thành file mới" → AI sinh code VBA</td></tr>
+          <tr><td>Tự phân tích, viết báo cáo</td><td>Dán bảng vào AI: "top 3 sản phẩm giảm doanh thu" → AI tóm tắt insight</td></tr>
+        </table>
+
+        <h3 class="sec">2. Tư duy mới: "Prompt" thay "Google"</h3>
+        <p>Thay vì Google rồi tổng hợp, bạn viết <strong>prompt</strong> — câu lệnh yêu cầu AI. Prompt tốt = kết quả tốt. Khóa học này dạy bạn <em>prompt chuẩn</em> cho từng tình huống Excel. Quy tắc cốt lõi của prompt tốt:</p>
+        <ul>
+          <li><strong>Rõ vai trò:</strong> "Bạn là chuyên gia Excel..."</li>
+          <li><strong>Rõ nhiệm vụ:</strong> "...viết công thức đếm..."</li>
+          <li><strong>Rõ dữ liệu:</strong> "...cột A là tên, cột B là doanh thu..."</li>
+          <li><strong>Rỏ định dạng đầu ra:</strong> "...chỉ đưa công thức, giải thích ngắn."</li>
+        </ul>
+        <div class="box tip"><span class="bt">💡 Khái niệm cốt lõi của khóa</span> Trong suốt khóa, bạn sẽ gặp các <strong>prompt card</strong> (khung xanh lá) — đây là prompt <em>copy-paste ngay</em> được. Bấm "Sao chép", dán vào ChatGPT/Gemini/Claude, thay tên cột của bạn. Đó là cách học nhanh nhất.</div>
+
+        <h3 class="sec">3. Các tool AI nên dùng</h3>
+        <table>
+          <tr><th>Tool</th><th>Mạnh về</th><th>Miễn phí?</th></tr>
+          <tr><td><strong>ChatGPT (GPT-4o)</strong></td><td>Phân tích bảng, viết công thức, VBA</td><td>Bản miễn phí có giới hạn</td></tr>
+          <tr><td><strong>Gemini</strong></td><td>Tích hợp Google Sheets, phân tích nhanh</td><td>Miễn phí</td></tr>
+          <tr><td><strong>Claude</strong></td><td>Đọc file Excel lớn, phân tích sâu</td><td>Miễn phí có giới hạn</td></tr>
+          <tr><td><strong>Copilot (Excel)</strong></td><td>Nhúng trực tiếp trong Excel, trả lời bằng tiếng tự nhiên</td><td>Trả phí (M365)</td></tr>
+        </table>
+        <div class="box warn"><span class="bt">⚠️ Lưu ý dữ liệu nhạy cảm</span> Không dán dữ liệu khách hàng/bảo mật (CCCD, tài chính cá nhân) vào AI công khai. Mask/ẩn danh trước, hoặc dùng bản enterprise có cam kết bảo mật.</div>
+
+        <h3 class="sec">4. Lộ trình khóa học</h3>
+        <p>P1 nền tảng → P2 công thức cốt lõi (lookup, điều kiện, text/date) → P3 phân tích nâng cao (Pivot, Power Query/DAX) → P4 AI ứng dụng (prompt công thức, phân tích, VBA, workflow). Mỗi chương: concept + công thức + prompt dùng ngay.</p>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Làm chủ dữ liệu lớn trong Excel</h2>
+        <div class="ch-sub">Khi Excel vượt quá 100k dòng: quy tắc để không bị treo, các công cụ xử lý dữ liệu lớn.</div>
+
+        <h3 class="sec">1. Giới hạn của Excel "thông thường"</h3>
+        <p>Excel có giới hạn: 1.048.576 dòng × 16.384 cột. Nhưng thực tế, khi file &gt; 100MB hoặc công thức volatile (<code class="ic">INDIRECT</code>, <code class="ic">OFFSET</code>, <code class="ic">TODAY</code>) xuất hiện nhiều, Excel bắt đầu chậm/không phản hồi. Nguyên tắc sống còn khi dữ liệu lớn:</p>
+        <table>
+          <tr><th>Nên</th><th>Không nên</th></tr>
+          <tr><td>Dùng <strong>Table (Ctrl+T)</strong> thay range thường</td><td>Range tĩnh <code class="ic">A1:D100000</code></td></tr>
+          <tr><td>Dùng <strong>Power Query</strong> xử lý trước khi nạp</td><td>Copy-paste nguyên file CSV vào</td></tr>
+          <tr><td>Dùng <strong>Pivot Table</strong> tổng hợp</td><td>Để nguyên hàng trăm nghìn dòng rồi filter</td></tr>
+          <tr><td>Công thức tham chiếu cột Table <code class="ic">[@doanhthu]</code></td><td>Công thức volatile (<code class="ic">OFFSET</code>, <code class="ic">INDIRECT</code>) hàng nghìn dòng</td></tr>
+        </table>
+        <div class="box danger"><span class="bt">🚫 Công thức "kẻ thù" hiệu năng</span> <code class="ic">INDIRECT</code>, <code class="ic">OFFSET</code>, <code class="ic">TODAY()</code>, <code class="ic">NOW()</code>, <code class="ic">RAND()</code> là <strong>volatile</strong> — tính lại mỗi khi Excel thay đổi gì đó. Trên dữ liệu lớn = chậm rất nhiều. Hạn chế tối đa.</div>
+
+        <h3 class="sec">2. Chuyển range thành Table</h3>
+        <p><strong>Table (Ctrl+T)</strong> là bước chuyển đổi quan trọng nhất cho dữ liệu lớn. Lợi ích: tự động mở rộng khi thêm dòng, công thức dùng tên cột (<code class="ic">[@doanhthu]</code>) dễ đọc, định dạng tự động, filter/sort tích hợp.</p>
+        <div class="code-block"><div class="cbhead"><span>excel</span><span class="dot">●</span></div><pre class="code"><span class="cm">[Cách 1] Chọn dữ liệu → Ctrl + T → đánh dấu "Bảng có tiêu đề"
+[Cách 2] Insert → Table
+
+<span class="cm">Sau khi thành Table, đặt tên (Table Design → Table Name):</span>
+Tên bảng: tblBanHang
+
+<span class="cm">Tham chiếu trong công thức (rất dễ đọc):</span>
+=SUMIFS(tblBanHang[doanhthu]; tblBanHang[city]; "HN")</pre></div>
+
+        <h3 class="sec">3. Khi nào Excel không đủ — chuyển sang đâu?</h3>
+        <table>
+          <tr><th>Kích thước dữ liệu</th><th>Công cụ phù hợp</th></tr>
+          <tr><td>&lt; 100k dòng</td><td>Excel thường + Pivot Table</td></tr>
+          <tr><td>100k – 1M dòng</td><td>Excel + Power Query + Power Pivot (DAX)</td></tr>
+          <tr><td>&gt; 1M dòng, hoặc nhiều nguồn</td><td>Power BI / SQL (khóa SQL của thư viện)</td></tr>
+          <tr><td>Phân tích ML/AI</td><td>Python + pandas (khóa Python của thư viện)</td></tr>
+        </table>
+        <div class="box pro"><span class="bt">🎯 Quy tắc vàng</span> <strong>Biến dữ liệu lớn thành bảng nhỏ trước khi xử lý.</strong> Power Query tổng hợp 1M dòng thành bảng 100 dòng → Excel xử lý cực nhanh. Đây là tư duy mà AI giúp bạn thực hiện qua prompt (Chương 9).</div>
+      </section>
+
+      <!-- ============ P2 ============ -->
+      <div class="part-divider" id="P2"><div class="line"></div><span class="tag tp1">P2 · CÔNG THỨC CỐT LÕI</span><div class="line"></div></div>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> VLOOKUP / XLOOKUP / INDEX-MATCH</h2>
+        <h3 class="sec">3. Lookup</h3>
+        <p>Lookup là nhóm công thức "sinh tồn" của DA. Nó giúp bạn <em>tìm</em> một giá trị trong bảng này rồi <em>lấy</em> thông tin tương ứng từ bảng khác. Ví dụ: từ mã khách hàng, lấy tên + số điện thoại từ bảng khách hàng.</p>
+        <table>
+          <tr><th>Công thức</th><th>Cú pháp</th><th>Dùng khi</th></tr>
+          <tr><td><code>VLOOKUP</code></td><td><code>=VLOOKUP(giá_trị_tìm; bảng; cột_thứ; 0)</code></td><td>Tra cứu cơ bản (lỗi thời nhưng phổ biến)</td></tr>
+          <tr><td><code>XLOOKUP</code></td><td><code>=XLOOKUP(tìm; cột_tìm; cột_lấy; "không thấy")</code></td><td>M365 — ưu tiên dùng cái này</td></tr>
+          <tr><td><code>INDEX + MATCH</code></td><td><code>=INDEX(cột_lấy; MATCH(tìm; cột_tìm; 0))</code></td><td>Phiên bản cũ, mạnh hơn VLOOKUP (tra 2 chiều)</td></tr>
+        </table>
+        <div class="code-block"><div class="cbhead"><span>excel</span><span class="dot">●</span></div><pre class="code"><span class="cm">[Bài toán] Từ mã KH (cột A), lấy tên KH từ bảng dmkhachhang</span>
+
+<span class="cm">-- VLOOKUP (cột phải ở bên phải cột tìm)</span>
+=VLOOKUP(A2; dmkhachhang!A:C; 2; 0)    <span class="cm"># 2 = cột tên (B)</span>
+
+<span class="cm">-- XLOOKUP (M365, không quan tâm thứ tự cột)</span>
+=XLOOKUP(A2; dmkhachhang!A:A; dmkhachhang!B:B; "Không có")
+
+<span class="cm">-- INDEX + MATCH (mạnh, tra trái/phải đều được)</span>
+=INDEX(dmkhachhang!B:B; MATCH(A2; dmkhachhang!A:A; 0))</pre></div>
+        <div class="box warn"><span class="bt">⚠️ Lỗi #N/A</span> <code class="ic">#N/A</code> = không tìm thấy giá trị. Nguyên nhân: giá trị không có thật, hoặc sai kiểu (text vs number — "123" ≠ 123). Bọc trong <code class="ic">IFERROR(VLOOKUP(...); "Không có")</code> để hiển thị gọn.</div>
+        <div class="box tip"><span class="bt">✅ Khi nào dùng cái nào?</span> Có M365 → luôn <strong>XLOOKUP</strong> (đơn giản, tra trái phải, có thông báo lỗi). Cũ hơn → <strong>INDEX+MATCH</strong> (mạnh hơn VLOOKUP). <strong>VLOOKUP</strong> chỉ dùng khi kế thừa file cũ.</div>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — AI viết công thức lookup <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-lookup">Bạn là chuyên gia Excel. Viết công thức:
+- Tìm giá trị ô [A2] trong cột [Mã KH] của sheet [dmkhachhang]
+- Trả về [Tên KH] từ cột tương ứng
+- Nếu không thấy, hiện "Chưa có"
+Yêu cầu: dùng XLOOKUP (hoặc INDEX+MATCH nếu không có M365). Giải thích ngắn từng tham số.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-lookup')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> SUMIFS / COUNTIFS &amp; công thức điều kiện</h2>
+        <h3 class="sec">4. Aggregate có điều kiện</h3>
+        <p>Nhóm này <strong>dùng mỗi ngày</strong>: tính tổng/đếm/trung bình theo nhiều điều kiện. Ví dụ: tổng doanh thu của thành phố HN, tháng 6, sản phẩm A.</p>
+        <table>
+          <tr><th>Công thức</th><th>Cú pháp</th><th>Ví dụ</th></tr>
+          <tr><td><code>SUMIFS</code></td><td><code>=SUMIFS(cột_tính; cột_đk1; giá_trị1; cột_đk2; giá_trị2; ...)</code></td><td>Tổng DT theo nhiều điều kiện</td></tr>
+          <tr><td><code>COUNTIFS</code></td><td><code>=COUNTIFS(cột_đk1; giá_trị1; ...)</code></td><td>Đếm theo nhiều điều kiện</td></tr>
+          <tr><td><code>AVERAGEIFS</code></td><td><code>=AVERAGEIFS(cột_tính; ...)</code></td><td>Trung bình theo điều kiện</td></tr>
+          <tr><td><code>SUMPRODUCT</code></td><td><code>=SUMPRODUCT((đk1)*(đk2)*(cột_tính))</code></td><td>Tính theo điều kiện phức tạp (hoặc có "hoặc")</td></tr>
+        </table>
+        <div class="code-block"><div class="cbhead"><span>excel</span><span class="dot">●</span></div><pre class="code"><span class="cm">[Bài toán] Tổng doanh thu: city="HN", tháng=6, sản phẩm="A"</span>
+
+=SUMIFS(tblBanHang[doanhthu];
+        tblBanHang[city]; "HN";
+        tblBanHang[thang]; 6;
+        tblBanHang[sanpham]; "A")
+
+<span class="cm">[Đếm] Đơn hàng city="HN", DT&gt;1000000</span>
+=COUNTIFS(tblBanHang[city]; "HN"; tblBanHang[doanhthu]; ">1000000")
+
+<span class="cm">[SUMPRODUCT — đếm có "HOẶC"] Đếm city="HN" HOẶC "ĐN"</span>
+=SUMPRODUCT(((tblBanHang[city]="HN")+(tblBanHang[city]="ĐN"))*1)</pre></div>
+        <div class="box warn"><span class="bt">⚠️ Lỗi thường gặp SUMIFS</span> (1) Sai thứ tự: <code class="ic">SUMIFS</code> đặt <em>cột tính tổng trước</em>, khác <code class="ic">SUMIF</code> cũ. (2) Quên ngoặc kép quanh điều kiện text/số: <code class="ic">"&gt;1000000"</code>. (3) Range không cùng kích thước.</div>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — AI viết SUMIFS nhiều điều kiện <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-sumifs">Bạn là chuyên gia Excel. Viết công thức SUMIFS:
+- Bảng: [tblBanHang]
+- Cột tính tổng: [doanhthu]
+- Điều kiện 1: [city] = "HN"
+- Điều kiện 2: [thang] = 6
+- Điều kiện 3: [sanpham] = "A"
+Chỉ đưa công thức + giải thích ngắn. Nếu có cách dùng SUMPRODUCT cho điều kiện "HOẶC", đề xuất kèm.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-sumifs')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Text, Date &amp; công thức làm sạch</h2>
+        <h3 class="sec">5. Làm sạch &amp; xử lý</h3>
+        <p>80% thời gian DA là làm sạch dữ liệu. Dưới đây các công cụ bạn phải thuộc.</p>
+        <h4 class="mini">a. Hàm Text</h4>
+        <table>
+          <tr><th>Hàm</th><th>Tác dụng</th><th>Ví dụ</th></tr>
+          <tr><td><code>TRIM</code></td><td>Xóa khoảng trắng thừa</td><td><code>=TRIM("  a  b  ")</code> → "a b"</td></tr>
+          <tr><td><code>PROPER/UPPER/LOWER</code></td><td>Viết hoa chữ đầu/toàn bộ/thường</td><td><code>=PROPER("nguyễn a")</code> → "Nguyễn A"</td></tr>
+          <tr><td><code>LEFT/RIGHT/MID</code></td><td>Cắt chuỗi</td><td><code>=LEFT("KH00123";2)</code> → "KH"</td></tr>
+          <tr><td><code>TEXTSPLIT</code> (M365)</td><td>Tách chuỗi theo dấu phân cách</td><td><code>=TEXTSPLIT(A2; "-")</code></td></tr>
+          <tr><td><code>TEXTJOIN</code></td><td>Nối nhiều ô có dấu phân cách</td><td><code>=TEXTJOIN(", ";1;A1:A5)</code></td></tr>
+          <tr><td><code>SUBSTITUTE</code></td><td>Thay thế text</td><td><code>=SUBSTITUTE(A2;" ";"")</code> xóa toàn bộ space</td></tr>
+        </table>
+        <h4 class="mini">b. Hàm Date</h4>
+        <table>
+          <tr><th>Hàm</th><th>Tác dụng</th><th>Ví dụ</th></tr>
+          <tr><td><code>DATE(y;m;d)</code></td><td>Tạo ngày từ số</td><td><code>=DATE(2024;6;15)</code></td></tr>
+          <tr><td><code>EOMONTH</code></td><td>Ngày cuối tháng</td><td><code>=EOMONTH(A2;0)</code></td></tr>
+          <tr><td><code>NETWORKDAYS</code></td><td>Đếm ngày làm việc (trừ T7/CN)</td><td><code>=NETWORKDAYS(A2;B2)</code></td></tr>
+          <tr><td><code>WEEKDAY</code></td><td>Thứ trong tuần</td><td><code>=WEEKDAY(A2;2)</code> → 1=T2 ... 7=CN</td></tr>
+          <tr><td><code>YEARFRAC</code></td><td>Số năm (lẻ)</td><td><code>=YEARFRAC(A2;B2)</code></td></tr>
+        </table>
+        <div class="box warn"><span class="bt">⚠️ Lỗi #VALUE! với Date</span> Khi ngày dạng text ("15/06/2024") không nhận diện. Dùng <code class="ic">DATEVALUE</code> ép kiểu, hoặc chia <code class="ic">DATE(RIGHT;MID;LEFT)</code>. Prompt AI (bên dưới) tự xử lý.</div>
+        <div class="code-block"><div class="cbhead"><span>excel · tách tên khỏi số</span><span class="dot">●</span></div><pre class="code"><span class="cm">[Bài toán] Cột A: "Nguyễn Văn An - KH00123", tách tên ra cột B</span>
+
+<span class="cm">-- Cách 1: LEFT + FIND</span>
+=LEFT(A2; FIND(" - "; A2) - 1)
+
+<span class="cm">-- Cách 2 (M365): TEXTBEFORE</span>
+=TEXTBEFORE(A2; " - ")</pre></div>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — AI làm sạch dữ liệu <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-clean">Bạn là chuyên gia Excel. Cột A có dữ liệu bẩn dạng:
+"  nguyễn văn an  " (có khoảng trắng thừa, viết thường)
+Viết công thức biến thành: "Nguyễn Văn An" (viết hoa chữ đầu, không space thừa).
+Liệt kê từng bước công thức, giải thích ngắn. Nếu M365, đề công thức 1 dòng gọn.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-clean')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <!-- ============ P3 ============ -->
+      <div class="part-divider" id="P3"><div class="line"></div><span class="tag tp2">P3 · PHÂN TÍCH NÂNG CAO</span><div class="line"></div></div>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Pivot Table &amp; bảng động</h2>
+        <div class="ch-sub">Công cụ phân tích mạnh nhất của Excel — tổng hợp hàng trăm nghìn dòng trong 3 giây.</div>
+
+        <h3 class="sec">1. Pivot Table là gì?</h3>
+        <p><strong>Pivot Table</strong> tổng hợp dữ liệu lớn theo nhóm mà không cần viết công thức. Kéo thả cột vào "Hàng/Cột/Giá trị" → Excel tự nhóm &amp; tính tổng. Đây là công cụ bạn <em>phải</em> thành thạo nếu làm DA.</p>
+        <div class="code-block"><div class="cbhead"><span>cách làm</span><span class="dot">●</span></div><pre class="code">[Tạo Pivot Table]
+1. Chọn dữ liệu (hoặc Table) → Insert → PivotTable
+2. Chọn "New Worksheet" → OK
+3. Kéo cột vào 4 khu:
+   - Filters: lọc (vd: theo năm)
+   - Rows: nhóm theo dòng (vd: city)
+   - Columns: nhóm theo cột (vd: tháng)
+   - Values: tính tổng (vd: SUM doanhthu)</pre></div>
+
+        <h3 class="sec">2. Khi nào dùng Pivot thay công thức?</h3>
+        <table>
+          <tr><th>Tình huống</th><th>Nên dùng</th></tr>
+          <tr><td>Tổng doanh thu theo city × tháng</td><td><strong>Pivot Table</strong></td></tr>
+          <tr><td>Một số chỉ số cụ thể, đặt vào báo cáo cố định</td><td>SUMIFS</td></tr>
+          <tr><td>Biểu đồ tương tác, slicer</td><td><strong>Pivot Chart</strong></td></tr>
+          <tr><td>Tính % so với tổng, % lũy kế</td><td>"Show Values As" trong Pivot</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">✅ Mẹo Pivot</span> <strong>Slicer</strong> (chèn bộ lọc nút bấm) &amp; <strong>Timeline</strong> (lọc theo thời gian) biến báo cáo thành dashboard tương tác. "Show Values As" → "% of Grand Total" / "Running Total" cho phép tính % &amp; lũy kế không cần công thức.</div>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — AI hướng dẫn Pivot <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-pivot">Bạn là chuyên gia Excel. Tôi có bảng [tblBanHang] các cột: [ngay, city, sanpham, soluong, doanhthu].
+Hướng dẫn từng bước tạo Pivot Table để: xem [doanhthu] theo [city] (dòng) × [tháng từ ngay] (cột). Kèm cách tính "% so với tổng cột" và thêm Slicer [sanpham].</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-pivot')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Power Query &amp; Power Pivot (DAX)</h2>
+        <div class="ch-sub">Vũ khí xử lý dữ liệu lớn &amp; nhiều nguồn — chạy nhanh gấp nhiều lần Excel thường.</div>
+
+        <h3 class="sec">1. Power Query: ETL trong Excel</h3>
+        <p><strong>Power Query</strong> (Get &amp; Transform) là công cụ <em>trích xuất - biến đổi - nạp</em> dữ liệu. Bạn thao tác bằng giao diện (không code), mỗi bước được ghi lại thành query <strong>có thể chạy lại</strong>. Lý tưởng cho: gộp nhiều file CSV, làm sạch lặp lại, join bảng lớn.</p>
+        <div class="code-block"><div class="cbhead"><span>các bước điển hình</span><span class="dot">●</span></div><pre class="code">[Power Query — workflow]
+Data → Get Data → From File / From Folder (gộp nhiều file)
+→ Power Query Editor mở ra:
+   - Remove Columns: xóa cột không cần
+   - Filter Rows: lọc
+   - Split Column: tách cột theo dấu
+   - Merge Queries: JOIN bảng
+   - Group By: GROUP BY
+   - Replace Values: SUBSTITUTE hàng loạt
+→ Close &amp; Load → nạp kết quả về Excel
+→ Lần sau: chỉ cần Refresh → chạy lại toàn bộ!</pre></div>
+        <div class="box pro"><span class="bt">🎯 Tại sao Power Query thay copy-paste?</span> (1) Tự động: lần sau chỉ Refresh, không làm lại. (2) Xử lý hàng triệu dòng mượt (engine mạnh hơn Excel). (3) Có "audit trail" — mỗi bước ghi lại, dễ debug. (4) AI (Chương 9) sinh code M (ngôn ngữ Power Query) cho bạn.</div>
+
+        <h3 class="sec">2. Power Pivot &amp; DAX</h3>
+        <p><strong>Power Pivot</strong> mở rộng Pivot Table: xử lý nhiều bảng + measure mạnh bằng ngôn ngữ <strong>DAX</strong>. Vượt giới hạn Pivot thường khi cần: quan hệ nhiều bảng, tính toán thời gian (YTD, so sánh kỳ), measure phức tạp.</p>
+        <table>
+          <tr><th>DAX Measure</th><th>Ý nghĩa</th></tr>
+          <tr><td><code>SUMX(bang; [sl]*[gia])</code></td><td>Tổng có tính toán trên từng dòng</td></tr>
+          <tr><td><code>TOTALYTD(SUM([dt]); [ngay])</code></td><td>Lũy kế từ đầu năm</td></tr>
+          <tr><td><code>CALCULATE(SUM([dt]); [city]="HN")</code></td><td>Tổng có điều kiện phức tạp</td></tr>
+          <tr><td><code>SAMEPERIODLASTYEAR([ngay])</code></td><td>So sánh cùng kỳ năm trước</td></tr>
+        </table>
+        <div class="box warn"><span class="bt">⚠️ DAX khó hơn công thức thường</span> DAX có khái niệm "context" (ngữ cảnh dòng vs filter) phức tạp. Đây là chỗ <strong>AI cực kỳ hữu ích</strong> — mô tả yêu cầu, AI viết DAX đúng (Chương 8 &amp; 9).</div>
+      </section>
+
+      <!-- ============ P4 ============ -->
+      <div class="part-divider" id="P4"><div class="line"></div><span class="tag tp3">P4 · AI ỨNG DỤNG THỰC CHIẾN</span><div class="line"></div></div>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Prompt chuẩn: AI viết công thức Excel</h2>
+        <div class="ch-sub">Bộ prompt dùng ngay để AI viết/sửa công thức Excel cho bạn — chính xác, ít lỗi.</div>
+
+        <h3 class="sec">1. Cấu trúc prompt chuẩn cho Excel</h3>
+        <p>Prompt tốt = kết quả đúng. Khung chuẩn cho mọi prompt Excel:</p>
+        <div class="prompt">
+          <div class="ph">📋 Khung prompt chuẩn Excel <span class="ptag">template</span></div>
+          <div class="pbody" id="p-template">Bạn là chuyên gia Excel. Viết công thức cho yêu cầu sau:
+
+[YÊU CẦU]: {mô tả ngắn gọn bằng tiếng Việt}
+
+[DỮ LIỆU]:
+- Bảng/Table: {tên}
+- Các cột liên quan: {cột A, B, C... kèm kiểu: text/number/date}
+
+[ĐỊNH DẠNG]:
+- Chỉ đưa công thức Excel, dùng dấu ";" (hoặc "," tùy máy)
+- Giải thích ngắn từng tham số trong 1-2 câu
+- Nếu có nhiều cách, đề xuất cách tốt nhất kèm lý do
+- Nếu dùng hàm M365 (XLOOKUP, FILTER...), ghi chú rõ</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-template')">📋 Sao chép</button></div>
+        </div>
+        <div class="box tip"><span class="bt">💡 Mẹo vàng</span> Thay vì mô tả cột chung chung ("cột doanh thu"), hãy dán <strong>5 dòng đầu dữ liệu thật</strong> vào prompt. AI hiểu chính xác cấu trúc → công thức đúng ngay lần đầu.</div>
+
+        <h3 class="sec">2. Prompt sửa lỗi công thức</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — sửa lỗi công thức <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-fix">Bạn là chuyên gia Excel. Công thức sau báo lỗi [{LỖI}]:
+{DÁN CÔNG THỨC VÀO ĐÂY}
+
+Dữ liệu mẫu (5 dòng đầu):
+{DÁN 5 DÒNG}
+
+Hãy:
+1. Giải thích nguyên nhân lỗi
+2. Đưa công thức đã sửa
+3. Đề xuất cách phòng tránh tương tự</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-fix')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">3. Prompt cho từng nhóm công thức</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — công thức điều kiện phức tạp <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-cond">Bạn là chuyên gia Excel. Viết công thức:
+- Nếu [doanhthu] &gt; 100.000.000 AND [city]="HN" → "VIP-HN"
+- Nếu [doanhthu] &gt; 100.000.000 → "VIP"
+- Nếu [doanhthu] &gt; 50.000.000 → "Khá"
+- Còn lại → "Thường"
+Dùng IFS (M365) hoặc nested IF. Đưa cả 2 phiên bản, giải thích.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-cond')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — INDEX+MATCH 2 chiều <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-index2">Bạn là chuyên gia Excel. Viết INDEX+MATCH 2 chiều:
+- Dòng: tìm [sản phẩm] trong cột A
+- Cột: tìm [tháng] trong dòng 1
+- Trả giá trị giao. Dùng INDEX + MATCH + MATCH.
+Kèm phiên bản XLOOKUP (M365) nếu gọn hơn.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-index2')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Prompt phân tích dữ liệu &amp; insight</h2>
+        <div class="ch-sub">Dán bảng vào AI, nhận về insight, xu hướng, bất thường — như có một DA tư vấn riêng.</div>
+
+        <h3 class="sec">1. Dán dữ liệu, nhận insight</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — phân tích tổng quan <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-analyze">Bạn là Data Analyst. Dưới đây là bảng dữ liệu doanh thu:
+
+{DÁN BẢNG / 50-100 DÒNG ĐẠI DIỆN}
+
+Phân tích và đưa ra:
+1. 3 insight quan trọng nhất (kèm số liệu chứng minh)
+2. Top 3 sản phẩm/thành phố có doanh thu giảm nhiều nhất
+3. Bất thường (outlier) cần lưu ý
+4. 2 đề xuất hành động kinh doanh cụ thể
+Viết rõ ràng, có cấu trúc, dùng tiếng Việt.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-analyze')">📋 Sao chép</button></div>
+        </div>
+        <div class="box warn"><span class="bt">⚠️ Quy tắc dữ liệu mẫu</span> Khi dán bảng vào AI, không cần dán toàn bộ — dán <strong>50-100 dòng đại diện</strong> (hoặc bảng đã tổng hợp qua Pivot). AI đủ hiểu cấu trúc. Tránh dán 10.000 dòng (chậm, đắt, vượt giới hạn).</div>
+
+        <h3 class="sec">2. Phân tích xu hướng &amp; dự báo</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — xu hướng &amp; phân loại <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-trend">Bạn là Data Analyst. Bảng dữ liệu doanh thu 12 tháng qua:
+
+{DÁN BẢNG}
+
+1. Xác định xu hướng (tăng/giảm/mùa vụ)
+2. Dự báo 3 tháng tới (đơn giản, kèm giả định)
+3. Phân loại khách hàng thành A/B/C theo doanh thu (kèm ngưỡng đề xuất)
+4. Tóm tắt bằng 5 gạch đầu dòng cho sếp</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-trend')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">3. Sinh code Power Query (M) &amp; DAX</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — AI sinh DAX <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-dax">Bạn là chuyên gia Power Pivot/DAX. Viết measure:
+- Tên: [DT_YTD]
+- Logic: tổng doanh thu lũy kế từ đầu năm (dựa cột [ngay])
+- Cột số: [doanhthu]
+Kèm 2 measure phụ: [DT cùng kỳ năm trước] và [% tăng trưởng YoY]. Giải thích context.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-dax')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> AI + VBA: tự động hóa &amp; macro</h2>
+        <div class="ch-sub">Không cần biết lập trình — mô tả yêu cầu, AI sinh code VBA, bạn copy vào Excel.</div>
+
+        <h3 class="sec">1. Macro &amp; VBA cơ bản</h3>
+        <p><strong>Macro</strong> ghi lại thao tác để chạy lại. <strong>VBA</strong> là ngôn ngữ lập trình Excel — mạnh hơn macro rất nhiều nhưng cần code. Tin vui: AI viết VBA cho bạn. Bạn chỉ cần biết <em>cách chạy</em>.</p>
+        <div class="code-block"><div class="cbhead"><span>cách chạy VBA</span><span class="dot">●</span></div><pre class="code">[Bật Developer tab] File → Options → Customize Ribbon → đánh dấu Developer
+[Mở VBA] Alt + F11 → Insert → Module → dán code
+[Chạy] F5 hoặc Developer → Macros → Run</pre></div>
+
+        <h3 class="sec">2. Prompt AI sinh VBA</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — sinh macro VBA <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-vba">Bạn là chuyên gia Excel VBA. Viết macro:
+[YÊU CẦU]: Xóa tất cả dòng trống trong sheet "Data", sau đó lưu file thành "clean.xlsx" vào thư mục C:\Reports, kèm timestamp.
+
+Yêu cầu:
+- Code có comment tiếng Việt
+- Có thông báo khi xong (MsgBox)
+- Xử lý lỗi (nếu không có dòng trống thì vẫn báo OK)
+- Giải thích ngắn cách chạy (Alt+F11 → Module → dán → F5)</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-vba')">📋 Sao chép</button></div>
+        </div>
+        <div class="box danger"><span class="bt">🚫 An toàn VBA</span> VBA có thể xóa/sửa file. Luôn <strong>save bản sao</strong> trước khi chạy macro lạ. AI sinh code có thể sai — đọc comment, chạy trên file test trước khi chạy thật.</div>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — VBA gộp nhiều file <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-vba2">Bạn là chuyên gia Excel VBA. Viết macro:
+Gộp tất cả file .xlsx trong thư mục "C:\Data" vào 1 sheet "TongHop", mỗi file 1 block (có dòng tiêu đề).
+
+Yêu cầu: comment tiếng Việt, bỏ dòng tiêu đề trùng, MsgBox báo số dòng đã gộp.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-vba2')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Workflow end-to-end: AI trợ lý Excel</h2>
+        <div class="ch-sub">Quy trình 5 bước biến AI thành trợ lý Excel cá nhân — từ file thô đến báo cáo.</div>
+
+        <h3 class="sec">1. Workflow chuẩn DA + AI</h3>
+        <ol>
+          <li><strong>Nhận dữ liệu thô</strong> (CSV/ERP/export) → nạp vào Excel qua Power Query.</li>
+          <li><strong>Dán cấu trúc cho AI</strong> (5 dòng đầu) → AI gợi ý bước làm sạch (tách cột, sửa kiểu).</li>
+          <li><strong>AI viết công thức</strong> cho cột tính toán (lookup, điều kiện, gom nhóm).</li>
+          <li><strong>Pivot + Pivot Chart</strong> tổng hợp → dán bảng tổng hợp vào AI nhận insight.</li>
+          <li><strong>AI tóm tắt &amp; đề xuất</strong> → viết báo cáo cho sếp / quyết định kinh doanh.</li>
+        </ol>
+        <div class="box pro"><span class="bt">🎯 Quy tắc 80/20</span> 80% thời gian DA cũ ở làm sạch + viết công thức. AI rút xuống 20% — bạn tập trung 80% thời gian còn lại vào <em>insight &amp; quyết định</em> (phần có giá trị thực).</div>
+
+        <h3 class="sec">2. Prompt "meta" — AI hướng dẫn cả workflow</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — AI tư vấn workflow <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p-workflow">Bạn là cố vấn Data Analyst. Tôi có file Excel:
+[MÔ TẢ]: {vd: doanh số bán hàng, 200k dòng, các cột: ngay, city, sanpham, sl, dt, khachhang}
+
+Lập kế hoạch phân tích end-to-end:
+1. Các bước làm sạch cần làm (Power Query hay công thức?)
+2. Cột tính toán nên thêm (kèm công thức gợi ý)
+3. Cấu trúc Pivot Table nên tạo (hàng/cột/values)
+4. 5 câu hỏi insight nên hỏi (kèm prompt cho từng câu)
+5. Định dạng báo cáo cuối cho sếp
+
+Viết rõ ràng, theo trình tự, tiếng Việt.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p-workflow')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">3. Tổng kết khóa</h3>
+        <div class="box tip"><span class="bt">✅ Bạn đã học</span> (1) Nền tảng dữ liệu lớn trong Excel (Table, Power Query). (2) Công thức cốt lõi: XLOOKUP, SUMIFS, INDEX-MATCH, text/date. (3) Pivot + Power Pivot/DAX. (4) <strong>Thư viện prompt</strong> để AI viết công thức, sửa lỗi, phân tích, sinh VBA. Giờ AI là trợ lý Excel của bạn — mô tả bằng tiếng Việt, nhận kết quả.</div>
+        <div class="box pro"><span class="bt">🎯 Bước tiếp theo</span> Thực hành trên file thật của bạn. Khi dữ liệu vượt quá Excel (&gt; 1M dòng, nhiều nguồn) → học thêm <a href="../ai/khoa-hoc-scikit-learn.html" style="color:var(--accent-2)">Python + pandas</a> hoặc <a href="#" style="color:var(--accent-2)">SQL</a> (có trong thư viện Mega Study). AI + Python + SQL = combo DA/AI Engineer đầy sức mạnh.</div>
+      </section>
+
+      <!-- ============ TOOLS ============ -->
+      <div class="part-divider" id="TOOLS"><div class="line"></div><span class="tag tp0">CÔNG CỤ</span><div class="line"></div></div>
+
+      <section class="chapter" id="library">
+        <h2 class="ch-title"><span class="num">📋</span> Thư viện Prompt (tất cả)</h2>
+        <div class="ch-sub">Tất cả prompt của khóa — bấm sao chép, dán vào AI, thay dữ liệu của bạn.</div>
+        <div class="prompt">
+          <div class="ph">Lookup (VLOOKUP/XLOOKUP/INDEX-MATCH)</div>
+          <div class="pbody" id="lib-lookup">Bạn là chuyên gia Excel. Viết công thức:
+- Tìm [A2] trong cột [Mã KH] sheet [dmkhachhang]
+- Trả [Tên KH]. Nếu không thấy, hiện "Chưa có"
+Dùng XLOOKUP (hoặc INDEX+MATCH nếu không M365). Giải thích ngắn.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-lookup')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">SUMIFS nhiều điều kiện</div>
+          <div class="pbody" id="lib-sumifs">Bạn là chuyên gia Excel. Viết SUMIFS:
+- Bảng [tblBanHang], tính tổng cột [doanhthu]
+- Điều kiện: [city]="HN" AND [thang]=6 AND [sanpham]="A"
+Chỉ công thức + giải thích ngắn. Đề xuất SUMPRODUCT cho điều kiện "HOẶC".</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-sumifs')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">Làm sạch text</div>
+          <div class="pbody" id="lib-clean">Bạn là chuyên gia Excel. Cột A: "  nguyễn văn an  " (space thừa, thường).
+Viết công thức thành "Nguyễn Văn An". Giải thích từng bước. Nếu M365, đề 1 dòng gọn.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-clean')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">Phân tích insight</div>
+          <div class="pbody" id="lib-analyze">Bạn là Data Analyst. Bảng doanh thu:
+{DÁN BẢNG}
+Đưa: 3 insight quan trọng (kèm số liệu), top 3 giảm mạnh, bất thường, 2 đề xuất hành động. Tiếng Việt, có cấu trúc.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-analyze')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">Sinh macro VBA</div>
+          <div class="pbody" id="lib-vba">Bạn là chuyên gia Excel VBA. Viết macro:
+[YÊU CẦU]: {mô tả}
+Code có comment tiếng Việt, MsgBox báo kết quả, xử lý lỗi. Giải thích cách chạy.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-vba')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">Sinh DAX</div>
+          <div class="pbody" id="lib-dax">Bạn là chuyên gia DAX. Viết measure [DT_YTD]: tổng doanh thu lũy kế đầu năm, cột [ngay], số [doanhthu]. Kèm [DT cùng kỳ] và [% YoY]. Giải thích context.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-dax')">📋 Sao chép</button></div>
+        </div>
+        <div class="prompt">
+          <div class="ph">Sửa lỗi công thức</div>
+          <div class="pbody" id="lib-fix">Bạn là chuyên gia Excel. Công thức báo lỗi [{LỖI}]:
+{CÔNG THỨC}
+Dữ liệu mẫu: {5 DÒNG}
+Giải thích nguyên nhân, đưa công thức sửa, đề xuất phòng tránh.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('lib-fix')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards — Ôn khái niệm</h2>
+        <div class="ch-sub">Bấm thẻ để lật. Các khái niệm &amp; công thức then chốt.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📐</span> Cheatsheet công thức</h2>
+        <div class="ch-sub">Tra nhanh công thức dùng nhiều.</div>
+        <div class="cheat-grid" id="cheatGrid"></div>
+      </section>
+
+      <section class="chapter" id="progress">
+        <h2 class="ch-title"><span class="num">📊</span> Tiến độ học</h2>
+        <div class="progress-wrap">
+          <div class="pt">🎯 Tiến độ tổng thể <span id="progressTxt" style="color:var(--accent-2)"></span></div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="ps" id="progressSub">Mở từng chương để tự cập nhật tiến độ.</div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="foot">
+      📊 <strong>AI + Excel cho Data Analyst</strong> — Dành cho người xử lý dữ liệu. Thuộc thư viện <a href="../index.html">Mega Study</a> · Mỗi chương: công thức + concept + prompt copy-paste.
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ===== COPY PROMPT ===== */
+function copyPrompt(id){
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.querySelector(`#pbtns-${id}, .pbtns`); // simple feedback
+    const orig = event.target.textContent;
+    event.target.textContent = '✅ Đã chép!';
+    setTimeout(()=>{ event.target.textContent = orig; }, 1200);
+  }).catch(()=>{
+    // fallback
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    event.target.textContent = '✅ Đã chép!'; setTimeout(()=>{ location.reload(); }, 1000);
+  });
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"XLOOKUP ưu điểm hơn VLOOKUP?", a:"Tra trái/phải, có thông báo lỗi, cú pháp đơn giản. M365 trở lên."},
+  {q:"Khi nào INDEX+MATCH hơn VLOOKUP?", a:"Khi cột trả về ở bên trái cột tìm, hoặc tra 2 chiều."},
+  {q:"SUMIFS vs SUMIF?", a:"SUMIFS: nhiều điều kiện, cột tính tổng ĐẦU. SUMIF: 1 điều kiện (cũ)."},
+  {q:"Lỗi #N/A trong VLOOKUP?", a:"Không tìm thấy giá trị. Bọc IFERROR, hoặc kiểm tra text/number."},
+  {q:"Volatile function là gì?", a:"Hàm tính lại mỗi thay đổi (OFFSET, INDIRECT, TODAY). Chậm dữ liệu lớn."},
+  {q:"Ctrl+T làm gì?", a:"Chuyển range thành Table — tự mở rộng, tên cột, công thức dễ đọc."},
+  {q:"Power Query dùng khi nào?", a:"Làm sạch lặp lại, gộp nhiều file, xử lý dữ liệu lớn. Refresh để chạy lại."},
+  {q:"Dùng Pivot hay SUMIFS?", a:"Tổng hợp nhiều nhóm → Pivot. Vài chỉ số cố định → SUMIFS."},
+  {q:"Prompt Excel chuẩn gồm gì?", a:"Vai trò + nhiệm vụ + dữ liệu (cột) + định dạng đầu ra mong muốn."},
+  {q:"Mẹo dán dữ liệu cho AI?", a:"Dán 5 dòng đầu (cấu trúc) thay vì toàn bộ — AI đủ hiểu, nhanh, rẻ."},
+  {q:"Cách chạy VBA?", a:"Alt+F11 → Insert Module → dán code → F5."},
+  {q:"DANGEROUS VBA?", a:"Có thể xóa/sửa file. Luôn save bản sao trước khi chạy macro lạ."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== CHEATSHEET ===== */
+const CHEAT = [
+  {ic:"🔍", t:"Lookup", c:"=XLOOKUP(A2; dm!A:A; dm!B:B; \"Không có\")\n=VLOOKUP(A2; dm!A:C; 2; 0)\n=INDEX(dm!B:B; MATCH(A2; dm!A:A; 0))"},
+  {ic:"➕", t:"Tổng/đếm điều kiện", c:"=SUMIFS(dt; city; \"HN\"; thang; 6)\n=COUNTIFS(city; \"HN\"; dt; \">1000000\")\n=AVERAGEIFS(dt; city; \"HN\")"},
+  {ic:"📝", t:"Text", c:"=TRIM(A2)\n=PROPER(A2)\n=LEFT(A2; 5)\n=TEXTSPLIT(A2; \"-\")"},
+  {ic:"📅", t:"Date", c:"=EOMONTH(A2; 0)\n=NETWORKDAYS(A2; B2)\n=WEEKDAY(A2; 2)"},
+  {ic:"🔀", t:"Điều kiện", c:"=IFS(dt>1e8;\"VIP\"; dt>5e7;\"Kha\"; 1;\"Thuong\")\n=IF(AND(a>10;b=\"HN\");\"OK\";\"\")"},
+  {ic:"🛡️", t:"Xử lý lỗi", c:"=IFERROR(VLOOKUP(...); \"Không có\")\n=IFNA(VLOOKUP(...); 0)"},
+  {ic:"🧮", t:"DAX (Power Pivot)", c:"DT_YTD = TOTALYTD(SUM(bang[dt]); bang[ngay])\nYoY% = DIVIDE([DT]-[DT_py]; [DT_py])"},
+  {ic:"📋", t:"Prompt gốc", c:"Bạn là chuyên gia Excel. Viết công thức:\n[YÊU CẦU]: ...\n[DỮ LIỆU]: bảng + cột\n[ĐỊNH DẠNG]: chỉ công thức + giải thích"},
+];
+document.getElementById('cheatGrid').innerHTML = CHEAT.map(c=>
+  `<div class="cheat-card"><h4>${c.ic} ${c.t}</h4><div class="ci">${c.c}</div></div>`).join('');
+
+/* ===== PROGRESS ===== */
+const PROGRESS_KEY = 'excel_ai_progress_v1';
+function loadP(){ try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveP(p){ try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch(e){} }
+function markChapter(id){
+  const p = loadP(); p[id] = true; saveP(p); renderProgress();
+}
+function renderProgress(){
+  const p = loadP();
+  const chapters = document.querySelectorAll('section.chapter[id^="c"]');
+  const done = [...chapters].filter(c => p[c.id]).length;
+  const total = chapters.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const fill = document.getElementById('progressFill');
+  if(fill){ fill.style.width = pct+'%';
+    document.getElementById('progressTxt').textContent = `${done}/${total} chương · ${pct}%`;
+    document.getElementById('progressSub').textContent = `Đánh dấu đã học ở mỗi chương. Tiến độ lưu trong trình duyệt.`;
+  }
+}
+// Thêm nút "Đã học" vào mỗi chương
+document.querySelectorAll('section.chapter[id^="c"]').forEach(c=>{
+  const btn = document.createElement('button');
+  btn.textContent = '✓ Đã học chương này';
+  btn.style.cssText = 'font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--gray);margin:8px 0;';
+  btn.onclick = ()=>{ markChapter(c.id); btn.style.background='var(--primary)'; btn.style.color='#06070d'; btn.textContent='✅ Đã học'; };
+  c.appendChild(btn);
+});
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+
+renderProgress();
+</script>
+</body>
+</html>
