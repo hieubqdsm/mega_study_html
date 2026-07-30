@@ -215,6 +215,15 @@ def clean_content_keep_classes(html_text):
     # Loai <template x-teleport> (modal/drawer — khong dung, gay loi Alpine)
     for t in soup.find_all("template", attrs={"x-teleport": True}):
         t.decompose()
+    # Loai SVG ben trong link "See section" (mui ten) — gay vo cau truc khi parse
+    # vi path khong dong => text sau bi nut. Chi giu text "See section".
+    for a in soup.find_all("a"):
+        if "see section" in (a.get_text(strip=True) or "").lower():
+            for svg in a.find_all("svg"):
+                svg.decompose()
+    # Loai tat ca svg con (icon mui ten/back/next) de tranh vo HTML
+    for svg in soup.find_all("svg"):
+        svg.decompose()
     # Loai cac khoi chua NHIEU link handbook (TOC related) — NHUNG bao ve card Overview.
     # Card Overview gom: h2 + p + 1 link See section. Container cha co the chua nhieu card
     # -> khong xoa neu container con ton tai h2 hoac p (co noi dung that).
