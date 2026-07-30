@@ -3612,7 +3612,7 @@ LESSON_DETAIL['s10-b6'] = { crumb: CRUMB('s10',M10_NAME,'Buổi 6 · CK'), html:
   <div class="emeta"><span>⏱ <b>cả buổi</b></span><span>Trọng số: <b>60%</b></span></div>
   <div class="q"><div class="qn">Phần 1 — Chính sách dữ liệu (5đ).</div><div class="qp">Cho 1 kịch bản hệ thống AI (vd: agent tư vấn tài chính khách hàng). Viết chính sách: loại dữ liệu thu thập, cách mask, thời gian lưu, quyền người dùng, xóa dữ liệu.</div></div>
   <div class="q"><div class="qn">Phần 2 — Đánh giá rủi ro pháp lý (3đ).</div><div class="qp">Liệt kê 5 rủi ro pháp lý (PII, bản quyền, thiên lệch, GDPR/NĐ-13, trách nhiệm). Mỗi rủi ro: mức độ + biện pháp giảm.</div></div>
-  <div class="q"><div class="qn">Phần 3 — Đạo đức (2đ).</div><div class="qp">Phân tích 1 dilemma đạo đức (vd: AI phát hiện gian lận但有 sai số → giao dịch hợp lệ bị khóa). Đề xuất giải pháp cân bằng.</div></div>
+  <div class="q"><div class="qn">Phần 3 — Đạo đức (2đ).</div><div class="qp">Phân tích 1 dilemma đạo đức (vd: AI phát hiện gian lận nhưng có sai số → giao dịch hợp lệ bị khóa). Đề xuất giải pháp cân bằng.</div></div>
   <details class="answer"><summary>✅ Hướng dẫn chấm</summary><div class="body"><div class="rubric"><span class="rt">Rubric CK tiểu luận</span>9-10: Chính sách cụ thể, đầy đủ PII/bản quyền/fairness, có cấp độ ưu tiên · 7-8: Đầy đủ nhưng thiếu sâu · 5-6: Liệt kê được nhưng chung chung · &lt;5: Thiếu các phần bắt buộc.</div></div></details>
 </div>
 ${PAGER('s10',6,6,M10_NAME)}` };
@@ -3667,6 +3667,91 @@ function renderM10Exams(){
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s10">M10 Pháp lý AI</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 11 — ĐỒ ÁN TỐT NGHIỆP / CAPSTONE (10 buổi)
+   ============================================================ */
+const M11_NAME = 'M11 ĐATN';
+const CAPSTONE_CRITERIA = `
+<div class="exam" style="background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(99,102,241,.06));border-color:var(--accent)">
+  <div class="eh">🎓 TIÊU CHÍ CHẤM ĐỒ ÁN TỐT NGHIỆP <span class="et">Hội đồng</span></div>
+  <div class="emeta"><span>Trọng số: <b>100% môn</b></span><span>Nhóm <b>2-3</b></span><span>Bảo vệ <b>30'</b></span></div>
+  <ul>
+    <li><strong>Mô hình (20%):</strong> YOLO và/hoặc pipeline Agent — tổng hợp HK1+HK2.</li>
+    <li><strong>Ứng dụng (15%):</strong> Web app/API có người dùng thử nghiệm thật.</li>
+    <li><strong>Đánh giá (15%):</strong> Eval set ≥ 30 mẫu + phân tích lỗi định lượng.</li>
+    <li><strong>Bảo mật &amp; governance (15%):</strong> RBAC, audit log, mask PII, ≥1 human checkpoint.</li>
+    <li><strong>Vận hành (15%):</strong> Trace, ≥1 metric cảnh báo, cache/routing.</li>
+    <li><strong>Triển khai (10%):</strong> Public link + CI chạy eval.</li>
+    <li><strong>Trình bày (10%):</strong> Demo sống + trả lời kỹ thuật + mỗi thành viên giải thích phần mình.</li>
+  </ul>
+  <div class="rubric"><span class="rt">Thang điểm hội đồng</span>
+    <b>9-10 (Xuất sắc):</b> Sản phẩm công khai, chạy ổn, đầy đủ eval+bảo mật+vận hành, demo sắc bén, đề xuất cải tiến thực tế ·
+    <b>7-8 (Khá):</b> Đầy đủ thành phần, chạy được, một số điểm chưa tối ưu ·
+    <b>5-6 (Đạt):</b> Hoàn thành cơ bản, thiếu chiều sâu ·
+    <b>&lt;5 (Chưa đạt):</b> Bảo vệ lại — thiếu thành phần cốt lõi.</div>
+</div>`;
+
+const capTL = (n, title, sub, acts) => ({ crumb: CRUMB('s11',M11_NAME,`Buổi ${n}`), html: `
+<div class="page-head"><span class="kicker k-lesson">M11 · BUỔI ${n}</span><h1>🎓 ${title}</h1><div class="ch-sub">${sub}</div></div>
+<div class="timeline">${acts}</div>
+<div class="box pro"><span class="bt">Mục tiêu buổi</span> Buổi ${n} của Capstone — đây là môn tổng hợp toàn bộ 1 năm. Mỗi buổi là một mốc tiến độ của đồ án.</div>
+${PAGER('s11',n,10,M11_NAME)}` });
+
+const tl = (time, pill, name, desc) => `<div class="tl-row"><div class="tl-time">${time}</div><div class="tl-act"><div class="tname"><span class="pill ${pill}">${name}</span></div><div class="tdesc">${desc}</div></div></div>`;
+
+LESSON_DETAIL['s11-b1'] = capTL(1, 'Chọn đề tài &amp; Pitch', 'Xác định bài toán thật, pitch ý tưởng trước lớp.',
+  tl('0-30','warm','Pitch','Mỗi nhóm 5\' pitch ý tưởng.') + tl('30-90','teach','Phản biện','Giáo viên + lớp phản biện tính khả thi.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Chốt đề','Chốt đề tài, viết problem statement.') + tl('160-175','wrap','Dặn dò','Phê duyệt đề, chuẩn bị B2.'));
+
+LESSON_DETAIL['s11-b2'] = capTL(2, 'Đặc tả &amp; Kiến trúc', 'Đặc tả yêu cầu, vẽ kiến trúc tổng thể.',
+  tl('0-30','old','Tra bài','Giáo viên xét problem statement.') + tl('30-90','teach','Kiến trúc','Vẽ diagram: mô hình + agent + API + DB.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Viết đặc tả','Đặc tả kỹ thuật + MVP scope.') + tl('160-175','wrap','Dặn dò','Phê duyệt đặc tả.'));
+
+LESSON_DETAIL['s11-b3'] = capTL(3, 'Thu thập &amp; Chuẩn bị dữ liệu', 'Thu thập/gán nhãn/chuẩn bị dữ liệu cho mô hình hoặc RAG.',
+  tl('0-30','old','Tra bài','Xét đặc tả.') + tl('30-90','prac','Dữ liệu','Thu thập, làm sạch, gán nhãn hoặc ingest.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','EDA/Chunking','EDA hoặc chunking cho RAG.') + tl('160-175','wrap','Dặn dò','Báo cáo dataset.'));
+
+LESSON_DETAIL['s11-b4'] = capTL(4, 'Build mô hình / Agent', 'Phát triển mô hình (YOLO) hoặc pipeline Agent.',
+  tl('0-30','old','Tra bài','Xét dataset.') + tl('30-100','prac','Build','Train YOLO hoặc build agent.') + tl('100-110','','☕ Nghỉ','') + tl('110-160','prac','Tinh chỉnh','Tinh chỉnh, eval nội bộ.') + tl('160-175','wrap','Dặn dò','Demo giữa chừng.'));
+
+LESSON_DETAIL['s11-b5'] = capTL(5, 'Mid-review', 'Review giữa chừng trước hội đồng nhỏ.',
+  tl('0-90','old','Mid-review','Mỗi nhóm 15\' demo + phản biện.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Sửa','Sửa theo feedback.') + tl('160-175','wrap','Dặn dò','Chuẩn bị B6.'));
+
+LESSON_DETAIL['s11-b6'] = capTL(6, 'Bọc bảo mật &amp; Governance', 'Áp dụng M8: RBAC, audit, mask PII.',
+  tl('0-30','old','Tra bài','Xét mid-review.') + tl('30-90','teach','Bọc bảo mật','RBAC + audit + mask.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Human checkpoint','Thêm human approval.') + tl('160-175','wrap','Dặn dò','Chuẩn bị B7 deploy.'));
+
+LESSON_DETAIL['s11-b7'] = capTL(7, 'Deploy production', 'Đưa lên production: API + UI + infra.',
+  tl('0-30','old','Tra bài','Xét bảo mật.') + tl('30-100','prac','Deploy','FastAPI + deploy HF/Render/VPS.') + tl('100-110','','☕ Nghỉ','') + tl('110-160','prac','Public test','Có người dùng thử nghiệm.') + tl('160-175','wrap','Dặn dò','Chuẩn bị B8 giám sát.'));
+
+LESSON_DETAIL['s11-b8'] = capTL(8, 'Đánh giá &amp; Giám sát', 'Eval set + observability (M7+M9).',
+  tl('0-30','old','Tra bài','Xét deploy.') + tl('30-90','prac','Eval','Eval set ≥ 30 mẫu + phân tích lỗi.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Giám sát','Trace + metric + alert.') + tl('160-175','wrap','Dặn dò','Chuẩn bị B9 tài liệu.'));
+
+LESSON_DETAIL['s11-b9'] = capTL(9, 'Tài liệu &amp; Video demo', 'Hoàn thiện README, diagram, runbook, video 5\'.',
+  tl('0-30','old','Tra bài','Xét eval/giám sát.') + tl('30-90','prac','Tài liệu','README + diagram + runbook.') + tl('90-100','','☕ Nghỉ','') + tl('100-160','prac','Video','Quay video demo 5\'.') + tl('160-175','wrap','Dặn dò','Chuẩn bị bảo vệ B10.'));
+
+LESSON_DETAIL['s11-b10'] = { crumb: CRUMB('s11',M11_NAME,'Buổi 10 · Bảo vệ'), html: `
+<div class="page-head"><span class="kicker k-exam">M11 · BUỔI 10 · BẢO VỆ HỘI ĐỒNG</span><h1>🎓 Bảo vệ Đồ án Tốt nghiệp</h1><div class="ch-sub">Trình bày trước hội đồng 30'. Tổng kết 1 năm.</div></div>
+<div class="timeline">
+  ${tl('0-150','old','Trình bày','Mỗi nhóm 30\': demo sống + Q&A hội đồng.')}
+  ${tl('150-175','wrap','Công bố','Công bố điểm + nhận xét.')}
+</div>
+${CAPSTONE_CRITERIA}
+<div class="box pro" style="margin-top:20px"><span class="bt">🎓 Sau tốt nghiệp — bạn là gì?</span> Một kỹ sư AI <em>thực chiến</em>: hiểu gốc Toán/thuật toán (không chỉ gọi API), train &amp; tinh chỉnh mô hình CV/ML, thiết kế &amp; điều phối Agent, bảo vệ hệ thống khỏi tấn công &amp; rủi ro pháp lý, vận hành production. Bạn đã đi đủ xa để tự tin nhận vai trò AI Engineer / MLOps / AI Agent Engineer — và tiếp tục học cả đời trong lĩnh vực thay đổi từng tuần.</div>
+${PAGER('s11',10,10,M11_NAME)}` };
+
+/* ===== M11: TIÊU CHÍ CHẤM (exams page) ===== */
+function renderM11Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M11 · TIÊU CHÍ CHẤM</span>
+      <h1>🎓 Tiêu chí chấm Đồ án Tốt nghiệp</h1>
+      <div class="ch-sub">ĐATN chấm theo rubric hội đồng, không có đề thi giấy.</div>
+    </div>
+    ${CAPSTONE_CRITERIA}
+    <div class="pager">
+      <a href="#/s11/b10"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 10</div></a>
+      <a class="next" href="#/overview"><div class="pl">Hoàn thành →</div><div class="pt">Về tổng quan</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s11">M11 ĐATN</a> <span class="sep">›</span> <b>Tiêu chí chấm</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -3708,6 +3793,7 @@ function renderExams(sid){
   if(sid === 's8'){ renderM8Exams(); return; }
   if(sid === 's9'){ renderM9Exams(); return; }
   if(sid === 's10'){ renderM10Exams(); return; }
+  if(sid === 's11'){ renderM11Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
