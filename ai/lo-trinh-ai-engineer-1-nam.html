@@ -1860,6 +1860,424 @@ Xp=PCA(n_components=0.95).fit_transform(X); <span class="nb">print</span>(Xp.sha
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s3">M3 Machine Learning</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 4 — DEEP LEARNING & COMPUTER VISION (10 buổi + 5 đề)
+   ============================================================ */
+const M4_NAME = 'M4 Deep Learning &amp; CV';
+EX.m4b1 = [
+  {re:/nn\.Module/, label:"kế thừa nn.Module"},
+  {re:/nn\.Sequential/, label:"nn.Sequential"},
+  {re:/nn\.Linear/, label:"nn.Linear"},
+  {re:/def\s+forward/, label:"def forward(self, x)"},
+];
+EX.m4b2 = [
+  {re:/model\.train\s*\(\s*\)/, label:"model.train()"},
+  {re:/opt\.zero_grad\s*\(\s*\)/, label:"opt.zero_grad()"},
+  {re:/loss\.backward\s*\(\s*\)/, label:"loss.backward()"},
+  {re:/opt\.step\s*\(\s*\)/, label:"opt.step()"},
+];
+EX.m4b3 = [
+  {re:/Dataset/, label:"kế thừa Dataset"},
+  {re:/def\s+__len__/, label:"__len__"},
+  {re:/def\s+__getitem__/, label:"__getitem__"},
+  {re:/DataLoader\s*\(/, label:"DataLoader(...)"},
+];
+EX.m4b5 = [
+  {re:/Conv2d\s*\(\s*3\s*,\s*32/, label:"Conv2d(3, 32, ...)"},
+  {re:/kernel_size\s*=\s*3|3\s*,\s*3/, label:"kernel 3x3"},
+  {re:/padding\s*=\s*1/, label:"padding=1"},
+  {re:/ReLU\s*\(\s*\)/, label:"ReLU()"},
+  {re:/MaxPool2d\s*\(\s*2\s*\)/, label:"MaxPool2d(2)"},
+];
+EX.m4b7 = [
+  {re:/def\s+iou\s*\(/, label:"def iou(...)"},
+  {re:/max\s*\(\s*a\[0\]\s*,\s*b\[0\]\s*\)/, label:"ix1 = max(...)"},
+  {re:/min\s*\(\s*a\[2\]\s*,\s*b\[2\]\s*\)/, label:"ix2 = min(...)"},
+  {re:/area_a\s*\+\s*area_b\s*-\s*inter/, label:"union"},
+  {re:/inter\s*\/\s*union/, label:"return inter/union"},
+];
+EX.m4b8 = [
+  {re:/YOLO\s*\(\s*["']yolov8n\.pt["']\s*\)/, label:"YOLO('yolov8n.pt')"},
+  {re:/\.train\s*\(/, label:".train(...)"},
+  {re:/data\s*=\s*["']symbols\.yaml["']/, label:"data='symbols.yaml'"},
+  {re:/imgsz\s*=\s*640/, label:"imgsz=640"},
+];
+
+LESSON_DETAIL['s4-b1'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 1</span><h1>🔥 ANN &amp; PyTorch nn.Module</h1><div class="ch-sub">Chuyển từ sklearn sang PyTorch — tự build kiến trúc mạng, tự viết forward.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu M4</div><div class="tdesc">"Tháng bản lề". Liên hệ M1 Toán + M3 ML.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–45'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Từ Perceptron đến MLP</div><div class="tdesc">Nơ-ron = σ(w·x+b). Nhiều lớp = mạng sâu.</div></div></div>
+  <div class="tl-row"><div class="tl-time">45–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> PyTorch nn.Module</div><div class="tdesc">__init__ + forward. nn.Sequential, nn.Linear.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Build MLP</div><div class="tdesc">Viết class mạng nơ-ron đầu tiên.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về activation/loss.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — Từ Perceptron đến mạng sâu (30 phút)</h3>
+<p>Một <strong>nơ-ron</strong>: <code class="ic">y = σ(w·x + b)</code> — chính hồi quy tuyến tính (M3) + hàm kích hoạt. Nối nhiều nơ-ron thành lớp, nhiều lớp thành mạng Feedforward (MLP). "Sâu" = nhiều lớp. Phép toán cốt lõi bạn đã biết ở M1-B1: <code class="ic">y = X·W + b</code>.</p>
+<h3 class="mini">Phần 2 — Hàm kích hoạt &amp; loss (20 phút)</h3>
+<table>
+  <tr><th>Hàm</th><th>Công thức</th><th>Dùng khi</th></tr>
+  <tr><td>ReLU</td><td>max(0,x)</td><td>Lớp ẩn (mặc định)</td></tr>
+  <tr><td>Sigmoid</td><td>1/(1+e⁻ˣ)</td><td>Đầu ra nhị phân</td></tr>
+  <tr><td>Softmax</td><td>e^xi/Σe^xj</td><td>Đầu ra đa lớp</td></tr>
+</table>
+<p><strong>Loss</strong> đo sai số: MSE cho hồi quy, CrossEntropy cho phân loại. Máy giảm loss bằng gradient descent (M1-B2).</p>
+<h3 class="mini">Phần 3 — PyTorch nn.Module (25 phút)</h3>
+<p>Khác sklearn giấu training loop, PyTorch bắt bạn <em>tự viết</em> — khó hơn nhưng tường minh. Mọi mạng kế thừa <code class="ic">nn.Module</code>, có <code class="ic">__init__</code> (định nghĩa lớp) &amp; <code class="ic">forward</code> (luồng dữ liệu).</p>
+<div class="code-block"><div class="cbhead"><span>python · pytorch</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> torch.nn <span class="kw">as</span> nn
+<span class="kw">class</span> <span class="fn">MLP</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, in_dim, hidden, out_dim):
+        <span class="nb">super</span>().__init__()
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, hidden), nn.ReLU(),
+            nn.Linear(hidden, out_dim),
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.net(x)</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m4b1">
+  <div class="eh">✍️ Bài thực hành — Build MLP</div>
+  <div class="etask">Hoàn thiện class MLP: nn.Sequential với Linear(20,64)+ReLU+Linear(64,3), def forward.</div>
+  <textarea class="codepad" id="m4b1" spellcheck="false">import torch.nn as nn
+class MLP(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+
+
+        )
+    def forward(self, x):</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m4b1')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m4b1')">↺ Reset</button></div>
+  <div class="echk" id="res-m4b1"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">self.net = nn.Sequential(
+    nn.Linear(20, 64), nn.ReLU(),
+    nn.Linear(64, 3),
+)
+<span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.net(x)</pre></div></div></details>
+</div>
+${PAGER('s4',1,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b2'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 2 · có KT15'</span><h1>🔁 Training loop PyTorch</h1><div class="ch-sub">Tự viết vòng lặp huấn luyện: forward → loss → backward → step.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Activation/loss.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–45'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> 4 bước training</div><div class="tdesc">zero_grad → forward → backward → step. Liên hệ M1-B2 GD.</div></div></div>
+  <div class="tl-row"><div class="tl-time">45–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train MLP trên dữ liệu</div><div class="tdesc">Viết loop đầy đủ, quan sát loss giảm.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: Dataset/DataLoader.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Training loop — 4 dòng thiêng (30 phút)</h3>
+<p>PyTorch giấu autograd (tự tính đạo hàm), nhưng bắt bạn viết loop. 4 dòng cốt lõi:</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">for</span> xb, yb <span class="kw">in</span> loader:
+    opt.zero_grad()           <span class="cm"># xoá gradient cũ</span>
+    out = model(xb)           <span class="cm"># forward</span>
+    loss = loss_fn(out, yb)   <span class="cm"># tính sai số</span>
+    loss.backward()           <span class="cm"># backward (autograd tính ∇)</span>
+    opt.step()                <span class="cm"># cập nhật trọng số</span></pre></div>
+<div class="box info"><span class="bt">📌 Liên hệ M1-B2</span> <code class="ic">opt.step()</code> chính là <code class="ic">x = x - lr·∇f</code> của gradient descent! PyTorch chỉ tự tính ∇ (autograd) cho bạn, còn cập nhật vẫn là công thức đó.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m4b2">
+  <div class="eh">✍️ Bài thực hành — Training loop</div>
+  <div class="etask">Hoàn thiện 4 bước: model.train, zero_grad, forward, backward, step.</div>
+  <textarea class="codepad" id="m4b2" spellcheck="false">for xb, yb in loader:
+    # set train mode
+
+    # forward + loss
+
+
+    # backward + step
+
+
+</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m4b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m4b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m4b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model.train()
+opt.zero_grad()
+out = model(xb)
+loss = loss_fn(out, yb)
+loss.backward()
+opt.step()</pre></div></div></details>
+</div>
+${PAGER('s4',2,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b3'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 3</span><h1>📦 Custom Dataset &amp; DataLoader</h1><div class="ch-sub">Cách feed dữ liệu vào mô hình PyTorch đúng cách.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét training loop.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Dataset/DataLoader</div><div class="tdesc">__len__, __getitem__, batch, shuffle.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Custom Dataset</div><div class="tdesc">Viết Dataset cho dữ liệu bảng, feed vào DataLoader.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: training full.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<p>PyTorch dùng <strong>Dataset</strong> (định nghĩa cách lấy 1 mẫu) &amp; <strong>DataLoader</strong> (gom thành batch, shuffle). Tách 2 khối này giúp xử lý dữ liệu lớn hiệu quả.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> torch.utils.data <span class="kw">import</span> Dataset, DataLoader
+<span class="kw">class</span> <span class="fn">MyDS</span>(Dataset):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, X, y): self.X, self.y = torch.tensor(X, dtype=torch.float32), torch.tensor(y)
+    <span class="kw">def</span> <span class="fn">__len__</span>(self): <span class="kw">return</span> <span class="nb">len</span>(self.X)
+    <span class="kw">def</span> <span class="fn">__getitem__</span>(self, i): <span class="kw">return</span> self.X[i], self.y[i]
+loader = DataLoader(MyDS(X, y), batch_size=32, shuffle=<span class="nb">True</span>)</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m4b3">
+  <div class="eh">✍️ Bài thực hành — Custom Dataset</div>
+  <div class="etask">Hoàn thiện class MyDS: __init__, __len__, __getitem__, DataLoader.</div>
+  <textarea class="codepad" id="m4b3" spellcheck="false">from torch.utils.data import Dataset, DataLoader
+class MyDS(Dataset):
+    def __init__(self, X, y): self.X, self.y = torch.tensor(X, dtype=torch.float32), torch.tensor(y)
+
+
+loader = DataLoader(</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m4b3')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m4b3')">↺ Reset</button></div>
+  <div class="echk" id="res-m4b3"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">def</span> <span class="fn">__len__</span>(self): <span class="kw">return</span> <span class="nb">len</span>(self.X)
+<span class="kw">def</span> <span class="fn">__getitem__</span>(self, i): <span class="kw">return</span> self.X[i], self.y[i]
+loader = DataLoader(MyDS(X, y), batch_size=32, shuffle=<span class="nb">True</span>)</pre></div></div></details>
+</div>
+${PAGER('s4',3,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b4'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 4</span><h1>⚙️ Training loop hoàn chỉnh</h1><div class="ch-sub">Ghép Module + Dataset + loop → train end-to-end, quan sát loss giảm.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra Dataset</div><div class="tdesc">Sửa bài DataLoader BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Ghép tất cả</div><div class="tdesc">Model + loader + loop + eval.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train end-to-end</div><div class="tdesc">Train MLP trên MNIST nhỏ, in loss/epoch.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B5: KT15' về CNN.</div></div></div>
+</div>
+<div class="box pro"><span class="bt">Buổi tổng hợp</span> Hôm nay ghép mọi thứ đã học (Module B1, loop B2, Dataset B3) thành pipeline train đầy đủ. Học viên chạy đầu tiên trên dữ liệu thật, thấy loss giảm dần — khoảnh khắc "nó hoạt động!".</div>
+<div class="code-block"><div class="cbhead"><span>python · full loop</span><span class="dot">●</span></div><pre class="code"><span class="kw">for</span> epoch <span class="kw">in</span> <span class="nb">range</span>(10):
+    model.train()
+    <span class="kw">for</span> xb, yb <span class="kw">in</span> loader:
+        opt.zero_grad()
+        loss = loss_fn(model(xb), yb)
+        loss.backward(); opt.step()
+    <span class="nb">print</span>(f<span class="st">"epoch {epoch}: loss={loss:.4f}"</span>)</pre></div>
+${PAGER('s4',4,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b5'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 5 · có KT15'</span><h1>🖼️ CNN &amp; Convolution</h1><div class="ch-sub">Mạng tích chập — kiến trúc mở đường computer vision. Hiểu vì sao AI "nhìn" ảnh.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">CNN/convolution.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Convolution</div><div class="tdesc">Kernel trượt, feature map. Lớp sâu học đặc trưng phức tạp.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Pooling</div><div class="tdesc">Max pooling giảm kích thước, bất biến dịch.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Build CNN</div><div class="tdesc">Conv2d + ReLU + MaxPool.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: MNIST.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — Convolution (25 phút)</h3>
+<p>Một <strong>bộ lọc (kernel)</strong> nhỏ (3×3) trượt qua ảnh, nhân từng vùng → "bản đồ đặc trưng". Lớp sâu học đặc trưng phức tạp dần: cạnh → texture → bộ phận → vật thể. Mỗi kernel là tham số được học bằng gradient descent.</p>
+<h3 class="mini">Phần 2 — Pooling (25 phút)</h3>
+<p><strong>Max Pooling</strong> lấy giá trị lớn nhất trong cửa sổ 2×2 → giảm kích thước, giữ đặc trưng nổi bật, tạo bất biến dịch (vật thể dịch chút vẫn nhận ra).</p>
+<div class="code-block"><div class="cbhead"><span>python · CNN</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">TinyCNN</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="nb">super</span>().__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(3, 32, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
+            nn.Conv2d(32, 64, 3, padding=1), nn.ReLU(), nn.MaxPool2d(2),
+        )
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x): <span class="kw">return</span> self.features(x)</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m4b5">
+  <div class="eh">✍️ Bài thực hành — CNN block</div>
+  <div class="etask">Viết block: Conv2d(3→32, kernel 3, padding 1) + ReLU + MaxPool2d(2).</div>
+  <textarea class="codepad" id="m4b5" spellcheck="false">import torch.nn as nn
+block = nn.Sequential(
+
+
+
+)</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m4b5')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m4b5')">↺ Reset</button></div>
+  <div class="echk" id="res-m4b5"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">block = nn.Sequential(
+    nn.Conv2d(3, 32, kernel_size=3, padding=1),
+    nn.ReLU(),
+    nn.MaxPool2d(2),
+)</pre></div></div></details>
+</div>
+${PAGER('s4',5,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b6'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 6'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 6</span><h1>🔢 MNIST — CNN đầu tiên</h1><div class="ch-sub">Luyện CNN trên chữ số MNIST, đạt &gt;99% accuracy.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra CNN</div><div class="tdesc">Trả KT15', nhận xét CNN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–40'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> MNIST &amp; DataLoader ảnh</div><div class="tdesc">Tải torchvision MNIST, transform.</div></div></div>
+  <div class="tl-row"><div class="tl-time">40–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train CNN MNIST</div><div class="tdesc">Full pipeline, mục tiêu &gt;99%.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B7: Object detection.</div></div></div>
+</div>
+<div class="box info"><span class="bt">📌 Bắt đầu từ đâu</span> MNIST (chữ số) hoặc CIFAR-10 — ảnh nhỏ, train nhanh trên CPU. Đạt &gt;99% (MNIST) trước khi sang ảnh lớn. Đây là "hello world" của CV.</div>
+<div class="code-block"><div class="cbhead"><span>python · torchvision</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> torchvision <span class="kw">import</span> datasets, transforms
+tf = transforms.Compose([transforms.ToTensor()])
+train = datasets.MNIST(<span class="st">"."</span>, train=<span class="nb">True</span>, download=<span class="nb">True</span>, transform=tf)
+loader = DataLoader(train, batch_size=64, shuffle=<span class="nb">True</span>)</pre></div>
+${PAGER('s4',6,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b7'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 7'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 7</span><h1>🎯 Object Detection — IoU &amp; mAP</h1><div class="ch-sub">Phân loại chỉ nói "đây là gì"; phát hiện vật thể còn chỉ "ở đâu".</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra MNIST</div><div class="tdesc">Hỏi: accuracy MNIST của bạn?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> BBox, IoU, mAP</div><div class="tdesc">Bounding box, IoU, mAP.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Two-stage vs One-stage</div><div class="tdesc">Faster R-CNN vs YOLO.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Code hàm IoU</div><div class="tdesc">Tính IoU tay bằng NumPy.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B8: YOLO.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">BBox, IoU, mAP (30 phút)</h3>
+<p>Phát hiện vật thể = phân loại + định vị. Mỗi dự đoán là hình chữ nhật (bbox) + nhãn + độ tin. <strong>IoU</strong> = giao/phần hợp giữa bbox dự đoán &amp; thật; ≥0.5 coi đúng. <strong>mAP</strong> = chỉ số xếp hạng detector.</p>
+<h3 class="mini">Two-stage vs One-stage (25 phút)</h3>
+<table>
+  <tr><th>Họ</th><th>Đại diện</th><th>Đặc điểm</th></tr>
+  <tr><td>Two-stage</td><td>Faster R-CNN</td><td>Đề xuất vùng → phân loại. Chính xác, chậm.</td></tr>
+  <tr><td>One-stage</td><td>YOLO</td><td>Dự đoán trực tiếp 1 lần. Nhanh, realtime.</td></tr>
+</table>
+<div class="box info"><span class="bt">📌 YOLO thống trị công nghiệp</span> Tốc độ realtime + đủ chính xác cho hầu hết ứng dụng (an ninh, tự lái, OCR kỹ thuật). YOLOv8/YOLOX hiện đại dùng anchor-free + augment mạnh.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m4b7">
+  <div class="eh">✍️ Bài thực hành — Hàm IoU</div>
+  <div class="etask">Hoàn thiện <code>iou(a,b)</code>, mỗi box (x1,y1,x2,y2): giao, hợp, trả IoU. Test → 1/7≈0.143.</div>
+  <textarea class="codepad" id="m4b7" spellcheck="false">def iou(a, b):
+    ix1 = max(a[0], b[0]); iy1 = max(a[1], b[1])
+    ix2 = min(a[2], b[2]); iy2 = min(a[3], b[3])
+    inter = max(0, ix2-ix1) * max(0, iy2-iy1)
+    area_a = (a[2]-a[0]) * (a[3]-a[1])
+    area_b = (b[2]-b[0]) * (b[3]-b[1])
+    union =
+    return
+
+print(iou((0,0,2,2), (1,1,3,3)))   # ≈ 0.143</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m4b7')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m4b7')">↺ Reset</button></div>
+  <div class="echk" id="res-m4b7"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">union = area_a + area_b - inter
+<span class="kw">return</span> inter / union</pre></div></div></details>
+</div>
+${PAGER('s4',7,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b8'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 8'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 8</span><h1>🎯 YOLOv8 — Train thực chiến</h1><div class="ch-sub">Pipeline train YOLO với Ultralytics. Case Study bản vẽ PDF.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra IoU</div><div class="tdesc">Sửa bài IoU BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Anchor-free &amp; augment</div><div class="tdesc">YOLO hiện đại, Mosaic augmentation.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–100'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Pipeline Ultralytics</div><div class="tdesc">Train 1 dòng, auto-labeling.</div></div></div>
+  <div class="tl-row"><div class="tl-time">100–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train YOLO</div><div class="tdesc">Train trên dataset ký hiệu nhỏ.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + ôn GK</div><div class="tdesc">Chuẩn bị B9: GK.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Anchor-free &amp; Mosaic (20 phút)</h3>
+<p>YOLO hiện đại bỏ anchor box cố định, dự đoán trực tiếp tâm + kích thước. <strong>Mosaic</strong>: ghép 4 ảnh thành 1 → học vật thể nhiều tỷ lệ/bối cảnh.</p>
+<h3 class="mini">Pipeline Ultralytics (30 phút)</h3>
+<div class="code-block"><div class="cbhead"><span>python · ultralytics</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> ultralytics <span class="kw">import</span> YOLO
+model = YOLO(<span class="st">"yolov8n.pt"</span>)
+model.train(data=<span class="st">"symbols.yaml"</span>, epochs=100, imgsz=640, batch=16)
+metrics = model.val()   <span class="cm"># mAP50, mAP50-95</span></pre></div>
+<h3 class="mini">Auto-labeling &amp; Human-in-the-loop (15 phút)</h3>
+<p>Gán nhãn thủ công tốn thời gian. Quy trình: train bản nháp → dự đoán phần còn lại → người sửa bbox sai → train lại. Công cụ: Roboflow, CVAT, Label Studio.</p>
+<div class="box warn"><span class="bt">⚠️ Bản vẽ PDF ≠ ảnh tự nhiên</span> Nền trắng, nét mảnh, ký hiệu bị nhiễu/nghiêng/scan mờ. Cần: raster đúng DPI (≥300), augment (rotation, noise, contrast).</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m4b8">
+  <div class="eh">✍️ Bài thực hành — Train YOLO</div>
+  <div class="etask"><code>YOLO("yolov8n.pt")</code>, train với data="symbols.yaml", epochs=50, imgsz=640.</div>
+  <textarea class="codepad" id="m4b8" spellcheck="false">from ultralytics import YOLO
+model =
+model.train(</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m4b8')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m4b8')">↺ Reset</button></div>
+  <div class="echk" id="res-m4b8"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model = YOLO(<span class="st">"yolov8n.pt"</span>)
+model.train(data=<span class="st">"symbols.yaml"</span>, epochs=50, imgsz=640)</pre></div></div></details>
+</div>
+${PAGER('s4',8,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b9'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 9 · GK'), html: `
+<div class="page-head"><span class="kicker k-exam">M4 · BUỔI 9 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn</h1><div class="ch-sub">Thi GK 90' (xem trang Đề thi môn). Trọng số 30%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–100'</div><div class="tl-act"><div class="tname">📝 Làm bài 90'</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">100–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét</div><div class="tdesc"></div></div></div>
+</div>
+${PAGER('s4',9,10,M4_NAME)}` };
+
+LESSON_DETAIL['s4-b10'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 10 · Project'), html: `
+<div class="page-head"><span class="kicker k-lesson">M4 · BUỔI 10</span><h1>🏆 Project YOLO — Nhận diện ký hiệu kỹ thuật</h1><div class="ch-sub">Case Study cốt lõi: Bơm/Van/Bình khí trên bản vẽ PDF.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Trả GK</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Hướng dẫn</span> Project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Chuẩn bị M5.</div></div></div>
+</div>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 PROJECT YOLO — Nhận diện ký hiệu kỹ thuật <span class="et">Cá nhân / Nhóm 2</span></div>
+  <p>Case Study cốt lõi: nhận diện Bơm/Van/Bình khí trên bản vẽ PDF.</p>
+  <ul><li>200–500 ảnh (PDF→PNG 300 DPI); gán nhãn CVAT/Roboflow.</li><li>Train YOLOv8n/s; report mAP50 &amp; mAP50-95.</li><li>Augment rotation/noise/contrast → đo cải thiện.</li><li>Script inference trên file PDF mới.</li></ul>
+  <div class="rubric"><span class="rt">Tiêu chí</span> · mAP50 ≥ 0.75 · Bảng so sánh trước/sau augment · Inference trên PDF mới · Confusion matrix.</div>
+</div>
+${PAGER('s4',10,10,M4_NAME)}` };
+
+/* ===== M4: ĐỀ THI (5 đề) ===== */
+function renderM4Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M4 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — Deep Learning &amp; CV</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', GK (90'), CK (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #1 <span class="et">B2 · Activation/Loss</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Một nơ-ron tính gì? Viết công thức.</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">ReLU dùng cho lớp ẩn vì sao?</div></div>
+      <div class="q"><div class="qn">C3 (3đ).</div><div class="qp">4 bước training loop PyTorch (tên hàm).</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Softmax khác Sigmoid ở đâu?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> y=σ(w·x+b). <b>C2:</b> Nhanh, đạo hàm 0/1 tránh gradient biến mất. <b>C3:</b> zero_grad → forward → backward → step. <b>C4:</b> Softmax cho đa lớp (tổng=1); Sigmoid cho nhị phân [0,1].</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #2 <span class="et">B5 · CNN</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Convolution làm gì? Kernel là gì?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Max Pooling lợi ích?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">IoU=0 nghĩa gì? IoU=1 nghĩa gì?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Kernel trượt qua ảnh, nhân từng vùng → feature map. <b>C2:</b> Giảm kích thước, giữ đặc trưng nổi bật, bất biến dịch. <b>C3:</b> 0 = không giao (trật hoàn toàn); 1 = trùng khít.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B8</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy + PyTorch</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">Viết class MLP (nn.Module) 2 lớp, forward.</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Viết training loop 5 epoch trên loader cho trước.</div></div>
+      <div class="q"><div class="qn">B3 (2đ).</div><div class="qp">Viết block CNN: Conv2d(3,32,3,padding=1)+ReLU+MaxPool2d(2).</div></div>
+      <div class="q"><div class="qn">B4 (2đ).</div><div class="qp">Hàm IoU(a,b) trả inter/union.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">class</span> <span class="fn">MLP</span>(nn.Module):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        <span class="nb">super</span>().__init__(); self.net=nn.Sequential(nn.Linear(784,128),nn.ReLU(),nn.Linear(128,10))
+    <span class="kw">def</span> <span class="fn">forward</span>(self,x): <span class="kw">return</span> self.net(x)
+<span class="kw">for</span> _ <span class="kw">in</span> <span class="nb">range</span>(5):
+    <span class="kw">for</span> xb,yb <span class="kw">in</span> loader:
+        opt.zero_grad(); loss=loss_fn(model(xb),yb); loss.backward(); opt.step()</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">B9 · 90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) Nơ-ron &amp; vì sao cần hàm kích hoạt (1đ). (b) Convolution vs Fully-connected (1đ). (c) IoU &amp; mAP (1đ). (d) Two-stage vs One-stage (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Code (6đ).</div><div class="qp">(a) CNN cho MNIST: Conv→Pool→Conv→Pool→FC, train 3 epoch (3đ). (b) Hàm IoU NumPy, test 2 box (1.5đ). (c) Inference 1 ảnh, vẽ kết quả (1.5đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Vì sao GPU là trái tim của deep learning?</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Autograd tính gì? Liên hệ gradient descent (M1).</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">CNN đầy đủ cho CIFAR-10: 2 khối Conv+Pool + FC, train 5 epoch, in accuracy.</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Giải thích pipeline YOLO: anchor-free, Mosaic, mAP. Đề xuất cải thiện nếu mAP thấp.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C1:</b> GPU có nhiều lõi giỏi nhân ma trận → train nhanh. <b>C2:</b> Autograd tự tính gradient; opt.step() = x−lr·∇f (M1-B2). <b>C4:</b> Thêm dữ liệu, augment, thử mô hình lớn hơn (yolov8s/m), tinh chỉnh lr.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s4/b10"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 10</div></a>
+      <a class="next" href="#/s5"><div class="pl">Môn tiếp →</div><div class="pt">M5 NLP &amp; LLM</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s4">M4 Deep Learning &amp; CV</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -1894,6 +2312,7 @@ function renderExams(sid){
   if(sid === 's1'){ renderM1Exams(); return; }
   if(sid === 's2'){ renderM2Exams(); return; }
   if(sid === 's3'){ renderM3Exams(); return; }
+  if(sid === 's4'){ renderM4Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
