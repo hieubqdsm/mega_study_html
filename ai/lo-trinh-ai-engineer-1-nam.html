@@ -2532,6 +2532,285 @@ function renderM5Exams(){
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s5">M5 NLP &amp; LLM</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 6 — AI AGENT ENGINEERING (10 buổi + 5 đề) — HK2 mở đầu
+   ============================================================ */
+const M6_NAME = 'M6 AI Agent';
+EX.m6b2 = [{re:/FAISS\.from_texts|from_texts/,label:"FAISS.from_texts(...)"},{re:/similarity_search\s*\(/,label:".similarity_search(...)"},{re:/k\s*=\s*3/,label:"k=3"}];
+EX.m6b4 = [{re:/"type":\s*"function"/,label:'type: function'},{re:/"name":\s*"search_docs"/,label:'name: search_docs'},{re:/"query":\s*{\s*"type":\s*"string"/,label:'query: {type:string}'}];
+EX.m6b6 = [{re:/def\s+sliding_window|messages\[0\]/,label:"giữ messages[0]"},{re:/messages\[-?\s*n\s*:\]|-\s*n/,label:"giữ n tin cuối"}];
+
+LESSON_DETAIL['s6-b1'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 1 · HK2 mở đầu</span><h1>🧩 Agent &amp; Context Harness</h1><div class="ch-sub">HK2 bắt đầu: lắp "động cơ AI" (HK1) vào hệ thống. Context Harness = đưa đúng thông tin vào prompt.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> HK2 &amp; 7 Harnesses</div><div class="tdesc">Giới thiệu HK2, 7 AI Harnesses.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Agent là gì</div><div class="tdesc">LLM + tool + memory + loop. Khác chatbot.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Context Harness</div><div class="tdesc">Cửa sổ ngữ cảnh giới hạn. Lựa &amp; nén thông tin.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Prompt RAG</div><div class="tdesc">Viết prompt có context.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về RAG.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Agent là gì (25 phút)</h3>
+<p><strong>Agent</strong> = LLM + <em>công cụ</em> + <em>bộ nhớ</em> + <em>vòng lặp</em>. Khác chatbot chỉ nói, agent <em>hành động</em>: gọi API, truy DB, chạy code. Ví dụ: agent "đặt lịch" đọc email → gọi tool calendar → xác nhận.</p>
+<h3 class="mini">Context Harness (30 phút)</h3>
+<p>LLM có giới hạn token (context window). Đưa quá nhiều → đắt, chậm, mất tập trung. Quá ít → ảo giác. <strong>Context Harness</strong> = nghệ thuật lựa &amp; nén thông tin trước khi đưa vào prompt.</p>
+<div class="box info"><span class="bt">📌 7 AI Harnesses</span> HK2 đi qua: <strong>Context</strong>, <strong>Tool</strong> (M6) → <strong>Orchestration</strong>, <strong>Evaluation</strong> (M7) → <strong>Security</strong>, <strong>Governance</strong> (M8) → <strong>AgentOps</strong> (M9).</div>
+${PAGER('s6',1,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b2'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 2 · có KT15'</span><h1>📚 RAG &amp; Vector DB</h1><div class="ch-sub">Retrieval-Augmented Generation — đưa thông tin nội bộ vào prompt, giảm ảo giác.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">RAG/vector DB.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> RAG pipeline</div><div class="tdesc">Chunk → embed → vector DB → retrieve → prompt.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> RAG với FAISS</div><div class="tdesc">Embed + similarity_search.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: Chunking.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">RAG pipeline (30 phút)</h3>
+<p>LLM không biết dữ liệu nội bộ của bạn. <strong>RAG</strong>: (1) chia tài liệu thành chunk; (2) embedding → vector DB; (3) hỏi → embedding câu hỏi → tìm chunk giống nhất; (4) ghép chunk vào prompt làm "ngữ cảnh". LLM trả lời dựa ngữ cảnh <em>thực</em>, trích nguồn được → giảm ảo giác.</p>
+<div class="code-block"><div class="cbhead"><span>python · RAG</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langchain_community.vectorstores <span class="kw">import</span> FAISS
+<span class="kw">from</span> langchain_openai <span class="kw">import</span> OpenAIEmbeddings
+db = FAISS.from_texts(chunks, OpenAIEmbeddings())
+docs = db.similarity_search(question, k=3)
+context = <span class="st">"\n"</span>.join(d.page_content <span class="kw">for</span> d <span class="kw">in</span> docs)</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m6b2">
+  <div class="eh">✍️ Bài thực hành — RAG retrieval</div>
+  <div class="etask"><code>FAISS.from_texts(chunks, OpenAIEmbeddings())</code>, similarity_search(question, k=3).</div>
+  <textarea class="codepad" id="m6b2" spellcheck="false">db =
+docs = </textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m6b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m6b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m6b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">db = FAISS.from_texts(chunks, OpenAIEmbeddings())
+docs = db.similarity_search(question, k=3)</pre></div></div></details>
+</div>
+${PAGER('s6',2,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b3'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 3</span><h1>✂️ Chunking &amp; Embedding</h1><div class="ch-sub">Chunking quyết định chất lượng RAG — siêu tham số quan trọng nhất.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét RAG.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Chunking</div><div class="tdesc">Quá to/nhỏ. Overlap. Theo đơn vị ngữ nghĩa.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Chunking chiến lược</div><div class="tdesc">Thử nhiều chiến lược chunk.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: Tool calling.</div></div></div>
+</div>
+<div class="box warn"><span class="bt">⚠️ Chunking quyết định RAG</span> Chunk quá to → nhét tạp nham; quá nhỏ → mất ngữ cảnh. Nguyên tắc: theo đơn vị ngữ nghĩa (đoạn, mục), có overlap (50-100 token). Siêu tham số RAG quan trọng nhất.</div>
+${PAGER('s6',3,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b4'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 4</span><h1>🔧 Tool Harness — Function calling</h1><div class="ch-sub">Cho agent dùng công cụ: gọi API, truy DB, chạy code.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra chunking</div><div class="tdesc">Hỏi: chunking ảnh hưởng RAG thế nào?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Function calling</div><div class="tdesc">JSON schema. LLM quyết định – code thực thi.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Định nghĩa tool</div><div class="tdesc">Viết tool schema + handler.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B5: KT15' về ReAct.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Function calling (30 phút)</h3>
+<p>Định nghĩa công cụ dạng <strong>JSON schema</strong> (tên, mô tả, tham số). LLM <em>quyết định</em> khi nào gọi công cụ nào + tham số gì; việc <em>thực thi</em> ở code của bạn. Đây là ranh giới an toàn quan trọng.</p>
+<div class="box danger"><span class="bt">🚫 Nguyên tắc vàng: LLM quyết định, code thực thi</span> Không bao giờ để LLM tự chạy code nguy hiểm. LLM chỉ <em>đề nghị</em> gọi tool; code xác nhận, kiểm tra tham số, giới hạn quyền (M8) rồi mới chạy.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m6b4">
+  <div class="eh">✍️ Bài thực hành — Định nghĩa tool</div>
+  <div class="etask">Tool <code>search_docs</code>: tham số query (string, required), mô tả "Tìm tài liệu".</div>
+  <textarea class="codepad" id="m6b4" spellcheck="false">tool = {
+    "type": "function",
+    "function": {
+        "name": "search_docs",
+        "description":
+
+
+        "parameters": {
+            "type": "object",
+            "properties": {
+
+            },
+            "required": ["query"],
+        },
+    },
+}</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m6b4')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m6b4')">↺ Reset</button></div>
+  <div class="echk" id="res-m6b4"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">tool = {
+    <span class="st">"type"</span>: <span class="st">"function"</span>,
+    <span class="st">"function"</span>: {
+        <span class="st">"name"</span>: <span class="st">"search_docs"</span>,
+        <span class="st">"description"</span>: <span class="st">"Tim tai lieu."</span>,
+        <span class="st">"parameters"</span>: {
+            <span class="st">"type"</span>: <span class="st">"object"</span>,
+            <span class="st">"properties"</span>: {<span class="st">"query"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}},
+            <span class="st">"required"</span>: [<span class="st">"query"</span>],
+        },
+    },
+}</pre></div></div></details>
+</div>
+${PAGER('s6',4,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b5'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 5 · có KT15'</span><h1>🔄 Vòng lặp ReAct</h1><div class="ch-sub">Reason + Act — agent suy luận rồi hành động lặp lại đến khi xong.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">ReAct loop.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> ReAct</div><div class="tdesc">Thought → Action → Observation → lặp.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Agent ReAct</div><div class="tdesc">Vòng lặp think-act-observe.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: Memory.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">ReAct — Reason + Act (40 phút)</h3>
+<p>Agent dùng vòng lặp <strong>ReAct</strong>: (1) <em>Thought</em> — suy luận "tôi cần làm gì"; (2) <em>Action</em> — gọi tool; (3) <em>Observation</em> — đọc kết quả; (4) lặp đến khi trả lời được. Đây là cách agent giải bài toán phức tạp qua nhiều bước.</p>
+<div class="code-block"><div class="cbhead"><span>python · ReAct skeleton</span><span class="dot">●</span></div><pre class="code"><span class="kw">while</span> <span class="kw">not</span> done:
+    thought = llm(<span class="st">"Suy luận bước tiếp..."</span>)
+    <span class="kw">if</span> need_tool(thought):
+        result = run_tool(thought.tool, thought.args)   <span class="cm"># code thực thi</span>
+        observations.append(result)
+    <span class="kw">else</span>:
+        done = <span class="nb">True</span></pre></div>
+${PAGER('s6',5,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b6'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 6'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 6</span><h1>🧠 Memory</h1><div class="ch-sub">3 loại bộ nhớ: short-term, long-term, working.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét ReAct.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> 3 loại memory</div><div class="tdesc">Short/long/working. Lưu ở đâu.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Quản lý hội thoại</div><div class="tdesc">Tóm tắt, sliding window.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Sliding window</div><div class="tdesc">Code quản lý context hội thoại.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B7: State.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">3 loại memory (25 phút)</h3>
+<table>
+  <tr><th>Loại</th><th>Ví dụ</th><th>Lưu</th></tr>
+  <tr><td>Short-term</td><td>Tin trong phiên hiện tại</td><td>messages trong RAM</td></tr>
+  <tr><td>Long-term</td><td>Sở thích người dùng</td><td>Vector DB / DB</td></tr>
+  <tr><td>Working</td><td>Kết quả tool trung gian</td><td>Scratchpad</td></tr>
+</table>
+<h3 class="mini">Quản lý hội thoại (25 phút)</h3>
+<p>Khi hội thoại dài, không giữ được toàn bộ. Kỹ thuật: <strong>tóm tắt</strong> (LLM nén cũ) hoặc <strong>sliding window</strong> (giữ N gần nhất + system) hoặc <strong>truy xuất</strong> (rút từ long-term).</p>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m6b6">
+  <div class="eh">✍️ Bài thực hành — Sliding window</div>
+  <div class="etask"><code>sliding_window(messages, n)</code>: giữ messages[0] (system) + n tin cuối.</div>
+  <textarea class="codepad" id="m6b6" spellcheck="false">def sliding_window(messages, n):
+
+
+    return</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m6b6')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m6b6')">↺ Reset</button></div>
+  <div class="echk" id="res-m6b6"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">def</span> <span class="fn">sliding_window</span>(messages, n):
+    <span class="kw">return</span> [messages[0]] + messages[-n:]</pre></div></div></details>
+</div>
+${PAGER('s6',6,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b7'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 7'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 7</span><h1>🗃️ State tường minh</h1><div class="ch-sub">Đưa state vào object rõ ràng, có thể serialize/load.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra memory</div><div class="tdesc">Sửa bài sliding window BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> State object</div><div class="tdesc">Dataclass, serialize, checkpoint.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Agent có state</div><div class="tdesc">Agent có thể pause/resume.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B8: ôn GK.</div></div></div>
+</div>
+<div class="box tip"><span class="bt">📌 State tường minh</span> Đừng giấu state trong biến toàn cục. Đưa vào dataclass rõ ràng, có thể serialize (lưu DB) &amp; load lại. Cơ sở để agent pause/resume &amp; debug (M9).</div>
+${PAGER('s6',7,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b8'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 8 · ôn GK'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 8</span><h1>📖 Ôn giữa kì môn</h1><div class="ch-sub">Ôn toàn M6: Agent, Context, RAG, Tool, ReAct, Memory, State.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra state</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">15–100'</div><div class="tl-act"><div class="tname"><span class="pill teach">Ôn</span> B1–B7</div><div class="tdesc">Tóm tắt + làm mẫu đề GK.</div></div></div>
+  <div class="tl-row"><div class="tl-time">100–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Đề GK mẫu</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Chuẩn bị GK</div><div class="tdesc">B9: thi GK.</div></div></div>
+</div>
+${PAGER('s6',8,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b9'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 9 · GK'), html: `
+<div class="page-head"><span class="kicker k-exam">M6 · BUỔI 9 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn</h1><div class="ch-sub">Thi GK 90' (xem trang Đề thi môn). Trọng số 30%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–100'</div><div class="tl-act"><div class="tname">📝 Làm bài 90'</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">100–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét</div><div class="tdesc"></div></div></div>
+</div>
+${PAGER('s6',9,10,M6_NAME)}` };
+
+LESSON_DETAIL['s6-b10'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 10 · Project'), html: `
+<div class="page-head"><span class="kicker k-lesson">M6 · BUỔI 10</span><h1>🏆 Project — Agent tra cứu nội bộ</h1><div class="ch-sub">Lắp Context + Tool + Memory thành agent hoàn chỉnh đầu tiên.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Trả GK</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Hướng dẫn</span> Project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Chuẩn bị M7.</div></div></div>
+</div>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 PROJECT — Agent tra cứu nội bộ <span class="et">Cá nhân</span></div>
+  <p>Lắp Context + Tool + Memory thành agent hoàn chỉnh.</p>
+  <ul><li>Ingest 20-50 tài liệu → FAISS.</li><li>Tool search_docs trả top-k chunk.</li><li>Vòng lặp ReAct + trích nguồn.</li><li>Memory giữ 5 lượt hội thoại.</li><li>Test 10 câu đã biết đáp án → recall nguồn.</li></ul>
+  <div class="rubric"><span class="rt">Tiêu chí</span> · ≥8/10 câu đúng nguồn · Tool gọi hợp lý · Memory giữ ngữ cảnh · Log ReAct minh bạch.</div>
+</div>
+${PAGER('s6',10,10,M6_NAME)}` };
+
+/* ===== M6: ĐỀ THI (5 đề) ===== */
+function renderM6Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M6 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — AI Agent</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', GK (90'), CK (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #1 <span class="et">B2 · RAG</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">RAG giải quyết vấn đề gì của LLM?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Nêu 4 bước pipeline RAG.</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Vì sao chunking quan trọng? Quá to/quá nhỏ hậu quả gì?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Đưa thông tin nội bộ/cập nhật vào prompt → giảm ảo giác, trích nguồn. <b>C2:</b> Chunk → embed → vector DB → retrieve → prompt. <b>C3:</b> To → tạp nham; nhỏ → mất ngữ cảnh.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #2 <span class="et">B5 · ReAct</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Nguyên tắc vàng tool calling: ai quyết định, ai thực thi?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">ReAct viết tắt gì? Nêu các bước vòng lặp.</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">3 loại memory của agent?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> LLM quyết định; code thực thi có kiểm tra quyền. <b>C2:</b> Reason+Act; Thought→Action→Observation→lặp. <b>C3:</b> Short/Long/Working.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B8</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">RAG: FAISS.from_texts + similarity_search k=3.</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Tool schema search_docs (query string).</div></div>
+      <div class="q"><div class="qn">B3 (2đ).</div><div class="qp">Sliding window giữ system + 3 tin cuối.</div></div>
+      <div class="q"><div class="qn">B4 (2đ).</div><div class="qp">Vòng lặp ReAct: gọi LLM, nếu cần tool thì chạy, lặp.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code">db=FAISS.from_texts(chunks, OpenAIEmbeddings())
+docs=db.similarity_search(q, k=3)
+<span class="kw">def</span> <span class="fn">sliding_window</span>(m,n): <span class="kw">return</span> [m[0]]+m[-n:]</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">B9 · 90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) Agent vs chatbot (1đ). (b) Context Harness &amp; giới hạn (1đ). (c) Tool calling nguyên tắc an toàn (1đ). (d) 3 loại memory (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Code (6đ).</div><div class="qp">(a) RAG: ingest 10 tài liệu + trả lời trích nguồn (3đ). (b) Tool calling + ReAct loop (3đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Thiết kế kiến trúc agent tra cứu tài liệu công ty. Liệt kê thành phần &amp; luồng.</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Khi hội thoại quá dài vượt context window, 3 kỹ thuật xử lý?</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">Agent ReAct đầy đủ: RAG + tool + memory + loop, trả lời trích nguồn.</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Phân tích thất bại: agent hay ảo giác / gọi tool sai. Đề xuất cải thiện (chunking, reranking, eval).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C2:</b> Tóm tắt / sliding window / truy xuất long-term. <b>C4:</b> Cải thiện chunking, rerank top-k, thêm eval set, giới hạn tool.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s6/b10"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 10</div></a>
+      <a class="next" href="#/s7"><div class="pl">Môn tiếp →</div><div class="pt">M7 Multi-Agent</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s6">M6 AI Agent</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -2568,6 +2847,7 @@ function renderExams(sid){
   if(sid === 's3'){ renderM3Exams(); return; }
   if(sid === 's4'){ renderM4Exams(); return; }
   if(sid === 's5'){ renderM5Exams(); return; }
+  if(sid === 's6'){ renderM6Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
