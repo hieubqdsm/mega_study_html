@@ -1000,6 +1000,866 @@ ${PAGER_M1('s1',4)}` };
 /* Override renderExams cho M1 để hiện 5 đề đầy đủ */
 const M1_EXAMS_OVERRIDE = true;
 
+/* ===== HELPERS GENERIC (cho mọi môn) ===== */
+function PAGER(sid, bnum, total, subjName){
+  const prev = bnum>1 ? `<a href="#/${sid}/b${bnum-1}"><div class="pl">← Buổi trước</div><div class="pt">Buổi ${bnum-1}</div></a>` : `<a href="#/${sid}"><div class="pl">← Quay lại</div><div class="pt">${subjName}</div></a>`;
+  const isLast = bnum >= total;
+  const nextHref = isLast ? `#/${sid}/exams` : `#/${sid}/b${bnum+1}`;
+  const nextLabel = isLast ? 'Đề thi môn' : 'Buổi '+(bnum+1);
+  return `<div class="pager">${prev}<a class="next" href="${nextHref}"><div class="pl">Tiếp →</div><div class="pt">${nextLabel}</div></a></div>`;
+}
+function CRUMB(sid, subjName, label){
+  return `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/${sid}">${subjName}</a> <span class="sep">›</span> <b>${label}</b>`;
+}
+
+/* ============================================================
+   MÔN 2 — PYTHON & DỮ LIỆU (8 buổi sâu + 5 đề thi)
+   ============================================================ */
+const M2_NAME = 'M2 Python &amp; Dữ liệu';
+
+/* Bài tập tự chấm M2 */
+EX.m2b2 = [
+  {re:/class\s+DataPreprocessor/, label:"class DataPreprocessor"},
+  {re:/def\s+__init__\s*\(\s*self\s*,\s*fill_value\s*\)/, label:"__init__(self, fill_value)"},
+  {re:/self\.fill_value\s*=\s*fill_value/, label:"lưu fill_value"},
+  {re:/def\s+clean\s*\(\s*self\s*,\s*rows\s*\)/, label:"clean(self, rows)"},
+  {re:/self\.fill_value\s+if|fill_value/, label:"dùng fill_value thay None"},
+];
+EX.m2b3 = [
+  {re:/\[s\[.age.\]\s*for\s*s\s*in\s*samples\]/, label:"ages = list comprehension"},
+  {re:/\{s\[.label.\]\s*for\s*s\s*in\s*samples\}/, label:"unique_labels = set comprehension"},
+];
+EX.m2b3b = [
+  {re:/mask\s*=.*>\s*100|>\s*100/, label:"mask = arr > 100"},
+  {re:/arr\[mask\]/, label:"arr[mask]"},
+];
+EX.m2b4 = [
+  {re:/read_csv\s*\(/, label:"pd.read_csv(...)"},
+  {re:/\.head\s*\(\s*\)/, label:".head()"},
+  {re:/\.shape/, label:".shape"},
+];
+EX.m2b4b = [
+  {re:/groupby\s*\(/, label:".groupby(...)"},
+  {re:/\.mean\s*\(\s*\)/, label:".mean()"},
+];
+EX.m2b5 = [
+  {re:/\.fillna\s*\(/, label:".fillna(...)"},
+  {re:/median\s*\(\s*\)/, label:"median()"},
+  {re:/isna\(\)\.sum\(\)/, label:"isna().sum()"},
+];
+EX.m2b5b = [
+  {re:/get_dummies\s*\(/, label:"pd.get_dummies(...)"},
+  {re:/columns\s*=\s*\[.city.\]/, label:"columns=['city']"},
+  {re:/drop_first\s*=\s*True/, label:"drop_first=True"},
+];
+
+LESSON_DETAIL['s2-b1'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 1</span><h1>🐍 Môi trường (Conda/Jupyter/Git) &amp; Python cơ bản</h1><div class="ch-sub">Biến người mới thành người cài đặt môi trường đúng, viết Python có cấu trúc. Buổi nền cho toàn bộ chương trình.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu môn</div><div class="tdesc">Mục tiêu M2, cách chấm, lịch KT. Hỏi: "Em đã cài Python chưa?"</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Liên hệ M1</div><div class="tdesc">Nhắc nhanh: Toán (M1) cần công cụ để tính → Python là công cụ đó.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–75'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Môi trường ảo</div><div class="tdesc">Vì sao bắt buộc Conda. Tạo env, cài numpy/pandas/jupyter. Git init.</div></div></div>
+  <div class="tl-row"><div class="tl-time">75–85'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">85–120'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Python cơ bản</div><div class="tdesc">Biến, kiểu, hàm, list/dict/tuple/set, list comprehension.</div></div></div>
+  <div class="tl-row"><div class="tl-time">120–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Jupyter + Python</div><div class="tdesc">Mở Jupyter, viết cell đầu, list comprehension trích đặc trưng.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về OOP. Cài env xong trước buổi sau.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Môi trường ảo: vì sao bắt buộc (25 phút)</h3>
+<p>Câu hỏi: "Em cài Python rồi, sao phải thêm Conda?" Trả lời nằm ở một sự thật đau: mỗi dự án AI cần tổ hợp thư viện &amp; phiên bản khác nhau. Hôm nay cần <code class="ic">torch 2.0</code>, tháng sau cần <code class="ic">torch 2.3</code>. Cài chung hệ thống → sau 2 tuần gặp lỗi <em>"incompatible dependency"</em> không hiểu từ đâu. <strong>Môi trường ảo</strong> cô lập từng dự án thành "bong bóng" riêng.</p>
+<div class="code-block"><div class="cbhead"><span>bash</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Tạo môi trường riêng tên "ai" với Python 3.11</span>
+conda create -n ai python=3.11 -y
+conda activate ai
+
+<span class="cm"># Cài bộ công cụ cho cả M2</span>
+pip install numpy pandas matplotlib jupyter scikit-learn
+
+<span class="cm"># Khởi chạy Jupyter Lab</span>
+jupyter lab
+
+<span class="cm"># Git — không bao giờ code AI mà không có Git</span>
+git init &amp;&amp; git add . &amp;&amp; git commit -m <span class="st">"init"</span></pre></div>
+<div class="box info"><span class="bt">📌 Vì sao Python 3.11?</span> Điểm cân bằng: nhanh hơn 3.9 ~25% (tối ưu interpreter) và vẫn tương thích wheel của thư viện AI. 3.13 mới hơn đôi khi chưa có wheel cho torch/transformers — tránh nếu chưa rành build từ source.</div>
+<div class="box danger"><span class="bt">🚫 Lỗi #1 người mới: cài vào base</span> Đừng <code class="ic">pip install</code> thẳng vào base của conda. Khi base hỏng, toàn bộ conda bị ảnh hưởng. Luôn <code class="ic">conda create -n &lt;tên&gt;</code> rồi activate trước khi cài.</div>
+<h3 class="mini">Phần 2 — Python cơ bản: biến, kiểu, hàm (20 phút)</h3>
+<p>Python là ngôn ngữ <strong>động kiểu</strong>: không cần khai báo kiểu, gán thẳng. Kiểm tra kiểu bằng <code class="ic">type()</code>. Điều này linh hoạt nhưng dễ bug nếu không cẩn thận — AI code nhiều, nên thói quen rõ ràng quan trọng.</p>
+<table>
+  <tr><th>Kiểu</th><th>Ví dụ</th><th>Dùng cho</th></tr>
+  <tr><td>int / float</td><td>42, 3.14</td><td>Số</td></tr>
+  <tr><td>str</td><td>"hello"</td><td>Chuỗi</td></tr>
+  <tr><td>bool</td><td>True/False</td><td>Điều kiện</td></tr>
+  <tr><td>list</td><td>[1,2,3]</td><td>Tập động</td></tr>
+  <tr><td>dict</td><td>{"a":1}</td><td>Ánh xạ</td></tr>
+</table>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">def</span> <span class="fn">chao</span>(ten):
+    <span class="kw">return</span> f<span class="st">"Xin chao {ten}, ban hoc AI!"</span>
+
+<span class="nb">print</span>(chao(<span class="st">"An"</span>))   <span class="cm"># Xin chao An, ban hoc AI!</span></pre></div>
+<h3 class="mini">Phần 3 — 4 cấu trúc dữ liệu cốt lõi (25 phút)</h3>
+<p>Bốn cấu trúc gặp mỗi ngày. Hiểu đặc tính giúp chọn đúng &amp; tránh bug:</p>
+<table>
+  <tr><th>Cấu trúc</th><th>Đặc tính</th><th>Dùng khi</th></tr>
+  <tr><td><code>list</code></td><td>Động, đa kiểu, có thứ tự</td><td>Tập mẫu, danh sách</td></tr>
+  <tr><td><code>dict</code></td><td>key→value, tra O(1)</td><td>One mẫu nhiều trường</td></tr>
+  <tr><td><code>tuple</code></td><td>Bất biến</td><td>Khóa dict, trả nhiều giá trị</td></tr>
+  <tr><td><code>set</code></td><td>Loại trùng</td><td>Từ vựng duy nhất</td></tr>
+</table>
+<p><strong>List comprehension</strong> — cú pháp tạo list từ list khác trong 1 dòng. Kỹ năng then chốt trong AI:</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">samples = [{<span class="st">"age"</span>:25,<span class="st">"label"</span>:<span class="st">"low"</span>}, {<span class="st">"age"</span>:47,<span class="st">"label"</span>:<span class="st">"high"</span>}]
+<span class="cm"># Trích đặc trưng — đừng dùng for thủ công</span>
+ages = [s[<span class="st">"age"</span>] <span class="kw">for</span> s <span class="kw">in</span> samples]      <span class="cm"># [25, 47]</span>
+labels = {s[<span class="st">"label"</span>] <span class="kw">for</span> s <span class="kw">in</span> samples}    <span class="cm"># {'low','high'}</span></pre></div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> Môi trường ảo = bắt buộc; 4 cấu trúc (list/dict/tuple/set); list comprehension = kỹ năng hàng ngày. Cuối buổi: KT15' B2 về OOP.</div>
+<h2 class="sec">🏠 Bài về nhà</h2>
+<div class="box tip"><span class="bt">BTCN</span><ol style="margin-top:6px">
+  <li>Cài xong môi trường <code class="ic">ai</code>, chạy được <code class="ic">jupyter lab</code> (chụp màn hình).</li>
+  <li>Viết list comprehension đếm số mẫu có age &gt; 30.</li>
+  <li>Đọc trước: OOP &amp; class (chuẩn bị B2).</li>
+</ol></div>
+${PAGER('s2',1,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b2'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 2 · có KT15'</span><h1>🧱 OOP &amp; Cấu trúc dữ liệu nâng cao</h1><div class="ch-sub">Hiểu class/__init__/self/@property — để đọc source sklearn/PyTorch &amp; viết pipeline có cấu trúc.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Phát đề (trang Đề thi môn). Thu chấm, trả cuối buổi.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Vì sao cần OOP</div><div class="tdesc">Sklearn/PyTorch toàn OOP. Không hiểu → không đọc source.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–75'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Class &amp; 4 ý cốt lõi</div><div class="tdesc">__init__, self, method, @property.</div></div></div>
+  <div class="tl-row"><div class="tl-time">75–85'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">85–120'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Interface fit/transform</div><div class="tdesc">Quy ước sklearn. Đặt nền cho Pipeline (M3).</div></div></div>
+  <div class="tl-row"><div class="tl-time">120–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Class DataPreprocessor</div><div class="tdesc">Viết class có __init__ + clean().</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Trả bài + tổng kết</div><div class="tdesc">Trả KT15'. Chuẩn bị B3: NumPy.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Vì sao AI toàn OOP (15 phút)</h3>
+<p>Scikit-learn, PyTorch, transformers — toàn bộ hệ sinh thái AI thiết kế theo <strong>OOP</strong>. Khi bạn gọi <code class="ic">LinearRegression().fit(X,y)</code>, thực ra bạn đang tạo object &amp; gọi method. Không hiểu <code class="ic">__init__</code>, <code class="ic">self</code>, <code class="ic">@property</code> → bạn không đọc được source thư viện, không viết được pipeline có cấu trúc. Tin vui: chỉ cần 4 ý là đủ đi xuyên chương trình.</p>
+<h3 class="mini">Phần 2 — 4 ý cốt lõi của OOP (35 phút)</h3>
+<ul>
+  <li><strong><code>__init__</code></strong> — hàm dựng, chạy 1 lần khi tạo object, lưu trạng thái nội tại.</li>
+  <li><strong><code>self</code></strong> — tham chiếu "chính object này"; biến gán cho <code class="ic">self.x</code> tồn tại suốt đời object.</li>
+  <li><strong>Phương thức</strong> — hàm trong class, thao tác trên <code class="ic">self</code>.</li>
+  <li><strong><code>@property</code></strong> — biến method thành thuộc tính, truy cập không cần ngoặc.</li>
+</ul>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">DataLoader</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, path, target_col):
+        self.path = path              <span class="cm"># trạng thái nội tại</span>
+        self.target_col = target_col
+    <span class="kw">def</span> <span class="fn">load</span>(self):
+        <span class="kw">return</span> f<span class="st">"load {self.path}, target={self.target_col}"</span>
+
+dl = DataLoader(<span class="st">"data.csv"</span>, <span class="st">"label"</span>)
+<span class="nb">print</span>(dl.load())   <span class="cm"># gọi method</span></pre></div>
+<div class="box info"><span class="bt">📌 self là gì, thật ra</span> Khi gọi <code class="ic">dl.load()</code>, Python tự truyền <code class="ic">dl</code> vào tham số <code class="ic">self</code>. Nên <code class="ic">self.path</code> bên trong = <code class="ic">dl.path</code>. self là "chính object này".</div>
+<h3 class="mini">Phần 3 — Quy ước fit/transform: đặt nền sklearn (25 phút)</h3>
+<p>Khi viết class xử lý dữ liệu, hãy đặt tên hàm theo <strong>interface sklearn</strong>: <code class="ic">fit()</code> (học tham số từ data) &amp; <code class="ic">transform()</code> (áp dụng). Luyện sớm → M3 bạn nhúng class vào <code class="ic">Pipeline</code> sklearn mà không sửa code.</p>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> OOP chỉ cần 4 ý: __init__, self, method, @property. Interface fit/transform giúp hòa vào sklearn. Cuối buổi: làm class DataPreprocessor.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m2b2">
+  <div class="eh">✍️ Bài thực hành — Class DataPreprocessor</div>
+  <div class="etask">Viết class <code>DataPreprocessor</code> có <code>__init__(self, fill_value)</code> &amp; <code>clean(self, rows)</code> thay None bằng self.fill_value (list comprehension). Test → <code>[1, 0, 3, 0]</code>.</div>
+  <textarea class="codepad" id="m2b2" spellcheck="false">class DataPreprocessor:
+    def __init__(self, fill_value):
+
+
+
+    def clean(self, rows):
+
+
+
+pp = DataPreprocessor(fill_value=0)
+print(pp.clean([1, None, 3, None]))   # mong đợi [1, 0, 3, 0]</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">class</span> <span class="fn">DataPreprocessor</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, fill_value):
+        self.fill_value = fill_value
+    <span class="kw">def</span> <span class="fn">clean</span>(self, rows):
+        <span class="kw">return</span> [self.fill_value <span class="kw">if</span> r <span class="kw">is</span> <span class="nb">None</span> <span class="kw">else</span> r <span class="kw">for</span> r <span class="kw">in</span> rows]</pre></div></div></details>
+</div>
+${PAGER('s2',2,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b3'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 3</span><h1>🔢 NumPy theo góc dữ liệu</h1><div class="ch-sub">Indexing, boolean mask, reshape, axis — góc nhìn dữ liệu (bổ sung cho góc Toán ở M1-B3).</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra OOP</div><div class="tdesc">2 học viên trình bày class DataPreprocessor.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Recap M1-B3</div><div class="tdesc">NumPy từ góc Toán (vector hóa). Hôm nay: góc dữ liệu.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–75'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Indexing &amp; mask</div><div class="tdesc">Cắt mảng, boolean mask (lọc theo điều kiện).</div></div></div>
+  <div class="tl-row"><div class="tl-time">75–85'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">85–120'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Reshape &amp; axis</div><div class="tdesc">Đổi shape, tổng theo trục (axis=0/1).</div></div></div>
+  <div class="tl-row"><div class="tl-time">120–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Lọc &amp; reshape</div><div class="tdesc">List comprehension + boolean mask + reshape.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Tổng kết</div><div class="tdesc">Chuẩn bị B4: Pandas.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Boolean mask: lọc dữ liệu siêu nhanh (25 phút)</h3>
+<p>Trong AI bạn liên tục cần lọc: "lấy các mẫu có giá &gt; 100", "loại outlier". NumPy có <strong>boolean mask</strong> — tạo mảng True/False rồi dùng để index. Nhanh &amp; gọn hơn for rất nhiều.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> numpy <span class="kw">as</span> np
+arr = np.array([50, 120, 30, 200, 80])
+mask = arr &gt; 100            <span class="cm"># [False, True, False, True, False]</span>
+<span class="nb">print</span>(arr[mask])           <span class="cm"># [120 200] — lọc nhanh!</span></pre></div>
+<h3 class="mini">Phần 2 — Reshape &amp; axis (25 phút)</h3>
+<p><strong>Reshape</strong> đổi shape mà không đổi dữ liệu: <code class="ic">arr.reshape(2,3)</code>. Quan trọng khi feed dữ liệu vào mô hình (phải đúng shape). <strong>Axis</strong>: <code class="ic">axis=0</code> = theo cột (xuống), <code class="ic">axis=1</code> = theo hàng (ngang).</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">M = np.array([[1,2,3],[4,5,6]])   <span class="cm"># shape (2,3)</span>
+<span class="nb">print</span>(M.sum(axis=0))             <span class="cm"># [5 7 9] — tổng mỗi cột</span>
+<span class="nb">print</span>(M.sum(axis=1))             <span class="cm"># [6 15] — tổng mỗi hàng</span>
+<span class="nb">print</span>(M.reshape(3,2))            <span class="cm"># đổi shape</span></pre></div>
+<div class="box warn"><span class="bt">⚠️ Nhầm axis</span> Người mới hay nhầm: <code class="ic">axis=0</code> là <em>xuống theo cột</em> (gộp các hàng), <code class="ic">axis=1</code> là <em>ngang theo hàng</em> (gộp các cột). Nhầm → kết quả sai mà không báo lỗi.</div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> Boolean mask lọc nhanh; reshape đổi shape; axis quyết định tổng theo hướng nào. Đây là vũ cụ dữ liệu cho M3 (ML).</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m2b3">
+  <div class="eh">✍️ Bài thực hành 1 — List comprehension</div>
+  <div class="etask">Cho samples (list of dict). Viết <code>ages</code> (list) &amp; <code>unique_labels</code> (set) bằng comprehension.</div>
+  <textarea class="codepad" id="m2b3" spellcheck="false">samples = [
+    {"age": 25, "label": "low"},
+    {"age": 47, "label": "high"},
+    {"age": 33, "label": "low"},
+]
+ages =
+unique_labels =
+print(ages, unique_labels)</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b3')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b3')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b3"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">ages = [s[<span class="st">"age"</span>] <span class="kw">for</span> s <span class="kw">in</span> samples]
+unique_labels = {s[<span class="st">"label"</span>] <span class="kw">for</span> s <span class="kw">in</span> samples}</pre></div></div></details>
+</div>
+<div class="exercise" data-ex="m2b3b">
+  <div class="eh">✍️ Bài thực hành 2 — Boolean mask</div>
+  <div class="etask">Cho <code>arr</code>. Tạo <code>mask = arr &gt; 100</code>, lọc ra <code>arr[mask]</code>.</div>
+  <textarea class="codepad" id="m2b3b" spellcheck="false">import numpy as np
+arr = np.array([50, 120, 30, 200, 80])
+mask =
+print(arr[mask])   # mong đợi [120 200]</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b3b')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b3b')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b3b"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">mask = arr &gt; 100
+<span class="nb">print</span>(arr[mask])   <span class="cm"># [120 200]</span></pre></div></div></details>
+</div>
+${PAGER('s2',3,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b4'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 4</span><h1>🐼 Pandas — Đọc &amp; lọc dữ liệu</h1><div class="ch-sub">DataFrame, read_csv, head/describe, lọc, groupby — bộ não xử lý bảng.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra NumPy</div><div class="tdesc">Sửa nhanh bài mask BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Từ NumPy → Pandas</div><div class="tdesc">NumPy cho số thuần; Pandas cho bảng có tên cột.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–75'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> DataFrame &amp; read_csv</div><div class="tdesc">Đọc CSV 1 dòng. head, describe, dtypes, shape.</div></div></div>
+  <div class="tl-row"><div class="tl-time">75–85'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">85–120'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Lọc &amp; groupby</div><div class="tdesc">Lọc theo điều kiện, groupby + aggregate.</div></div></div>
+  <div class="tl-row"><div class="tl-time">120–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Phân tích dataset</div><div class="tdesc">Đọc dataset thật, lọc, groupby.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Tổng kết + thông báo KT</div><div class="tdesc">B5: KT15' về làm sạch. Tải dataset Kaggle.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — DataFrame: bảng trong code (25 phút)</h3>
+<p>Pandas là thư viện dùng mỗi ngày. Đối tượng chính là <strong>DataFrame</strong> — giống bảng Excel nhưng trong code, có tên cột &amp; tên hàng. Đọc file CSV chỉ 1 dòng.</p>
+<div class="code-block"><div class="cbhead"><span>python · pandas</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+df = pd.read_csv(<span class="st">"sales.csv"</span>)
+<span class="nb">print</span>(df.shape)        <span class="cm"># (dòng, cột)</span>
+<span class="nb">print</span>(df.head())      <span class="cm"># 5 dòng đầu</span>
+<span class="nb">print</span>(df.describe())   <span class="cm"># thống kê: mean/std/min/max</span>
+<span class="nb">print</span>(df.dtypes)      <span class="cm"># kiểu mỗi cột</span></pre></div>
+<h3 class="mini">Phần 2 — Lọc &amp; groupby (30 phút)</h3>
+<p><strong>Lọc</strong>: giống boolean mask nhưng đọc tự nhiên hơn. <strong>Groupby</strong>: gom theo giá trị của một cột rồi tính aggregate (mean, sum, count) — cực mạnh cho phân tích.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Lọc: khách hàng thu nhập cao</span>
+rich = df[df[<span class="st">"income"</span>] &gt; 5000]
+
+<span class="cm"># Groupby: doanh thu trung bình theo thành phố</span>
+<span class="nb">print</span>(df.groupby(<span class="st">"city"</span>)[<span class="st">"revenue"</span>].mean())</pre></div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> Pandas: read_csv, head/describe, lọc [df[...]], groupby+mean. Đây là công cụ EDA cho Mini-project B8.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m2b4">
+  <div class="eh">✍️ Bài thực hành 1 — Đọc CSV</div>
+  <div class="etask">Đọc <code>"sales.csv"</code> vào <code>df</code>, in <code>df.head()</code> và <code>df.shape</code>.</div>
+  <textarea class="codepad" id="m2b4" spellcheck="false">import pandas as pd
+df = pd.</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b4')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b4')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b4"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">df = pd.read_csv(<span class="st">"sales.csv"</span>)
+<span class="nb">print</span>(df.head())
+<span class="nb">print</span>(df.shape)</pre></div></div></details>
+</div>
+<div class="exercise" data-ex="m2b4b">
+  <div class="eh">✍️ Bài thực hành 2 — Groupby</div>
+  <div class="etask">Tính doanh thu (<code>revenue</code>) trung bình theo <code>city</code> bằng groupby + mean.</div>
+  <textarea class="codepad" id="m2b4b" spellcheck="false">print(df.groupby(</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b4b')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b4b')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b4b"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="nb">print</span>(df.groupby(<span class="st">"city"</span>)[<span class="st">"revenue"</span>].mean())</pre></div></div></details>
+</div>
+${PAGER('s2',4,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b5'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 5 · có KT15'</span><h1>🧹 Làm sạch dữ liệu (NaN, Outliers, Encoding)</h1><div class="ch-sub">Dữ liệu bẩn vào → mô hình rác. Học 3 thao tác thiết yếu + lỗi chết người data leakage.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">Phát đề. Thu chấm, trả cuối buổi.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–35'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> GIGO</div><div class="tdesc">Garbage In Garbage Out — dữ liệu bẩn → mô hình rác.</div></div></div>
+  <div class="tl-row"><div class="tl-time">35–80'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> 3 thao tác làm sạch</div><div class="tdesc">NaN (fillna), outlier (IQR), encoding (get_dummies).</div></div></div>
+  <div class="tl-row"><div class="tl-time">80–90'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">90–120'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Data leakage</div><div class="tdesc">Lỗi chết người: fillna trước chia train/test. Pipeline giải quyết.</div></div></div>
+  <div class="tl-row"><div class="tl-time">120–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm sạch DataFrame</div><div class="tdesc">fillna + one-hot encoding.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Trả bài + tổng kết</div><div class="tdesc">Chuẩn bị B6: ôn GK.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — NaN: giá trị thiếu (20 phút)</h3>
+<p>NaN ("Not a Number") làm mô hình crash hoặc sai. Cách xử lý: điền giá trị thay thế (mean/median/0) hoặc bỏ dòng. Quy tắc: <strong>median</strong> cho cột có outlier (không bị kéo), <strong>mean</strong> khi phân phối chuẩn.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">df[<span class="st">"income"</span>] = df[<span class="st">"income"</span>].fillna(df[<span class="st">"income"</span>].median())
+<span class="nb">print</span>(df[<span class="st">"income"</span>].isna().sum())   <span class="cm"># 0</span></pre></div>
+<h3 class="mini">Phần 2 — Outlier: quy tắc IQR (20 phút)</h3>
+<p>Outlier làm mô hình lệch. Quy tắc <strong>IQR</strong>: Q1, Q3, IQR=Q3−Q1; điểm ngoài <code class="ic">[Q1−1.5·IQR, Q3+1.5·IQR]</code> là outlier.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">Q1, Q3 = df[<span class="st">"income"</span>].quantile([0.25, 0.75])
+IQR = Q3 - Q1
+mask = (df[<span class="st">"income"</span>] &gt;= Q1-1.5*IQR) &amp; (df[<span class="st">"income"</span>] &lt;= Q3+1.5*IQR)
+df = df[mask]</pre></div>
+<h3 class="mini">Phần 3 — Encoding: chữ → số (20 phút)</h3>
+<p>Mô hình chỉ hiểu số. Cột chữ (city: HN/ĐN/SG) phải mã hóa. Cách phổ biến: <strong>one-hot</strong> — tạo cột 0/1 cho mỗi giá trị.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="cm"># drop_first tránh đa cộng tuyến</span>
+df = pd.get_dummies(df, columns=[<span class="st">"city"</span>], drop_first=<span class="nb">True</span>)</pre></div>
+<h3 class="mini">Phần 4 — Lỗi chết người: data leakage (25 phút)</h3>
+<div class="box danger"><span class="bt">🚫 fillna TRƯỚC khi chia train/test = lỗi chết người</span> Nếu tính median trên toàn dataset rồi mới chia, thông tin test "rỉ" vào train → điểm ảo. Đúng: tính trên train, áp dụng cho cả hai. Pipeline (M3) giải quyết tự động.</div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> 3 thao tác: fillna (median), IQR outlier, get_dummies. Quy tắc vàng: <strong>fit trên train, transform trên test</strong>.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m2b5">
+  <div class="eh">✍️ Bài thực hành 1 — Điền NaN</div>
+  <div class="etask">Điền NaN cột <code>price</code> bằng median, đếm NaN còn lại (phải = 0).</div>
+  <textarea class="codepad" id="m2b5" spellcheck="false">import pandas as pd
+df = pd.DataFrame({"price": [100, 150, None, 200, None, 175]})
+# điền NaN bằng median
+
+print(df["price"].isna().sum())</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b5')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b5')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b5"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">df[<span class="st">"price"</span>] = df[<span class="st">"price"</span>].fillna(df[<span class="st">"price"</span>].median())
+<span class="nb">print</span>(df[<span class="st">"price"</span>].isna().sum())   <span class="cm"># 0</span></pre></div></div></details>
+</div>
+<div class="exercise" data-ex="m2b5b">
+  <div class="eh">✍️ Bài thực hành 2 — One-hot encoding</div>
+  <div class="etask">Mã hóa cột <code>city</code> bằng <code>pd.get_dummies</code> (drop_first=True).</div>
+  <textarea class="codepad" id="m2b5b" spellcheck="false">df = pd.get_dummies(
+
+
+print(df.columns.tolist())</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m2b5b')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m2b5b')">↺ Reset</button></div>
+  <div class="echk" id="res-m2b5b"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">df = pd.get_dummies(df, columns=[<span class="st">"city"</span>], drop_first=<span class="nb">True</span>)
+<span class="nb">print</span>(df.columns.tolist())</pre></div></div></details>
+</div>
+${PAGER('s2',5,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b6'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 6 · ôn GK'), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 6</span><h1>📖 Ôn tập giữa kì môn</h1><div class="ch-sub">Ôn toàn bộ B1–B5: môi trường, Python, OOP, NumPy, Pandas, làm sạch. Làm mẫu đề GK.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra làm sạch</div><div class="tdesc">Hỏi 2 câu về data leakage.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–40'</div><div class="tl-act"><div class="tname"><span class="pill teach">Ôn</span> B1–B3: môi trường + Python</div><div class="tdesc">Conda, list/dict, comprehension, class.</div></div></div>
+  <div class="tl-row"><div class="tl-time">40–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–90'</div><div class="tl-act"><div class="tname"><span class="pill teach">Ôn</span> B4–B5: Pandas + làm sạch</div><div class="tdesc">read_csv, groupby, fillna, IQR, encoding.</div></div></div>
+  <div class="tl-row"><div class="tl-time">90–130'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm mẫu đề GK</div><div class="tdesc">Cả lớp làm đề GK mẫu cùng giáo viên.</div></div></div>
+  <div class="tl-row"><div class="tl-time">130–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Giải đáp + ôn tiếp</div><div class="tdesc">Chuẩn bị B7: thi GK.</div></div></div>
+</div>
+<div class="box info"><span class="bt">📌 Trọng tâm ôn</span> 5 chủ đề: (1) môi trường ảo; (2) 4 cấu trúc dữ liệu + comprehension; (3) OOP (__init__/self/method); (4) NumPy (mask/reshape/axis); (5) Pandas (read_csv/groupby/fillna/encoding) + data leakage.</div>
+${PAGER('s2',6,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b7'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 7 · GK'), html: `
+<div class="page-head"><span class="kicker k-exam">M2 · BUỔI 7 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn</h1><div class="ch-sub">Thi GK 90 phút theo đề (xem trang Đề thi môn). Trọng số 30%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc">Phát đề GK, dặn quy tắc.</div></div></div>
+  <div class="tl-row"><div class="tl-time">10–100'</div><div class="tl-act"><div class="tname">📝 Làm bài 90'</div><div class="tdesc">Lý thuyết + code Pandas/NumPy.</div></div></div>
+  <div class="tl-row"><div class="tl-time">100–130'</div><div class="tl-act"><div class="tname">Thu bài</div><div class="tdesc">Thu, dọn dẹp.</div></div></div>
+  <div class="tl-row"><div class="tl-time">130–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét chung</div><div class="tdesc">Nhận xét nhanh các lỗi phổ biến.</div></div></div>
+</div>
+<div class="box warn"><span class="bt">Quy tắc thi</span> Mang laptop có môi trường <code class="ic">ai</code>. Không Internet (trừ tài liệu đã cho). Có máy tính + Jupyter.</div>
+${PAGER('s2',7,8,M2_NAME)}` };
+
+LESSON_DETAIL['s2-b8'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 8 · Mini-project'), html: `
+<div class="page-head"><span class="kicker k-lesson">M2 · BUỔI 8</span><h1>🏆 Mini-project EDA + DataCleaner</h1><div class="ch-sub">Tổng hợp M2: EDA đầy đủ + class DataCleaner có fit/transform. Chuẩn bị ôn CK môn.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Trả bài GK</div><div class="tdesc">Trả GK, nhận xét từng người.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–40'</div><div class="tl-act"><div class="tname"><span class="pill teach">Hướng dẫn</span> Mini-project</div><div class="tdesc">Yêu cầu EDA + DataCleaner class.</div></div></div>
+  <div class="tl-row"><div class="tl-time">40–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–150'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc">Học viên làm, giáo viên đi vòng hỗ trợ.</div></div></div>
+  <div class="tl-row"><div class="tl-time">150–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Nộp project + ôn CK</div><div class="tdesc">Nộp GitHub. Thông báo lịch CK môn.</div></div></div>
+</div>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 MINI-PROJECT M2 — EDA &amp; DataCleaner <span class="et">Cá nhân</span></div>
+  <p>Tổng hợp kỹ năng B1–B5 thành một pipeline xử lý dữ liệu.</p>
+  <ul>
+    <li>Tải dataset Kaggle (House Prices / Telco Churn).</li>
+    <li>EDA: ≥ 5 biểu đồ + nhận xét (matplotlib/seaborn).</li>
+    <li>Class <code>DataCleaner</code> có <code>fit()</code> + <code>transform()</code>: xử lý NaN + outlier + encoding.</li>
+    <li>Notebook + <code>.py</code> + README; đẩy GitHub.</li>
+  </ul>
+  <div class="rubric"><span class="rt">Tiêu chí nghiệm thu</span> · EDA ≥ 5 biểu đồ có nhận xét · DataCleaner xử lý NaN + outlier + encoding · Fit trên train, transform test đúng quy tắc · Có README · Code trên GitHub.</div>
+</div>
+${PAGER('s2',8,8,M2_NAME)}` };
+
+/* ===== M2: ĐỀ THI (5 đề) ===== */
+function renderM2Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M2 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — Python &amp; Dữ liệu</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', giữa kì (90'), cuối kì (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15 PHÚT #1 <span class="et">B2 · OOP</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Vì sao bắt buộc môi trường ảo trong dự án AI?</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp"><code>self</code> trong class Python có vai trò gì?</div></div>
+      <div class="q"><div class="qn">C3 (3đ).</div><div class="qp">Viết class <code>Counter</code> có <code>__init__(self)</code> tạo <code>self.count=0</code> và <code>add(self,n)</code> tăng count.</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Cho samples. Viết list comprehension lấy các age.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Cô lập dependency, tránh xung đột phiên bản. <b>C2:</b> Tham chiếu chính object, self.x tồn tại suốt đời object. <b>C3:</b> <code>def __init__(self): self.count=0</code> &amp; <code>def add(self,n): self.count+=n</code>. <b>C4:</b> <code>[s["age"] for s in samples]</code>.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15 PHÚT #2 <span class="et">B5 · Làm sạch</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Vì sao dùng median thay mean khi cột có outlier?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Quy tắc IQR phát hiện outlier dùng ngưỡng gì?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Vì sao không nên fillna trên toàn dataset trước chia train/test?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Median không bị kéo bởi outlier. <b>C2:</b> [Q1−1.5·IQR, Q3+1.5·IQR]. <b>C3:</b> Data leakage — thông tin test rỉ vào train → điểm ảo.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45 PHÚT <span class="et">Sau B6</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy + Pandas</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">Đọc CSV, in shape, dtypes, describe. Lọc dòng có income &gt; 5000.</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Groupby theo city, tính mean revenue.</div></div>
+      <div class="q"><div class="qn">B3 (2đ).</div><div class="qp">Điền NaN cột "age" bằng median.</div></div>
+      <div class="q"><div class="qn">B4 (2đ).</div><div class="qp">One-hot encode cột "city" (drop_first).</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code">df = pd.read_csv(<span class="st">"x.csv"</span>); <span class="nb">print</span>(df.shape, df.dtypes, df.describe())
+rich = df[df[<span class="st">"income"</span>]&gt;5000]
+<span class="nb">print</span>(df.groupby(<span class="st">"city"</span>)[<span class="st">"revenue"</span>].mean())
+df[<span class="st">"age"</span>]=df[<span class="st">"age"</span>].fillna(df[<span class="st">"age"</span>].median())
+df=pd.get_dummies(df,columns=[<span class="st">"city"</span>],drop_first=<span class="nb">True</span>)</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">B7 · 90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy + Jupyter</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (3đ).</div><div class="qp">(a) Vì sao môi trường ảo bắt buộc (1đ). (b) self &amp; __init__ làm gì (1đ). (c) Data leakage là gì, cách tránh (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Pandas/NumPy (4đ).</div><div class="qp">(a) Đọc CSV, lọc income&gt;5000, groupby city mean (1.5đ). (b) NumPy: tạo arr 1D, boolean mask &gt;100, in kết quả (1đ). (c) reshape (2,3)→(3,2), sum axis=0 và axis=1 (1.5đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 3 — Code (3đ).</div><div class="qp">Viết class <code>DataCleaner</code>: fit(X) tính median mỗi cột số; transform(X) điền NaN bằng median đã tính. Test với df có NaN.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">class</span> <span class="fn">DataCleaner</span>:
+    <span class="kw">def</span> <span class="fn">fit</span>(self, X):
+        self.medians_ = X.select_dtypes(<span class="st">'number'</span>).median()
+        <span class="kw">return</span> self
+    <span class="kw">def</span> <span class="fn">transform</span>(self, X):
+        <span class="kw">return</span> X.fillna(self.medians_)</pre></div>
+        <div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F học lại.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy + Jupyter</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Phân biệt list/dict/tuple/set. Cho ví dụ mỗi loại trong AI.</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Vẽ output của <code>np.array([[1,2,3],[4,5,6]]).sum(axis=0)</code> và axis=1.</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">Class <code>Pipeline</code> đơn giản: nhận list transformer (mỗi cái có fit/transform), fit tuần tự, transform tuần tự.</div></div>
+      <div class="q"><div class="qn">C4 (3đ — code).</div><div class="qp">Đọc dataset, EDA: đếm NaN mỗi cột, vẽ histogram 1 cột, groupby + mean, encoding. Viết report ngắn.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C2:</b> axis=0 → [5,7,9]; axis=1 → [6,15]. <b>C3:</b> class với fit lặp transformers, transform lặp tương tự.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s2/b8"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 8</div></a>
+      <a class="next" href="#/s3"><div class="pl">Môn tiếp →</div><div class="pt">M3 Machine Learning</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s2">M2 Python &amp; Dữ liệu</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
+/* ============================================================
+   MÔN 3 — MACHINE LEARNING (10 buổi sâu + 5 đề thi)
+   ============================================================ */
+const M3_NAME = 'M3 Machine Learning';
+EX.m3b2 = [
+  {re:/LinearRegression\s*\(/, label:"LinearRegression()"},
+  {re:/\.fit\s*\(\s*Xtr\s*,\s*ytr/, label:".fit(Xtr, ytr)"},
+  {re:/\.predict\s*\(\s*Xte/, label:".predict(Xte)"},
+];
+EX.m3b2b = [
+  {re:/LogisticRegression\s*\(/, label:"LogisticRegression()"},
+  {re:/max_iter\s*=\s*1000/, label:"max_iter=1000"},
+  {re:/\.fit\s*\(/, label:".fit(...)"},
+];
+EX.m3b4 = [
+  {re:/RandomForestClassifier\s*\(/, label:"RandomForestClassifier()"},
+  {re:/n_estimators\s*=\s*200/, label:"n_estimators=200"},
+  {re:/\.fit\s*\(/, label:".fit(...)"},
+  {re:/\.score\s*\(\s*Xte\s*,\s*yte/, label:".score(Xte, yte)"},
+];
+EX.m3b5 = [
+  {re:/XGBClassifier\s*\(/, label:"XGBClassifier()"},
+  {re:/n_estimators\s*=\s*300/, label:"n_estimators=300"},
+  {re:/learning_rate\s*=\s*0\.05/, label:"learning_rate=0.05"},
+];
+EX.m3b6 = [
+  {re:/KMeans\s*\(/, label:"KMeans()"},
+  {re:/n_clusters\s*=\s*4/, label:"n_clusters=4"},
+  {re:/fit_predict\s*\(/, label:"fit_predict(X)"},
+];
+EX.m3b6b = [
+  {re:/PCA\s*\(\s*n_components\s*=\s*0\.95/, label:"PCA(n_components=0.95)"},
+  {re:/fit_transform\s*\(/, label:"fit_transform(X)"},
+];
+EX.m3b7 = [
+  {re:/cross_val_score\s*\(/, label:"cross_val_score(...)"},
+  {re:/cv\s*=\s*5/, label:"cv=5"},
+  {re:/scores\.mean\(\)/, label:"scores.mean()"},
+];
+EX.m3b8 = [
+  {re:/Pipeline\s*\(\s*\[/, label:"Pipeline([...])"},
+  {re:/StandardScaler\s*\(/, label:"StandardScaler()"},
+  {re:/\.fit\s*\(\s*Xtr\s*,\s*ytr/, label:".fit(Xtr,ytr)"},
+];
+
+LESSON_DETAIL['s3-b1'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 1</span><h1>📊 ML &amp; scikit-learn là gì</h1><div class="ch-sub">Bức tranh tổng thể, 3 loại bài toán, API fit/predict đồng nhất. Nền cho toàn M3.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu M3</div><div class="tdesc">Mục tiêu, cách chấm, lịch KT. Liên hệ M1 Toán + M2 Python.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–40'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> ML là gì</div><div class="tdesc">Học từ dữ liệu thay lập trình tay. 3 loại bài toán.</div></div></div>
+  <div class="tl-row"><div class="tl-time">40–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> scikit-learn API</div><div class="tdesc">fit/predict/transform đồng nhất. train_test_split.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> End-to-end đầu tiên</div><div class="tdesc">Đọc dữ liệu, chia train/test, fit mô hình đầu tiên.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về Linear/Logistic.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — ML là gì (25 phút)</h3>
+<p>Lập trình truyền thống: bạn viết <em>quy tắc</em> để máy xử lý dữ liệu. Machine Learning <strong>đảo ngược</strong>: bạn cho máy <em>dữ liệu + đáp án</em>, máy <em>tự tìm quy tắc</em>. Ví dụ: khó viết quy tắc "đây là email spam" — nhưng cho máy 10000 email đã dán nhãn, nó tự học được pattern.</p>
+<p><strong>3 loại bài toán:</strong></p>
+<table>
+  <tr><th>Loại</th><th>Mục tiêu</th><th>Ví dụ</th></tr>
+  <tr><td>Học có giám sát (supervised)</td><td>Dự đoán nhãn đã biết</td><td>Giá nhà, churn, phân loại ảnh</td></tr>
+  <tr><td>Học không giám sát (unsupervised)</td><td>Tìm cấu trúc ẩn (không nhãn)</td><td>Gom cụm khách hàng, PCA</td></tr>
+  <tr><td>Học tăng cường (reinforcement)</td><td>Học qua thử-sai-phần thưởng</td><td>Game AI, robot</td></tr>
+</table>
+<p>M3 tập trung 2 loại đầu (có/không giám sát). Reinforcement ngoài phạm vi.</p>
+<h3 class="mini">Phần 2 — scikit-learn: API đẹp nhất (25 phút)</h3>
+<p>scikit-learn có một <strong>API đồng nhất</strong> tuyệt đẹp: mọi mô hình đều dùng <code class="ic">fit()</code> để học, <code class="ic">predict()</code> để dự đoán. Học 1 lần, dùng cho hàng trăm thuật toán.</p>
+<div class="code-block"><div class="cbhead"><span>python · sklearn</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LinearRegression
+
+Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)
+model = LinearRegression()
+model.fit(Xtr, ytr)              <span class="cm"># học</span>
+pred = model.predict(Xte)        <span class="cm"># dự đoán</span>
+<span class="nb">print</span>(model.score(Xte, yte))   <span class="cm"># đánh giá</span></pre></div>
+<div class="box info"><span class="bt">📌 train_test_split — vì sao</span> Đánh giá mô hình trên chính dữ liệu đã train = "tự chấm tự": vô nghĩa. Phải chia: train để học, test (chưa thấy) để đánh giá khả năng tổng quát. <code class="ic">random_state=42</code> để kết quả lặp lại được.</div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> ML = học từ dữ liệu thay quy tắc tay. 3 loại bài toán. sklearn API: fit/predict đồng nhất. train_test_split bắt buộc.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="box pro">Làm chung: đọc dataset mẫu, chia train/test, fit LinearRegression đầu tiên, in score. Giáo viên code cùng, giải thích từng dòng.</div>
+${PAGER('s3',1,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b2'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 2 · có KT15'</span><h1>📈 Linear &amp; Logistic Regression</h1><div class="ch-sub">2 thuật toán nền: hồi quy tuyến tính &amp; phân loại với sigmoid.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Linear/Logistic cơ bản.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–40'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Linear Regression</div><div class="tdesc">y=w·x+b. Máy khớp bằng bình phương tối thiểu. R².</div></div></div>
+  <div class="tl-row"><div class="tl-time">40–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Logistic + Sigmoid</div><div class="tdesc">σ(z)=1/(1+e⁻ᶻ). Kẹp về [0,1] → xác suất.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train cả 2 mô hình</div><div class="tdesc">Linear dự đoán giá, Logistic phân loại.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: đánh giá model.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — Linear Regression (25 phút)</h3>
+<p>Mô hình đơn giản nhất: tìm đường thẳng <code class="ic">ŷ = w·x + b</code> sao cho tổng bình phương sai số nhỏ nhất. Đây chính là bài gradient descent ở M1-B2, nhưng sklearn giải trực tiếp. <strong>R²</strong> đo phần phương sai giải thích được: 1.0 hoàn hảo, 0 = bằng đoán trung bình.</p>
+<h3 class="mini">Phần 2 — Logistic Regression &amp; Sigmoid (30 phút)</h3>
+<p>Để phân loại, ta "kẹp" đầu ra về [0,1] bằng <strong>sigmoid</strong> <code class="ic">σ(z)=1/(1+e⁻ᶻ)</code> → diễn dịch thành xác suất. ≥0.5 → nhãn 1. <strong>"Logistic Regression" thực ra là phân loại</strong>, không phải hồi quy (tên dễ nhầm).</p>
+<div class="box warn"><span class="bt">⚠️ Tên gây nhầm</span> Logistic Regression là thuật toán <em>phân loại</em>. "Regression" vì nó dùng hồi quy tuyến tính rồi qua sigmoid.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m3b2">
+  <div class="eh">✍️ Bài thực hành 1 — Linear Regression</div>
+  <div class="etask">Khởi tạo <code>LinearRegression()</code>, fit Xtr/ytr, predict Xte.</div>
+  <textarea class="codepad" id="m3b2" spellcheck="false">from sklearn.linear_model import LinearRegression
+model =
+pred = </textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">model = LinearRegression().fit(Xtr, ytr)
+pred = model.predict(Xte)</pre></div></div></details>
+</div>
+<div class="exercise" data-ex="m3b2b">
+  <div class="eh">✍️ Bài thực hành 2 — Logistic Regression</div>
+  <div class="etask">Khởi tạo <code>LogisticRegression(max_iter=1000)</code>, fit, predict_proba.</div>
+  <textarea class="codepad" id="m3b2b" spellcheck="false">from sklearn.linear_model import LogisticRegression
+clf =
+</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b2b')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b2b')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b2b"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">clf = LogisticRegression(max_iter=1000).fit(Xtr, ytr)
+<span class="nb">print</span>(clf.predict_proba(Xte)[:2])</pre></div></div></details>
+</div>
+${PAGER('s3',2,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b3'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 3</span><h1>📐 Đánh giá mô hình (Accuracy/Precision/Recall/F1)</h1><div class="ch-sub">Mô hình "chạy tốt" trên train chưa nói gì. Học đo khả năng tổng quát trung thực.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–45'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Ma trận đánh giá</div><div class="tdesc">Accuracy/Precision/Recall/F1. Khi nào dùng cái nào.</div></div></div>
+  <div class="tl-row"><div class="tl-time">45–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–90'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Confusion matrix</div><div class="tdesc">Lớp mất cân bằng → accuracy lừa. Ví dụ fraud.</div></div></div>
+  <div class="tl-row"><div class="tl-time">90–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> classification_report</div><div class="tdesc">In metrics, phân tích confusion matrix.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: Decision Tree.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — Bốn chỉ số cốt lõi (30 phút)</h3>
+<table>
+  <tr><th>Chỉ số</th><th>Ý nghĩa</th><th>Quan trọng khi</th></tr>
+  <tr><td><strong>Accuracy</strong></td><td>Tỷ lệ đúng</td><td>Lớp cân bằng</td></tr>
+  <tr><td><strong>Precision</strong></td><td>Trong các dương đoán, đúng bao nhiêu</td><td>Dương tính giả tốn kém (spam)</td></tr>
+  <tr><td><strong>Recall</strong></td><td>Trong các dương thật, phát hiện bao nhiêu</td><td>Bỏ sót nguy hiểm (ung thư, fraud)</td></tr>
+  <tr><td><strong>F1</strong></td><td>Trung bình điều hòa P&amp;R</td><td>Lớp mất cân bằng</td></tr>
+</table>
+<div class="box info"><span class="bt">📌 Base rate lại xuất hiện</span> Liên hệ M1-B4 (Bayes): khi lớp hiếm (fraud 1%), accuracy 99% có thể vô nghĩa — mô hình đoán toàn "không fraud" cũng 99% đúng! Cần Recall/F1.</div>
+<h3 class="mini">Phần 2 — Confusion matrix (20 phút)</h3>
+<p>Bảng 2×2: TP/FP/FN/TN. Trực quan xem mô hình sai kiểu nào — đoán dương sai (FP) hay bỏ sót (FN).</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.metrics <span class="kw">import</span> classification_report, confusion_matrix
+<span class="nb">print</span>(classification_report(yte, pred, digits=3))
+<span class="nb">print</span>(confusion_matrix(yte, pred))</pre></div>
+<div class="box tip"><span class="bt">🎯 Tổng kết</span> Accuracy lừa khi lớp mất cân bằng. Fraud → Recall. Spam → Precision. Cân bằng → F1.</div>
+${PAGER('s3',3,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b4'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 4</span><h1>🌳 Decision Tree &amp; Random Forest</h1><div class="ch-sub">Cây quyết định &amp; bagging — "vua" dữ liệu bảng.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra metrics</div><div class="tdesc">Hỏi: fraud dùng chỉ số nào?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–45'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Decision Tree</div><div class="tdesc">Chia theo ngưỡng (Gini/Entropy). Dễ overfit.</div></div></div>
+  <div class="tl-row"><div class="tl-time">45–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–90'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Random Forest</div><div class="tdesc">Nhiều cây + bagging → giảm phương sai.</div></div></div>
+  <div class="tl-row"><div class="tl-time">90–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train RF</div><div class="tdesc">So sánh với Logistic.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B5: KT15' về XGBoost.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — Decision Tree (25 phút)</h3>
+<p>Cây chia dữ liệu theo ngưỡng từng đặc trưng (vd <code class="ic">income&gt;5000?</code>) sao cho nhánh con đồng nhất nhất. Tiêu chí chia: <strong>Gini</strong> hoặc <strong>Entropy</strong>. Dễ hiểu, nhưng dễ <em>overfit</em> nếu cây quá sâu (học thuộc nhiễu).</p>
+<h3 class="mini">Phần 2 — Random Forest: bagging (25 phút)</h3>
+<p>Trồng <em>nhiều cây</em> trên mẫu ngẫu nhiên + lấy biểu quyết → giảm phương sai (variance). Kỹ thuật <strong>bagging</strong>. RF mạnh, ít cần tune, là baseline lý tưởng.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+rf = RandomForestClassifier(n_estimators=200, random_state=42).fit(Xtr, ytr)
+<span class="nb">print</span>(rf.score(Xte, yte))</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m3b4">
+  <div class="eh">✍️ Bài thực hành — Random Forest</div>
+  <div class="etask"><code>RandomForestClassifier(n_estimators=200, random_state=42)</code>, fit, score trên Xte/yte.</div>
+  <textarea class="codepad" id="m3b4" spellcheck="false">from sklearn.ensemble import RandomForestClassifier
+rf =
+print(rf.score(Xte, yte))</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b4')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b4')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b4"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">rf = RandomForestClassifier(n_estimators=200, random_state=42).fit(Xtr, ytr)
+<span class="nb">print</span>(rf.score(Xte, yte))</pre></div></div></details>
+</div>
+${PAGER('s3',4,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b5'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 5 · có KT15'</span><h1>🚀 XGBoost / LightGBM</h1><div class="ch-sub">Gradient Boosting — "bá chủ" Kaggle dữ liệu bảng.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">XGBoost/boosting.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Gradient Boosting</div><div class="tdesc">Cây tuần tự sửa lỗi cây trước. RF vs GB.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Train XGBoost</div><div class="tdesc">So sánh RF vs XGBoost trên cùng dataset.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: K-Means/PCA.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Gradient Boosting — khác RF cốt lõi (25 phút)</h3>
+<p>Khác RF (cây song song độc lập, bagging), <strong>Boosting</strong> trồng cây <em>tuần tự</em>, mỗi cây sửa lỗi của chuỗi trước (boosting). Kết quả: thường chính xác hơn RF trên dữ liệu bảng. <strong>XGBoost/LightGBM</strong> là hiện thực hóa nhanh &amp; mạnh nhất — "vua" Kaggle.</p>
+<div class="box info"><span class="bt">📌 Khi nào dùng gì</span> Bắt đầu = Random Forest (dễ, ít tune). Cần vắt thêm độ chính xác → XGBoost/LightGBM. Dữ liệu lớn (&gt;1M dòng) → LightGBM nhanh hơn. Luôn là baseline trước deep learning.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m3b5">
+  <div class="eh">✍️ Bài thực hành — XGBoost</div>
+  <div class="etask"><code>XGBClassifier(n_estimators=300, learning_rate=0.05, max_depth=6)</code>, fit.</div>
+  <textarea class="codepad" id="m3b5" spellcheck="false">from xgboost import XGBClassifier
+xgb =
+</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b5')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b5')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b5"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">xgb = XGBClassifier(n_estimators=300, learning_rate=0.05, max_depth=6).fit(Xtr, ytr)</pre></div></div></details>
+</div>
+${PAGER('s3',5,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b6'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 6'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 6</span><h1>🧮 K-Means &amp; PCA</h1><div class="ch-sub">Học không giám sát: gom cụm &amp; giảm chiều.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét XGBoost.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–45'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> K-Means</div><div class="tdesc">Gom cụm không nhãn. Elbow chọn k.</div></div></div>
+  <div class="tl-row"><div class="tl-time">45–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–90'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> PCA</div><div class="tdesc">Giảm chiều giữ phương sai. Scale trước!</div></div></div>
+  <div class="tl-row"><div class="tl-time">90–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> K-Means + PCA</div><div class="tdesc">Phân khúc khách hàng + visualize 2D.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B7: Cross-validation.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Phần 1 — K-Means (25 phút)</h3>
+<p>Không cần nhãn, K-Means chia dữ liệu thành <code class="ic">k</code> cụm sao cho điểm trong cụm giống nhau nhất. Ứng dụng: phân khúc khách hàng. Chọn k bằng <strong>elbow method</strong>.</p>
+<h3 class="mini">Phần 2 — PCA (25 phút)</h3>
+<p>Ép dữ liệu 2000 cột xuống 50 cột mà <em>giữ phần lớn phương sai</em> (thông tin). Tăng tốc training, visualize 2D/3D, giảm nhiễu.</p>
+<div class="box warn"><span class="bt">⚠️ Scale trước!</span> Cả K-Means &amp; PCA dựa khoảng cách. Cột lớn (doanh thu triệu) áp đảo cột nhỏ (tuổi). Luôn StandardScaler trước.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m3b6">
+  <div class="eh">✍️ Bài thực hành 1 — K-Means</div>
+  <div class="etask"><code>KMeans(n_clusters=4, random_state=42, n_init=10)</code>, fit_predict.</div>
+  <textarea class="codepad" id="m3b6" spellcheck="false">from sklearn.cluster import KMeans
+km =
+labels = </textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b6')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b6')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b6"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">km = KMeans(n_clusters=4, random_state=42, n_init=10)
+labels = km.fit_predict(X)</pre></div></div></details>
+</div>
+<div class="exercise" data-ex="m3b6b">
+  <div class="eh">✍️ Bài thực hành 2 — PCA</div>
+  <div class="etask"><code>PCA(n_components=0.95)</code>, fit_transform, in shape mới.</div>
+  <textarea class="codepad" id="m3b6b" spellcheck="false">from sklearn.decomposition import PCA
+pca =
+Xp = </textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b6b')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b6b')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b6b"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">pca = PCA(n_components=0.95)
+Xp = pca.fit_transform(X)
+<span class="nb">print</span>(Xp.shape)</pre></div></div></details>
+</div>
+${PAGER('s3',6,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b7'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 7'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 7</span><h1>🔄 Cross-validation &amp; Pipeline</h1><div class="ch-sub">Đánh giá trung thực (CV) + chống data leakage (Pipeline).</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra K-Means/PCA</div><div class="tdesc">Hỏi: vì sao phải scale trước PCA?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Cross-validation</div><div class="tdesc">Chia k-fold, đánh giá đáng tin hơn.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Pipeline</div><div class="tdesc">Ghép tiền xử lý + model. Chống leakage.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> CV + Pipeline</div><div class="tdesc">cross_val_score trên Pipeline.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B8: GridSearch + ôn GK.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Cross-validation (30 phút)</h3>
+<p>Một lần chia train/test có thể may rủi. <strong>Cross-validation</strong> chia dữ liệu thành k phần, train k−1 đánh giá phần còn lại, xoay vòng k lần → điểm trung bình đáng tin hơn nhiều.</p>
+<div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+scores = cross_val_score(model, X, y, cv=5)
+<span class="nb">print</span>(f<span class="st">"{scores.mean():.3f} ± {scores.std():.3f}"</span>)</pre></div>
+<h3 class="mini">Pipeline — chống data leakage (25 phút)</h3>
+<p>Ghép tiền xử lý + model thành 1 khối. Khi CV, Pipeline tự <strong>fit trên từng fold train</strong>, tránh leakage (rõ hơn tự làm tay). Liên hệ M2-B5.</p>
+<div class="exercise" data-ex="m3b8">
+  <div class="eh">✍️ Bài thực hành — Pipeline + CV</div>
+  <div class="etask">Pipeline([StandardScaler, RandomForest]), fit trên Xtr/ytr.</div>
+  <textarea class="codepad" id="m3b8" spellcheck="false">from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+pipe = Pipeline([
+    ("scaler", ),
+    ("clf", ),
+])
+</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b8')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b8')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b8"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">pipe = Pipeline([
+    (<span class="st">"scaler"</span>, StandardScaler()),
+    (<span class="st">"clf"</span>, RandomForestClassifier()),
+])
+pipe.fit(Xtr, ytr)</pre></div></div></details>
+</div>
+<div class="exercise" data-ex="m3b7">
+  <div class="eh">✍️ Bài thực hành — Cross-validation</div>
+  <div class="etask"><code>cross_val_score(pipe, X, y, cv=5)</code>, in mean &amp; std.</div>
+  <textarea class="codepad" id="m3b7" spellcheck="false">from sklearn.model_selection import cross_val_score
+scores =
+print(f"{scores.mean():.3f} +- {scores.std():.3f}")</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m3b7')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m3b7')">↺ Reset</button></div>
+  <div class="echk" id="res-m3b7"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">scores = cross_val_score(pipe, X, y, cv=5)
+<span class="nb">print</span>(f<span class="st">"{scores.mean():.3f} +- {scores.std():.3f}"</span>)</pre></div></div></details>
+</div>
+${PAGER('s3',7,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b8'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 8 · ôn GK'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 8</span><h1>🔧 GridSearchCV + Ôn giữa kì</h1><div class="ch-sub">Tinh chỉnh siêu tham số + ôn toàn M3 cho GK.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra CV/Pipeline</div><div class="tdesc">Sửa bài Pipeline BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> GridSearchCV</div><div class="tdesc">Thử tổ hợp siêu tham số + CV, chọn tốt nhất.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–100'</div><div class="tl-act"><div class="tname"><span class="pill teach">Ôn</span> Toàn M3</div><div class="tdesc">B1–B7 tóm tắt. Làm mẫu đề GK.</div></div></div>
+  <div class="tl-row"><div class="tl-time">100–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Đề GK mẫu</div><div class="tdesc">Cả lớp làm đề GK mẫu.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Chuẩn bị GK</div><div class="tdesc">B9: thi GK.</div></div></div>
+</div>
+<div class="code-block"><div class="cbhead"><span>python · GridSearchCV</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> GridSearchCV
+grid = GridSearchCV(pipe, {<span class="st">"clf__n_estimators"</span>:[100,200,400]}, cv=5)
+grid.fit(X, y)
+<span class="nb">print</span>(grid.best_params_, grid.best_score_)</pre></div>
+${PAGER('s3',8,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b9'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 9 · GK'), html: `
+<div class="page-head"><span class="kicker k-exam">M3 · BUỔI 9 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn</h1><div class="ch-sub">Thi GK 90' (xem trang Đề thi môn). Trọng số 30%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–100'</div><div class="tl-act"><div class="tname">📝 Làm bài 90'</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">100–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét</div><div class="tdesc"></div></div></div>
+</div>
+${PAGER('s3',9,10,M3_NAME)}` };
+
+LESSON_DETAIL['s3-b10'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 10 · Project'), html: `
+<div class="page-head"><span class="kicker k-lesson">M3 · BUỔI 10</span><h1>🏆 Mid-term Project HK1 — XGBoost</h1><div class="ch-sub">Dự đoán dữ liệu kinh doanh. Mốc giữa HK1.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Trả bài GK</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Hướng dẫn</span> Project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc">Giáo viên đi vòng hỗ trợ.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Nộp GitHub. Chuẩn bị M4.</div></div></div>
+</div>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 MID-TERM PROJECT HK1 — XGBoost <span class="et">Cá nhân · Bảo vệ</span></div>
+  <p>Dùng toàn bộ M3 giải bài toán dự đoán kinh doanh trên dữ liệu bảng.</p>
+  <ul><li>Dataset Kaggle: giá nhà / churn / doanh thu.</li><li>EDA → Pipeline → so sánh ≥ 3 mô hình → GridSearchCV.</li><li>Báo cáo: metrics + feature importance + confusion matrix.</li></ul>
+  <div class="rubric"><span class="rt">Tiêu chí</span> · Đạt baseline Kaggle · Pipeline đúng quy tắc · So sánh ≥ 3 mô hình · Feature importance · Bảo vệ 15'.</div>
+</div>
+${PAGER('s3',10,10,M3_NAME)}` };
+
+/* ===== M3: ĐỀ THI (5 đề) ===== */
+function renderM3Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M3 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — Machine Learning</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', GK (90'), CK (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #1 <span class="et">B2 · Linear/Logistic</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Phân biệt học có giám sát vs không giám sát. Ví dụ mỗi loại.</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Vì sao phải chia train/test?</div></div>
+      <div class="q"><div class="qn">C3 (3đ).</div><div class="qp">Hàm σ(z)=1/(1+e⁻ᶻ) (sigmoid) tác dụng gì?</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">"Logistic Regression" là hồi quy hay phân loại? Vì sao tên gây nhầm?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Có giám sát = có nhãn (phân loại/hồi quy); không = không nhãn (gom cụm/PCA). <b>C2:</b> Đánh giá khả năng tổng quát trên dữ liệu chưa thấy. <b>C3:</b> Kẹp đầu ra về [0,1] → xác suất. <b>C4:</b> Phân loại; tên vì dùng hồi quy tuyến tính rồi qua sigmoid.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #2 <span class="et">B5 · Boosting</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Khác RF vs Gradient Boosting (cốt lõi)?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Khi nào nên bắt đầu bằng RF thay vì XGBoost?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Fraud (rất hiếm): dùng Accuracy hay Recall? Vì sao?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> RF = bagging (cây song song độc lập); GB = boosting (cây tuần tự sửa lỗi). <b>C2:</b> RF dễ, ít tune, là baseline lý tưởng. <b>C3:</b> Recall — bỏ sót gian lận nguy hiểm; accuracy lừa vì lớp "không fraud" 99%+.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B8</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy + sklearn</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">Đọc CSV, train_test_split, fit RandomForest, in score.</div></div>
+      <div class="q"><div class="qn">B2 (2đ).</div><div class="qp">In classification_report + confusion_matrix.</div></div>
+      <div class="q"><div class="qn">B3 (3đ).</div><div class="qp">Pipeline([StandardScaler, LogisticRegression]), cross_val_score cv=5.</div></div>
+      <div class="q"><div class="qn">B4 (2đ).</div><div class="qp">PCA(n_components=0.95), in shape mới.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code">Xtr,Xte,ytr,yte=train_test_split(X,y,test_size=0.2,random_state=42)
+rf=RandomForestClassifier(n_estimators=200,random_state=42).fit(Xtr,ytr)
+<span class="nb">print</span>(rf.score(Xte,yte))
+<span class="nb">print</span>(classification_report(yte,rf.predict(Xte)))
+pipe=Pipeline([(<span class="st">"s"</span>,StandardScaler()),(<span class="st">"c"</span>,LogisticRegression(max_iter=1000))])
+<span class="nb">print</span>(cross_val_score(pipe,X,y,cv=5).mean())
+Xp=PCA(n_components=0.95).fit_transform(X); <span class="nb">print</span>(Xp.shape)</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">B9 · 90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) 3 loại bài toán ML (1đ). (b) Accuracy lừa khi nào, dùng gì thay (1đ). (c) RF vs GB (1đ). (d) Data leakage &amp; cách Pipeline tránh (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Code (6đ).</div><div class="qp">Trên dataset cho sẵn: (a) EDA + train_test_split (1đ). (b) So sánh Logistic vs RF vs XGBoost bằng CV (2đ). (c) Pipeline đúng quy tắc (1đ). (d) GridSearchCV tinh chỉnh (1đ). (e) Phân tích feature importance + confusion matrix (1đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Giải thích Precision vs Recall. Bài toán nào ưu tiên cái nào?</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Vì sao K-Means/PCA cần scale trước?</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">Pipeline đầy đủ: imputer + scaler + PCA + XGBoost, cross_val_score, in mean/std.</div></div>
+      <div class="q"><div class="qn">C4 (3đ — phân tích).</div><div class="qp">Cho confusion matrix. Tính Precision/Recall/F1 tay. Đề xuất cải thiện nếu Recall thấp.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C1:</b> Precision = đúng trong các đoán dương; Recall = phát hiện trong các dương thật. Spam→Precision, ung thư→Recall. <b>C2:</b> Cả hai dựa khoảng cách, cột lớn áp đảo. <b>C3:</b> Pipeline([('imp',SimpleImputer()),('s',StandardScaler()),('p',PCA(0.95)),('x',XGBClassifier())]) + CV. <b>C4:</b> P=TP/(TP+FP), R=TP/(TP+FN), F1=2PR/(P+R); tăng Recall = giảm ngưỡng / class_weight / resample.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s3/b10"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 10</div></a>
+      <a class="next" href="#/s4"><div class="pl">Môn tiếp →</div><div class="pt">M4 Deep Learning &amp; CV</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s3">M3 Machine Learning</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -1027,11 +1887,13 @@ function renderLesson(sid, bid){
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/${sid}">${s.name}</a> <span class="sep">›</span> <b>Buổi ${bnum}</b>`);
 }
 
-/* ===== RENDER: EXAMS (skeleton; M1 có override đầy đủ) ===== */
+/* ===== RENDER: EXAMS (skeleton; M1/M2 có override đầy đủ) ===== */
 function renderExams(sid){
   const s = SUBJECTS[sid];
   if(!s){ renderOverview(); return; }
   if(sid === 's1'){ renderM1Exams(); return; }
+  if(sid === 's2'){ renderM2Exams(); return; }
+  if(sid === 's3'){ renderM3Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
