@@ -3287,6 +3287,237 @@ function renderM8Exams(){
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s8">M8 Security &amp; Gov</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 9 — LLMOPS & TRIỂN KHAI (8 buổi + 5 đề)
+   ============================================================ */
+const M9_NAME = 'M9 LLMOps';
+EX.m9b1 = [{re:/@app\.post|@app\.get/,label:"route decorator"},{re:/BaseModel/,label:"kế thừa BaseModel"},{re:/def\s+\w+\(.*:.*Query\)|def\s+\w+\(.*q:.*Query\)/,label:"route có Query"}];
+EX.m9b5 = [{re:/tracer\.start_span|span\s*=/,label:"start_span"},{re:/set_attribute\s*\(\s*["']tokens/,label:'set_attribute tokens'},{re:/latency|time\.time\(\)/,label:"tính latency"}];
+EX.m9b7 = [{re:/question\s+in\s+cache|in\s+cache/,label:"kiểm tra cache"},{re:/cache\[question\]\s*=/,label:"lưu cache"}];
+
+LESSON_DETAIL['s9-b1'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 1</span><h1>🌐 Từ notebook → API (FastAPI)</h1><div class="ch-sub">Khoảng cách lớn nhất của kỹ sư AI: từ "chạy trong Jupyter" sang "chạy 24/7".</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu M9</div><div class="tdesc">Production. Liên hệ M6-M8.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> FastAPI</div><div class="tdesc">Route, BaseModel, endpoint.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> API agent</div><div class="tdesc">Đóng gói agent M6 thành API.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về queue.</div></div></div>
+</div>
+<div class="code-block"><div class="cbhead"><span>python · fastapi</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+app = FastAPI()
+<span class="kw">class</span> <span class="fn">Query</span>(BaseModel):
+    question: str; user_id: str
+<span class="kw">@app.post</span>(<span class="st">"/ask"</span>)
+<span class="kw">def</span> <span class="fn">ask</span>(q: Query):
+    <span class="kw">return</span> {<span class="st">"answer"</span>: agent.run(q.question)}</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m9b1">
+  <div class="eh">✍️ Bài thực hành — Endpoint FastAPI</div>
+  <div class="etask">Route POST /health trả {"status": "ok"}.</div>
+  <textarea class="codepad" id="m9b1" spellcheck="false">@app.post("/health")
+def health():</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m9b1')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m9b1')">↺ Reset</button></div>
+  <div class="echk" id="res-m9b1"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">@app.post</span>(<span class="st">"/health"</span>)
+<span class="kw">def</span> <span class="fn">health</span>():
+    <span class="kw">return</span> {<span class="st">"status"</span>: <span class="st">"ok"</span>}</pre></div></div></details>
+</div>
+${PAGER('s9',1,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b2'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 2 · có KT15'</span><h1>📨 Queue &amp; async</h1><div class="ch-sub">Tác vụ lâu → đẩy vào queue, trả job_id, client poll kết quả.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Queue/async.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Queue</div><div class="tdesc">Celery/RQ. Tách request khỏi xử lý.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Async job</div><div class="tdesc">Endpoint đẩy job, endpoint poll.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: vector DB prod.</div></div></div>
+</div>
+<div class="box info"><span class="bt">📌 Vì sao queue</span> Agent có thể chạy hàng chục giây. Đồng bộ → client timeout + server nghẽn. Queue tách rời, trả job_id, chịu tải tốt, retry được.</div>
+${PAGER('s9',2,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b3'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 3</span><h1>🗄️ Vector DB production</h1><div class="ch-sub">FAISS cho nhỏ; Qdrant/Pinecone/pgvector cho production.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra queue</div><div class="tdesc">Trả KT15', nhận xét.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Vector DB</div><div class="tdesc">So sánh, metadata, persistence.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Qdrant/pgvector</div><div class="tdesc">Migrate FAISS → persistent.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: CI/CD.</div></div></div>
+</div>
+${PAGER('s9',3,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b4'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 4</span><h1>🔄 CI/CD chạy eval</h1><div class="ch-sub">Mỗi PR chạy eval set; tụt điểm → chặn merge. Giữ chất lượng agent.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra vector DB</div><div class="tdesc">Hỏi: FAISS vs Qdrant?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> CI/CD</div><div class="tdesc">GitHub Actions, eval gate.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> GitHub Actions</div><div class="tdesc">Workflow chạy eval.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B5: KT15' về observability.</div></div></div>
+</div>
+<div class="box tip"><span class="bt">📌 Eval trong CI</span> Kết nối M7: mỗi PR chạy eval set; điểm tụt so main → chặn merge. Giữ chất lượng agent khi đổi prompt/model mà không kiểm tay.</div>
+${PAGER('s9',4,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b5'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 5 · có KT15'</span><h1>👁️ Observability &amp; trace</h1><div class="ch-sub">Agent có thể "im lặng hỏng" — trả sai mà không crash. Cần trace.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">Observability/trace.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Trace</div><div class="tdesc">LangSmith/Langfuse/Phoenix. Phát lại phiên.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–100'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Metrics</div><div class="tdesc">Chất lượng/hiệu năng/chi phí/an toàn.</div></div></div>
+  <div class="tl-row"><div class="tl-time">100–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Span trace</div><div class="tdesc">Trace từng bước agent.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: metrics/alert.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Trace vòng lặp agent (30 phút)</h3>
+<p>Đừng chỉ log input/output. Trace từng bước: prompt gửi, tool gọi, kết quả, token, độ trễ. Công cụ: <strong>LangSmith, Langfuse, Phoenix</strong> — cho phép "phát lại" phiên để debug.</p>
+<h3 class="mini">Metric cần theo dõi (25 phút)</h3>
+<table>
+  <tr><th>Nhóm</th><th>Metric</th><th>Vì sao</th></tr>
+  <tr><td>Chất lượng</td><td>Phản hồi tiêu cực, eval định kỳ</td><td>Phát hiện degradation</td></tr>
+  <tr><td>Hiệu năng</td><td>Độ trễ P50/P95/P99</td><td>UX</td></tr>
+  <tr><td>Chi phí</td><td>Token/request, $/ngày</td><td>Ngân sách</td></tr>
+  <tr><td>An toàn</td><td>Tool bị chặn, injection phát hiện</td><td>Tấn công/lạm dụng</td></tr>
+</table>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m9b5">
+  <div class="eh">✍️ Bài thực hành — Span trace</div>
+  <div class="etask">Bắt đầu span "llm_call", ghi tokens &amp; latency_ms khi kết thúc.</div>
+  <textarea class="codepad" id="m9b5" spellcheck="false">def call_llm_with_trace(prompt):
+    t0 = time.time()
+    span = tracer.start_span("llm_call")
+    resp = client.chat.completions.create(model="gpt-4o-mini",
+        messages=[{"role":"user","content":prompt}])
+
+
+    span.end()
+    return resp.choices[0].message.content</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m9b5')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m9b5')">↺ Reset</button></div>
+  <div class="echk" id="res-m9b5"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">span.set_attribute(<span class="st">"tokens"</span>, resp.usage.total_tokens)
+span.set_attribute(<span class="st">"latency_ms"</span>, <span class="nb">round</span>((time.time()-t0)*1000))</pre></div></div></details>
+</div>
+${PAGER('s9',5,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b6'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 6'), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 6</span><h1>🚨 Metrics &amp; alert</h1><div class="ch-sub">Cảnh báo thông minh — tránh alarm fatigue.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra trace</div><div class="tdesc">Sửa bài span BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Alert</div><div class="tdesc">Ngưỡng, runbook, alarm fatigue.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Setup alert</div><div class="tdesc">Alert P95 + chi phí + eval.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B7: chi phí.</div></div></div>
+</div>
+<div class="box warn"><span class="bt">⚠️ Cảnh báo thông minh</span> Đừng alert mọi lỗi (alarm fatigue). Alert khi: trễ P95 tăng, chi phí/ngày vượt budget, phản hồi tiêu cực tăng, eval tụt. Mỗi alert có runbook.</div>
+${PAGER('s9',6,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b7'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 7'), html: `
+<div class="page-head"><span class="kicker k-lesson">M9 · BUỔI 7</span><h1>💰 Tối ưu chi phí</h1><div class="ch-sub">Đòn bẩy giảm chi phí mà không hy sinh chất lượng.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra alert</div><div class="tdesc">Hỏi: alert nào quan trọng?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Đòn bẩy chi phí</div><div class="tdesc">Cache, routing, lo-cal, batch.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Cache + route</div><div class="tdesc">Code cache câu hỏi.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B8: CK.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Các đòn bẩy chi phí (30 phút)</h3>
+<table>
+  <tr><th>Đòn bẩy</th><th>Giảm</th><th>Trade-off</th></tr>
+  <tr><td>Cache semantic</td><td>60-90% (câu lặp)</td><td>Invalidation</td></tr>
+  <tr><td>Route model</td><td>50-80%</td><td>Classifier chọn</td></tr>
+  <tr><td>Mô hình nhỏ/lo-cal</td><td>90%+ /token</td><td>Chất lượng thấp</td></tr>
+  <tr><td>Cắt context thừa</td><td>20-40%</td><td>Mất thông tin</td></tr>
+</table>
+<div class="box info"><span class="bt">📌 Đòn bẩy lớn nhất</span> Route model: câu đơn giản (FAQ) → mô hình rẻ; phức tạp → mạnh. Giảm 50-80% mà giữ chất lượng.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m9b7">
+  <div class="eh">✍️ Bài thực hành — Cache câu hỏi</div>
+  <div class="etask"><code>cached_call(question)</code>: có trong cache → trả; không → gọi llm, lưu cache.</div>
+  <textarea class="codepad" id="m9b7" spellcheck="false">cache = {}
+def cached_call(question):
+    if
+
+
+    ans = llm(question)
+    cache[question] = ans
+    return ans</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m9b7')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m9b7')">↺ Reset</button></div>
+  <div class="echk" id="res-m9b7"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">if</span> question <span class="kw">in</span> cache:
+    <span class="kw">return</span> cache[question]</pre></div></div></details>
+</div>
+${PAGER('s9',7,8,M9_NAME)}` };
+
+LESSON_DETAIL['s9-b8'] = { crumb: CRUMB('s9',M9_NAME,'Buổi 8 · CK'), html: `
+<div class="page-head"><span class="kicker k-exam">M9 · BUỔI 8 · CUỐI KÌ</span><h1>📋 Kiểm tra Cuối kì môn</h1><div class="ch-sub">Thi CK 120' (xem trang Đề thi môn). Trọng số 45%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–130'</div><div class="tl-act"><div class="tname">📝 Làm bài 120'</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">130–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét</div><div class="tdesc"></div></div></div>
+</div>
+${PAGER('s9',8,8,M9_NAME)}` };
+
+/* ===== M9: ĐỀ THI (5 đề) ===== */
+function renderM9Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M9 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — LLMOps</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', GK (90'), CK (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #1 <span class="et">B2 · Queue</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Vì sao đẩy tác vụ lâu của agent vào queue thay vì đồng bộ?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">FAISS vs Qdrant — khi nào dùng cái nào?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Eval trong CI giúp gì?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Tránh client timeout, chịu tải, retry/throttle. <b>C2:</b> FAISS nhỏ/dev; Qdrant production (persistence, metadata, scale). <b>C3:</b> Chặn merge khi đổi prompt/model làm tụt điểm.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #2 <span class="et">B5 · Observability</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Agent "silent failure" là gì?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">4 nhóm metric cần theo dõi?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Alarm fatigue &amp; cách tránh?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Không crash nhưng trả sai → cần trace + metric chất lượng. <b>C2:</b> Chất lượng/hiệu năng/chi phí/an toàn. <b>C3:</b> Chỉ alert ngưỡng quan trọng + runbook.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B7</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">FastAPI endpoint /ask + BaseModel Query.</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Trace span: tokens + latency_ms.</div></div>
+      <div class="q"><div class="qn">B3 (2đ).</div><div class="qp">cached_call(question) với dict cache.</div></div>
+      <div class="q"><div class="qn">B4 (2đ).</div><div class="qp">Alert: nếu latency_ms &gt; 5000 → log cảnh báo.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code"><span class="kw">if</span> latency_ms &gt; 5000:
+    logger.warning(f<span class="st">"latency cao: {latency_ms}ms"</span>)</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) Notebook vs production khác gì (1đ). (b) Queue (1đ). (c) Observability &amp; trace (1đ). (d) Đòn bẩy chi phí (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Code (6đ).</div><div class="qp">Triển khai agent M6: FastAPI (2đ) + queue (1đ) + trace (1đ) + cache (1đ) + alert (1đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">B8 · 120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Thiết kế kiến trúc production cho agent tra cứu 1000 user. Vẽ, liệt kê thành phần.</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Chi phí API tăng đột biến. Đề xuất 3 đòn bẩy giảm, thứ tự ưu tiên.</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">Hệ thống đầy đủ: FastAPI + cache + trace + alert + eval CI.</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Incident: agent trả sai hàng loạt sau deploy. Trình tự điều tra + rollback + phòng tái diễn.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C2:</b> (1) Route model rẻ cho đơn giản; (2) cache câu lặp; (3) cắt context. <b>C4:</b> Xem trace/metric → rollback → thêm eval gate CI + canary deploy.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s9/b8"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 8</div></a>
+      <a class="next" href="#/s10"><div class="pl">Môn tiếp →</div><div class="pt">M10 Pháp lý AI</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s9">M9 LLMOps</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -3326,6 +3557,7 @@ function renderExams(sid){
   if(sid === 's6'){ renderM6Exams(); return; }
   if(sid === 's7'){ renderM7Exams(); return; }
   if(sid === 's8'){ renderM8Exams(); return; }
+  if(sid === 's9'){ renderM9Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
