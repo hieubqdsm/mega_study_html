@@ -22,6 +22,40 @@ with open(os.path.join(ROOT, "_manifest.json"), encoding="utf-8") as f:
 with open(os.path.join(PHB, "assets", "_image-map.json"), encoding="utf-8") as f:
     img_map = json.load(f)["url_to_local"]
 
+# Load translations (key = text Anh, value = {"vi": ...}) - chi lay entry da co ban dich
+TRANS_PATH = os.path.join(ROOT, "translations.json")
+_translations = {}
+if os.path.exists(TRANS_PATH):
+    with open(TRANS_PATH, encoding="utf-8") as f:
+        _raw = json.load(f)
+    _translations = {k: v["vi"] for k, v in _raw.items() if v.get("vi")}
+
+
+def apply_translations(html_text):
+    """Thay text trong <p>/<h2>/<h3>/<li> bang ban dich (neu co).
+    Bo POI heading (data-number). Match theo prefix 40 ky tu de chiu text dai/ngan."""
+    if not _translations:
+        return html_text
+    PREFIX = {en[:40]: vi for en, vi in _translations.items()}
+
+    def repl(m):
+        tag = m.group(1)
+        attrs = m.group(2)
+        inner = m.group(3)
+        if "data-number" in attrs:
+            return m.group(0)  # POI heading giu nguyen
+        txt = re.sub(r"<[^>]+>", "", inner)
+        txt = re.sub(r"\s+", " ", txt).strip()
+        vi = _translations.get(txt)
+        if vi is None:
+            vi = PREFIX.get(txt[:40])
+        if vi:
+            return f"<{tag}{attrs}> {vi} </{tag}>"
+        return m.group(0)
+
+    html_text = re.sub(r"<(p|h2|h3|li)([^>]*)>(.*?)</\1>", repl, html_text, flags=re.S)
+    return html_text
+
 chapters = {}
 order = []
 for p in manifest["pages"]:
@@ -184,6 +218,13 @@ def main():
         sidebar = build_sidebar(chapter, slug)
         out_html = NATIVE_TEMPLATE.format(
             title=title, content=content, sidebar=sidebar
+        )
+        # Áp dụng bản dịch (nếu có trong translations.json)
+        out_html = apply_translations(out_html)
+        # Cập nhật lang-note
+        out_html = out_html.replace(
+            "📖 Nội dung bên dưới là bản gốc tiếng Anh (chưa dịch). Ảnh đã cache offline.",
+            "📖 Đã dịch sang tiếng Việt. Thuật ngữ chuyên môn giữ tiếng Anh — <b>rê chuột</b> để xem nghĩa (tooltip)."
         )
         out_path = os.path.join(PHB, p["file"])
         os.makedirs(os.path.dirname(out_path), exist_ok=True)
