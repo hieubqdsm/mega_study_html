@@ -207,13 +207,23 @@ def clean_content_keep_classes(html_text):
             pr = a.find_parent(["div", "section"])
             if pr is not None:
                 pr.decompose()
-    for div in soup.find_all(["div", "section", "nav", "ul"]):
-        hl = div.find_all("a", href=re.compile(r"/procreate/handbook/"))
-        if len(hl) >= 3:
+    # Loai modal Alpine (clipboard fail) — div co x-data clipboard/modal
+    for div in soup.find_all(attrs={"x-data": True}):
+        xd = div.get("x-data", "")
+        if "clipboard" in xd or "modal" in xd or "copied" in xd:
             div.decompose()
     # Loai <template x-teleport> (modal/drawer — khong dung, gay loi Alpine)
     for t in soup.find_all("template", attrs={"x-teleport": True}):
         t.decompose()
+    # Loai cac khoi chua NHIEU link handbook (TOC related) — NHUNG bao ve card Overview.
+    # Card Overview gom: h2 + p + 1 link See section. Container cha co the chua nhieu card
+    # -> khong xoa neu container con ton tai h2 hoac p (co noi dung that).
+    for div in soup.find_all(["div", "section", "nav", "ul"]):
+        hl = div.find_all("a", href=re.compile(r"/procreate/handbook/"))
+        if len(hl) >= 3:
+            # Chi xoa neu KHONG co heading/paragraph (TOC thuần link, khong phai card)
+            if not div.find(["h2", "h3", "p"]):
+                div.decompose()
     title = soup.find("h1").get_text(strip=True) if soup.find("h1") else ""
     return str(soup), title
 
