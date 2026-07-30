@@ -33,7 +33,8 @@ if os.path.exists(TRANS_PATH):
 
 def apply_translations(html_text):
     """Thay text trong <p>/<h2>/<h3>/<li> bang ban dich (neu co).
-    Bo POI heading (data-number). Match theo prefix 40 ky tu de chiu text dai/ngan."""
+    Bo POI heading (data-number). Match theo prefix 40 ky tu de chiu text dai/ngan.
+    CHI dich noi dung (text trong content), KHONG dich sidebar/breadcrumb."""
     if not _translations:
         return html_text
     PREFIX = {en[:40]: vi for en, vi in _translations.items()}
@@ -55,6 +56,12 @@ def apply_translations(html_text):
 
     html_text = re.sub(r"<(p|h2|h3|li)([^>]*)>(.*?)</\1>", repl, html_text, flags=re.S)
     return html_text
+
+
+def apply_translations_to_content(content_html):
+    """Goi apply_translations CHI tren phan content (da boc trong document-container),
+    KHONG len sidebar/breadcrumb/topbar."""
+    return apply_translations(content_html)
 
 chapters = {}
 order = []
@@ -212,6 +219,9 @@ def main():
         if not title:
             title = p["title"]
 
+        # Áp dụng bản dịch CHỈ lên phần content (KHÔNG đụng sidebar/breadcrumb)
+        content = apply_translations_to_content(content)
+
         # Bọc content native vào template có sidebar Việt.
         chapter = p["chapter"]
         slug = p["slug"]
@@ -219,8 +229,6 @@ def main():
         out_html = NATIVE_TEMPLATE.format(
             title=title, content=content, sidebar=sidebar
         )
-        # Áp dụng bản dịch (nếu có trong translations.json)
-        out_html = apply_translations(out_html)
         # Cập nhật lang-note
         out_html = out_html.replace(
             "📖 Nội dung bên dưới là bản gốc tiếng Anh (chưa dịch). Ảnh đã cache offline.",
