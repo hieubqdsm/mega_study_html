@@ -2811,6 +2811,248 @@ docs=db.similarity_search(q, k=3)
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s6">M6 AI Agent</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 7 — MULTI-AGENT ORCHESTRATION (8 buổi + 5 đề)
+   ============================================================ */
+const M7_NAME = 'M7 Multi-Agent';
+EX.m7b2 = [{re:/StateGraph|from langgraph/,label:"StateGraph/LangGraph"},{re:/add_node/,label:".add_node(...)"},{re:/add_edge|set_entry_point/,label:"add_edge/entry"}];
+EX.m7b5 = [{re:/def\s+eval_run|for\s+q,\s*expected/,label:"vòng lặp eval"},{re:/scores\.mean|llm_judge/,label:"tính điểm"}];
+EX.m7b6 = [{re:/def\s+llm_judge|question.*answer.*expected/,label:"prompt rubric judge"},{re:/float\s*\(/,label:"parse điểm 0..1"}];
+
+LESSON_DETAIL['s7-b1'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 1</span><h1>🕸️ Orchestration — 3 mô hình điều phối</h1><div class="ch-sub">Router / Supervisor / Graph — khi nào cần nhiều agent.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu M7</div><div class="tdesc">Khi 1 agent không đủ → phối hợp.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> 3 mô hình</div><div class="tdesc">Router, Supervisor, Graph (DAG).</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Router đơn giản</div><div class="tdesc">Hàm route theo câu hỏi.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về LangGraph.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">3 mô hình điều phối (30 phút)</h3>
+<table>
+  <tr><th>Mô hình</th><th>Cách</th><th>Phù hợp</th></tr>
+  <tr><td>Router</td><td>1 agent phân loại → đẩy cho chuyên gia</td><td>Tác vụ rời rạc</td></tr>
+  <tr><td>Supervisor</td><td>1 quản đốc giao việc, gom kết quả</td><td>Quy trình nhiều bước</td></tr>
+  <tr><td>Graph (DAG)</td><td>Agent là node, cạnh là luồng</td><td>Quy trình phức tạp, rẽ nhánh</td></tr>
+</table>
+<div class="box warn"><span class="bt">⚠️ Đừng thêm agent vô tội vạ</span> Mỗi agent = trễ + chi phí + điểm lỗi. Bắt đầu 1 agent; chỉ tách khi tác vụ khác biệt rõ, cần chuyên môn/LLM khác nhau, cần song song. Nhiều hệ thống "7 agent oai" thực ra chỉ cần 1.</div>
+${PAGER('s7',1,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b2'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 2 · có KT15'</span><h1>🕸️ LangGraph skeleton</h1><div class="ch-sub">Framework dựng graph agent: node, edge, conditional.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">LangGraph.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> LangGraph API</div><div class="tdesc">StateGraph, add_node, add_edge.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Build graph</div><div class="tdesc">Router → research/writer.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: workflow.</div></div></div>
+</div>
+<div class="code-block"><div class="cbhead"><span>python · langgraph</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph, END
+g = StateGraph(dict)
+g.add_node(<span class="st">"router"</span>, route_fn)
+g.add_node(<span class="st">"research"</span>, research_agent)
+g.set_entry_point(<span class="st">"router"</span>)
+g.add_conditional_edges(<span class="st">"router"</span>, decide, {<span class="st">"research"</span>:<span class="st">"research"</span>, <span class="st">"done"</span>:END})
+app = g.compile()</pre></div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m7b2">
+  <div class="eh">✍️ Bài thực hành — LangGraph skeleton</div>
+  <div class="etask">StateGraph, add_node router/research, set_entry_point, compile.</div>
+  <textarea class="codepad" id="m7b2" spellcheck="false">from langgraph.graph import StateGraph, END
+g = StateGraph(dict)
+# add node router, research
+
+
+# entry point + compile
+
+</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m7b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m7b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m7b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">g.add_node(<span class="st">"router"</span>, route_fn)
+g.add_node(<span class="st">"research"</span>, research_agent)
+g.set_entry_point(<span class="st">"router"</span>)
+g.add_edge(<span class="st">"research"</span>, END)
+app = g.compile()</pre></div></div></details>
+</div>
+${PAGER('s7',2,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b3'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 3</span><h1>🔄 Workflow 3 Agent</h1><div class="ch-sub">Researcher → Writer → Reviewer — pipeline kinh điển.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra LangGraph</div><div class="tdesc">Trả KT15', nhận xét graph.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> 3-agent pipeline</div><div class="tdesc">Luồng, vai trò, checkpoint.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Xây pipeline</div><div class="tdesc">3 node LangGraph.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: route model.</div></div></div>
+</div>
+<div class="box info"><span class="bt">📌 Human checkpoint</span> Đầu ra quan trọng (báo cáo khách hàng) → chèn bước "chờ người duyệt" giữa Writer &amp; đầu ra. Đừng tự động gửi không qua mắt người (Governance M8).</div>
+${PAGER('s7',3,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b4'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 4</span><h1>🎚️ Route model theo độ khó</h1><div class="ch-sub">Câu đơn giản → mô hình rẻ; phức tạp → mô hình mạnh. Đòn bẩy chi phí lớn.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra workflow</div><div class="tdesc">Hỏi: lợi ích LLM khác cấp?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Route model</div><div class="tdesc">Classifier chọn mô hình.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Router model</div><div class="tdesc">LLM nhỏ phân luồng.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B5: KT15' về Evaluation.</div></div></div>
+</div>
+<div class="box tip"><span class="bt">🎯 Đòn bẩy chi phí</span> Phần lớn traffic là câu đơn giản. Route đúng → giảm 50-80% chi phí mà giữ chất lượng cho câu phức tạp. (Sẽ đi sâu M9.)</div>
+${PAGER('s7',4,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b5'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 5 · có KT15'</span><h1>📊 Evaluation Harness</h1><div class="ch-sub">Không đánh giá = không cải tiến. Eval set = unit test cho AI.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">Evaluation.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Eval set</div><div class="tdesc">Tập cố định (q, đáp án). So sánh phiên bản.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Eval runner</div><div class="tdesc">Chạy eval, so sánh 2 phiên bản.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: LLM-as-judge.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Eval set (25 phút)</h3>
+<p>Xây tập cố định: <em>(câu hỏi, đáp án mong đợi / tiêu chí)</em>. Mỗi lần đổi prompt/model/tool, chạy lại → so sánh điểm. Tương đương unit test cho AI.</p>
+<div class="box warn"><span class="bt">⚠️ Overfit eval set</span> Tinh chỉnh đến khi eval 100% có thể đang "fit" vào test, không cải thiện thực. Giữ holdout + đánh giá định tính bằng người.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m7b5">
+  <div class="eh">✍️ Bài thực hành — Eval runner</div>
+  <div class="etask"><code>eval_run(agent, eval_set)</code>: chạy agent, chấm, trả mean.</div>
+  <textarea class="codepad" id="m7b5" spellcheck="false">def eval_run(agent, eval_set):
+    results = []
+    for q, expected in eval_set:
+        ans = agent.run(q)
+        score =
+
+
+        results.append(score)
+    return</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m7b5')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m7b5')">↺ Reset</button></div>
+  <div class="echk" id="res-m7b5"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">score = llm_judge(q, ans, expected)
+results.append(score)
+<span class="kw">return</span> <span class="nb">sum</span>(results)/<span class="nb">len</span>(results)</pre></div></div></details>
+</div>
+${PAGER('s7',5,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b6'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 6'), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 6</span><h1>⚖️ LLM-as-judge</h1><div class="ch-sub">Khi không chấm chính xác, dùng LLM khác làm trọng tài theo rubric.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra eval</div><div class="tdesc">Sửa bài eval runner BTCN.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> LLM-as-judge</div><div class="tdesc">Rubric, cạm bẫy judge sai.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Judge function</div><div class="tdesc">LLM chấm theo rubric.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B7: GK.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">LLM-as-judge (30 phút)</h3>
+<p>Khi không chấm tự động chính xác (văn bản tự do), dùng LLM <em>khác</em> (thường mạnh hơn) làm trọng tài chấm theo <strong>rubric</strong>: đúng sự thật? đầy đủ? ảo giác? trích nguồn? Cảnh giác: judge cũng sai → kết hợp spot-check người.</p>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m7b6">
+  <div class="eh">✍️ Bài thực hành — LLM-as-judge</div>
+  <div class="etask"><code>llm_judge(question, answer, expected)</code> trả điểm 0..1 theo rubric.</div>
+  <textarea class="codepad" id="m7b6" spellcheck="false">def llm_judge(question, answer, expected):
+    prompt = f"""
+
+
+
+    Tra ve 1 so tu 0.0 den 1.0."""
+    resp = client.chat.completions.create(model="gpt-4o-mini",
+        messages=[{"role":"user","content":prompt}])
+    return float(resp.choices[0].message.content.strip())</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m7b6')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m7b6')">↺ Reset</button></div>
+  <div class="echk" id="res-m7b6"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">prompt = f<span class="st">"""Ban la trong tai. Cham:
+- Dung su that
+- Day du, khong ao giao
+Cau hoi: {question}
+Tra loi: {answer}
+Dap an: {expected}
+Diem:"""</span></pre></div></div></details>
+</div>
+${PAGER('s7',6,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b7'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 7 · GK'), html: `
+<div class="page-head"><span class="kicker k-exam">M7 · BUỔI 7 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn</h1><div class="ch-sub">Thi GK 90' (xem trang Đề thi môn). Trọng số 30%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–100'</div><div class="tl-act"><div class="tname">📝 Làm bài 90'</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">100–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét</div><div class="tdesc"></div></div></div>
+</div>
+${PAGER('s7',7,8,M7_NAME)}` };
+
+LESSON_DETAIL['s7-b8'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 8 · Mid-term HK2'), html: `
+<div class="page-head"><span class="kicker k-lesson">M7 · BUỔI 8</span><h1>🏆 Mid-term Project HK2 — Multi-Agent + Eval</h1><div class="ch-sub">Mốc giữa HK2: pipeline đa agent có đánh giá tự động.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Trả GK</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Hướng dẫn</span> Project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Bảo vệ</span></div><div class="tdesc"></div></div></div>
+</div>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 MID-TERM PROJECT HK2 — Multi-Agent + Eval <span class="et">Nhóm 2-3 · Bảo vệ</span></div>
+  <p>Pipeline ≥ 2 agent với đánh giá tự động.</p>
+  <ul><li>Điều phối LangGraph (router/supervisor).</li><li>Eval set ≥ 20 mẫu + LLM-as-judge + 5 spot-check tay.</li><li>Báo cáo trước/sau tối ưu (điểm, trễ, chi phí).</li><li>Phân tích lỗi cụ thể.</li></ul>
+  <div class="rubric"><span class="rt">Tiêu chí</span> · End-to-end ổn định · So sánh ≥ 2 phiên bản · Điểm eval khách quan · Phân tích lỗi cụ thể · Bảo vệ 20'.</div>
+</div>
+${PAGER('s7',8,8,M7_NAME)}` };
+
+/* ===== M7: ĐỀ THI (5 đề) ===== */
+function renderM7Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M7 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — Multi-Agent</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', GK (90'), CK (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #1 <span class="et">B2 · LangGraph</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">3 mô hình điều phối agent? Phù hợp khi nào?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Vì sao KHÔNG nên thêm agent vô tội vạ?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">LangGraph: 3 API cốt lõi để build graph?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> Router (rời rạc), Supervisor (nhiều bước), Graph (rẽ nhánh). <b>C2:</b> Mỗi agent = trễ + chi phí + điểm lỗi. <b>C3:</b> add_node, add_edge/set_entry_point, compile.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #2 <span class="et">B5 · Eval</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Eval set mục đích chính?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">LLM-as-judge cạm bẫy gì?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Overfit eval set là gì, cách tránh?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> So sánh khách quan phiên bản qua cùng test. <b>C2:</b> Judge cũng sai; kết hợp spot-check người. <b>C3:</b> Fit vào test; giữ holdout + đánh giá định tính.</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B6</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">LangGraph: router → research/writer, compile, chạy.</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Eval runner: chạy agent trên 5 mẫu, mean score.</div></div>
+      <div class="q"><div class="qn">B3 (2đ).</div><div class="qp">llm_judge(question, answer, expected) trả 0..1.</div></div>
+      <div class="q"><div class="qn">B4 (2đ).</div><div class="qp">Route model: LLM nhỏ phân simple→gpt-4o-mini, hard→gpt-4o.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="rubric"><span class="rt">Tham khảo</span>g.add_node + add_edge + compile; eval_run lặp llm_judge; route đọc độ khó.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">B7 · 90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) 3 mô hình điều phối (1đ). (b) Khi nào tách agent (1đ). (c) Eval set (1đ). (d) LLM-as-judge cạm bẫy (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Code (6đ).</div><div class="qp">(a) LangGraph 3-agent Researcher→Writer→Reviewer (3đ). (b) Eval set 10 mẫu + LLM-as-judge + báo cáo (3đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Thiết kế hệ thống tổng hợp báo cáo đa nguồn (web + DB + PDF). Vẽ graph, vai trò mỗi agent.</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Human checkpoint: khi nào cần, đặt ở đâu?</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">Pipeline LangGraph + eval set 15 mẫu + LLM-as-judge, in báo cáo so sánh 2 config.</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Phân tích: pipeline chậm/đắt. Đề xuất tối ưu (route model, cache, song song, giảm agent).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C2:</b> Đầu ra rủi ro cao (gửi khách) → checkpoint trước khi gửi. <b>C4:</b> Route model rẻ cho đơn giản, cache câu lặp, song song agent độc lập, gộp agent thừa.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s7/b8"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 8</div></a>
+      <a class="next" href="#/s8"><div class="pl">Môn tiếp →</div><div class="pt">M8 Security &amp; Gov</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s7">M7 Multi-Agent</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -2848,6 +3090,7 @@ function renderExams(sid){
   if(sid === 's4'){ renderM4Exams(); return; }
   if(sid === 's5'){ renderM5Exams(); return; }
   if(sid === 's6'){ renderM6Exams(); return; }
+  if(sid === 's7'){ renderM7Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
