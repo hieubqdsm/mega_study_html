@@ -2278,6 +2278,260 @@ function renderM4Exams(){
   setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s4">M4 Deep Learning &amp; CV</a> <span class="sep">›</span> <b>Đề thi</b>`);
 }
 
+/* ============================================================
+   MÔN 5 — NLP & LLM (8 buổi + 5 đề)
+   ============================================================ */
+const M5_NAME = 'M5 NLP &amp; LLM';
+EX.m5b2 = [{re:/TfidfVectorizer\s*\(/,label:"TfidfVectorizer()"},{re:/fit_transform\s*\(\s*docs\s*\)/,label:"fit_transform(docs)"}];
+EX.m5b4 = [{re:/Q\s*@\s*K\s*\.transpose/,label:"Q @ K.transpose"},{re:/softmax\s*\(\s*scores/,label:"softmax(scores)"},{re:/weights\s*@\s*V/,label:"weights @ V"}];
+EX.m5b6 = [{re:/client\.chat\.completions\.create|messages\s*=/,label:"gọi chat API"},{re:/role.*system|role.*user/,label:"có role"},{re:/content/,label:"có content"}];
+
+LESSON_DETAIL['s5-b1'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 1</span><h1>📝 NLP cốt lõi &amp; Tokenization</h1><div class="ch-sub">Máy không hiểu chữ — chỉ hiểu số. NLP là nghệ thuật biến chữ thành vector có ý nghĩa.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill warm">Warm-up</span> Giới thiệu M5</div><div class="tdesc">Đỉnh HK1. Cầu nối sang HK2 (Agent).</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–45'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Tokenization</div><div class="tdesc">Tách câu thành token. Word/subword.</div></div></div>
+  <div class="tl-row"><div class="tl-time">45–55'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">55–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> TF-IDF</div><div class="tdesc">Đánh giá tầm quan trọng từ.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Tokenize + TF-IDF</div><div class="tdesc">Xử lý văn bản tiếng Việt đơn giản.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B2: KT15' về Word2Vec.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Tokenization (25 phút)</h3>
+<p><strong>Token hóa</strong>: tách câu thành đơn vị (từ/subword). Bước đầu tiên — máy chỉ hiểu số. Các LLM hiện đại dùng subword (vd BPE) để cân bằng từ hiếm/phổ biến.</p>
+<h3 class="mini">TF-IDF (25 phút)</h3>
+<p><strong>TF-IDF</strong>: đánh giá tầm quan trọng của từ trong văn bản so với corpus. Từ xuất hiện nhiều trong 1 văn bản nhưng ít trong corpus → quan trọng. Cơ bản, cho văn bản ngắn.</p>
+<div class="box info"><span class="bt">📌 Hạn chế TF-IDF</span> TF-IDF chỉ đếm tần suất, không hiểu ngữ nghĩa. "Vua" và "nữ hoàng" là 2 vector hoàn toàn khác. Word2Vec (B2) giải quyết điều này.</div>
+${PAGER('s5',1,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b2'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 2 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 2 · có KT15'</span><h1>🔮 Word2Vec &amp; Embedding</h1><div class="ch-sub">Vector từ có ý nghĩa — vec(vua)−vec(nam)+vec(nữ)≈vec(nữ hoàng).</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #1</div><div class="tdesc">Word2Vec/embedding.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Word2Vec</div><div class="tdesc">Học vector từ ngữ nghĩa. Không gian embedding.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> TF-IDF + Word2Vec</div><div class="tdesc">So sánh 2 cách biểu diễn.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B3: RNN/LSTM.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Word2Vec — embedding có ngữ nghĩa (30 phút)</h3>
+<p><strong>Word2Vec</strong> học vector từ sao cho từ gần nghĩa → gần nhau trong không gian. Phép toán vector phản ánh quan hệ: <code class="ic">vec(vua)−vec(nam)+vec(nữ)≈vec(nữ_hoàng)</code>. Đây là gốc của mọi embedding hiện đại.</p>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m5b2">
+  <div class="eh">✍️ Bài thực hành — TF-IDF</div>
+  <div class="etask"><code>TfidfVectorizer()</code>, fit_transform(docs), in shape.</div>
+  <textarea class="codepad" id="m5b2" spellcheck="false">from sklearn.feature_extraction.text import TfidfVectorizer
+docs = ["AI la tuong lai", "AI thay doi the gioi"]
+vec =
+X = </textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m5b2')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m5b2')">↺ Reset</button></div>
+  <div class="echk" id="res-m5b2"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">vec = TfidfVectorizer()
+X = vec.fit_transform(docs)
+<span class="nb">print</span>(X.shape)</pre></div></div></details>
+</div>
+${PAGER('s5',2,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b3'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 3'), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 3</span><h1>🔁 RNN &amp; LSTM</h1><div class="ch-sub">Xử lý chuỗi với "bộ nhớ". Giới hạn dẫn tới Transformer.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét Word2Vec.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> RNN</div><div class="tdesc">Đọc tuần tự, truyền trạng thái ẩn.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> LSTM &amp; giới hạn</div><div class="tdesc">Cổng nhớ/quên. Vanishing gradient → Transformer.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> RNN đơn giản</div><div class="tdesc">PyTorch nn.RNN/nn.LSTM cơ bản.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B4: Attention.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">RNN — bộ nhớ tuần tự (25 phút)</h3>
+<p>RNN đọc chuỗi từng bước, truyền "trạng thái ẩn" từ bước này sang bước kia → có "bộ nhớ". Nhưng RNN <strong>quên xa</strong> (vanishing gradient).</p>
+<h3 class="mini">LSTM &amp; giới hạn (25 phút)</h3>
+<p><strong>LSTM</strong> bổ sung cổng (gates) kiểm soát nhớ/quên → xử lý chuỗi dài hơn. <strong>Nhưng</strong>: xử lý tuần tự → không song song, chậm với văn bản dài. Điểm yếu này dẫn tới Transformer (B4).</p>
+${PAGER('s5',3,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b4'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 4'), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 4</span><h1>⚡ Self-Attention</h1><div class="ch-sub">Linh hồn của ChatGPT. Mỗi token nhìn tất cả token khác để hoàn thiện ý nghĩa.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra RNN/LSTM</div><div class="tdesc">Hỏi: giới hạn RNN là gì?</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Self-Attention</div><div class="tdesc">Q,K,V. Mỗi token nhìn tất cả.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Code attention</div><div class="tdesc">Viết scaled dot-product attention tay.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN + thông báo KT</div><div class="tdesc">B5: KT15' về Transformer.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Self-Attention (35 phút)</h3>
+<p>Ý tưởng: mỗi token <em>nhìn</em> tất cả token khác để tự hoàn thiện ý nghĩa, có trọng số. <code class="ic">Attention(Q,K,V)=softmax(Q·Kᵀ/√d)·V</code>. So với RNN: xử lý <strong>song song toàn chuỗi</strong>, nắm phụ thuộc xa dù khoảng cách lớn.</p>
+<div class="box info"><span class="bt">📌 Q, K, V là gì</span> Query (hỏi), Key (chìa), Value (giá trị). Mỗi token dùng Q của mình hỏi tất cả K, tính độ liên quan, rồi lấy tổng có trọng số của V. Giống tra cứu "mềm" trong database.</div>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m5b4">
+  <div class="eh">✍️ Bài thực hành — Scaled dot-product attention</div>
+  <div class="etask">Hoàn thiện: scores=Q@K.transpose/√d, softmax, ×V.</div>
+  <textarea class="codepad" id="m5b4" spellcheck="false">import torch, torch.nn.functional as F
+def attention(Q, K, V):
+    d = K.size(-1)
+    scores =
+    weights =
+    return</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m5b4')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m5b4')">↺ Reset</button></div>
+  <div class="echk" id="res-m5b4"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">scores = Q @ K.transpose(-2,-1) / (d**0.5)
+weights = F.softmax(scores, dim=-1)
+<span class="kw">return</span> weights @ V</pre></div></div></details>
+</div>
+${PAGER('s5',4,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b5'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 5 · KT15\''), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 5 · có KT15'</span><h1>🤖 Transformer &amp; Encoder-Decoder</h1><div class="ch-sub">Kiến trúc đổi đời AI: song song + scale + attention toàn cục.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> 📝 KT 15 PHÚT #2</div><div class="tdesc">Transformer.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Kiến trúc Transformer</div><div class="tdesc">Encoder-Decoder. BERT vs GPT.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–65'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">65–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Dùng pretrained</div><div class="tdesc">Gọi transformer pretrained qua HuggingFace.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B6: gọi LLM API.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Kiến trúc Transformer (40 phút)</h3>
+<p>Bài gốc 2017: <strong>Encoder</strong> (hiểu đầu vào) + <strong>Decoder</strong> (sinh đầu ra). BERT = chỉ Encoder. GPT = chỉ Decoder. Hầu hết LLM hôm nay (GPT, Llama, Claude) là <em>Decoder-only</em>.</p>
+<div class="box pro"><span class="bt">Vì sao Transformer thay đổi mọi thứ</span> (1) Song song → train trên GPU khổng lồ; (2) Attention nắm ngữ cảnh toàn cục; (3) Scale lên hàng tỷ tham số. Cơ sở của mọi LLM.</div>
+${PAGER('s5',5,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b6'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 6'), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 6</span><h1>🌐 Gọi LLM API &amp; Prompt Engineering</h1><div class="ch-sub">Cầu nối sang HK2 — từ hiểu LLM sang xây hệ thống trên LLM.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Tra bài KT</div><div class="tdesc">Trả KT15', nhận xét Transformer.</div></div></div>
+  <div class="tl-row"><div class="tl-time">15–50'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Gọi API</div><div class="tdesc">OpenAI/Claude. Quản lý key an toàn.</div></div></div>
+  <div class="tl-row"><div class="tl-time">50–60'</div><div class="tl-act"><div class="tname">☕ Giải lao</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">60–95'</div><div class="tl-act"><div class="tname"><span class="pill teach">Giảng</span> Prompt Engineering</div><div class="tdesc">Zero-shot, few-shot, CoT.</div></div></div>
+  <div class="tl-row"><div class="tl-time">95–155'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Few-shot</div><div class="tdesc">Phân loại cảm xúc bằng prompt.</div></div></div>
+  <div class="tl-row"><div class="tl-time">155–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> BTCN</div><div class="tdesc">Chuẩn bị B7: GK.</div></div></div>
+</div>
+<h2 class="sec">💻 Nội dung giảng</h2>
+<h3 class="mini">Gọi API + key an toàn (25 phút)</h3>
+<div class="code-block"><div class="cbhead"><span>python · openai</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+<span class="kw">import</span> os
+client = OpenAI(api_key=os.environ[<span class="st">"OPENAI_API_KEY"</span>])
+resp = client.chat.completions.create(
+    model=<span class="st">"gpt-4o-mini"</span>,
+    messages=[{<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"Tóm tắt hợp đồng..."</span>}])</pre></div>
+<div class="box danger"><span class="bt">🚫 Không hardcode key!</span> Để trong .env, load bằng dotenv. Đưa lên Git = rò rỉ tiền + dữ liệu. (Lỗ hổng T25 sẽ học chống sâu hơn.)</div>
+<h3 class="mini">Prompt Engineering (25 phút)</h3>
+<table>
+  <tr><th>Kỹ thuật</th><th>Mô tả</th><th>Khi nào</th></tr>
+  <tr><td>Zero-shot</td><td>Hỏi trực tiếp</td><td>Task đơn giản</td></tr>
+  <tr><td>Few-shot</td><td>Cho 2-5 ví dụ</td><td>Cần định dạng nhất quán</td></tr>
+  <tr><td>Chain-of-Thought</td><td>"Suy luận từng bước"</td><td>Toán, logic phức tạp</td></tr>
+</table>
+<h2 class="sec">🛠️ Thực hành</h2>
+<div class="exercise" data-ex="m5b6">
+  <div class="eh">✍️ Bài thực hành — Few-shot prompt</div>
+  <div class="etask">Viết messages few-shot: system + 2 ví dụ user/assistant + câu mới.</div>
+  <textarea class="codepad" id="m5b6" spellcheck="false">messages = [
+    {"role": "system", "content": "Phan loai cam xuc."},
+    # vi du 1
+
+
+    # vi du 2
+
+
+    # cau moi
+
+]</textarea>
+  <div class="ebtns"><button class="ebtn" onclick="gradeEx('m5b6')">✅ Kiểm tra</button><button class="ebtn ghost" onclick="resetEx('m5b6')">↺ Reset</button></div>
+  <div class="echk" id="res-m5b6"></div>
+  <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">messages = [
+    {<span class="st">"role"</span>:<span class="st">"system"</span>,<span class="st">"content"</span>:<span class="st">"Phan loai cam xuc."</span>},
+    {<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"Mon an ngon!"</span>},
+    {<span class="st">"role"</span>:<span class="st">"assistant"</span>,<span class="st">"content"</span>:<span class="st">"tich_cuc"</span>},
+    {<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"Giao cham."</span>},
+    {<span class="st">"role"</span>:<span class="st">"assistant"</span>,<span class="st">"content"</span>:<span class="st">"tieu_cuc"</span>},
+    {<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"Den lay ban."</span>},
+]</pre></div></div></details>
+</div>
+${PAGER('s5',6,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b7'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 7 · GK'), html: `
+<div class="page-head"><span class="kicker k-exam">M5 · BUỔI 7 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn</h1><div class="ch-sub">Thi GK 90' (xem trang Đề thi môn). Trọng số 30%.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–10'</div><div class="tl-act"><div class="tname"><span class="pill old">Phát đề</span></div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">10–100'</div><div class="tl-act"><div class="tname">📝 Làm bài 90'</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">100–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Sau thi</span> Nhận xét</div><div class="tdesc"></div></div></div>
+</div>
+${PAGER('s5',7,8,M5_NAME)}` };
+
+LESSON_DETAIL['s5-b8'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 8 · Final HK1'), html: `
+<div class="page-head"><span class="kicker k-lesson">M5 · BUỔI 8</span><h1>🏆 Final Project HK1 — Web App AI</h1><div class="ch-sub">Mốc cuối HK1: đóng gói mô hình thành Web App demo được.</div></div>
+<div class="timeline">
+  <div class="tl-row"><div class="tl-time">0–15'</div><div class="tl-act"><div class="tname"><span class="pill old">Bài cũ</span> Trả GK</div><div class="tdesc"></div></div></div>
+  <div class="tl-row"><div class="tl-time">15–55'</div><div class="tl-act"><div class="tname"><span class="pill teach">Hướng dẫn</span> Streamlit/Gradio</div><div class="tdesc">Đóng gói mô hình thành web app.</div></div></div>
+  <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Build app + deploy</div><div class="tdesc">Deploy HF Spaces / Streamlit Cloud.</div></div></div>
+  <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Bảo vệ cuối kì.</div></div></div>
+</div>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 FINAL PROJECT HK1 — Web App AI demo <span class="et">Cá nhân · Bảo vệ cuối kì</span></div>
+  <p>Tự train mô hình CV (YOLO) hoặc ML bảng, đóng gói thành Web App công khai.</p>
+  <ul><li>Hướng A: app nhận diện ảnh YOLO bạn train. Hướng B: app dự đoán dữ liệu bảng.</li><li>Streamlit/Gradio + README + deploy công khai.</li><li>Trình bày 20': bài toán, dữ liệu, mô hình, demo sống.</li></ul>
+  <div class="rubric"><span class="rt">Tiêu chí</span> · Public link · Mô hình tự train · README · Demo sống · Trả lời kỹ thuật.</div>
+</div>
+${PAGER('s5',8,8,M5_NAME)}` };
+
+/* ===== M5: ĐỀ THI (5 đề) ===== */
+function renderM5Exams(){
+  const html = `
+    <div class="page-head">
+      <span class="kicker k-exam">M5 · ĐỀ THI</span>
+      <h1>📝 Hệ thống đề kiểm tra — NLP &amp; LLM</h1>
+      <div class="ch-sub">5 đề: 15'×2, 45', GK (90'), CK (120'). Có đáp án + thang điểm.</div>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #1 <span class="et">B2 · Word2Vec</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">TF-IDF hạn chế gì mà Word2Vec giải quyết được?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Word2Vec học được điều gì?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">Ví dụ phép toán vector Word2Vec cho thấy quan hệ ngữ nghĩa?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> TF-IDF chỉ đếm tần suất, không hiểu ngữ nghĩa; Word2Vec học vector có ngữ nghĩa. <b>C2:</b> Vector từ sao cho từ gần nghĩa gần nhau. <b>C3:</b> vec(vua)−vec(nam)+vec(nữ)≈vec(nữ_hoàng).</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 15' #2 <span class="et">B5 · Transformer</span></div>
+      <div class="emeta"><span>⏱ <b>15'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>5%</b></span></div>
+      <div class="q"><div class="qn">C1 (3đ).</div><div class="qp">Self-Attention công thức?</div></div>
+      <div class="q"><div class="qn">C2 (3đ).</div><div class="qp">Vì sao Transformer thắng RNN?</div></div>
+      <div class="q"><div class="qn">C3 (4đ).</div><div class="qp">BERT vs GPT khác gì (Encoder/Decoder)?</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><p><b>C1:</b> softmax(Q·Kᵀ/√d)·V. <b>C2:</b> Xử lý song song toàn chuỗi + nắm phụ thuộc xa. <b>C3:</b> BERT = Encoder (hiểu); GPT = Decoder (sinh).</p></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ KT 45' <span class="et">Sau B6</span></div>
+      <div class="emeta"><span>⏱ <b>45'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>15%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">B1 (3đ).</div><div class="qp">TF-IDF cho 5 câu, in shape + top từ quan trọng.</div></div>
+      <div class="q"><div class="qn">B2 (3đ).</div><div class="qp">Code hàm attention(Q,K,V) bằng NumPy/torch.</div></div>
+      <div class="q"><div class="qn">B3 (4đ).</div><div class="qp">Gọi OpenAI API few-shot phân loại cảm xúc, in kết quả.</div></div>
+      <details class="answer"><summary>✅ Đáp án</summary><div class="body"><div class="code-block"><pre class="code">vec=TfidfVectorizer(); X=vec.fit_transform(docs)
+<span class="kw">def</span> <span class="fn">attention</span>(Q,K,V):
+    d=K.shape[-1]
+    <span class="kw">return</span> np.softmax(Q@K.T/(d**0.5))@V</pre></div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ GIỮA KÌ MÔN <span class="et">B7 · 90'</span></div>
+      <div class="emeta"><span>⏱ <b>90'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>30%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">PHẦN 1 — Lý thuyết (4đ).</div><div class="qp">(a) Tokenization &amp; vì sao subword (1đ). (b) Word2Vec vs TF-IDF (1đ). (c) RNN giới hạn &amp; Transformer giải quyết (1đ). (d) Self-Attention Q,K,V (1đ).</div></div>
+      <div class="q"><div class="qn">PHẦN 2 — Code (6đ).</div><div class="qp">(a) TF-IDF + phân cụm văn bản (2đ). (b) Code attention NumPy (2đ). (c) Gọi LLM API few-shot, đánh giá 5 mẫu (2đ).</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><div class="rubric"><span class="rt">Thang điểm GK</span>8.5–10: A · 7–8.4: B · 5.5–6.9: C · &lt;5.5: D/F.</div></div></details>
+    </div>
+    <div class="exam">
+      <div class="eh">📝 ĐỀ CUỐI KÌ MÔN <span class="et">120'</span></div>
+      <div class="emeta"><span>⏱ <b>120'</b></span><span>Điểm tối đa: <b>10</b></span><span>Trọng số: <b>45%</b></span><span>💻 Có máy</span></div>
+      <div class="q"><div class="qn">C1 (2đ).</div><div class="qp">Trình bày tiến hóa: TF-IDF → Word2Vec → RNN → Transformer. Mỗi bước giải quyết gì?</div></div>
+      <div class="q"><div class="qn">C2 (2đ).</div><div class="qp">Vì sao Transformer scale được lên tỷ tham số mà RNN không?</div></div>
+      <div class="q"><div class="qn">C3 (3đ — code).</div><div class="qp">Multi-head attention: code attention + lặp 4 head + concat.</div></div>
+      <div class="q"><div class="qn">C4 (3đ).</div><div class="qp">Xây hệ thống RAG đơn giản: embedding + similarity search + prompt. Giải thích vì sao RAG giảm ảo giác.</div></div>
+      <details class="answer"><summary>✅ Đáp án tóm tắt</summary><div class="body"><p><b>C2:</b> Transformer song song → train trên GPU khổng lồ; RNN tuần tự không scale. <b>C4:</b> RAG đưa ngữ cảnh thật vào prompt → LLM trả lời dựa dữ liệu thực, có nguồn, ít bịa.</p></div></details>
+    </div>
+    <div class="pager">
+      <a href="#/s5/b8"><div class="pl">← Buổi cuối</div><div class="pt">Buổi 8</div></a>
+      <a class="next" href="#/s6"><div class="pl">HK2 →</div><div class="pt">M6 AI Agent</div></a>
+    </div>`;
+  setPage(html, `<a href="#/overview">Tổng quan</a> <span class="sep">›</span> <a href="#/s5">M5 NLP &amp; LLM</a> <span class="sep">›</span> <b>Đề thi</b>`);
+}
+
 
 function renderLesson(sid, bid){
   const s = SUBJECTS[sid];
@@ -2313,6 +2567,7 @@ function renderExams(sid){
   if(sid === 's2'){ renderM2Exams(); return; }
   if(sid === 's3'){ renderM3Exams(); return; }
   if(sid === 's4'){ renderM4Exams(); return; }
+  if(sid === 's5'){ renderM5Exams(); return; }
   const html = `
     <div class="page-head">
       <span class="kicker k-exam">${s.code} · ĐỀ THI</span>
