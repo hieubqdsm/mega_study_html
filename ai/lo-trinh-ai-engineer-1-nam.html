@@ -686,15 +686,27 @@ function setPage(html, crumbText){
 function highlightNav(){
   const hash = location.hash.replace('#/','');
   document.querySelectorAll('#navMenu a[data-page]').forEach(a=>{
-    const p = a.dataset.page;
-    const on = hash === p || (hash.startsWith(p+'/') ) || (p!=='overview' && hash===p);
-    a.classList.toggle('active', hash === p);
+    a.classList.toggle('active', hash === a.dataset.page);
   });
-  // mở nhóm HK + môn tương ứng
+  // Đóng tất cả nav-group + nav-subject trước
+  document.querySelectorAll('.nav-group, .nav-subject').forEach(el=>el.classList.remove('open'));
+  // Mở lại group + môn tương ứng với trang hiện tại
   const sid = hash.split('/')[0];
-  if(sid.startsWith('s')){
+  if(sid && sid !== 'overview' && sid !== 'progress' && sid !== 'cards' && sid !== 'cheat'){
     const subj = document.querySelector(`.nav-subject[data-sid="${sid}"]`);
-    if(subj){ subj.classList.add('open'); const hk = subj.closest('.nav-group'); if(hk) hk.previousElementSibling.classList.add('open'); }
+    if(subj){
+      subj.classList.add('open');
+      const hk = subj.closest('.nav-group');
+      if(hk) hk.previousElementSibling.classList.add('open');
+    } else {
+      // trang tools (progress/cards/cheat) — mở group Công cụ
+      const toolGroup = document.querySelectorAll('.nav-group')[document.querySelectorAll('.nav-group').length-1];
+      if(toolGroup) toolGroup.previousElementSibling.classList.add('open');
+    }
+  } else if(sid === 'overview'){
+    // overview — mở HK0 để hướng dẫn bắt đầu
+    const firstGroup = document.querySelector('.nav-group');
+    if(firstGroup) firstGroup.previousElementSibling.classList.add('open');
   }
 }
 
