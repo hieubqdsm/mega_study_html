@@ -1097,6 +1097,126 @@ P_dis_given_pos = P_pos_given_dis*P_disease / P_pos
 </div>
 ${PAGER_M1('s1',4)}` };
 
+LESSON_DETAIL['s1-b5'] = { crumb: CRUMB_M1(5), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 5 · có KT15'</span><h1>🔗 Ứng dụng Toán trong AI: mạng nơ-ron &amp; loss</h1><div class="ch-sub">Tổng hợp B1-B4: một lớp mạng nơ-ron thực ra chỉ là y=X·W+b + activation. Loss đo sai số. Học = giảm loss bằng gradient descent.</div></div>
+<div class="timeline">
+  ${tl0('0-15','old','📝 KT 15 PHÚT #2','Bayes + gradient + vector hóa.')}
+  ${tl0('15-35','warm','Warm-up','Toán nằm ở đâu trong 1 mô hình ML?')}
+  ${tl0('35-70','teach','Giảng','Lớp mạng = y=X·W+b + ReLU. Tính forward NumPy.')}
+  ${tl0('70-80','','☕ Giải lao','')}
+  ${tl0('80-120','teach','Giảng','Loss (MSE, CrossEntropy). Gradient descent giảm loss.')}
+  ${tl0('120-160','prac','Thực hành','Viết lớp mạng giả lập + tính MSE + 1 bước GD.')}
+  ${tl0('160-175','wrap','Dặn dò','Trả KT. Chuẩn bị B6 ôn GK.')}
+</div>
+<h2 class="sec">💻 Nội dung giảng chi tiết</h2>
+<h3 class="mini">Phần 1 — Lớp mạng = đại số tuyến tính + activation (30 phút)</h3>
+<p>Tổng hợp mọi thứ đã học: một lớp fully-connected thực ra chỉ là <strong>3 dòng NumPy</strong>. Liên hệ trực tiếp B1 (vector/ma trận), B2 (gradient descent), B3 (vector hóa + ReLU), B4 (xác suất).</p>
+<div class="code-block"><div class="cbhead"><span>python · lớp mạng giả lập</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># 1 lớp mạng fully-connected</span>
+X = np.random.rand(4, 3)         <span class="cm"># 4 mẫu, 3 đặc trưng (B1: ma trận)</span>
+W = np.random.rand(3, 2) * 0.1   <span class="cm"># trọng số 3→2</span>
+b = np.array([0.5, -0.5])         <span class="cm"># bias (B3: broadcasting)</span>
+
+z = X @ W + b                    <span class="cm"># B1: nhân ma trận + B3: broadcasting</span>
+y = np.maximum(0, z)             <span class="cm"># B3: ReLU</span>
+<span class="nb">print</span>(y.shape)                  <span class="cm"># (4, 2)</span></pre></div>
+<div class="box info"><span class="bt">📌 Toán bạn đã học nằm ở đâu?</span> B1 (vector/ma trận/shape) → nhân ma trận X@W. B2 (đạo hàm/gradient) → máy học W bằng gradient descent. B3 (NumPy/ReLU/broadcasting) → code thực tế. B4 (Bayes/xác suất) → phân loại = đo xác suất. <strong>4 buổi nền tảng ghép lại thành 1 lớp mạng.</strong></div>
+<h3 class="mini">Phần 2 — Loss: đo sai số (25 phút)</h3>
+<p><strong>MSE</strong> (Mean Squared Error) cho hồi quy: <code class="ic">L = mean((y_pred - y_true)²)</code>. <strong>CrossEntropy</strong> cho phân loại: đo khoảng cách giữa phân phối dự đoán và nhãn thật. Loss càng nhỏ = mô hình càng đúng.</p>
+<div class="code-block"><div class="cbhead"><span>python · MSE + 1 bước GD</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Tính MSE</span>
+y_pred = X @ W + b
+y_true = np.array([[1, 0], [0, 1], [1, 0], [0, 1]])
+mse = np.mean((y_pred - y_true) ** 2)
+<span class="nb">print</span>(<span class="st">"MSE ="</span>, mse)
+
+<span class="cm"># 1 bước gradient descent (B2)</span>
+grad = 2 * (y_pred - y_true) / <span class="nb">len</span>(X)   <span class="cm"># đạo hàm MSE theo y_pred</span>
+lr = 0.01
+W = W - lr * (X.T @ grad)                <span class="cm"># cập nhật W</span></pre></div>
+<h3 class="mini">Phần 3 — Từ lớp mạng đến mô hình AI hoàn chỉnh (20 phút)</h3>
+<p>Mô hình AI = <strong>nhiều lớp</strong> xếp chồng (deep learning — sẽ học ở M4). Mỗi lớp = y=X·W+b+ReLU. Máy học bằng cách: forward (tính output) → tính loss → backward (gradient) → cập nhật W. Lặp nhiều lần. Đó là toàn bộ "phép màu" — chỉ là đại số tuyến tính + giải tích lặp đi lặp lại.</p>
+<div class="box pro"><span class="bt">🎯 Tổng kết M1</span> Bạn đã nắm 4 nền Toán của AI: (1) Đại số tuyến tính — ma trận/trọng số; (2) Giải tích — đạo hàm/gradient descent; (3) NumPy — công cụ tính; (4) Xác suất — dự đoán/Bayes. HK1 M2-M5 sẽ dùng nền này. Sẵn sàng!</div>
+<h2 class="sec">🏠 BTCN</h2>
+<div class="box tip"><span class="bt">BTCN</span><ol style="margin-top:6px">
+<li>Viết script NumPy: tạo X(100,4), W1(4,8), W2(8,1). Forward y=relu(X@W1+b1)@W2+b2. In shape.</li>
+<li>Tính MSE với y_true ngẫu nhiên. Chạy 50 bước GD. In MSE sau mỗi 10 bước (thấy giảm).</li>
+<li>Ôn toàn bộ B1-B4 cho GK (B7).</li>
+</ol></div>
+${PAGER_M1('s1',5)}` };
+
+LESSON_DETAIL['s1-b6'] = { crumb: CRUMB_M1(6), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 6</span><h1>📖 Ôn tập giữa kì môn</h1><div class="ch-sub">Ôn toàn bộ B1-B5: đại số tuyến tính, đạo hàm/gradient, NumPy, xác suất/Bayes, ứng dụng AI.</div></div>
+<div class="timeline">
+  ${tl0('0-15','old','Tra bài','Hỏi: lớp mạng = gì bằng Toán?')}
+  ${tl0('15-45','teach','Ôn','B1-B2: vector/ma trận/shape + đạo hàm/gradient descent.')}
+  ${tl0('45-55','','☕ Giải lao','')}
+  ${tl0('55-90','teach','Ôn','B3-B4: NumPy/vector hóa/broadcasting + Bayes/xác suất.')}
+  ${tl0('90-140','prac','Thực hành','Làm mẫu đề GK — cả lớp làm chung.')}
+  ${tl0('140-175','wrap','Dặn dò','Q&amp;A. Chuẩn bị thi GK B7.')}
+</div>
+<h2 class="sec">💻 Nội dung ôn tập</h2>
+<h3 class="mini">Bảng tổng hợp 5 chủ đề</h3>
+<table>
+  <tr><th>Chủ đề</th><th>Ý cốt lõi</th><th>Công thức/toán</th></tr>
+  <tr><td>Đại số tuyến tính (B1)</td><td>AI thao tác trên tensor số</td><td>A(m,n)@B(n,p)→(m,p)</td></tr>
+  <tr><td>Đạo hàm (B2)</td><td>Đạo hàm = độ dốc; GD tìm cực tiểu</td><td>x ← x − lr·f'(x)</td></tr>
+  <tr><td>NumPy (B3)</td><td>Vector hóa nhanh 100-1000×</td><td>np.maximum(0,x) — ReLU</td></tr>
+  <tr><td>Xác suất (B4)</td><td>Bayes cập nhật niềm tin</td><td>P(A|B)=P(B|A)·P(A)/P(B)</td></tr>
+  <tr><td>Ứng dụng (B5)</td><td>Lớp mạng = X@W+b+ReLU</td><td>MSE = mean((pred-true)²)</td></tr>
+</table>
+<div class="box info"><span class="bt">📌 Trọng tâm GK</span> (1) Quy tắc shape nhân ma trận. (2) Gradient chỉ hướng nào, vì sao đi ngược. (3) np.maximum vs np.max. (4) Bayes — tỷ lệ cơ sở. (5) Tính forward + MSE bằng NumPy.</div>
+<div class="box warn"><span class="bt">⚠️ Lỗi thường gặp trong GK</span> Nhầm shape (A(3,2)@B(2,4)→(3,4) không phải (2,2)). Nhầm maximum/max. Quên chia √d trong attention (chưa học, chỉ M5). Bayes — quên chuẩn hóa P(B).</div>
+${PAGER_M1('s1',6)}` };
+
+LESSON_DETAIL['s1-b7'] = { crumb: CRUMB_M1(7), html: `
+<div class="page-head"><span class="kicker k-exam">M1 · BUỔI 7 · GIỮA KÌ</span><h1>📋 Kiểm tra Giữa kì môn Toán</h1><div class="ch-sub">Thi GK 90 phút. Trọng số 30%. Có máy + NumPy. Xem đề ở trang Đề thi môn.</div></div>
+<div class="timeline">
+  ${tl0('0-10','old','Phát đề','Phát đề, dặn quy tắc.')}
+  ${tl0('10-100','old','📝 Thi GK 90\'','Lý thuyết + tính toán + code NumPy.')}
+  ${tl0('100-130','wrap','Thu bài','Thu, dọn dẹp.')}
+  ${tl0('130-175','wrap','Sau thi','Nhận xét nhanh các lỗi phổ biến.')}
+</div>
+<div class="box warn"><span class="bt">Quy tắc thi</span> Mang laptop có môi trường <code class="ic">ai</code> + NumPy. Không Internet. Có máy tính + Jupyter. Đề: 3 phần (lý thuyết / tính toán / code).</div>
+${PAGER_M1('s1',7)}` };
+
+LESSON_DETAIL['s1-b8'] = { crumb: CRUMB_M1(8), html: `
+<div class="page-head"><span class="kicker k-lesson">M1 · BUỔI 8</span><h1>🏆 Bài tập lớn + Ôn cuối kì</h1><div class="ch-sub">Bài tập lớn tổng hợp Toán + hướng dẫn ôn CK môn.</div></div>
+<div class="timeline">
+  ${tl0('0-15','old','Tra bài','Trả GK, nhận xét từng người.')}
+  ${tl0('15-45','teach','Hướng dẫn','Bài tập lớn: xây mạng 2 lớp + tính loss + chạy GD.')}
+  ${tl0('45-55','','☕ Giải lao','')}
+  ${tl0('55-100','prac','Thực hành','Học viên làm bài tập lớn.')}
+  ${tl0('100-150','teach','Ôn CK','Cấu trúc đề CK. Làm mẫu câu tích hợp.')}
+  ${tl0('150-175','wrap','Dặn dò','Thông báo lịch CK. Tổng kết M1.')}
+</div>
+<h2 class="sec">💻 Nội dung</h2>
+<h3 class="mini">Bài tập lớn tổng hợp</h3>
+<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+  <div class="eh">🏆 BÀI TẬP LỚN M1 — Mạng nơ-ron 2 lớp bằng NumPy <span class="et">Cá nhân</span></div>
+  <p>Tổng hợp toàn bộ Toán: xây mạng 2 lớp hoàn chỉnh bằng NumPy tay.</p>
+  <ul>
+    <li>Tạo dữ liệu: X(200,4), y_true(200,1) ngẫu nhiên.</li>
+    <li>W1(4,8), b1(8,); W2(8,1), b2(1,).</li>
+    <li>Forward: h=relu(X@W1+b1); y_pred=h@W2+b2.</li>
+    <li>Loss: MSE = mean((y_pred-y_true)²).</li>
+    <li>Gradient descent: 100 bước, lr=0.001. In MSE mỗi 20 bước (thấy giảm).</li>
+    <li>Trả file .ipynb + nhận xét: MSE có giảm không? Tại sao?</li>
+  </ul>
+  <div class="rubric"><span class="rt">Tiêu chí</span> · Code chạy được · Forward đúng shape · MSE giảm · Có nhận xét · Nộp .ipynb.</div>
+</div>
+<h3 class="mini">Cấu trúc đề CK</h3>
+<table>
+  <tr><th>Phần</th><th>Nội dung</th><th>Điểm</th></tr>
+  <tr><td>Câu 1</td><td>Shape nhân ma trận + tính kết hợp</td><td>1.5đ</td></tr>
+  <tr><td>Câu 2</td><td>Gradient hàm 3 biến + điểm cực tiểu</td><td>2đ</td></tr>
+  <tr><td>Câu 3</td><td>Code GD 3 biến</td><td>2đ</td></tr>
+  <tr><td>Câu 4</td><td>Bayes nâng cao (tăng nhạy vs giảm dương giả)</td><td>1.5đ</td></tr>
+  <tr><td>Câu 5</td><td>Code mạng 2 lớp + MSE</td><td>3đ</td></tr>
+</table>
+<div class="box pro"><span class="bt">🎓 Tổng kết M1</span> Bạn đã nắm gốc Toán của AI: đại số tuyến tính, giải tích, NumPy, xác suất. 4 buổi đầu học nền, 4 buổi sau áp dụng + ôn + thi. Giờ sẵn sàng M2 (Python) — nơi Toán thành code thực tế.</div>
+${PAGER_M1('s1',8)}` };
+
 /* Override renderExams cho M1 để hiện 5 đề đầy đủ */
 const M1_EXAMS_OVERRIDE = true;
 
