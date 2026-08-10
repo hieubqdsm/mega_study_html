@@ -36,9 +36,9 @@
 
 ## Chương 0: ★ AI không hiểu data nếu thiếu context
 
-Data chỉ có cột mã hóa (`profile-qbirthyear_o1990`). AI không biết cột đó nghĩa gì, giá trị 1/0 ra sao. **Prompt "kiểm tra respondent nói xạo" sẽ thất bại** nếu thiếu 3 file setup.
+Data chỉ có cột mã hóa (`profile-qbirthyear`). AI không biết cột đó chứa giá trị gì. **Prompt "kiểm tra respondent nói xạo" sẽ thất bại** nếu thiếu 3 file setup.
 
-**Context gồm:** data file + questionnaire.csv (giải mã code) + survey-structure.csv (loại widget) + behavior.csv (rule validation) + mô tả rule của DA.
+**Context gồm:** data file + questionnaire.csv (giải mã cột & giá trị) + survey-structure.csv (loại widget) + behavior.csv (rule validation) + mô tả rule của DA.
 
 > **Quy luật vàng:** Context càng đầy đủ → AI càng đúng ngay lần đầu. 90% lỗi là do thiếu context.
 
@@ -52,13 +52,13 @@ Cài 3 thứ (nhờ AI dẫn từng bước): Python 3.12+, VS Code + extension 
 
 | File | Vai trò | Dùng để |
 |---|---|---|
-| **questionnaire.csv** | Codebook: map `survey-code` → nhãn VI/EN + "Chọn/Không chọn" | Giải mã cột `..._o1990` vô nghĩa thành "respondent chọn 1990" |
-| **survey-structure.csv** | Cây cấu trúc: mã câu + **WIDGET TYPE** (multiple_choice/scale/list_box...) + "belong question" (cha) | Biết loại câu hỏi → đọc đúng cách truy cập |
+| **questionnaire.csv** | Codebook: mô tả từng câu hỏi + option giá trị | Giải mã cột `profile-qbirthyear` → biết chứa giá trị gì (1990, 2007...) mỗi giá trị nghĩa là gì |
+| **survey-structure.csv** | Cây cấu trúc: mã câu + **WIDGET TYPE** (multiple_choice/scale/list_box...) + "belong question" (cha) | AI biết loại câu hỏi → tự biết cách đọc data |
 | **behavior.csv** | Rule validation: `va_at_least 1`, `va_force_response`, `dlogic_show_element_when...` | Hiểu ràng buộc (bắt buộc chọn, hiện theo điều kiện) |
 
 **Quan trọng:** Đưa AI cả **4 file** mỗi lần (3 setup + data), không chỉ data. Tạo 1 folder dự án cho mỗi đợt, bỏ đủ 4 file vào.
 
-**Đọc cột multiple_choice:** `_o{value}=1` → chọn option đó (khác single_choice/list_box dùng giá trị trực tiếp). Cần survey-structure.csv để biết loại → đọc đúng.
+**Cách data lưu:** Tùy loại câu hỏi — thường ra dạng `[tên câu hỏi]` + giá trị, có khi dạng `[tên]o1 o2` (mỗi option 1 cột). **Bạn không cần phân biệt** — AI đọc questionnaire sẽ tự hiểu cách đọc từng cột.
 
 ## Chương 3: ★ Viết context block chuẩn (4 phần)
 
@@ -100,9 +100,9 @@ Cài 3 thứ (nhờ AI dẫn từng bước): Python 3.12+, VS Code + extension 
 **Ví dụ rule "SV 2007 năm 3-4 → nói xạo":**
 - Mô tả VI + 2 cột (`profile-qbirthyear`, `profile-qyear-of-study`)
 - Mock code: `if(birthyear=2007 AND yearofstudy in [3,4], 1, 0)`
-- AI đọc setup → biết `_o2007=1` (multiple) vs giá trị trực tiếp (list_box) → tự dịch sang Python
+- AI tự so questionnaire để biết cách đọc giá trị "sinh 2007" trong cột → tự dịch sang Python
 
-**Batch:** Gom 20-50 rule thành 1 danh sách, AI sinh script tạo tất cả cột cùng lúc. **Bẫy:** nhầm multiple_choice (dùng `_o{value}=1`) với single_choice (giá trị trực tiếp) — luôn đính kèm survey-structure.csv.
+**Batch:** Gom 20-50 rule thành 1 danh sách, AI sinh script tạo tất cả cột cùng lúc. **Bạn không cần lo cách đọc cột** — AI đọc setup tự hiểu; nếu đọc sai, gửi 5 dòng data mẫu để nó tự kiểm chứng.
 
 ## Chương 7: ★ Nhờ AI tạo cột phán quyết cuối
 
@@ -124,7 +124,7 @@ Báo cáo: tỷ lệ đạt, top rule vi phạm, tỷ lệ theo phân khúc, quo
 
 ## Chương 9: ★ Nhờ AI check code rule cũ
 
-Khi tỷ lệ REJECT bất thường hoặc nghi rule sai — nhờ AI review. Prompt tốt: dán **3 setup + code + mô tả triệu chứng cụ thể**. AI bắt được: nhầm loại cột, NaN xử lý sai, hiểu sai `_o{value}`, quy chiếu câu cha.
+Khi tỷ lệ REJECT bất thường hoặc nghi rule sai — nhờ AI review. Prompt tốt: dán **3 setup + code + mô tả triệu chứng cụ thể**. AI bắt được: đọc sai cách lưu data, NaN xử lý sai, quy chiếu câu cha. Nếu AI đọc cột sai, gửi 5 dòng data mẫu để nó tự kiểm chứng.
 
 ## Chương 10: ★ Update rule khi DA đổi
 

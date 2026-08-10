@@ -246,12 +246,11 @@
 
       <section class="chapter" id="c0">
         <h2 class="ch-title"><span class="num">Chương 0</span> ★ Sự thật: AI không hiểu data nếu thiếu context</h2>
-        <div class="ch-sub">Bài học quan trọng nhất: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Với data khảo sát, các cột mã hóa (profile-qbirthyear_o1990) là vô nghĩa nếu không có 3 file setup.</div>
+        <div class="ch-sub">Bài học quan trọng nhất: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Với data khảo sát, các cột mã hóa (như <code class="ic">profile-qbirthyear</code>) là vô nghĩa nếu không có 3 file setup.</div>
 
         <p>Hãy tưởng tượng bạn upload file data CSV vào ChatGPT rồi gõ: <em>"Kiểm tra respondent này có nói xạo không"</em>. Kết quả? AI sẽ <strong>không làm được</strong> — vì nó không biết:</p>
         <ul>
-          <li>Cột <code class="ic">profile-qbirthyear_o1990</code> nghĩa là gì? (respondent sinh năm 1990?)</li>
-          <li>Giá trị trong cột là gì? (1 = đã chọn? hay text?)</li>
+          <li>Cột <code class="ic">profile-qbirthyear</code> chứa giá trị gì? (số năm? hay mã?)</li>
           <li><code class="ic">profile-qyear-of-study</code> có giá trị nào? (1, 2, 3, 4 = năm 1-4?)</li>
           <li>"Nói xạo" được định nghĩa thế nào? Rule kiểm tra là gì?</li>
         </ul>
@@ -263,7 +262,7 @@
         <table>
           <tr><th>Thành phần</th><th>Ví dụ</th></tr>
           <tr><td><strong>Data file</strong></td><td><code class="ic">data.csv</code> — 200k dòng × 2000 cột (mỗi dòng = 1 respondent)</td></tr>
-          <tr><td><strong>questionnaire.csv</strong></td><td>Giải mã code cột: <code class="ic">profile-qbirthyear_o1990</code> = "1990", option "Chọn"</td></tr>
+          <tr><td><strong>questionnaire.csv</strong></td><td>Giải mã cột &amp; giá trị: cột <code class="ic">profile-qbirthyear</code> có giá trị nào, mỗi giá trị nghĩa là gì</td></tr>
           <tr><td><strong>survey-structure.csv</strong></td><td>Cấu trúc cây câu hỏi: loại widget (multiple_choice, scale...), câu cha</td></tr>
           <tr><td><strong>behavior.csv</strong></td><td>Rule validation/hiển thị: <code class="ic">va_at_least 1</code>, logic hiện theo điều kiện</td></tr>
           <tr><td><strong>Rule của DA</strong></td><td>Mô tả: "SV sinh 2007 nhưng năm 3-4 → nói xạo"</td></tr>
@@ -282,10 +281,10 @@
           <div class="ph">📋 Prompt ĐÚNG — đủ context <span class="ptag">template</span></div>
           <div class="pbody" id="p0-good">Bạn là Data Analyst. Tôi đính kèm: data.csv + 3 file setup (questionnaire.csv, survey-structure.csv, behavior.csv).
 
-[CONTEXT - GIẢI MÃ CỘT]
-- Cột dạng profile-qbirthyear_oYYYY: respondent sinh năm YYYY (giá trị 1 = đã chọn)
+[CONTEXT - CÁCH ĐỌC DATA]
+- 3 file setup đính kèm (questionnaire/structure/behavior) — bạn tự so để biết:
+  cột nào (vd profile-qbirthyear) chứa giá trị gì, mỗi giá trị nghĩa là gì
 - profile-qyear-of-study: năm học (1=năm1, 2=năm2, 3=năm3, 4=năm4)
-- profile-qfinal-year: sinh viên năm cuối (1=đúng)
 
 [RULE CẦN KIỂM TRA]
 "SV sinh năm 2007 nhưng đang học năm 3 hoặc năm 4 → khả năng nói xạo"
@@ -336,8 +335,8 @@ Viết rõ từng bước cho người mới, kèm lệnh chính xác.</div>
 
         <p>Mỗi đợt khảo sát, hệ thống (survey platform) xuất về <strong>4 loại file</strong>. Data file là kết quả, 3 file còn lại là "hướng dẫn sử dụng" để hiểu data. Bạn <strong>phải nộp cả 4 cho AI</strong>, không chỉ data.</p>
 
-        <h3 class="sec">File 1 — questionnaire.csv (codebook giải mã cột)</h3>
-        <p>Mỗi dòng = 1 option của 1 câu hỏi. Giải mã cột data vô nghĩa thành ý nghĩa.</p>
+        <h3 class="sec">File 1 — questionnaire.csv (codebook giải mã cột &amp; giá trị)</h3>
+        <p>Mỗi dòng mô tả 1 câu hỏi hoặc 1 option giá trị. Đây là "bản dịch" data từ mã vô nghĩa sang ngôn ngữ người.</p>
         <div class="code-block">
           <div class="cbhead"><span><span class="dot">●</span> questionnaire.csv — ví dụ</span><span class="copy">📋</span></div>
           <pre class="code"><span class="cm">survey-code, vi, en, chọn, type</span>
@@ -346,11 +345,11 @@ profile-qbirthyear_o1990, "1990", "1990", Chọn, external
 profile-qbirthyear_o2007, "2007", "2007", Chọn, external
 profile-qbirthyear_o2011, "Sau năm 2010", "After 2010", Chọn, external</pre>
         </div>
-        <p>→ Khi thấy cột <code class="ic">profile-qbirthyear_o1990</code> trong data có giá trị 1, tra file này biết ngay: <em>"respondent chọn 1990 làm năm sinh"</em>.</p>
-        <div class="box tip"><span class="bt">✅ Dùng để</span> Giải mã <strong>mọi cột data</strong> thành ngôn ngữ người. AI đọc file này để biết cột nào nghĩa là gì, giá trị nào hợp lệ.</div>
+        <p>→ Khi thấy cột <code class="ic">profile-qbirthyear</code> trong data, AI tra file này để biết: đây là câu "Năm sinh", có các giá trị nào (1990, 2007...), mỗi giá trị nghĩa là gì.</p>
+        <div class="box tip"><span class="bt">✅ Dùng để</span> Giải mã <strong>mọi cột data</strong> thành ngôn ngữ người. AI đọc file này để biết cột nào nghĩa là gì, giá trị nào hợp lệ. <strong>Bạn không cần tự nhớ — AI tự so questionnaire để hiểu.</strong></div>
 
         <h3 class="sec">File 2 — survey-structure.csv (cây cấu trúc câu hỏi)</h3>
-        <p>Mỗi dòng = 1 thành phần form. Cho biết loại câu hỏi + quan hệ cha-con.</p>
+        <p>Mỗi dòng = 1 thành phần form. Cho biết loại câu hỏi (WIDGET TYPE) + quan hệ cha-con.</p>
         <div class="code-block">
           <div class="cbhead"><span><span class="dot">●</span> survey-structure.csv — ví dụ</span><span class="copy">📋</span></div>
           <pre class="code"><span class="cm">Mã Câu Hỏi, WIDGET TYPE, Survey, Belong Question, Client Action</span>
@@ -361,8 +360,8 @@ favorite-industry, multiple_choice, external, , Chọn
 ai-use, scale, external, , Chọn
 impt-ranking, grid_listbox, external, , Chọn</pre>
         </div>
-        <p>→ Cột <strong>WIDGET TYPE</strong> cho biết loại câu hỏi: <code class="ic">multiple_choice</code> (chọn nhiều), <code class="ic">scale</code> (thang điểm), <code class="ic">list_box</code> (chọn 1), <code class="ic">grid_multiple</code> (ma trận)... Cột <strong>Belong Question</strong> cho biết option nào thuộc câu nào.</p>
-        <div class="box tip"><span class="bt">✅ Dùng để</span> Hiểu <strong>kiểu câu hỏi</strong> → biết cách xử lý. Vd: <code class="ic">multiple_choice</code> thì respondent có thể chọn nhiều option (=1 ở nhiều cột), khác với <code class="ic">single_choice</code> (chỉ 1).</div>
+        <p>→ Cột <strong>WIDGET TYPE</strong> cho biết loại câu hỏi: <code class="ic">multiple_choice</code> (chọn nhiều), <code class="ic">scale</code> (thang điểm), <code class="ic">list_box</code> (chọn 1), <code class="ic">grid_multiple</code> (ma trận)... AI dùng để biết cách đọc data cho đúng loại.</p>
+        <div class="box tip"><span class="bt">✅ Dùng để</span> AI hiểu <strong>kiểu câu hỏi</strong> → tự biết cách đọc data (mỗi loại lưu khác nhau). Bạn không cần phân biệt — AI lo.</div>
 
         <h3 class="sec">File 3 — behavior.csv (rule validation &amp; logic hiển thị)</h3>
         <p>Rule do người thiết kế khảo sát đặt: bắt buộc chọn, hiện theo điều kiện, v.v.</p>
@@ -399,10 +398,10 @@ profile-qbirthyear, behavior_custom_empty_text_for_select, , "- Năm sinh -", ex
 - Mỗi dòng = 1 respondent (theo respondentid)
 - 3 file setup đính kèm: questionnaire.csv, survey-structure.csv, behavior.csv
 
-[2. CÁCH ĐỌC CỘT - QUAN TRỌNG]
-- Cột dạng {code}_o{value}: respondent chọn option đó (giá trị 1 = đã chọn, 0/rỗng = không)
-- VD: profile-qbirthyear_o1990=1 → sinh viên sinh 1990
-- Cột {code} (không _o): giá trị trực tiếp (vd profile-qyear-of-study=3 → năm 3)
+[2. CÁCH ĐỌC DATA]
+- Data thường trả về dạng [tên câu hỏi] + giá trị (vd profile-qbirthyear=1990)
+- Một số câu trả về dạng [tên]o1 o2 (mỗi option 1 cột) — AI đọc questionnaire sẽ tự hiểu
+- Bạn KHÔNG cần mô tả chi tiết: chỉ cần đính kèm 3 file setup, AI tự so để biết cách đọc từng cột
 
 [3. DANH SÁCH RULE CẦN TẠO]
 Mỗi rule = 1 cột mới. Mô tả bằng tiếng Việt + chỉ ra cột liên quan:
@@ -424,11 +423,9 @@ Mỗi rule = 1 cột mới. Mô tả bằng tiếng Việt + chỉ ra cột liê
           <div class="pbody" id="p3-full">[1. MÔ TẢ DATA]
 File: data_q3_2025.csv — 48.217 respondents × 1.850 cột. Đính kèm 3 file setup.
 
-[2. CÁCH ĐỌC CỘT]
-- profile-qbirthyear_oYYYY=1 → respondent sinh năm YYYY
-- profile-qyear-of-study={1,2,3,4} → năm học
-- profile-qfinal-year=1 → sinh viên năm cuối
-- favorite-industry_o{code}=1 → chọn ngành đó
+[2. CÁCH ĐỌC DATA]
+- 3 file setup đính kèm — AI tự so questionnaire để biết cột nào chứa gì
+- profile-qyear-of-study: năm học (1-4)
 - ai-use: scale 1-5 (mức dùng AI)
 
 [3. DANH SÁCH RULE]
@@ -548,7 +545,7 @@ Giải thích ngắn gọn, thực tế cho người không rành kỹ thuật.<
         <div class="ch-sub">Bước đầu với mỗi data file: đừng vội viết rule — để AI đọc 3 file setup để hiểu cấu trúc, rồi tóm tắt lại cho bạn các "khối" câu hỏi.</div>
 
         <h3 class="sec">Tại sao cần "giải mã" trước?</h3>
-        <p>Data file có 2000 cột với tên như <code class="ic">profile-qbirthyear_o1990</code>, <code class="ic">eba-most-attractive-1</code> — bạn không thể nhớ hết. AI đọc 3 file setup rồi <strong>tóm tắt cấu trúc</strong> (phần nào có câu gì, loại gì) giúp bạn định vị nhanh.</p>
+        <p>Data file có ~2000 cột với tên mã hóa như <code class="ic">profile-qbirthyear</code>, <code class="ic">eba-most-attractive</code> — bạn không thể nhớ hết. AI đọc 3 file setup rồi <strong>tóm tắt cấu trúc</strong> (phần nào có câu gì, loại gì) giúp bạn định vị nhanh.</p>
 
         <div class="prompt">
           <div class="ph">📋 Prompt — nhờ AI giải mã &amp; tóm tắt cấu trúc data <span class="ptag">copy-paste</span></div>
@@ -592,8 +589,8 @@ Tóm tắt bằng tiếng Việt, có cấu trúc rõ ràng.</div>
 [RULE: sayso_2007_year34]
 Mô tả: "Sinh viên sinh năm 2007 nhưng đang học năm 3 hoặc năm 4 → khả năng nói xạo"
 Cột liên quan:
-- profile-qbirthyear (và các option _o2007)
-- profile-qyear-of-study (giá trị 1-4)
+- profile-qbirthyear (năm sinh)
+- profile-qyear-of-study (năm học, giá trị 1-4)
 
 Viết code Python tạo cột rule_sayso_2007_year34:
 - = 1 (phạm rule) nếu: respondent sinh 2007 AND year-of-study in [3,4]
@@ -603,9 +600,9 @@ Logic check (mock code):
 if (birthyear=2007 AND yearofstudy in [3,4], 1, 0)
 
 Yêu cầu:
-- Đọc đúng cột (nhớ multiple_choice có thể là _o2007=1, list_box là giá trị trực tiếp)
+- Tự so questionnaire.csv để biết cách đọc giá trị "sinh 2007" trong cột profile-qbirthyear
 - In 5 dòng ví dụ (cả trước/sau khi apply) để tôi verify
-- Giải thích cách bạn xác định "sinh 2007" từ cấu trúc cột</div>
+- Giải thích cách bạn xác định "sinh 2007" từ data</div>
           <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p6-rule1')">📋 Sao chép</button></div>
         </div>
 
@@ -618,8 +615,8 @@ Yêu cầu:
 [DANH SÁCH RULE - mỗi rule tạo 1 cột mới]
 1. rule_sayso_2007_year34: "SV sinh 2007 mà năm 3-4" → cột: qbirthyear, qyear-of-study
 2. rule_top_uni_it: "Học trường top (list dưới) AND thích ngành IT"
-   - Trường top: {quniversity-hn_o1, quniversity-hcm_o3}
-   - Ngành IT: favorite-industry_oIT=1
+   - Trường top: tự so questionnaire để xác định mã trường top
+   - Ngành IT: tự so questionnaire để xác định mã ngành IT
 3. rule_fast_response: "Thời gian trả lời &lt; 3 phút"
    - Cột: submit_time, start_time
 4. rule_missing_profile: "Thiếu &gt;2 câu profile bắt buộc"
@@ -636,7 +633,7 @@ Tôi sẽ chạy script trên data thật (200k dòng).</div>
           <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p6-batch')">📋 Sao chép</button></div>
         </div>
 
-        <div class="box warn"><span class="bt">⚠️ Bẫy khi đọc cột multiple_choice</span> Với <code class="ic">multiple_choice</code>, respondent chọn option thì cột <code class="ic">_o{value}</code> = 1, không chọn = 0/rỗng. Với <code class="ic">list_box/single_choice</code>, giá trị trực tiếp nằm trong cột gốc. <strong>AI cần file structure để biết loại nào</strong> — luôn đính kèm.</div>
+        <div class="box warn"><span class="bt">⚠️ Bẫy khi đọc cột</span> Mỗi loại câu hỏi lưu data khác nhau (chọn 1 vs chọn nhiều vs thang điểm). <strong>Bạn không cần phân biệt</strong> — chỉ cần đính kèm đủ 3 file setup, AI tự so questionnaire để đọc đúng từng cột. Nếu AI đọc sai, gửi lại 5 dòng data mẫu để nó tự kiểm chứng.</div>
 
         <div class="box pro"><span class="bt">🎯 Nguyên tắc cốt lõi</span> Bạn <strong>không cần viết công thức</strong>. Chỉ cần: (1) mô tả rule bằng tiếng Việt, (2) chỉ ra cột liên quan. AI tự đọc setup để biết cách truy cập cột, rồi viết code. Rule phức tạp bao nhiêu cũng được — miễn bạn mô tả rõ.</div>
       </section>
@@ -740,10 +737,10 @@ YÊU CẦU:
 Tôi NGHI NGỜ kết quả sai: {mô tả triệu chứng, vd: "rule_sayso_2007 vi phạm 0% trong khi kỳ vọng ~5%"}
 
 Hãy REVIEW và chỉ ra:
-1. Lỗi đọc cột: có đọc sai loại (multiple_choice vs list_box) không? Có hiểu sai _o2007=1 không?
+1. Lỗi đọc cột: có đọc sai cách data lưu (so với questionnaire) không? Gửi 5 dòng data mẫu để bạn tự kiểm chứng.
 2. Lỗi logic: điều kiện if có đúng không? NaN xử lý đúng chưa?
 3. Edge case: respondent không có câu trả lời (NaN) bị tính ra sao?
-Với mỗi vấn đề: giải thích + code đã sửa. Ưu tiên lỗi đọc cột (hay sai nhất).</div>
+Với mỗi vấn đề: giải thích + code đã sửa.</div>
           <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p9-review')">📋 Sao chép</button></div>
         </div>
 
@@ -751,9 +748,9 @@ Với mỗi vấn đề: giải thích + code đã sửa. Ưu tiên lỗi đọc
 
         <h3 class="sec">Lỗi thường gặp khi apply rule</h3>
         <ul>
-          <li><strong>Nhầm loại cột</strong>: đọc <code class="ic">multiple_choice</code> như <code class="ic">single_choice</code> → sai</li>
+          <li><strong>Đọc sai cách lưu data</strong>: không so questionnaire → hiểu sai giá trị cột. Khắc phục: luôn đính kèm 3 file setup</li>
           <li><strong>NaN</strong>: respondent không trả lời → NaN, nếu code không xử lý → tính sai</li>
-          <li><strong>Giá trị option</strong>: <code class="ic">_o1990=1</code> chứ không phải <code class="ic">=1990</code></li>
+          <li><strong>Edge case</strong>: giá trị bất thường (ngoài dự kiến) → AI cần check</li>
           <li><strong>Quy chiếu câu cha</strong>: option thuộc câu nào (xem Belong Question trong structure)</li>
         </ul>
       </section>
@@ -1019,10 +1016,10 @@ function copyPrompt(id){
 
 /* ===== FLASHCARDS ===== */
 const FC = [
-  {q:"3 file setup của 1 đợt khảo sát là gì?", a:"questionnaire.csv (giải mã code cột → ý nghĩa), survey-structure.csv (loại widget + cấu trúc cha-con), behavior.csv (rule validation/logic hiển thị). Đây là 'context vàng' để AI hiểu data."},
-  {q:"Tại sao AI 'không hiểu' file data của bạn?", a:"Vì data chỉ có cột mã hóa như profile-qbirthyear_o1990. AI không biết cột đó nghĩa là gì, giá trị 1/0 ra sao. Phải đưa 3 file setup để AI giải mã."},
-  {q:"Cột _o1990 trong multiple_choice nghĩa là gì?", a:"Option 1990 của câu hỏi. Giá trị 1 = respondent đã chọn 1990. Nhờ questionnaire.csv để biết code cột ứng với option nào."},
-  {q:"multiple_choice khác single_choice khi xử lý thế nào?", a:"multiple_choice: respondent chọn nhiều option → nhiều cột _o*=1. single_choice: chỉ 1 giá trị trong cột gốc. AI cần survey-structure.csv để biết loại → đọc đúng."},
+  {q:"3 file setup của 1 đợt khảo sát là gì?", a:"questionnaire.csv (giải mã cột & giá trị), survey-structure.csv (loại widget + cấu trúc cha-con), behavior.csv (rule validation/logic hiển thị). Đây là 'context vàng' để AI hiểu data."},
+  {q:"Tại sao AI 'không hiểu' file data của bạn?", a:"Vì data chỉ có cột mã hóa (vd profile-qbirthyear). AI không biết cột đó chứa giá trị gì. Phải đưa 3 file setup — AI tự so questionnaire để hiểu."},
+  {q:"Cách data lưu trong file respondent thế nào?", a:"Tùy loại câu hỏi — thường ra dạng [tên câu hỏi] + giá trị, có khi dạng [tên]o1 o2 (mỗi option 1 cột). Bạn KHÔNG cần nhớ — AI đọc questionnaire sẽ tự hiểu cách đọc từng cột."},
+  {q:"Cần phân biệt multiple_choice vs single_choice không?", a:"KHÔNG cần. AI đọc survey-structure.csv để biết loại câu hỏi, tự biết cách đọc data. Bạn chỉ việc đính kèm đủ 3 file setup."},
   {q:"Vì sao Excel/PQ 'tắc thở' với 2000 cột × 200k dòng?", a:"Excel/PQ xử lý từng dòng + giới hạn RAM. Cột nhiều + dòng nhiều + công thức lồng → đơ máy. Python xử lý theo cột (vector hóa) nên không bị."},
   {q:"Để apply 1 rule, DA cần đưa AI những gì?", a:"Chỉ 2 thứ: (1) mô tả rule tiếng Việt, (2) tên cột liên quan. AI đọc 3 file setup để hiểu cách truy cập cột, tự viết code. Không cần học syntax."},
   {q:"Ví dụ rule kiểm tra 'nói xạo'?", a:"'SV sinh 2007 nhưng năm 3-4 → nói xạo'. Dùng cột profile-qbirthyear + profile-qyear-of-study. Mock code: if(birthyear=2007 AND yearofstudy in [3,4], 1, 0)."},
@@ -1031,7 +1028,7 @@ const FC = [
   {q:"Claude Code là gì? DA có cần không?", a:"Agent code của Anthropic, plugin VS Code & JetBrains. DA nên cài plugin VS Code: Claude sửa run_report.py trực tiếp, bạn duyệt diff — không copy-dán. Lý tưởng cho pipeline nhiều file."},
   {q:"Antigravity là gì? DA có cần không?", a:"IDE desktop của Google (11/2025), chạy Gemini 1M context, có 'Agent Teams'. Quá mức cho DA xử lý CSV — chỉ cân nhắc nếu build app báo cáo có giao diện."},
   {q:"Bạn có cần học git để commit code?", a:"KHÔNG. Nhờ AI sinh lệnh commit/push, bạn copy–dán terminal. AI giải thích từng bước. Lỗi gì dán lại cho AI sửa."},
-  {q:"Bẫy #1 khi đọc cột trong code rule?", a:"Nhầm loại cột: multiple_choice dùng _o{value}=1, single_choice/list_box dùng giá trị trực tiếp. Luôn đính kèm survey-structure.csv để AI biết loại → đọc đúng."},
+  {q:"Bẫy #1 khi đọc cột trong code rule?", a:"Không so questionnaire → hiểu sai giá trị cột. Khắc phục: luôn đính kèm đủ 3 file setup. Nếu AI đọc sai, gửi 5 dòng data mẫu để nó tự kiểm chứng."},
   {q:"Quy tắc vàng khi rule đổi?", a:"Cập nhật file context.md (danh sách rule + mô tả) TRƯỚC, rồi mới nhờ AI sửa code. Context là 'nguồn sự thật', code chỉ là hệ quả."},
   {q:"Loại file nào KHÔNG được commit lên Git?", a:"Data respondent thật (email, thông tin cá nhân) — vi phạm bảo mật. Chỉ commit code + context đã ẩn danh + rule template. Dùng .gitignore loại trừ *.csv data."},
 ];
@@ -1046,10 +1043,10 @@ document.getElementById('fcGrid').innerHTML = FC.map(c=>
 /* ===== CHEATSHEET ===== */
 const CHEAT = [
   {ic:"📁", t:"4 file cần đưa AI mỗi đợt", c:"1. data.csv          — respondent × cột\n2. questionnaire.csv — giải mã code cột\n3. survey-structure.csv — loại widget\n4. behavior.csv      — rule validation\n→ Đính kèm cả 4, không chỉ data."},
-  {ic:"🔤", t:"Đọc cột multiple_choice", c:"# Cột _o{value}=1 → chọn option đó\nprofile-qbirthyear_o1990 = 1\n  → respondent sinh 1990\n# Cột gốc (không _o): giá trị trực tiếp\nprofile-qyear-of-study = 3  → năm 3"},
-  {ic:"📝", t:"Context block — 4 phần", c:"[1. MÔ TẢ DATA] file, số dòng, setup\n[2. CÁCH ĐỌC CỘT] code_o{val}=1 ...\n[3. DANH SÁCH RULE] mô tả VI + cột\n[4. ĐỊNH DẠNG ĐẦU RA] cột rule_*, verdict"},
+  {ic:"🔤", t:"Cách data lưu trong file respondent", c:"# Tùy loại câu hỏi, thường:\n# - 1 cột + giá trị trực tiếp:\nprofile-qbirthyear = 1990\n# - hoặc dạng [tên]o1 o2 (mỗi option 1 cột)\n# → KHÔNG cần nhớ, AI đọc questionnaire tự hiểu"},
+  {ic:"📝", t:"Context block — 4 phần", c:"[1. MÔ TẢ DATA] file, số dòng, setup\n[2. CÁCH ĐỌC DATA] đính kèm 3 setup, AI tự so\n[3. DANH SÁCH RULE] mô tả VI + cột liên quan\n[4. ĐỊNH DẠNG ĐẦU RA] cột rule_*, verdict"},
   {ic:"🎯", t:"Mô tả 1 rule cho AI", c:"# Chỉ cần 2 thứ:\n1. Mô tả tiếng Việt:\n   'SV 2007 mà năm 3-4 → nói xạo'\n2. Cột liên quan:\n   profile-qbirthyear\n   profile-qyear-of-study\n→ AI tự đọc setup, tự viết code."},
-  {ic:"🐍", t:"Mock code → Python (AI dịch)", c:"# Mock (bạn viết):\nif(birthyear=2007 AND yearofstudy>2, 1, 0)\n\n# Python (AI sinh):\ndf['rule_sayso_2007'] = (\n  (df['qbirthyear_o2007']==1) &\n  (df['qyear-of-study'].isin([3,4]))\n).astype(int)"},
+  {ic:"🐍", t:"Mock code → Python (AI dịch)", c:"# Mock (bạn viết, ko cần đúng syntax):\nif(birthyear=2007 AND yearofstudy>2, 1, 0)\n\n# AI tự so questionnaire để biết\n# cách đọc giá trị 2007, rồi sinh\n# code Python tương ứng."},
   {ic:"⚖️", t:"Cột phán quyết — dạng phổ biến", c:"# Đếm rule pass\ntotal_ok = (df[rule_cols]==0).sum(axis=1)\n# Hard fail\nhard = df[hard_rules].any(axis=1)\n# Phân loại\ndf['verdict'] = np.where(hard,'REJECT',\n  np.where(total_ok>=22,'QUALIFIED','REVIEW'))"},
   {ic:"🤖", t:"Chọn model nhanh (DA khảo sát)", c:"Khám nhanh data        → ChatGPT (Adv. Data Analysis)\nViết/review pipeline   → Claude Sonnet 5 (code chuẩn, rẻ)\nNạp cả bộ 4 file       → Gemini 3.6 Flash (context 1M)\nDùng luân phiên được."},
   {ic:"🔍", t:"Prompt review code rule", c:"Review code (đính kèm 3 setup).\nNGHI NGỜ: {triệu chứng, vd rule X vi phạm 0%}.\nChỉ ra: lỗi đọc cột (nhầm loại?), NaN,\nedge case. Đưa code sửa. Ưu tiên lỗi đọc cột."},
