@@ -64,7 +64,7 @@ Cài 3 thứ (nhờ AI dẫn từng bước): Python 3.12+, VS Code + extension 
 
 ```
 [1. MÔ TẢ DATA] file, số dòng, 3 setup đính kèm
-[2. CÁCH ĐỌC CỘT] code_o{val}=1 → chọn option; cột gốc = giá trị trực tiếp
+[2. CÁCH ĐỌC DATA] đính kèm 3 setup — AI tự so questionnaire để biết cách đọc từng cột
 [3. DANH SÁCH RULE] mỗi rule = mô tả VI + cột liên quan
 [4. ĐỊNH DẠNG ĐẦU RA] cột rule_* (1/0) + cột phán quyết
 ```
