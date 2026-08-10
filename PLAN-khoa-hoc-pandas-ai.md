@@ -116,8 +116,8 @@ Mỗi chương HTML dùng **đúng bộ component** của `khoa-hoc-excel-ai.htm
 ### 6.1 File sẽ tạo
 ```
 lap-trinh/
-  khoa-hoc-pandas-ai.html      ← bản chính (dark theme, sidebar, prompt copy)
-  khoa-hoc-pandas-ai.md        ← bản Markdown (đọc nhanh)
+  ai-cho-data-analyst-khao-sat.html      ← bản chính (dark theme, sidebar, prompt copy)
+  ai-cho-data-analyst-khao-sat.md        ← bản Markdown (đọc nhanh)
 ```
 
 > **Đặc điểm bản HTML:** Trọng tâm hiển thị **prompt + context** (không phải code editor). Code chỉ xuất hiện dưới dạng *kết quả AI sinh* để học viên biết hình thù, **không** nhúng Pyodide chạy code trong trình duyệt (khóa này không dạy gõ code, chạy thật trên máy qua AI). File gọn hơn khóa v1.
@@ -131,7 +131,7 @@ lap-trinh/
 ### 6.3 Đăng ký vào `index.html`
 Thêm card `class="card feat"` cạnh card Excel-AI (cùng nhóm "Dành cho Data Analyst"), style xanh dương:
 ```html
-<a class="card feat" href="lap-trinh/khoa-hoc-pandas-ai.html" style="border-color:#704dff;...">
+<a class="card feat" href="lap-trinh/ai-cho-data-analyst-khao-sat.html" style="border-color:#704dff;...">
   <span class="badge" style="background:#704dff;color:#fff">MỚI</span>
   <div class="ic">🐼</div>
   <span class="tag t-prog" style="background:rgba(112,77,255,.18);color:#a78bfa">Dành cho Data Analyst</span>
@@ -185,8 +185,8 @@ Tạo bộ file CSV giả (inline trong HTML, ~30–80 dòng) mô phỏng 1 kh�
 
 ## 9. Deliverable (sẽ bàn giao)
 
-1. `lap-trinh/khoa-hoc-pandas-ai.html` — bản đầy đủ
-2. `lap-trinh/khoa-hoc-pandas-ai.md` — bản Markdown tóm tắt
+1. `lap-trinh/ai-cho-data-analyst-khao-sat.html` — bản đầy đủ
+2. `lap-trinh/ai-cho-data-analyst-khao-sat.md` — bản Markdown tóm tắt
 3. Cập nhật `index.html` — thêm card + đăng ký
 4. (Tùy chọn) File CSV mẫu inline hoặc thư mục `samples/`
 

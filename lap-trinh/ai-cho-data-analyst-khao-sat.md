@@ -1,6 +1,6 @@
 # Hướng Dẫn — Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát Lớn
 
-> Nguồn: [khoa-hoc-pandas-ai.html](khoa-hoc-pandas-ai.html) — bản HTML có **prompt copy-paste** (nút sao chép), **flashcards** lật thẻ, **cheatsheet context** và **theo dõi tiến độ**.
+> Nguồn: [ai-cho-data-analyst-khao-sat.html](ai-cho-data-analyst-khao-sat.html) — bản HTML có **prompt copy-paste** (nút sao chép), **flashcards** lật thẻ, **cheatsheet context** và **theo dõi tiến độ**.
 
 ---
 
