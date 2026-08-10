@@ -190,11 +190,12 @@
     </div>
     <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
     <ul class="nav-menu" id="navMenu">
-      <li class="nav-section-title np0"><span class="badge">★</span> P1 · NỀN TẢNG &amp; 3 FILE SETUP</li>
+      <li class="nav-section-title np0"><span class="badge">★</span> P1 · NỀN TẢNG &amp; CONTEXT QUA TƯƠNG TÁC</li>
       <li><a href="#c0"><span class="cn">0</span> AI không hiểu data nếu thiếu context</a></li>
       <li><a href="#c1"><span class="cn">1</span> Môi trường &amp; vì sao Excel/PQ "tắc thở"</a></li>
-      <li><a href="#c2"><span class="cn">2</span> ★ 3 file setup = "context vàng"</a></li>
-      <li><a href="#c3"><span class="cn">3</span> ★ Viết context block chuẩn</a></li>
+      <li><a href="#c2"><span class="cn">2</span> ★ Nhận diện các file context</a></li>
+      <li><a href="#c3"><span class="cn">3</span> ★ Quy trình tương tác &amp; đưa rule</a></li>
+      <li><a href="#c3b"><span class="cn">★</span> Nhờ AI ghi nhớ context vào MD</a></li>
 
       <li class="nav-section-title np1"><span class="badge">P2</span> ĐIỀU KHIỂN AI XỬ LÝ (KHÔNG TỰ CODE)</li>
       <li><a href="#c4"><span class="cn">4</span> ★ Chọn AI &amp; công cụ (ChatGPT/Claude/Gemini)</a></li>
@@ -246,55 +247,63 @@
 
       <section class="chapter" id="c0">
         <h2 class="ch-title"><span class="num">Chương 0</span> ★ Sự thật: AI không hiểu data nếu thiếu context</h2>
-        <div class="ch-sub">Bài học quan trọng nhất: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Với data khảo sát, các cột mã hóa (như <code class="ic">profile-qbirthyear</code>) là vô nghĩa nếu không có 3 file setup.</div>
+        <div class="ch-sub">Bài học quan trọng nhất: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Và context không phải 1 câu "1 phát ăn ngay" — là quá trình xây dựng qua tương tác.</div>
 
-        <p>Hãy tưởng tượng bạn upload file data CSV vào ChatGPT rồi gõ: <em>"Kiểm tra respondent này có nói xạo không"</em>. Kết quả? AI sẽ <strong>không làm được</strong> — vì nó không biết:</p>
+        <p>Hãy tưởng tượng bạn upload file data CSV vào ChatGPT rồi gõ: <em>"Kiểm tra respondent này có nói xạo không"</em>. Kết quả? AI sẽ <strong>không làm được</strong> — vì nó chỉ thấy các con số và tên cột mã hóa (<code class="ic">profile-qbirthyear</code>...), không biết:</p>
         <ul>
-          <li>Cột <code class="ic">profile-qbirthyear</code> chứa giá trị gì? (số năm? hay mã?)</li>
-          <li><code class="ic">profile-qyear-of-study</code> có giá trị nào? (1, 2, 3, 4 = năm 1-4?)</li>
+          <li>Cột đó chứa giá trị gì? (số năm? mã? text?)</li>
           <li>"Nói xạo" được định nghĩa thế nào? Rule kiểm tra là gì?</li>
         </ul>
 
-        <div class="box danger"><span class="bt">🚫 Lỗi phổ biến #1</span> Tin rằng "AI thông minh, tự hiểu được". <strong>Thực tế:</strong> AI chỉ thấy các con số và tên cột mã hóa vô nghĩa. Nó sẽ đoán — và đoán sai.</div>
+        <div class="box danger"><span class="bt">🚫 Lỗi phổ biến #1</span> Tin rằng "AI thông minh, tự hiểu được". <strong>Thực tế:</strong> AI chỉ thấy các con số và tên cột. Nó sẽ đoán — và đoán sai.</div>
 
-        <h3 class="sec">Context là gì?</h3>
-        <p><strong>Context</strong> = toàn bộ thông tin AI cần để hiểu đúng data của bạn. Với khảo sát, context đến từ <strong>3 file setup</strong> + <strong>file rule</strong> của bạn:</p>
+        <h3 class="sec">Context không phải 1 câu — là quá trình</h3>
+        <p>Nhiều người tưởng dùng AI là <em>"nói 1 câu, AI ra kết quả luôn"</em>. Với data phức tạp (2000 cột × 200k dòng), điều đó <strong>không khả thi</strong>. Thay vào đó, bạn xây context qua <strong>vài lượt tương tác</strong>:</p>
+        <ol>
+          <li><strong>Đưa nền</strong>: mention 3 file setup + file data → AI đọc hiểu cấu trúc</li>
+          <li><strong>Yêu cầu kiểm tra</strong>: "bạn đã hiểu cột profile-qbirthyear chưa?" → AI trả lời, nếu sai thì bổ sung</li>
+          <li><strong>Thêm rule/bổ sung</strong>: mention file rule Excel, bảng merge ngành... → AI tích hợp</li>
+          <li><strong>Yêu cầu xử lý</strong>: áp rule lên data → xem kết quả → tinh chỉnh</li>
+        </ol>
+
+        <h3 class="sec">Context đến từ nhiều nguồn (không chỉ 3 file setup)</h3>
+        <p>3 file setup (questionnaire/structure/behavior) chỉ là <strong>nền</strong>. Tùy dự án, bạn có thể thêm nhiều file khác để AI xử lý chính xác hơn:</p>
         <table>
-          <tr><th>Thành phần</th><th>Ví dụ</th></tr>
-          <tr><td><strong>Data file</strong></td><td><code class="ic">data.csv</code> — 200k dòng × 2000 cột (mỗi dòng = 1 respondent)</td></tr>
-          <tr><td><strong>questionnaire.csv</strong></td><td>Giải mã cột &amp; giá trị: cột <code class="ic">profile-qbirthyear</code> có giá trị nào, mỗi giá trị nghĩa là gì</td></tr>
-          <tr><td><strong>survey-structure.csv</strong></td><td>Cấu trúc cây câu hỏi: loại widget (multiple_choice, scale...), câu cha</td></tr>
-          <tr><td><strong>behavior.csv</strong></td><td>Rule validation/hiển thị: <code class="ic">va_at_least 1</code>, logic hiện theo điều kiện</td></tr>
-          <tr><td><strong>Rule của DA</strong></td><td>Mô tả: "SV sinh 2007 nhưng năm 3-4 → nói xạo"</td></tr>
+          <tr><th>Loại file</th><th>Tác dụng</th><th>Khi nào mention</th></tr>
+          <tr><td><strong>3 file setup</strong> (questionnaire/structure/behavior)</td><td>Nền tảng: giải mã cột, loại câu hỏi, rule validation</td><td>Luôn luôn (ở lượt đầu)</td></tr>
+          <tr><td><strong>file data</strong></td><td>Respondent × cột</td><td>Khi bắt đầu xử lý</td></tr>
+          <tr><td><strong>File rule của DA</strong> (Excel/MD)</td><td>Logic: "SV 2007 năm 3-4 → nói xạo"</td><td>Khi cần apply rule</td></tr>
+          <tr><td><strong>Bảng merge ngành / mapping</strong></td><td>Vd: gom 50 mã trường → 3 nhóm (top/khá/Khác)</td><td>Khi rule dùng phân nhóm</td></tr>
+          <tr><td><strong>File context cũ</strong> (từ đợt trước)</td><td>Đã có rule, verdict... tái dùng</td><td>Đợt sau, hoặc khi review</td></tr>
         </table>
 
-        <div class="box tip"><span class="bt">✅ Quy luật vàng</span> <strong>Context càng đầy đủ → AI càng đúng ngay lần đầu.</strong> 90% lỗi khi dùng AI xử lý data là do <em>thiếu context</em>, không phải do AI kém.</div>
+        <div class="box tip"><span class="bt">✅ Quy luật vàng</span> <strong>Context càng đầy đủ → AI càng đúng.</strong> Nhưng không cần đưa hết 1 lần — xây qua tương tác, AI dần hiểu đúng data của bạn.</div>
 
-        <h3 class="sec">Ví dụ: cùng 1 yêu cầu, 2 kết quả khác nhau</h3>
-        <p><strong>Prompt nghèo context (sai):</strong></p>
+        <h3 class="sec">Ví dụ: tương tác thực tế (không phải 1 phát)</h3>
+        <p><strong>Lượt 1 — Đưa nền:</strong></p>
         <div class="prompt">
-          <div class="ph">📋 Prompt NGƯỢC — kết quả sai <span class="ptag">đừng làm vậy</span></div>
-          <div class="pbody">Kiểm tra xem respondent nào nói xạo trong file mình đính kèm.</div>
+          <div class="ph">📋 Lượt 1 — mention file + yêu cầu đọc hiểu <span class="ptag">tương tác</span></div>
+          <div class="pbody" id="p0-turn1">Tôi là Data Analyst. Đính kèm 4 file của 1 đợt khảo sát:
+- questionnaire.csv, survey-structure.csv, behavior.csv (3 file setup)
+- data_q3_2025.csv (data thật)
+
+Hãy đọc 3 file setup để hiểu cấu trúc. Sau đó mở data, check vài cột (profile-qbirthyear, profile-qyear-of-study) để xác nhận bạn đọc đúng.
+Tóm tắt lại cho tôi: bạn hiểu cột nào nghĩa là gì, và quy ước lưu data thế nào.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p0-turn1')">📋 Sao chép</button></div>
         </div>
-        <p><strong>Prompt đủ context (đúng):</strong></p>
+        <p>→ AI trả lời. Nếu đúng → sang lượt 2. Nếu sai (vd: hiểu nhầm giá trị) → bạn sửa. <strong>Đây là lúc đảm bảo AI "vào đúng bài" trước khi làm việc thật.</strong></p>
+
+        <p><strong>Lượt 2 — Đưa rule + xử lý:</strong></p>
         <div class="prompt">
-          <div class="ph">📋 Prompt ĐÚNG — đủ context <span class="ptag">template</span></div>
-          <div class="pbody" id="p0-good">Bạn là Data Analyst. Tôi đính kèm: data.csv + 3 file setup (questionnaire.csv, survey-structure.csv, behavior.csv).
-
-[CONTEXT - CÁCH ĐỌC DATA]
-- 3 file setup đính kèm (questionnaire/structure/behavior) — bạn tự so để biết:
-  cột nào (vd profile-qbirthyear) chứa giá trị gì, mỗi giá trị nghĩa là gì
-- profile-qyear-of-study: năm học (1=năm1, 2=năm2, 3=năm3, 4=năm4)
-
-[RULE CẦN KIỂM TRA]
+          <div class="ph">📋 Lượt 2 — áp rule lên data đã hiểu <span class="ptag">tương tác</span></div>
+          <div class="pbody" id="p0-turn2">Tốt, bạn đã hiểu đúng cấu trúc. Giờ áp rule này:
 "SV sinh năm 2007 nhưng đang học năm 3 hoặc năm 4 → khả năng nói xạo"
-(vì sinh 2007 thì 2025 mới ~18 tuổi, chưa thể năm 3-4 đại học)
 
-Viết code Python tạo cột rule_sayso_2007: =1 nếu (birthyear=2007 AND year-of-study in [3,4]), ngược lại =0.
-Giải thích logic và in 5 dòng ví dụ.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p0-good')">📋 Sao chép</button></div>
+Viết code tạo cột rule_sayso_2007_year34 (=1 nếu phạm). Dùng cột profile-qbirthyear và profile-qyear-of-study.
+In 5 dòng ví dụ để tôi kiểm tra.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p0-turn2')">📋 Sao chép</button></div>
         </div>
-        <div class="box pro"><span class="bt">🎯 So sánh</span> Cùng 1 yêu cầu, prompt thứ 2 ra kết quả đúng ngay vì AI biết rõ: code cột nghĩa gì, giá trị thế nào, rule kiểm tra cụ thể. <strong>Đó là sức mạnh của context.</strong></div>
+        <div class="box pro"><span class="bt">🎯 So sánh với cách "1 phát ăn ngay"</span> Nếu gộp lượt 1+2 thành 1 câu, AI dễ hiểu sai cột → code sai → phải làm lại. Tách thành tương tác giúp bạn <strong>bắt lỗi sớm</strong> và AI "học" đúng data.</div>
       </section>
 
       <section class="chapter" id="c1">
@@ -330,119 +339,130 @@ Viết rõ từng bước cho người mới, kèm lệnh chính xác.</div>
       </section>
 
       <section class="chapter" id="c2">
-        <h2 class="ch-title"><span class="num">Chương 2</span> ★ 3 file setup = "context vàng"</h2>
-        <div class="ch-sub">3 file questionnaire / structure / behavior là "bản đồ" giải mã data. Đây là tài sản quan trọng nhất — hiểu chúng là chìa khóa để AI làm đúng.</div>
+        <h2 class="ch-title"><span class="num">Chương 2</span> ★ Nhận diện các file context &amp; tác dụng</h2>
+        <div class="ch-sub">Hiểu logic từng loại file để biết khi nào mention cái nào. Bạn không cần đọc cặn kẽ từng dòng — AI đọc cho bạn. Bạn chỉ cần biết "file này để làm gì".</div>
 
-        <p>Mỗi đợt khảo sát, hệ thống (survey platform) xuất về <strong>4 loại file</strong>. Data file là kết quả, 3 file còn lại là "hướng dẫn sử dụng" để hiểu data. Bạn <strong>phải nộp cả 4 cho AI</strong>, không chỉ data.</p>
-
-        <h3 class="sec">File 1 — questionnaire.csv (codebook giải mã cột &amp; giá trị)</h3>
-        <p>Mỗi dòng mô tả 1 câu hỏi hoặc 1 option giá trị. Đây là "bản dịch" data từ mã vô nghĩa sang ngôn ngữ người.</p>
-        <div class="code-block">
-          <div class="cbhead"><span><span class="dot">●</span> questionnaire.csv — ví dụ</span><span class="copy">📋</span></div>
-          <pre class="code"><span class="cm">survey-code, vi, en, chọn, type</span>
-profile-qbirthyear, "Năm sinh", "Birthyear", Chọn, external
-profile-qbirthyear_o1990, "1990", "1990", Chọn, external
-profile-qbirthyear_o2007, "2007", "2007", Chọn, external
-profile-qbirthyear_o2011, "Sau năm 2010", "After 2010", Chọn, external</pre>
-        </div>
-        <p>→ Khi thấy cột <code class="ic">profile-qbirthyear</code> trong data, AI tra file này để biết: đây là câu "Năm sinh", có các giá trị nào (1990, 2007...), mỗi giá trị nghĩa là gì.</p>
-        <div class="box tip"><span class="bt">✅ Dùng để</span> Giải mã <strong>mọi cột data</strong> thành ngôn ngữ người. AI đọc file này để biết cột nào nghĩa là gì, giá trị nào hợp lệ. <strong>Bạn không cần tự nhớ — AI tự so questionnaire để hiểu.</strong></div>
-
-        <h3 class="sec">File 2 — survey-structure.csv (cây cấu trúc câu hỏi)</h3>
-        <p>Mỗi dòng = 1 thành phần form. Cho biết loại câu hỏi (WIDGET TYPE) + quan hệ cha-con.</p>
-        <div class="code-block">
-          <div class="cbhead"><span><span class="dot">●</span> survey-structure.csv — ví dụ</span><span class="copy">📋</span></div>
-          <pre class="code"><span class="cm">Mã Câu Hỏi, WIDGET TYPE, Survey, Belong Question, Client Action</span>
-part0, layout_box, external, , Chọn
-profile-qbirthyear, list_box, external, part0, Chọn
-profile-qyear-of-study, list_box, external, part0, Chọn
-favorite-industry, multiple_choice, external, , Chọn
-ai-use, scale, external, , Chọn
-impt-ranking, grid_listbox, external, , Chọn</pre>
-        </div>
-        <p>→ Cột <strong>WIDGET TYPE</strong> cho biết loại câu hỏi: <code class="ic">multiple_choice</code> (chọn nhiều), <code class="ic">scale</code> (thang điểm), <code class="ic">list_box</code> (chọn 1), <code class="ic">grid_multiple</code> (ma trận)... AI dùng để biết cách đọc data cho đúng loại.</p>
-        <div class="box tip"><span class="bt">✅ Dùng để</span> AI hiểu <strong>kiểu câu hỏi</strong> → tự biết cách đọc data (mỗi loại lưu khác nhau). Bạn không cần phân biệt — AI lo.</div>
-
-        <h3 class="sec">File 3 — behavior.csv (rule validation &amp; logic hiển thị)</h3>
-        <p>Rule do người thiết kế khảo sát đặt: bắt buộc chọn, hiện theo điều kiện, v.v.</p>
-        <div class="code-block">
-          <div class="cbhead"><span><span class="dot">●</span> behavior.csv — ví dụ</span><span class="copy">📋</span></div>
-          <pre class="code"><span class="cm">code, Behavior, Value, Reminder - VE, Survey</span>
-policyagreement5, va_at_least, 1, "Vui lòng đồng ý...", external
-part0, va_force_response, , "Vui lòng lựa chọn...", external
-profile-qbirthyear, behavior_custom_empty_text_for_select, , "- Năm sinh -", external</pre>
-        </div>
-        <p>→ <code class="ic">va_at_least 1</code> = phải chọn ít nhất 1. <code class="ic">va_force_response</code> = bắt buộc trả lời. File này giúp AI hiểu <strong>ràng buộc</strong> của dữ liệu (câu nào bắt buộc, logic phụ thuộc).</p>
-        <div class="box info"><span class="bt">💡 Lưu ý</span> File này đôi khi không cần cho mọi rule. Nhưng khi rule của DA liên quan logic "hiện theo điều kiện" (vd: chỉ hỏi trường HN nếu chọn khu vực HN), file này là chìa khóa.</div>
-
-        <h3 class="sec">Tổng kết: 4 file bạn cần đưa AI mỗi lần</h3>
+        <h3 class="sec">3 file setup = "nền tảng" (luôn mention ở lượt đầu)</h3>
+        <p>Mỗi đợt khảo sát, hệ thống (survey platform) xuất về 3 file "hướng dẫn sử dụng". Đây là <strong>nền</strong> để AI giải mã data — không phải tất cả những gì AI cần.</p>
         <table>
-          <tr><th>File</th><th>Vai trò</th><th>Bắt buộc?</th></tr>
-          <tr><td><strong>data.csv</strong></td><td>Data thô (respondent × cột)</td><td>✅ Luôn luôn</td></tr>
-          <tr><td><strong>questionnaire.csv</strong></td><td>Giải mã code cột → ý nghĩa</td><td>✅ Luôn luôn</td></tr>
-          <tr><td><strong>survey-structure.csv</strong></td><td>Loại câu hỏi, cấu trúc</td><td>✅ Luôn luôn</td></tr>
-          <tr><td><strong>behavior.csv</strong></td><td>Rule validation/logic</td><td>🔶 Khi rule liên quan logic hiển thị</td></tr>
+          <tr><th>File</th><th>Tác dụng (nói cho AI)</th></tr>
+          <tr><td><strong>questionnaire.csv</strong></td><td><em>"Bản dịch" mã cột → ý nghĩa</em>. Khi AI thấy cột <code class="ic">profile-qbirthyear</code>, file này cho biết: câu "Năm sinh", có giá trị nào (1990, 2007...), mỗi giá trị nghĩa gì.</td></tr>
+          <tr><td><strong>survey-structure.csv</strong></td><td><em>Loại câu hỏi + cấu trúc</em>. Cho biết cột nào là multiple_choice (chọn nhiều), scale (thang), list_box (chọn 1)... → AI biết cách đọc data cho đúng loại.</td></tr>
+          <tr><td><strong>behavior.csv</strong></td><td><em>Rule validation/logic hiển thị</em>. Cho biết câu nào bắt buộc (<code class="ic">va_force_response</code>), hiện theo điều kiện (<code class="ic">dlogic_show...</code>). Thường dùng khi rule liên quan logic phụ thuộc.</td></tr>
         </table>
-        <div class="box pro"><span class="bt">🎯 Thói quen vàng</span> Tạo 1 folder dự án cho mỗi đợt khảo sát, bỏ đủ 4 file (3 setup + data) vào. Khi nhờ AI, đính kèm cả folder — AI có đầy đủ "bản đồ" để hiểu data.</div>
+        <div class="box info"><span class="bt">💡 Bạn không cần hiểu cặn kẽ</span> Chỉ cần biết "file này để làm gì" rồi mention cho AI — AI tự đọc từng dòng. Nếu rule không liên quan logic hiển thị, behavior.csv có thể bỏ qua được.</div>
+
+        <h3 class="sec">Các file bổ sung (tùy dự án)</h3>
+        <p>3 file setup là nền, nhưng nhiều rule cần thêm thông tin. Đây là chỗ DA chủ động <strong>thêm context</strong>:</p>
+        <table>
+          <tr><th>File bổ sung</th><th>Tác dụng</th><th>Ví dụ</th></tr>
+          <tr><td><strong>File rule của DA</strong> (Excel/MD)</td><td>Định nghĩa logic kiểm tra</td><td>"SV 2007 năm 3-4 → nói xạo"</td></tr>
+          <tr><td><strong>Bảng merge ngành</strong></td><td>Gom nhiều mã → nhóm</td><td>50 mã trường → 3 nhóm (top/khá/Khác)</td></tr>
+          <tr><td><strong>Bảng quota</strong></td><td>Mục tiêu số lượng từng nhóm</td><td>Cần 500 SV IT HN</td></tr>
+          <tr><td><strong>File context cũ</strong> (từ đợt trước)</td><td>Tái dùng rule, tránh viết lại</td><td>context_2024.md từ đợt trước</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — mention nhiều file + mô tả tác dụng <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p2-mention">Tôi là Data Analyst. Đính kèm các file cho đợt khảo sát:
+- questionnaire.csv, survey-structure.csv, behavior.csv → 3 file setup, đọc để hiểu cấu trúc data
+- data_q3_2025.csv → data respondent cần xử lý
+- rule_definitions.xlsx → file rule của tôi (mỗi dòng = 1 rule, có cột mô tả + cột liên quan)
+- industry_merge.csv → bảng gom ngành (cột industry_code → industry_group)
+
+Hãy đọc tất cả, tóm tắt lại cho tôi: bạn hiểu mỗi file dùng làm gì, và rule nào sẽ áp dụng. Tôi sẽ kiểm tra trước khi bạn viết code.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p2-mention')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box pro"><span class="bt">🎯 Tư duy then chốt</span> Bạn là người <strong>biết file nào dùng làm gì</strong> — AI là người đọc nội dung. Mention file kèm 1 câu mô tả tác dụng (vd: "industry_merge.csv → bảng gom ngành"), AI sẽ tích hợp đúng cách. <strong>Không cần đưa tất cả file mọi lúc</strong> — chỉ những file liên quan đến task hiện tại.</div>
       </section>
 
       <section class="chapter" id="c3">
-        <h2 class="ch-title"><span class="num">Chương 3</span> ★ Viết context block chuẩn</h2>
-        <div class="ch-sub">Đưa 3 file setup cho AI là chưa đủ — bạn cần tóm tắt rule nghiệp vụ thành "context block" rõ ràng. Đây là template dùng cho mọi đợt khảo sát.</div>
+        <h2 class="ch-title"><span class="num">Chương 3</span> ★ Quy trình tương tác &amp; đưa rule cho AI</h2>
+        <div class="ch-sub">Không phải "1 phát ăn ngay" — đây là quy trình qua lại giữa bạn và AI. Chia lượt để bắt lỗi sớm, AI "học" đúng data từng bước.</div>
 
-        <h3 class="sec">Cấu trúc context block chuẩn (4 phần)</h3>
+        <h3 class="sec">Quy trình 4 lượt tương tác</h3>
+
+        <h4 class="mini">Lượt 1 — Mention nền + yêu cầu đọc hiểu</h4>
         <div class="prompt">
-          <div class="ph">📋 Template Context block chuẩn <span class="ptag">template gốc</span></div>
-          <div class="pbody" id="p3-template">[1. MÔ TẢ DATA]
-- File data: {data.csv} — {200.000 dòng × 2.000 cột}
-- Mỗi dòng = 1 respondent (theo respondentid)
-- 3 file setup đính kèm: questionnaire.csv, survey-structure.csv, behavior.csv
+          <div class="ph">📋 Lượt 1 — mention file + đọc hiểu <span class="ptag">quy trình</span></div>
+          <div class="pbody" id="p3-turn1">Tôi là Data Analyst. Đính kèm 3 file setup + data của đợt khảo sát:
+- questionnaire.csv, survey-structure.csv, behavior.csv
+- data_q3_2025.csv
 
-[2. CÁCH ĐỌC DATA]
-- Data thường trả về dạng [tên câu hỏi] + giá trị (vd profile-qbirthyear=1990)
-- Một số câu trả về dạng [tên]o1 o2 (mỗi option 1 cột) — AI đọc questionnaire sẽ tự hiểu
-- Bạn KHÔNG cần mô tả chi tiết: chỉ cần đính kèm 3 file setup, AI tự so để biết cách đọc từng cột
-
-[3. DANH SÁCH RULE CẦN TẠO]
-Mỗi rule = 1 cột mới. Mô tả bằng tiếng Việt + chỉ ra cột liên quan:
-- Rule "sayso_2007": "SV sinh 2007 nhưng năm 3-4 → khả năng nói xạo"
-  Dùng cột: profile-qbirthyear, profile-qyear-of-study
-- Rule "...": "{mô tả}"
-  Dùng cột: ...
-
-[4. ĐỊNH DẠNG ĐẦU RA]
-- Thêm cột rule_* vào data, giá trị 1 (pass) / 0 (fail) hoặc theo logic mô tả
-- Cuối cùng tạo cột {tên phán quyết} theo quy tắc {mô tả}
-- Xuất ra {ten_file_ket_qua}.csv</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-template')">📋 Sao chép</button></div>
+Hãy đọc 3 file setup để hiểu cấu trúc, rồi check vài cột data (profile-qbirthyear, profile-qyear-of-study) để xác nhận bạn đọc đúng cách.
+Tóm tắt lại: bạn hiểu cột nào nghĩa là gì, quy ước lưu data thế nào.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-turn1')">📋 Sao chép</button></div>
         </div>
 
-        <h3 class="sec">Ví dụ context block hoàn chỉnh</h3>
+        <h4 class="mini">Lượt 2 — Kiểm tra hiểu đúng + bổ sung</h4>
+        <p>Đọc tóm tắt của AI. Nếu đúng → tiếp. Nếu sai (vd AI hiểu nhầm giá trị) → sửa: "không phải vậy, cột X có giá trị...". <strong>Đây là điểm QA quan trọng</strong> — đảm bảo AI vào đúng bài trước khi làm việc thật.</p>
+
+        <h4 class="mini">Lượt 3 — Đưa rule + file bổ sung</h4>
         <div class="prompt">
-          <div class="ph">📋 Context block thực tế — đợt khảo sát sinh viên <span class="ptag">ví dụ hoàn chỉnh</span></div>
-          <div class="pbody" id="p3-full">[1. MÔ TẢ DATA]
-File: data_q3_2025.csv — 48.217 respondents × 1.850 cột. Đính kèm 3 file setup.
+          <div class="ph">📋 Lượt 3 — mention file rule + mô tả <span class="ptag">quy trình</span></div>
+          <div class="pbody" id="p3-turn3">Tốt, bạn đã hiểu đúng. Giờ tôi đính kèm thêm:
+- rule_definitions.xlsx → file rule của tôi (mỗi dòng = 1 rule)
+- industry_merge.csv → bảng gom ngành để dùng cho rule phân nhóm
 
-[2. CÁCH ĐỌC DATA]
-- 3 file setup đính kèm — AI tự so questionnaire để biết cột nào chứa gì
-- profile-qyear-of-study: năm học (1-4)
-- ai-use: scale 1-5 (mức dùng AI)
+Danh sách rule chính:
+1. rule_sayso_2007: "SV sinh 2007 mà năm 3-4 → nói xạo"
+2. rule_top_uni_it: "Trường top (xem industry_merge) AND thích ngành IT"
 
-[3. DANH SÁCH RULE]
-- rule_sayso_2007: "SV sinh 2007 nhưng năm 3-4 → nói xạo (1=phạm, 0=ok)"
-- rule_top_uni: "Học trường top (theo danh sách) AND favorite-industry chứa IT"
-- rule_fast_response: "Thời gian trả lời &lt; 3 phút → nghi copy"
-
-[4. ĐỊNH DẠNG]
-- Thêm các cột rule_* (1/0)
-- Cột final_verdict: = "QUALIFIED" nếu &gt;=80% rule pass, "REVIEW" nếu 50-80%, "REJECT" nếu &lt;50%
-- Xuất ra qualified_data.csv</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-full')">📋 Sao chép</button></div>
+Hãy đọc 2 file mới, kết hợp với context từ lượt 1, rồi áp các rule lên data.
+In 5 dòng ví dụ mỗi rule để tôi kiểm tra trước khi chạy full.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-turn3')">📋 Sao chép</button></div>
         </div>
 
-        <div class="box tip"><span class="bt">✅ Thực hành Chương 3</span> Mở 1 đợt khảo sát thật, viết context block theo template. Lưu thành <code class="ic">context.md</code>. Mỗi rule chỉ cần <strong>mô tả tiếng Việt + chỉ ra cột liên quan</strong> — không cần viết công thức, AI sẽ tự dịch.</div>
+        <h4 class="mini">Lượt 4 — Xem kết quả + tinh chỉnh</h4>
+        <p>Sau khi AI áp rule, xem kết quả. Tỷ lệ phạm bất thường? Rule nào quá lỏng/khắt? → yêu cầu AI điều chỉnh. Đây là lượt <strong>phản hồi</strong>, không phải viết mới.</p>
 
-        <div class="box pro"><span class="bt">🎯 Nguyên tắc cốt lõi</span> Bạn chỉ cần <strong>2 thứ cho mỗi rule</strong>: (1) mô tả nghiệp vụ bằng tiếng Việt, (2) tên các cột liên quan. AI đọc 3 file setup để hiểu cột, rồi tự viết code. <strong>Không cần học syntax.</strong></div>
+        <div class="box pro"><span class="bt">🎯 Tại sao chia lượt?</span> Nhồi 4 việc vào 1 câu = AI dễ hiểu sai 1 chỗ → sai cả chain. Chia lượt giúp bạn <strong>bắt lỗi ở từng bước</strong>, AI "học" dần đúng data. Mất thêm 2-3 lượt nhưng tiết kiệm hàng giờ sửa sai.</div>
+
+        <h3 class="sec">Mô tả rule cho AI</h3>
+        <p>Mỗi rule chỉ cần <strong>2 thứ</strong>, không cần viết công thức:</p>
+        <ol>
+          <li><strong>Mô tả nghiệp vụ tiếng Việt</strong>: "SV sinh 2007 mà năm 3-4 → nói xạo"</li>
+          <li><strong>Chỉ ra cột liên quan</strong>: profile-qbirthyear, profile-qyear-of-study</li>
+        </ol>
+        <p>AI tự đọc setup để biết cách truy cập cột, tự viết code. Rule phức tạp bao nhiêu cũng được — miễn mô tả rõ.</p>
+
+        <div class="box info"><span class="bt">💡 Thường tôi chỉ mention 3 file rồi nói AI đọc để hiểu context</span> Đó là lượt 1. Sau khi AI tóm tắt đúng, tôi mới mention file data + yêu cầu xử lý. <strong>Không nhồi tất cả vào 1 lần.</strong></div>
+      </section>
+
+      <section class="chapter" id="c3b">
+        <h2 class="ch-title"><span class="num">★</span> Nhờ AI ghi nhớ context vào file MD</h2>
+        <div class="ch-sub">Sau khi AI đã hiểu đúng data + rule, bảo nó ghi lại vào file MD để dùng cho lần sau — không phải giải thích lại từ đầu.</div>
+
+        <h3 class="sec">Vấn đề: mỗi lần chat mới lại phải giải thích lại</h3>
+        <p>Mỗi cuộc chat mới, AI "quên" hết. Nếu lần sau bạn muốn review/đổi rule, lại phải mention 3 file + giải thích cấu trúc từ đầu — mất thời gian. <strong>Giải pháp: nhờ AI ghi nhớ vào file MD.</strong></p>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — nhờ AI ghi nhớ context vào MD <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p3b-memorize">Tốt, bạn đã hiểu đúng cấu trúc data + các rule của đợt khảo sát này.
+
+Hãy TỰ ĐỘNG ghi chú tất cả context vào các file MD tương ứng để truy xuất về sau:
+1. context_q3_2025.md — tóm tắt: cấu trúc bộ khảo sát, cách đọc từng cột chính, quy ước lưu data
+2. rules_q3_2025.md — danh sách rule: mỗi rule kèm mô tả + cột liên quan + logic
+3. README.md — mục lục: file nào chứa gì, cách dùng
+
+Yêu cầu:
+- Viết rõ ràng, có cấu trúc, tiếng Việt
+- Đủ chi tiết để lần sau (hoặc đồng nghiệp) chỉ cần đọc MD là hiểu — không cần hỏi lại
+- Tôi sẽ lưu các file này vào folder dự án</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3b-memorize')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Lợi ích</span> Lần sau review/đổi rule, bạn chỉ cần mention file MD + hỏi: "đọc context_q3_2025.md, rồi cập nhật rule X". AI nắm ngay bối cảnh — <strong>không phải đi quét lại 3 file setup + giải thích từ đầu.</strong></div>
+
+        <h3 class="sec">Khi nào nhờ AI ghi nhớ?</h3>
+        <ul>
+          <li>Sau khi AI đã <strong>hiểu đúng</strong> data (qua lượt 1-2) → ghi context</li>
+          <li>Sau khi <strong>danh sách rule ổn định</strong> → ghi rules.md</li>
+          <li>Mỗi lần <strong>đổi rule</strong> → yêu cầu AI cập nhật MD tương ứng</li>
+        </ul>
+
+        <div class="box pro"><span class="bt">🎯 Nguyên tắc</span> Context và rule là <strong>tài sản dự án</strong> — không phải tạm thời trong 1 cuộc chat. Lưu thành MD, dùng lại cho mọi lần sau, chia sẻ đồng nghiệp, commit lên Git. <strong>AI tự động ghi chú, bạn chỉ yêu cầu.</strong></div>
       </section>
 
       <!-- ============ PART 2 ============ -->
@@ -1016,8 +1036,10 @@ function copyPrompt(id){
 
 /* ===== FLASHCARDS ===== */
 const FC = [
-  {q:"3 file setup của 1 đợt khảo sát là gì?", a:"questionnaire.csv (giải mã cột & giá trị), survey-structure.csv (loại widget + cấu trúc cha-con), behavior.csv (rule validation/logic hiển thị). Đây là 'context vàng' để AI hiểu data."},
-  {q:"Tại sao AI 'không hiểu' file data của bạn?", a:"Vì data chỉ có cột mã hóa (vd profile-qbirthyear). AI không biết cột đó chứa giá trị gì. Phải đưa 3 file setup — AI tự so questionnaire để hiểu."},
+  {q:"3 file setup dùng làm gì?", a:"questionnaire.csv (giải mã cột & giá trị), survey-structure.csv (loại câu hỏi), behavior.csv (rule validation). Đây là NỀN để AI hiểu data — không phải tất cả. Có thể thêm file rule, bảng merge ngành, file context cũ..."},
+  {q:"Dùng AI có phải '1 phát ăn ngay'?", a:"KHÔNG. Context xây qua tương tác: lượt 1 mention 3 file setup → AI đọc tóm tắt → lượt 2 kiểm tra hiểu đúng → lượt 3 đưa rule+file bổ sung → lượt 4 xem kết quả tinh chỉnh. Chia lượt để bắt lỗi sớm."},
+  {q:"Tại sao AI 'không hiểu' file data của bạn?", a:"Vì data chỉ có cột mã hóa (vd profile-qbirthyear). AI không biết cột đó chứa giá trị gì. Mention 3 file setup — AI tự so questionnaire để hiểu."},
+  {q:"Làm sao AI ghi nhớ context cho lần sau?", a:"Sau khi AI hiểu đúng, bảo nó ghi vào file MD (context_*.md, rules_*.md, README.md). Lần sau chỉ cần mention MD — không phải quét lại 3 file setup + giải thích từ đầu."},
   {q:"Cách data lưu trong file respondent thế nào?", a:"Tùy loại câu hỏi — thường ra dạng [tên câu hỏi] + giá trị, có khi dạng [tên]o1 o2 (mỗi option 1 cột). Bạn KHÔNG cần nhớ — AI đọc questionnaire sẽ tự hiểu cách đọc từng cột."},
   {q:"Cần phân biệt multiple_choice vs single_choice không?", a:"KHÔNG cần. AI đọc survey-structure.csv để biết loại câu hỏi, tự biết cách đọc data. Bạn chỉ việc đính kèm đủ 3 file setup."},
   {q:"Vì sao Excel/PQ 'tắc thở' với 2000 cột × 200k dòng?", a:"Excel/PQ xử lý từng dòng + giới hạn RAM. Cột nhiều + dòng nhiều + công thức lồng → đơ máy. Python xử lý theo cột (vector hóa) nên không bị."},

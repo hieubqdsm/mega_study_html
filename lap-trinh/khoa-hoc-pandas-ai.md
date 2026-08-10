@@ -25,51 +25,66 @@
 
 | Phần | Tên | Chương | Mục tiêu |
 |---|---|---|---|
-| **P1** | 🟦 Nền tảng & 3 File Setup | 0–3 | Hiểu vì sao cần đổi cách; nắm vững **3 file setup** làm "context vàng" |
+| **P1** | 🟦 Nền tảng & Context qua Tương tác | 0–3+★ | Hiểu các file context (3 setup + bổ sung); quy trình tương tác; ghi nhớ vào MD |
 | **P2** | 🟩 Điều Khiển AI Xử Lý (Không Tự Code) | 4–8 | Nhờ AI giải mã → apply 20-50 rule → phán quyết → báo cáo |
 | **P3** | 🟨 Vòng Đời Code: Check · Update · Commit | 9–12 | Nhờ AI review, update rule, build pipeline, **commit Git (không học git)** |
 | **P4** | 🟪 Thực Chiến & Công Cụ | 13–15 | Case study full loop, thư viện prompt, cheatsheet |
 
 ---
 
-# 🟦 PHẦN 1 — NỀN TẢNG & 3 FILE SETUP
+# 🟦 PHẦN 1 — NỀN TẢNG & CONTEXT QUA TƯƠNG TÁC
 
 ## Chương 0: ★ AI không hiểu data nếu thiếu context
 
-Data chỉ có cột mã hóa (`profile-qbirthyear`). AI không biết cột đó chứa giá trị gì. **Prompt "kiểm tra respondent nói xạo" sẽ thất bại** nếu thiếu 3 file setup.
+Data chỉ có cột mã hóa (`profile-qbirthyear`). AI không biết cột đó chứa giá trị gì. **Prompt "kiểm tra respondent nói xạo" sẽ thất bại** nếu thiếu context.
 
-**Context gồm:** data file + questionnaire.csv (giải mã cột & giá trị) + survey-structure.csv (loại widget) + behavior.csv (rule validation) + mô tả rule của DA.
+**Quan trọng: context KHÔNG phải "1 phát ăn ngay".** Nó là quá trình xây qua tương tác: mention 3 file setup → AI đọc tóm tắt → kiểm tra hiểu đúng → đưa rule+file bổ sung → xem kết quả tinh chỉnh.
 
-> **Quy luật vàng:** Context càng đầy đủ → AI càng đúng ngay lần đầu. 90% lỗi là do thiếu context.
+**Context đến từ nhiều nguồn (không chỉ 3 file setup):** 3 file setup là *nền*. Có thể thêm file rule Excel, bảng merge ngành, bảng quota, file context cũ từ đợt trước...
+
+> **Quy luật vàng:** Context càng đầy đủ → AI càng đúng. Nhưng xây qua tương tác, không nhồi 1 lần.
 
 ## Chương 1: Môi trường & vì sao Excel/PQ "tắc thở"
 
-Workflow cũ (Excel + 20-50 cột rule công thức) không chịu nổi 2000 cột × 200k dòng: Excel treo, PQ tính rất lâu, kéo công thức xuống 200k dòng đơ máy. Python xử lý theo cột (vector hóa) nên chạy trong vài giây.
+Workflow cũ (Excel + 20-50 cột rule công thức) không chịu nổi 2000 cột × 200k dòng. Python xử lý theo cột (vector hóa) nên chạy trong vài giây.
 
-Cài 3 thứ (nhờ AI dẫn từng bước): Python 3.12+, VS Code + extension Python/Jupyter, `pip install pandas openpyxl`. **Thay thế:** Google Colab nếu công ty không cho cài Python.
+Cài 3 thứ (nhờ AI dẫn từng bước): Python 3.12+, VS Code + extension Python/Jupyter, `pip install pandas openpyxl`. **Thay thế:** Google Colab.
 
-## Chương 2: ★ 3 file setup = "context vàng"
+## Chương 2: ★ Nhận diện các file context & tác dụng
 
-| File | Vai trò | Dùng để |
-|---|---|---|
-| **questionnaire.csv** | Codebook: mô tả từng câu hỏi + option giá trị | Giải mã cột `profile-qbirthyear` → biết chứa giá trị gì (1990, 2007...) mỗi giá trị nghĩa là gì |
-| **survey-structure.csv** | Cây cấu trúc: mã câu + **WIDGET TYPE** (multiple_choice/scale/list_box...) + "belong question" (cha) | AI biết loại câu hỏi → tự biết cách đọc data |
-| **behavior.csv** | Rule validation: `va_at_least 1`, `va_force_response`, `dlogic_show_element_when...` | Hiểu ràng buộc (bắt buộc chọn, hiện theo điều kiện) |
+Hiểu logic từng loại file để biết khi nào mention cái nào — **không cần đọc cặn kẽ, AI đọc cho bạn.**
 
-**Quan trọng:** Đưa AI cả **4 file** mỗi lần (3 setup + data), không chỉ data. Tạo 1 folder dự án cho mỗi đợt, bỏ đủ 4 file vào.
+**3 file setup (nền — luôn mention lượt đầu):**
+| File | Tác dụng |
+|---|---|
+| **questionnaire.csv** | "Bản dịch" mã cột → ý nghĩa + giá trị |
+| **survey-structure.csv** | Loại câu hỏi (multiple_choice/scale/list_box) + cấu trúc cha-con |
+| **behavior.csv** | Rule validation/logic hiển thị (bắt buộc, hiện theo điều kiện) |
 
-**Cách data lưu:** Tùy loại câu hỏi — thường ra dạng `[tên câu hỏi]` + giá trị, có khi dạng `[tên]o1 o2` (mỗi option 1 cột). **Bạn không cần phân biệt** — AI đọc questionnaire sẽ tự hiểu cách đọc từng cột.
+**File bổ sung (tùy dự án):** file rule DA (Excel/MD), bảng merge ngành, bảng quota, file context cũ. Mention kèm 1 câu mô tả tác dụng → AI tích hợp đúng.
 
-## Chương 3: ★ Viết context block chuẩn (4 phần)
+> **Tư duy then chốt:** Bạn biết file nào dùng làm gì — AI đọc nội dung. Mention file kèm mô tả (vd "industry_merge.csv → bảng gom ngành"), AI tự lo phần còn lại.
 
-```
-[1. MÔ TẢ DATA] file, số dòng, 3 setup đính kèm
-[2. CÁCH ĐỌC DATA] đính kèm 3 setup — AI tự so questionnaire để biết cách đọc từng cột
-[3. DANH SÁCH RULE] mỗi rule = mô tả VI + cột liên quan
-[4. ĐỊNH DẠNG ĐẦU RA] cột rule_* (1/0) + cột phán quyết
-```
+## Chương 3: ★ Quy trình tương tác & đưa rule cho AI
 
-> **Nguyên tắc cốt lõi:** Chỉ cần 2 thứ cho mỗi rule — (1) mô tả tiếng Việt, (2) tên cột liên quan. AI tự đọc setup để biết cách truy cập cột, tự viết code. **Không cần học syntax.**
+**4 lượt tương tác:**
+1. **Lượt 1** — Mention 3 file setup + data → AI đọc, tóm tắt cấu trúc
+2. **Lượt 2** — Kiểm tra AI hiểu đúng chưa (QA quan trọng). Sai → sửa
+3. **Lượt 3** — Mention file rule + file bổ sung (bảng merge...) → áp rule, in 5 dòng ví dụ
+4. **Lượt 4** — Xem kết quả, tinh chỉnh rule
+
+> **Thường tôi chỉ mention 3 file rồi nói AI đọc để hiểu context** — đó là lượt 1. Sau khi AI tóm tắt đúng, mới mention file data + yêu cầu xử lý. **Không nhồi tất cả 1 lần.**
+
+**Mô tả rule:** chỉ cần (1) mô tả tiếng Việt + (2) tên cột liên quan. AI tự đọc setup để viết code.
+
+## ★ Nhờ AI ghi nhớ context vào file MD
+
+Sau khi AI hiểu đúng data + rule → bảo nó ghi vào MD để dùng lần sau:
+- `context_q3_2025.md` — cấu trúc bộ khảo sát, cách đọc cột
+- `rules_q3_2025.md` — danh sách rule + cột liên quan + logic
+- `README.md` — mục lục
+
+**Lợi ích:** Lần sau review/đổi rule, chỉ cần mention MD — không phải quét lại 3 file setup + giải thích từ đầu. Context & rule là **tài sản dự án**, lưu thành MD, commit lên Git.
 
 ---
 
