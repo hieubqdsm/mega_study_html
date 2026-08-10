@@ -6,7 +6,9 @@
 
 ## 📚 Tổng Quan
 
-**Mục tiêu:** Hướng dẫn cho team **Data Analyst xử lý khảo sát** (data hàng nghìn cột × hàng trăm nghìn dòng). Bạn **không cần biết code, không cần học git** — chỉ cần biết **đưa 3 file setup + mô tả rule cho AI**, AI tự sinh code Python để apply 20-50 cột rule và ra **cột phán quyết** (respondent đủ/không đủ chuẩn). Mọi thao tác qua **prompt tiếng Việt**.
+**Mục tiêu:** Hướng dẫn cho team **Data Analyst xử lý khảo sát** (data hàng nghìn cột × hàng trăm nghìn dòng). Bạn **chưa biết code hay git cũng không sao** — hãy **nhờ AI viết trước, rồi nhờ AI giải thích từng bước để hiểu và biết AI sai chỗ nào mà sửa**. Qua vài vòng bạn tự chủ làm chủ công nghệ. Mọi thao tác qua **prompt tiếng Việt**.
+
+> **Cách tiếp cận:** Không phải "không cần học gì". Cách đúng: *không cần biết ngay* → nhờ AI viết → nhờ AI giải thích cái nó vừa viết để hiểu → đọc hiểu đủ để bắt lỗi AI và yêu cầu sửa. Học qua làm, chủ động, từng bước.
 
 **Bài toán thực:** Workflow cũ — tải data CSV → Excel → thêm 20-50 cột rule bằng công thức → cột phán quyết. Vấn đề: **2000 cột × 200k dòng làm Excel/PQ treo**. Lời giải: Python (do AI sinh code), xử lý theo cột (vector hóa) nên không bị.
 
@@ -27,7 +29,7 @@
 |---|---|---|---|
 | **P1** | 🟦 Nền tảng & Context qua Tương tác | 0–3+★ | Hiểu các file context (3 setup + bổ sung); quy trình tương tác; ghi nhớ vào MD |
 | **P2** | 🟩 Điều Khiển AI Xử Lý (Không Tự Code) | 4–8 | Nhờ AI giải mã → apply 20-50 rule → phán quyết → báo cáo |
-| **P3** | 🟨 Vòng Đời Code: Check · Update · Commit | 9–12 | Nhờ AI review, update rule, build pipeline, **commit Git (không học git)** |
+| **P3** | 🟨 Vòng Đời Code: Check · Update · Commit | 9–12 | Nhờ AI review, update rule, build pipeline, **commit Git (chưa biết git cũng OK)** |
 | **P4** | 🟪 Thực Chiến & Công Cụ | 13–15 | Case study full loop, thư viện prompt, cheatsheet |
 
 ---
@@ -149,9 +151,9 @@ Khi thêm/đổi/bỏ rule: **cập nhật `context.md` trước**, rồi nhờ 
 
 Gom các bước thành `run_report.py`: `load_setup()` → `load_data()` → `apply_rules()` → `make_verdict()` → `report()`. Chạy `python run_report.py surveys/q3_2025/`. **Đợt sau thay folder + data → 10 phút thay 1.5 ngày.**
 
-## Chương 12: ★ Nhờ AI commit lên Git — KHÔNG cần học git
+## Chương 12: ★ Nhờ AI commit lên Git — chưa biết git cũng làm được
 
-**Git = Google Drive cho code.** Bạn không cần thuộc 1 lệnh. Mỗi lần commit/push: mở AI → mô tả → AI sinh lệnh → copy–dán terminal → lỗi dán lại.
+**Git = Google Drive cho code.** Bạn chưa thuộc lệnh cũng không sao. Mỗi lần commit/push: nhờ AI sinh lệnh → copy–dán terminal. **Nhưng đừng dán mù** — nhờ AI giải thích từng lệnh để hiểu, qua vài lần bạn sẽ tự nhớ. Lỗi gì → dán lại cho AI sửa.
 
 **Bảo mật:** KHÔNG commit data respondent thật. Chỉ commit code + context ẩn danh. Dùng `.gitignore` loại trừ `*.csv` data.
 
