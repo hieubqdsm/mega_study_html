@@ -104,7 +104,18 @@ Sau khi AI hiểu đúng data + rule → bảo nó ghi vào MD để dùng lần
 - Claude: Opus 5 (suy luận sâu) / **Sonnet 5 (code & agentic — chọn cho 90% việc code pandas)**
 - Gemini: Gemini 3 / **Gemini 3.6 Flash (dẫn đầu bảng xếp hạng — chọn cho đa số việc)**
 
-**Tool đi kèm:** **Claude Code** (plugin VS Code — DA nên cài, sửa file trực tiếp + duyệt diff). **Antigravity** (Google, IDE desktop — thường quá mức cho DA xử lý CSV).
+**Giao tiếp với AI ở đâu? (5 loại interface)** — cùng model, nơi giao tiếp khác → trải nghiệm khác:
+1. **① Chat web** (chatgpt.com, claude.ai) — đơn giản nhất, không cài đặt, có Advanced Data Analysis. *Khám nhanh 1 đợt, hỏi test.*
+2. **② Desktop app** (Claude Desktop, ChatGPT Desktop) — đọc/sửa file local không cần upload, phím tắt. *Kéo thả CSV vào app, hỏi Q&A — hợp người không code.*
+3. **③ CLI / Terminal** (Claude Code CLI, Codex CLI) — nhanh, tự động hóa được, nhưng giao diện chữ. *Khi đã có pipeline, nhờ AI chạy/sửa trong terminal.*
+4. **④ Extension VS Code** (Claude Code, Codex, Copilot) — AI sửa file trực tiếp, xem **diff** trước/sau. *Giai đoạn viết/chỉnh pipeline — DA nên cài, đây là điểm "ngọt" nhất.*
+5. **⑤ IDE agent** (Antigravity, Copilot Agent) — tự chạy nhiều bước. *Thường quá mức cho DA xử lý CSV.*
+
+**Hành trình đề xuất cho DA:** Bắt đầu ①② → khi viết pipeline chuyển ④ → khi ổn dùng ③ hoặc ① để review. Không cần dùng tất cả — chọn 1-2 cái quen tay.
+
+**Claude Code: CLI hay VS Code extension?** Cùng 1 sản phẩm. CLI = nhanh, cho người quen terminal. VS Code extension = có sidebar + xem diff, **dễ hơn cho người mới** — DA nên bắt đầu bằng extension.
+
+**Khác:** GitHub Copilot (Ask/Edit/Agent mode trong VS Code, trả phí). Antigravity (Google, IDE agent 1M context — quá mức cho CSV, mạnh cho app/web).
 
 ## Chương 5: Nhờ AI giải mã data file
 

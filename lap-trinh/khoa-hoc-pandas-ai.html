@@ -69,7 +69,7 @@
   .content-inner { padding: 38px 48px 120px; max-width: 1040px; }
 
   .hero { background: linear-gradient(135deg, rgba(112,77,255,.16), rgba(255,211,61,.05)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
-  .hero::after { content:"🐼"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.07; }
+  .hero::after { content:"📊"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.07; }
   .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
   .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
   .hero p { color: var(--light); max-width: 730px; }
@@ -183,7 +183,7 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo">
-      <div class="ic">🐼</div>
+      <div class="ic">📊</div>
       <h1>Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát</h1>
       <div class="sub">CSV LỚN · 3 FILE SETUP · RULE · GIT</div>
       <div class="pat">ai.apply_rules(data) → verdict</div>
@@ -198,7 +198,7 @@
       <li><a href="#c3b"><span class="cn">★</span> Nhờ AI ghi nhớ context vào MD</a></li>
 
       <li class="nav-section-title np1"><span class="badge">P2</span> ĐIỀU KHIỂN AI XỬ LÝ (KHÔNG TỰ CODE)</li>
-      <li><a href="#c4"><span class="cn">4</span> ★ Chọn AI &amp; công cụ (ChatGPT/Claude/Gemini)</a></li>
+      <li><a href="#c4"><span class="cn">4</span> ★ Chọn AI &amp; interface (web/desktop/CLI/IDE)</a></li>
       <li><a href="#c5"><span class="cn">5</span> Nhờ AI giải mã data file</a></li>
       <li><a href="#c6"><span class="cn">6</span> ★ Nhờ AI apply 20-50 cột rule</a></li>
       <li><a href="#c7"><span class="cn">7</span> ★ Nhờ AI tạo cột phán quyết cuối</a></li>
@@ -225,7 +225,7 @@
   <!-- MAIN -->
   <main class="main-content">
     <div class="topbar">
-      <div class="crumb">🐼 Hướng dẫn · <b id="crumb">AI Xử Lý Khảo Sát</b></div>
+      <div class="crumb">📊 Hướng dẫn · <b id="crumb">AI Xử Lý Khảo Sát</b></div>
       <a class="home" href="../index.html">🏠 Thư viện</a>
     </div>
     <div class="content-inner">
@@ -532,33 +532,73 @@ Yêu cầu:
 
         <div class="box info"><span class="bt">💡 Lưu ý về context window</span> Claude (Opus/Sonnet 5) và Gemini đều hỗ trợ <strong>1M token</strong> (Gemini mặc định; Claude 200K mặc định, 1M dạng mở rộng/tùy gói). Với data 2000 cột + 3 file setup, context lớn rất quan trọng — bạn đính kèm trọn bộ mà không bị cắt.</div>
 
-        <h3 class="sec">C. Công cụ đi kèm (ngoài chat web)</h3>
-        <p>Chat web tốt để bắt đầu, nhưng khi làm dự án nhiều file, các tool chuyên dụng dưới đây tiện hơn. <strong>Bạn vẫn điều khiển bằng tiếng Việt</strong> — chỉ khác giao diện.</p>
+        <h3 class="sec">C. Giao tiếp với AI ở đâu? (5 loại interface)</h3>
+        <p>Cùng 1 model nhưng <strong>nơi bạn giao tiếp khác nhau thì trải nghiệm &amp; phù hợp khác nhau</strong>. Dưới đây là 5 cách phổ biến, xếp từ dễ → chuyên dụng. <strong>Bạn vẫn dùng tiếng Việt ở mọi loại.</strong></p>
+
         <table>
-          <tr><th>Tool</th><th>Là gì</th><th>Khi nào DA nên dùng</th></tr>
+          <tr><th>Interface</th><th>Là gì</th><th>Ưu điểm</th><th>Nhược điểm</th><th>DA dùng khi nào</th></tr>
           <tr>
-            <td><strong>Claude Code</strong><br>(Anthropic)</td>
-            <td>Agent code dạng CLI/terminal, có plugin chính thức cho <strong>VS Code &amp; JetBrains</strong> (PyCharm, IntelliJ…), gần đây thêm Visual Studio 2026. Chỉnh sửa file trực tiếp, xem diff.</td>
-            <td><strong>DA nên cài plugin VS Code.</strong> Bạn mở folder dự án, Claude Code sửa <code class="ic">run_report.py</code> trực tiếp, bạn duyệt diff trước khi chấp nhận — không phải copy–dán. Lý tưởng cho pipeline nhiều file.</td>
+            <td><strong>① Chat web</strong><br>(chatgpt.com, claude.ai, gemini.google.com)</td>
+            <td>Trình duyệt, upload file, gõ prompt</td>
+            <td>Đơn giản nhất, không cài đặt, có Advanced Data Analysis (ChatGPT tự chạy code)</td>
+            <td>Phải copy–dán code ra ngoài chạy; chat mới thì quên context cũ</td>
+            <td><strong>Khám nhanh 1 đợt, hỏi test</strong> — bắt đầu ở đây</td>
           </tr>
           <tr>
-            <td><strong>Antigravity</strong><br>(Google)</td>
-            <td>IDE desktop agent (ra 11/2025, antigravity.google) chạy trên Gemini, 1M context. Có "Agent Teams" chạy nhiều subagent song song, agent tự code + chạy localhost + duyệt web test.</td>
-            <td><strong>Thường quá mức cần thiết cho DA xử lý CSV.</strong> Mạnh cho phát triển app/web đầy đủ. Chỉ cân nhắc nếu bạn build công cụ báo cáo nội bộ có giao diện.</td>
+            <td><strong>② Desktop app</strong><br>(Claude Desktop, ChatGPT Desktop)</td>
+            <td>App cài trên máy (Win/Mac). Claude Desktop đọc file local, MCP; ChatGPT Desktop có Alt+Space, tích hợp Codex</td>
+            <td>Đọc/sửa file trực tiếp trên máy không cần upload; phím tắt toàn hệ thống</td>
+            <td>Computer Use còn beta; không phải môi trường code thực thụ</td>
+            <td><strong>Kéo thả CSV vào app, hỏi Q&amp;A</strong> — thích hợp người không code</td>
+          </tr>
+          <tr>
+            <td><strong>③ CLI / Terminal</strong><br>(Claude Code CLI, Codex CLI)</td>
+            <td>Gõ lệnh trong terminal, AI chạy code ngay ở máy</td>
+            <td>Nhanh, chạy được pipeline dài, tự động hóa được</td>
+            <td>Giao diện chữ, khó với người mới; phải quen terminal</td>
+            <td><strong>Khi đã có pipeline</strong> <code class="ic">run_report.py</code> → nhờ AI chạy/sửa trong terminal</td>
+          </tr>
+          <tr>
+            <td><strong>④ Extension VS Code</strong><br>(Claude Code extension, Codex extension, Copilot)</td>
+            <td>Plugin chạy trong VS Code — AI sửa file trực tiếp, xem <strong>diff</strong> (so sánh trước/sau)</td>
+            <td>Xem được AI đổi gì trước khi chấp nhận; sửa nhiều file cùng lúc; học code qua đọc diff</td>
+            <td>Phải quen VS Code; một số bản hay "compacting" (nén context)</td>
+            <td><strong>Giai đoạn viết/chỉnh pipeline</strong> — DA nên cài, đây là điểm "ngọt" nhất</td>
+          </tr>
+          <tr>
+            <td><strong>⑤ IDE agent</strong><br>(Antigravity, GitHub Copilot Agent mode)</td>
+            <td>Agent tự chạy nhiều bước: code → chạy → xem lỗi → tự sửa. Antigravity = IDE riêng của Google</td>
+            <td>Tự chủ cao, chạy song song nhiều subagent (Antigravity)</td>
+            <td><strong>Quá mức cho DA xử lý CSV</strong>; thiên về build app/web</td>
+            <td>Chỉ khi build công cụ báo cáo có giao diện web nội bộ</td>
           </tr>
         </table>
 
+        <div class="box pro"><span class="bt">🎯 Hành trình đề xuất cho DA</span>
+        <strong>Bắt đầu:</strong> chat web (①) hoặc Claude Desktop (②) — kéo CSV vào, hỏi để hiểu data.<br>
+        <strong>Khi viết pipeline:</strong> chuyển sang Claude Code extension trong VS Code (④) — AI sửa <code class="ic">run_report.py</code> trực tiếp, bạn duyệt diff để hiểu nó đổi gì.<br>
+        <strong>Khi pipeline ổn:</strong> dùng CLI (③) để chạy nhanh, hoặc chat web để review. <strong>Không cần dùng tất cả</strong> — chọn 1-2 cái quen tay.</div>
+
+        <div class="box info"><span class="bt">💡 Claude Code: CLI hay VS Code extension?</span> Cùng 1 sản phẩm, 2 giao diện. <strong>CLI</strong> = gõ terminal, nhanh, cho người đã quen. <strong>VS Code extension</strong> = có sidebar + xem diff trực quan, <strong>dễ hơn cho người mới</strong> — bạn thấy rõ AI thêm/sửa dòng nào trước khi chấp nhận. DA nên bắt đầu bằng extension.</div>
+
+        <h3 class="sec">D. Công cụ khác (biết cho đủ)</h3>
+        <ul>
+          <li><strong>GitHub Copilot</strong> — trợ lý AI ngay trong VS Code, 3 chế độ: Ask (hỏi), Edit (sửa nhiều file), Agent (tự chạy + tự sửa lỗi). Cần thuê bao trả phí.</li>
+          <li><strong>Antigravity</strong> (Google) — IDE desktop agent riêng, chạy Gemini 1M context, có "Agent Teams". <strong>Thường quá mức cho DA xử lý CSV</strong> — mạnh cho build app/web.</li>
+        </ul>
+
         <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI gợi ý chọn model/tool cho task cụ thể <span class="ptag">copy-paste</span></div>
+          <div class="ph">📋 Prompt — nhờ AI gợi ý chọn model + interface cho task <span class="ptag">copy-paste</span></div>
           <div class="pbody" id="p4-pick">Tôi là Data Analyst xử lý khảo sát. Mô tả task:
 
-[TASK]: {vd: apply 30 cột rule lên 200k dòng data, mỗi rule là if lồng nhau}
+[TASK]: {vd: apply 30 cột rule lên 200k dòng data}
 [QUY MÔ]: {số file, số dòng, có cần chạy lại mỗi đợt không}
+[KINH NGHIỆM]: {chưa quen terminal / đã quen VS Code / gì cũng được}
 
 Tôi có quyền dùng ChatGPT, Claude, Gemini. Hãy gợi ý:
-1. Dùng model nào (và phiên bản nào) cho task này? Tại sao?
-2. Nên làm trong chat web hay qua Claude Code / VS Code?
-3. Các bước cụ thể (1-2-3) để tôi bắt đầu
+1. Dùng model nào (phiên bản nào)? Tại sao?
+2. Dùng interface nào (chat web / desktop / CLI / VS Code ext)? Tại sao?
+3. Các bước cụ thể (1-2-3) để tôi bắt đầu với interface đó
 Giải thích ngắn gọn, thực tế cho người không rành kỹ thuật.</div>
           <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p4-pick')">📋 Sao chép</button></div>
         </div>
@@ -1018,7 +1058,7 @@ Tôi mới học quy trình, hãy kiên nhẫn và rõ ràng. Bắt đầu từ 
       </section>
 
       <footer class="foot">
-        🐼 <strong>Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát Lớn</strong> — Cho Data Analyst xử lý khảo sát. Thuộc thư viện <a href="../index.html">Mega Study</a> · Mỗi chương: context + prompt copy-paste + thực hành.
+        📊 <strong>Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát Lớn</strong> — Cho Data Analyst xử lý khảo sát. Thuộc thư viện <a href="../index.html">Mega Study</a> · Mỗi chương: context + prompt copy-paste + thực hành.
       </footer>
     </main>
   </div>
@@ -1051,8 +1091,9 @@ const FC = [
   {q:"Ví dụ rule kiểm tra 'nói xạo'?", a:"'SV sinh 2007 nhưng năm 3-4 → nói xạo'. Dùng cột profile-qbirthyear + profile-qyear-of-study. Mock code: if(birthyear=2007 AND yearofstudy in [3,4], 1, 0)."},
   {q:"Cột phán quyết cuối dựa trên gì?", a:"Tùy dự án: đếm rule pass (≥80%→QUALIFIED), rule chặn (hard fail→REJECT), tính tổng điểm, hoặc composite. Mô tả logic cụ thể, AI dịch sang code — không hard code 1 cách."},
   {q:"Chọn AI nào cho việc nào?", a:"Khám nhanh data → ChatGPT (Advanced Data Analysis). Viết/review pipeline → Claude Sonnet 5. Nạp cả bộ 4 file (data+3 setup) → Gemini 3.6 Flash (context 1M). Dùng luân phiên được."},
-  {q:"Claude Code là gì? DA có cần không?", a:"Agent code của Anthropic, plugin VS Code & JetBrains. DA nên cài plugin VS Code: Claude sửa run_report.py trực tiếp, bạn duyệt diff — không copy-dán. Lý tưởng cho pipeline nhiều file."},
-  {q:"Antigravity là gì? DA có cần không?", a:"IDE desktop của Google (11/2025), chạy Gemini 1M context, có 'Agent Teams'. Quá mức cho DA xử lý CSV — chỉ cân nhắc nếu build app báo cáo có giao diện."},
+  {q:"Claude Code dùng CLI hay VS Code extension?", a:"Cùng 1 sản phẩm, 2 giao diện. CLI = gõ terminal, nhanh, cho người quen. VS Code extension = sidebar + xem diff trực quan, dễ hơn cho người mới. DA nên bắt đầu bằng extension — thấy rõ AI sửa dòng nào trước khi chấp nhận."},
+  {q:"5 cách giao tiếp với AI là gì? (DA dùng cái nào)", a:"① chat web (đơn giản nhất) ② desktop app (Claude/ChatGPT Desktop, đọc file local) ③ CLI/terminal (nhanh, cho pipeline) ④ VS Code extension (xem diff, viết pipeline) ⑤ IDE agent (Antigravity/Copilot Agent, quá mức cho CSV). DA: bắt đầu ①②, pipeline → ④."},
+  {q:"Antigravity / Copilot Agent — DA có cần không?", a:"Thường KHÔNG. Đây là IDE agent tự chạy nhiều bước, mạnh cho build app/web. DA xử lý CSV thì chat web + VS Code extension (Claude Code/Copilot) là đủ. Chỉ cân nhắc khi build công cụ báo cáo có giao diện."},
   {q:"Chưa biết git có commit code được không?", a:"ĐƯỢC. Nhờ AI sinh lệnh commit/push → bạn copy–dán terminal. Nhưng hãy nhờ AI giải thích từng lệnh để hiểu — qua vài lần bạn sẽ tự nhớ. Lỗi gì dán lại cho AI sửa."},
   {q:"Bẫy #1 khi đọc cột trong code rule?", a:"Không so questionnaire → hiểu sai giá trị cột. Khắc phục: luôn đính kèm đủ 3 file setup. Nếu AI đọc sai, gửi 5 dòng data mẫu để nó tự kiểm chứng."},
   {q:"Quy tắc vàng khi rule đổi?", a:"Cập nhật file context.md (danh sách rule + mô tả) TRƯỚC, rồi mới nhờ AI sửa code. Context là 'nguồn sự thật', code chỉ là hệ quả."},
