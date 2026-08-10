@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học — AI Xử Lý Dữ Liệu Khảo Sát (CSV Lớn) Cho Data Analyst</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #704dff;          /* Python/Pandas purple-blue */
+    --primary-glow: #9b7dff;
+    --accent: #150458;           /* deep pandas dark */
+    --accent-2: #ffd33d;         /* pandas yellow accent */
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #0a0a1a; --darker: #060614;
+    --light: #c7c7e6; --light-strong: #eceeff; --gray: #8a8ab8;
+    --card: #12122a; --card-2: #1a1a38; --border: #2a2a55; --terminal: #08081c;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f6f97;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(112,77,255,.12) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(255,211,61,.05) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #03030a 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(112,77,255,.14);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(112,77,255,.55)); }
+  .logo h1 { font-size: 18px; background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 10.5px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .logo .pat { font-family: monospace; font-size: 11.5px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(112,77,255,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#06070d; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(112,77,255,.1); color: var(--accent-2); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--accent-2); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,6,20,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--accent-2); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1040px; }
+
+  .hero { background: linear-gradient(135deg, rgba(112,77,255,.16), rgba(255,211,61,.05)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🐼"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.07; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--accent-2); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--primary); }
+  h4.mini { font-size: 15px; color: var(--primary-glow); margin: 18px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  em { color: var(--accent-2); font-style: normal; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--accent-2); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(112,77,255,.08); border-color: rgba(112,77,255,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  .code-block .cbhead .copy { cursor:pointer; color: var(--gray); transition: color .2s; }
+  .code-block .cbhead .copy:hover { color: var(--accent-2); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* PROMPT CARD (copy-paste ready) */
+  .prompt { background: linear-gradient(135deg, rgba(112,77,255,.10), rgba(255,211,61,.04)); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:16px 18px; margin:18px 0; }
+  .prompt .ph { font-weight:800; color: var(--accent-2); margin-bottom:8px; display:flex; align-items:center; gap:8px; font-size:14.5px; flex-wrap:wrap; }
+  .prompt .ptag { font-size:10px; font-weight:900; letter-spacing:1px; background:var(--primary); color:#060614; padding:3px 9px; border-radius:20px; }
+  .prompt .pbody { background: var(--terminal); border:1px solid var(--border); border-radius:9px; padding:12px 14px; font-size:13px; color:var(--code-green); white-space:pre-wrap; line-height:1.7; font-family:'JetBrains Mono','Consolas',monospace; }
+  .prompt .pbtns { display:flex; gap:8px; margin-top:9px; }
+  .prompt .cpbtn { font-family:inherit; font-size:12px; font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; border:none; background:var(--primary); color:#060614; transition: all .2s; }
+  .prompt .cpbtn:hover { background:var(--accent-2); color: var(--accent); }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--accent-2); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* CHEATSHEET */
+  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap:14px; }
+  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
+  .cheat-card h4 { color: var(--accent-2); font-size:14.5px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .cheat-card .ci { background: var(--terminal); border:1px solid var(--border); border-radius:8px; padding:9px 11px; font-size:12px; color:var(--code-green); white-space:pre; overflow-x:auto; margin-bottom:8px; }
+
+  /* PROGRESS */
+  .progress-wrap { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:22px 0; }
+  .progress-wrap .pt { font-weight:800; color:var(--light-strong); margin-bottom:10px; }
+  .progress-bar { height:10px; background: var(--card-2); border-radius:6px; overflow:hidden; margin-bottom:8px; }
+  .progress-fill { height:100%; background: linear-gradient(90deg, var(--primary), var(--accent-2)); width:0%; transition: width .6s; border-radius:6px; }
+  .progress-wrap .ps { font-size:12px; color:var(--gray); }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--accent-2); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#060614; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:23px; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🐼</div>
+      <h1>AI Xử Lý Dữ Liệu Khảo Sát</h1>
+      <div class="sub">CSV LỚN · CONTEXT · PROMPT · GIT</div>
+      <div class="pat">ai.run(survey_csv) → insight</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">★</span> P1 · NỀN TẢNG &amp; CONTEXT KHẢO SÁT</li>
+      <li><a href="#c0"><span class="cn">0</span> AI không hiểu file nếu thiếu context</a></li>
+      <li><a href="#c1"><span class="cn">1</span> Môi trường: Python + VS Code + CSV lớn</a></li>
+      <li><a href="#c2"><span class="cn">2</span> CSV khảo sát lớn hoạt động thế nào</a></li>
+      <li><a href="#c3"><span class="cn">3</span> ★ Context là gì &amp; viết context chuẩn</a></li>
+
+      <li class="nav-section-title np1"><span class="badge">P2</span> ĐIỀU KHIỂN AI XỬ LÝ (KHÔNG TỰ CODE)</li>
+      <li><a href="#c4"><span class="cn">4</span> ★ Chọn AI &amp; công cụ (ChatGPT/Claude/Gemini)</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Nhờ AI lọc &amp; tìm kiếm theo nhóm NV</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Nhờ AI nối nhiều file (thay VLOOKUP)</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Nhờ AI scoring (tính điểm Likert)</a></li>
+      <li><a href="#c8"><span class="cn">8</span> Nhờ AI tổng hợp &amp; xuất báo cáo</a></li>
+
+      <li class="nav-section-title np2"><span class="badge">★</span> P3 · VÒNG ĐỜI CODE: CHECK · UPDATE · COMMIT</li>
+      <li><a href="#c9"><span class="cn">9</span> ★ Nhờ AI check code cũ (review logic)</a></li>
+      <li><a href="#c10"><span class="cn">10</span> ★ Update ngữ cảnh &amp; rule xử lý mới</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Pipeline tái dùng (AI lo cấu trúc)</a></li>
+      <li><a href="#c12"><span class="cn">12</span> ★ Nhờ AI commit lên Git — không học git</a></li>
+
+      <li class="nav-section-title np3"><span class="badge">★</span> P4 · THỰC CHIẾN &amp; CÔNG CỤ</li>
+      <li><a href="#c13"><span class="cn">13</span> Case study: báo cáo engagement quý</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Thư viện Prompt (copy-paste)</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Cheatsheet Context (1 trang)</a></li>
+
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📐</span> Cheatsheet Context</a></li>
+      <li><a href="#progress"><span class="cn">📊</span> Tiến độ</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🐼 Khóa học · <b id="crumb">AI Xử Lý Khảo Sát</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <!-- HERO -->
+      <div class="hero" id="top">
+        <h1>Điều khiển AI xử lý <span class="g">dữ liệu khảo sát lớn</span> — thay Power Query</h1>
+        <p>Khóa cho team <strong>Data Analyst xử lý khảo sát nguồn nhân sự</strong> (engagement, onboarding, 360, exit interview…). Bạn <strong>không cần biết code, không cần học git</strong> — chỉ cần biết <strong>mô tả dữ liệu (context)</strong> đủ rõ để AI tự sinh code, tự check, tự update rule, và tự commit lên Git. Mọi thao tác qua <strong>prompt tiếng Việt</strong>.</p>
+        <div class="meta-row">
+          <div class="meta-pill">📖 <b>16 chương</b> · 4 phần</div>
+          <div class="meta-pill">🤖 <b>20+ prompt</b> copy-paste</div>
+          <div class="meta-pill">📝 <b>8 context template</b> cho khảo sát HR</div>
+          <div class="meta-pill">⏱️ <b>4–6 tuần</b></div>
+        </div>
+      </div>
+
+      <!-- ============ PART 1 ============ -->
+      <div class="part-divider" id="p1"><span class="tag tp0">P1 · Nền tảng &amp; Context Khảo Sát</span><span class="line"></span></div>
+
+      <section class="chapter" id="c0">
+        <h2 class="ch-title"><span class="num">Chương 0</span> ★ Sự thật: AI không hiểu file của bạn — trừ khi bạn cho context</h2>
+        <div class="ch-sub">Bài học quan trọng nhất của khóa: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Với khảo sát HR, context đặc biệt phức tạp.</div>
+
+        <p>Hãy tưởng tượng bạn upload <code class="ic">survey_raw.csv</code> vào ChatGPT rồi gõ: <em>"Tính điểm engagement trung bình"</em>. Kết quả? AI sẽ <strong>sai gần như chắc chắn</strong> — vì nó không biết:</p>
+        <ul>
+          <li>Cột <code class="ic">Q12</code> nghĩa là gì? (câu hỏi nào?)</li>
+          <li>Giá trị 1–5 là thang Likert, hay điểm thô?</li>
+          <li>Câu nào cần <strong>reverse-code</strong> trước khi tính tổng?</li>
+          <li>Điểm engagement là trung bình nhóm câu nào? (Q11–Q30? hay khác?)</li>
+          <li>Cột <code class="ic">emp_id</code> mã hóa thế nào, có trùng không?</li>
+        </ul>
+
+        <div class="box danger"><span class="bt">🚫 Lỗi phổ biến #1</span> Tin rằng "AI thông minh, tự hiểu được". <strong>Thực tế:</strong> AI chỉ thấy các con số và tên cột vô nghĩa (Q1, Q2...). Nó sẽ đoán — và đoán sai.</div>
+
+        <h3 class="sec">Context là gì?</h3>
+        <p><strong>Context</strong> = toàn bộ thông tin AI cần để hiểu đúng dữ liệu của bạn, gồm:</p>
+        <table>
+          <tr><th>Thành phần</th><th>Ví dụ với khảo sát HR</th></tr>
+          <tr><td><strong>Dữ liệu thô</strong></td><td>File <code class="ic">survey_raw.csv</code> (50.000 dòng × 50 cột Q1–Q50)</td></tr>
+          <tr><td><strong>Bản câu hỏi</strong></td><td>"Q12 = Tôi thấy ý kiến mình được lắng nghe" (Likert 1–5)</td></tr>
+          <tr><td><strong>Cấu trúc bộ khảo sát</strong></td><td>"Q1–Q10: Môi trường; Q11–Q20: Lãnh đạo; Q21–Q30: Phát triển"</td></tr>
+          <tr><td><strong>Quy tắc hành vi / chấm điểm</strong></td><td>"Q5, Q15 là câu reverse-code; engagement = trung bình Q11–Q30"</td></tr>
+          <tr><td><strong>Chính sách missing</strong></td><td>"Bỏ trống &gt; 30% câu → loại response khỏi phân tích"</td></tr>
+        </table>
+
+        <div class="box tip"><span class="bt">✅ Quy luật vàng của khóa</span> <strong>Context càng đầy đủ → AI càng đúng ngay lần đầu.</strong> 90% lỗi khi dùng AI xử lý dữ liệu là do <em>thiếu context</em>, không phải do AI kém.</div>
+
+        <h3 class="sec">Ví dụ: cùng 1 câu hỏi, 2 kết quả khác nhau</h3>
+        <p><strong>Prompt nghèo context (sai):</strong></p>
+        <div class="prompt">
+          <div class="ph">📋 Prompt NGƯỢC — kết quả sai <span class="ptag">đừng làm vậy</span></div>
+          <div class="pbody">Tính điểm engagement trung bình theo phòng ban từ file mình đính kèm.</div>
+        </div>
+        <p><strong>Prompt đủ context (đúng):</strong></p>
+        <div class="prompt">
+          <div class="ph">📋 Prompt ĐÚNG — đủ context <span class="ptag">template</span></div>
+          <div class="pbody" id="p0-good">Bạn là Data Analyst. File đính kèm: survey_raw.csv (50.000 dòng).
+
+[CONTEXT]
+- Cột Q1–Q50: câu hỏi khảo sát engagement, thang Likert 1–5 (1=Hoàn toàn không đồng ý, 5=Hoàn toàn đồng ý)
+- Nhóm chủ đề: Q1–Q10 = Môi trường; Q11–Q20 = Lãnh đạo; Q21–Q30 = Phát triển; Q31–Q40 = Đãi ngộ; Q41–Q50 = Ý nghĩa công việc
+- Câu reverse-code (cần đảo 6−giá trị): Q5, Q15, Q25, Q35
+- Điểm engagement = trung bình Q11–Q30 (sau khi đã reverse-code)
+- Cột emp_id: mã nhân viên (để join với demographics)
+- Cột phong_ban: phòng ban
+
+[YÊU CẦU]
+Tính điểm engagement trung bình theo phòng ban, sắp xếp giảm dần. Loại response có &gt;30% câu bỏ trống. Giải thích từng bước.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p0-good')">📋 Sao chép</button></div>
+        </div>
+        <div class="box pro"><span class="bt">🎯 So sánh</span> Cùng 1 yêu cầu, prompt thứ 2 sẽ ra kết quả đúng ngay lần đầu vì AI biết rõ: thang đo gì, câu nào reverse, nhóm nào tính engagement, chính sách missing thế nào. <strong>Đó là sức mạnh của context.</strong></div>
+
+        <h3 class="sec">Bài thực hành 0</h3>
+        <p>Mở ChatGPT/Claude/Gemini, upload 1 file CSV nhỏ của công ty (ẩn danh). Thử 2 prompt: (a) nghèo context, (b) thêm 3 dòng mô tả cột. So sánh kết quả — bạn sẽ thấy khác biệt rõ rệt.</p>
+      </section>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> Môi trường tối thiểu: Python + VS Code + mở CSV lớn</h2>
+        <div class="ch-sub">Cài đủ để chạy, không cài thừa. Mục tiêu: mở được file 500k dòng (10.000 nhân viên × 50 câu hỏi) mà không treo máy.</div>
+
+        <h3 class="sec">Vì sao Power Query bắt đầu gặp khó?</h3>
+        <table>
+          <tr><th>Tình huống</th><th>Power Query</th><th>Python (do AI sinh code)</th></tr>
+          <tr><td>File 50k dòng</td><td>OK</td><td>OK</td></tr>
+          <tr><td>File 500k dòng, 50 cột</td><td>Chậm, đôi khi treo Excel</td><td>Chạy trong vài giây</td></tr>
+          <tr><td>Ghép 5 file CSV khảo sát các năm</td><td>Cần cấu hình phức tạp</td><td>1 dòng <code class="ic">pd.concat()</code></td></tr>
+          <tr><td>Chạy lại mỗi tháng</td><td>Refresh thủ công</td><td>1 lệnh <code class="ic">python run.py</code></td></tr>
+          <tr><td>Logic scoring phức tạp</td><td>Khó debug</td><td>Code trong suốt, AI sửa được</td></tr>
+        </table>
+
+        <h3 class="sec">3 thứ cần cài (nhờ AI hướng dẫn từng bước)</h3>
+        <div class="prompt">
+          <div class="ph">📋 Prompt — nhờ AI hướng dẫn cài môi trường <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p1-install">Tôi là Data Analyst, máy Windows, chưa từng dùng Python. Hãy hướng dẫn tôi từng bước:
+1. Cài Python 3.12+ (tick "Add to PATH")
+2. Cài VS Code + 2 extension: Python + Jupyter
+3. Tạo thư mục dự án, mở terminal trong VS Code
+4. Cài pandas: pip install pandas openpyxl matplotlib
+5. Kiểm tra: chạy lệnh import pandas as pd; print(pd.__version__)
+Viết rõ từng bước cho người mới, kèm lệnh chính xác.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p1-install')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box warn"><span class="bt">⚠️ Đừng lo nếu không rành terminal</span> Toàn bộ quá trình này, AI sẽ <strong>dẫn bạn từng bước</strong>. Bạn chỉ copy lệnh AI cho → dán vào terminal → Enter. Sai ở đâu, dán lỗi lại cho AI, nó sửa.</div>
+
+        <div class="box info"><span class="bt">💡 Lựa chọn thay thế: Google Colab</span> Nếu công ty không cho cài Python, dùng <strong>Google Colab</strong> (colab.research.google.com) — chạy Python ngay trong trình duyệt, miễn phí, upload CSV lên là chạy được. AI sinh code → bạn dán vào Colab.</div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> CSV khảo sát lớn hoạt động thế nào</h2>
+        <div class="ch-sub">Hiểu cấu trúc file CSV: mỗi dòng = 1 response, mỗi cột = 1 câu hỏi. Đây là gốc để viết context chính xác.</div>
+
+        <h3 class="sec">Cấu trúc 1 file CSV khảo sát điển hình</h3>
+        <div class="code-block">
+          <div class="cbhead"><span><span class="dot">●</span> survey_raw.csv — 5 dòng đầu</span><span class="copy">📋</span></div>
+          <pre class="code"><span class="cm">emp_id,phong_ban,Q1,Q2,Q3,...,Q50,submit_time</span>
+NV001,R&amp;D,4,5,3,...,4,2025-06-15 10:23:00
+NV002,Sales,3,2,5,...,1,2025-06-15 11:01:00
+NV003,R&amp;D,5,5,5,...,4,2025-06-15 14:45:00
+NV004,Marketing,2,3,1,...,2,2025-06-16 09:12:00
+NV005,HR,4,4,4,...,5,2025-06-16 09:30:00</pre>
+        </div>
+
+        <h3 class="sec">Đọc đúng file CSV khảo sát (kiến thức cơ bản)</h3>
+        <p>Trước khi làm gì, bạn cần đọc được file đúng. Đây là kỹ năng đọc file cơ bản của DA — không phải làm sạch dữ liệu (việc đó thuộc quy trình rule của team thu thập).</p>
+        <table>
+          <tr><th>Điểm cần biết</th><th>Triệu chứng nếu sai</th><th>Nhờ AI thế nào</th></tr>
+          <tr><td><strong>Encoding</strong></td><td>Tên nhân viên thành "Nguy?n V?n A"</td><td>Nhờ AI thêm <code class="ic">encoding='utf-8'</code> hoặc <code class="ic">'utf-8-sig'</code></td></tr>
+          <tr><td><strong>Dấu phân tách</strong></td><td>Đọc thành 1 cột khổng lồ</td><td>Nhờ AI đổi <code class="ic">sep=';'</code> hoặc <code class="ic">sep='\t'</code></td></tr>
+          <tr><td><strong>Tên cột &amp; kiểu</strong></td><td>Không biết Q12 là câu gì, kiểu số hay chữ</td><td>Nhờ AI in danh sách cột + kiểu dữ liệu + 5 giá trị phổ biến mỗi cột</td></tr>
+          <tr><td><strong>Thang đo</strong></td><td>Có cột 1–5, có cột "Rất hài lòng"</td><td>Nhờ AI thống kê giá trị duy nhất (unique) mỗi cột — để ghi vào context chính xác</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — đọc &amp; hiểu cấu trúc 1 file CSV mới <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p2-explore">Bạn là Data Analyst. File đính kèm là 1 file CSV khảo sát HR mà tôi mới nhận, chưa biết cấu trúc.
+
+Hãy viết code Python (pandas) để:
+1. Đọc file (thử utf-8, nếu lỗi thử các encoding phổ biến ở VN)
+2. In ra: số dòng, số cột, tên tất cả cột kèm kiểu dữ liệu
+3. Với mỗi cột câu hỏi: in 5 giá trị phổ biến nhất (để tôi nhận diện thang đo — Likert 1-5, 1-7, hay text?)
+4. Tóm tắt bằng tiếng Việt: cấu trúc file thế nào, mỗi cột câu hỏi dùng thang đo gì — để tôi ghi vào context.
+
+Tôi sẽ chạy code, gửi kết quả lại cho bạn. (Lưu ý: việc làm sạch dữ liệu bẩn đã do team thu thập lo theo quy trình của họ — tôi chỉ cần hiểu cấu trúc để viết context.)</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p2-explore')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Thói quen tốt</span> Mỗi khi nhận file mới, <strong>chạy prompt này để hiểu cấu trúc</strong> — rồi ghi ngay vào <code class="ic">context.md</code> (Chương 3). Hiểu đúng thang đo &amp; tên cột là nền cho mọi phân tích đúng.</div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> ★ Context là gì &amp; cách viết context chuẩn cho khảo sát</h2>
+        <div class="ch-sub">Chương trọng tâm. Sau chương này, bạn tự viết được 1 block context hoàn chỉnh cho bất kỳ bộ khảo sát nào của công ty.</div>
+
+        <h3 class="sec">Cấu trúc 1 block context chuẩn (5 phần)</h3>
+        <p>Mọi context đều nên có đủ 5 phần sau. Bạn có thể lưu thành template, copy ra dùng mỗi lần:</p>
+        <div class="prompt">
+          <div class="ph">📋 Template Context chuẩn cho khảo sát HR <span class="ptag">template gốc</span></div>
+          <div class="pbody" id="p3-template">[1. MÔ TẢ FILE]
+- Tên file: {survey_raw.csv}
+- Số dòng: {~50.000 responses}
+- Nguồn: {Khảo sát engagement hàng năm, thu thập qua Google Forms/LimeSurvey}
+
+[2. BẢN CÂU HỎI]
+- Q1: "{nội dung câu hỏi}" — thang {Likert 1-5}
+- Q2: ...
+- (hoặc đính kèm file questionnaire.md)
+
+[3. CẤU TRÚC NHÓM]
+- Nhóm Môi trường: Q1–Q10
+- Nhóm Lãnh đạo: Q11–Q20
+- ...
+
+[4. QUY TẮC CHẤM ĐIỂM / HÀNH VI]  ← phần DA tự định nghĩa
+- Câu reverse-code (đảo giá trị): Q5, Q15, Q25 (công thức 6 - giá trị)
+- Điểm nhóm X = trung bình các câu trong nhóm
+- Điểm tổng = trung bình có trọng số (hoặc không)
+- Phân loại: &lt;3.0 = "Nguy cơ", 3.0–3.8 = "Trung bình", &gt;3.8 = "Tốt"
+
+[5. GHI CHÚ TỪ TEAM THU THẬP]  ← do team thu thập cung cấp, DA chỉ ghi chú
+- Dữ liệu đã được làm sạch theo quy trình của team (null, duplicate, outlier đã xử lý)
+- Phiên bản dữ liệu: {vd: clean_v2_2025-06-30}
+- Liên hệ: {người phụ trách data} nếu cần rõ thêm rule làm sạch</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-template')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">8 context template theo tình huống</h3>
+        <table>
+          <tr><th>Template</th><th>Dùng khi</th><th>Đặc biệt chú ý</th></tr>
+          <tr><td><strong>Questionnaire</strong></td><td>Mô tả nội dung từng câu hỏi</td><td>Bắt buộc cho mọi phân tích</td></tr>
+          <tr><td><strong>Structure</strong></td><td>Nhóm câu hỏi → nhóm chủ đề</td><td>Để tính điểm theo nhóm</td></tr>
+          <tr><td><strong>Behavior / Scoring</strong></td><td>Cách interpret điểm, reverse-code</td><td>Tránh tính điểm sai</td></tr>
+          <tr><td><strong>Demographic</strong></td><td>Thông tin nhân viên (phòng ban, cấp bậc)</td><td>Để phân nhóm, merge</td></tr>
+          <tr><td><strong>Likert</strong></td><td>Thang đo 1–5 / 1–7</td><td>Chú ý chiều: 1 = tốt hay 5 = tốt?</td></tr>
+          <tr><td><strong>Raw-vs-coded</strong></td><td>Giá trị thô vs giá trị đã mã hóa</td><td>Ví dụ 1="Nam" hay "Nữ"?</td></tr>
+          <tr><td><strong>Missing-policy</strong></td><td>Quy tắc xử lý bỏ trống</td><td>Loại response hay điền giá trị?</td></tr>
+          <tr><td><strong>Multi-wave</strong></td><td>Khảo sát lặp lại nhiều đợt/năm</td><td>Cột wave/year, so sánh theo thời gian</td></tr>
+        </table>
+
+        <div class="box pro"><span class="bt">🎯 Mẹo: giữ context trong 1 file</span> Tạo 1 file <code class="ic">context.md</code> trong folder dự án, chứa block context chuẩn. Mỗi lần dùng AI, copy nội dung file này dán vào prompt đầu tiên. <strong>Đây là "vũ khí tối thượng"</strong> — tiết kiệm hàng giờ debug.</div>
+
+        <h3 class="sec">Ví dụ context hoàn chỉnh — bộ engagement 50 câu</h3>
+        <div class="prompt">
+          <div class="ph">📋 Context thực tế — bộ engagement 50 câu <span class="ptag">ví dụ hoàn chỉnh</span></div>
+          <div class="pbody" id="p3-full">[MÔ TẢ FILE]
+File: engagement_2025_raw.csv (48.217 responses). Khảo sát engagement năm 2025, thu thập 1/6–30/6/2025.
+
+[BẢN CÂU HỎI — rút gọn]
+Q1: "Tôi hài lòng với môi trường làm việc" — Likert 1-5 (1=Hoàn toàn không đồng ý, 5=Hoàn toàn đồng ý)
+Q5: "Tôi thường xuyên phải làm thêm giờ" — REVERSE (5= hoàn toàn không đồng ý mới tốt)
+Q11: "Quản lý trực tiếp của tôi lắng nghe ý kiến tôi"
+Q15: "Tôi cân nhắc nghỉ việc trong 6 tháng tới" — REVERSE
+Q21–Q30: các câu về cơ hội phát triển
+Q41–Q50: ý nghĩa công việc
+
+[CẤU TRÚC NHÓM]
+- Môi trường: Q1–Q10 (điểm môi trường = avg)
+- Lãnh đạo: Q11–Q20
+- Phát triển: Q21–Q30
+- Đãi ngộ: Q31–Q40
+- Ý nghĩa: Q41–Q50
+- ENGAGEMENT TỔNG = avg(Q11–Q30) sau reverse-code Q15, Q25
+
+[QUY TẮC]
+- Reverse: giá trị mới = 6 − giá trị cũ
+- Phân loại engagement: &lt;3.0 "Nguy cơ nghỉ việc", 3.0–3.8 "Ổn", &gt;3.8 "Gắn kết cao"
+
+[GHI CHÚ TỪ TEAM THU THẬP]
+- Dữ liệu đã làm sạch (null/duplicate/outlier xử lý xong theo quy trình team)
+- Phiên bản: clean_v2_2025-06-30. Liên hệ chị A (HR data) nếu cần rõ rule làm sạch</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-full')">📋 Sao chép</button></div>
+        </div>
+        <div class="box tip"><span class="bt">✅ Thực hành Chương 3</span> Mở 1 bộ khảo sát thật của công ty (ẩn danh), viết block context theo template trên. Lưu thành <code class="ic">context.md</code>. Đây là tài sản dùng lại cho mọi prompt sau này.</div>
+      </section>
+
+      <!-- ============ PART 2 ============ -->
+      <div class="part-divider" id="p2div"><span class="tag tp1">P2 · Điều Khiển AI Xử Lý (Không Tự Code)</span><span class="line"></span></div>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> ★ Chọn AI &amp; công cụ phù hợp (ChatGPT / Claude / Gemini)</h2>
+        <div class="ch-sub">Công ty bạn thường có 3 lựa chọn: ChatGPT, Claude, Gemini. Mỗi model mạnh việc khác nhau — chọn đúng sẽ đỡ công sửa lại. Kèm hướng dẫn các tool đi kèm (Claude Code, Antigravity).</div>
+
+        <h3 class="sec">A. So sánh 3 dòng model (tính đến 8/2026)</h3>
+        <p>Đây là bảng tra nhanh. Bạn không cần thuộc lòng — chỉ cần biết <strong>việc nào nên nhờ model nào</strong>.</p>
+        <table>
+          <tr><th>Model</th><th>Phiên bản hiện tại</th><th>Mạnh nhất về</th><th>Phù hợp DA khi nào</th></tr>
+          <tr>
+            <td><strong>ChatGPT</strong><br>(OpenAI)</td>
+            <td>GPT-5.2 (flagship), GPT-5.6 (Sol/Terra/Luna — thế hệ mới nhất 7/2026)</td>
+            <td>Sinh &amp; <em>chạy code</em> ngay trong chat (Advanced Data Analysis), vẽ biểu đồ, GUI tốt</td>
+            <td><strong>Khám nhanh CSV</strong>: upload file, AI tự viết + tự chạy pandas, trả file Excel/biểu đồ. Không cần cài Python. Tốt cho phân tích khám phá ban đầu.</td>
+          </tr>
+          <tr>
+            <td><strong>Claude</strong><br>(Anthropic)</td>
+            <td>Claude Opus 5 (suy luận sâu, nặng), Claude Sonnet 5 (code/agentic, nhanh, rẻ)</td>
+            <td>Viết &amp; refactor code chuẩn, tuân thủ context dài (1M token), ít "đoán mò"</td>
+            <td><strong>Viết pipeline &amp; code production</strong>: viết <code class="ic">run_report.py</code>, review code cũ, refactor. Sonnet 5 là lựa chọn giá/hiệu quả nhất cho code pandas.</td>
+          </tr>
+          <tr>
+            <td><strong>Gemini</strong><br>(Google)</td>
+            <td>Gemini 3 (flagship), Gemini 3.6 Flash (nhanh, dẫn đầu bảng xếp hạng 7/2026)</td>
+            <td>Context cực lớn (1M token), đọc nhiều file cùng lúc, tích hợp Workspace</td>
+            <td><strong>Phân tích nhiều file cùng lúc</strong>: nạp 5 file CSV + questionnaire + structure + behavior_rules vào 1 cuộc chat → AI hiểu toàn cảnh. Flash nhanh và rẻ.</td>
+          </tr>
+        </table>
+
+        <div class="box pro"><span class="bt">🎯 Quy tắc chọn nhanh (cho DA xử lý khảo sát)</span>
+        <strong>Công việc khám nhanh 1 file</strong> → ChatGPT (Advanced Data Analysis tự chạy code).<br>
+        <strong>Viết/chỉnh pipeline dài, review code</strong> → Claude Sonnet 5.<br>
+        <strong>Nạp cả bộ (raw + questionnaire + structure + behavior + demographics)</strong> → Gemini 3.6 Flash (context 1M).<br>
+        Có thể <strong>dùng luân phiên</strong> — không phải chọn 1 cho mọi việc.</div>
+
+        <h3 class="sec">B. Từng version thì tốt cho vai trò gì?</h3>
+        <p>Trong cùng 1 dòng model, các phiên bản thường chia theo <em>độ "nặng"</em> (suy luận sâu hơn = chậm hơn, đắt hơn). Chọn đúng tier giúp bạn đỡ tốn chi phí &amp; thời gian:</p>
+        <table>
+          <tr><th>Dòng</th><th>Tier "nặng" (flagship)</th><th>Tier "nhẹ" (Flash/Sonnet)</th><th>Lời khuyên</th></tr>
+          <tr>
+            <td>ChatGPT</td>
+            <td>GPT-5.2 / GPT-5.6 — suy luận &amp; agentic mạnh</td>
+            <td>(dùng bản mini/flash trong app)</td>
+            <td>DA: bản flagship cho logic scoring phức tạp; bản nhỏ cho hỏi lọc/làm sạch đơn giản.</td>
+          </tr>
+          <tr>
+            <td>Claude</td>
+            <td>Opus 5 — suy luận sâu, phân tích chiến lược</td>
+            <td>Sonnet 5 — code &amp; agentic, nhanh, rẻ (giá intro $2/$10 mỗi MTok đến 31/8/2026)</td>
+            <td>DA: <strong>Sonnet 5 cho 90% việc code pandas</strong>. Opus 5 chỉ khi logic phức tạp (scoring nhiều nhóm, rule chồng nhau).</td>
+          </tr>
+          <tr>
+            <td>Gemini</td>
+            <td>Gemini 3 — đa năng</td>
+            <td>Gemini 3.6 Flash — nhanh, rẻ, dẫn đầu bảng xếp hạng</td>
+            <td>DA: <strong>3.6 Flash cho đa số việc</strong> (nhanh, rẻ, context 1M). Bản Pro khi cần chất lượng suy luận cao.</td>
+          </tr>
+        </table>
+
+        <div class="box info"><span class="bt">💡 Lưu ý về context window</span> Claude (Opus/Sonnet 5) và Gemini đều hỗ trợ <strong>1M token</strong> (Gemini mặc định; Claude 200K mặc định, 1M dạng mở rộng/tùy gói). Với bộ khảo sát 50k dòng + nhiều file mô tả, context lớn rất quan trọng — bạn dán trọn context + dữ liệu mà không bị cắt.</div>
+
+        <h3 class="sec">C. Công cụ đi kèm (ngoài chat web)</h3>
+        <p>Chat web tốt để bắt đầu, nhưng khi làm dự án nhiều file, các tool chuyên dụng dưới đây tiện hơn. <strong>Bạn vẫn điều khiển bằng tiếng Việt</strong> — chỉ khác giao diện.</p>
+        <table>
+          <tr><th>Tool</th><th>Là gì</th><th>Khi nào DA nên dùng</th></tr>
+          <tr>
+            <td><strong>Claude Code</strong><br>(Anthropic)</td>
+            <td>Agent code dạng CLI/terminal, có plugin chính thức cho <strong>VS Code &amp; JetBrains</strong> (PyCharm, IntelliJ…), gần đây thêm Visual Studio 2026. Chỉnh sửa file trực tiếp, xem diff.</td>
+            <td><strong>DA nên cài plugin VS Code.</strong> Bạn mở folder dự án, Claude Code sửa <code class="ic">run_report.py</code> trực tiếp, bạn duyệt diff trước khi chấp nhận — không phải copy–dán. Lý tưởng cho pipeline nhiều file.</td>
+          </tr>
+          <tr>
+            <td><strong>Antigravity</strong><br>(Google)</td>
+            <td>IDE desktop agent (ra 11/2025, antigravity.google) chạy trên Gemini, 1M context. Có "Agent Teams" chạy nhiều subagent song song, agent tự code + chạy localhost + duyệt web test.</td>
+            <td><strong>Thường quá mức cần thiết cho DA xử lý CSV.</strong> Mạnh cho phát triển app/web đầy đủ. Chỉ cân nhắc nếu bạn build công cụ báo cáo nội bộ có giao diện.</td>
+          </tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — nhờ AI gợi ý chọn model/tool cho task cụ thể <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p4-pick">Tôi là Data Analyst xử lý khảo sát HR. Mô tả task của tôi:
+
+[TASK]: {vd: tính điểm engagement 5 nhóm cho 50.000 response, vẽ heatmap phòng ban × nhóm}
+[QUY MÔ]: {số file, số dòng, có cần chạy lại mỗi tháng không}
+
+Tôi có quyền dùng ChatGPT, Claude, Gemini. Hãy gợi ý:
+1. Dùng model nào (và phiên bản nào) cho task này? Tại sao?
+2. Nên làm trong chat web hay qua Claude Code / VS Code?
+3. Các bước cụ thể (1-2-3) để tôi bắt đầu
+Giải thích ngắn gọn, thực tế cho người không rành kỹ thuật.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p4-pick')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Thực hành Chương 4</span> Thử cùng 1 task (vd: "tính engagement theo phòng ban") trên cả 3 model. So sánh: cái nào ra code chạy đúng ngay, cái nào giải thích rõ hơn. Cảm nhận trực tiếp sẽ giúp bạn chọn nhanh sau này.</div>
+      </section>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Nhờ AI lọc &amp; tìm kiếm theo nhóm nhân viên</h2>
+        <div class="ch-sub">Thay cho "Filter Rows" trong Power Query — nhưng bằng prompt tiếng Việt.</div>
+
+        <h3 class="sec">Các tình huống lọc phổ biến trong khảo sát HR</h3>
+        <table>
+          <tr><th>Tình huống</th><th>Mô tả cho AI</th></tr>
+          <tr><td>Lọc theo phòng ban</td><td>"Chỉ giữ nhân viên phòng R&amp;D và Sales"</td></tr>
+          <tr><td>Lọc theo mức engagement</td><td>"Chỉ những người engagement &lt; 3.0 (nguy cơ)"</td></tr>
+          <tr><td>Lọc theo thâm niên</td><td>"Thâm niên &gt; 3 năm" (cần merge demographics)</td></tr>
+          <tr><td>Lọc theo tỷ lệ trả lời</td><td>"Response hoàn thành &gt;80% câu hỏi"</td></tr>
+          <tr><td>Tổ hợp điều kiện</td><td>"R&amp;D + cấp Junior + engagement thấp"</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — lọc theo nhóm nhân viên <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p5-filter">Bạn là Data Analyst. File đính kèm + context:
+
+{DÁN CONTEXT}
+
+YÊU CẦU: Lọc ra các nhân viên thỏa mãn ĐỒNG THỜI:
+- Phòng ban thuộc: R&amp;D, Sales, Marketing
+- Engagement (sau khi tính theo context) &lt; 3.0 (nhóm "Nguy cơ")
+- Thâm niên &gt;= 2 năm (cần merge với demographics.csv theo emp_id)
+
+Viết code Python:
+1. Tính engagement cho mỗi response
+2. Merge với demographics để lấy thâm niên
+3. Lọc theo 3 điều kiện trên
+4. Xuất ra file nguy_co_nghi_viec.csv kèm cột: emp_id, phong_ban, engagement, thâm_nien
+5. In tóm tắt: bao nhiêu người, phân bố phòng ban thế nào
+Giải thích logic lọc bằng tiếng Việt.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p5-filter')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Mẹo</span> Khi mô tả điều kiện lọc cho AI, dùng <strong>ngôn ngữ tự nhiên rõ ràng</strong> thay vì cố viết công thức. AI dịch sang code chính xác hơn bạn viết tay.</div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Nhờ AI nối nhiều file (thay VLOOKUP / Merge Queries)</h2>
+        <div class="ch-sub">Vlookup/Merge trong Excel dễ sai khi file lớn. Nhờ AI merge nhiều CSV theo emp_id — sạch và đúng.</div>
+
+        <h3 class="sec">Tình huống điển hình: 4 file cần ghép</h3>
+        <table>
+          <tr><th>File</th><th>Vai trò</th><th>Khóa ghép</th></tr>
+          <tr><td><code class="ic">survey_raw.csv</code></td><td>Câu trả lời Q1–Q50</td><td>emp_id</td></tr>
+          <tr><td><code class="ic">demographics.csv</code></td><td>Phòng ban, cấp bậc, thâm niên</td><td>emp_id</td></tr>
+          <tr><td><code class="ic">salary_band.csv</code></td><td>Bậc lương</td><td>emp_id</td></tr>
+          <tr><td><code class="ic">manager_rating.csv</code></td><td>Đánh giá của quản lý</td><td>emp_id</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — merge nhiều file <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p6-merge">Bạn là Data Analyst. Tôi có 4 file CSV (đều đính kèm):
+
+1. survey_raw.csv — câu trả lời khảo sát (emp_id, Q1...Q50)
+2. demographics.csv — emp_id, phong_ban, cap_bac, thâm_nien
+3. salary_band.csv — emp_id, bac_luong
+4. manager_rating.csv — emp_id, diem_quan_ly (1-5)
+
+YÊU CẦU:
+- Ghép 4 file theo emp_id (LEFT JOIN từ survey_raw, để giữ tất cả response)
+- Kiểm tra: có emp_id nào trong survey mà thiếu ở demographics không? Báo cáo số lượng
+- Sau khi merge, mỗi dòng có đủ thông tin để phân tích chéo
+- Xuất ra merged_master.csv
+- Giải thích kiểu merge (left/inner) bạn chọn và lý do</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p6-merge')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box warn"><span class="bt">⚠️ Bẫy merge trong khảo sát</span> 2 lỗi phổ biến: (1) Dùng INNER JOIN mất response nếu nhân viên thiếu ở demographics → nên LEFT JOIN; (2) Duplicate ở 1 file (vd 1 nhân viên có 2 dòng salary_band) → merge sinh ra dòng ảo. <strong>Nhờ AI check 2 điểm này trước khi merge.</strong></div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Nhờ AI scoring (tính điểm thang Likert)</h2>
+        <div class="ch-sub">Phần lõi của DA khảo sát: áp rule chấm điểm (reverse-code, tính nhóm, phân loại) lên dữ liệu đã sạch. Dữ liệu bẩn do team thu thập lo — bạn chỉ việc tính điểm đúng.</div>
+
+        <div class="box info"><span class="bt">💡 Phạm vi chương này</span> Giả sử dữ liệu đã được làm sạch theo quy trình của team thu thập (xử lý null, duplicate, outlier — đó là rule của họ). Chương này chỉ tập trung <strong>scoring</strong>: biến câu trả lời 1–5 thành điểm nhóm + điểm tổng + phân loại — đây mới là việc của DA.</div>
+
+        <h3 class="sec">Reverse-code — bẫy #1 của khảo sát</h3>
+        <p>Một số câu hỏi "chiều ngược" (vd: "Tôi muốn nghỉ việc") — giá trị 5 thực ra là xấu. Trước khi tính điểm, phải đảo: <strong>giá trị mới = 6 − giá trị cũ</strong> (cho thang 1–5).</p>
+        <div class="box danger"><span class="bt">🚫 Lỗi nguy hiểm</span> Quên reverse-code → điểm engagement bị tính ngược → nhân viên "nguy cơ nghỉ việc" lại thành "gắn kết cao". <strong>Báo cáo sai dẫn đến quyết định sai.</strong></div>
+
+        <h3 class="sec">Các bước scoring chuẩn</h3>
+        <ol>
+          <li><strong>Reverse-code</strong> các câu chỉ định trong context (6 − giá trị, thang 1–5; 8 − giá trị, thang 1–7)</li>
+          <li><strong>Tính điểm từng nhóm chủ đề</strong> = trung bình các câu trong nhóm (Môi trường, Lãnh đạo, Phát triển, Đãi ngộ, Ý nghĩa)</li>
+          <li><strong>Tính engagement tổng</strong> theo công thức trong context (vd: avg Q11–Q30 sau reverse)</li>
+          <li><strong>Phân loại</strong> theo ngưỡng (&lt;3.0 "Nguy cơ", 3.0–3.8 "Ổn", &gt;3.8 "Gắn kết cao")</li>
+        </ol>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — scoring đầy đủ (chỉ tính điểm) <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p7-score">Bạn là Data Analyst. File đính kèm đã được làm sạch. Context (đặc biệt chú ý phần [QUY TẮC CHẤM ĐIỂM]):
+
+{DÁN CONTEXT — đảm bảo có phần [QUY TẮC CHẤM ĐIỂM]}
+
+Viết code Python thực hiện scoring ĐÚNG THỨ TỰ:
+1. Reverse-code các câu được chỉ định (giá_trị_mới = 6 − giá_trị_cũ cho thang 1-5)
+2. Tính điểm từng nhóm chủ đề (Môi trường, Lãnh đạo, Phát triển, Đãi ngộ, Ý nghĩa) = trung bình các câu trong nhóm
+3. Tính điểm ENGAGEMENT TỔNG theo công thức trong context
+4. Phân loại engagement theo ngưỡng trong context
+5. Xuất ra scored_data.csv kèm tất cả cột điểm + phân loại
+6. In phân bố mỗi nhóm phân loại (bao nhiêu % "Nguy cơ", "Ổn", "Gắn kết cao")
+KIỂM TRA: in ra 5 dòng ví dụ trước+sau reverse-code để tôi xác nhận đúng.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p7-score')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box pro"><span class="bt">🎯 Tại sao bước kiểm tra quan trọng</span> Yêu cầu AI "in 5 dòng trước/sau reverse" giúp bạn <strong>xác minh bằng mắt</strong> thay vì tin mù. Đây là thói quen DA chuyên nghiệp — luôn verify transformation.</div>
+      </section>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Nhờ AI tổng hợp &amp; xuất báo cáo</h2>
+        <div class="ch-sub">Bước cuối của xử lý: group by, pivot, so sánh theo nhóm — rồi xuất file báo cáo cho quản lý.</div>
+
+        <h3 class="sec">Loại báo cáo phổ biến cho khảo sát HR</h3>
+        <table>
+          <tr><th>Loại báo cáo</th><th>Mô tả</th></tr>
+          <tr><td>Theo phòng ban</td><td>Engagement trung bình từng phòng, so sánh</td></tr>
+          <tr><td>Theo cấp bậc</td><td>Junior/Mid/Senior — nhóm nào gắn kết hơn</td></tr>
+          <tr><td>Theo nhóm chủ đề</td><td>Điểm Môi trường vs Lãnh đạo vs Phát triển — điểm yếu nhất</td></tr>
+          <tr><td>So sánh năm</td><td>Engagement 2024 vs 2025 — xu hướng</td></tr>
+          <tr><td>Heatmap</td><td>Phòng ban × Nhóm chủ đề — vùng đỏ cần chú ý</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — báo cáo engagement theo phòng ban × nhóm chủ đề <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p8-report">Bạn là Data Analyst. File scored_data.csv đính kèm (đã có cột điểm từng nhóm + phân loại).
+
+YÊU CẦU: Tạo báo cáo quản lý dạng bảng + biểu đồ:
+1. Bảng: engagement trung bình theo phòng ban × 5 nhóm chủ đề (Môi trường, Lãnh đạo, Phát triển, Đãi ngộ, Ý nghĩa)
+2. Đánh dấu ô nào &lt;3.0 (vùng "nguy cơ") bằng comment
+3. Top 3 phòng ban có engagement thấp nhất + top 3 cao nhất
+4. Nhóm chủ đề yếu nhất toàn công ty
+5. Vẽ heatmap phòng ban × nhóm chủ đề (dùng matplotlib/seaborn, lưu PNG)
+6. Xuất báo cáo ra Excel nhiều sheet: "Tổng quan", "Theo phòng ban", "Heatmap"
+7. Viết 3 insight quan trọng nhất bằng tiếng Việt ở đầu sheet "Tổng quan"
+Format Excel đẹp, có tiêu đề, đơn vị, chú thích thang điểm.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p8-report')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Thói quen báo cáo</span> Luôn yêu cầu AI <strong>viết insight bằng tiếng Việt</strong> ở đầu báo cáo — quản lý đọc phần này trước. Dữ liệu chi tiết để ở sheet sau cho ai cần.</div>
+      </section>
+
+      <!-- ============ PART 3 ============ -->
+      <div class="part-divider" id="p3div"><span class="tag tp2">P3 · Vòng Đời Code: Check · Update · Commit</span><span class="line"></span></div>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> ★ Nhờ AI check code cũ (review logic &amp; lỗi tiềm ẩn)</h2>
+        <div class="ch-sub">Code sinh ra không hoàn hảo ngay. Khi chạy sai hoặc nghi ngờ, nhờ AI review lại.</div>
+
+        <h3 class="sec">Khi nào cần nhờ AI review code?</h3>
+        <ul>
+          <li>Kết quả báo cáo "lạ" (vd: engagement toàn công ty = 4.9 — cao bất thường)</li>
+          <li>Code chạy lâu / chạy chậm</li>
+          <li>Đổi quy tắc tính điểm, muốn chắc code cũ còn đúng</li>
+          <li>Trước khi đưa cho đồng nghiệp dùng chung</li>
+        </ul>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — nhờ AI review code cũ <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p9-review">Bạn là Senior Data Analyst. Tôi có đoạn code Python (pandas) xử lý khảo sát engagement. Context:
+
+{DÁN CONTEXT}
+
+Đây là code của tôi:
+{DÁN CODE}
+
+Hãy REVIEW kỹ và chỉ ra:
+1. Lỗi logic (đặc biệt: có quên reverse-code câu nào không? Chính sách missing áp dụng đúng chưa?)
+2. Lỗi hiệu năng (có vòng lặp chậm không? Có thể vectorize không?)
+3. Lỗi tiềm ẩn (kiểu dữ liệu, edge case: file rỗng, cột thiếu...)
+4. Code khó đọc / khó bảo trì
+Với mỗi vấn đề: giải thích + đưa code đã sửa. Ưu tiên lỗi logic trước (ảnh hưởng kết quả).</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p9-review')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box warn"><span class="bt">⚠️ Đừng nhờ AI "tối ưu chung chung"</span> Prompt mơ hồ "tối ưu giúp tôi" ra kết quả nông. <strong>Luôn dán context + mô tả triệu chứng cụ thể</strong> (vd: "kết quả engagement của phòng R&amp;D = 4.9 trong khi kỳ vọng ~3.5, nghi tính sai reverse-code").</div>
+
+        <h3 class="sec">Ví dụ lỗi mà AI thường bắt được</h3>
+        <ul>
+          <li>Quên reverse-code 1 câu trong danh sách → điểm sai</li>
+          <li>Dùng <code class="ic">.mean()</code> mà không bỏ null → tính sai trung bình</li>
+          <li>Merge tạo duplicate → cột điểm bị nhân đôi</li>
+          <li>Ép kiểu <code class="ic">astype(int)</code> khi có null → lỗi</li>
+        </ul>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> ★ Update ngữ cảnh &amp; rule xử lý mới</h2>
+        <div class="ch-sub">Công ty đổi quy tắc (thang điểm mới, thêm câu hỏi, gộp phòng ban) — cập nhật context rồi nhờ AI sửa code.</div>
+
+        <h3 class="sec">Tình huống điển hình: rule thay đổi</h3>
+        <table>
+          <tr><th>Thay đổi</th><th>Ảnh hưởng code</th></tr>
+          <tr><td>Đổi thang 1–5 → 1–7</td><td>Công thức reverse đổi (8−giá trị), ngưỡng phân loại đổi</td></tr>
+          <tr><td>Thêm câu Q51–Q55 (nhóm "Sức khỏe")</td><td>Update structure + tính thêm 1 nhóm điểm</td></tr>
+          <tr><td>Gộp 2 phòng ban thành 1</td><td>Mapping phòng ban, báo cáo so sánh đổi</td></tr>
+          <tr><td>Đổi định nghĩa engagement (chỉ Q11–Q20 thay vì Q11–Q30)</td><td>Công thức tính tổng đổi → toàn bộ kết quả đổi</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — update code theo rule mới <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p10-update">Bạn là Data Analyst. Tôi có code cũ + context cũ. Nay CÔNG TY ĐỔI RULE:
+
+[THAY ĐỔI MỚI]
+- Thang đo đổi từ 1-5 → 1-7 (1=Hoàn toàn không đồng ý, 7=Hoàn toàn đồng ý)
+- Reverse-code: công thức mới = 8 − giá trị
+- Thêm nhóm "Sức khỏe tinh thần": Q51–Q55
+- Ngưỡng phân loại engagement mới: &lt;4.0 "Nguy cơ", 4.0–5.5 "Ổn", &gt;5.5 "Gắn kết cao"
+- Gộp phòng "Kế toán" + "Tài chính" thành "Tài chính-Kế toán"
+
+[CONTEXT CŨ]
+{DÁN CONTEXT CŨ}
+
+[CODE CŨ]
+{DÁN CODE CŨ}
+
+YÊU CẦU:
+1. Update context theo rule mới (viết lại block context mới)
+2. Sửa code tương ứng, đánh dấu chỗ nào thay đổi bằng comment "# MỚI"
+3. Giải thích từng thay đổi bằng tiếng Việt
+4. Chỉ ra nếu có dữ liệu cũ (năm trước thang 1-5) cần xử lý riêng</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p10-update')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box pro"><span class="bt">🎯 Thói quen vàng</span> Mỗi lần rule đổi, <strong>cập nhật file <code class="ic">context.md</code> trước</strong>, rồi mới nhờ AI sửa code. Như vậy context luôn là "nguồn sự thật" — code chỉ là hệ quả.</div>
+
+        <div class="box info"><span class="bt">💡 Phiên bản hóa context</span> Lưu nhiều phiên bản: <code class="ic">context_2024.md</code>, <code class="ic">context_2025.md</code>. Khi so sánh năm, biết rõ rule nào áp dụng cho năm nào — tránh nhầm.</div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Pipeline tái dùng (AI lo cấu trúc)</h2>
+        <div class="ch-sub">Đến cuối quý, chạy lại báo cáo chỉ bằng 1 lệnh. AI gom các bước thành pipeline.</div>
+
+        <h3 class="sec">Pipeline là gì — cho người không rành code</h3>
+        <p>Pipeline = 1 script Python chạy tuần tự các bước (đọc → làm sạch → scoring → báo cáo). Thay vì làm từng bước thủ công mỗi quý, bạn chạy 1 lệnh <code class="ic">python run_report.py</code> — xong trong vài phút.</p>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — nhờ AI build pipeline tái dùng <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p11-pipeline">Bạn là Data Engineer. Tôi đã có các đoạn code riêng lẻ (đọc, làm sạch, scoring, báo cáo). Giờ muốn gom thành 1 pipeline chạy 1 lệnh.
+
+[CODE CÁC BƯỚC]
+{DÁN CODE CÁC BƯỚC, hoặc mô tả}
+
+[CONTEXT]
+{DÁN CONTEXT}
+
+YÊU CẦU: Tạo file run_report.py với cấu trúc:
+1. Hàm riêng cho mỗi bước: load_data(), clean(), score(), report()
+2. Hàm main() gọi tuần tự, in tiến độ từng bước (bao nhiêu dòng xử lý, lỗi gì)
+3. Nhận tham số: đường dẫn file input, quý, năm (vd: python run_report.py data/q3_2025.csv 3 2025)
+4. Tự tạo folder output theo quý (vd: output/2025/Q3/)
+5. Xử lý lỗi: nếu file thiếu cột, báo rõ bằng tiếng Việt chứ không crash
+6. Cuối cùng in: "✅ Xong. Báo cáo tại output/2025/Q3/engagement_report.xlsx"
+Viết code có comment tiếng Việt, dễ hiểu cho người mới.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p11-pipeline')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Lợi ích thực tế</span> Thay vì mỗi quý mất 1 ngày xử lý → pipeline chạy 10 phút. Bạn rảnh thời gian phân tích insight thay vì làm việc tay chân.</div>
+
+        <div class="box warn"><span class="bt">⚠️ Test với dữ liệu nhỏ trước</span> Lần đầu chạy pipeline, dùng file nhỏ (1.000 dòng) để kiểm tra. Đúng rồi mới chạy file thật (50.000 dòng). Nhờ AI thêm bước "dry run" nếu cần.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> ★ Nhờ AI commit lên Git — KHÔNG cần học git</h2>
+        <div class="ch-sub">Lưu code + context lên GitHub/GitLab để backup, chia sẻ đồng nghiệp, xem lại lịch sử. Tất cả qua AI — bạn không cần thuộc 1 lệnh git nào.</div>
+
+        <div class="box info"><span class="bt">💡 Git là gì — cho Data Analyst (1 câu)</span> Git = công cụ lưu phiên bản code, giống Google Drive cho tài liệu. GitHub/GitLab = trang web đặt code đó để team cùng xem. <strong>Bạn không cần học git — AI làm hết.</strong></div>
+
+        <h3 class="sec">3 việc bạn cần làm với Git (AI gõ lệnh cho bạn)</h3>
+        <table>
+          <tr><th>Việc</th><th>Khi nào</th><th>Bạn làm gì</th></tr>
+          <tr><td><strong>Commit</strong></td><td>Hoàn thành 1 phần (vd: xong scoring)</td><td>Nhờ AI sinh lệnh → copy → dán terminal</td></tr>
+          <tr><td><strong>Push</strong></td><td>Cuối ngày / cuối task</td><td>Tương tự — AI sinh lệnh</td></tr>
+          <tr><td><strong>Pull / xem lịch sử</strong></td><td>Muốn xem phiên bản cũ, hoặc đồng nghiệp cập nhật</td><td>Hỏi AI "xem lịch sử thay đổi"</td></tr>
+        </table>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — nhờ AI dẫn commit &amp; push LẦN ĐẦU <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p12-gitsetup">Tôi là Data Analyst, CHƯA TỪNG DÙNG GIT. Tôi muốn đưa code Python + context.md lên GitLab/GitHub công ty. Hãy dẫn tôi từng bước, mỗi bước 1 lệnh, tôi copy rồi dán terminal:
+
+THÔNG TIN:
+- Máy: Windows
+- Tôi đã có tài khoản GitHub/GitLab công ty: {điền URL repo}
+- Folder dự án: D:\code\survey_analysis
+- File cần đưa: run_report.py, context.md, requirements.txt
+
+Hãy hướng dẫn:
+1. Cài git (nếu chưa) — kiểm tra bằng: git --version
+2. Cấu hình tên + email 1 lần: git config ...
+3. Khởi tạo repo trong folder: git init
+4. Thêm file: git add ...
+5. Commit đầu tiên: git commit ... (AI viết message tiếng Việt rõ ràng)
+6. Kết nối với repo remote công ty: git remote add ...
+7. Push lên: git push ...
+Giải thích từng lệnh bằng tiếng Việt (1 câu). Nếu gặp lỗi, tôi sẽ dán lỗi lại.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p12-gitsetup')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — commit các lần sau (hàng ngày) <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p12-commit">Tôi vừa sửa code Python (thêm nhóm "Sức khỏe" vào scoring, update context). Hãy cho tôi đúng các lệnh để commit + push, kèm commit message tiếng Việt rõ ràng. Tôi sẽ copy từng lệnh dán terminal. Giải thích ngắn mỗi lệnh.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p12-commit')">📋 Sao chép</button></div>
+        </div>
+
+        <div class="box tip"><span class="bt">✅ Nguyên tắc làm việc với AI + Git</span> <strong>Bạn không cần nhớ lệnh git.</strong> Mỗi lần muốn commit/push, mở AI, mô tả việc ("tôi sửa xong scoring, muốn commit"), AI sinh lệnh → bạn copy–dán. <strong>Lỗi gì → dán lỗi lại cho AI.</strong></div>
+
+        <div class="box warn"><span class="bt">⚠️ Không đưa dữ liệu nhạy cảm lên Git</span> File CSV có thông tin nhân viên thật (tên, email, lương) <strong>KHÔNG được commit</strong> lên Git — vi phạm bảo mật. Commit chỉ code + context (đã ẩn danh) + file cấu trúc. Nhờ AI tạo <code class="ic">.gitignore</code> loại trừ dữ liệu thô.</div>
+
+        <div class="box info"><span class="bt">💡 Sau này muốn hiểu sâu git?</span> Khóa này chỉ dạy "nhờ AI làm git". Nếu sau này bạn muốn tự hiểu git (branch, merge, conflict...), tham khảo khóa <a href="khoa-hoc-git.html" style="color:var(--accent-2)">Git — Từ Newbie đến Team Workflow</a> (tùy chọn, không bắt buộc).</div>
+      </section>
+
+      <!-- ============ PART 4 ============ -->
+      <div class="part-divider" id="p4div"><span class="tag tp3">P4 · Thực Chiến &amp; Công Cụ</span><span class="line"></span></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Case study: báo cáo engagement quý — full loop</h2>
+        <div class="ch-sub">Walkthrough 1 báo cáo thật từ đầu đến cuối: nhận file raw → context → prompt từng bước → báo cáo → commit. Đây là tổng hợp toàn khóa.</div>
+
+        <h3 class="sec">Kịch bản</h3>
+        <p>Đầu quý 4/2025, HR gửi bạn file <code class="ic">engagement_q3_2025.csv</code> (52.000 responses). Quản lý yêu cầu báo cáo engagement theo phòng ban + nhóm chủ đề, nộp trong 2 ngày. <strong>Cách làm cũ (Power Query): mất 1.5 ngày.</strong> <strong>Cách mới (AI + Python): 2 giờ.</strong></p>
+
+        <h4 class="mini">Bước 1 — Chọn AI &amp; đọc context (10 phút)</h4>
+        <p>Dùng hướng dẫn Chương 4. Với 4 file (raw + questionnaire + structure + behavior) → chọn Gemini 3.6 Flash (context 1M) cho tổng quan; Claude Sonnet 5 khi bắt đầu viết code production. Chuẩn bị context theo Chương 3.</p>
+
+        <h4 class="mini">Bước 2 — Merge demographics (20 phút)</h4>
+        <p>Dùng prompt Chương 6, LEFT JOIN với demographics.csv. 89 nhân viên thiếu thông tin phòng ban → báo HR bổ sung.</p>
+
+        <h4 class="mini">Bước 3 — Scoring (30 phút)</h4>
+        <p>Dùng prompt Chương 7. Reverse-code Q5, Q15, Q25, Q35. Tính điểm 5 nhóm + engagement tổng. Verify 5 dòng trước/sau reverse.</p>
+
+        <h4 class="mini">Bước 4 — Báo cáo (30 phút)</h4>
+        <p>Dùng prompt Chương 8. Xuất Excel nhiều sheet + heatmap. Viết insight tiếng Việt.</p>
+
+        <h4 class="mini">Bước 5 — Build pipeline (25 phút)</h4>
+        <p>Dùng prompt Chương 11. Gom thành <code class="ic">run_report.py</code>. Lần sau mỗi quý chạy 1 lệnh.</p>
+
+        <h4 class="mini">Bước 6 — Commit lên Git (10 phút)</h4>
+        <p>Dùng prompt Chương 12. Commit code + context (đã ẩn danh). Đồng nghiệp có thể xem/lại dùng.</p>
+
+        <div class="box pro"><span class="bt">🎯 Kết quả</span> 2 giờ thay vì 1.5 ngày. Báo cáo đầy đủ hơn cũ (có heatmap, insight). Code tái dùng cho quý sau. <strong>Đây là mục tiêu của khóa — tự chủ điều khiển AI end-to-end.</strong></div>
+
+        <div class="prompt">
+          <div class="ph">📋 Prompt — kickoff 1 dự án báo cáo mới <span class="ptag">meta-prompt</span></div>
+          <div class="pbody" id="p13-kickoff">Bạn là trợ lý Data Analyst. Tôi nhận báo cáo engagement quý mới (dữ liệu đã được team thu thập làm sạch). Hãy dẫn tôi qua từng bước (merge → score → báo cáo → pipeline → commit), ở mỗi bước:
+1. Cho tôi prompt chính xác để làm bước đó
+2. Giải thích tôi cần chuẩn bị gì (file nào, context gì)
+3. Sau khi tôi làm xong, tôi báo kết quả, bạn sang bước kế
+Tôi mới học quy trình này, hãy kiên nhẫn và rõ ràng. Bắt đầu từ bước merge dữ liệu.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p13-kickoff')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Thư viện Prompt (copy-paste, phân loại)</h2>
+        <div class="ch-sub">Tổng hợp các prompt xuyên khóa, phân loại theo mục đích. Copy ra dùng ngay.</div>
+
+        <h3 class="sec">A. Prompt khám &amp; đọc dữ liệu</h3>
+        <div class="prompt">
+          <div class="ph">📋 Khám phá file CSV lạ <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p14a">Bạn là Data Analyst. File đính kèm là CSV khảo sát HR mới. Viết code pandas để: đọc file (thử utf-8 rồi các encoding VN), in số dòng/cột/kiểu, với mỗi cột in null% + 5 giá trị phổ biến, check duplicate theo emp_id. Tóm tắt tiếng Việt các vấn đề cần làm sạch.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14a')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">B. Prompt làm sạch &amp; scoring</h3>
+        <div class="prompt">
+          <div class="ph">📋 Reverse-code + scoring đầy đủ <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p14b">Bạn là Data Analyst. File + context đính kèm. Thực hiện đúng thứ tự: (1) reverse-code các câu chỉ định (6−giá trị cho thang 1-5), (2) giá trị ngoài thang → null, (3) loại response &gt;30% null, (4) tính điểm từng nhóm chủ đề, (5) tính engagement tổng theo context, (6) phân loại theo ngưỡng. In 5 dòng trước/sau reverse để verify. Xuất scored_data.csv.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14b')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">C. Prompt phân tích &amp; báo cáo</h3>
+        <div class="prompt">
+          <div class="ph">📋 Báo cáo theo phòng ban + insight <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p14c">Bạn là Data Analyst. File scored_data.csv đính kèm. Tạo báo cáo: bảng engagement trung bình theo phòng ban × 5 nhóm chủ đề, đánh dấu ô &lt;3.0, top 3 phòng thấp/cao, nhóm chủ đề yếu nhất toàn công ty, heatmap PNG, xuất Excel nhiều sheet. Viết 3 insight tiếng Việt ở sheet đầu.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14c')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">D. Prompt vòng đời code</h3>
+        <div class="prompt">
+          <div class="ph">📋 Review code cũ + update rule <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p14d">Bạn là Senior DA. Review code sau (đính kèm context), chỉ ra: lỗi logic (quên reverse? missing sai?), hiệu năng, edge case. Đưa code đã sửa. NẾU có rule mới {mô tả}, update context + code tương ứng, đánh dấu "# MỚI". Giải thích tiếng Việt.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14d')">📋 Sao chép</button></div>
+        </div>
+
+        <h3 class="sec">E. Prompt Git (nhờ AI hết)</h3>
+        <div class="prompt">
+          <div class="ph">📋 Commit + push (không học git) <span class="ptag">copy-paste</span></div>
+          <div class="pbody" id="p14e">Tôi là DA, chưa từng học git. Tôi sửa xong {mô tả thay đổi}. Hãy cho đúng các lệnh để commit + push lên {repo URL}, kèm commit message tiếng Việt rõ ràng. Mỗi lệnh kèm 1 câu giải thích. Tôi copy dán terminal. Nếu lỗi tôi dán lại.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14e')">📋 Sao chép</button></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Cheatsheet Context (1 trang)</h2>
+        <div class="ch-sub">Template mô tả bộ khảo sát nhanh — dán vào mọi prompt. In ra dán cạnh màn hình.</div>
+
+        <p>Dưới đây là các card cheatsheet — tổng hợp nhanh context template &amp; quy tắc cốt lõi.</p>
+        <div class="cheat-grid" id="cheatGrid"></div>
+
+        <div class="box pro"><span class="bt">🎯 Cách dùng</span> Trước mỗi phân tích, copy 1–2 card phù hợp → điền thông tin công ty bạn → dán vào prompt. <strong>5 phút chuẩn bị context = 5 giờ tiết kiệm debug.</strong></div>
+      </section>
+
+      <!-- FLASHCARDS -->
+      <div class="part-divider" id="cards"><span class="tag tp0">Công cụ ôn tập</span><span class="line"></span></div>
+      <section class="chapter" id="fc-section">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards — khái niệm cốt lõi</h2>
+        <div class="ch-sub">Lật thẻ để ôn. Bấm vào thẻ để xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- PROGRESS -->
+      <div class="part-divider" id="progress"><span class="tag tp1">Tiến độ học</span><span class="line"></span></div>
+      <section class="chapter" id="prog-section">
+        <h2 class="ch-title"><span class="num">📊</span> Tiến độ</h2>
+        <div class="progress-wrap">
+          <div class="pt">Đánh dấu đã học ở mỗi chương</div>
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <div class="ps" id="progressTxt">0/0 chương · 0%</div>
+          <div class="ps" id="progressSub" style="margin-top:6px;">Tiến độ lưu trong trình duyệt.</div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🐼 <strong>AI Xử Lý Dữ Liệu Khảo Sát (CSV Lớn)</strong> — Cho Data Analyst xử lý khảo sát nguồn nhân sự. Thuộc thư viện <a href="../index.html">Mega Study</a> · Mỗi chương: context + prompt copy-paste + thực hành.
+      </footer>
+    </main>
+  </div>
+
+<script>
+/* ===== COPY PROMPT ===== */
+function copyPrompt(id){
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const orig = event.target.textContent;
+    event.target.textContent = '✅ Đã chép!';
+    setTimeout(()=>{ event.target.textContent = orig; }, 1200);
+  }).catch(()=>{
+    const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    event.target.textContent = '✅ Đã chép!'; setTimeout(()=>{ location.reload(); }, 1000);
+  });
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"'Context' trong xử lý dữ liệu khảo sát là gì?", a:"Toàn bộ thông tin AI cần để hiểu đúng dữ liệu: bản câu hỏi, cấu trúc nhóm, quy tắc chấm điểm (reverse-code), chính sách missing. File raw chỉ có Q1–Q50 là vô nghĩa nếu thiếu context."},
+  {q:"Tại sao AI 'không hiểu' file khảo sát của bạn?", a:"Vì AI chỉ thấy các con số và tên cột mã hóa (Q1, Q2...). Nó không biết Q12 nghĩa là gì, thang mấy, câu nào reverse → phải mô tả qua context."},
+  {q:"Reverse-code là gì? Tại sao quan trọng?", a:"Câu hỏi 'chiều ngược' (vd: 'tôi muốn nghỉ việc' = 5 là xấu). Trước khi tính điểm phải đảo: giá_trị_mới = 6 − giá_trị_cũ (thang 1–5). Quên reverse → điểm tính ngược → báo cáo sai."},
+  {q:"Cấu trúc 1 block context chuẩn có mấy phần?", a:"5 phần: (1) mô tả file, (2) bản câu hỏi, (3) cấu trúc nhóm, (4) quy tắc chấm điểm/hành vi, (5) chính sách dữ liệu (missing, duplicate)."},
+  {q:"Vì sao Python + AI hơn Power Query với CSV lớn?", a:"Pandas xử lý hàng triệu dòng nhanh, AI sinh code bằng tiếng Việt, chạy lại được 1 lệnh, merge mạnh, debug trong suốt. PQ chậm/treo khi file quá lớn."},
+  {q:"Bạn có cần biết code để dùng khóa này?", a:"KHÔNG. AI sinh code, bạn copy–chạy–xem kết quả. Khóa dạy cách mô tả dữ liệu (context) và đặt prompt — không dạy gõ code."},
+  {q:"Bạn có cần học git để commit code?", a:"KHÔNG. Nhờ AI sinh lệnh commit/push, bạn copy–dán terminal. AI giải thích từng bước. Lỗi gì dán lại cho AI sửa."},
+  {q:"Bẫy #1 khi merge nhiều file khảo sát?", a:"Dùng INNER JOIN mất response nếu nhân viên thiếu ở demographics → nên LEFT JOIN. Cũng phải check duplicate ở file phụ trước, kẻo sinh dòng ảo."},
+  {q:"Quy tắc vàng khi rule công ty đổi?", a:"Cập nhật file context.md TRƯỚC, rồi mới nhờ AI sửa code. Context luôn là 'nguồn sự thật', code chỉ là hệ quả."},
+  {q:"Chọn AI nào cho việc nào? (ChatGPT vs Claude vs Gemini)", a:"Khám nhanh 1 file CSV → ChatGPT (Advanced Data Analysis tự chạy code). Viết/review pipeline dài → Claude Sonnet 5 (code chuẩn, rẻ). Nạp cả bộ (raw+questionnaire+structure+behavior) → Gemini 3.6 Flash (context 1M)."},
+  {q:"Claude Code là gì? DA có cần không?", a:"Agent code của Anthropic, có plugin VS Code & JetBrains. DA nên cài plugin VS Code: Claude sửa file run_report.py trực tiếp, bạn duyệt diff — không phải copy-dán. Lý tưởng cho pipeline nhiều file."},
+  {q:"Antigravity là gì? DA có cần không?", a:"IDE desktop của Google (11/2025), chạy Gemini 1M context, có 'Agent Teams'. Quá mức cho DA xử lý CSV — chỉ cân nhắc nếu build app báo cáo có giao diện."},
+  {q:"Loại file nào KHÔNG được commit lên Git?", a:"Dữ liệu nhân viên thật (tên, email, lương) — vi phạm bảo mật. Chỉ commit code + context đã ẩn danh + file cấu trúc. Dùng .gitignore loại trừ data thô."},
+  {q:"Pipeline là gì — cho DA?", a:"1 script Python chạy tuần tự: đọc → làm sạch → scoring → báo cáo. Thay vì làm thủ công mỗi quý, chạy 1 lệnh python run_report.py — xong trong vài phút."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== CHEATSHEET ===== */
+const CHEAT = [
+  {ic:"📝", t:"Template Context — 5 phần", c:"[1. MÔ TẢ FILE] tên, số dòng, nguồn\n[2. BẢN CÂU HỎI] Q1: '...' — Likert 1-5\n[3. CẤU TRÚC NHÓM] Q1-10=Môi trường...\n[4. QUY TẮC CHẤM ĐIỂM] reverse, công thức\n[5. CHÍNH SÁCH DỮ LIỆU] missing, duplicate"},
+  {ic:"🔄", t:"Reverse-code (thang 1-5)", c:"# Câu reverse: Q5, Q15, Q25, Q35\nfor col in ['Q5','Q15','Q25','Q35']:\n    df[col] = 6 - df[col]"},
+  {ic:"📊", t:"Tính điểm nhóm chủ đề", c:"# Nhóm Lãnh đạo = Q11-Q20\nleader_cols = [f'Q{i}' for i in range(11,21)]\ndf['diem_lanh_dao'] = df[leader_cols].mean(axis=1)"},
+  {ic:"🎯", t:"Engagement tổng + phân loại", c:"df['engagement'] = df[leader_cols+dev_cols].mean(axis=1)\ndf['phan_loai'] = pd.cut(df['engagement'],\n  bins=[0,3,3.8,5], labels=['Nguy cơ','Ổn','Gắn kết'])"},
+  {ic:"🔍", t:"Lọc theo nhóm nhân viên", c:"# R&D + engagement thấp + thâm niên >= 2\nmask = (df.phong_ban=='R&D') & (df.engagement<3.0) & (df.tham_nien>=2)\nnguy_co = df[mask]"},
+  {ic:"🔗", t:"Merge nhiều file (thay VLOOKUP)", c:"# LEFT JOIN giữ mọi response\ndf = survey.merge(demographics, on='emp_id', how='left')\n# Check nhân viên thiếu thông tin\nthieu = df[df.phong_ban.isna()]"},
+  {ic:"🤖", t:"Chọn model nhanh (DA khảo sát)", c:"Khám nhanh 1 file CSV    → ChatGPT (Advanced Data Analysis)\nViết/review pipeline    → Claude Sonnet 5 (code chuẩn, rẻ)\nNạp cả bộ (5 file)      → Gemini 3.6 Flash (context 1M)\nCó thể dùng luân phiên — không chọn 1 cho mọi việc."},
+  {ic:"🏗️", t:"Pipeline — cấu trúc hàm", c:"def main(input_path, quy, nam):\n    df = load_data(input_path)\n    df = clean(df)\n    df = score(df)\n    report(df, quy, nam)\n# Chạy: python run_report.py data/q3.csv 3 2025"},
+  {ic:"🤖", t:"Prompt review code cũ", c:"Review code sau (kèm context). Chỉ ra:\n1. Lỗi logic (quên reverse? missing sai?)\n2. Hiệu năng (có thể vectorize?)\n3. Edge case (file rỗng, cột thiếu)\nĐưa code đã sửa. Ưu tiên lỗi logic."},
+  {ic:"📝", t:"Prompt update rule mới", c:"CÔNG TY ĐỔI RULE: {mô tả}\n[CONTEXT CŨ] {...} [CODE CŨ] {...}\n1. Update context mới\n2. Sửa code, comment '# MỚI'\n3. Giải thích từng thay đổi"},
+  {ic:"🔐", t:"Prompt Git (không học git)", c:"Tôi là DA, chưa học git. Sửa xong {thay đổi}.\nCho đúng lệnh commit + push lên {repo}.\nMỗi lệnh kèm 1 câu giải thích.\nTôi copy dán terminal. Lỗi dán lại."},
+  {ic:"🚫", t:".gitignore — không đẩy dữ liệu thật", c:"# .gitignore\n*.csv\n*.xlsx\n!sample_*.csv\ndata/\noutput/\n# Chỉ commit code + context.md"},
+];
+document.getElementById('cheatGrid').innerHTML = CHEAT.map(c=>
+  `<div class="cheat-card"><h4>${c.ic} ${c.t}</h4><div class="ci">${c.c}</div></div>`).join('');
+
+/* ===== PROGRESS ===== */
+const PROGRESS_KEY = 'pandas_ai_progress_v1';
+function loadP(){ try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch(e){ return {}; } }
+function saveP(p){ try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch(e){} }
+function markChapter(id){
+  const p = loadP(); p[id] = true; saveP(p); renderProgress();
+}
+function renderProgress(){
+  const p = loadP();
+  const chapters = document.querySelectorAll('section.chapter[id^="c"]');
+  const done = [...chapters].filter(c => p[c.id]).length;
+  const total = chapters.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+  const fill = document.getElementById('progressFill');
+  if(fill){ fill.style.width = pct+'%';
+    document.getElementById('progressTxt').textContent = `${done}/${total} chương · ${pct}%`;
+    document.getElementById('progressSub').textContent = `Đánh dấu đã học ở mỗi chương. Tiến độ lưu trong trình duyệt.`;
+  }
+}
+document.querySelectorAll('section.chapter[id^="c"]').forEach(c=>{
+  const btn = document.createElement('button');
+  btn.textContent = '✓ Đã học chương này';
+  btn.style.cssText = 'font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--gray);margin:8px 0;';
+  btn.onclick = ()=>{ markChapter(c.id); btn.style.background='var(--primary)'; btn.style.color='#060614'; btn.textContent='✅ Đã học'; };
+  c.appendChild(btn);
+});
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+
+renderProgress();
+</script>
+</body>
+</html>
