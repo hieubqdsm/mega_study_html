@@ -1,0 +1,289 @@
+<!DOCTYPE html><html lang="en" class="no-js">
+<head><meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<script>window.dataLayer = window.dataLayer || []; dataLayer.push({ event: 'dataLayer-initialized', user: { user_unity_id: undefined, user_logged_in: 'no' }, environment: { environment_locale: 'en-us', environment_currency: undefined }});</script><script>var offline=(location.href.indexOf('docs.unity3d.com')==-1)?true:false;if(!offline){(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);  })(window,document,'script','dataLayer','GTM-5V25JL6');}</script><link href="https://fonts.googleapis.com/css?family=Roboto&amp;display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity - Manual: Introduction to the Audio Mixer</title>
+<meta property="og:image" content="https://unity3d.com/files/images/ogimg.jpg">
+<meta name="author" content="Unity Technologies">
+<meta property="relative-path-to-manual" content="">
+<meta property="version-switcher-versions-with-this-page" content="Versions with this page:">
+<meta property="version-switcher-versions-without-this-page" content="Versions without this page:">
+<meta property="version-switcher-supported" content="Supported">
+<meta property="version-switcher-legacy" content="Legacy">
+<link rel="shortcut icon" href="../StaticFilesManual/images/favicons/favicon.png">
+<link rel="icon" type="image/png" href="../StaticFilesManual/images/favicons/favicon.png">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="../StaticFilesManual/images/favicons/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../StaticFilesManual/images/favicons/apple-touch-icon-144x144.png">
+<link rel="apple-touch-icon-precomposed" sizes="120x120" href="../StaticFilesManual/images/favicons/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../StaticFilesManual/images/favicons/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../StaticFilesManual/images/favicons/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon-precomposed" href="../StaticFilesManual/images/favicons/apple-touch-icon.png">
+<link rel="canonical" href="https://docs.unity3d.com/6000.5/Documentation/Manual/AudioMixerOverview.html">
+<meta name="msapplication-TileColor" content="#222c37">
+<meta name="msapplication-TileImage" content="../StaticFilesManual/images/favicons/tileicon-144x144.png">
+<script type="text/javascript" src="../StaticFilesConfig/UnityVersionsInfo.js"></script><script type="text/javascript" src="../StaticFilesManual/js/jquery.js"></script><script type="text/javascript" src="../StaticFilesManual/js/core.js"></script><script type="text/javascript" src="../StaticFilesManual/js/image-comp.js"></script><script type="text/javascript" src="docdata/toc.js"></script><script type="text/javascript" src="docdata/global_toc.js"></script><link rel="stylesheet" type="text/css" href="../StaticFilesManual/css/core.css">
+<link rel="stylesheet" type="text/css" href="../StaticFilesManual/css/icons.css">
+<link rel="stylesheet" href="../StaticFilesManual/css/prism.css">
+<script src="../StaticFilesManual/js/prism.js"></script><script src="../StaticFilesConfig/feedback/feedback.js"></script><script src="../StaticFilesManual/js/jquery.sidebar.min.js"></script><link rel="stylesheet" href="../StaticFilesManual/css/mobileoptimisation.css">
+<script src="../StaticFilesManual/js/mobileoptimisation.js"></script>
+</head>
+<body>
+<div id="DocsAnalyticsData" data-area="none" data-pagetype="manual"></div>
+<div class="header-wrapper">
+<div id="header" class="header"><div class="content">
+<div class="spacer"><div class="menu">
+<div id="nav-open" for="nav-input"><span></span></div>
+<div class="logo"><a aria-label="go to the homepage" href="https://docs.unity3d.com"></a></div>
+<div class="search-form"><form action="30_search.html" method="get" class="apisearch">
+<input type="text" name="q" aria-label="Search manual documentation" placeholder="Search manual..." autosave="Unity Reference" results="5" class="sbox field" id="q"><input type="submit" class="submit">
+</form></div>
+<ul>
+<li><a href="index.html" class="selected">Manual</a></li>
+<li><a href="../ScriptReference/index.html">Scripting API</a></li>
+</ul>
+</div></div>
+<div class="more">
+<div class="filler"></div>
+<ul><li><a href="https://unity.com/">unity.com</a></li></ul>
+</div>
+</div></div>
+<div class="toolbar"><div class="content">
+<div class="toggle version-number" id="VersionNumber" data-target=".otherversionscontent">
+                                Version: <b>Unity 6.5</b> (6000.5)
+                                <div class="otherversionscontent" id="OtherVersionsContent" style="display: none;">
+<ul id="OtherVersionsContentUl"></ul>
+<div id="otherVersionsLegend"><ul>
+<li>
+<div id="supportedColour" class="legendBox"></div>Supported</li>
+<li>
+<div id="notFoundColour" class="legendBox"></div>Legacy</li>
+</ul></div>
+</div>
+<div id="VersionSwitcherArrow" class="arrow versionSwitcherArrow"></div>
+</div>
+<div class="lang-switcher"><div class="current toggle" data-target=".lang-list">
+<div class="lbl">Language
+:                <span class="b">English</span>
+</div>
+<div class="arrow"></div>
+<div class="lang-list" style="display:none;"><ul>
+<li><a href="AudioMixerOverview.html">English</a></li>
+<li><a href="https://docs.unity3d.com/cn/current/Manual/AudioMixerOverview.html">中文</a></li>
+<li><a href="https://docs.unity3d.com/ja/current/Manual/AudioMixerOverview.html">日本語</a></li>
+<li><a href="https://docs.unity3d.com/kr/current/Manual/AudioMixerOverview.html">한국어</a></li>
+</ul></div>
+</div></div>
+</div></div>
+<div class="mobileLogo"><a aria-label="go to the homepage" href="https://docs.unity3d.com"></a></div>
+</div>
+<div id="master-wrapper" class="master-wrapper clear">
+<div id="sidebar" class="sidebar"><div class="sidebar-wrap"><div class="content"><div class="sidebar-menu"><div class="toc" id="customScrollbar">
+<h2>Unity Manual</h2>
+<div class="search-form sidebar-search-form"><form action="30_search.html" method="get" class="apisearch">
+<input type="text" name="q" aria-label="Search manual documentation" placeholder="Search manual..." autosave="Unity Reference" results="5" class="sbox field" id="q"><input type="submit" id="mobileSearchBtn" class="submit" value="Search">
+</form></div>
+<div class="toggle version-number sidebar-version-switcher" id="VersionNumber" data-target=".otherversionscontent"><form id="otherVersionsContentMobileForm"><div class="ui-field-contain">
+<label for="select-native-4">Version: Unity 6.5</label><select name="select-native-4" id="versionsSelectMobile"><option>Select a different version</option>
+<optgroup id="versionsWithThisPageMobile" label="Versions with this page"></optgroup>
+<optgroup id="versionsWithoutThisPageMobile" label="Versions without this page"></optgroup></select>
+</div></form></div>
+<div class="lang-switcher"><div class="current toggle" data-target=".lang-list">
+<div class="lbl">Language
+:                <span class="b">English</span>
+</div>
+<div class="arrow"></div>
+<div class="lang-list" style="display:none;"><ul>
+<li><a href="AudioMixerOverview.html">English</a></li>
+<li><a href="https://docs.unity3d.com/cn/current/Manual/AudioMixerOverview.html">中文</a></li>
+<li><a href="https://docs.unity3d.com/ja/current/Manual/AudioMixerOverview.html">日本語</a></li>
+<li><a href="https://docs.unity3d.com/kr/current/Manual/AudioMixerOverview.html">한국어</a></li>
+</ul></div>
+</div></div>
+</div></div></div></div></div>
+<div id="content-wrap" class="content-wrap"><div class="content-block"><div class="content">
+<div class="section">
+<div class="breadcrumbs clear"><ul>
+<li><a href="Audio.html">Audio</a></li>
+<li><a href="audio-mixer-landing.html">Audio Mixer</a></li>
+<li>Introduction to the Audio Mixer</li>
+</ul></div>
+<div class="mb20"><div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a aria-label="go to the previous page" href="audio-mixer-landing.html"></a></span><div class="tip">Audio Mixer</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a aria-label="go to the next page" href="AudioMixer.html"></a></span><div class="tip">Audio Mixer window</div>
+</div>
+</div></div>
+<div id="_leavefeedback"></div>
+<h1>Introduction to the Audio Mixer</h1>
+<!--BeginSwitchLink--><!--EndSwitchLink-->
+<div class="clear"></div>
+
+<p>The Audio Mixer is an asset that Audio Sources reference to apply complex routing and mixing to the audio signal they generate. The Audio Mixer performs this category-based mixing through a hierarchy of groups that you construct inside the asset.</p>
+
+<p>You can apply digital signal processing (DSP) effects and other audio mastering to the signal as Unity routes it from the Audio Source to the Audio Listener.</p>
+
+<h2>Audio Mixer view</h2>
+
+<figure>
+<img src="../uploads/Main/AudioMixerView.webp" alt="The Audio Mixer view, including the Audio Mixer asset (1), Hierarchy view (2), Mixer views (3), Snapshots panel (4), output Audio Mixer (5), Audio group strip view (6), Edit in Play Mode toggle (7), and Exposed Parameters (8).">
+<figcaption>The Audio Mixer view, including the Audio Mixer asset (1), Hierarchy view (2), Mixer views (3), Snapshots panel (4), output Audio Mixer (5), Audio group strip view (6), Edit in Play Mode toggle (7), and Exposed Parameters (8).</figcaption>
+</figure>
+
+<p>The Audio Mixer window contains the following areas:</p>
+
+<ol>
+<li>Audio Mixer asset: Contains all groups and snapshots as subassets.</li>
+<li>
+<strong>Hierarchy</strong> view: Shows the entire mixing hierarchy of groups within the Audio Mixer.</li>
+<li>
+<strong>Mixer Views</strong>: Lists cached visibility settings for the mixer. Each view shows only a subset of the hierarchy in the main mixer window.</li>
+<li>
+<strong>Snapshots</strong>: Lists all snapshots within the Audio Mixer asset. Snapshots capture the state of every parameter setting in an Audio Mixer, and you can transition between them at runtime.</li>
+<li>
+<strong>Output</strong> Audio Mixer: Routes this Audio Mixer’s signal into a group of another Audio Mixer. Use this property to define the output group.</li>
+<li>AudioGroup strip view: Shows an overview of an AudioGroup, including the volume unit (VU) levels, attenuation (volume) settings, <strong>Mute</strong>, <strong>Solo</strong>, and <strong>Effect Bypass</strong> settings, and the list of DSP effects within the group.</li>
+<li>
+<strong>Edit in Play Mode</strong> toggle: Lets you edit the Audio Mixer during Play mode or prevent edits, so the application runtime controls the state of the Audio Mixer.</li>
+<li>
+<strong>Exposed Parameters</strong>: Lists the exposed parameters and their string names. You can expose any parameter within an Audio Mixer to a script through a string name.</li>
+</ol>
+
+<h2>Audio Mixer Inspector window</h2>
+
+<figure>
+<img src="../uploads/Main/AudioMixerInspector.webp" alt="The Audio Mixer Inspector window displays a list of configurable Audio Mixer components, including Pitch and Ducking settings (1), Send effect (2), Attenuation effect (3), and Reverb effect (4).">
+<figcaption>The Audio Mixer Inspector window displays a list of configurable Audio Mixer components, including Pitch and Ducking settings (1), Send effect (2), Attenuation effect (3), and Reverb effect (4).</figcaption>
+</figure>
+
+<p>The Audio Mixer Inspector displays the configurable components of a group:</p>
+
+<ol>
+<li>
+<strong>Pitch</strong> and <strong>Ducking</strong> settings: Appear at the top of every group.</li>
+<li>
+<strong>Send</strong>: An example send effect, positioned before the point where Unity applies attenuation.</li>
+<li>
+<strong>Attenuation</strong>: Sets the volume for a group. You can apply attenuation anywhere in the effect stack. The VU meter shows the volume level at that point in the stack, which differs from the VU meters in the Audio Mixer view that show the level of the signal as it leaves the group.</li>
+<li>
+<strong>SFX Reverb</strong>: An example effect with parameters, in this case a reverb. To expose a parameter, right-click it, and select the option.</li>
+</ol>
+
+<h2>Routing and mixing</h2>
+
+<p>Audio routing is the process of taking input audio signals and producing one or more output signals. A signal is a continuous stream of digital audio data, which you can break down into digital audio channels, such as stereo or 5.1 (six channels).</p>
+
+<p>You can use the Audio Mixer to perform important audio processing work on these signals. Examples include mixing, applying effects, and attenuation.</p>
+
+<p>With the exception of sends and returns, the Audio Mixer contains groups that accept any number of input signals, mix those signals, and produce exactly one output.</p>
+
+<figure>
+<img src="../uploads/Main/AudioMixerSignalPath.webp" alt="The relationship between different audio entities. One Audio Mixer receives input signals from two different Audio Sources. A second Audio Mixer receives input signals from the first Audio Mixer and a third Audio Source. An Audio Listener receives input signals from the second Audio Mixer and a fourth Audio Source.">
+<figcaption>The relationship between different audio entities. One Audio Mixer receives input signals from two different Audio Sources. A second Audio Mixer receives input signals from the first Audio Mixer and a third Audio Source. An Audio Listener receives input signals from the second Audio Mixer and a fourth Audio Source.</figcaption>
+</figure>
+
+<p>In audio processing, this routing and mixing usually happens independently of the scene graph hierarchy because audio behaves differently from the objects and concepts shown in the scene. You interact with it differently too.</p>
+
+<p>Without an Audio Mixer, the signal that each Audio Source produces (through audio clips, for example) routes directly to the Audio Listener, where Unity mixes all the audio signals at a single point. This mixing happens independently of the scene graph, regardless of where your Audio Sources are in the scene.</p>
+
+<p>An Audio Mixer sits between the Audio Source and the Audio Listener in the audio signal processing chain. It takes the output signal from the Audio Source and performs the routing and mixing operations you want, until Unity outputs all audio to the Audio Listener and plays it through the speakers.</p>
+
+<h3>Benefits of routing and mixing</h3>
+
+<p>With mixing and routing, you can categorize the audio in your application into the categories you want. After you mix sound into these categories, you can apply effects and other operations to each category as a whole. This is powerful for applying logic changes to sound categories. You also can tweak aspects of the mix to perform what’s known as mastering of the entire soundscape dynamically at runtime.</p>
+
+<h3>Relationship to 3D spatial attenuation</h3>
+
+<p>Some sound concepts relate to the scene graph and the 3D world. The most obvious examples are attenuation based on 3D distance, relative speed to the Audio Listener, and environmental reverb effects.</p>
+
+<p>Because these operations relate to the scene rather than to the categories of sounds in an Audio Mixer, Unity applies the effects at the Audio Source, before the signal enters an Audio Mixer. For example, Unity applies the distance-based attenuation for an Audio Source to the signal before the signal leaves the Audio Source and routes into an Audio Mixer.</p>
+
+<h2>Sound categories</h2>
+
+<p>With an Audio Mixer, you can categorize types of sounds and apply operations to those categories. This categorization is important. Without it, every sound plays back equally and without any mixing, and the soundscape becomes difficult to distinguish. With techniques such as ducking (automatically lowering the volume of one category when another plays), categories of sounds can influence each other, which adds richness to the mix.</p>
+
+<p>You might want to perform the following operations on a category:</p>
+
+<ul>
+<li>Apply attenuation to a group of ambient sounds.</li>
+<li>Trigger a low-pass filter on all the foley sounds in your application to simulate being underwater.</li>
+<li>Attenuate all sounds except the menu music and interaction sounds.</li>
+<li>Reduce the volume of all the gun and explosion sounds so the user can hear a non-player character (NPC) speaking.</li>
+</ul>
+
+<p>These categories are application-specific and vary between projects. The following is an example of one such categorization:</p>
+
+<ul>
+<li>All sounds route into the <strong>Master</strong> group.</li>
+<li>The Master group contains categories for music, menu sounds, and all application sounds.</li>
+<li>The application sounds group breaks down into dialogue from NPCs, environmental sounds from ambient sources, and other foley sounds such as gunshots and footsteps.</li>
+<li>These categories break down further as required.</li>
+</ul>
+
+<p>The following image shows the category hierarchy of this layout:</p>
+
+<figure>
+<img src="../uploads/Main/AudioMixerHierarchy.webp" alt="The group hierarchy panel displays the configurable hierarchy of groups within an Audio Mixer.">
+<figcaption>The group hierarchy panel displays the configurable hierarchy of groups within an Audio Mixer.</figcaption>
+</figure>
+
+<p>The scene graph layout differs significantly from the layout for sound categories.</p>
+
+<h2>Moods and themes of the mix</h2>
+
+<p>You can also use mixing and routing to create the immersion you want. For example, you can apply reverb to all the application sounds and attenuate the music to create the feeling of being in a cave.</p>
+
+<p>You can use the Audio Mixer to create moods in your application. With techniques such as snapshots and multiple mixers, your application can transition its mood and evoke the feelings you want the user to experience, which strengthens immersion.</p>
+
+<h2>The global mix</h2>
+
+<p>The Audio Mixer controls the overall mix of all the sounds in your application. An Audio Mixer controls the global mix. It’s the static, persistent mix that sound instances route through.</p>
+
+<p>In other words, an Audio Mixer is always present throughout the lifetime of a scene. Unity creates and destroys sound instances as your application runs, and those instances play through these global Audio Mixers.</p>
+
+<h2>Snapshots</h2>
+
+<p>Snapshots capture the state of an Audio Mixer and transition between those states as your application runs. Use snapshots to define moods or themes for the mix and change those moods as the user progresses through your application.</p>
+
+<p>Snapshots capture the values of all the parameters in the Audio Mixer:</p>
+
+<ul>
+<li>Volume</li>
+<li>Pitch</li>
+<li>Send level</li>
+<li>Wet mix level</li>
+<li>Effect parameters</li>
+</ul>
+
+<p>Combine snapshots with application logic to change many aspects of the soundscape.</p>
+
+<h2>Additional resources</h2>
+
+<ul>
+<li><a href="audio-mixer-landing.html">Audio Mixer</a></li>
+<li><a href="AudioMixerUsage.html">Overview of Usage and API</a></li>
+<li><a href="../ScriptReference/Audio.AudioMixer.html">AudioMixer</a></li>
+</ul>
+<div id="_content"></div>
+<div class="nextprev clear">
+<div class="icon tt left mr1" data-distance="-40|-30|top">
+<span class="prev"><a aria-label="go to the previous page" href="audio-mixer-landing.html"></a></span><div class="tip">Audio Mixer</div>
+</div>
+<div class="icon tt right" data-distance="-40|-30|top">
+<span class="next"><a aria-label="go to the next page" href="AudioMixer.html"></a></span><div class="tip">Audio Mixer window</div>
+</div>
+</div>
+</div>
+<div class="footer-wrapper"><div class="footer clear">
+<div class="copy">Copyright ©2005-2026 Unity Technologies. All rights reserved. Built from job ID 73121950. Built on: 2026-08-09.</div>
+<div class="menu">
+<a href="https://learn.unity.com/">Tutorials</a><a href="https://answers.unity3d.com">Community Answers</a><a href="https://support.unity3d.com/hc/en-us">Knowledge Base</a><a href="https://forum.unity3d.com">Forums</a><a href="https://unity3d.com/asset-store">Asset Store</a><a href="https://docs.unity3d.com/Manual/TermsOfUse.html">Terms of use</a><a href="https://unity.com/legal">Legal</a><a href="https://unity.com/legal/privacy-policy">Privacy Policy</a><a href="https://unity.com/legal/cookie-policy">Cookies</a><a href="https://unity.com/legal/docs-terms">Documentation Terms of Use</a><a href="https://unity.com/legal/do-not-sell-my-personal-information">Do Not Sell or Share My Personal Information</a><div id="ot-sdk-btn-container"><a id="ot-sdk-btn" class="ot-sdk-show-settings" href="javascript:void(0);">Your Privacy Choices (Cookie Settings)</a></div>
+</div>
+</div></div>
+</div></div></div>
+</div>
+</body>
+</html>
