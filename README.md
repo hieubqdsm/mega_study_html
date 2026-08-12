@@ -51,6 +51,14 @@ mega_study_html/
 │   ├── khoa-hoc-llamaindex.*     # 🦙 LlamaIndex (RAG/data framework, HTML+MD)
 │   ├── khoa-hoc-hugging-face.*   # 🤗 Hugging Face (transformers/datasets/Hub, HTML+MD)
 │   ├── khoa-hoc-peft-lora.*      # 🧩 PEFT & LoRA (fine-tune LLM tiết kiệm, HTML+MD)
+│   ├── khoa-hoc-mcp.*            # 🔌 MCP — Model Context Protocol (Agent tool-connecting, HTML+MD)
+│   ├── khoa-hoc-dspy.*           # ⚡ DSPy — tối ưu prompt bằng code (Signature/Teleprompter, HTML+MD)
+│   ├── khoa-hoc-hybrid-search-reranking.*  # 🔍 Hybrid Search + Re-ranking (BM25⊕Dense→RRF→Cross-encoder)
+│   ├── khoa-hoc-rag-evaluation.* # 📊 RAGAS/TruLens — đánh giá RAG định lượng (HTML+MD)
+│   ├── khoa-hoc-quantization-serving.*    # 🚀 Quantization + serving (AWQ/GGUF/vLLM, HTML+MD)
+│   ├── khoa-hoc-ai-system-design.*        # 🏗️ AI System Design (phỏng vấn Senior, HTML+MD)
+│   ├── khoa-hoc-ml-dl-architecture.*      # 🤖 ML & DL Architecture (Toán→CV→NLP→MLOps, HTML+MD)
+│   ├── lo-trinh-ai-engineer-1-nam.html    # 🎓 Kỹ sư AI thực chiến — lộ trình 1 năm (32 tuần)
 │   ├── claude-course/            # Bộ khóa Claude (index.html, foundations, coding, ...)
 │   ├── khoa-hoc-gemini-pro.*     # ✦ Gemini Pro
 │   └── giao_trinh_agentic_ai.html
@@ -110,4 +118,4 @@ Rồi mở trình duyệt tới: **http://localhost:8000** → trang chủ hiệ
 - Hầu hết khóa học có **2 bản**: HTML (giao diện tương tác) và Markdown (đọc trên editor/GitHub).
 - Nội dung bằng **tiếng Việt**. Tất cả trang đều **thân thiện mobile** (responsive).
 
-*Cập nhật: 2026-06-10*
+*Cập nhật: 2026-08-12*

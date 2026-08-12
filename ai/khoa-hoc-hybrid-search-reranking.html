@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hybrid Search &amp; Re-ranking — Nâng Recall RAG Lên &gt;90%</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #14b8a6;        /* teal */
+    --primary-glow: #2dd4bf;
+    --accent: #f59e0b;         /* amber */
+    --accent-2: #fbbf24;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #08161a; --darker: #04090b;
+    --light: #cfe8e6; --light-strong: #effdfb; --gray: #7fa39e;
+    --card: #0d1f22; --card-2: #142a2d; --border: #1f4143; --terminal: #050f12;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #5c7d7a;
+  }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image: radial-gradient(circle at 16% 22%, rgba(20,184,166,.10) 0%, transparent 45%), radial-gradient(circle at 84% 72%, rgba(245,158,11,.06) 0%, transparent 45%); background-attachment: fixed; }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar { width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #020708 100%); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(20,184,166,.13); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(20,184,166,.5)); }
+  .logo h1 { font-size: 19px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .logo .pat { font-family: monospace; font-size: 11.5px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(20,184,166,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; } .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#08161a; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); } .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); } .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(20,184,166,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(4,9,11,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+  .hero { background: linear-gradient(135deg, rgba(20,184,166,.16), rgba(245,158,11,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🔍"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 30px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; } ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(20,184,166,.08); border-color: rgba(20,184,166,.4);} .box.pro::before{content:"🎯";}
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; } pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); } pre.code .fn { color: var(--code-blue); } pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; } pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(20,184,166,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#08161a; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; } .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; } .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(20,184,166,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder label { font-size:12.5px; color:var(--gray); display:flex; flex-direction:column; gap:4px; }
+  .builder select, .builder input[type=text], .builder input[type=number] { font-family:inherit; font-size:13px; padding:7px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .builder input[type=range] { padding:0; width:130px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#08161a; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:23px; } .opt-grid { grid-template-columns: 1fr; } .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) { .hero h1 { font-size:20px; } h2.ch-title { font-size:20px; } .meta-pill { font-size:12px; } }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🔍</div>
+      <h1>Hybrid Search</h1>
+      <div class="sub">RE-RANKING CHO RAG</div>
+      <div class="pat">BM25 ⊕ dense → rerank</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nền tảng</li>
+      <li><a href="#c1"><span class="cn">1</span> Vì sao Dense chưa đủ</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Sparse vs Dense</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Hybrid Search là gì</a></li>
+      <li><a href="#c4"><span class="cn">4</span> Setup môi trường</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Retrieval</li>
+      <li><a href="#c5"><span class="cn">5</span> Index Dense (Qdrant)</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Sparse retrieval (BM25)</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Dense retrieval</a></li>
+      <li><a href="#c8"><span class="cn">8</span> Đo Recall@k</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Fusion &amp; Re-ranking</li>
+      <li><a href="#c9"><span class="cn">9</span> Vì sao không trộn điểm</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Reciprocal Rank Fusion</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Cross-encoder là gì</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Re-ranking với bge-reranker</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Thực chiến</li>
+      <li><a href="#c13"><span class="cn">13</span> Pipeline Hybrid đầy đủ</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Đánh giá Dense vs Hybrid</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Mẹo &amp; tối ưu</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án RAG tiếng Việt</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> Hybrid Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🔍 Khóa học · <b id="crumb">Hybrid Search</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Hybrid Search &amp; <span class="g">Re-ranking</span> — nâng Recall RAG &gt; 90%</h1>
+        <p>16 chương theo 4 cấp độ. Kết hợp <strong>Sparse (BM25) + Dense (embedding) + Cross-encoder</strong> để đẩy <strong>Recall@5</strong> của RAG từ ~70% lên <strong>&gt;90%</strong>. Khóa thực hành hướng dẫn dựng pipeline BM25 ⊕ Dense → RRF → rerank, đo cải thiện thật. Mỗi chương có code, <strong>bài tập tự chấm</strong>, quiz, flashcard.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>Hybrid Builder</b></span>
+          <span class="meta-pill">🔍 BM25 · Dense · Cross-encoder</span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Cài <code class="ic">pip install qdrant-client sentence-transformers FlagEmbedding rank-bm25</code>. Nên học RAG ở <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="khoa-hoc-langchain.html">LangChain</a> / <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="khoa-hoc-llamaindex.html">LlamaIndex</a> trước. Bài tập <b>tự chấm offline</b>.</div>
+      </div>
+
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nền tảng</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> Vì sao chỉ Dense Search chưa đủ</h2>
+        <div class="ch-sub">Embedding giỏi ngữ nghĩa — nhưng bỏ sót từ khóa chính xác.</div>
+        <p>Dense (embedding) giỏi khớp ngữ nghĩa nhưng <strong>bỏ sót từ khóa chính xác</strong> (tên riêng, mã số, thuật ngữ kỹ thuật). Query <em>"Thông tư 08"</em> — Dense có thể trả tài liệu về "quy định ngân hàng" (liên quan ngữ nghĩa) mà <em>lỡ</em> tài liệu thực sự chứa cụm "Thông tư 08". BM25 lại bắt chính xác. Hybrid = cộng sức.</p>
+        <table>
+          <tr><th></th><th>Dense</th><th>Sparse (BM25)</th><th>Hybrid + Rerank</th></tr>
+          <tr><td>Khớp ngữ nghĩa</td><td>✅</td><td>❌</td><td>✅</td></tr>
+          <tr><td>Khớp từ khóa chính xác</td><td>❌</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Recall@5 điển hình</td><td>~70%</td><td>~65%</td><td><strong>&gt;90%</strong></td></tr>
+        </table>
+        <div class="box pro"><span class="bt">Bài học thực tế</span> Hệ thống RAG production hiếm khi chỉ dùng Dense. <strong>Hybrid + re-ranking</strong> là chuẩn de-facto ở Qdrant, Weaviate, Elasticsearch, Pinecone — đều hỗ trợ native. Học được cái này = nâng chất lượng RAG rõ rệt mà không đổi model.</div>
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. Query "Thông tư 08" — loại retrieval nào dễ bỏ sót tài liệu chứa đúng cụm này?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Dense (embedding) — vì khớp ngữ nghĩa, không từ khóa</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">BM25 — vì đếm từ</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Hybrid</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Cross-encoder</button>
+            </div>
+            <div class="qexp">✅ Dense khớp ngữ nghĩa nên có thể ưu tiên "liên quan" thay vì "chứa đúng" — BM25 mới bắt chính xác từ khóa.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Sparse vs Dense Retrieval</h2>
+        <div class="ch-sub">Hai họ vector — hai thế mạnh khác nhau.</div>
+        <ul>
+          <li><strong>Sparse vector</strong>: nhiều chiều (kích thước vocabulary), mỗi chiều ứng với 1 từ, hầu hết = 0. Ví dụ: <strong>BM25</strong>, TF-IDF. Mô hình: đếm/trọng số từ.</li>
+          <li><strong>Dense vector</strong>: vài trăm chiều (768/1536), <em>tất cả</em> mang thông tin. Sinh bởi <strong>embedding model</strong> (Sentence-BERT, BGE, OpenAI). Nắm ngữ nghĩa.</li>
+        </ul>
+        <div class="box info"><span class="bt">Vì sao "sparse"</span> Vector sparse dài hàng nghìn/trăm nghìn chiều nhưng chỉ vài giá trị ≠ 0 (từ nào xuất hiện). Chiếc "nén tự nhiên" — phù hợp khớp từ khóa. Dense ngược lại: ngắn nhưng đặc — phù hợp khớp ý.</div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Hybrid Search là gì</h2>
+        <div class="ch-sub">Sparse + Dense song song → fusion → (re-rank).</div>
+        <p>Hybrid Search = chạy cả Sparse &amp; Dense <strong>song song</strong>, rồi <strong>fusion</strong> (gộp) kết quả. Thường thêm <strong>re-ranking</strong> bằng cross-encoder cho top cuối.</p>
+        <div class="code-block"><div class="cbhead"><span>sơ đồ</span><span class="dot">●</span></div><pre class="code"><span class="cm">#     Query</span>
+<span class="cm">#     ┌────┴────┐</span>
+<span class="cm">#   Sparse    Dense           ← retrieval song song</span>
+<span class="cm">#  (BM25)   (embedding)</span>
+<span class="cm">#   top20    top20</span>
+<span class="cm">#     └────┬────┘</span>
+<span class="cm">#       Fusion (RRF)           ← gộp theo thứ hạng</span>
+<span class="cm">#       top15</span>
+<span class="cm">#         │</span>
+<span class="cm">#   Cross-encoder rerank       ← xếp lại chính xác</span>
+<span class="cm">#       top5 → prompt LLM</span></pre></div>
+      </section>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Setup môi trường</h2>
+        <div class="ch-sub">Qdrant (dense+sparse) + SentenceTransformer + BM25.</div>
+        <div class="code-block"><div class="cbhead"><span>bash</span><span class="dot">●</span></div><pre class="code">pip install qdrant-client sentence-transformers FlagEmbedding rank-bm25</pre></div>
+        <div class="box tip"><span class="bt">Qdrant tiện nhất</span> Qdrant hỗ trợ <strong>cả dense &amp; sparse trong 1 collection</strong> — không phải quản 2 index riêng. Chạy local: <code class="ic">QdrantClient(":memory:")</code>; production: Docker.</div>
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Khởi tạo client + encoder</div>
+          <div class="etask">Tạo <code>client = QdrantClient(":memory:")</code> và <code>model = SentenceTransformer("BAAI/bge-small-en-v1.5")</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">from qdrant_client import QdrantClient
+from sentence_transformers import SentenceTransformer
+
+client =
+model =
+</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">client = QdrantClient(":memory:")
+model = SentenceTransformer("BAAI/bge-small-en-v1.5")</pre></div></div></details>
+        </div>
+      </section>
+
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Retrieval</span><div class="line"></div></div>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Index Dense vector vào Qdrant</h2>
+        <div class="ch-sub">Chunk → embedding → insert vào collection.</div>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> qdrant_client.models <span class="kw">import</span> Distance, VectorParams, PointStruct
+
+client.create_collection(<span class="st">"docs"</span>, vectors_config={
+    <span class="st">"dense"</span>: VectorParams(size=<span class="nb">384</span>, distance=Distance.COSINE)
+})
+vecs = model.encode(chunks).tolist()
+client.upsert(<span class="st">"docs"</span>, points=[
+    PointStruct(id=i, vector={<span class="st">"dense"</span>: vecs[i]}, payload={<span class="st">"text"</span>: chunks[i]})
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(chunks))
+])</pre></div>
+        <div class="box info"><span class="bt">BGE encode có prefix</span> Với BGE, prepend <code class="ic">"Represent this sentence for searching relevant passages: "</code> cho query khi <em>retrieval</em> (không cho doc). Tăng chất lượng đáng kể.</div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Sparse retrieval (BM25)</h2>
+        <div class="ch-sub">Đếm từ — bắt chính xác từ khóa.</div>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> rank_bm25 <span class="kw">import</span> BM25Okapi
+
+tokenized = [doc.split() <span class="kw">for</span> doc <span class="kw">in</span> corpus]
+bm25 = BM25Okapi(tokenized)
+scores = bm25.get_scores(query.split())
+top_sparse = sorted(range(len(scores)), key=<span class="kw">lambda</span> i: scores[i], reverse=<span class="kw">True</span>)[:<span class="nb">20</span>]</pre></div>
+        <div class="box warn"><span class="bt">Tokenize tiếng Việt</span> <code class="ic">.split()</code> chỉ tách theo khoảng trắng — đủ demo. Production tiếng Việt dùng <code class="ic">underthesea.word_tokenize</code> để tách đúng ("nhà máy" thành 1 token). Ảnh hưởng lớn chất lượng BM25.</div>
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tính điểm BM25</div>
+          <div class="etask">Gọi <code>bm25.get_scores(query.split())</code> để lấy mảng điểm của tất cả doc cho query.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">scores = bm25.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">scores = bm25.get_scores(query.split())</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Dense retrieval</h2>
+        <div class="ch-sub">Embedding + cosine similarity.</div>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">q_vec = model.encode(<span class="st">"Represent this sentence for searching relevant passages: "</span> + query)
+hits = client.search(<span class="st">"docs"</span>, query_vector={<span class="st">"dense"</span>: q_vec.tolist()}, limit=<span class="nb">20</span>)
+top_dense = [h.id <span class="kw">for</span> h <span class="kw">in</span> hits]</pre></div>
+      </section>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Đo Recall@k</h2>
+        <div class="ch-sub">Chỉ số quyết định — không đo = không cải thiện được.</div>
+        <div class="code-block"><div class="cbhead"><span>công thức</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Recall@k = (số tài liệu ĐÚNG nằm trong top-k) / (tổng tài liệu ĐÚNG cho query)</span>
+<span class="kw">def</span> <span class="fn">recall_at_k</span>(retrieved_ids, relevant_ids, k=<span class="nb">5</span>):
+    topk = set(retrieved_ids[:k])
+    <span class="kw">return</span> len(topk &amp; set(relevant_ids)) / len(relevant_ids)</pre></div>
+        <div class="box pro"><span class="bt">Golden set là yêu cầu</span> Cần <strong>golden set</strong>: các câu hỏi có sẵn danh sách tài liệu đúng (do người gán). Không có golden set = không thể nói "hybrid tốt hơn" một cách khách quan. Đây là đầu việc tốn công nhưng bắt buộc.</div>
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Recall@5 = 0.8 nghĩa là gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">80% tài liệu đúng nằm trong top-5 kết quả</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">80% kết quả trong top-5 là đúng</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Độ chính xác 80%</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Latency 0.8 giây</button>
+            </div>
+            <div class="qexp">✅ Recall@k đo "tìm được bao nhiêu phần trăm cái ĐÚNG" — khác Precision (đo "trong kết quả bao nhiêu cái đúng").</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Fusion &amp; Re-ranking</span><div class="line"></div></div>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Vì sao KHÔNG trộn điểm trực tiếp</h2>
+        <div class="ch-sub">Thang điểm BM25 &amp; cosine khác nhau.</div>
+        <p>Điểm BM25 (0–vài chục) và cosine (0–1) <strong>thang khác nhau</strong> → trộn trực tiếp <code class="ic">0.5*bm25 + 0.5*dense</code> vô nghĩa: BM25 luôn áp đảo. Cần fusion theo <em>thứ hạng</em> (rank), không theo điểm.</p>
+        <div class="box danger"><span class="bt">Lỗi phổ biến #1</span> Trộn <code class="ic">alpha*bm25_score + (1-alpha)*dense_score</code>. Trông "khoa học" nhưng sai, vì thang điểm không so sánh được. Dùng RRF (chương 10) hoặc normalize trước khi trộn.</div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Reciprocal Rank Fusion (RRF)</h2>
+        <div class="ch-sub">Fusion theo thứ hạng — đơn giản &amp; hiệu quả.</div>
+        <p>RRF chấm mỗi doc theo <strong>thứ hạng</strong> nó xuất hiện trong các list, không cần normalize điểm:</p>
+        <div class="code-block"><div class="cbhead"><span>công thức RRF</span><span class="dot">●</span></div><pre class="code"><span class="cm"># score(doc) = Σ  1 / (k + rank_i(doc))     với k thường = 60</span>
+<span class="cm"># rank_i(doc): thứ hạng của doc trong list i (bắt đầu từ 1)</span>
+<span class="cm"># doc không có trong list i → không cộng</span></pre></div>
+        <div class="code-block"><div class="cbhead"><span>python · RRF</span><span class="dot">●</span></div><pre class="code"><span class="kw">def</span> <span class="fn">rrf</span>(lists, k=<span class="nb">60</span>):
+    scores = {}
+    <span class="kw">for</span> lst <span class="kw">in</span> lists:
+        <span class="kw">for</span> rank, doc <span class="kw">in</span> enumerate(lst, <span class="nb">1</span>):
+            scores[doc] = scores.get(doc, <span class="nb">0</span>) + 1/(k + rank)
+    <span class="kw">return</span> sorted(scores, key=scores.get, reverse=<span class="kw">True</span>)</pre></div>
+        <div class="box info"><span class="bt">k=60 từ đâu</span> k điều chỉnh "độ ưu tiên top đầu". k lớn → ưu tiên ít hơn (cân bằng). k nhỏ → top đầu được ưu tiên mạnh. 60 là giá trị gốc từ paper, hoạt động tốt trong thực tế — hiếm khi cần đổi.</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Hoàn thiện RRF</div>
+          <div class="etask">Viết dòng cộng điểm RRF: <code>scores[doc] = scores.get(doc, 0) + 1/(k + rank)</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">def rrf(lists, k=60):
+    scores = {}
+    for lst in lists:
+        for rank, doc in enumerate(lst, 1):
+
+    return sorted(scores, key=scores.get, reverse=True)</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">            scores[doc] = scores.get(doc, 0) + 1/(k + rank)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Cross-encoder là gì</h2>
+        <div class="ch-sub">Khác bi-encoder ở chỗ: query+doc cùng transformer.</div>
+        <table>
+          <tr><th></th><th>Bi-encoder (Dense)</th><th>Cross-encoder</th></tr>
+          <tr><td>Cách</td><td>Encode query &amp; doc <em>riêng</em>, so cosine</td><td>Query+doc vào <em>cùng 1 transformer</em></td></tr>
+          <tr><td>Có cross-attention?</td><td>Không</td><td>Có</td></tr>
+          <tr><td>Tốc độ</td><td>Nhanh (pre-compute doc embedding)</td><td>Chậm (mỗi cặp 1 forward)</td></tr>
+          <tr><td>Chất lượng</td><td>Khá</td><td><strong>Cao hơn nhiều</strong></td></tr>
+          <tr><td>Dùng cho</td><td>Retrieval (toàn corpus)</td><td>Re-rank top-N nhỏ</td></tr>
+        </table>
+        <div class="box pro"><span class="bt">Hai giai đoạn — best of both</span> Production dùng <em>cả hai</em>: bi-encoder để lọc từ 1 triệu doc xuống top-20 (nhanh), cross-encoder để xếp lại top-20 → top-5 (chính xác). Gọi là <strong>retrieve-then-rerank</strong>.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Re-ranking với bge-reranker</h2>
+        <div class="ch-sub">Cross-encoder mạnh, đa ngữ cho tiếng Việt.</div>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> FlagEmbedding <span class="kw">import</span> FlagReranker
+
+reranker = FlagReranker(<span class="st">"BAAI/bge-reranker-base"</span>, use_fp16=<span class="kw">True</span>)
+<span class="cm"># bge-reranker-m3 cho đa ngữ (tiếng Việt tốt hơn)</span>
+
+pairs = [[query, corpus[i]] <span class="kw">for</span> i <span class="kw">in</span> candidates]
+scores = reranker.compute_score(pairs)        <span class="cm"># list điểm, cao = phù hợp</span>
+reranked = [c <span class="kw">for</span> _, c <span class="kw">in</span> sorted(zip(scores, candidates), reverse=<span class="kw">True</span>)][:<span class="nb">5</span>]</pre></div>
+        <div class="box tip"><span class="bt">Batch, không lặp</span> Truyền <em>list</em> cặp vào <code class="ic">compute_score</code> 1 lần — đỡ gọi từng cặp. Nhanh hơn nhiều lần, đặc biệt khi top-N lớn.</div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Gọi reranker</div>
+          <div class="etask">Tính điểm cho 2 cặp: <code>reranker.compute_score([[query, doc1], [query, doc2]])</code>.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">scores = reranker.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">scores = reranker.compute_score([[query, doc1], [query, doc2]])</pre></div></div></details>
+        </div>
+      </section>
+
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Thực chiến</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Pipeline Hybrid đầy đủ</h2>
+        <div class="ch-sub">Ráp cả 3 giai đoạn thành 1 hàm.</div>
+        <div class="code-block"><div class="cbhead"><span>python · hybrid_search</span><span class="dot">●</span></div><pre class="code"><span class="kw">def</span> <span class="fn">hybrid_search</span>(query, top_k=<span class="nb">5</span>, top_n=<span class="nb">20</span>, k=<span class="nb">60</span>):
+    <span class="cm"># 1) Sparse + Dense song song</span>
+    sparse = bm25_top(query, n=top_n)        <span class="cm"># list id từ BM25</span>
+    dense  = dense_top(query, n=top_n)       <span class="cm"># list id từ Qdrant</span>
+    <span class="cm"># 2) Fusion theo thứ hạng</span>
+    fused = rrf([sparse, dense], k=k)[:<span class="nb">15</span>]
+    <span class="cm"># 3) Re-rank bằng cross-encoder</span>
+    pairs = [[query, corpus[i]] <span class="kw">for</span> i <span class="kw">in</span> fused]
+    scores = reranker.compute_score(pairs)
+    ranked = sorted(zip(scores, fused), reverse=<span class="kw">True</span>)
+    <span class="kw">return</span> [i <span class="kw">for</span> _, i <span class="kw">in</span> ranked][:top_k]</pre></div>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Khai báo hàm hybrid</div>
+          <div class="etask">Viết dòng <code>def hybrid_search(query, top_k=5):</code> khai báo hàm.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">
+</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">def hybrid_search(query, top_k=5):</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Đánh giá: Dense vs Hybrid+Rerank</h2>
+        <div class="ch-sub">Đo bằng số — không tin lời.</div>
+        <table>
+          <tr><th>Cấu hình</th><th>Recall@5</th><th>Latency</th></tr>
+          <tr><td>Dense only</td><td>~70%</td><td>Nhanh nhất</td></tr>
+          <tr><td>Hybrid (RRF)</td><td>~82%</td><td>+1 lần BM25</td></tr>
+          <tr><td><strong>Hybrid + cross-encoder rerank</strong></td><td><strong>&gt;90%</strong></td><td>+rerank top-15</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">Đánh đổi</span> Rerank thêm ~20–50ms/query (top-15 qua cross-encoder). Với RAG user-facing, độ trễ này đáng đổi lấy +15-25% recall. Nếu query volume cực cao → cache hoặc chỉ rerank khi query "khó".</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Mẹo &amp; tối ưu</h2>
+        <div class="ch-sub">Vặn từng nút khi chưa đạt recall.</div>
+        <ul>
+          <li><strong>alpha fusion</strong> — RRF thuần không cần; nếu cần thiên lệch sparse/dense, dùng weighted RRF.</li>
+          <li><strong>k RRF</strong> — 60 mặc định; giảm (vd 30) nếu muốn ưu tiên top đầu.</li>
+          <li><strong>top-n mỗi giai đoạn</strong> — quá ít = mất recall; quá nhiều = chậm reranker. 20 là điểmsweet.</li>
+          <li><strong>batch reranker</strong> — <code class="ic">compute_score(list)</code> 1 lần, không lặp từng cặp.</li>
+          <li><strong>cache embedding</strong> — doc embedding tính 1 lần &amp; lưu; chỉ query embedding tính mỗi lần.</li>
+          <li><strong>reranker đa ngữ</strong> — tiếng Việt: <code class="ic">bge-reranker-m3</code> &gt; <code class="ic">base</code>.</li>
+        </ul>
+        <div class="box warn"><span class="bt">Đừng tối ưu sớm</span> Bắt đầu với default (RRF k=60, top-20 mỗi bên, rerank top-15→5). Đo recall. Chỉ vặn núm khi chưa đạt mục tiêu — từng cái một, đo lại mỗi lần.</div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án: RAG tiếng Việt</h2>
+        <div class="ch-sub">Ráp mọi thứ — đo trên dữ liệu thật.</div>
+        <ol>
+          <li><strong>Dữ liệu:</strong> 1000 chunks tài liệu tiếng Việt (luật/văn bản công ty). Gán golden 20 câu (mỗi câu chỉ rõ tài liệu đúng).</li>
+          <li><strong>Index:</strong> Qdrant hybrid (dense BGE-m3 + sparse). Chunk tiếng Việt tokenize bằng <code class="ic">underthesea</code>.</li>
+          <li><strong>Pipeline:</strong> BM25 ⊕ Dense → RRF → <code class="ic">bge-reranker-m3</code> → top-5.</li>
+          <li><strong>Đo:</strong> Recall@5 của Dense only vs Hybrid+rerank trên golden 20 câu.</li>
+          <li><strong>Tích hợp RAG:</strong> dùng top-5 làm context trong <a href="khoa-hoc-langchain.html" style="color:var(--primary-glow)">LangChain</a> / <a href="khoa-hoc-llamaindex.html" style="color:var(--primary-glow)">LlamaIndex</a> pipeline.</li>
+        </ol>
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã nâng cấp RAG từ "chỉ Dense" lên "Hybrid + rerank" — chuẩn production. Tiếp theo: đo định lượng với <a href="khoa-hoc-rag-evaluation.html" style="color:var(--primary-glow)">RAGAS / TruLens</a>, và kết nối LLM qua <a href="khoa-hoc-mcp.html" style="color:var(--primary-glow)">MCP</a> khi cần tool.</div>
+      </section>
+
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> Hybrid Builder</h2>
+        <div class="ch-sub">Tùy chọn → sinh code pipeline hybrid sẵn copy.</div>
+        <div class="builder">
+          <div class="bh">🔧 Cấu hình Hybrid Search</div>
+          <div class="brow">
+            <label>top-n mỗi retrieval<input id="bN" type="number" value="20" min="5" max="100"></label>
+            <label>k RRF<input id="bK" type="number" value="60" min="1" max="200"></label>
+            <label>top-k cuối (sau rerank)<input id="bKfinal" type="number" value="5" min="1" max="20"></label>
+            <label>reranker<select id="bRerank">
+              <option value="bge-reranker-m3">bge-reranker-m3 (đa ngữ)</option>
+              <option value="bge-reranker-base">bge-reranker-base</option>
+              <option value="none">không rerank</option>
+            </select></label>
+          </div>
+          <div class="out" id="builderOut"></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Khái niệm</div>
+            <table style="margin:0"><tr><td>Sparse</td><td>BM25/TF-IDF — đếm từ</td></tr>
+            <tr><td>Dense</td><td>Embedding — ngữ nghĩa</td></tr>
+            <tr><td>Hybrid</td><td>Sparse + Dense song song</td></tr>
+            <tr><td>RRF</td><td>Fusion theo thứ hạng</td></tr>
+            <tr><td>Cross-encoder</td><td>Query+doc cùng transformer</td></tr>
+            <tr><td>Recall@k</td><td>Đúng-trong-top-k / tổng-đúng</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">API</div>
+            <table style="margin:0"><tr><td><code class="ic">BM25Okapi(tokens)</code></td><td>Sparse search</td></tr>
+            <tr><td><code class="ic">SentenceTransformer</code></td><td>Dense embed</td></tr>
+            <tr><td><code class="ic">QdrantClient</code></td><td>Vector DB</td></tr>
+            <tr><td><code class="ic">rrf(lists, k=60)</code></td><td>Fusion rank</td></tr>
+            <tr><td><code class="ic">FlagReranker</code></td><td>Cross-encoder</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Giá trị mặc định</div>
+            <table style="margin:0"><tr><td>top-n mỗi retrieval</td><td>20</td></tr>
+            <tr><td>k RRF</td><td>60</td></tr>
+            <tr><td>rerank candidates</td><td>15</td></tr>
+            <tr><td>top-k cuối</td><td>5</td></tr>
+            <tr><td>reranker VN</td><td>bge-reranker-m3</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🔍 <strong>Hybrid Search &amp; Re-ranking</strong> — một phần của <a href="../index.html">Mega Study</a>.<br>
+        Hỗ trợ RAG ở <a href="khoa-hoc-langchain.html">LangChain</a> &amp; <a href="khoa-hoc-llamaindex.html">LlamaIndex</a>; đánh giá ở <a href="khoa-hoc-rag-evaluation.html">RAGAS / TruLens</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+const EX = {
+  ex1: [
+    {re:/QdrantClient\s*\(/, label:"QdrantClient(...)"},
+    {re:/:memory:/, label:'":memory:"'},
+    {re:/SentenceTransformer\s*\(/, label:"SentenceTransformer(...)"},
+    {re:/bge-small/, label:"BGE model"},
+  ],
+  ex2: [
+    {re:/bm25\.get_scores\s*\(/, label:"bm25.get_scores(...)"},
+    {re:/query\.split\(\)/, label:"query.split()"},
+  ],
+  ex3: [
+    {re:/scores\[doc\]\s*=\s*scores\.get\(doc,\s*0\)\s*\+\s*1\s*\/\s*\(.*k.*\+.*rank|1\s*\/\s*\(k\s*\+\s*rank\)/, label:"scores[doc] += 1/(k+rank)"},
+    {re:/scores\.get\(doc,\s*0\)/, label:"scores.get(doc, 0)"},
+  ],
+  ex4: [
+    {re:/\.compute_score\s*\(/, label:".compute_score(...)"},
+    {re:/\[\s*\[.*query/, label:"[[query, doc1], ...]"},
+  ],
+  ex5: [
+    {re:/def\s+hybrid_search\s*\(/, label:"def hybrid_search(...)"},
+    {re:/query/, label:"query"},
+    {re:/top_k\s*=\s*5/, label:"top_k=5"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){ document.getElementById(id).value = DEFAULTS[id] || ''; const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML=''; }
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{ b.disabled = true; if(b.dataset.c==='1') b.classList.add('right'); });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+const FC = [
+  {q:"Dense giỏi gì?", a:"Khớp ngữ nghĩa (liên quan ý)."},
+  {q:"BM25 giỏi gì?", a:"Khớp từ khóa chính xác (tên riêng, mã)."},
+  {q:"Hybrid Search là gì?", a:"Sparse (BM25) + Dense (embedding) song song + fusion."},
+  {q:"Vì sao không trộn điểm BM25 + cosine?", a:"Thang khác nhau (BM25 0-vài chục, cosine 0-1) → trộn vô nghĩa."},
+  {q:"RRF là gì?", a:"Reciprocal Rank Fusion: score=Σ 1/(k+rank), k=60. Dùng thứ hạng, không điểm."},
+  {q:"Bi-encoder?", a:"Encode query & doc riêng, so cosine — nhanh, dùng retrieval."},
+  {q:"Cross-encoder?", a:"Query+doc cùng transformer, cross-attention — chính xác, chậm."},
+  {q:"Re-rank khi nào?", a:"Top-N nhỏ (~15) sau retrieval, trước khi vào prompt."},
+  {q:"Recall@k là gì?", a:"Số tài liệu ĐÚNG trong top-k / tổng tài liệu đúng."},
+  {q:"bge-reranker-m3?", a:"Cross-encoder đa ngữ, tốt cho tiếng Việt."},
+  {q:"alpha fusion?", a:"Trọng số sparse vs dense (tuỳ chọn, RRF thuần không cần)."},
+  {q:"Pipeline chuẩn?", a:"BM25+Dense top-20 → RRF top-15 → cross-encoder rerank → top-5 → prompt."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+function renderBuilder(){
+  const n = document.getElementById('bN').value || 20;
+  const k = document.getElementById('bK').value || 60;
+  const kf = document.getElementById('bKfinal').value || 5;
+  const rerank = document.getElementById('bRerank').value;
+  let code = 'def hybrid_search(query, top_n=' + n + ', top_k=' + kf + ', k=' + k + '):\n';
+  code += '    sparse = bm25_top(query, n=top_n)\n';
+  code += '    dense  = dense_top(query, n=top_n)\n';
+  code += '    fused = rrf([sparse, dense], k=k)[:15]\n';
+  if(rerank === 'none'){
+    code += '    return fused[:top_k]\n';
+  } else {
+    code += '    from FlagEmbedding import FlagReranker\n';
+    code += '    reranker = FlagReranker("' + rerank + '", use_fp16=True)\n';
+    code += '    pairs = [[query, corpus[i]] for i in fused]\n';
+    code += '    scores = reranker.compute_score(pairs)\n';
+    code += '    ranked = sorted(zip(scores, fused), reverse=True)\n';
+    code += '    return [i for _, i in ranked][:top_k]\n';
+  }
+  document.getElementById('builderOut').textContent = code;
+}
+['bN','bK','bKfinal','bRerank'].forEach(id =>
+  document.getElementById(id).addEventListener('input', renderBuilder));
+renderBuilder();
+
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{ const on = a.getAttribute('href')==='#'+cur; a.classList.toggle('active', on); if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; } });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{ if(li.classList.contains('nav-section-title')) return; li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

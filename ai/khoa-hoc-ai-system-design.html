@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI System Design — Thiết Kế Hệ Thống AI Quy Mô Lớn</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #8b5cf6;        /* violet */
+    --primary-glow: #a78bfa;
+    --accent: #fbbf24;         /* amber */
+    --accent-2: #fcd34d;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #140d1f; --darker: #08050d;
+    --light: #ddd0ea; --light-strong: #f4eeff; --gray: #9587a8;
+    --card: #1b1129; --card-2: #261838; --border: #38254d; --terminal: #0a0510;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6e5e80;
+  }
+  body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image: radial-gradient(circle at 16% 22%, rgba(139,92,246,.10) 0%, transparent 45%), radial-gradient(circle at 84% 72%, rgba(251,191,36,.05) 0%, transparent 45%); background-attachment: fixed; }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+  .sidebar { width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #04020840 100%), #04020a; padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(139,92,246,.13); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(139,92,246,.5)); }
+  .logo h1 { font-size: 18px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .logo .pat { font-family: monospace; font-size: 11px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139,92,246,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; } .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#140d1f; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); } .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); } .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(139,92,246,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(8,5,13,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+  .hero { background: linear-gradient(135deg, rgba(139,92,246,.16), rgba(251,191,36,.06)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"🏗️"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 29px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; } ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(139,92,246,.08); border-color: rgba(139,92,246,.4);} .box.pro::before{content:"🎯";}
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; } pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); } pre.code .fn { color: var(--code-blue); } pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; } pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(139,92,246,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#140d1f; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; } .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; } .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(139,92,246,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder label { font-size:12.5px; color:var(--gray); display:flex; flex-direction:column; gap:4px; }
+  .builder input[type=number] { font-family:inherit; font-size:13px; padding:7px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); width:120px; }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#140d1f; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:23px; } .opt-grid { grid-template-columns: 1fr; } .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) { .hero h1 { font-size:20px; } h2.ch-title { font-size:20px; } .meta-pill { font-size:12px; } }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">🏗️</div>
+      <h1>AI System Design</h1>
+      <div class="sub">HỆ THỐNG AI TRIỆU USER</div>
+      <div class="pat">DAU → QPS → scale</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Khung System Design</li>
+      <li><a href="#c1"><span class="cn">1</span> System Design AI là gì</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Khung phỏng vấn 4 bước</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Functional &amp; Non-functional</a></li>
+      <li><a href="#c4"><span class="cn">4</span> Capacity Estimation</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Thành phần &amp; Trade-off</li>
+      <li><a href="#c5"><span class="cn">5</span> Database choice</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Caching</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Message Queue</a></li>
+      <li><a href="#c8"><span class="cn">8</span> Scale: Sharding/LB/RateLimit</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Case Study AI</li>
+      <li><a href="#c9"><span class="cn">9</span> Recommender System</a></li>
+      <li><a href="#c10"><span class="cn">10</span> ChatGPT Clone</a></li>
+      <li><a href="#c11"><span class="cn">11</span> AI Search Engine</a></li>
+      <li><a href="#c12"><span class="cn">12</span> ML: serving/A-B/feature store</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Thực chiến</li>
+      <li><a href="#c13"><span class="cn">13</span> High-level Design</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Bottleneck deep dive</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Mẹo phỏng vấn Senior</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án mock interview</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> Capacity Estimator</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🏗️ Khóa học · <b id="crumb">AI System Design</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>AI System Design — <span class="g">Hệ thống AI triệu user</span></h1>
+        <p>16 chương theo 4 cấp độ. Định dạng phỏng vấn Senior ở công ty công nghệ lớn: thiết kế hệ thống AI phục vụ triệu user. <strong>Capacity estimation</strong> (DAU→QPS→storage), <strong>trade-off</strong> (SQL/NoSQL/Vector DB, cache, queue), <strong>scale</strong> (sharding/LB/rate limit) — qua 3 case study: Recommender, ChatGPT clone, AI Search. Mỗi chương có <strong>bài tập tự chấm</strong>, quiz, flashcard.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>Capacity Estimator</b></span>
+          <span class="meta-pill">🏗️ 3 case study</span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Không cần cài thêm — đây là khóa tư duy thiết kế. Nên ôn <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="../lap-trinh/khoa-hoc-mang-may-tinh.html">Mạng máy tính</a>, <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="../lap-trinh/khoa-hoc-he-dieu-hanh.html">Hệ điều hành</a>, <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="lo-trinh-ai-engineer-1-nam.html">MLOps</a> trước. Bài tập <b>tự chấm offline</b>.</div>
+      </div>
+
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Khung System Design</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> System Design AI là gì</h2>
+        <div class="ch-sub">Khác ML truyền thống — thêm GPU cost, model serving, context window.</div>
+        <p>Khác ML system design truyền thống, AI system design phải lo thêm: <strong>GPU cost</strong> (inference tốn tiền mỗi request), <strong>model serving</strong> (vLLM, batching, quantize), <strong>context window</strong> (lưu lịch sử chat), <strong>vector DB</strong> (RAG/search). Mục tiêu phỏng vấn: không có đáp án "đúng" — bạn cần <em>justify trade-off</em>.</p>
+        <div class="box pro"><span class="bt">Interviewer muốn thấy gì</span> Khả năng (1) <strong>clarify</strong> yêu cầu trước khi nhảy vào giải pháp, (2) <strong>estimate</strong> quy mô bằng số, (3) <strong>vẽ</strong> kiến trúc rõ ràng, (4) <strong>defend</strong> trade-off dưới câu hỏi "vì sao chọn X không Y". Không phải ra thiết kế hoàn hảo — mà là tư duy có cấu trúc.</div>
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. Mục tiêu chính của vòng phỏng vấn System Design?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Thấy tư duy trade-off &amp; cấu trúc, không phải đáp án đúng</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Ra thiết kế hoàn hảo nhất</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Code nhanh 1 hệ thống</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Liệt kê nhiều công nghệ</button>
+            </div>
+            <div class="qexp">✅ Interviewer đánh giá quá trình tư duy — clarify, estimate, trade-off — hơn kết quả.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Khung phỏng vấn 4 bước</h2>
+        <div class="ch-sub">Bản đồ cho 45-60 phút.</div>
+        <ol>
+          <li><strong>Clarify</strong> (5-10') — functional &amp; non-functional requirements. Hỏi interviewer.</li>
+          <li><strong>Capacity</strong> (5') — DAU, QPS, storage, bandwidth (back-of-envelope math).</li>
+          <li><strong>High-level Design</strong> (15-20') — vẽ diagram: client → LB → service → DB/cache/queue.</li>
+          <li><strong>Deep Dive</strong> (15-20') — focus 1-2 bottleneck, defend trade-off.</li>
+        </ol>
+        <div class="box tip"><span class="bt">Quản lý thời gian</span> Lỗi phổ biến #1: mắc ở bước clarify/quá sa vào detail sớm. Bám khung 4 bước, interviewer sẽ guide. Luôn <em>state assumptions</em> rõ ràng để interviewer follow.</div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Functional &amp; Non-functional Requirements</h2>
+        <div class="ch-sub">Hệ thống LÀM gì &amp; LÀM TỐT đến đâu.</div>
+        <table>
+          <tr><th>Loại</th><th>Câu hỏi</th><th>Ví dụ chatbot</th></tr>
+          <tr><td><strong>Functional</strong></td><td>Làm gì?</td><td>Trả lời dựa tài liệu nội bộ, trích nguồn</td></tr>
+          <tr><td><strong>Scale</strong></td><td>Bao nhiêu user?</td><td>1M DAU, 10 msg/user/day</td></tr>
+          <tr><td><strong>Latency</strong></td><td>Độ trễ?</td><td>TTFT &lt; 1s, full &lt; 5s</td></tr>
+          <tr><td><strong>Availability</strong></td><td>Uptime?</td><td>99.9%</td></tr>
+          <tr><td><strong>Cost</strong></td><td>Ngân sách?</td><td>&lt; $X/user/tháng</td></tr>
+        </table>
+        <div class="box info"><span class="bt">Clarify proactively</span> Đừng đợi interviewer cho số — bạn đề xuất (&quot;giả sử 1M DAU, 10 msg/user/day&quot;) rồi xin xác nhận. Cho thấy bạn nghĩ về quy mô.</div>
+      </section>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Capacity Estimation</h2>
+        <div class="ch-sub">Back-of-envelope math — đo bằng số trước khi vẽ.</div>
+        <div class="code-block"><div class="cbhead"><span>tính toán</span><span class="dot">●</span></div><pre class="code"><span class="cm"># Cho: 1M DAU, 10 msg/user/day, mỗi msg 2KB</span>
+requests_per_day = 1_000_000 * 10           <span class="cm"># 10M</span>
+qps             = 10_000_000 / 86400        <span class="cm"># ~116 req/s</span>
+peak_qps        = qps * 3                    <span class="cm"># ~350 (3× peak)</span>
+storage_day     = 10_000_000 * 2 * 1024      <span class="cm"># bytes → ~20 GB/day</span>
+storage_year    = storage_day * 365          <span class="cm"># ~7.3 TB/năm</span></pre></div>
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Tính QPS</div>
+          <div class="etask">Viết công thức QPS = (DAU × requests_per_user_per_day) / 86400. Dùng biến <code>dau</code> và <code>req</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">qps = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">qps = dau * req / 86400</pre></div></div></details>
+        </div>
+      </section>
+
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Thành phần &amp; Trade-off</span><div class="line"></div></div>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Database choice</h2>
+        <div class="ch-sub">Đúng tool cho đúng việc.</div>
+        <table>
+          <tr><th>Loại</th><th>Khi nào</th><th>Ví dụ AI</th></tr>
+          <tr><td><strong>SQL</strong> (PostgreSQL)</td><td>Cấu trúc, transaction, quan hệ</td><td>User, billing, config</td></tr>
+          <tr><td><strong>NoSQL</strong> (Cassandra)</td><td>Linh hoạt schema, scale ngang, write-heavy</td><td>Lịch sử chat (triệu dòng)</td></tr>
+          <tr><td><strong>Vector DB</strong> (Qdrant)</td><td>Tìm ngữ nghĩa (embedding)</td><td>RAG, AI search</td></tr>
+          <tr><td><strong>In-memory</strong> (Redis)</td><td>Cache nóng, low latency</td><td>Feature store, session</td></tr>
+        </table>
+        <div class="box warn"><span class="bt">Đừng cố 1 DB cho tất cả</span> Hệ thống lớn luôn dùng <em>nhiều loại</em>: SQL cho billing, NoSQL cho chat log, vector DB cho RAG, Redis cho cache. Polyglot persistence.</div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Caching</h2>
+        <div class="ch-sub">Đòn bẩy #1 giảm load &amp; cost.</div>
+        <ul>
+          <li><strong>Redis/Memcached</strong>: cache kết quả truy vấn / nội dung nóng.</li>
+          <li><strong>Semantic caching</strong> (LLM): cache theo <em>ý nghĩa</em> câu — query tương tự → trả đáp án cũ. Giảm 30-60% LLM call.</li>
+          <li><strong>Write-through vs write-around</strong>: trade-off nhất quán vs tốc độ.</li>
+        </ul>
+        <div class="box pro"><span class="bt">Semantic cache cho LLM</span> Embedding query → tìm trong cache query cũ nào cosine similarity &gt; 0.95 → trả đáp án cũ. Tiết kiệm GPU/API cost khổng lồ cho FAQ-like traffic. Cẩn thận invalidation khi dữ liệu đổi.</div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Message Queue</h2>
+        <div class="ch-sub">Decouple — tránh timeout, chịu tải.</div>
+        <p><strong>Kafka/RabbitMQ</strong> tách request khỏi xử lý: client gửi → queue → worker xử lý async → client poll kết quả. Dùng cho: batch job, train offline, email gửi sau, tác vụ LLM lâu (&gt; 10s).</p>
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Vì sao dùng queue?</div>
+          <div class="etask">Nêu 2 lý do đẩy tác vụ LLM lâu (hàng chục giây) vào queue thay vì xử lý đồng bộ (gợi ý: <code>timeout</code>, <code>async</code>, <code>retry</code>...).</div>
+          <textarea class="codepad" id="ex2" spellcheck="false"></textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body">(1) Tránh client timeout khi tác vụ lâu. (2) Chịu tải spike + retry được khi fail. (3) Worker scale ngang độc lập với API.</div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Scale: Sharding, LB, Rate Limiting</h2>
+        <div class="ch-sub">Từ 1 server lên nghìn.</div>
+        <ul>
+          <li><strong>Sharding</strong>: chia DB theo key (user_id) → mỗi shard 1 phần dữ liệu. Scale ngang.</li>
+          <li><strong>Load Balancer</strong>: L4 (TCP) hoặc L7 (HTTP, smart routing) — phân tải nhiều instance.</li>
+          <li><strong>Rate Limiting</strong>: <strong>Token Bucket</strong> — chống bot/DDoS sập API. Mỗi user N request/phút.</li>
+        </ul>
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Sharding giải quyết vấn đề gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">DB quá lớn cho 1 máy → chia theo key ra nhiều máy</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Cache truy vấn nóng</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Tăng độ chính xác model</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Giảm độ trễ mạng</button>
+            </div>
+            <div class="qexp">✅ Sharding = chia DB theo key (user_id, region) → mỗi shard 1 phần → scale ngang.</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Case Study AI</span><div class="line"></div></div>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Case Study: Recommender System</h2>
+        <div class="ch-sub">Two-tower — chuẩn industry cho triệu item.</div>
+        <p><strong>Two-tower model</strong> chia thành 3 giai đoạn:</p>
+        <ol>
+          <li><strong>Retrieval</strong>: từ triệu item → top-1000 candidate (embedding similarity, fast).</li>
+          <li><strong>Ranking</strong>: model chi tiết xếp lại top-1000 → top-50 (nhiều feature).</li>
+          <li><strong>Re-ranking</strong>: filter logic kinh doanh (đa dạng, mới, không trùng).</li>
+        </ol>
+        <div class="box info"><span class="bt">Near-line vs Offline</span> <strong>Offline</strong>: train model nightly trên cluster Spark. <strong>Near-line</strong>: feature realtime (click 5 phút qua) qua Redis — cập nhật gợi ý phản ánh hành vi mới. Cả hai kết hợp.</div>
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — 3 giai đoạn recommender</div>
+          <div class="etask">Liệt kê 3 giai đoạn pipeline recommender (gợi ý: <code>retrieval</code>, <code>ranking</code>, <code>re-ranking</code>).</div>
+          <textarea class="codepad" id="ex3" spellcheck="false"></textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body">(1) Retrieval — triệu item → top-1000. (2) Ranking — top-1000 → top-50 bằng model chi tiết. (3) Re-ranking — filter logic kinh doanh.</div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> Case Study: ChatGPT Clone</h2>
+        <div class="ch-sub">Streaming + context storage + model serving.</div>
+        <ul>
+          <li><strong>Streaming</strong>: SSE (đơn giản, 1 chiều server→client) hoặc WebSocket (2 chiều). Chat thường SSE đủ.</li>
+          <li><strong>Context window</strong>: lưu lịch sử chat ở <strong>Cassandra/DynamoDB</strong>, lazy-load N tin gần nhất khi cần — không load toàn bộ mỗi request.</li>
+          <li><strong>Model serving</strong>: <strong>vLLM</strong> multi-tenant, PagedAttention, batch user. Quantize INT4 nếu GPU eo hẹp.</li>
+        </ul>
+        <div class="box tip"><span class="bt">SSE vs WebSocket</span> Chat LLM: SSE đơn giản hơn (HTTP, tự reconnect, cache-friendly), đủ vì chỉ cần server→client. WebSocket khi cần 2 chiều (voice, realtime collab). Đừng over-engineer.</div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> Case Study: AI Search Engine</h2>
+        <div class="ch-sub">Crawling → indexing → vector sharding.</div>
+        <p>Pipeline: <strong>crawling</strong> (thu thập web) → <strong>indexing</strong> (inverted index + vector) → <strong>vector DB sharding</strong> (HNSW/IVF). Trade-off <strong>Recall vs Latency</strong>:</p>
+        <table>
+          <tr><th></th><th>HNSW</th><th>IVF</th></tr>
+          <tr><td>Tốc độ</td><td>Nhanh (đồ thị)</td><td>Trung bình</td></tr>
+          <tr><td>RAM</td><td>Nhiều (giữ đồ thị trong RAM)</td><td>Ít hơn</td></tr>
+          <tr><td>Recall</td><td>Cao</td><td>Thấp hơn (đổi theo nprobe)</td></tr>
+        </table>
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — HNSW vs IVF</div>
+          <div class="etask">Nêu đánh đổi chính giữa HNSW và IVF (gợi ý: <code>RAM</code>, <code>latency</code>, <code>recall</code>).</div>
+          <textarea class="codepad" id="ex4" spellcheck="false"></textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body">HNSW: nhanh + recall cao nhưng tốn nhiều RAM (giữ đồ thị). IVF: ít RAM hơn, đổi lại latency/recall thấp hơn (điều chỉnh nprobe).</div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> ML: serving, A/B, feature store</h2>
+        <div class="ch-sub">Đưa model ra production an toàn.</div>
+        <ul>
+          <li><strong>Canary deploy</strong>: 5% traffic model mới trước → giám sát metric → mở rộng/rollback.</li>
+          <li><strong>A/B test</strong>: so model mới vs cũ trên metric (retention, CTR, latency). Ý nghĩa thống kê.</li>
+          <li><strong>Feature store</strong>: đảm bảo feature train &amp; serve <em>nhất quán</em> (training-serving skew) — nguồn bug thầm lặng.</li>
+        </ul>
+        <div class="box danger"><span class="bt">Training-serving skew</span> Model train với feature tính 1 cách, nhưng serve tính khác (vd train dùng data batch, serve realtime thiếu) → hiệu năng production tụt. Feature store (Feast, Tecton) giải quyết.</div>
+      </section>
+
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Thực chiến</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> High-level Design: vẽ &amp; communicate</h2>
+        <div class="ch-sub">Diagram rõ ràng — hơn 1000 chữ.</div>
+        <p>Vẽ theo layer: <strong>client → CDN/LB → API gateway → service layer → (DB / cache / queue / model server)</strong>. Mỗi box ghi rõ trách nhiệm. <strong>Communicate</strong> suy nghĩ thành tiếng — interviewer cần thấy quá trình.</p>
+        <div class="box tip"><span class="bt">Mẹo vẽ</span> Bắt đầu đơn giản (client → service → DB), rồi thêm khi interviewer hỏi (&quot;cache ở đâu?&quot;, &quot;queue?&quot;). Đừng vẽ hết 20 component ngay — rối và mất thời gian.</div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> Bottleneck deep dive</h2>
+        <div class="ch-sub">Focus 1-2 điểm — chiều sâu hơn bề rộng.</div>
+        <p>Interviewer sẽ hỏi &quot;chỗ này có vấn đề gì?&quot; — chọn 1-2 bottleneck &amp; giải:</p>
+        <ul>
+          <li><strong>Độ trễ inference cao</strong> → batch + quantize (INT4) + cache + route model rẻ cho query đơn giản.</li>
+          <li><strong>Vector search chậm</strong> → sharding + HNSW + rerank 2 giai đoạn.</li>
+          <li><strong>LLM cost cao</strong> → semantic cache + route model + prompt ngắn gọn.</li>
+          <li><strong>Hot key trong DB</strong> → consistent hashing + replica.</li>
+        </ul>
+        <div class="box warn"><span class="bt">Đừng cố cover tất cả</span> 45 phút không đủ cho mọi detail. Chọn 1-2 bottleneck quan trọng nhất (thường interviewer hint) &amp; giải sâu. Chiều sâu tại 1 điểm &gt; sơ sài ở 10 điểm.</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Mẹo phỏng vấn Senior</h2>
+        <div class="ch-sub">Phân biệt ứng viên Senior với Mid.</div>
+        <ul>
+          <li><strong>Clarify trước khi vẽ</strong> — 5 phút hỏi requirements đáng giá. Đừng nhảy vào giải pháp.</li>
+          <li><strong>State assumptions</strong> rõ ràng (&quot;giả sử 1M DAU&quot;) &amp; xin xác nhận.</li>
+          <li><strong>Back-of-envelope math</strong> — cho thấy tư duy quy mô, không đoán mò.</li>
+          <li><strong>Trade-off</strong> thay vì &quot;đáp án đúng&quot; — so sánh 2 lựa chọn, nói khi nào chọn cái nào.</li>
+          <li><strong>Đừng im lặng</strong> — nghĩ thành tiếng, interviewer không đọc được suy nghĩ.</li>
+          <li><strong>Recognize hint</strong> — interviewer gợi ý (&quot;thế nếu user gõ 1000 msg/phút?&quot;) → đó là hướng deep dive.</li>
+        </ul>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án: mock interview</h2>
+        <div class="ch-sub">Ráp toàn bộ — luyện thực sự.</div>
+        <p>Chọn 1 bài (vd <em>&quot;thiết kế chatbot CSKH 1M user&quot;</em>), thực hành 4 bước:</p>
+        <ol>
+          <li><strong>Clarify</strong>: trả lời dựa tài liệu? đa ngữ? peak traffic?</li>
+          <li><strong>Capacity</strong>: 1M DAU × 10 msg × 2KB → QPS, storage/năm.</li>
+          <li><strong>High-level</strong>: client → LB → API → RAG (vector DB + <a href="khoa-hoc-hybrid-search-reranking.html" style="color:var(--primary-glow)">hybrid search</a>) → LLM (vLLM) → stream SSE. Cassandra cho chat log, Redis cache.</li>
+          <li><strong>Deep dive</strong>: streaming + semantic cache + quantize cho GPU cost.</li>
+        </ol>
+        <p>Viết solution doc 2 trang. Mock với bạn/mentor 45'. Quay video &amp; tự review.</p>
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Tính storage/năm</div>
+          <div class="etask">Chatbot 1M DAU, mỗi user 10 msg/day, mỗi msg 2KB. Tính <code>storage_year</code> bytes (gợi ý: <code>dau * msg * size * 365</code>).</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">storage_year = </textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">storage_year = 1_000_000 * 10 * 2 * 1024 * 365   # ~7.3 TB</pre></div></div></details>
+        </div>
+        <div class="box pro"><span class="bt">Hoàn thành toàn bộ roadmap 🎉</span> Bạn đã đi hết 6 mục bổ sung — từ MCP/DSPy (framework mới) qua Hybrid/RAGAS (RAG nâng cao) đến Quantization (serving) &amp; System Design (Senior). Đây là mảnh cuối ghép bạn từ người dùng API thành kỹ sư AI thực chiến. Luyện mock interview thường xuyên — System Design là kỹ năng <em>cũ</em> hơn theo năm.</div>
+      </section>
+
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> Capacity Estimator</h2>
+        <div class="ch-sub">Nhập DAU / req / size → tính QPS, storage, bandwidth.</div>
+        <div class="builder">
+          <div class="bh">🔧 Ước lượng quy mô</div>
+          <div class="brow">
+            <label>DAU<input id="bDau" type="number" value="1000000"></label>
+            <label>requests/user/day<input id="bReq" type="number" value="10"></label>
+            <label>response size (KB)<input id="bSize" type="number" value="2"></label>
+          </div>
+          <div class="out" id="builderOut"></div>
+        </div>
+      </section>
+
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">4 bước phỏng vấn</div>
+            <table style="margin:0"><tr><td>1</td><td>Clarify requirements</td></tr>
+            <tr><td>2</td><td>Capacity estimation</td></tr>
+            <tr><td>3</td><td>High-level design</td></tr>
+            <tr><td>4</td><td>Deep dive bottleneck</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Thành phần</div>
+            <table style="margin:0"><tr><td>DB</td><td>SQL/NoSQL/Vector/In-memory</td></tr>
+            <tr><td>Cache</td><td>Redis + semantic cache</td></tr>
+            <tr><td>Queue</td><td>Kafka — decouple async</td></tr>
+            <tr><td>Scale</td><td>Sharding/LB/RateLimit</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Case study</div>
+            <table style="margin:0"><tr><td>Recommender</td><td>Retrieval→Ranking→Re-rank</td></tr>
+            <tr><td>ChatGPT clone</td><td>SSE + Cassandra + vLLM</td></tr>
+            <tr><td>AI search</td><td>HNSW (RAM) vs IVF</td></tr>
+            <tr><td>Deploy</td><td>Canary + A/B + feature store</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        🏗️ <strong>AI System Design</strong> — một phần của <a href="../index.html">Mega Study</a>.<br>
+        Ôn <a href="../lap-trinh/khoa-hoc-mang-may-tinh.html">Mạng máy tính</a> &amp; <a href="../lap-trinh/khoa-hoc-he-dieu-hanh.html">Hệ điều hành</a>; MLOps ở <a href="lo-trinh-ai-engineer-1-nam.html">Lộ trình 1 năm</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+const EX = {
+  ex1: [
+    {re:/dau\s*\*\s*req|dau\s*\*\s*\w+\s*\/\s*86400/, label:"dau * req"},
+    {re:/86400/, label:"/ 86400 (giây/ngày)"},
+  ],
+  ex2: [
+    {re:/timeout/i, label:"timeout"},
+    {re:/async|asynchronous|đồng bộ/i, label:"async / không đồng bộ"},
+    {re:/retry|chịu tải|scale|spike/i, label:"retry / chịu tải"},
+  ],
+  ex3: [
+    {re:/retrieval/i, label:"retrieval"},
+    {re:/ranking/i, label:"ranking"},
+    {re:/re-?rank/i, label:"re-ranking"},
+  ],
+  ex4: [
+    {re:/HNSW/i, label:"HNSW"},
+    {re:/IVF/i, label:"IVF"},
+    {re:/RAM|memory/i, label:"RAM/memory"},
+    {re:/latency|recall|tốc/i, label:"latency/recall"},
+  ],
+  ex5: [
+    {re:/365/, label:"× 365 (ngày)"},
+    {re:/1024|KB|size|2\s*\*\s*1024/, label:"× size (KB→bytes)"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){ document.getElementById(id).value = DEFAULTS[id] || ''; const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML=''; }
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{ b.disabled = true; if(b.dataset.c==='1') b.classList.add('right'); });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+const FC = [
+  {q:"4 bước phỏng vấn?", a:"Clarify → Capacity → High-level Design → Deep Dive."},
+  {q:"Functional vs Non-functional?", a:"Làm gì / scale, latency, availability, cost."},
+  {q:"DAU → QPS?", a:"DAU × req/user/day ÷ 86400 (×3 cho peak)."},
+  {q:"SQL/NoSQL/Vector?", a:"Quan hệ cấu trúc / linh hoạt scale / tìm ngữ nghĩa."},
+  {q:"Semantic caching LLM?", a:"Cache theo ý nghĩa câu (cosine>0.95) — giảm 30-60% LLM call."},
+  {q:"Queue dùng khi nào?", a:"Tác vụ lâu/async, decouple, chịu tải spike, retry."},
+  {q:"Sharding?", a:"Chia DB theo key (user_id) → scale ngang."},
+  {q:"Token Bucket?", a:"Thuật toán rate limiting — chống bot/DDoS."},
+  {q:"Two-tower recommender?", a:"Retrieval → Ranking → Re-ranking."},
+  {q:"HNSW vs IVF?", a:"HNSW nhanh+tốn RAM; IVF ít RAM, latency/recall thấp hơn."},
+  {q:"Canary deploy?", a:"5% traffic model mới trước → giám sát → mở rộng/rollback."},
+  {q:"Training-serving skew?", a:"Feature train khác serve → production tụt; feature store giải quyết."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+function renderBuilder(){
+  const dau = parseFloat(document.getElementById('bDau').value) || 0;
+  const req = parseFloat(document.getElementById('bReq').value) || 0;
+  const size = parseFloat(document.getElementById('bSize').value) || 0;   // KB
+  const reqDay = dau * req;
+  const qps = reqDay / 86400;
+  const peak = qps * 3;
+  const storageDay = reqDay * size;          // KB/day
+  const storageYear = storageDay * 365;       // KB/year
+  const bandwidth = qps * size;               // KB/s
+  const fmt = kb => {
+    if(kb > 1e9) return (kb/1e9).toFixed(2) + ' PB';
+    if(kb > 1e6) return (kb/1e6).toFixed(2) + ' TB';
+    if(kb > 1e3) return (kb/1e3).toFixed(2) + ' GB';
+    return kb.toFixed(0) + ' MB';
+  };
+  let out = `DAU: ${dau.toLocaleString()}\n`;
+  out += `requests/user/day: ${req}\n`;
+  out += `response size: ${size} KB\n\n`;
+  out += `→ total/day: ${reqDay.toLocaleString()} requests\n`;
+  out += `→ QPS: ${qps.toFixed(1)} req/s   (peak ×3: ${peak.toFixed(0)} req/s)\n`;
+  out += `→ storage/day: ${fmt(storageDay)}\n`;
+  out += `→ storage/year: ${fmt(storageYear)}\n`;
+  out += `→ bandwidth: ${bandwidth.toFixed(0)} KB/s  (~${(bandwidth*8/1000).toFixed(0)} Mbps)`;
+  document.getElementById('builderOut').textContent = out;
+}
+['bDau','bReq','bSize'].forEach(id =>
+  document.getElementById(id).addEventListener('input', renderBuilder));
+renderBuilder();
+
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{ const on = a.getAttribute('href')==='#'+cur; a.classList.toggle('active', on); if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; } });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{ if(li.classList.contains('nav-section-title')) return; li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>

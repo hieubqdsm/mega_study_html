@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khóa Học DSPy — Lập Trình &amp; Tối Ưu Prompt Bằng Code</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #6366f1;        /* indigo */
+    --primary-glow: #818cf8;
+    --accent: #34d399;         /* emerald */
+    --accent-2: #6ee7b7;
+    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
+    --dark: #0f0f1a; --darker: #050510;
+    --light: #d5d5e8; --light-strong: #f3f3ff; --gray: #8b8ba8;
+    --card: #14142a; --card-2: #1c1c38; --border: #2e2e52; --terminal: #08081a;
+    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6c6c8b;
+  }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 16% 22%, rgba(99,102,241,.10) 0%, transparent 45%),
+      radial-gradient(circle at 84% 72%, rgba(52,211,153,.06) 0%, transparent 45%);
+    background-attachment: fixed;
+  }
+  code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #020208 100%);
+    padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
+    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(99,102,241,.13);
+  }
+  .sidebar::-webkit-scrollbar { width: 8px; }
+  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(99,102,241,.5)); }
+  .logo h1 { font-size: 20px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo .sub { font-size: 11px; color: var(--gray); margin-top: 6px; letter-spacing: 2px; }
+  .logo .pat { font-family: monospace; font-size: 12px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+  .nav-menu { list-style: none; padding: 0 14px; }
+  .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#0f0f1a; }
+  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
+  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
+  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
+  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(99,102,241,.1); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  /* MAIN */
+  .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(5,5,16,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); }
+  .topbar .crumb b { color: var(--accent-2); }
+  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary-glow); }
+  .content-inner { padding: 38px 48px 120px; max-width: 1020px; }
+
+  .hero { background: linear-gradient(135deg, rgba(99,102,241,.16), rgba(52,211,153,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
+  .hero::after { content:"⚡"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.06; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero p { color: var(--light); max-width: 730px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
+  .meta-pill b { color: var(--accent-2); }
+
+  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
+  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
+  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
+  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
+  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+
+  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
+  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent-2); }
+  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+  code.ic { background: var(--card-2); color: var(--code-pink); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+
+  /* BOXES */
+  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
+  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
+  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
+  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
+  .box.pro { background: rgba(99,102,241,.08); border-color: rgba(99,102,241,.4);} .box.pro::before{content:"🎯";}
+
+  /* CODE BLOCK */
+  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
+  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead .dot { color: var(--primary); }
+  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code .cm { color: var(--code-gray); font-style:italic; }
+  pre.code .kw { color: var(--code-purple); }
+  pre.code .st { color: var(--code-green); }
+  pre.code .fn { color: var(--code-blue); }
+  pre.code .nb { color: var(--code-yellow); }
+  pre.code::-webkit-scrollbar { height:8px; }
+  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
+
+  /* EXERCISE */
+  .exercise { background: var(--card); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .exercise .eh { font-weight:800; color:var(--primary-glow); margin-bottom:6px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .exercise .etask { font-size:14px; margin-bottom:10px; }
+  .exercise .etask code { background:var(--terminal); color:var(--code-yellow); padding:1px 6px; border-radius:4px; font-size:12.5px; }
+  .codepad { width:100%; min-height:150px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:12px 14px; resize:vertical; white-space:pre; tab-size:4; }
+  .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.13); }
+  .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:9px 18px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#0f0f1a; }
+  .ebtn:hover { background:var(--primary-glow); }
+  .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
+  .echk { margin-top:12px; display:none; }
+  .echk.show { display:block; }
+  .chk-row { font-size:12.8px; padding:4px 0; font-family:'JetBrains Mono',monospace; }
+  .chk-row.ok { color: var(--ok); } .chk-row.no { color: var(--danger); }
+  .echk .summary { margin-top:8px; font-weight:800; font-size:13.5px; }
+
+  /* QUIZ */
+  .quiz { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:22px 0; }
+  .quiz .qh { font-weight:800; color:var(--accent-2); margin-bottom:12px; display:flex; align-items:center; gap:8px; font-size:15.5px; }
+  .qitem { margin-bottom:18px; }
+  .qitem .qq { font-weight:700; color:var(--light-strong); margin-bottom:9px; }
+  .opt-grid { display:grid; grid-template-columns: 1fr 1fr; gap:9px; }
+  .opt-btn { text-align:left; font-family:inherit; font-size:13.3px; padding:10px 14px; border-radius:9px; cursor:pointer; border:1px solid var(--border); background:var(--card-2); color:var(--light); transition:all .15s; }
+  .opt-btn:hover:not(:disabled) { border-color:var(--primary); transform:translateY(-1px); }
+  .opt-btn:disabled { cursor:default; opacity:.9; }
+  .opt-btn.right { border-color:var(--ok); background:rgba(52,211,153,.16); color:#bbf7d0; }
+  .opt-btn.wrong { border-color:var(--danger); background:rgba(248,113,113,.14); color:#fecaca; }
+  .qexp { margin-top:9px; font-size:13px; background:var(--card-2); border:1px solid var(--border); border-radius:8px; padding:9px 12px; display:none; }
+  .qexp.show { display:block; }
+  .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
+
+  /* details */
+  details.hint, details.answer { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 8px 13px; font-size: 12.5px; font-weight: 700; user-select:none; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details summary::before { content:"▸ "; } details[open] summary::before { content:"▾ "; }
+  details.hint summary { background: rgba(96,165,250,.08); color: var(--info); }
+  details.answer summary { background: rgba(52,211,153,.08); color: var(--ok); }
+  details .body { padding: 8px 13px 12px; font-size: 13.5px; }
+
+  /* FLASHCARDS */
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
+  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-front { background: var(--card); }
+  .fc-front .q { font-weight:800; color:var(--primary-glow); font-size:14.5px; }
+  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
+  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+
+  /* BUILDER */
+  .builder { background: var(--card); border:1px solid var(--primary); border-radius:14px; padding:20px 22px; margin:18px 0; box-shadow:0 0 26px rgba(99,102,241,.08); }
+  .builder .bh { font-weight:800; color:var(--primary-glow); margin-bottom:10px; display:flex; align-items:center; gap:8px; font-size:16px; }
+  .builder .brow { display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-bottom:10px; }
+  .builder label { font-size:12.5px; color:var(--gray); display:flex; flex-direction:column; gap:4px; }
+  .builder select, .builder input[type=text] { font-family:inherit; font-size:13px; padding:7px 10px; background:var(--terminal); border:1px solid var(--border); border-radius:7px; color:var(--light); }
+  .builder .out { background:var(--terminal); border:1px solid var(--border); border-radius:9px; padding:13px 15px; font-family:monospace; font-size:12.7px; white-space:pre; overflow-x:auto; color:var(--code-green); margin-top:8px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
+  footer.foot a { color: var(--primary-glow); }
+  .menu-toggle { display:none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#0f0f1a; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
+    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
+    .hero { padding:24px 18px; } .hero h1 { font-size:24px; }
+    .opt-grid { grid-template-columns: 1fr; }
+    .content-inner { max-width:100%; }
+  }
+  @media (max-width: 600px) {
+    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .meta-pill { font-size:12px; }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="ic">⚡</div>
+      <h1>DSPy</h1>
+      <div class="sub">LẬP TRÌNH &amp; TỐI ƯU PROMPT</div>
+      <div class="pat">signature → compile</div>
+    </div>
+    <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li class="nav-section-title np0"><span class="badge">L0</span> Nhập môn</li>
+      <li><a href="#c1"><span class="cn">1</span> DSPy là gì</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Sự cạn kiệt của prompt truyền thống</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Cài đặt &amp; config LM</a></li>
+      <li><a href="#c4"><span class="cn">4</span> Pipeline đầu tiên</a></li>
+      <li class="nav-section-title np1"><span class="badge">L1</span> Primitives</li>
+      <li><a href="#c5"><span class="cn">5</span> Signature — Input/Output</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Module Predict</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Module ChainOfThought</a></li>
+      <li><a href="#c8"><span class="cn">8</span> Module ReAct &amp; compose</a></li>
+      <li class="nav-section-title np2"><span class="badge">L2</span> Tối ưu hóa (Teleprompter)</li>
+      <li><a href="#c9"><span class="cn">9</span> Teleprompter là gì</a></li>
+      <li><a href="#c10"><span class="cn">10</span> BootstrapFewShot</a></li>
+      <li><a href="#c11"><span class="cn">11</span> MIPRO / COPRO</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Metrics (hàm đánh giá)</a></li>
+      <li class="nav-section-title np3"><span class="badge">L3</span> Thực chiến</li>
+      <li><a href="#c13"><span class="cn">13</span> Inspect — xem prompt sinh</a></li>
+      <li><a href="#c14"><span class="cn">14</span> So sánh manual vs DSPy</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Mẹo &amp; lỗi thường gặp</a></li>
+      <li><a href="#c16"><span class="cn">16</span> Dự án classification/QA</a></li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li><a href="#builder"><span class="cn">🔧</span> Signature Builder</a></li>
+      <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
+      <li><a href="#cheat"><span class="cn">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">⚡ Khóa học · <b id="crumb">DSPy</b></div>
+      <a class="home" href="../index.html">🏠 Thư viện</a>
+    </div>
+    <div class="content-inner">
+
+      <div class="hero" id="top">
+        <h1>Làm chủ <span class="g">DSPy</span> — lập trình &amp; tự tối ưu prompt</h1>
+        <p>16 chương theo 4 cấp độ. <strong>DSPy</strong> (Stanford NLP) thay "gõ prompt bằng text" bằng <strong>khai báo code</strong> (Signature → Module), rồi để framework <strong>tự tìm prompt/few-shot tối ưu</strong> bằng ML (Teleprompter). Đổi tư duy từ "Kỹ sư gõ text" sang "Kỹ sư lập trình AI". Mỗi chương có code, <strong>bài tập tự chấm</strong>, quiz, flashcard.</p>
+        <div class="meta-row">
+          <span class="meta-pill">📖 <b>16</b> chương · 4 cấp độ</span>
+          <span class="meta-pill">✍️ <b>Bài tập tự chấm</b></span>
+          <span class="meta-pill">🔧 <b>Signature Builder</b></span>
+          <span class="meta-pill">⚡ Stanford NLP</span>
+        </div>
+        <div class="box info" style="margin-top:22px"><span class="bt">Chuẩn bị</span> Cài <code class="ic">pip install dspy</code>. Cần API key của một LLM provider (OpenAI/Anthropic) hoặc chạy local (Ollama: <code class="ic">dspy.LM("ollama/llama3")</code>). Khóa này nối tiếp <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="khoa-hoc-langchain.html">LangChain</a> &amp; <a class="home" style="border:none;padding:0;color:var(--primary-glow)" href="giao_trinh_agentic_ai.html">Agentic AI</a>. Bài tập <b>tự chấm offline</b>.</div>
+      </div>
+
+      <!-- ============ L0 ============ -->
+      <div class="part-divider" id="L0"><div class="line"></div><span class="tag tp0">L0 · Nhập môn</span><div class="line"></div></div>
+
+      <section class="chapter" id="c1">
+        <h2 class="ch-title"><span class="num">Chương 1</span> DSPy là gì</h2>
+        <div class="ch-sub">Từ "gõ prompt" sang "lập trình AI".</div>
+
+        <p><strong>DSPy</strong> (Declarative Self-improving Language Programs, python) là framework của Stanford NLP (2023). Triết lý: thay vì viết prompt bằng text &amp; thử-nhầm nhiều lần, <strong>khai báo luồng chương trình bằng code</strong>, rồi để framework <strong>tự sinh &amp; tối ưu prompt</strong> (instruction + few-shot) bằng machine learning.</p>
+
+        <table>
+          <tr><th></th><th>Manual Prompting</th><th>DSPy</th></tr>
+          <tr><td>Viết prompt</td><td>Tay, thử-nhầm</td><td>Khai báo Signature, code tự sinh</td></tr>
+          <tr><td>Few-shot examples</td><td>Chọn tay, cố định</td><td>Tự sinh + chắt lọc (Bootstrap)</td></tr>
+          <tr><td>Đổi model</td><td>Viết lại prompt</td><td>Compile lại, prompt tự thích ứng</td></tr>
+          <tr><td>Version control</td><td>Copy-paste text</td><td>Git như code thường</td></tr>
+        </table>
+
+        <div class="box pro"><span class="bt">Thay đổi tư duy</span> Bạn ngừng lo "dùng từ nào cho LLM hiểu". Bạn lo <em>logic</em> (Input gì → Output gì → qua mấy bước); DSPy lo <em>wordsmithing</em>. Giống như bạn viết Python thay vì viết assembly.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz nhanh</div>
+          <div class="qitem">
+            <div class="qq">1. DSPy khác prompt engineering truyền thống ở điểm cốt lõi nào?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Khai báo luồng bằng code, tự tối ưu prompt bằng ML</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Cung sẵn thư viện prompt mẫu</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Thay thế hoàn toàn LLM API</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Là một model ngôn ngữ mới</button>
+            </div>
+            <div class="qexp">✅ DSPy = khai báo (Signature/Module) + tối ưu tự động (Teleprompter). Bạn lo logic, DSPy lo prompt.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c2">
+        <h2 class="ch-title"><span class="num">Chương 2</span> Sự cạn kiệt của prompt truyền thống</h2>
+        <div class="ch-sub">Vì sao "tinh chỉnh prompt bằng tay" là ngõ cụt ở quy mô lớn.</div>
+
+        <p>Prompt text dài có 4 vấn đề: <strong>khó bảo trì</strong> (sửa 1 câu có thể hỏng cả luồng), <strong>phụ thuộc cảm tính</strong> ("thêm từ 'chú ý' có giúp không?"), <strong>không tái dùng giữa model</strong> (prompt tốt cho GPT-4 có thể tệ với Llama), và <strong>khó tối ưu</strong> (không có "gradient" để biết hướng sửa).</p>
+        <div class="box info"><span class="bt">Separation of concerns</span> DSPy mượn nguyên lý kỹ thuật phần mềm: tách <strong>luồng chương trình</strong> (program flow — cái bạn viết bằng code) khỏi <strong>tham số</strong> (prompt strings — cái DSPy tối ưu). Giống model vs weights trong ML: bạn thiết kế kiến trúc, optimization đi tìm weights.</div>
+      </section>
+
+      <section class="chapter" id="c3">
+        <h2 class="ch-title"><span class="num">Chương 3</span> Cài đặt &amp; config LM</h2>
+        <div class="ch-sub">Một LM toàn cục cho mọi module.</div>
+
+        <div class="code-block"><div class="cbhead"><span>bash + python</span><span class="dot">●</span></div><pre class="code">pip install dspy</pre></div>
+        <div class="code-block"><div class="cbhead"><span>python · config LM</span><span class="dot">●</span></div><pre class="code"><span class="kw">import</span> dspy
+
+lm = dspy.LM(<span class="st">"openai/gpt-4o-mini"</span>, api_key=<span class="st">"sk-..."</span>)
+dspy.configure(lm=lm)        <span class="cm"># đặt làm LM mặc định toàn cục</span>
+
+<span class="cm"># Provider khác:</span>
+<span class="cm">#   dspy.LM("anthropic/claude-3-5-sonnet")</span>
+<span class="cm">#   dspy.LM("ollama/llama3")              # local, miễn phí</span></pre></div>
+        <div class="box tip"><span class="bt">Một LM cho tất cả</span> <code class="ic">dspy.configure(lm=...)</code> đặt LM mặc định. Mọi module sau dùng chung — không cần truyền <code class="ic">client=</code> từng nơi. Muốn override riêng: <code class="ic">with dspy.context(lm=other_lm): ...</code>.</div>
+
+        <div class="exercise" data-ex="ex1">
+          <div class="eh">✍️ Bài tập 1 — Config LM</div>
+          <div class="etask">Tạo <code>lm = dspy.LM("openai/gpt-4o-mini")</code> rồi đặt làm LM mặc định bằng <code>dspy.configure(lm=lm)</code>.</div>
+          <textarea class="codepad" id="ex1" spellcheck="false">import dspy
+
+lm = dspy.LM(
+</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex1')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex1')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex1"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">lm = dspy.LM("openai/gpt-4o-mini")
+dspy.configure(lm=lm)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c4">
+        <h2 class="ch-title"><span class="num">Chương 4</span> Pipeline đầu tiên (Predict)</h2>
+        <div class="ch-sub">Vài dòng — không viết 1 dòng text prompt.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">classify = dspy.Predict(<span class="st">"sentence -> sentiment"</span>)
+r = classify(sentence=<span class="st">"Phim này hay quá!"</span>)
+print(r.sentiment)   <span class="cm"># "tích cực"</span></pre></div>
+        <p>Signature <code class="ic">"sentence -> sentiment"</code> đủ để DSPy tự sinh prompt hoàn chỉnh, gọi LLM, parse kết quả vào <code class="ic">r.sentiment</code>. Không cần <code class="ic">f"..."</code>, không cần parse text.</p>
+        <div class="box info"><span class="bt">"->" là cú pháp Signature</span> DSPy hiểu <code class="ic">"A -> B"</code> là: nhận input <code class="ic">A</code>, trả output <code class="ic">B</code>. Nhiều input/output: <code class="ic">"context, question -> answer"</code>.</div>
+      </section>
+
+      <!-- ============ L1 ============ -->
+      <div class="part-divider" id="L1"><div class="line"></div><span class="tag tp1">L1 · Primitives</span><div class="line"></div></div>
+
+      <section class="chapter" id="c5">
+        <h2 class="ch-title"><span class="num">Chương 5</span> Signature — Input/Output</h2>
+        <div class="ch-sub">Hợp đồng giữa bạn và LLM — khai báo bằng code.</div>
+
+        <p><strong>Signature</strong> khai báo Input → Output của một bước. Hai dạng:</p>
+
+        <h3 class="sec">Dạng chuỗi — gọn, cho việc nhanh</h3>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">qa = dspy.Predict(<span class="st">"question -> answer"</span>)</pre></div>
+
+        <h3 class="sec">Dạng class (typed) — đầy đủ, có docstring &amp; mô tả trường</h3>
+        <div class="code-block"><div class="cbhead"><span>python · typed signature</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">QA</span>(dspy.Signature):
+    <span class="st">"""Trả lời câu hỏi sự thật, ngắn gọn."""</span>
+    question = dspy.InputField()
+    answer = dspy.OutputField(desc=<span class="st">"tối đa 1 câu, chính xác"</span>)</pre></div>
+        <div class="box pro"><span class="bt">Docstring = instruction</span> Docstring của class trở thành <em>instruction</em> (chỉ dẫn) trong prompt. <code class="ic">desc=</code> của field mô tả định dạng mong muốn. DSPy dùng cả hai để sinh prompt đầy đủ — bạn không phải wordsmithing.</div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Trong <code>class QA(dspy.Signature)</code>, docstring đóng vai trò gì?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Trở thành instruction trong prompt DSPy sinh</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Chỉ là comment, không ảnh hưởng</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Đặt tên model</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Khai báo output field</button>
+            </div>
+            <div class="qexp">✅ Docstring → instruction. Cùng với desc của field, DSPy dùng để tự sinh prompt đầy đủ.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c6">
+        <h2 class="ch-title"><span class="num">Chương 6</span> Module Predict</h2>
+        <div class="ch-sub">Viên gạch nền — gọi LLM 1 lần theo signature.</div>
+
+        <p><code class="ic">Predict</code> là module đơn giản nhất: nhận signature, gọi LLM đúng <strong>1 lần</strong>, trả output. Mọi module khác (ChainOfThought, ReAct) đều mở rộng từ Predict.</p>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">summarize = dspy.Predict(<span class="st">"text -> summary"</span>)
+print(summarize(text=<span class="st">"Bài viết dài..."</span>).summary)</pre></div>
+        <div class="box tip"><span class="bt">Dùng khi nào</span> Bài toán "trực tiếp" — không cần suy luận nhiều bước (phân loại cảm xúc, trích thực thể, tóm tắt ngắn). Cần reasoning → dùng ChainOfThought (chương 7).</div>
+      </section>
+
+      <section class="chapter" id="c7">
+        <h2 class="ch-title"><span class="num">Chương 7</span> Module ChainOfThought</h2>
+        <div class="ch-sub">Tự thêm bước reasoning — tăng chất lượng bài toán khó.</div>
+
+        <p><code class="ic">ChainOfThought</code> thêm trường <strong>reasoning</strong> trước output. DSPy tự chèn bước suy luận (tương đương "Let's think step by step") — LLM "nghĩ" rồi mới trả lời.</p>
+
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">solve = dspy.ChainOfThought(<span class="st">"question -> answer"</span>)
+r = solve(question=<span class="st">"Nếu 3 máy in in 3 trang trong 3 phút, 100 máy in in 100 trang mất bao lâu?"</span>)
+print(r.reasoning)   <span class="cm"># "Mỗi máy in 1 trang / 3 phút..."</span>
+print(r.answer)      <span class="cm"># "3 phút"</span></pre></div>
+        <div class="box warn"><span class="bt">Đánh đổi</span> ChainOfThought dùng nhiều token hơn Predict (sinh thêm reasoning) và chậm hơn. Dùng cho bài toán cần suy luận (toán, logic, QA phức tạp) — với bài toán trivial, Predict đủ.</div>
+
+        <div class="exercise" data-ex="ex2">
+          <div class="eh">✍️ Bài tập 2 — Tạo module ChainOfThought</div>
+          <div class="etask">Tạo module <code>solve = dspy.ChainOfThought("question -> answer")</code>.</div>
+          <textarea class="codepad" id="ex2" spellcheck="false">solve = dspy.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex2')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex2')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex2"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">solve = dspy.ChainOfThought("question -> answer")</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c8">
+        <h2 class="ch-title"><span class="num">Chương 8</span> Module ReAct &amp; compose</h2>
+        <div class="ch-sub">Dùng tool &amp; ghép module thành pipeline.</div>
+
+        <p><code class="ic">ReAct</code> = module dùng <strong>tool</strong>: LLM Reason → Act (gọi tool) → Observe → lặp. Cần truyền danh sách tool.</p>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">agent = dspy.ReAct(<span class="st">"question -> answer"</span>, tools=[search, calculator])
+print(agent(question=<span class="st">"GDP Việt Nam 2023 nhân 2?"</span>).answer)</pre></div>
+        <div class="box pro"><span class="bt">Compose — sức mạnh thật sự</span> Module là "hàm" — bạn có thể <strong>lồng nhau</strong> thành pipeline phức tạp (giống function composition). Ví dụ: Retrieve → ChainOfThought → Predict(format). Đây là cách DSPy scale từ 1 bước lên pipeline nhiều bước mà vẫn declarative.</div>
+      </section>
+
+      <!-- ============ L2 ============ -->
+      <div class="part-divider" id="L2"><div class="line"></div><span class="tag tp2">L2 · Tối ưu hóa (Teleprompter)</span><div class="line"></div></div>
+
+      <section class="chapter" id="c9">
+        <h2 class="ch-title"><span class="num">Chương 9</span> Teleprompter là gì</h2>
+        <div class="ch-sub">"Trình biên dịch prompt" — tối ưu tự động.</div>
+
+        <p><strong>Teleprompter</strong> nhận (<em>module gốc</em> + <em>trainset</em> + <em>metric</em>) → trả về module <strong>đã tối ưu</strong>: prompt/few-shot được sinh &amp; chọn tự động. Quá trình gọi là <strong>compile</strong> — giống compile code (code → bytecode tối ưu).</p>
+        <div class="code-block"><div class="cbhead"><span>sơ đồ compile</span><span class="dot">●</span></div><pre class="code"><span class="cm"># student: module gốc (chưa tối ưu)</span>
+<span class="cm"># trainset: vài chục example (input + label mong muốn)</span>
+<span class="cm"># metric: hàm chấm "đúng/sai"</span>
+compiled = teleprompter.compile(student=student, trainset=trainset)
+<span class="cm"># → compiled là module ĐÃ tối ưu (prompt tốt hơn, có few-shot)</span></pre></div>
+
+        <div class="quiz">
+          <div class="qh">📝 Quiz</div>
+          <div class="qitem">
+            <div class="qq">1. Teleprompter cần gì để compile một module?</div>
+            <div class="opt-grid">
+              <button class="opt-btn" data-c="1" onclick="pickOpt(this,1)">Module gốc + trainset + metric</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Chỉ cần API key</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Một prompt mẫu tốt</button>
+              <button class="opt-btn" onclick="pickOpt(this,0)">Model mạnh nhất</button>
+            </div>
+            <div class="qexp">✅ Ba thứ: student (module), trainset (ví dụ), metric (đánh giá) — để biết cái nào "tốt" mà giữ lại làm few-shot.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="chapter" id="c10">
+        <h2 class="ch-title"><span class="num">Chương 10</span> BootstrapFewShot</h2>
+        <div class="ch-sub">Tự sinh few-shot từ ví dụ thành công.</div>
+
+        <p><code class="ic">BootstrapFewShot</code> chạy module trên trainset, giữ lại các ví dụ <strong>thành công</strong> (đạt metric) làm few-shot demos. Tự động chọn ví dụ tốt — không cần đoán "ví dụ nào minh hoạ rõ".</p>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> dspy.teleprompt <span class="kw">import</span> BootstrapFewShot
+
+tele = BootstrapFewShot(metric=my_metric, max_bootstrapped_demos=<span class="nb">4</span>)
+compiled = tele.compile(student=classify, trainset=trainset)</pre></div>
+        <div class="box info"><span class="bt">max_bootstrapped_demos</span> Số few-shot tối đa được sinh. Vài demo (3–8) thường đủ. Nhiều quá = prompt dài + tốn token + đôi khi giảm chất lượng (distract).</div>
+
+        <div class="exercise" data-ex="ex3">
+          <div class="eh">✍️ Bài tập 3 — Compile module</div>
+          <div class="etask">Gọi <code>compiled = tele.compile(student=classify, trainset=trainset)</code>.</div>
+          <textarea class="codepad" id="ex3" spellcheck="false">compiled = tele.compile(
+</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex3')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex3')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex3"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">compiled = tele.compile(student=classify, trainset=trainset)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c11">
+        <h2 class="ch-title"><span class="num">Chương 11</span> MIPRO / COPRO</h2>
+        <div class="ch-sub">Tối ưu cả instruction — không chỉ few-shot.</div>
+
+        <table>
+          <tr><th>Teleprompter</th><th>Tối ưu gì</th><th>Chi phí</th></tr>
+          <tr><td><strong>BootstrapFewShot</strong></td><td>Few-shot demos</td><td>Rẻ — khởi đầu tốt</td></tr>
+          <tr><td><strong>COPRO</strong></td><td>Instruction (prefix)</td><td>Trung bình</td></tr>
+          <tr><td><strong>MIPRO</strong></td><td>Cả instruction + few-shot</td><td>Đắt (Bayesian search) — mạnh nhất</td></tr>
+        </table>
+        <div class="box warn"><span class="bt">Thứ tự thực tế</span> Bắt đầu với <code class="ic">BootstrapFewShot</code> (rẻ, đã tốt). Chưa đủ → <code class="ic">COPRO</code>. Cần vắt kiệt → <code class="ic">MIPRO</code>. Mỗi bước đo trên eval riêng để biết có thực sự cải thiện.</div>
+      </section>
+
+      <section class="chapter" id="c12">
+        <h2 class="ch-title"><span class="num">Chương 12</span> Metrics (hàm đánh giá)</h2>
+        <div class="ch-sub">"Metric sai = tối ưu sai hướng."</div>
+
+        <p>Metric nhận <code class="ic">(example, pred, trace)</code> → trả số/bool. Có thể exact-match, hoặc dùng <strong>LLM-as-judge</strong> cho output tự do.</p>
+        <div class="code-block"><div class="cbhead"><span>python · exact match</span><span class="dot">●</span></div><pre class="code"><span class="kw">def</span> <span class="fn">exact_match</span>(example, pred, trace=<span class="kw">None</span>):
+    <span class="kw">return</span> example.answer.strip().lower() == pred.answer.strip().lower()</pre></div>
+        <div class="code-block"><div class="cbhead"><span>python · LLM-as-judge (dspy.Signature)</span><span class="dot">●</span></div><pre class="code"><span class="kw">class</span> <span class="fn">Judge</span>(dspy.Signature):
+    <span class="st">"""Chấm câu trả lời 1-5 theo độ chính xác."""</span>
+    question = dspy.InputField()
+    answer = dspy.InputField()
+    score  = dspy.OutputField(desc=<span class="st">"số 1 đến 5"</span>)</pre></div>
+        <div class="box danger"><span class="bt">Metric là thứ quan trọng nhất</span> Teleprompter tối ưu cho metric của bạn. Metric hẹp/sai → module "tốt" trên paper nhưng tệ thực tế. Dành thời gian thiết kế metric kỹ — đáng giá hơn tinh chỉnh bất cứ tham số nào.</div>
+      </section>
+
+      <!-- ============ L3 ============ -->
+      <div class="part-divider" id="L3"><div class="line"></div><span class="tag tp3">L3 · Thực chiến</span><div class="line"></div></div>
+
+      <section class="chapter" id="c13">
+        <h2 class="ch-title"><span class="num">Chương 13</span> Inspect — xem prompt DSPy sinh</h2>
+        <div class="ch-sub">Mở "hộp đen" — biết DSPy thực sự gửi gì.</div>
+
+        <p>Sau khi gọi module, <code class="ic">dspy.inspect_history(n=1)</code> in prompt <strong>thật sự</strong> gửi cho LLM (kèm few-shot DSPy đã chèn). Quan trọng để hiểu &amp; debug.</p>
+        <div class="code-block"><div class="cbhead"><span>python</span><span class="dot">●</span></div><pre class="code">classify(sentence=<span class="st">"Phim dở"</span>)
+dspy.inspect_history(n=<span class="nb">1</span>)
+<span class="cm"># In ra prompt đầy đủ:</span>
+<span class="cm">#   system: "Given a sentence, classify sentiment..."  ← DSPy sinh</span>
+<span class="cm">#   few-shot: 4 ví dụ                                ← Bootstrap chèn</span>
+<span class="cm">#   user: "Phim dở"</span></pre></div>
+
+        <div class="exercise" data-ex="ex4">
+          <div class="eh">✍️ Bài tập 4 — Xem prompt cuối</div>
+          <div class="etask">Gọi <code>dspy.inspect_history(n=1)</code> để in prompt cuối cùng DSPy gửi cho LLM.</div>
+          <textarea class="codepad" id="ex4" spellcheck="false">dspy.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex4')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex4')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex4"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">dspy.inspect_history(n=1)</pre></div></div></details>
+        </div>
+      </section>
+
+      <section class="chapter" id="c14">
+        <h2 class="ch-title"><span class="num">Chương 14</span> So sánh manual vs DSPy</h2>
+        <div class="ch-sub">Đo bằng số — không tin lời.</div>
+
+        <div class="code-block"><div class="cbhead"><span>python · Evaluate</span><span class="dot">●</span></div><pre class="code"><span class="kw">from</span> dspy <span class="kw">import</span> Evaluate
+eval = Evaluate(devset=testset, metric=exact_match, num_threads=<span class="nb">4</span>)
+print(eval(classify))    <span class="cm"># baseline (không compile)</span>
+print(eval(compiled))    <span class="cm"># đã compile — thường cao hơn</span></pre></div>
+        <table>
+          <tr><th></th><th>Manual prompt</th><th>DSPy baseline</th><th>DSPy compiled</th></tr>
+          <tr><td>Accuracy (điển hình)</td><td>~70%</td><td>~72%</td><td>~80%+</td></tr>
+          <tr><td>Nỗ lực</td><td>Thử-nhầm tay</td><td>0</td><td>1 lần compile</td></tr>
+          <tr><td>Tái lập</td><td>Khó</td><td>Cao</td><td>Cao</td></tr>
+        </table>
+        <div class="box tip"><span class="bt">Kết quả thực tế</span> Nghiên cứu DSPy cho thấy compiled thường nhỉnh hơn baseline vài %, <em>và</em> ổn định hơn — không phụ thuộc "may mắn" chọn prompt tay. Đổi model? Compile lại, prompt tự thích ứng.</div>
+      </section>
+
+      <section class="chapter" id="c15">
+        <h2 class="ch-title"><span class="num">Chương 15</span> Mẹo &amp; lỗi thường gặp</h2>
+        <div class="ch-sub">Tránh những cái bẫy phổ biến.</div>
+
+        <ul>
+          <li><strong>Metric phải xác đáng</strong> — metric sai = tối ưu sai hướng. Dành thời gian thiết kế metric kỹ.</li>
+          <li><strong>Trainset đủ đa dạng</strong> — vài chục example đa dạng tốt hơn rất nhiều ví dụ giống nhau.</li>
+          <li><strong>Compile tốn token</strong> — chạy module nhiều lần trên trainset. Giới hạn <code class="ic">max_bootstrapped_demos</code> &amp; <code class="ic">max_labeled_demos</code>.</li>
+          <li><strong>Overfit trainset</strong> — giữ holdout eval <em>riêng</em>; đừng compile trên chính tập eval.</li>
+          <li><strong>Đổi model → compile lại</strong> — prompt tối ưu khác nhau giữa GPT-4o-mini và Claude; prompt không "chuyển giao" nguyên vẹn.</li>
+          <li><strong>Output không parse được</strong> → thêm <code class="ic">desc=</code> rõ ràng cho OutputField (vd "chỉ trả JSON").</li>
+        </ul>
+        <div class="box danger"><span class="bt">Bẫy "compile mãi không xong"</span> MIPRO có thể chạy rất lâu &amp; tốn nhiều token. Bắt đầu bằng BootstrapFewShot, đo eval, <em>rồi mới</em> quyết định có cần MIPRO không. Đừng bật MIPRO ngay từ đầu.</div>
+      </section>
+
+      <section class="chapter" id="c16">
+        <h2 class="ch-title"><span class="num">Chương 16</span> Dự án: classification/QA pipeline</h2>
+        <div class="ch-sub">End-to-end — ráp tất cả lại.</div>
+
+        <p><strong>Capstone</strong> — pipeline phân loại/QA đầy đủ:</p>
+        <ol>
+          <li><strong>Dữ liệu:</strong> dataset (vd review → sentiment, hoặc FAQ QA). Chia train/eval.</li>
+          <li><strong>Signature typed:</strong> <code class="ic">class Sentiment(dspy.Signature)</code> với InputField/OutputField + docstring.</li>
+          <li><strong>Module:</strong> <code class="ic">dspy.ChainOfThought(Sentiment)</code> (nếu cần reasoning).</li>
+          <li><strong>Metric:</strong> exact_match hoặc LLM-as-judge.</li>
+          <li><strong>Compile:</strong> <code class="ic">BootstrapFewShot(metric=...).compile(...)</code>.</li>
+          <li><strong>Đánh giá:</strong> <code class="ic">Evaluate</code> so sánh baseline vs compiled.</li>
+          <li><strong>Inspect:</strong> <code class="ic">dspy.inspect_history()</code> xem prompt DSPy sinh.</li>
+        </ol>
+
+        <div class="exercise" data-ex="ex5">
+          <div class="eh">✍️ Bài tập 5 — Khởi tạo Predict</div>
+          <div class="etask">Tạo module <code>clf = dspy.Predict("review -> sentiment")</code> để phân loại cảm xúc review.</div>
+          <textarea class="codepad" id="ex5" spellcheck="false">clf = dspy.</textarea>
+          <div class="ebtns">
+            <button class="ebtn" onclick="gradeEx('ex5')">✅ Kiểm tra</button>
+            <button class="ebtn ghost" onclick="resetEx('ex5')">↺ Reset</button>
+          </div>
+          <div class="echk" id="res-ex5"></div>
+          <details class="answer"><summary>Xem lời giải</summary><div class="body"><div class="code-block"><pre class="code">clf = dspy.Predict("review -> sentiment")</pre></div></div></details>
+        </div>
+
+        <div class="box pro"><span class="bt">Hoàn thành khóa học 🎉</span> Bạn đã làm chủ DSPy — cách nghĩ "lập trình" AI thay vì "gõ prompt". Tiếp theo: kết hợp với <a href="khoa-hoc-langchain.html" style="color:var(--primary-glow)">LangChain</a> cho orchestration, hoặc <a href="khoa-hoc-mcp.html" style="color:var(--primary-glow)">MCP</a> cho tool-connecting. Mục tiêu: dùng DSPy compile một pipeline QA thật trên dữ liệu của bạn, đo cải thiện trước/sau.</div>
+      </section>
+
+      <!-- ============ BUILDER ============ -->
+      <section class="chapter" id="builder">
+        <h2 class="ch-title"><span class="num">🔧 Công cụ</span> Signature Builder</h2>
+        <div class="ch-sub">Tùy chọn → sinh code DSPy (Signature + Module) sẵn copy.</div>
+        <div class="builder">
+          <div class="bh">🔧 Cấu hình Signature</div>
+          <div class="brow">
+            <label>input field<input id="bIn" type="text" value="question"></label>
+            <label>output field<input id="bOut" type="text" value="answer"></label>
+            <label>module<select id="bMod">
+              <option value="Predict">Predict</option>
+              <option value="ChainOfThought">ChainOfThought</option>
+              <option value="ReAct">ReAct</option>
+            </select></label>
+          </div>
+          <div class="brow">
+            <label>mô tả output (desc)<input id="bDesc" type="text" value="ngắn gọn, chính xác"></label>
+          </div>
+          <div class="out" id="builderOut"></div>
+        </div>
+      </section>
+
+      <!-- ============ FLASHCARDS ============ -->
+      <section class="chapter" id="cards">
+        <h2 class="ch-title"><span class="num">🃏 Ôn tập</span> Flashcards</h2>
+        <div class="ch-sub">Bấm vào thẻ để lật xem đáp án.</div>
+        <div class="fc-grid" id="fcGrid"></div>
+      </section>
+
+      <!-- ============ CHEATSHEET ============ -->
+      <section class="chapter" id="cheat">
+        <h2 class="ch-title"><span class="num">📋 Tra nhanh</span> Cheatsheet</h2>
+        <div class="fc-grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Khái niệm</div>
+            <table style="margin:0"><tr><td>DSPy</td><td>Framework Stanford: code → tự tối ưu prompt</td></tr>
+            <tr><td>Signature</td><td>Input → Output (chuỗi hoặc class)</td></tr>
+            <tr><td>Module</td><td>Predict / ChainOfThought / ReAct</td></tr>
+            <tr><td>Teleprompter</td><td>"Trình biên dịch" prompt</td></tr>
+            <tr><td>Compile</td><td>Tối ưu module → prompt tốt hơn</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">API</div>
+            <table style="margin:0"><tr><td><code class="ic">dspy.LM(...)</code></td><td>Config model</td></tr>
+            <tr><td><code class="ic">dspy.configure(lm=)</code></td><td>Đặt LM toàn cục</td></tr>
+            <tr><td><code class="ic">dspy.Predict(sig)</code></td><td>Module cơ bản</td></tr>
+            <tr><td><code class="ic">dspy.ChainOfThought(sig)</code></td><td>+ reasoning</td></tr>
+            <tr><td><code class="ic">BootstrapFewShot</code></td><td>Teleprompter few-shot</td></tr>
+            <tr><td><code class="ic">tele.compile(...)</code></td><td>Tối ưu</td></tr>
+            <tr><td><code class="ic">Evaluate(devset, metric)</code></td><td>Đánh giá</td></tr></table>
+          </div>
+          <div class="builder" style="box-shadow:none;padding:14px 16px">
+            <div class="bh" style="font-size:14px">Quy trình</div>
+            <table style="margin:0"><tr><td>1</td><td>Config LM</td></tr>
+            <tr><td>2</td><td>Signature (Input→Output)</td></tr>
+            <tr><td>3</td><td>Module (Predict/CoT)</td></tr>
+            <tr><td>4</td><td>(tuỳ chọn) Compile + metric</td></tr>
+            <tr><td>5</td><td>Evaluate + inspect</td></tr></table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="foot">
+        ⚡ <strong>Khóa Học DSPy — Lập Trình &amp; Tối Ưu Prompt</strong> — một phần của <a href="../index.html">Mega Study</a>. Dựa trên DSPy (Stanford NLP).<br>
+        Nối tiếp <a href="khoa-hoc-langchain.html">LangChain</a> &amp; <a href="giao_trinh_agentic_ai.html">Agentic AI</a>; tool-connecting ở <a href="khoa-hoc-mcp.html">MCP</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ===== EXERCISE SELF-GRADER ===== */
+const EX = {
+  ex1: [
+    {re:/dspy\.LM\s*\(/, label:"dspy.LM(...)"},
+    {re:/["']openai\/gpt-4o-mini["']/, label:'"openai/gpt-4o-mini"'},
+    {re:/dspy\.configure\s*\(\s*lm\s*=\s*lm\s*\)/, label:"dspy.configure(lm=lm)"},
+  ],
+  ex2: [
+    {re:/dspy\.ChainOfThought\s*\(/, label:"dspy.ChainOfThought(...)"},
+    {re:/question/, label:"question"},
+    {re:/answer/, label:"answer"},
+    {re:/->/, label:"->"},
+  ],
+  ex3: [
+    {re:/\.compile\s*\(/, label:".compile(...)"},
+    {re:/student\s*=\s*classify/, label:"student=classify"},
+    {re:/trainset\s*=\s*trainset/, label:"trainset=trainset"},
+  ],
+  ex4: [
+    {re:/dspy\.inspect_history\s*\(/, label:"dspy.inspect_history(...)"},
+    {re:/n\s*=\s*1/, label:"n=1"},
+  ],
+  ex5: [
+    {re:/dspy\.Predict\s*\(/, label:"dspy.Predict(...)"},
+    {re:/review/, label:"review"},
+    {re:/sentiment/, label:"sentiment"},
+    {re:/->/, label:"->"},
+  ],
+};
+const DEFAULTS = {};
+document.querySelectorAll('.codepad').forEach(t => DEFAULTS[t.id] = t.value);
+
+function gradeEx(id){
+  const code = document.getElementById(id).value;
+  const checks = EX[id] || [];
+  const box = document.getElementById('res-'+id);
+  let passed = 0;
+  const rows = checks.map(c => {
+    const ok = c.re.test(code);
+    if(ok) passed++;
+    return `<div class="chk-row ${ok?'ok':'no'}">${ok?'✓':'✗'} ${c.label}</div>`;
+  }).join('');
+  const all = passed === checks.length;
+  box.innerHTML = rows + `<div class="summary" style="color:${all?'var(--ok)':'var(--warn)'}">`
+    + (all ? '🎉 Hoàn hảo! Tất cả dấu hiệu đều đạt.' : `Đạt ${passed}/${checks.length} — xem gợi ý hoặc lời giải.`) + '</div>';
+  box.classList.add('show');
+}
+function resetEx(id){
+  document.getElementById(id).value = DEFAULTS[id] || '';
+  const box = document.getElementById('res-'+id); box.classList.remove('show'); box.innerHTML='';
+}
+
+/* ===== QUIZ ===== */
+function pickOpt(btn, correct){
+  const item = btn.closest('.qitem');
+  if(item.dataset.done) return;
+  item.dataset.done = '1';
+  item.querySelectorAll('.opt-btn').forEach(b=>{
+    b.disabled = true;
+    if(b.dataset.c==='1') b.classList.add('right');
+  });
+  if(!correct) btn.classList.add('wrong');
+  item.querySelector('.qexp').classList.add('show');
+}
+
+/* ===== FLASHCARDS ===== */
+const FC = [
+  {q:"DSPy là gì?", a:"Framework Stanford NLP: khai báo luồng bằng code (Signature/Module), tự tối ưu prompt bằng ML (Teleprompter)."},
+  {q:"Manual vs DSPy?", a:"Manual: gõ text thử-nhầm. DSPy: khai báo Signature, code tự sinh & tối ưu prompt."},
+  {q:"Signature là gì?", a:"Khai báo Input → Output. Dạng chuỗi 'a -> b' hoặc class typed với InputField/OutputField."},
+  {q:"Module Predict?", a:"Module cơ bản: gọi LLM 1 lần theo signature. Nền của mọi module khác."},
+  {q:"ChainOfThought?", a:"Module tự thêm trường reasoning trước output — tăng chất lượng bài toán khó."},
+  {q:"ReAct?", a:"Module dùng tool: Reason → Act (gọi tool) → Observe → lặp."},
+  {q:"Teleprompter?", a:"'Trình biên dịch' — nhận module + trainset + metric, trả module đã tối ưu prompt/few-shot."},
+  {q:"Compile?", a:"Quá trình teleprompter tối ưu module. Giống compile code → bytecode."},
+  {q:"BootstrapFewShot?", a:"Teleprompter: chạy trên trainset, giữ ví dụ thành công làm few-shot demos."},
+  {q:"MIPRO vs COPRO?", a:"MIPRO tối ưu instruction+few-shot (Bayesian, đắt); COPRO chỉ instruction (rẻ hơn)."},
+  {q:"Metric?", a:"Hàm (example, pred, trace) → số/bool. Exact-match hoặc LLM-as-judge. Quan trọng nhất!"},
+  {q:"inspect_history?", a:"dspy.inspect_history(n) — xem prompt thật DSPy gửi cho LLM (kèm few-shot)."},
+  {q:"Đổi model thì sao?", a:"Compile lại — prompt tối ưu khác nhau giữa các model, không chuyển giao nguyên vẹn."},
+];
+document.getElementById('fcGrid').innerHTML = FC.map(c=>
+  `<div class="flashcard" onclick="this.classList.toggle('flipped')">
+     <div class="fc-inner">
+       <div class="fc-face fc-front"><div class="q">${c.q}</div><div class="hint">Bấm để lật ↻</div></div>
+       <div class="fc-face fc-back">${c.a}</div>
+     </div>
+   </div>`).join('');
+
+/* ===== SIGNATURE BUILDER ===== */
+function renderBuilder(){
+  const inp = (document.getElementById('bIn').value || 'question').replace(/[^a-zA-Z0-9_]/g,'_').replace(/^[0-9]+/,'') || 'question';
+  const out = (document.getElementById('bOut').value || 'answer').replace(/[^a-zA-Z0-9_]/g,'_').replace(/^[0-9]+/,'') || 'answer';
+  const mod = document.getElementById('bMod').value;
+  const desc = (document.getElementById('bDesc').value || '').replace(/["']/g,'');
+  const cls = out.charAt(0).toUpperCase() + out.slice(1);
+  let code = 'import dspy\n\n';
+  code += `class ${cls}(dspy.Signature):\n`;
+  code += `    """Nhiệm vụ: ${inp} → ${out}."""\n`;
+  code += `    ${inp} = dspy.InputField()\n`;
+  code += `    ${out} = dspy.OutputField(${desc ? `desc="${desc}"` : ''})\n\n`;
+  if(mod === 'ReAct'){
+    code += `module = dspy.ReAct(${cls}, tools=[...])   # truyền danh sách tool\n`;
+  } else {
+    code += `module = dspy.${mod}(${cls})\n`;
+  }
+  code += `result = module(${inp}="...")\n`;
+  code += `print(result.${out})\n\n`;
+  code += `# (tuỳ chọn) compile với BootstrapFewShot để tự tối ưu few-shot`;
+  document.getElementById('builderOut').textContent = code;
+}
+['bIn','bOut','bMod','bDesc'].forEach(id =>
+  document.getElementById(id).addEventListener('input', renderBuilder));
+renderBuilder();
+
+/* ===== NAV ===== */
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+const crumb = document.getElementById('crumb');
+window.addEventListener('scroll', ()=>{
+  let cur='';
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  navLinks.forEach(a=>{
+    const on = a.getAttribute('href')==='#'+cur;
+    a.classList.toggle('active', on);
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+  });
+}, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{
+  const q = e.target.value.toLowerCase().trim();
+  document.querySelectorAll('#navMenu li').forEach(li=>{
+    if(li.classList.contains('nav-section-title')) return;
+    li.style.display = li.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+});
+navLinks.forEach(a=> a.addEventListener('click', ()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+</script>
+</body>
+</html>
