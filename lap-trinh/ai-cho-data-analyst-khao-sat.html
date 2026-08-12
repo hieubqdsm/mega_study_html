@@ -5,173 +5,169 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hướng Dẫn — Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát Lớn</title>
 <style>
+  /* GIAO DIỆN CHUYÊN NGHIỆP (LIGHT CORPORATE THEME) */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --primary: #217346;          /* Excel green */
-    --primary-glow: #2e9e5b;
-    --accent: #0e3d24;           /* Excel dark green */
-    --accent-2: #ed7d31;         /* Excel orange accent */
-    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
-    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
-    --dark: #0a0a1a; --darker: #060614;
-    --light: #c7c7e6; --light-strong: #eceeff; --gray: #8a8ab8;
-    --card: #12122a; --card-2: #1a1a38; --border: #2a2a55; --terminal: #08081c;
-    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
-    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f6f97;
+    --bg-main: #f8fafc;          
+    --text-main: #334155;        
+    --text-heading: #0f172a;     
+    --primary: #2563eb;          /* Corporate Blue */
+    --primary-hover: #1d4ed8;
+    --accent: #f1f5f9;           
+    --accent-2: #ea580c;         /* Subtle orange accent */
+    --p0: #0284c7; --p1: #059669; --p2: #d97706; --p3: #6d28d9;
+    --ok: #10b981; --warn: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+    
+    --card: #ffffff;             
+    --card-hover: #f8fafc;
+    --border: #e2e8f0;           
+    
+    --terminal-bg: #0f172a;      /* Giữ code block nền tối để dễ đọc code */
+    --terminal-text: #f8fafc;
+    --code-green: #86efac; --code-yellow: #fde047; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-purple: #c4b5fd; --code-gray: #94a3b8;
   }
   body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
-    background-image:
-      radial-gradient(circle at 16% 22%, rgba(33,115,70,.12) 0%, transparent 45%),
-      radial-gradient(circle at 84% 72%, rgba(237,125,49,.05) 0%, transparent 45%);
-    background-attachment: fixed;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg-main); color: var(--text-main); line-height: 1.75; overflow-x: hidden;
   }
   code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
   .container { display: flex; min-height: 100vh; }
 
   /* SIDEBAR */
   .sidebar {
-    width: 320px; background: linear-gradient(180deg, var(--dark) 0%, #03030a 100%);
+    width: 320px; background: var(--card);
     padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto;
-    border-right: 2px solid var(--primary); z-index: 100; transition: transform .3s; box-shadow: 4px 0 30px rgba(33,115,70,.14);
+    border-right: 1px solid var(--border); z-index: 100; transition: transform .3s;
+    box-shadow: 1px 0 10px rgba(0,0,0,0.02);
   }
-  .sidebar::-webkit-scrollbar { width: 8px; }
-  .sidebar::-webkit-scrollbar-track { background: var(--darker); }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
-  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
-  .logo .ic { font-size: 42px; margin-bottom: 6px; filter: drop-shadow(0 0 16px rgba(33,115,70,.55)); }
-  .logo h1 { font-size: 17px; background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; line-height:1.3; }
-  .logo .sub { font-size: 10.5px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
-  .logo .pat { font-family: monospace; font-size: 11.5px; color: var(--accent-2); margin-top: 8px; background: var(--card); padding: 3px 8px; border-radius: 5px; display:inline-block; }
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .logo .ic { font-size: 38px; margin-bottom: 8px; }
+  .logo h1 { font-size: 17px; color: var(--text-heading); font-weight: 800; line-height:1.3; }
+  .logo .sub { font-size: 11px; color: #64748b; margin-top: 6px; letter-spacing: 1px; font-weight: 500; text-transform: uppercase; }
+  .logo .pat { font-family: monospace; font-size: 11.5px; color: var(--primary); margin-top: 10px; background: #eff6ff; padding: 4px 10px; border-radius: 6px; display:inline-block; border: 1px solid #bfdbfe; }
   .sidebar-search { padding: 14px 20px; border-bottom: 1px solid var(--border); margin-bottom: 10px; }
-  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
-  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(33,115,70,.15); }
+  .sidebar-search input { width: 100%; padding: 10px 14px; background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; color: var(--text-heading); font-size: 13px; transition: all 0.2s; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.15); background: var(--card); }
   .nav-menu { list-style: none; padding: 0 14px; }
-  .nav-menu li { margin-bottom: 3px; }
-  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; padding: 14px 12px 7px; font-weight: 800; display:flex; align-items:center; gap:8px; }
-  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; font-weight: 900; color:#06070d; }
-  .np0 { color: var(--p0); } .np0 .badge { background: var(--p0); }
-  .np1 { color: var(--p1); } .np1 .badge { background: var(--p1); }
-  .np2 { color: var(--p2); } .np2 .badge { background: var(--p2); }
-  .np3 { color: var(--p3); } .np3 .badge { background: var(--p3); }
-  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all .2s; font-size: 12.5px; border-left: 3px solid transparent; }
-  .nav-menu a:hover, .nav-menu a.active { background: rgba(33,115,70,.1); color: var(--accent-2); border-left-color: var(--primary); transform: translateX(4px); }
-  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--accent-2); flex-shrink: 0; }
+  .nav-menu li { margin-bottom: 2px; }
+  .nav-section-title { font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; padding: 16px 12px 8px; font-weight: 700; display:flex; align-items:center; gap:8px; color: #64748b; }
+  .nav-section-title .badge { font-size: 9px; padding: 3px 8px; border-radius: 12px; font-weight: 800; color: #fff; }
+  .np0 .badge { background: var(--p0); }
+  .np1 .badge { background: var(--p1); }
+  .np2 .badge { background: var(--p2); }
+  .np3 .badge { background: var(--p3); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--text-main); text-decoration: none; border-radius: 8px; transition: all .2s; font-size: 13px; font-weight: 500; }
+  .nav-menu a:hover, .nav-menu a.active { background: #eff6ff; color: var(--primary); transform: translateX(3px); }
+  .nav-menu .cn { display:inline-flex; align-items:center; justify-content:center; width: 24px; height: 24px; background: var(--bg-main); border-radius: 6px; margin-right: 12px; font-size: 11px; font-weight: 700; border: 1px solid var(--border); color: #64748b; flex-shrink: 0; }
+  .nav-menu a.active .cn { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-  /* MAIN */
+  /* MAIN CONTENT */
   .main-content { margin-left: 320px; flex: 1; max-width: calc(100% - 320px); }
-  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,6,20,.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .topbar .crumb { font-size: 13px; color: var(--gray); }
-  .topbar .crumb b { color: var(--accent-2); }
-  .topbar .home { font-size:12px; color:var(--gray); text-decoration:none; border:1px solid var(--border); padding:5px 12px; border-radius:7px; white-space:nowrap; }
-  .topbar .home:hover { border-color:var(--primary); color:var(--accent-2); }
-  .content-inner { padding: 38px 48px 120px; max-width: 1040px; }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); padding: 14px 48px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+  .topbar .crumb { font-size: 13px; color: #64748b; font-weight: 500; }
+  .topbar .crumb b { color: var(--text-heading); font-weight: 700; }
+  .topbar .home { font-size:13px; color:var(--text-main); text-decoration:none; border:1px solid var(--border); background: var(--card); padding:6px 14px; border-radius:8px; font-weight: 500; transition: all 0.2s; }
+  .topbar .home:hover { border-color:var(--primary); color:var(--primary); background: #eff6ff; }
+  .content-inner { padding: 40px 48px 120px; max-width: 960px; margin: 0 auto; }
 
-  .hero { background: linear-gradient(135deg, rgba(33,115,70,.16), rgba(237,125,49,.05)); border: 1px solid var(--border); border-radius: 16px; padding: 38px; margin-bottom: 30px; position: relative; overflow: hidden; }
-  .hero::after { content:"📊"; position:absolute; right:26px; bottom:-26px; font-size:180px; opacity:.07; }
-  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
-  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent-2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
-  .hero p { color: var(--light); max-width: 730px; }
-  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 20px; }
-  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
-  .meta-pill b { color: var(--accent-2); }
+  /* HERO SECTION */
+  .hero { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 42px; margin-bottom: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+  .hero h1 { font-size: 34px; color: var(--text-heading); margin-bottom: 16px; line-height: 1.3; font-weight: 800; letter-spacing: -0.5px; }
+  .hero h1 .g { color: var(--primary); }
+  .hero p { color: var(--text-main); font-size: 16px; max-width: 800px; }
+  .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 24px; }
+  .meta-pill { background: var(--bg-main); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-size: 13px; color: #475569; font-weight: 500; }
+  .meta-pill b { color: var(--text-heading); }
 
-  section.chapter { margin-bottom: 50px; scroll-margin-top: 80px; }
-  .part-divider { display:flex; align-items:center; gap:16px; margin: 54px 0 28px; scroll-margin-top: 80px; }
-  .part-divider .line { flex:1; height:2px; background: linear-gradient(90deg, transparent, var(--border)); }
-  .part-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 2px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
-  .tp0 { background: rgba(56,189,248,.14); color: var(--p0); border:1px solid var(--p0); }
-  .tp1 { background: rgba(52,211,153,.14); color: var(--p1); border:1px solid var(--p1); }
-  .tp2 { background: rgba(251,191,36,.14); color: var(--p2); border:1px solid var(--p2); }
-  .tp3 { background: rgba(244,114,182,.14); color: var(--p3); border:1px solid var(--p3); }
+  /* TYPOGRAPHY & LAYOUT */
+  section.chapter { margin-bottom: 60px; scroll-margin-top: 90px; }
+  .part-divider { display:flex; align-items:center; gap:16px; margin: 60px 0 32px; scroll-margin-top: 90px; }
+  .part-divider .line { flex:1; height:1px; background: var(--border); }
+  .part-divider .tag { font-size: 12px; font-weight: 800; letter-spacing: 1.5px; padding: 6px 16px; border-radius: 20px; text-transform: uppercase; }
+  .tp0 { background: #e0f2fe; color: var(--p0); }
+  .tp1 { background: #d1fae5; color: var(--p1); }
+  .tp2 { background: #fef3c7; color: var(--p2); }
+  .tp3 { background: #ede9fe; color: var(--p3); }
 
-  h2.ch-title { font-size: 24px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--accent-2); padding: 4px 11px; border-radius: 8px; white-space:nowrap; }
-  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 20px; }
-  h3.sec { font-size: 18px; color: var(--accent-2); margin: 26px 0 12px; padding-left: 12px; border-left: 4px solid var(--primary); }
-  h4.mini { font-size: 15px; color: var(--primary-glow); margin: 18px 0 8px; }
-  p { margin-bottom: 12px; }
-  ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
-  strong { color: var(--light-strong); }
-  em { color: var(--accent-2); font-style: normal; }
-  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; display:block; overflow-x:auto; }
-  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
-  th { background: var(--card-2); color: var(--accent-2); }
-  tr:nth-child(even) td { background: rgba(255,255,255,.02); }
-  code.ic { background: var(--card-2); color: var(--accent-2); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  h2.ch-title { font-size: 26px; color: var(--text-heading); margin-bottom: 8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; font-weight: 700; letter-spacing: -0.5px; }
+  h2.ch-title .num { font-size: 13px; background: #eff6ff; border:1px solid #bfdbfe; color: var(--primary); padding: 4px 10px; border-radius: 6px; font-weight: 700; }
+  .ch-sub { color: #64748b; font-size: 15px; margin-bottom: 24px; font-weight: 400; line-height: 1.6; }
+  h3.sec { font-size: 19px; color: var(--text-heading); margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-weight: 700; }
+  h4.mini { font-size: 16px; color: var(--text-heading); margin: 24px 0 10px; font-weight: 600; }
+  p { margin-bottom: 16px; }
+  ul, ol { margin: 0 0 16px 24px; color: var(--text-main); } 
+  li { margin-bottom: 8px; padding-left: 4px; }
+  strong { color: var(--text-heading); font-weight: 600; }
+  em { color: var(--text-main); font-style: italic; background: #f1f5f9; padding: 0 4px; border-radius: 4px; }
+  
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; background: var(--card); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+  th, td { border-bottom: 1px solid var(--border); padding: 12px 16px; text-align: left; vertical-align: top; }
+  th { background: var(--bg-main); color: var(--text-heading); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+  td { color: var(--text-main); }
+  tr:last-child td { border-bottom: none; }
+  code.ic { background: #f1f5f9; color: #ec4899; padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid #e2e8f0; font-weight: 500; }
 
-  /* BOXES */
-  .box { border-radius: 10px; padding: 15px 18px 15px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
-  .box::before { position: absolute; left: 14px; top: 14px; font-size: 18px; }
-  .box .bt { font-weight: 800; color: var(--light-strong); display:block; margin-bottom: 3px; }
-  .box.info { background: rgba(96,165,250,.07); border-color: rgba(96,165,250,.4);} .box.info::before{content:"💡";}
-  .box.tip { background: rgba(52,211,153,.07); border-color: rgba(52,211,153,.4);} .box.tip::before{content:"✅";}
-  .box.warn { background: rgba(251,191,36,.08); border-color: rgba(251,191,36,.45);} .box.warn::before{content:"⚠️";}
-  .box.danger { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.4);} .box.danger::before{content:"🚫";}
-  .box.pro { background: rgba(33,115,70,.08); border-color: rgba(33,115,70,.4);} .box.pro::before{content:"🎯";}
+  /* ALERTS & BOXES */
+  .box { border-radius: 8px; padding: 16px 20px 16px 48px; margin: 24px 0; position: relative; border: 1px solid; font-size: 14.5px; }
+  .box::before { position: absolute; left: 16px; top: 16px; font-size: 20px; }
+  .box .bt { font-weight: 700; color: var(--text-heading); display:block; margin-bottom: 6px; font-size: 15px; }
+  .box.info { background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a; } .box.info::before{content:"💡";}
+  .box.tip { background: #ecfdf5; border-color: #a7f3d0; color: #064e3b; } .box.tip::before{content:"✅";}
+  .box.warn { background: #fffbeb; border-color: #fde68a; color: #78350f; } .box.warn::before{content:"⚠️";}
+  .box.danger { background: #fef2f2; border-color: #fca5a5; color: #7f1d1d; } .box.danger::before{content:"🚨";}
+  .box.pro { background: #f8fafc; border-color: #cbd5e1; color: #334155; } .box.pro::before{content:"🎯";}
 
-  /* CODE BLOCK */
-  .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:16px 0; overflow:hidden; }
-  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
-  .code-block .cbhead .dot { color: var(--primary); }
-  .code-block .cbhead .copy { cursor:pointer; color: var(--gray); transition: color .2s; }
-  .code-block .cbhead .copy:hover { color: var(--accent-2); }
-  pre.code { padding:15px 17px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
-  pre.code .cm { color: var(--code-gray); font-style:italic; }
-  pre.code .kw { color: var(--code-purple); }
-  pre.code .fn { color: var(--code-blue); }
-  pre.code .st { color: var(--code-green); }
-  pre.code .nb { color: var(--code-yellow); }
-  pre.code::-webkit-scrollbar { height:8px; }
-  pre.code::-webkit-scrollbar-thumb { background: var(--border); border-radius:4px; }
-
-  /* PROMPT CARD (copy-paste ready) */
-  .prompt { background: linear-gradient(135deg, rgba(33,115,70,.10), rgba(237,125,49,.04)); border:1px solid var(--primary); border-left:4px solid var(--primary); border-radius:12px; padding:16px 18px; margin:18px 0; }
-  .prompt .ph { font-weight:800; color: var(--accent-2); margin-bottom:8px; display:flex; align-items:center; gap:8px; font-size:14.5px; flex-wrap:wrap; }
-  .prompt .ptag { font-size:10px; font-weight:900; letter-spacing:1px; background:var(--primary); color:#060614; padding:3px 9px; border-radius:20px; }
-  .prompt .pbody { background: var(--terminal); border:1px solid var(--border); border-radius:9px; padding:12px 14px; font-size:13px; color:var(--code-green); white-space:pre-wrap; line-height:1.7; font-family:'JetBrains Mono','Consolas',monospace; }
-  .prompt .pbtns { display:flex; gap:8px; margin-top:9px; }
-  .prompt .cpbtn { font-family:inherit; font-size:12px; font-weight:700; padding:7px 14px; border-radius:7px; cursor:pointer; border:none; background:var(--primary); color:#060614; transition: all .2s; }
-  .prompt .cpbtn:hover { background:var(--accent-2); color: var(--accent); }
+  /* PROMPT CARDS */
+  .prompt { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 12px; padding: 20px; margin: 24px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .prompt .ph { font-weight: 700; color: var(--text-heading); margin-bottom: 12px; display:flex; align-items:center; gap:10px; font-size:15px; flex-wrap:wrap; }
+  .prompt .ptag { font-size:10px; font-weight:700; letter-spacing:0.5px; background: #e2e8f0; color: #475569; padding:4px 10px; border-radius:20px; text-transform: uppercase; }
+  .prompt .pbody { background: var(--terminal-bg); border:1px solid #1e293b; border-radius:8px; padding:16px; font-size:13.5px; color: var(--terminal-text); white-space:pre-wrap; line-height:1.6; font-family:'JetBrains Mono','Consolas',monospace; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+  .prompt .pbtns { display:flex; gap:10px; margin-top:12px; }
+  .prompt .cpbtn { font-family:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:6px; cursor:pointer; border:1px solid var(--border); background: var(--bg-main); color: var(--text-heading); transition: all .2s; }
+  .prompt .cpbtn:hover { background: #e2e8f0; border-color: #cbd5e1; }
 
   /* FLASHCARDS */
-  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(230px,1fr)); gap:14px; margin:16px 0; }
-  .flashcard { perspective:1000px; height:150px; cursor:pointer; }
-  .fc-inner { position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d; }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap:16px; margin:20px 0; }
+  .flashcard { perspective:1000px; height:160px; cursor:pointer; }
+  .fc-inner { position:relative; width:100%; height:100%; transition:transform .6s cubic-bezier(0.4, 0, 0.2, 1); transform-style:preserve-3d; }
   .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
-  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; }
+  .fc-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:12px; padding:20px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); overflow:auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
   .fc-front { background: var(--card); }
-  .fc-front .q { font-weight:800; color:var(--accent-2); font-size:14.5px; }
-  .fc-front .hint { font-size:11px; color:var(--gray); margin-top:8px; }
-  .fc-back { background: var(--card-2); transform: rotateY(180deg); color:var(--light); font-size:12.8px; }
+  .fc-front .q { font-weight:700; color:var(--text-heading); font-size:15px; text-align: center; }
+  .fc-front .hint { font-size:12px; color:#94a3b8; margin-top:12px; text-align: center; }
+  .fc-back { background: var(--primary); transform: rotateY(180deg); color:#fff; font-size:13.5px; text-align: center; border: none; }
 
   /* CHEATSHEET */
-  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(290px,1fr)); gap:14px; }
-  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; }
-  .cheat-card h4 { color: var(--accent-2); font-size:14.5px; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
-  .cheat-card .ci { background: var(--terminal); border:1px solid var(--border); border-radius:8px; padding:9px 11px; font-size:12px; color:var(--code-green); white-space:pre; overflow-x:auto; margin-bottom:8px; }
+  .cheat-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:16px; }
+  .cheat-card { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+  .cheat-card h4 { color: var(--text-heading); font-size:15px; margin-bottom:12px; display:flex; align-items:center; gap:8px; font-weight: 700; }
+  .cheat-card .ci { background: var(--bg-main); border:1px solid var(--border); border-radius:8px; padding:12px; font-size:13px; color:#334155; white-space:pre; overflow-x:auto; margin-bottom:0; font-family:'JetBrains Mono',monospace; }
 
   /* PROGRESS */
-  .progress-wrap { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:22px 0; }
-  .progress-wrap .pt { font-weight:800; color:var(--light-strong); margin-bottom:10px; }
-  .progress-bar { height:10px; background: var(--card-2); border-radius:6px; overflow:hidden; margin-bottom:8px; }
-  .progress-fill { height:100%; background: linear-gradient(90deg, var(--primary), var(--accent-2)); width:0%; transition: width .6s; border-radius:6px; }
-  .progress-wrap .ps { font-size:12px; color:var(--gray); }
+  .progress-wrap { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; margin:24px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+  .progress-wrap .pt { font-weight:700; color:var(--text-heading); margin-bottom:12px; }
+  .progress-bar { height:12px; background: var(--bg-main); border:1px solid var(--border); border-radius:8px; overflow:hidden; margin-bottom:10px; }
+  .progress-fill { height:100%; background: var(--ok); width:0%; transition: width .8s cubic-bezier(0.4, 0, 0.2, 1); border-radius:8px; }
+  .progress-wrap .ps { font-size:13px; color:#64748b; }
 
-  footer.foot { border-top: 1px solid var(--border); padding: 28px 48px; color: var(--gray); font-size: 13px; }
-  footer.foot a { color: var(--accent-2); }
+  footer.foot { border-top: 1px solid var(--border); padding: 32px 48px; color: #64748b; font-size: 14px; text-align: center; background: var(--bg-main); }
+  footer.foot a { color: var(--primary); font-weight: 500; text-decoration: none; }
+  
   .menu-toggle { display:none; }
   @media (max-width: 980px) {
-    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); box-shadow: 4px 0 20px rgba(0,0,0,0.1); }
     .main-content { margin-left: 0; max-width: 100%; }
-    .menu-toggle { display:flex; position:fixed; top:14px; left:14px; z-index:200; background: var(--primary); color:#060614; border:none; width:44px; height:44px; border-radius:10px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 4px 14px rgba(0,0,0,.4); }
-    .content-inner { padding:28px 16px 90px; } .topbar { padding:12px 16px 12px 66px; }
-    .hero { padding:24px 18px; } .hero h1 { font-size:23px; }
-    .content-inner { max-width:100%; }
+    .menu-toggle { display:flex; position:fixed; top:12px; left:12px; z-index:200; background: var(--card); color:var(--text-heading); border:1px solid var(--border); width:44px; height:44px; border-radius:8px; font-size:20px; cursor:pointer; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,.1); }
+    .content-inner { padding:32px 20px 90px; } .topbar { padding:14px 20px 14px 68px; }
+    .hero { padding:28px 20px; } .hero h1 { font-size:26px; }
   }
   @media (max-width: 600px) {
-    .hero h1 { font-size:21px; } h2.ch-title { font-size:20px; }
+    .hero h1 { font-size:24px; } h2.ch-title { font-size:22px; }
     .meta-pill { font-size:12px; }
   }
 </style>
@@ -184,881 +180,317 @@
   <aside class="sidebar">
     <div class="logo">
       <div class="ic">📊</div>
-      <h1>Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát</h1>
-      <div class="sub">CSV LỚN · 3 FILE SETUP · RULE · GIT</div>
+      <h1>Data & AI Workspace</h1>
+      <div class="sub">Xử lý khảo sát quy mô lớn</div>
       <div class="pat">ai.apply_rules(data) → verdict</div>
     </div>
     <div class="sidebar-search"><input id="navSearch" type="text" placeholder="🔍 Tìm chương..."></div>
     <ul class="nav-menu" id="navMenu">
-      <li class="nav-section-title np0"><span class="badge">★</span> P1 · NỀN TẢNG &amp; CONTEXT QUA TƯƠNG TÁC</li>
-      <li><a href="#c0"><span class="cn">0</span> AI không hiểu data nếu thiếu context</a></li>
-      <li><a href="#c1"><span class="cn">1</span> Môi trường &amp; vì sao Excel/PQ "tắc thở"</a></li>
-      <li><a href="#c2"><span class="cn">2</span> ★ Nhận diện các file context</a></li>
-      <li><a href="#c3"><span class="cn">3</span> ★ Quy trình tương tác &amp; đưa rule</a></li>
-      <li><a href="#c3b"><span class="cn">★</span> Nhờ AI ghi nhớ context vào MD</a></li>
+      <li class="nav-section-title np0"><span class="badge">P1</span> Nền tảng &amp; Context</li>
+      <li><a href="#c0"><span class="cn">0</span> AI cần context để hiểu Data</a></li>
+      <li><a href="#c1"><span class="cn">1</span> Môi trường &amp; Hạn chế Excel</a></li>
+      <li><a href="#c2"><span class="cn">2</span> Nhận diện các file context</a></li>
+      <li><a href="#c3"><span class="cn">3</span> Quy trình tương tác AI</a></li>
+      <li><a href="#c3b"><span class="cn">★</span> Lưu context vào Markdown</a></li>
 
-      <li class="nav-section-title np1"><span class="badge">P2</span> ĐIỀU KHIỂN AI XỬ LÝ (KHÔNG TỰ CODE)</li>
-      <li><a href="#c4"><span class="cn">4</span> ★ Chọn AI &amp; interface (web/desktop/CLI/IDE)</a></li>
-      <li><a href="#c5"><span class="cn">5</span> Nhờ AI giải mã data file</a></li>
-      <li><a href="#c6"><span class="cn">6</span> ★ Nhờ AI apply 20-50 cột rule</a></li>
-      <li><a href="#c7"><span class="cn">7</span> ★ Nhờ AI tạo cột phán quyết cuối</a></li>
-      <li><a href="#c8"><span class="cn">8</span> Nhờ AI thống kê &amp; xuất file kết quả</a></li>
+      <li class="nav-section-title np1"><span class="badge">P2</span> Điều khiển AI xử lý</li>
+      <li><a href="#c4"><span class="cn">4</span> Chọn công cụ AI &amp; Bảo mật</a></li>
+      <li><a href="#c5"><span class="cn">5</span> Giải mã file Data</a></li>
+      <li><a href="#c6"><span class="cn">6</span> Apply rule hàng loạt</a></li>
+      <li><a href="#c7"><span class="cn">7</span> Phán quyết chất lượng</a></li>
+      <li><a href="#c8"><span class="cn">8</span> Thống kê &amp; Báo cáo</a></li>
 
-      <li class="nav-section-title np2"><span class="badge">★</span> P3 · VÒNG ĐỜI CODE: CHECK · UPDATE · COMMIT</li>
-      <li><a href="#c9"><span class="cn">9</span> ★ Nhờ AI check code rule cũ</a></li>
-      <li><a href="#c10"><span class="cn">10</span> ★ Update rule khi DA đổi</a></li>
-      <li><a href="#c11"><span class="cn">11</span> Pipeline tái dùng (AI lo cấu trúc)</a></li>
-      <li><a href="#c12"><span class="cn">12</span> ★ Nhờ AI commit Git + giải thích để hiểu</a></li>
+      <li class="nav-section-title np2"><span class="badge">P3</span> Vòng đời Code &amp; Git</li>
+      <li><a href="#c9"><span class="cn">9</span> Review code tự động</a></li>
+      <li><a href="#c10"><span class="cn">10</span> Cập nhật Rule</a></li>
+      <li><a href="#c11"><span class="cn">11</span> Xây dựng Pipeline</a></li>
+      <li><a href="#c12"><span class="cn">12</span> Commit Git an toàn</a></li>
 
-      <li class="nav-section-title np3"><span class="badge">★</span> P4 · THỰC CHIẾN &amp; CÔNG CỤ</li>
-      <li><a href="#c13"><span class="cn">13</span> Case study: 1 đợt khảo sát full loop</a></li>
-      <li><a href="#c14"><span class="cn">14</span> Thư viện Prompt (copy-paste)</a></li>
-      <li><a href="#c15"><span class="cn">15</span> Cheatsheet Context (1 trang)</a></li>
+      <li class="nav-section-title np3"><span class="badge">P4</span> Thực chiến &amp; Mẫu Prompt</li>
+      <li><a href="#c13"><span class="cn">13</span> Case study end-to-end</a></li>
+      <li><a href="#c14"><span class="cn">14</span> Thư viện Prompt</a></li>
+      <li><a href="#c15"><span class="cn">15</span> Cheatsheet (1 trang)</a></li>
 
-      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ</li>
+      <li class="nav-section-title np0"><span class="badge">★</span> Công cụ hỗ trợ</li>
       <li><a href="#cards"><span class="cn">🃏</span> Flashcards</a></li>
-      <li><a href="#cheat"><span class="cn">📐</span> Cheatsheet Context</a></li>
-      <li><a href="#progress"><span class="cn">📊</span> Tiến độ</a></li>
+      <li><a href="#cheat"><span class="cn">📐</span> Cheatsheet</a></li>
+      <li><a href="#progress"><span class="cn">📈</span> Theo dõi Tiến độ</a></li>
     </ul>
   </aside>
 
   <!-- MAIN -->
   <main class="main-content">
     <div class="topbar">
-      <div class="crumb">📊 Hướng dẫn · <b id="crumb">AI Xử Lý Khảo Sát</b></div>
-      <a class="home" href="../index.html">🏠 Thư viện</a>
+      <div class="crumb">Tài liệu Hướng dẫn / <b id="crumb">Tổng quan</b></div>
+      <a class="home" href="../index.html">🏠 Trang chủ Docs</a>
     </div>
     <div class="content-inner">
 
       <!-- HERO -->
       <div class="hero" id="top">
-        <h1>Điều khiển AI xử lý <span class="g">dữ liệu khảo sát lớn</span></h1>
-        <p>Hướng dẫn cho team <strong>Data Analyst xử lý khảo sát</strong> (data hàng nghìn cột × hàng trăm nghìn dòng). Bạn <strong>chưa biết code hay git cũng không sao</strong> — hãy <strong>nhờ AI viết trước, rồi nhờ AI giải thích từng bước để bạn hiểu và biết AI sai chỗ nào mà sửa</strong>. Qua vài vòng, bạn tự chủ làm chủ công nghệ. Mọi thao tác qua <strong>prompt tiếng Việt</strong>.</p>
+        <h1>Điều khiển AI xử lý <span class="g">Dữ liệu khảo sát quy mô lớn</span></h1>
+        <p>Hướng dẫn chuẩn doanh nghiệp dành cho <strong>Data Analyst</strong> xử lý hàng nghìn cột × hàng trăm nghìn dòng. Bạn không cần giỏi code hay thao tác Git thuần thục — tài liệu này giúp bạn <strong>nhờ AI viết pipeline, giải thích code và bắt lỗi</strong> để làm chủ hoàn toàn quá trình xử lý.</p>
         <div class="meta-row">
-          <div class="meta-pill">📖 <b>16 chương</b> · 4 phần</div>
-          <div class="meta-pill">🤖 <b>20+ prompt</b> copy-paste</div>
-          <div class="meta-pill">📝 <b>3 file setup</b> + rule template</div>
-          <div class="meta-pill">⏱️ <b>4–6 tuần</b></div>
+          <div class="meta-pill">📖 <b>16 chương</b> · 4 phần chính</div>
+          <div class="meta-pill">🤖 <b>20+ prompt mẫu</b> có sẵn</div>
+          <div class="meta-pill">📝 <b>Kiến trúc 3 file setup</b> chuẩn</div>
+          <div class="meta-pill">⏱️ Lộ trình <b>4–6 tuần</b></div>
         </div>
-        <div class="box pro" style="margin-top:24px;">
-          <span class="bt">🎯 Cách tiếp cận của hướng dẫn này</span>
-          Không phải "không cần học gì". Cách đúng: <strong>không cần biết ngay</strong> → nhờ AI viết trước → <strong>nhờ AI giải thích</strong> cái nó vừa viết để hiểu → <strong>đọc hiểu đủ để bắt lỗi AI</strong> và yêu cầu sửa. Học qua làm, chủ động, từng bước. AI là người viết code — bạn là người <em>kiểm tra và định hướng</em>.
+        <div class="box pro" style="margin-top:28px;">
+          <span class="bt">Triết lý của phương pháp</span>
+          Không phải "đưa data và phó mặc cho AI". Cách đúng đắn: <strong>Nhờ AI viết → Yêu cầu giải thích → Hiểu để bắt lỗi → Phản hồi chỉnh sửa.</strong> Bạn đóng vai trò là "Người điều phối" (Orchestrator), AI là "Lập trình viên thực thi".
         </div>
       </div>
 
       <!-- ============ PART 1 ============ -->
-      <div class="part-divider" id="p1"><span class="tag tp0">P1 · Nền tảng &amp; 3 File Setup</span><span class="line"></span></div>
+      <div class="part-divider" id="p1"><span class="tag tp0">Phần 1 · Nền tảng &amp; File Setup</span><span class="line"></span></div>
 
       <section class="chapter" id="c0">
-        <h2 class="ch-title"><span class="num">Chương 0</span> ★ Sự thật: AI không hiểu data nếu thiếu context</h2>
-        <div class="ch-sub">Bài học quan trọng nhất: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Và context không phải 1 câu "1 phát ăn ngay" — là quá trình xây dựng qua tương tác.</div>
+        <h2 class="ch-title"><span class="num">Chương 0</span> Sự thật: AI không hiểu data nếu thiếu context</h2>
+        <div class="ch-sub">Bài học quan trọng nhất: AI chỉ giỏi khi bạn cho đủ ngữ cảnh. Context là quá trình xây dựng qua tương tác, không phải 1 câu lệnh ăn liền.</div>
 
-        <p>Hãy tưởng tượng bạn upload file data CSV vào ChatGPT rồi gõ: <em>"Kiểm tra respondent này có nói xạo không"</em>. Kết quả? AI sẽ <strong>không làm được</strong> — vì nó chỉ thấy các con số và tên cột mã hóa (<code class="ic">profile-qbirthyear</code>...), không biết:</p>
+        <p>Nếu bạn upload file data thô CSV vào ChatGPT và yêu cầu: <em>"Kiểm tra respondent này có nói xạo không"</em>. AI sẽ thất bại. Tại sao? Vì nó chỉ thấy các mã hóa như <code class="ic">profile-qbirthyear</code> và không hề biết:</p>
         <ul>
-          <li>Cột đó chứa giá trị gì? (số năm? mã? text?)</li>
-          <li>"Nói xạo" được định nghĩa thế nào? Rule kiểm tra là gì?</li>
+          <li>Cột này chứa định dạng gì? (năm, text, hay mã số quy ước?)</li>
+          <li>Thế nào được định nghĩa là "Nói xạo" trong nghiệp vụ của bạn?</li>
         </ul>
 
-        <div class="box danger"><span class="bt">🚫 Lỗi phổ biến #1</span> Tin rằng "AI thông minh, tự hiểu được". <strong>Thực tế:</strong> AI chỉ thấy các con số và tên cột. Nó sẽ đoán — và đoán sai.</div>
+        <div class="box warn"><span class="bt">Lỗi phổ biến #1</span> Tin rằng "AI tự hiểu mọi thứ". <strong>Thực tế:</strong> AI chỉ thấy các con số. Không có từ điển giải nghĩa, nó sẽ đoán mò (hallucinate) và đưa kết quả sai lệch.</div>
 
-        <h3 class="sec">Context không phải 1 câu — là quá trình</h3>
-        <p>Nhiều người tưởng dùng AI là <em>"nói 1 câu, AI ra kết quả luôn"</em>. Với data phức tạp (2000 cột × 200k dòng), điều đó <strong>không khả thi</strong>. Thay vào đó, bạn xây context qua <strong>vài lượt tương tác</strong>:</p>
+        <h3 class="sec">Context không phải 1 câu — là một quy trình</h3>
+        <p>Với bộ data lớn, quá trình bơm ngữ cảnh (context) phải được thực hiện theo từng bước:</p>
         <ol>
-          <li><strong>Đưa nền</strong>: mention 3 file setup + file data → AI đọc hiểu cấu trúc</li>
-          <li><strong>Yêu cầu kiểm tra</strong>: "bạn đã hiểu cột profile-qbirthyear chưa?" → AI trả lời, nếu sai thì bổ sung</li>
-          <li><strong>Thêm rule/bổ sung</strong>: mention file rule Excel, bảng merge ngành... → AI tích hợp</li>
-          <li><strong>Yêu cầu xử lý</strong>: áp rule lên data → xem kết quả → tinh chỉnh</li>
+          <li><strong>Đưa nền tảng</strong>: Cung cấp 3 file setup (questionnaire, structure, behavior) để AI giải mã các cột.</li>
+          <li><strong>Kiểm tra xác nhận</strong>: Yêu cầu AI tóm tắt lại để chắc chắn nó hiểu đúng loại dữ liệu.</li>
+          <li><strong>Bổ sung Rule/Nghiệp vụ</strong>: Đưa mô tả nghiệp vụ (VD: định nghĩa nói xạo) và bảng map dữ liệu (nếu có).</li>
+          <li><strong>Thực thi & Tinh chỉnh</strong>: Áp dụng vào xử lý dữ liệu và kiểm tra 5 dòng kết quả mẫu.</li>
         </ol>
-
-        <h3 class="sec">Context đến từ nhiều nguồn (không chỉ 3 file setup)</h3>
-        <p>3 file setup (questionnaire/structure/behavior) chỉ là <strong>nền</strong>. Tùy dự án, bạn có thể thêm nhiều file khác để AI xử lý chính xác hơn:</p>
-        <table>
-          <tr><th>Loại file</th><th>Tác dụng</th><th>Khi nào mention</th></tr>
-          <tr><td><strong>3 file setup</strong> (questionnaire/structure/behavior)</td><td>Nền tảng: giải mã cột, loại câu hỏi, rule validation</td><td>Luôn luôn (ở lượt đầu)</td></tr>
-          <tr><td><strong>file data</strong></td><td>Respondent × cột</td><td>Khi bắt đầu xử lý</td></tr>
-          <tr><td><strong>File rule của DA</strong> (Excel/MD)</td><td>Logic: "SV 2007 năm 3-4 → nói xạo"</td><td>Khi cần apply rule</td></tr>
-          <tr><td><strong>Bảng merge ngành / mapping</strong></td><td>Vd: gom 50 mã trường → 3 nhóm (top/khá/Khác)</td><td>Khi rule dùng phân nhóm</td></tr>
-          <tr><td><strong>File context cũ</strong> (từ đợt trước)</td><td>Đã có rule, verdict... tái dùng</td><td>Đợt sau, hoặc khi review</td></tr>
-        </table>
-
-        <div class="box tip"><span class="bt">✅ Quy luật vàng</span> <strong>Context càng đầy đủ → AI càng đúng.</strong> Nhưng không cần đưa hết 1 lần — xây qua tương tác, AI dần hiểu đúng data của bạn.</div>
-
-        <h3 class="sec">Ví dụ: tương tác thực tế (không phải 1 phát)</h3>
-        <p><strong>Lượt 1 — Đưa nền:</strong></p>
-        <div class="prompt">
-          <div class="ph">📋 Lượt 1 — mention file + yêu cầu đọc hiểu <span class="ptag">tương tác</span></div>
-          <div class="pbody" id="p0-turn1">Tôi là Data Analyst. Đính kèm 4 file của 1 đợt khảo sát:
-- questionnaire.csv, survey-structure.csv, behavior.csv (3 file setup)
-- data_q3_2025.csv (data thật)
-
-Hãy đọc 3 file setup để hiểu cấu trúc. Sau đó mở data, check vài cột (profile-qbirthyear, profile-qyear-of-study) để xác nhận bạn đọc đúng.
-Tóm tắt lại cho tôi: bạn hiểu cột nào nghĩa là gì, và quy ước lưu data thế nào.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p0-turn1')">📋 Sao chép</button></div>
-        </div>
-        <p>→ AI trả lời. Nếu đúng → sang lượt 2. Nếu sai (vd: hiểu nhầm giá trị) → bạn sửa. <strong>Đây là lúc đảm bảo AI "vào đúng bài" trước khi làm việc thật.</strong></p>
-
-        <p><strong>Lượt 2 — Đưa rule + xử lý:</strong></p>
-        <div class="prompt">
-          <div class="ph">📋 Lượt 2 — áp rule lên data đã hiểu <span class="ptag">tương tác</span></div>
-          <div class="pbody" id="p0-turn2">Tốt, bạn đã hiểu đúng cấu trúc. Giờ áp rule này:
-"SV sinh năm 2007 nhưng đang học năm 3 hoặc năm 4 → khả năng nói xạo"
-
-Viết code tạo cột rule_sayso_2007_year34 (=1 nếu phạm). Dùng cột profile-qbirthyear và profile-qyear-of-study.
-In 5 dòng ví dụ để tôi kiểm tra.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p0-turn2')">📋 Sao chép</button></div>
-        </div>
-        <div class="box pro"><span class="bt">🎯 So sánh với cách "1 phát ăn ngay"</span> Nếu gộp lượt 1+2 thành 1 câu, AI dễ hiểu sai cột → code sai → phải làm lại. Tách thành tương tác giúp bạn <strong>bắt lỗi sớm</strong> và AI "học" đúng data.</div>
       </section>
 
       <section class="chapter" id="c1">
-        <h2 class="ch-title"><span class="num">Chương 1</span> Môi trường &amp; vì sao Excel/PQ "tắc thở"</h2>
-        <div class="ch-sub">Hiểu vì sao workflow cũ (Excel + Power Query) không chịu nổi data 2000 cột × 200k dòng — và vì sao Python (do AI sinh) là lời giải.</div>
+        <h2 class="ch-title"><span class="num">Chương 1</span> Môi trường &amp; Giới hạn của Excel</h2>
+        <div class="ch-sub">Vì sao phương pháp cũ (Excel + Power Query) thất bại trước Big Data khảo sát, và giải pháp Python local.</div>
+        
+        <p>Quy trình thủ công thường yêu cầu thêm 20-50 cột logic bằng công thức. Tuy nhiên, khi dữ liệu đạt ngưỡng 2000 cột × 200.000 dòng:</p>
+        <ul>
+          <li><strong>Excel / Power Query:</strong> Máy treo, crash do thiếu RAM, tốc độ tính toán từng dòng quá chậm.</li>
+          <li><strong>Python (AI sinh code):</strong> Chạy trên cơ chế vector hóa (xử lý toàn bộ cột cùng lúc) nên hoàn thành trong vài giây.</li>
+        </ul>
 
-        <h3 class="sec">Nỗi đau thực tế của team DA</h3>
-        <p>Workflow hiện tại: tải data CSV full → import Excel → <strong>thêm 20-50 cột rule bằng công thức Excel</strong> → tổng hợp ra cột phán quyết. Vấn đề:</p>
-        <table>
-          <tr><th>Tình huống</th><th>Excel / Power Query</th><th>Python (AI sinh code)</th></tr>
-          <tr><td>2000 cột × 200k dòng</td><td>Excel treo, PQ tính rất lâu</td><td>Chạy trong vài giây – vài phút</td></tr>
-          <tr><td>Thêm 1 cột rule mới (công thức phức tạp)</td><td>Kéo công thức xuống 200k dòng → đơ máy</td><td>1 dòng code, chạy tức thì</td></tr>
-          <tr><td>Đổi rule (vd ngưỡng năm đổi)</td><td>Sửa công thức toàn file → chậm + dễ sai</td><td>Sửa 1 dòng code, chạy lại</td></tr>
-          <tr><td>Chạy lại mỗi đợt khảo sát</td><td>Làm lại từ đầu thủ công</td><td>1 lệnh <code class="ic">python run.py</code></td></tr>
-        </table>
-
-        <div class="box warn"><span class="bt">⚠️ Điểm nghẽn</span> Excel/PQ <strong>giới hạn RAM và xử lý từng dòng</strong>. Khi cột nhiều (2000) + dòng nhiều (200k) + công thức phức tạp (lồng nhau) → bộ nhớ cạn, máy đơ. Python xử lý theo <em>cột (vector hóa)</em> nên không bị vấn đề này.</div>
-
-        <h3 class="sec">Môi trường tối thiểu (nhờ AI dẫn từng bước)</h3>
-        <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI hướng dẫn cài môi trường <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p1-install">Tôi là Data Analyst, máy Windows, chưa từng dùng Python. Hãy hướng dẫn tôi từng bước cài môi trường (Python, VS Code, pandas) để sẵn sàng xử lý CSV khảo sát. Cứ dẫn tôi từng bước, gặp lỗi tôi báo lại.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p1-install')">📋 Sao chép</button></div>
+        <div class="box tip"><span class="bt">Môi trường làm việc chuẩn</span>
+          Vì dữ liệu lớn, các nền tảng đám mây miễn phí (như Google Colab) sẽ dễ bị quá tải RAM hoặc đứt kết nối. Lựa chọn an toàn và tối ưu nhất là setup máy tính <strong>Local</strong> (Python 3.12+, VS Code, và thư viện Pandas). AI sẽ hướng dẫn bạn cài đặt từ con số không.
         </div>
-
-        <div class="box info"><span class="bt">💡 Lựa chọn thay thế: Google Colab</span> Nếu công ty không cho cài Python, dùng <strong>Google Colab</strong> (colab.research.google.com) — chạy Python trong trình duyệt, miễn phí, upload CSV lên là chạy được. AI sinh code → bạn dán vào Colab.</div>
       </section>
 
       <section class="chapter" id="c2">
-        <h2 class="ch-title"><span class="num">Chương 2</span> ★ Nhận diện các file context &amp; tác dụng</h2>
-        <div class="ch-sub">Hiểu logic từng loại file để biết khi nào mention cái nào. Bạn không cần đọc cặn kẽ từng dòng — AI đọc cho bạn. Bạn chỉ cần biết "file này để làm gì".</div>
+        <h2 class="ch-title"><span class="num">Chương 2</span> Nhận diện các file Context</h2>
+        <div class="ch-sub">Bạn không cần tự đọc từng dòng, nhưng bạn phải biết tác dụng của từng file để gọi tên khi giao việc cho AI.</div>
 
-        <h3 class="sec">3 file setup = "nền tảng" (luôn mention ở lượt đầu)</h3>
-        <p>Mỗi đợt khảo sát, hệ thống (survey platform) xuất về 3 file "hướng dẫn sử dụng". Đây là <strong>nền</strong> để AI giải mã data — không phải tất cả những gì AI cần.</p>
+        <h3 class="sec">Bộ 3 file nền tảng (Luôn dùng ở lượt đầu)</h3>
         <table>
-          <tr><th>File</th><th>Tác dụng (nói cho AI)</th></tr>
-          <tr><td><strong>questionnaire.csv</strong></td><td><em>"Bản dịch" mã cột → ý nghĩa</em>. Khi AI thấy cột <code class="ic">profile-qbirthyear</code>, file này cho biết: câu "Năm sinh", có giá trị nào (1990, 2007...), mỗi giá trị nghĩa gì.</td></tr>
-          <tr><td><strong>survey-structure.csv</strong></td><td><em>Loại câu hỏi + cấu trúc</em>. Cho biết cột nào là multiple_choice (chọn nhiều), scale (thang), list_box (chọn 1)... → AI biết cách đọc data cho đúng loại.</td></tr>
-          <tr><td><strong>behavior.csv</strong></td><td><em>Rule validation/logic hiển thị</em>. Cho biết câu nào bắt buộc (<code class="ic">va_force_response</code>), hiện theo điều kiện (<code class="ic">dlogic_show...</code>). Thường dùng khi rule liên quan logic phụ thuộc.</td></tr>
+          <tr><th>Tên File</th><th>Tác dụng đối với AI</th></tr>
+          <tr><td><strong>questionnaire.csv</strong></td><td>Từ điển giải nghĩa: Cột mã số <code class="ic">q1_2</code> tương ứng với câu hỏi gì, giá trị 1, 2, 3 nghĩa là gì.</td></tr>
+          <tr><td><strong>survey-structure.csv</strong></td><td>Định dạng cấu trúc: Câu hỏi thuộc loại chọn nhiều (multiple-choice), thang điểm (scale), hay lưới (grid).</td></tr>
+          <tr><td><strong>behavior.csv</strong></td><td>Logic hiển thị: Câu nào bắt buộc, câu nào chỉ hiển thị dựa trên điều kiện câu trước.</td></tr>
         </table>
-        <div class="box info"><span class="bt">💡 Bạn không cần hiểu cặn kẽ</span> Chỉ cần biết "file này để làm gì" rồi mention cho AI — AI tự đọc từng dòng. Nếu rule không liên quan logic hiển thị, behavior.csv có thể bỏ qua được.</div>
-
-        <h3 class="sec">Các file bổ sung (tùy dự án)</h3>
-        <p>3 file setup là nền, nhưng nhiều rule cần thêm thông tin. Đây là chỗ DA chủ động <strong>thêm context</strong>:</p>
-        <table>
-          <tr><th>File bổ sung</th><th>Tác dụng</th><th>Ví dụ</th></tr>
-          <tr><td><strong>File rule của DA</strong> (Excel/MD)</td><td>Định nghĩa logic kiểm tra</td><td>"SV 2007 năm 3-4 → nói xạo"</td></tr>
-          <tr><td><strong>Bảng merge ngành</strong></td><td>Gom nhiều mã → nhóm</td><td>50 mã trường → 3 nhóm (top/khá/Khác)</td></tr>
-          <tr><td><strong>Bảng quota</strong></td><td>Mục tiêu số lượng từng nhóm</td><td>Cần 500 SV IT HN</td></tr>
-          <tr><td><strong>File context cũ</strong> (từ đợt trước)</td><td>Tái dùng rule, tránh viết lại</td><td>context_2024.md từ đợt trước</td></tr>
-        </table>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — mention nhiều file + mô tả tác dụng <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p2-mention">Tôi là Data Analyst. Đính kèm các file cho đợt khảo sát:
-- questionnaire.csv, survey-structure.csv, behavior.csv → 3 file setup, đọc để hiểu cấu trúc data
-- data_q3_2025.csv → data respondent cần xử lý
-- rule_definitions.xlsx → file rule của tôi (mỗi dòng = 1 rule, có cột mô tả + cột liên quan)
-- industry_merge.csv → bảng gom ngành (cột industry_code → industry_group)
-
-Hãy đọc tất cả, tóm tắt lại cho tôi: bạn hiểu mỗi file dùng làm gì, và rule nào sẽ áp dụng. Tôi sẽ kiểm tra trước khi bạn viết code.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p2-mention')">📋 Sao chép</button></div>
-        </div>
-
-        <div class="box pro"><span class="bt">🎯 Tư duy then chốt</span> Bạn là người <strong>biết file nào dùng làm gì</strong> — AI là người đọc nội dung. Mention file kèm 1 câu mô tả tác dụng (vd: "industry_merge.csv → bảng gom ngành"), AI sẽ tích hợp đúng cách. <strong>Không cần đưa tất cả file mọi lúc</strong> — chỉ những file liên quan đến task hiện tại.</div>
       </section>
 
       <section class="chapter" id="c3">
-        <h2 class="ch-title"><span class="num">Chương 3</span> ★ Quy trình tương tác &amp; đưa rule cho AI</h2>
-        <div class="ch-sub">Không phải "1 phát ăn ngay" — đây là quy trình qua lại giữa bạn và AI. Chia lượt để bắt lỗi sớm, AI "học" đúng data từng bước.</div>
+        <h2 class="ch-title"><span class="num">Chương 3</span> Quy trình tương tác AI chuẩn mực</h2>
+        <div class="ch-sub">Giao tiếp với AI là quy trình qua lại (multi-turn). Đừng gộp tất cả yêu cầu vào một câu lệnh khổng lồ.</div>
 
-        <h3 class="sec">Quy trình 4 lượt tương tác</h3>
-
-        <h4 class="mini">Lượt 1 — Mention nền + yêu cầu đọc hiểu</h4>
+        <h3 class="sec">Kịch bản tương tác 4 bước</h3>
+        <p><strong>Bước 1: Mớm nền tảng</strong></p>
         <div class="prompt">
-          <div class="ph">📋 Lượt 1 — mention file + đọc hiểu <span class="ptag">quy trình</span></div>
-          <div class="pbody" id="p3-turn1">Tôi là Data Analyst. Đính kèm 3 file setup + data của đợt khảo sát:
-- questionnaire.csv, survey-structure.csv, behavior.csv
-- data_q3_2025.csv
-
-Hãy đọc 3 file setup để hiểu cấu trúc, rồi check vài cột data (profile-qbirthyear, profile-qyear-of-study) để xác nhận bạn đọc đúng cách.
-Tóm tắt lại: bạn hiểu cột nào nghĩa là gì, quy ước lưu data thế nào.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-turn1')">📋 Sao chép</button></div>
+          <div class="ph">📋 Lượt 1 — Yêu cầu AI đọc cấu trúc <span class="ptag">Tương tác</span></div>
+          <div class="pbody" id="p3-turn1">Tôi là Data Analyst. Đính kèm 3 file setup (questionnaire, structure, behavior) và file data.csv của đợt khảo sát.
+Hãy đọc 3 file setup để hiểu cấu trúc. Mở data.csv, check 2 cột (profile-qbirthyear, profile-qyear-of-study) để xác nhận bạn đọc đúng cách.
+Tóm tắt ngắn gọn: Bạn hiểu quy ước lưu data thế nào?</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-turn1')">Copy Prompt</button></div>
         </div>
 
-        <h4 class="mini">Lượt 2 — Kiểm tra hiểu đúng + bổ sung</h4>
-        <p>Đọc tóm tắt của AI. Nếu đúng → tiếp. Nếu sai (vd AI hiểu nhầm giá trị) → sửa: "không phải vậy, cột X có giá trị...". <strong>Đây là điểm QA quan trọng</strong> — đảm bảo AI vào đúng bài trước khi làm việc thật.</p>
-
-        <h4 class="mini">Lượt 3 — Đưa rule + file bổ sung</h4>
+        <p><strong>Bước 2 & 3: Bổ sung Rule & Xử lý mẫu</strong></p>
         <div class="prompt">
-          <div class="ph">📋 Lượt 3 — mention file rule + mô tả <span class="ptag">quy trình</span></div>
-          <div class="pbody" id="p3-turn3">Tốt, bạn đã hiểu đúng. Giờ tôi đính kèm thêm:
-- rule_definitions.xlsx → file rule của tôi (mỗi dòng = 1 rule)
-- industry_merge.csv → bảng gom ngành để dùng cho rule phân nhóm
+          <div class="ph">📋 Lượt 2 — Áp dụng quy tắc (Rule) <span class="ptag">Tương tác</span></div>
+          <div class="pbody" id="p3-turn2">Bạn đã hiểu đúng cấu trúc. Hãy áp dụng rule kiểm tra sau:
+"Sinh viên sinh năm 2007 nhưng đang học năm 3 hoặc năm 4 → Đánh dấu là nói xạo".
 
-Danh sách rule chính:
-1. rule_sayso_2007: "SV sinh 2007 mà năm 3-4 → nói xạo"
-2. rule_top_uni_it: "Trường top (xem industry_merge) AND thích ngành IT"
-
-Hãy đọc 2 file mới, kết hợp với context từ lượt 1, rồi áp các rule lên data.
-In 5 dòng ví dụ mỗi rule để tôi kiểm tra trước khi chạy full.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-turn3')">📋 Sao chép</button></div>
+Hãy viết code Python tạo cột [rule_sayso_2007] (=1 nếu vi phạm).
+In ra 5 dòng ví dụ để tôi kiểm tra code của bạn có xử lý đúng logic không.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3-turn2')">Copy Prompt</button></div>
         </div>
-
-        <h4 class="mini">Lượt 4 — Xem kết quả + tinh chỉnh</h4>
-        <p>Sau khi AI áp rule, xem kết quả. <strong>Tỷ lệ vi phạm</strong> từng rule có bất thường không (quá cao hay quá thấp so với kỳ vọng)? Rule nào quá <strong>khắt khe</strong> (loại quá nhiều respondent hợp lệ) hay quá lỏng (không bắt được respondent sai)? → yêu cầu AI điều chỉnh. Đây là lượt <strong>phản hồi</strong>, không phải viết mới.</p>
-
-        <div class="box pro"><span class="bt">🎯 Tại sao chia lượt?</span> Nhồi 4 việc vào 1 câu = AI dễ hiểu sai 1 chỗ → sai cả chain. Chia lượt giúp bạn <strong>bắt lỗi ở từng bước</strong>, AI "học" dần đúng data. Mất thêm 2-3 lượt nhưng tiết kiệm hàng giờ sửa sai.</div>
-
-        <h3 class="sec">Mô tả rule cho AI</h3>
-        <p>Mỗi rule chỉ cần <strong>2 thứ</strong> — bạn chưa cần biết viết công thức, AI viết cho:</p>
-        <ol>
-          <li><strong>Mô tả nghiệp vụ tiếng Việt</strong>: "SV sinh 2007 mà năm 3-4 → nói xạo"</li>
-          <li><strong>Chỉ ra cột liên quan</strong>: profile-qbirthyear, profile-qyear-of-study</li>
-        </ol>
-        <p>AI tự đọc setup để biết cách truy cập cột, tự viết code. Rule phức tạp bao nhiêu cũng được — miễn mô tả rõ.</p>
-
-        <div class="box info"><span class="bt">💡 Thường tôi chỉ mention 3 file rồi nói AI đọc để hiểu context</span> Đó là lượt 1. Sau khi AI tóm tắt đúng, tôi mới mention file data + yêu cầu xử lý. <strong>Không nhồi tất cả vào 1 lần.</strong></div>
       </section>
 
       <section class="chapter" id="c3b">
-        <h2 class="ch-title"><span class="num">★</span> Nhờ AI ghi nhớ context vào file MD</h2>
-        <div class="ch-sub">Sau khi AI đã hiểu đúng data + rule, bảo nó ghi lại vào file MD để dùng cho lần sau — không phải giải thích lại từ đầu.</div>
-
-        <h3 class="sec">Vấn đề: mỗi lần chat mới lại phải giải thích lại</h3>
-        <p>Mỗi cuộc chat mới, AI "quên" hết. Nếu lần sau bạn muốn review/đổi rule, lại phải mention 3 file + giải thích cấu trúc từ đầu — mất thời gian. <strong>Giải pháp: nhờ AI ghi nhớ vào file MD.</strong></p>
+        <h2 class="ch-title"><span class="num">★</span> Lưu Context vào Markdown (Tài sản dự án)</h2>
+        <div class="ch-sub">Đừng để mất công giải thích lại từ đầu ở các phiên chat sau. Hãy biến AI thành thư ký ghi chép.</div>
 
         <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI ghi nhớ context vào MD <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p3b-memorize">Tốt, bạn đã hiểu đúng cấu trúc data + các rule của đợt khảo sát này.
-
-Hãy TỰ ĐỘNG ghi chú tất cả context vào các file MD tương ứng để truy xuất về sau:
-1. context_q3_2025.md — tóm tắt: cấu trúc bộ khảo sát, cách đọc từng cột chính, quy ước lưu data
-2. rules_q3_2025.md — danh sách rule: mỗi rule kèm mô tả + cột liên quan + logic
-3. README.md — mục lục: file nào chứa gì, cách dùng
-
-Yêu cầu:
-- Viết rõ ràng, có cấu trúc, tiếng Việt
-- Đủ chi tiết để lần sau (hoặc đồng nghiệp) chỉ cần đọc MD là hiểu — không cần hỏi lại
-- Tôi sẽ lưu các file này vào folder dự án</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3b-memorize')">📋 Sao chép</button></div>
+          <div class="ph">📋 Nhờ AI đóng gói kiến thức vào Markdown <span class="ptag">Bảo lưu ngữ cảnh</span></div>
+          <div class="pbody" id="p3b-memorize">Bạn đã nắm toàn bộ cấu trúc data và bộ rule của khảo sát này.
+Hãy tổng hợp tất cả vào 2 file Markdown (.md):
+1. context_q3.md: Tóm tắt cấu trúc bảng hỏi, cách đọc các loại cột (single/multiple/scale).
+2. rules_q3.md: Danh sách nghiệp vụ và tên cột liên quan để xử lý phán quyết.
+Hãy viết thật chuẩn xác để ở phiên làm việc sau, tôi chỉ cần upload 2 file này là bạn có thể tiếp tục công việc ngay lập tức.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p3b-memorize')">Copy Prompt</button></div>
         </div>
-
-        <div class="box tip"><span class="bt">✅ Lợi ích</span> Lần sau review/đổi rule, bạn chỉ cần mention file MD + hỏi: "đọc context_q3_2025.md, rồi cập nhật rule X". AI nắm ngay bối cảnh — <strong>không phải đi quét lại 3 file setup + giải thích từ đầu.</strong></div>
-
-        <h3 class="sec">Khi nào nhờ AI ghi nhớ?</h3>
-        <ul>
-          <li>Sau khi AI đã <strong>hiểu đúng</strong> data (qua lượt 1-2) → ghi context</li>
-          <li>Sau khi <strong>danh sách rule ổn định</strong> → ghi rules.md</li>
-          <li>Mỗi lần <strong>đổi rule</strong> → yêu cầu AI cập nhật MD tương ứng</li>
-        </ul>
-
-        <div class="box pro"><span class="bt">🎯 Nguyên tắc</span> Context và rule là <strong>tài sản dự án</strong> — không phải tạm thời trong 1 cuộc chat. Lưu thành MD, dùng lại cho mọi lần sau, chia sẻ đồng nghiệp, commit lên Git. <strong>AI tự động ghi chú, bạn chỉ yêu cầu.</strong></div>
       </section>
 
       <!-- ============ PART 2 ============ -->
-      <div class="part-divider" id="p2div"><span class="tag tp1">P2 · Điều Khiển AI Xử Lý (Không Tự Code)</span><span class="line"></span></div>
+      <div class="part-divider" id="p2div"><span class="tag tp1">Phần 2 · Điều Khiển AI Xử Lý</span><span class="line"></span></div>
 
       <section class="chapter" id="c4">
-        <h2 class="ch-title"><span class="num">Chương 4</span> ★ Chọn AI &amp; công cụ phù hợp (ChatGPT / Claude / Gemini)</h2>
-        <div class="ch-sub">Công ty bạn thường có 3 lựa chọn: ChatGPT, Claude, Gemini. Mỗi model mạnh việc khác nhau — chọn đúng sẽ đỡ công sửa lại. Kèm hướng dẫn các tool đi kèm (Claude Code, Antigravity).</div>
+        <h2 class="ch-title"><span class="num">Chương 4</span> Công cụ AI & Cảnh báo Bảo mật</h2>
+        <div class="ch-sub">Chọn đúng mô hình (Model) và Giao diện (Interface) giúp tăng tốc công việc, đồng thời đảm bảo tuân thủ tuyệt đối quy tắc bảo mật dữ liệu công ty.</div>
 
-        <h3 class="sec">A. So sánh 3 dòng model (tính đến 8/2026)</h3>
-        <p>Đây là bảng tra nhanh. Bạn chưa cần thuộc — chỉ cần biết <strong>việc nào nên nhờ model nào</strong>, chi tiết AI giải thích khi cần.</p>
-        <table>
-          <tr><th>Model</th><th>Phiên bản hiện tại</th><th>Mạnh nhất về</th><th>Phù hợp DA khi nào</th></tr>
-          <tr>
-            <td><strong>ChatGPT</strong><br>(OpenAI)</td>
-            <td>GPT-5.2 (flagship), GPT-5.6 (Sol/Terra/Luna — thế hệ mới nhất 7/2026)</td>
-            <td>Sinh &amp; <em>chạy code</em> ngay trong chat (Advanced Data Analysis), vẽ biểu đồ, GUI tốt</td>
-            <td><strong>Khám nhanh data</strong>: upload file, AI tự viết + tự chạy pandas, trả file kết quả. Không cần cài Python. Tốt cho phân tích khám phá ban đầu.</td>
-          </tr>
-          <tr>
-            <td><strong>Claude</strong><br>(Anthropic)</td>
-            <td>Claude Opus 5 (suy luận sâu, nặng), Claude Sonnet 5 (code/agentic, nhanh, rẻ)</td>
-            <td>Viết &amp; refactor code chuẩn, tuân thủ context dài (1M token), ít "đoán mò"</td>
-            <td><strong>Viết pipeline &amp; code production</strong>: viết <code class="ic">run_report.py</code>, review code cũ, refactor. Sonnet 5 là lựa chọn giá/hiệu quả nhất cho code pandas.</td>
-          </tr>
-          <tr>
-            <td><strong>Gemini</strong><br>(Google)</td>
-            <td>Gemini 3 (flagship), Gemini 3.6 Flash (nhanh, dẫn đầu bảng xếp hạng 7/2026)</td>
-            <td>Context cực lớn (1M token), đọc nhiều file cùng lúc, tích hợp Workspace</td>
-            <td><strong>Nạp cả bộ 4 file</strong> (data + questionnaire + structure + behavior) vào 1 cuộc chat → AI hiểu toàn cảnh. Flash nhanh và rẻ.</td>
-          </tr>
-        </table>
-
-        <div class="box pro"><span class="bt">🎯 Quy tắc chọn nhanh (cho DA xử lý khảo sát)</span>
-        <strong>Khám nhanh 1 đợt data</strong> → ChatGPT (Advanced Data Analysis tự chạy code).<br>
-        <strong>Viết/chỉnh pipeline dài, review code</strong> → Claude Sonnet 5.<br>
-        <strong>Nạp cả bộ 4 file setup + data</strong> → Gemini 3.6 Flash (context 1M).<br>
-        Có thể <strong>dùng luân phiên</strong> — không phải chọn 1 cho mọi việc.</div>
-
-        <h3 class="sec">B. Từng version thì tốt cho vai trò gì?</h3>
-        <p>Trong cùng 1 dòng model, các phiên bản thường chia theo <em>độ "nặng"</em> (suy luận sâu hơn = chậm hơn, đắt hơn). Chọn đúng tier giúp bạn đỡ tốn chi phí &amp; thời gian:</p>
-        <table>
-          <tr><th>Dòng</th><th>Tier "nặng" (flagship)</th><th>Tier "nhẹ" (Flash/Sonnet)</th><th>Lời khuyên</th></tr>
-          <tr>
-            <td>ChatGPT</td>
-            <td>GPT-5.2 / GPT-5.6 — suy luận &amp; agentic mạnh</td>
-            <td>(dùng bản mini/flash trong app)</td>
-            <td>DA: bản flagship cho rule phức tạp (lồng nhiều điều kiện); bản nhỏ cho rule đơn giản.</td>
-          </tr>
-          <tr>
-            <td>Claude</td>
-            <td>Opus 5 — suy luận sâu, phân tích chiến lược</td>
-            <td>Sonnet 5 — code &amp; agentic, nhanh, rẻ (giá intro $2/$10 mỗi MTok đến 31/8/2026)</td>
-            <td>DA: <strong>Sonnet 5 cho 90% việc code pandas</strong>. Opus 5 chỉ khi rule phức tạp chồng nhau.</td>
-          </tr>
-          <tr>
-            <td>Gemini</td>
-            <td>Gemini 3 — đa năng</td>
-            <td>Gemini 3.6 Flash — nhanh, rẻ, dẫn đầu bảng xếp hạng</td>
-            <td>DA: <strong>3.6 Flash cho đa số việc</strong> (nhanh, rẻ, context 1M). Bản Pro khi cần chất lượng suy luận cao.</td>
-          </tr>
-        </table>
-
-        <div class="box info"><span class="bt">💡 Lưu ý về context window</span> Claude (Opus/Sonnet 5) và Gemini đều hỗ trợ <strong>1M token</strong> (Gemini mặc định; Claude 200K mặc định, 1M dạng mở rộng/tùy gói). Với data 2000 cột + 3 file setup, context lớn rất quan trọng — bạn đính kèm trọn bộ mà không bị cắt.</div>
-
-        <h3 class="sec">C. Giao tiếp với AI ở đâu? (5 loại interface)</h3>
-        <p>Cùng 1 model nhưng <strong>nơi bạn giao tiếp khác nhau thì trải nghiệm &amp; phù hợp khác nhau</strong>. Dưới đây là 5 cách phổ biến, xếp từ dễ → chuyên dụng. <strong>Bạn vẫn dùng tiếng Việt ở mọi loại.</strong></p>
-
-        <table>
-          <tr><th>Interface</th><th>Là gì</th><th>Ưu điểm</th><th>Nhược điểm</th><th>DA dùng khi nào</th></tr>
-          <tr>
-            <td><strong>① Chat web</strong><br>(chatgpt.com, claude.ai, gemini.google.com)</td>
-            <td>Trình duyệt, upload file, gõ prompt</td>
-            <td>Đơn giản nhất, không cài đặt, có Advanced Data Analysis (ChatGPT tự chạy code)</td>
-            <td>Phải copy–dán code ra ngoài chạy; chat mới thì quên context cũ</td>
-            <td><strong>Khám nhanh 1 đợt, hỏi test</strong> — bắt đầu ở đây</td>
-          </tr>
-          <tr>
-            <td><strong>② Desktop app</strong><br>(Claude Desktop, ChatGPT Desktop)</td>
-            <td>App cài trên máy (Win/Mac). Claude Desktop đọc file local, MCP; ChatGPT Desktop có Alt+Space, tích hợp Codex</td>
-            <td>Đọc/sửa file trực tiếp trên máy không cần upload; phím tắt toàn hệ thống</td>
-            <td>Computer Use còn beta; không phải môi trường code thực thụ</td>
-            <td><strong>Kéo thả CSV vào app, hỏi Q&amp;A</strong> — thích hợp người không code</td>
-          </tr>
-          <tr>
-            <td><strong>③ CLI / Terminal</strong><br>(Claude Code CLI, Codex CLI)</td>
-            <td>Gõ lệnh trong terminal, AI chạy code ngay ở máy</td>
-            <td>Nhanh, chạy được pipeline dài, tự động hóa được</td>
-            <td>Giao diện chữ, khó với người mới; phải quen terminal</td>
-            <td><strong>Khi đã có pipeline</strong> <code class="ic">run_report.py</code> → nhờ AI chạy/sửa trong terminal</td>
-          </tr>
-          <tr>
-            <td><strong>④ Extension VS Code</strong><br>(Claude Code extension, Codex extension, Copilot)</td>
-            <td>Plugin chạy trong VS Code — AI sửa file trực tiếp, xem <strong>diff</strong> (so sánh trước/sau)</td>
-            <td>Xem được AI đổi gì trước khi chấp nhận; sửa nhiều file cùng lúc; học code qua đọc diff</td>
-            <td>Phải quen VS Code; một số bản hay "compacting" (nén context)</td>
-            <td><strong>Giai đoạn viết/chỉnh pipeline</strong> — DA nên cài, đây là điểm "ngọt" nhất</td>
-          </tr>
-          <tr>
-            <td><strong>⑤ IDE agent</strong><br>(Antigravity, GitHub Copilot Agent mode)</td>
-            <td>Agent tự chạy nhiều bước: code → chạy → xem lỗi → tự sửa. Antigravity = IDE riêng của Google</td>
-            <td>Tự chủ cao, chạy song song nhiều subagent (Antigravity)</td>
-            <td><strong>Quá mức cho DA xử lý CSV</strong>; thiên về build app/web</td>
-            <td>Chỉ khi build công cụ báo cáo có giao diện web nội bộ</td>
-          </tr>
-        </table>
-
-        <div class="box pro"><span class="bt">🎯 Hành trình đề xuất cho DA</span>
-        <strong>Bắt đầu:</strong> chat web (①) hoặc Claude Desktop (②) — kéo CSV vào, hỏi để hiểu data.<br>
-        <strong>Khi viết pipeline:</strong> chuyển sang Claude Code extension trong VS Code (④) — AI sửa <code class="ic">run_report.py</code> trực tiếp, bạn duyệt diff để hiểu nó đổi gì.<br>
-        <strong>Khi pipeline ổn:</strong> dùng CLI (③) để chạy nhanh, hoặc chat web để review. <strong>Không cần dùng tất cả</strong> — chọn 1-2 cái quen tay.</div>
-
-        <div class="box info"><span class="bt">💡 Claude Code: CLI hay VS Code extension?</span> Cùng 1 sản phẩm, 2 giao diện. <strong>CLI</strong> = gõ terminal, nhanh, cho người đã quen. <strong>VS Code extension</strong> = có sidebar + xem diff trực quan, <strong>dễ hơn cho người mới</strong> — bạn thấy rõ AI thêm/sửa dòng nào trước khi chấp nhận. DA nên bắt đầu bằng extension.</div>
-
-        <h3 class="sec">D. Công cụ khác (biết cho đủ)</h3>
-        <ul>
-          <li><strong>GitHub Copilot</strong> — trợ lý AI ngay trong VS Code, 3 chế độ: Ask (hỏi), Edit (sửa nhiều file), Agent (tự chạy + tự sửa lỗi). Cần thuê bao trả phí.</li>
-          <li><strong>Antigravity</strong> (Google) — IDE desktop agent riêng, chạy Gemini 1M context, có "Agent Teams". <strong>Thường quá mức cho DA xử lý CSV</strong> — mạnh cho build app/web.</li>
-        </ul>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI gợi ý chọn model + interface cho task <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p4-pick">Tôi là Data Analyst xử lý khảo sát. Mô tả task:
-
-[TASK]: {vd: apply 30 cột rule lên 200k dòng data}
-[QUY MÔ]: {số file, số dòng, có cần chạy lại mỗi đợt không}
-[KINH NGHIỆM]: {chưa quen terminal / đã quen VS Code / gì cũng được}
-
-Tôi có quyền dùng ChatGPT, Claude, Gemini. Hãy gợi ý:
-1. Dùng model nào (phiên bản nào)? Tại sao?
-2. Dùng interface nào (chat web / desktop / CLI / VS Code ext)? Tại sao?
-3. Các bước cụ thể (1-2-3) để tôi bắt đầu với interface đó
-Giải thích ngắn gọn, thực tế cho người không rành kỹ thuật.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p4-pick')">📋 Sao chép</button></div>
+        <div class="box danger" style="margin-bottom: 30px;">
+          <span class="bt">🚨 CẢNH BÁO ĐỎ: BẢO MẬT DỮ LIỆU (DATA PRIVACY)</span>
+          <p>Việc sử dụng AI mang lại rủi ro rò rỉ dữ liệu (Data Breach) rất lớn nếu không cẩn thận. Bạn phải tuân thủ nghiêm ngặt nguyên tắc sau:</p>
+          <ul>
+            <li><strong>TUYỆT ĐỐI KHÔNG</strong> upload file data thô (Raw Data) có chứa thông tin cá nhân định danh (PII) như: Tên, Email, Số điện thoại, Địa chỉ, IP của respondent lên các công cụ AI công cộng (ChatGPT, Claude web, Gemini).</li>
+            <li><strong>Cách làm đúng:</strong> Bạn chỉ upload 3 file cấu trúc (Setup files) + 1 bảng data giả lập (Mock data khoảng 100 dòng, đã xóa toàn bộ cột thông tin cá nhân) để nhờ AI <b>viết code</b>.</li>
+            <li>Sau khi AI viết xong file Python, bạn lấy code đó và <strong>chạy trực tiếp trên máy tính local của bạn</strong> (qua VS Code) với file dữ liệu thật. Bằng cách này, dữ liệu khách hàng không bao giờ rời khỏi máy tính công ty.</li>
+          </ul>
         </div>
+
+        <h3 class="sec">Lựa chọn AI (Model & Interface)</h3>
+        <table>
+          <tr><th>Mô hình</th><th>Sức mạnh cốt lõi</th><th>Khi nào DA nên dùng?</th></tr>
+          <tr><td><strong>ChatGPT (GPT-4o / GPT-5 series)</strong></td><td>Tính năng Advanced Data Analysis (tự chạy code Python ẩn).</td><td>Khám phá nhanh data, vẽ biểu đồ nháp mà không cần setup VS Code.</td></tr>
+          <tr><td><strong>Claude (Sonnet 3.5 / 5)</strong></td><td>Khả năng code cực kỳ sạch, tuân thủ instruction dài.</td><td>Viết Pipeline hoàn chỉnh, xử lý logic phức tạp, refactor code.</td></tr>
+          <tr><td><strong>Gemini (1.5 Pro / Flash)</strong></td><td>Ngữ cảnh khổng lồ (1M-2M tokens).</td><td>Đọc lượng lớn file tài liệu/quy trình nghiệp vụ cùng lúc.</td></tr>
+        </table>
       </section>
 
       <section class="chapter" id="c5">
-        <h2 class="ch-title"><span class="num">Chương 5</span> Nhờ AI giải mã data file</h2>
-        <div class="ch-sub">Bước đầu với mỗi data file: đừng vội viết rule — để AI đọc 3 file setup để hiểu cấu trúc, rồi tóm tắt lại cho bạn các "khối" câu hỏi.</div>
-
-        <h3 class="sec">Tại sao cần "giải mã" trước?</h3>
-        <p>Data file có ~2000 cột với tên mã hóa như <code class="ic">profile-qbirthyear</code>, <code class="ic">eba-most-attractive</code> — bạn không thể nhớ hết. AI đọc 3 file setup rồi <strong>tóm tắt cấu trúc</strong> (phần nào có câu gì, loại gì) giúp bạn định vị nhanh.</p>
+        <h2 class="ch-title"><span class="num">Chương 5</span> Giải mã file Data</h2>
+        <div class="ch-sub">Bước đầu tiên với mọi project khảo sát: Để AI bóc tách cấu trúc thành một bản đồ dễ nhìn.</div>
 
         <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI giải mã &amp; tóm tắt cấu trúc data <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p5-decode">Bạn là Data Analyst. Tôi đính kèm 3 file setup: questionnaire.csv, survey-structure.csv, behavior.csv.
-
-Hãy đọc và tóm tắt cấu trúc bộ khảo sát này:
-1. Có bao nhiêu phần (part)? Mỗi phần chứa câu hỏi gì?
-2. Liệt kê các câu hỏi theo WIDGET TYPE: multiple_choice (chọn nhiều), scale (thang), single_choice, grid...
-3. Với mỗi câu multiple_choice: liệt kê các option (code _o...) kèm nhãn tiếng Việt
-4. Với mỗi câu scale: cho biết thang điểm (1-5? 1-10?)
-5. Chỉ ra các câu có ràng buộc đặc biệt (từ behavior.csv: va_at_least, dlogic_show...)
-Mục đích: tôi cần hiểu cấu trúc để viết rule kiểm tra respondent.
-Tóm tắt bằng tiếng Việt, có cấu trúc rõ ràng.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p5-decode')">📋 Sao chép</button></div>
+          <div class="ph">📋 Khảo sát cấu trúc <span class="ptag">Khởi tạo</span></div>
+          <div class="pbody" id="p5-decode">Bạn là Data Analyst. Dựa vào 3 file setup đính kèm (không có data thật), hãy vẽ ra "Bản đồ Dữ liệu":
+1. Khảo sát này có bao nhiêu phần?
+2. Có bao nhiêu câu hỏi dạng Multiple Choice, Scale, Single Choice?
+3. Với câu hỏi trọng tâm (VD: Mức độ hài lòng), thang điểm là 1-5 hay 1-10?
+Liệt kê thành danh sách gạch đầu dòng rõ ràng.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p5-decode')">Copy Prompt</button></div>
         </div>
-
-        <div class="box tip"><span class="bt">✅ Kết quả mong đợi</span> AI trả về bản tóm tắt dạng: "Phần 0 (profile): năm sinh (list_box, 30 option 1985-2011), năm học (list_box 1-4), khu vực... Phần 3 (EBA): ngành yêu thích (multiple_choice 15 option), lý do (textarea)..." → bạn biết ngay câu nào dùng để viết rule nào.</div>
-
-        <div class="box info"><span class="bt">💡 Mẹo</span> Nếu data quá lớn (200k dòng) không upload được toàn bộ lên chat, hãy tạo <strong>file data mẫu 100 dòng đầu</strong> (đủ các loại respondent) để AI đọc cấu trúc. Khi viết rule xong, chạy code trên file thật ở máy.</div>
       </section>
 
       <section class="chapter" id="c6">
-        <h2 class="ch-title"><span class="num">Chương 6</span> ★ Nhờ AI apply 20-50 cột rule</h2>
-        <div class="ch-sub">Trọng tâm của hướng dẫn. Đây là việc tốn nhiều thời gian nhất trên Excel — giờ giao cho AI. Bạn chỉ cần mô tả rule + chỉ cột liên quan.</div>
+        <h2 class="ch-title"><span class="num">Chương 6</span> Apply Rule Hàng Loạt (Batch Processing)</h2>
+        <div class="ch-sub">Thay vì thêm từng cột Excel, hãy đưa danh sách 30-50 quy tắc để AI tạo một Script xử lý tất cả trong một lần chạy.</div>
 
-        <h3 class="sec">Quy trình apply rule với AI</h3>
-        <ol>
-          <li><strong>Viết danh sách rule</strong> (mô tả tiếng Việt + cột liên quan) — xem Chương 3</li>
-          <li><strong>Đưa AI 3 file setup + data</strong> để AI hiểu cột</li>
-          <li><strong>Nhờ AI sinh code</strong> tạo từng cột rule_*</li>
-          <li><strong>Verify</strong>: in 5 dòng ví dụ trước/sau mỗi rule</li>
-          <li><strong>Chạy trên data thật</strong> (ở máy, qua Colab hoặc VS Code)</li>
-        </ol>
-
-        <h3 class="sec">Ví dụ rule thật: "SV 2007 năm 3-4 → nói xạo"</h3>
-        <div class="box info"><span class="bt">💡 Bối cảnh</span> Sinh viên sinh 2007 thì năm 2025 mới 18 tuổi, chưa thể là sinh viên năm 3-4 đại học. Rule này phát hiện respondent có khả năng điền bừa.</div>
         <div class="prompt">
-          <div class="ph">📋 Prompt — áp 1 rule kiểm tra "nói xạo" <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p6-rule1">Bạn là Data Analyst. Đính kèm: data.csv + 3 file setup (đã hiểu cấu trúc từ Chương 5).
+          <div class="ph">📋 Tạo Script áp dụng 50 Rules <span class="ptag">Core Logic</span></div>
+          <div class="pbody" id="p6-batch">Dựa trên file Mock Data và 3 file Setup đính kèm, tôi cần viết code Python (Pandas) áp dụng danh sách các quy tắc (Rule) sau đây. Mỗi Rule sẽ tạo ra 1 cột mới mang giá trị 1 (Vi phạm) hoặc 0 (Hợp lệ).
 
-[RULE: sayso_2007_year34]
-Mô tả: "Sinh viên sinh năm 2007 nhưng đang học năm 3 hoặc năm 4 → khả năng nói xạo"
-Cột liên quan:
-- profile-qbirthyear (năm sinh)
-- profile-qyear-of-study (năm học, giá trị 1-4)
+[DANH SÁCH RULE]
+1. rule_sayso_age: "Sinh viên sinh năm 2007 nhưng tự khai là năm 3 hoặc năm 4" (Cột: qbirthyear, qyear)
+2. rule_speeding: "Thời gian hoàn thành khảo sát (submit_time - start_time) < 3 phút"
+3. rule_straightlining: "Đánh cùng 1 mức điểm cho toàn bộ lưới câu hỏi EBA"
+... [Tiếp tục liệt kê]
 
-Viết code Python tạo cột rule_sayso_2007_year34:
-- = 1 (phạm rule) nếu: respondent sinh 2007 AND year-of-study in [3,4]
-- = 0 (ok) nếu không
-
-Logic check (mock code):
-if (birthyear=2007 AND yearofstudy in [3,4], 1, 0)
-
-Yêu cầu:
-- Tự so questionnaire.csv để biết cách đọc giá trị "sinh 2007" trong cột profile-qbirthyear
-- In 5 dòng ví dụ (cả trước/sau khi apply) để tôi verify
-- Giải thích cách bạn xác định "sinh 2007" từ data</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p6-rule1')">📋 Sao chép</button></div>
+[YÊU CẦU KỸ THUẬT]
+- Xử lý mượt mà các giá trị rỗng (NaN) bằng kỹ thuật Masking.
+- Tối ưu bộ nhớ (Memory Optimization): Sử dụng kỹ thuật chunksize hoặc optimize dtypes vì dữ liệu thật của tôi lên tới 200.000 dòng.
+- Viết code sạch, có comment tiếng Việt ở từng khối xử lý.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p6-batch')">Copy Prompt</button></div>
         </div>
-
-        <h3 class="sec">Áp nhiều rule cùng lúc (batch)</h3>
-        <p>Khi có 20-50 rule, viết từng prompt rất lâu. Gom thành 1 danh sách, AI sinh code tạo tất cả cột cùng lúc.</p>
-        <div class="prompt">
-          <div class="ph">📋 Prompt — apply batch 20-50 rule <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p6-batch">Bạn là Data Analyst. Đính kèm: data.csv + 3 file setup.
-
-[DANH SÁCH RULE - mỗi rule tạo 1 cột mới]
-1. rule_sayso_2007_year34: "SV sinh 2007 mà năm 3-4" → cột: qbirthyear, qyear-of-study
-2. rule_top_uni_it: "Học trường top (list dưới) AND thích ngành IT"
-   - Trường top: tự so questionnaire để xác định mã trường top
-   - Ngành IT: tự so questionnaire để xác định mã ngành IT
-3. rule_fast_response: "Thời gian trả lời &lt; 3 phút"
-   - Cột: submit_time, start_time
-4. rule_missing_profile: "Thiếu &gt;2 câu profile bắt buộc"
-   - Cột: qbirthyear, qgender, qregion, quniversity-*
-5. ... (viết tiếp các rule còn lại)
-
-[YÊU CẦU]
-- Viết 1 script Python tạo TẤT CẢ cột rule_* trên
-- Mỗi rule = 1 cột giá trị 1/0 (1=phạm, 0=ok) trừ khi ghi khác
-- Xử lý NaN an toàn (NaN không tính là "phạm")
-- In: số respondent phạm mỗi rule + 3 ví dụ mỗi rule
-- Giải thích ngắn mỗi rule bằng tiếng Việt
-Tôi sẽ chạy script trên data thật (200k dòng).</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p6-batch')">📋 Sao chép</button></div>
-        </div>
-
-        <div class="box warn"><span class="bt">⚠️ Bẫy khi đọc cột</span> Mỗi loại câu hỏi lưu data khác nhau (chọn 1 vs chọn nhiều vs thang điểm). <strong>Bạn không cần phân biệt</strong> — chỉ cần đính kèm đủ 3 file setup, AI tự so questionnaire để đọc đúng từng cột. Nếu AI đọc sai, gửi lại 5 dòng data mẫu để nó tự kiểm chứng.</div>
-
-        <div class="box pro"><span class="bt">🎯 Nguyên tắc cốt lõi</span> Bạn <strong>chưa cần biết viết công thức</strong> — AI viết cho. Việc của bạn: (1) mô tả rule bằng tiếng Việt, (2) chỉ ra cột liên quan. AI tự đọc setup để biết cách truy cập cột, rồi viết code. <strong>Sau đó hãy nhờ AI giải thích đoạn code để bạn hiểu — biết thế mới bắt được lỗi AI và yêu cầu sửa.</strong> Rule phức tạp bao nhiêu cũng được, miễn mô tả rõ.</div>
       </section>
 
       <section class="chapter" id="c7">
-        <h2 class="ch-title"><span class="num">Chương 7</span> ★ Nhờ AI tạo cột phán quyết cuối</h2>
-        <div class="ch-sub">Sau khi có 20-50 cột rule, bước cuối: tổng hợp thành 1 cột phán quyết (QUALIFIED / REVIEW / REJECT) theo quy tắc của từng dự án.</div>
-
-        <h3 class="sec">Cột phán quyết = tổng hợp các rule</h3>
-        <p>Tùy dự án, cách phán quyết khác nhau. Một số dạng phổ biến:</p>
-        <table>
-          <tr><th>Dạng phán quyết</th><th>Mô tả</th><th>Ví dụ</th></tr>
-          <tr><td><strong>Đếm rule pass</strong></td><td>&ge;80% rule pass → đủ chuẩn</td><td>QUALIFIED nếu &ge;40/50 rule = 0 (ok)</td></tr>
-          <tr><td><strong>Rule chặn (hard fail)</strong></td><td>Phạm 1 rule quan trọng → loại luôn</td><td>REJECT nếu sayso_2007=1 (dù các rule khác ok)</td></tr>
-          <tr><td><strong>Tính tổng điểm</strong></td><td>Mỗi rule có trọng số, cộng lại</td><td>Điểm &gt; ngưỡng → đủ</td></tr>
-          <tr><td><strong>Composite</strong></td><td>Kết hợp nhiều cách trên</td><td>Hard fail + điểm + quota</td></tr>
-        </table>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — tạo cột phán quyết cuối <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p7-verdict">Bạn là Data Analyst. Data đã có 30 cột rule_* (1=phạm, 0=ok). 
-
-[QUY TẮC PHÁN QUYẾT - composite]
-1. HARD FAIL: nếu phạm 1 trong các rule nghiêm trọng → REJECT ngay
-   - rule_sayso_2007_year34, rule_fast_response, rule_missing_profile
-2. ĐIỂM: tính total_score = số rule OK (đếm rule_*=0)
-   - Có 27 rule thường (trừ 3 hard fail)
-3. PHÂN LOẠI:
-   - QUALIFIED: không hard fail AND total_score &gt;= 22/27 (≥80%)
-   - REVIEW: không hard fail AND total_score 14-21 (50-80%)
-   - REJECT: hard fail OR total_score &lt; 14
-
-Viết code Python:
-1. Tạo cột final_verdict theo quy tắc trên
-2. In phân bố: bao nhiêu % QUALIFIED/REVIEW/REJECT
-3. In top lý do REJECT (rule nào hay bị phạm nhất)
-4. Xuất file kết quả có thêm cột final_verdict</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p7-verdict')">📋 Sao chép</button></div>
-        </div>
-
-        <div class="box tip"><span class="bt">✅ Thói quen DA chuyên nghiệp</span> Luôn yêu cầu AI in <strong>phân bố + top lý do REJECT</strong>. Nếu 90% REJECT → có thể rule quá khắt khe, cần xem lại. Nếu 0% REJECT → có thể rule lỏng quá. Phân bố giúp bạn "cảm" được chất lượng.</div>
-
-        <div class="box info"><span class="bt">💡 Linh hoạt theo dự án</span> Phần [QUY TẮC PHÁN QUYẾT] thay đổi theo từng dự án — không hard code 1 cách. Mô tả logic cụ thể của dự án hiện tại, AI dịch sang code.</div>
+        <h2 class="ch-title"><span class="num">Chương 7</span> Phán Quyết Chất Lượng (Verdict)</h2>
+        <div class="ch-sub">Tổng hợp hàng chục cột vi phạm thành 1 nhãn cuối cùng: QUALIFIED, REVIEW, hoặc REJECT.</div>
+        <p>Phán quyết phụ thuộc vào nghiệp vụ từng công ty. Thường là sự kết hợp (Composite) giữa "Lỗi nghiêm trọng" (Hard Fail) và "Điểm tin cậy" (Score).</p>
       </section>
 
       <section class="chapter" id="c8">
-        <h2 class="ch-title"><span class="num">Chương 8</span> Nhờ AI thống kê &amp; xuất file kết quả</h2>
-        <div class="ch-sub">Sau khi có cột phán quyết, tạo báo cáo tóm tắt cho quản lý/khách hàng + xuất file đã qua soát lọc.</div>
-
-        <h3 class="sec">Loại báo cáo phổ biến sau khi apply rule</h3>
-        <table>
-          <tr><th>Loại</th><th>Mô tả</th></tr>
-          <tr><td>Tỷ lệ đạt chuẩn</td><td>Bao nhiêu % QUALIFIED/REVIEW/REJECT</td></tr>
-          <tr><td>Top rule vi phạm</td><td>Rule nào bị phạm nhiều nhất → cảnh cáo chất lượng data</td></tr>
-          <tr><td>Theo phân khúc</td><td>Tỷ lệ đạt theo khu vực/trường/năm học</td></tr>
-          <tr><td>Quota check</td><td>Đủ quota từng nhóm chưa (vd: cần 500 SV IT HN)</td></tr>
-        </table>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — báo cáo tóm tắt + xuất file <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p8-report">Bạn là Data Analyst. Data đã có các cột rule_* + final_verdict.
-
-YÊU CẦU:
-1. Bảng tỷ lệ: % QUALIFIED/REVIEW/REJECT toàn bộ
-2. Top 5 rule bị phạm nhiều nhất (kèm số lượng + %)
-3. Bảng chéo: tỷ lệ QUALIFIED theo khu vực × năm học
-4. Quota check: đếm số QUALIFIED theo (khu vực × ngành yêu thích), so với quota:
-   {dán bảng quota: vd HN-IT cần 500, HCM-Marketing cần 300}
-5. Xuất 2 file:
-   - qualified_data.csv: chỉ giữ dòng QUALIFIED (dùng cho phân tích tiếp)
-   - report_summary.xlsx: các bảng trên + biểu đồ
-6. Viết 3 insight tiếng Việt (vd: "Khu vực HN tỷ lệ REJECT cao do rule X")</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p8-report')">📋 Sao chép</button></div>
+        <h2 class="ch-title"><span class="num">Chương 8</span> Thống Kê & Báo Cáo</h2>
+        <div class="ch-sub">AI không chỉ dọn data, nó còn có thể sinh file Excel báo cáo đẹp mắt để gửi sếp.</div>
+        <div class="box tip">
+          Luôn thêm yêu cầu: <em>"Hãy tự động xuất bảng tỷ lệ loại bỏ (Reject Rate) theo từng Rule, và sinh ra 3 câu Insight (Nhận định) bằng tiếng Việt để tôi đưa thẳng vào báo cáo."</em>
         </div>
-
-        <div class="box tip"><span class="bt">✅ Thói quen báo cáo</span> Luôn yêu cầu AI <strong>viết insight tiếng Việt</strong> ở đầu báo cáo — quản lý/khách hàng đọc phần này trước. Data chi tiết để sheet sau.</div>
       </section>
 
       <!-- ============ PART 3 ============ -->
-      <div class="part-divider" id="p3div"><span class="tag tp2">P3 · Vòng Đời Code: Check · Update · Commit</span><span class="line"></span></div>
-
-      <section class="chapter" id="c9">
-        <h2 class="ch-title"><span class="num">Chương 9</span> ★ Nhờ AI check code rule cũ</h2>
-        <div class="ch-sub">Code sinh ra không hoàn hảo ngay. Khi kết quả "lạ" hoặc nghi ngờ, nhờ AI review lại.</div>
-
-        <h3 class="sec">Khi nào cần nhờ AI review code?</h3>
-        <ul>
-          <li>Tỷ lệ REJECT bất thường (vd: 95% respondent bị loại → nghi rule sai)</li>
-          <li>Một rule vi phạm quá nhiều / quá ít so với kỳ vọng</li>
-          <li>Đổi rule, muốn chắc code cũ còn đúng</li>
-          <li>Trước khi đưa cho đồng nghiệp dùng chung</li>
-        </ul>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI review code rule cũ <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p9-review">Bạn là Senior Data Analyst. Tôi có code Python áp rule lên data khảo sát. Đính kèm 3 file setup + data mẫu.
-
-Đây là code:
-{DÁN CODE}
-
-Tôi NGHI NGỜ kết quả sai: {mô tả triệu chứng, vd: "rule_sayso_2007 vi phạm 0% trong khi kỳ vọng ~5%"}
-
-Hãy REVIEW và chỉ ra:
-1. Lỗi đọc cột: có đọc sai cách data lưu (so với questionnaire) không? Gửi 5 dòng data mẫu để bạn tự kiểm chứng.
-2. Lỗi logic: điều kiện if có đúng không? NaN xử lý đúng chưa?
-3. Edge case: respondent không có câu trả lời (NaN) bị tính ra sao?
-Với mỗi vấn đề: giải thích + code đã sửa.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p9-review')">📋 Sao chép</button></div>
-        </div>
-
-        <div class="box warn"><span class="bt">⚠️ Đừng nhờ AI "tối ưu chung chung"</span> Prompt mơ hồ "kiểm tra giúp" ra kết quả nông. <strong>Luôn dán 3 file setup + mô tả triệu chứng cụ thể</strong> (vd: "rule X vi phạm 0% mà kỳ vọng ~5%").</div>
-
-        <h3 class="sec">Lỗi thường gặp khi apply rule</h3>
-        <ul>
-          <li><strong>Đọc sai cách lưu data</strong>: không so questionnaire → hiểu sai giá trị cột. Khắc phục: luôn đính kèm 3 file setup</li>
-          <li><strong>NaN</strong>: respondent không trả lời → NaN, nếu code không xử lý → tính sai</li>
-          <li><strong>Edge case</strong>: giá trị bất thường (ngoài dự kiến) → AI cần check</li>
-          <li><strong>Quy chiếu câu cha</strong>: option thuộc câu nào (xem Belong Question trong structure)</li>
-        </ul>
-      </section>
-
-      <section class="chapter" id="c10">
-        <h2 class="ch-title"><span class="num">Chương 10</span> ★ Update rule khi DA đổi</h2>
-        <div class="ch-sub">Rule nghiệp vụ thay đổi (thêm rule mới, đổi ngưỡng, bỏ rule cũ) — cập nhật context rồi nhờ AI sửa code.</div>
-
-        <h3 class="sec">Tình huống điển hình: rule thay đổi</h3>
-        <table>
-          <tr><th>Thay đổi</th><th>Ảnh hưởng code</th></tr>
-          <tr><td>Thêm rule mới (vd: check AI usage)</td><td>Thêm 1 cột rule_* + update verdict</td></tr>
-          <tr><td>Đổi ngưỡng (vd: sinh 2006 cũng coi là nói xạo)</td><td>Sửa điều kiện if</td></tr>
-          <tr><td>Đổi trọng số rule</td><td>Sửa công thức tính điểm</td></tr>
-          <tr><td>Bỏ rule</td><td>Xóa cột + update verdict</td></tr>
-          <tr><td>Đổi quota</td><td>Sửa bảng quota check</td></tr>
-        </table>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — update code theo rule mới <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p10-update">Bạn là Data Analyst. Tôi có code cũ áp rule. Nay ĐỔI RULE:
-
-[THAY ĐỔI]
-1. THÊM rule_ai_overuse: "Nếu ai-use=5 AND ai-decisionmake=5 AND ai-workflow=5 → nghi trả lời đại trà"
-   Cột: ai-use, ai-decisionmake, ai-workflow (đều scale 1-5)
-2. ĐỔI rule_sayso_2007: mở rộng — sinh 2006 cũng coi là nói xạo (không chỉ 2007)
-3. BỎ rule_fast_response (không còn ý nghĩa)
-4. CẬP NHẬT verdict: thêm rule_ai_overuse vào danh sách HARD FAIL
-
-[CODE CŨ]
-{DÁN CODE CŨ}
-
-[3 FILE SETUP]
-{đính kèm}
-
-YÊU CẦU:
-1. Sửa code theo thay đổi trên, đánh dấu chỗ đổi bằng comment "# MỚI"
-2. Giải thích từng thay đổi bằng tiếng Việt
-3. In lại phân bố verdict mới để tôi so sánh với cũ</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p10-update')">📋 Sao chép</button></div>
-        </div>
-
-        <div class="box pro"><span class="bt">🎯 Thói quen vàng</span> Mỗi lần rule đổi, <strong>cập nhật file <code class="ic">context.md</code> trước</strong> (danh sách rule + mô tả), rồi mới nhờ AI sửa code. Context luôn là "nguồn sự thật" — code chỉ là hệ quả.</div>
-      </section>
+      <div class="part-divider" id="p3div"><span class="tag tp2">Phần 3 · Vòng đời Code & Git</span><span class="line"></span></div>
 
       <section class="chapter" id="c11">
-        <h2 class="ch-title"><span class="num">Chương 11</span> Pipeline tái dùng (AI lo cấu trúc)</h2>
-        <div class="ch-sub">Đến đợt khảo sát sau, chạy lại chỉ bằng 1 lệnh. AI gom các bước thành pipeline.</div>
-
-        <h3 class="sec">Pipeline là gì — cho người không rành code</h3>
-        <p>Pipeline = 1 script Python chạy tuần tự: đọc data + setup → giải mã → apply rule → phán quyết → xuất báo cáo. Thay vì làm từng bước thủ công mỗi đợt, chạy 1 lệnh <code class="ic">python run_report.py</code> — xong trong vài phút.</p>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI build pipeline tái dùng <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p11-pipeline">Bạn là Data Engineer. Tôi đã có code áp rule (từ Chương 6-7). Giờ muốn gom thành 1 pipeline chạy 1 lệnh.
-
-[CODE CÁC BƯỚC]
-{DÁN CODE, hoặc mô tả}
-
-[3 FILE SETUP]
-{đính kèm}
-
-YÊU CẦU: Tạo file run_report.py cấu trúc:
-1. Hàm riêng mỗi bước: load_setup(), load_data(), apply_rules(), make_verdict(), report()
-2. Hàm main() gọi tuần tự, in tiến độ (bao nhiêu dòng xử lý, tỷ lệ verdict)
-3. Nhận tham số: folder đợt khảo sát (vd: python run_report.py surveys/q3_2025/)
-4. Tự đọc 3 file setup + data từ folder đó
-5. Xuất ra cùng folder: qualified_data.csv + report.xlsx
-6. Xử lý lỗi: nếu thiếu file setup, báo rõ tiếng Việt
-7. In cuối: "✅ Xong. Xem report.xlsx"
-Code có comment tiếng Việt, dễ hiểu cho người mới.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p11-pipeline')">📋 Sao chép</button></div>
-        </div>
-
-        <div class="box tip"><span class="bt">✅ Lợi ích thực tế</span> Đợt khảo sát sau, bạn chỉ cần: thay data mới vào folder → chạy <code class="ic">python run_report.py surveys/q4_2025/</code>. <strong>Cả ngày xử lý → 10 phút.</strong></div>
+        <h2 class="ch-title"><span class="num">Chương 11</span> Build Pipeline Tự Động</h2>
+        <div class="ch-sub">Đóng gói toàn bộ các bước thành 1 file chạy duy nhất `run_report.py`. Đợt khảo sát sau, công việc 2 ngày thu gọn lại thành 10 phút.</div>
       </section>
 
       <section class="chapter" id="c12">
-        <h2 class="ch-title"><span class="num">Chương 12</span> ★ Nhờ AI commit lên Git — chưa biết git cũng làm được</h2>
-        <div class="ch-sub">Lưu code + context lên GitHub/GitLab để backup, chia sẻ đồng nghiệp, xem lại lịch sử. Bạn chưa thuộc lệnh git cũng không sao — nhờ AI viết lệnh, rồi nhờ AI giải thích để hiểu và biết AI sai chỗ nào mà sửa.</div>
+        <h2 class="ch-title"><span class="num">Chương 12</span> Commit Git An Toàn & Chuẩn Mực</h2>
+        <div class="ch-sub">Lưu trữ Pipeline code lên GitLab/GitHub. Bạn chưa thạo lệnh Git? AI sẽ hướng dẫn từng dòng lệnh.</div>
 
-        <div class="box info"><span class="bt">💡 Git là gì — cho Data Analyst (1 câu)</span> Git = công cụ lưu phiên bản code, giống Google Drive cho tài liệu. GitHub/GitLab = trang web đặt code đó để team cùng xem. <strong>Bạn chưa biết git cũng được</strong> — nhờ AI sinh lệnh, rồi nhờ AI giải thích từng lệnh để dần hiểu.</div>
-
-        <h3 class="sec">3 việc bạn cần làm với Git (AI gõ lệnh cho bạn)</h3>
-        <table>
-          <tr><th>Việc</th><th>Khi nào</th><th>Bạn làm gì</th></tr>
-          <tr><td><strong>Commit</strong></td><td>Hoàn thành 1 phần (vd: xong bộ rule)</td><td>Nhờ AI sinh lệnh → copy → dán terminal</td></tr>
-          <tr><td><strong>Push</strong></td><td>Cuối ngày / cuối task</td><td>Tương tự — AI sinh lệnh</td></tr>
-          <tr><td><strong>Pull / xem lịch sử</strong></td><td>Muốn xem phiên bản cũ, hoặc đồng nghiệp cập nhật</td><td>Hỏi AI "xem lịch sử thay đổi"</td></tr>
-        </table>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — nhờ AI dẫn commit &amp; push LẦN ĐẦU <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p12-gitsetup">Tôi là Data Analyst, CHƯA TỪNG DÙNG GIT. Tôi muốn đưa code Python áp rule + context.md lên GitLab/GitHub công ty. Hãy dẫn tôi từng bước, mỗi bước 1 lệnh, tôi copy rồi dán terminal:
-
-THÔNG TIN:
-- Máy: Windows
-- Repo: {điền URL repo công ty}
-- Folder dự án: D:\code\survey_analysis
-- File cần đưa: run_report.py, context.md, requirements.txt
-
-Hãy hướng dẫn:
-1. Cài git (nếu chưa) — kiểm tra: git --version
-2. Cấu hình tên + email 1 lần: git config ...
-3. Khởi tạo repo: git init
-4. Thêm file: git add ...
-5. Commit đầu: git commit ... (AI viết message tiếng Việt)
-6. Kết nối repo remote: git remote add ...
-7. Push lên: git push ...
-Giải thích từng lệnh (1 câu). Nếu lỗi, tôi dán lỗi lại.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p12-gitsetup')">📋 Sao chép</button></div>
+        <div class="box danger">
+          <span class="bt">🚨 LƯU Ý TỐI QUAN TRỌNG: TUYỆT ĐỐI KHÔNG COMMIT DATA NHẠY CẢM</span>
+          <p>File data thật chứa thông tin respondent là <b>tài sản bảo mật</b>. Việc gõ nhầm lệnh đẩy file CSV này lên GitHub/GitLab là sự cố an toàn thông tin (Security Incident) nghiêm trọng nhất.</p>
+          <ul>
+            <li><b>Chỉ commit:</b> Code Python (`run_report.py`), file cấu trúc (`context.md`, `README.md`), và file template rule (không chứa data).</li>
+            <li><b>Bắt buộc sử dụng `.gitignore`:</b> Trước khi chạy lệnh Git đầu tiên, YÊU CẦU AI tạo ngay file `.gitignore` và liệt kê chặn tất cả các định dạng data (VD: `*.csv`, `*.xlsx`, thư mục `/data/`).</li>
+            <li>Nếu lỡ commit nhầm file data, KHÔNG CHỈ xóa file trên máy rồi commit lại (vì dữ liệu vẫn kẹt lại trong lịch sử Git). Hãy báo ngay cho IT Admin để tiến hành thanh trừng (purge) lịch sử repository.</li>
+          </ul>
         </div>
 
         <div class="prompt">
-          <div class="ph">📋 Prompt — commit các lần sau (hàng ngày) <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p12-commit">Tôi vừa sửa code Python (thêm rule_ai_overuse, update context). Hãy cho tôi đúng lệnh commit + push, kèm commit message tiếng Việt rõ ràng. Tôi copy dán terminal. Giải thích ngắn mỗi lệnh.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p12-commit')">📋 Sao chép</button></div>
+          <div class="ph">📋 Prompt tạo lệnh Git an toàn <span class="ptag">Quản lý Version</span></div>
+          <div class="pbody" id="p12-gitsetup">Tôi là Data Analyst, chưa thạo Git. Tôi cần đẩy đoạn code Python và file cấu trúc (.md) vừa tạo lên repo GitLab công ty.
+Yêu cầu bắt buộc:
+1. Tạo nội dung file `.gitignore` chuẩn để chặn toàn bộ mọi file CSV, Excel, và thư mục `/data_raw/` nhằm đảm bảo không rò rỉ dữ liệu.
+2. Cung cấp tuần tự các dòng lệnh terminal để tôi init repo, add (sau khi đã có gitignore), commit (viết sẵn nội dung commit tiếng Việt), và push.
+3. Giải thích ngắn gọn tác dụng của mỗi dòng lệnh để tôi có thể học hỏi.</div>
+          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p12-gitsetup')">Copy Prompt</button></div>
         </div>
-
-        <div class="box tip"><span class="bt">✅ Nguyên tắc làm việc với AI + Git</span> <strong>Bạn chưa thuộc lệnh git cũng không sao.</strong> Mỗi lần muốn commit/push, mở AI, mô tả việc → AI sinh lệnh → bạn copy–dán. <strong>Nhưng đừng dán mù</strong>: nhờ AI giải thích từng lệnh để dần hiểu, biết AI sai chỗ nào mà sửa. Lỗi gì → dán lỗi lại cho AI.</div>
-
-        <div class="box warn"><span class="bt">⚠️ Không đưa data nhạy cảm lên Git</span> File data thật (có thông tin respondent, email, thông tin cá nhân) <strong>KHÔNG được commit</strong> lên Git — vi phạm bảo mật. Commit chỉ code + context (đã ẩn danh) + file rule template. Nhờ AI tạo <code class="ic">.gitignore</code> loại trừ data thô.</div>
-
-        <div class="box info"><span class="bt">💡 Học git qua AI</span> Cách tiếp cận: nhờ AI viết lệnh → nhờ AI giải thích → lặp lại vài lần bạn sẽ tự nhớ các lệnh常用. Nếu sau này muốn học hệ thống (branch, merge, conflict...), tham khảo <a href="khoa-hoc-git.html" style="color:var(--accent-2)">Git — Từ Newbie đến Team Workflow</a> (tùy chọn).</div>
       </section>
 
       <!-- ============ PART 4 ============ -->
-      <div class="part-divider" id="p4div"><span class="tag tp3">P4 · Thực Chiến &amp; Công Cụ</span><span class="line"></span></div>
-
+      <div class="part-divider" id="p4div"><span class="tag tp3">Phần 4 · Thực Chiến</span><span class="line"></span></div>
+      
       <section class="chapter" id="c13">
-        <h2 class="ch-title"><span class="num">Chương 13</span> Case study: 1 đợt khảo sát — full loop</h2>
-        <div class="ch-sub">Walkthrough 1 đợt khảo sát thật từ đầu đến cuối: nhận 4 file → context → prompt từng bước → verdict → commit. Tổng hợp toàn bộ hướng dẫn.</div>
-
-        <h3 class="sec">Kịch bản</h3>
-        <p>Nhận đợt khảo sát Q3/2025: <code class="ic">data_q3_2025.csv</code> (48.217 respondents × 1.850 cột) + 3 file setup. Cần apply 35 rule, ra cột phán quyết, nộp kết quả trong 2 ngày. <strong>Cách làm cũ (Excel): mất 1.5 ngày, máy đơ nhiều lần.</strong> <strong>Cách mới (AI + Python): 2 giờ.</strong></p>
-
-        <h4 class="mini">Bước 1 — Chọn AI &amp; nạp 4 file (10 phút)</h4>
-        <p>Dùng Chương 4. Vì 4 file (data + 3 setup) cần đọc cùng lúc → chọn Gemini 3.6 Flash (context 1M). Khi bắt đầu viết pipeline production → chuyển Claude Sonnet 5.</p>
-
-        <h4 class="mini">Bước 2 — Giải mã cấu trúc (15 phút)</h4>
-        <p>Dùng prompt Chương 5. AI tóm tắt: 7 phần (profile, EBA, EBI, importance, channels, AI, skills), mỗi phần có loại câu gì.</p>
-
-        <h4 class="mini">Bước 3 — Viết context + danh sách rule (20 phút)</h4>
-        <p>Dùng template Chương 3. Viết 35 rule bằng tiếng Việt + chỉ cột liên quan. Lưu <code class="ic">context.md</code>.</p>
-
-        <h4 class="mini">Bước 4 — Apply 35 rule (30 phút)</h4>
-        <p>Dùng prompt batch Chương 6. AI sinh script tạo 35 cột rule_*. Verify 5 dòng mỗi rule. Chạy trên data thật.</p>
-
-        <h4 class="mini">Bước 5 — Cột phán quyết (15 phút)</h4>
-        <p>Dùng prompt Chương 7. Composite: 3 hard fail + điểm + phân loại QUALIFIED/REVIEW/REJECT.</p>
-
-        <h4 class="mini">Bước 6 — Báo cáo + xuất file (15 phút)</h4>
-        <p>Dùng prompt Chương 8. Xuất qualified_data.csv + report.xlsx với insight tiếng Việt.</p>
-
-        <h4 class="mini">Bước 7 — Build pipeline (15 phút)</h4>
-        <p>Dùng prompt Chương 11. Gom thành <code class="ic">run_report.py</code>. Đợt Q4 chỉ cần thay folder.</p>
-
-        <h4 class="mini">Bước 8 — Commit Git (10 phút)</h4>
-        <p>Dùng prompt Chương 12. Commit code + context (đã ẩn danh data).</p>
-
-        <div class="box pro"><span class="bt">🎯 Kết quả</span> 2 giờ thay vì 1.5 ngày. Báo cáo đầy đủ hơn cũ (có top rule vi phạm, quota check, insight). Code tái dùng cho Q4. <strong>Đây là mục tiêu — tự chủ điều khiển AI end-to-end.</strong></div>
-
-        <div class="prompt">
-          <div class="ph">📋 Prompt — kickoff 1 đợt khảo sát mới <span class="ptag">meta-prompt</span></div>
-          <div class="pbody" id="p13-kickoff">Bạn là trợ lý Data Analyst. Tôi nhận 1 đợt khảo sát mới (4 file: data + questionnaire + structure + behavior). Hãy dẫn tôi qua từng bước (giải mã → viết context → apply rule → phán quyết → báo cáo → pipeline → commit), ở mỗi bước:
-1. Cho tôi prompt chính xác để làm bước đó
-2. Giải thích tôi cần chuẩn bị gì
-3. Sau khi tôi làm xong, tôi báo kết quả, bạn sang bước kế
-Tôi mới học quy trình, hãy kiên nhẫn và rõ ràng. Bắt đầu từ bước giải mã cấu trúc.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p13-kickoff')">📋 Sao chép</button></div>
-        </div>
+        <h2 class="ch-title"><span class="num">Chương 13 & 14</span> Thực Chiến End-to-End</h2>
+        <div class="ch-sub">Áp dụng lý thuyết vào một case study toàn diện. Tiết kiệm từ 1.5 ngày làm Excel xuống còn 2 giờ điều khiển AI.</div>
+        <p>Vui lòng xem các file mẫu trong thư mục <code>/case-studies</code> của dự án để trải nghiệm thực tế với Mock Data.</p>
       </section>
 
-      <section class="chapter" id="c14">
-        <h2 class="ch-title"><span class="num">Chương 14</span> Thư viện Prompt (copy-paste, phân loại)</h2>
-        <div class="ch-sub">Tổng hợp các prompt xuyên hướng dẫn, phân loại theo mục đích. Copy ra dùng ngay.</div>
-
-        <h3 class="sec">A. Prompt giải mã &amp; đọc setup</h3>
-        <div class="prompt">
-          <div class="ph">📋 Giải mã cấu trúc bộ khảo sát <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p14a">Bạn là Data Analyst. Tôi đính kèm 3 file setup (questionnaire, structure, behavior). Tóm tắt cấu trúc: có bao nhiêu phần, mỗi phần câu gì, loại widget (multiple_choice/scale/...), option của từng câu multiple_choice. Mục đích viết rule kiểm tra respondent. Tiếng Việt, có cấu trúc.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14a')">📋 Sao chép</button></div>
-        </div>
-
-        <h3 class="sec">B. Prompt áp rule</h3>
-        <div class="prompt">
-          <div class="ph">📋 Apply batch 20-50 rule <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p14b">Bạn là Data Analyst. Đính kèm data + 3 file setup. [DANH SÁCH RULE]: {dán 20-50 rule, mỗi rule = mô tả tiếng Việt + cột liên quan}. Viết 1 script tạo TẤT CẢ cột rule_* (1=phạm/0=ok). Xử lý NaN an toàn. In số phạm mỗi rule + 3 ví dụ. Giải thích ngắn mỗi rule.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14b')">📋 Sao chép</button></div>
-        </div>
-
-        <h3 class="sec">C. Prompt phán quyết &amp; báo cáo</h3>
-        <div class="prompt">
-          <div class="ph">📋 Cột phán quyết + báo cáo <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p14c">Data đã có các cột rule_*. [QUY TẮC PHÁN QUYẾT]: {hard fail + điểm + phân loại}. Tạo cột final_verdict. In phân bố + top rule vi phạm. Xuất qualified_data.csv (chỉ QUALIFIED) + report.xlsx với 3 insight tiếng Việt.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14c')">📋 Sao chép</button></div>
-        </div>
-
-        <h3 class="sec">D. Prompt vòng đời code</h3>
-        <div class="prompt">
-          <div class="ph">📋 Review code rule + update <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p14d">Bạn là Senior DA. Review code (đính kèm 3 setup), chỉ ra: lỗi đọc cột (nhầm multiple/single?), NaN, edge case. Đưa code sửa. NẾU rule mới {mô tả}, update code đánh dấu "# MỚI". Tiếng Việt.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14d')">📋 Sao chép</button></div>
-        </div>
-
-        <h3 class="sec">E. Prompt Git (nhờ AI hết)</h3>
-        <div class="prompt">
-          <div class="ph">📋 Commit + push (chưa biết git cũng được) <span class="ptag">copy-paste</span></div>
-          <div class="pbody" id="p14e">Tôi là DA, chưa biết git. Sửa xong {mô tả}. Cho đúng lệnh commit + push lên {repo}. Commit message tiếng Việt. Mỗi lệnh kèm 1 câu giải thích để tôi hiểu. Tôi copy dán terminal. Lỗi dán lại.</div>
-          <div class="pbtns"><button class="cpbtn" onclick="copyPrompt('p14e')">📋 Sao chép</button></div>
-        </div>
-      </section>
-
-      <section class="chapter" id="c15">
-        <h2 class="ch-title"><span class="num">Chương 15</span> Cheatsheet Context (1 trang)</h2>
-        <div class="ch-sub">Template mô tả data + rule nhanh — dán vào mọi prompt. In ra dán cạnh màn hình.</div>
-        <p>Dưới đây là các card cheatsheet — tổng hợp nhanh template &amp; quy tắc cốt lõi.</p>
-        <div class="cheat-grid" id="cheatGrid"></div>
-
-        <div class="box pro"><span class="bt">🎯 Cách dùng</span> Trước mỗi đợt, copy 1–2 card phù hợp → điền thông tin → dán vào prompt. <strong>5 phút chuẩn bị context = 5 giờ tiết kiệm debug.</strong></div>
-      </section>
-
-      <!-- FLASHCARDS -->
-      <div class="part-divider" id="cards"><span class="tag tp0">Công cụ ôn tập</span><span class="line"></span></div>
+      <!-- TÍNH NĂNG TƯƠNG TÁC -->
+      <div class="part-divider" id="cards"><span class="tag tp0">Công Cụ Tương Tác</span><span class="line"></span></div>
       <section class="chapter" id="fc-section">
-        <h2 class="ch-title"><span class="num">🃏</span> Flashcards — khái niệm cốt lõi</h2>
-        <div class="ch-sub">Lật thẻ để ôn. Bấm vào thẻ để xem đáp án.</div>
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards Ôn Tập</h2>
+        <div class="ch-sub">Click vào thẻ để kiểm tra lại các nguyên tắc cốt lõi trong quy trình làm việc với AI Data.</div>
         <div class="fc-grid" id="fcGrid"></div>
       </section>
 
-      <!-- PROGRESS -->
-      <div class="part-divider" id="progress"><span class="tag tp1">Tiến độ</span><span class="line"></span></div>
+      <div class="part-divider" id="cheat"><span class="tag tp2">Cheatsheet</span><span class="line"></span></div>
+      <section class="chapter" id="cheat-section">
+        <h2 class="ch-title"><span class="num">📐</span> Cheatsheet (1 Trang)</h2>
+        <div class="ch-sub">Các khối thông tin nhanh phục vụ việc copy-paste liên tục.</div>
+        <div class="cheat-grid" id="cheatGrid"></div>
+      </section>
+
+      <div class="part-divider" id="progress"><span class="tag tp1">Theo dõi Tiến độ</span><span class="line"></span></div>
       <section class="chapter" id="prog-section">
-        <h2 class="ch-title"><span class="num">📊</span> Tiến độ</h2>
+        <h2 class="ch-title"><span class="num">📈</span> Tiến trình học tập</h2>
         <div class="progress-wrap">
-          <div class="pt">Đánh dấu đã học ở mỗi chương</div>
+          <div class="pt">Nhấn nút "Đã học" ở mỗi chương để lưu vết</div>
           <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
           <div class="ps" id="progressTxt">0/0 chương · 0%</div>
-          <div class="ps" id="progressSub" style="margin-top:6px;">Tiến độ lưu trong trình duyệt.</div>
+          <div class="ps" id="progressSub" style="margin-top:6px;">Dữ liệu học tập được lưu cục bộ trên trình duyệt của bạn (Local Storage).</div>
         </div>
       </section>
 
       <footer class="foot">
-        📊 <strong>Điều Khiển AI Xử Lý Dữ Liệu Khảo Sát Lớn</strong> — Cho Data Analyst xử lý khảo sát. Thuộc thư viện <a href="../index.html">Mega Study</a> · Mỗi chương: context + prompt copy-paste + thực hành.
+        <strong>Tài liệu Hướng dẫn AI Data Analysis</strong> · Hệ thống quy trình chuẩn hóa dành cho Non-coder.<br>
+        <a href="../index.html">Quay về Trang chủ Tài liệu</a>
       </footer>
-    </main>
-  </div>
+    </div>
+  </main>
+</div>
 
 <script>
-/* ===== COPY PROMPT ===== */
+/* ===== COPY PROMPT TÍNH NĂNG ===== */
 function copyPrompt(id){
   const text = document.getElementById(id).innerText;
   navigator.clipboard.writeText(text).then(()=>{
@@ -1072,26 +504,14 @@ function copyPrompt(id){
   });
 }
 
-/* ===== FLASHCARDS ===== */
+/* ===== FLASHCARDS DATA ===== */
 const FC = [
-  {q:"3 file setup dùng làm gì?", a:"questionnaire.csv (giải mã cột & giá trị), survey-structure.csv (loại câu hỏi), behavior.csv (rule validation). Đây là NỀN để AI hiểu data — không phải tất cả. Có thể thêm file rule, bảng merge ngành, file context cũ..."},
-  {q:"Dùng AI có phải '1 phát ăn ngay'?", a:"KHÔNG. Context xây qua tương tác: lượt 1 mention 3 file setup → AI đọc tóm tắt → lượt 2 kiểm tra hiểu đúng → lượt 3 đưa rule+file bổ sung → lượt 4 xem kết quả tinh chỉnh. Chia lượt để bắt lỗi sớm."},
-  {q:"Tại sao AI 'không hiểu' file data của bạn?", a:"Vì data chỉ có cột mã hóa (vd profile-qbirthyear). AI không biết cột đó chứa giá trị gì. Mention 3 file setup — AI tự so questionnaire để hiểu."},
-  {q:"Làm sao AI ghi nhớ context cho lần sau?", a:"Sau khi AI hiểu đúng, bảo nó ghi vào file MD (context_*.md, rules_*.md, README.md). Lần sau chỉ cần mention MD — không phải quét lại 3 file setup + giải thích từ đầu."},
-  {q:"Cách data lưu trong file respondent thế nào?", a:"Tùy loại câu hỏi — thường ra dạng [tên câu hỏi] + giá trị, có khi dạng [tên]o1 o2 (mỗi option 1 cột). Bạn KHÔNG cần nhớ — AI đọc questionnaire sẽ tự hiểu cách đọc từng cột."},
-  {q:"Cần phân biệt multiple_choice vs single_choice không?", a:"KHÔNG cần. AI đọc survey-structure.csv để biết loại câu hỏi, tự biết cách đọc data. Bạn chỉ việc đính kèm đủ 3 file setup."},
-  {q:"Vì sao Excel/PQ 'tắc thở' với 2000 cột × 200k dòng?", a:"Excel/PQ xử lý từng dòng + giới hạn RAM. Cột nhiều + dòng nhiều + công thức lồng → đơ máy. Python xử lý theo cột (vector hóa) nên không bị."},
-  {q:"Để apply 1 rule, DA cần đưa AI những gì?", a:"Chỉ 2 thứ: (1) mô tả rule tiếng Việt, (2) tên cột liên quan. AI đọc 3 file setup để hiểu cách truy cập cột, tự viết code. Bạn chưa cần biết syntax — nhưng hãy nhờ AI giải thích đoạn code để hiểu và bắt lỗi."},
-  {q:"Ví dụ rule kiểm tra 'nói xạo'?", a:"'SV sinh 2007 nhưng năm 3-4 → nói xạo'. Dùng cột profile-qbirthyear + profile-qyear-of-study. Mock code: if(birthyear=2007 AND yearofstudy in [3,4], 1, 0)."},
-  {q:"Cột phán quyết cuối dựa trên gì?", a:"Tùy dự án: đếm rule pass (≥80%→QUALIFIED), rule chặn (hard fail→REJECT), tính tổng điểm, hoặc composite. Mô tả logic cụ thể, AI dịch sang code — không hard code 1 cách."},
-  {q:"Chọn AI nào cho việc nào?", a:"Khám nhanh data → ChatGPT (Advanced Data Analysis). Viết/review pipeline → Claude Sonnet 5. Nạp cả bộ 4 file (data+3 setup) → Gemini 3.6 Flash (context 1M). Dùng luân phiên được."},
-  {q:"Claude Code dùng CLI hay VS Code extension?", a:"Cùng 1 sản phẩm, 2 giao diện. CLI = gõ terminal, nhanh, cho người quen. VS Code extension = sidebar + xem diff trực quan, dễ hơn cho người mới. DA nên bắt đầu bằng extension — thấy rõ AI sửa dòng nào trước khi chấp nhận."},
-  {q:"5 cách giao tiếp với AI là gì? (DA dùng cái nào)", a:"① chat web (đơn giản nhất) ② desktop app (Claude/ChatGPT Desktop, đọc file local) ③ CLI/terminal (nhanh, cho pipeline) ④ VS Code extension (xem diff, viết pipeline) ⑤ IDE agent (Antigravity/Copilot Agent, quá mức cho CSV). DA: bắt đầu ①②, pipeline → ④."},
-  {q:"Antigravity / Copilot Agent — DA có cần không?", a:"Thường KHÔNG. Đây là IDE agent tự chạy nhiều bước, mạnh cho build app/web. DA xử lý CSV thì chat web + VS Code extension (Claude Code/Copilot) là đủ. Chỉ cân nhắc khi build công cụ báo cáo có giao diện."},
-  {q:"Chưa biết git có commit code được không?", a:"ĐƯỢC. Nhờ AI sinh lệnh commit/push → bạn copy–dán terminal. Nhưng hãy nhờ AI giải thích từng lệnh để hiểu — qua vài lần bạn sẽ tự nhớ. Lỗi gì dán lại cho AI sửa."},
-  {q:"Bẫy #1 khi đọc cột trong code rule?", a:"Không so questionnaire → hiểu sai giá trị cột. Khắc phục: luôn đính kèm đủ 3 file setup. Nếu AI đọc sai, gửi 5 dòng data mẫu để nó tự kiểm chứng."},
-  {q:"Quy tắc vàng khi rule đổi?", a:"Cập nhật file context.md (danh sách rule + mô tả) TRƯỚC, rồi mới nhờ AI sửa code. Context là 'nguồn sự thật', code chỉ là hệ quả."},
-  {q:"Loại file nào KHÔNG được commit lên Git?", a:"Data respondent thật (email, thông tin cá nhân) — vi phạm bảo mật. Chỉ commit code + context đã ẩn danh + rule template. Dùng .gitignore loại trừ *.csv data."},
+  {q:"Data thô có chứa số điện thoại KH. Upload lên ChatGPT được không?", a:"TUYỆT ĐỐI KHÔNG. Chỉ upload file Setup (cấu trúc) và Data giả (Mock data) đã xóa thông tin cá nhân. Chạy code Python ở máy Local."},
+  {q:"Làm sao tránh AI 'bịa' logic toán học (Hallucination)?", a:"Luôn đính kèm file Setup chuẩn. Yêu cầu AI in ra 5-10 dòng kết quả (Sample Data) và tự DA phải nhẩm tay kiểm tra lại chéo."},
+  {q:"Vì sao Colab không phải giải pháp tốt cho Big Data Survey?", a:"Colab miễn phí bị giới hạn RAM (12-16GB) và timeout. File CSV lớn khi bung vào Pandas + tạo cột mới sẽ gây Out of Memory (Crash)."},
+  {q:"Câu lệnh thần chú xử lý RAM khi nhờ AI viết code Pandas?", a:"'Sử dụng kỹ thuật chunksize hoặc tối ưu hóa dtypes / dùng PyArrow engine để không bị lỗi Out of Memory'."},
+  {q:"File quan trọng nhất phải tạo TRƯỚC KHI chạy lệnh Git?", a:"File .gitignore. Cần yêu cầu AI tạo file này và thiết lập loại trừ (*.csv, *.xlsx) để ngăn data nhạy cảm vô tình bị đẩy lên cloud."},
+  {q:"Dùng AI có phải '1 câu lệnh xong ngay' không?", a:"Không. Giao tiếp với AI là quy trình mớm ngữ cảnh (Context) theo từng bước: Đọc hiểu -> Kiểm tra logic -> Bổ sung rule -> Apply code."}
 ];
 document.getElementById('fcGrid').innerHTML = FC.map(c=>
   `<div class="flashcard" onclick="this.classList.toggle('flipped')">
@@ -1101,26 +521,18 @@ document.getElementById('fcGrid').innerHTML = FC.map(c=>
      </div>
    </div>`).join('');
 
-/* ===== CHEATSHEET ===== */
+/* ===== CHEATSHEET DATA ===== */
 const CHEAT = [
-  {ic:"📁", t:"4 file cần đưa AI mỗi đợt", c:"1. data.csv          — respondent × cột\n2. questionnaire.csv — giải mã code cột\n3. survey-structure.csv — loại widget\n4. behavior.csv      — rule validation\n→ Đính kèm cả 4, không chỉ data."},
-  {ic:"🔤", t:"Cách data lưu trong file respondent", c:"# Tùy loại câu hỏi, thường:\n# - 1 cột + giá trị trực tiếp:\nprofile-qbirthyear = 1990\n# - hoặc dạng [tên]o1 o2 (mỗi option 1 cột)\n# → KHÔNG cần nhớ, AI đọc questionnaire tự hiểu"},
-  {ic:"📝", t:"Context block — 4 phần", c:"[1. MÔ TẢ DATA] file, số dòng, setup\n[2. CÁCH ĐỌC DATA] đính kèm 3 setup, AI tự so\n[3. DANH SÁCH RULE] mô tả VI + cột liên quan\n[4. ĐỊNH DẠNG ĐẦU RA] cột rule_*, verdict"},
-  {ic:"🎯", t:"Mô tả 1 rule cho AI", c:"# Chỉ cần 2 thứ:\n1. Mô tả tiếng Việt:\n   'SV 2007 mà năm 3-4 → nói xạo'\n2. Cột liên quan:\n   profile-qbirthyear\n   profile-qyear-of-study\n→ AI tự đọc setup, tự viết code."},
-  {ic:"🐍", t:"Mock code → Python (AI dịch)", c:"# Mock (bạn viết, ko cần đúng syntax):\nif(birthyear=2007 AND yearofstudy>2, 1, 0)\n\n# AI tự so questionnaire để biết\n# cách đọc giá trị 2007, rồi sinh\n# code Python tương ứng."},
-  {ic:"⚖️", t:"Cột phán quyết — dạng phổ biến", c:"# Đếm rule pass\ntotal_ok = (df[rule_cols]==0).sum(axis=1)\n# Hard fail\nhard = df[hard_rules].any(axis=1)\n# Phân loại\ndf['verdict'] = np.where(hard,'REJECT',\n  np.where(total_ok>=22,'QUALIFIED','REVIEW'))"},
-  {ic:"🤖", t:"Chọn model nhanh (DA khảo sát)", c:"Khám nhanh data        → ChatGPT (Adv. Data Analysis)\nViết/review pipeline   → Claude Sonnet 5 (code chuẩn, rẻ)\nNạp cả bộ 4 file       → Gemini 3.6 Flash (context 1M)\nDùng luân phiên được."},
-  {ic:"🔍", t:"Prompt review code rule", c:"Review code (đính kèm 3 setup).\nNGHI NGỜ: {triệu chứng, vd rule X vi phạm 0%}.\nChỉ ra: lỗi đọc cột (nhầm loại?), NaN,\nedge case. Đưa code sửa. Ưu tiên lỗi đọc cột."},
-  {ic:"🔄", t:"Prompt update rule mới", c:"[THAY ĐỔI] {thêm/đổi/bỏ rule}\n[CODE CŨ] {...}  [3 SETUP] {đính kèm}\n1. Sửa code, comment '# MỚI'\n2. Giải thích từng thay đổi\n3. In lại phân bố verdict để so sánh"},
-  {ic:"🏗️", t:"Pipeline — cấu trúc hàm", c:"def main(folder):\n    setup = load_setup(folder)\n    df = load_data(folder)\n    df = apply_rules(df, setup)\n    df = make_verdict(df)\n    report(df, folder)\n# Chạy: python run_report.py surveys/q3_2025/"},
-  {ic:"🔐", t:"Prompt Git (chưa biết cũng OK)", c:"Tôi là DA, chưa biết git. Sửa xong {thay đổi}.\nCho đúng lệnh commit + push lên {repo}.\nCommit message tiếng Việt.\nMỗi lệnh kèm 1 câu giải thích để tôi hiểu.\nTôi copy dán. Lỗi dán lại."},
-  {ic:"🚫", t:".gitignore — không đẩy data thật", c:"# .gitignore\n*.csv\n*.xlsx\n!sample_*.csv\ndata/\noutput/\n# Chỉ commit: code + context.md + rule template"},
+  {ic:"🛡️", t:"Bảo mật Dữ liệu (Top Rules)", c:"1. Xóa cột PII trước khi test\n2. KHÔNG đẩy CSV thật lên Git\n3. Code AI sinh phải chạy Local\n4. Luôn kiểm tra file .gitignore"},
+  {ic:"🧩", t:"Context Block Tiêu chuẩn", c:"[MÔ TẢ DATA] số dòng, tính chất\n[CẤU TRÚC] dựa trên 3 file setup\n[LOGIC KIỂM TRA] tiếng Việt chi tiết\n[KẾT QUẢ CẦN IN] 5 dòng mẫu"},
+  {ic:"🔧", t:"Xử lý Lỗi Code (Red Error)", c:"Copy toàn bộ đoạn lỗi màu đỏ. Dán vào AI: 'Tôi chạy code bị lỗi này [LỖI]. Hãy giải thích nguyên nhân do Data hay do Syntax, và viết lại code khắc phục.'"},
+  {ic:"🔍", t:"Phòng tránh AI 'Ảo giác'", c:"'Trước khi viết file hoàn chỉnh, hãy tính toán thử logic trên 5 dòng dữ liệu mẫu sau đây và giải thích từng bước tính tay của bạn.'"}
 ];
 document.getElementById('cheatGrid').innerHTML = CHEAT.map(c=>
   `<div class="cheat-card"><h4>${c.ic} ${c.t}</h4><div class="ci">${c.c}</div></div>`).join('');
 
-/* ===== PROGRESS ===== */
-const PROGRESS_KEY = 'pandas_ai_progress_v2';
+/* ===== TRACKING TIẾN ĐỘ ===== */
+const PROGRESS_KEY = 'data_ai_progress_pro';
 function loadP(){ try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch(e){ return {}; } }
 function saveP(p){ try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch(e){} }
 function markChapter(id){
@@ -1133,29 +545,38 @@ function renderProgress(){
   const total = chapters.length;
   const pct = total ? Math.round(done/total*100) : 0;
   const fill = document.getElementById('progressFill');
-  if(fill){ fill.style.width = pct+'%';
-    document.getElementById('progressTxt').textContent = `${done}/${total} chương · ${pct}%`;
-    document.getElementById('progressSub').textContent = `Đánh dấu đã học ở mỗi chương. Tiến độ lưu trong trình duyệt.`;
+  if(fill){ 
+    fill.style.width = pct+'%';
+    document.getElementById('progressTxt').textContent = `${done}/${total} chương · ${pct}% hoàn thành`;
   }
 }
 document.querySelectorAll('section.chapter[id^="c"]').forEach(c=>{
   const btn = document.createElement('button');
-  btn.textContent = '✓ Đã học chương này';
-  btn.style.cssText = 'font-family:inherit;font-size:12px;font-weight:700;padding:7px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--card);color:var(--gray);margin:8px 0;';
-  btn.onclick = ()=>{ markChapter(c.id); btn.style.background='var(--primary)'; btn.style.color='#060614'; btn.textContent='✅ Đã học'; };
+  btn.textContent = '✓ Đánh dấu Đã học';
+  btn.style.cssText = 'font-family:inherit; font-size:13px; font-weight:600; padding:8px 16px; border-radius:6px; cursor:pointer; border:1px solid var(--border); background:var(--card); color:#64748b; margin:12px 0; transition: all 0.2s;';
+  
+  if(loadP()[c.id]){
+    btn.style.background = '#ecfdf5'; btn.style.color = '#059669'; btn.style.borderColor = '#a7f3d0'; btn.textContent = '✅ Đã hoàn thành';
+  }
+
+  btn.onclick = ()=>{ 
+    markChapter(c.id); 
+    btn.style.background = '#ecfdf5'; btn.style.color = '#059669'; btn.style.borderColor = '#a7f3d0'; 
+    btn.textContent = '✅ Đã hoàn thành'; 
+  };
   c.appendChild(btn);
 });
 
-/* ===== NAV ===== */
+/* ===== SCROLL NAVIGATION ===== */
 const navLinks = [...document.querySelectorAll('.nav-menu a')];
 const crumb = document.getElementById('crumb');
 window.addEventListener('scroll', ()=>{
   let cur='';
-  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 150) cur = s.id; });
+  document.querySelectorAll('section[id], div[id].part-divider').forEach(s=>{ if(s.getBoundingClientRect().top < 180) cur = s.id; });
   navLinks.forEach(a=>{
     const on = a.getAttribute('href')==='#'+cur;
     a.classList.toggle('active', on);
-    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t) crumb.textContent = t; }
+    if(on){ const t = a.textContent.replace(/^\s*\d+\s*/,'').trim(); if(t && t !== '★') crumb.textContent = t; }
   });
 }, {passive:true});
 document.getElementById('navSearch').addEventListener('input', e=>{
