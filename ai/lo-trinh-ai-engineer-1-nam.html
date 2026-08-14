@@ -7,39 +7,37 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --primary: #6366f1; --primary-glow: #818cf8;
-    --accent: #f59e0b; --accent-2: #fbbf24;
-    --p0: #38bdf8; --p1: #34d399; --p2: #fbbf24; --p3: #f472b6;
+    --primary: #2563eb; --primary-glow: #1d4ed8;
+    --accent: #f1f5f9; --accent-2: #ea580c;
+    --p0: #0284c7; --p1: #059669; --p2: #d97706; --p3: #6d28d9;
     --hk1: #34d399; --hk2: #f472b6;
-    --ok: #34d399; --warn: #fbbf24; --danger: #f87171; --info: #60a5fa;
-    --dark: #0d0f1a; --darker: #06070d;
-    --light: #cdd3e0; --light-strong: #f3f5fa; --gray: #8a92a6;
-    --card: #141826; --card-2: #1c2233; --border: #2a3146; --terminal: #080b14;
-    --code-green: #86efac; --code-yellow: #fcd34d; --code-blue: #7dd3fc;
-    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #6f7891;
+    --ok: #10b981; --warn: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+    --dark: #ffffff; --darker: #f8fafc;
+    --light: #334155; --light-strong: #0f172a; --gray: #64748b;
+    --card: #ffffff; --card-2: #f8fafc; --border: #e2e8f0; --terminal: #0f172a;
+    --code-green: #86efac; --code-yellow: #fde047; --code-blue: #7dd3fc;
+    --code-pink: #f9a8d4; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-gray: #94a3b8;
     --sidebar-w: 286px; --sidebar-w-collapsed: 0px;
   }
   html { scroll-behavior: smooth; }
   body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
     background: var(--darker); color: var(--light); line-height: 1.78; overflow-x: hidden;
-    background-image:
-      radial-gradient(circle at 16% 22%, rgba(99,102,241,.11) 0%, transparent 45%),
-      radial-gradient(circle at 84% 72%, rgba(245,158,11,.06) 0%, transparent 45%);
-    background-attachment: fixed;
+
+
   }
   code, pre, .mono { font-family: 'JetBrains Mono','Consolas','Courier New',monospace; }
 
   /* ===== LAYOUT: sidebar (collapsible) + content ===== */
   .app { display: flex; min-height: 100vh; }
   .sidebar {
-    width: var(--sidebar-w); background: linear-gradient(180deg, var(--dark) 0%, #04060c 100%);
+    width: var(--sidebar-w); background: var(--card);
     position: fixed; height: 100vh; overflow-y: auto; overflow-x: hidden;
     border-right: 2px solid var(--primary); z-index: 100; transition: width .25s, transform .25s; box-shadow: 4px 0 30px rgba(99,102,241,.14);
   }
   .sidebar.collapsed { width: 0; border-right: none; box-shadow: none; }
   .sidebar::-webkit-scrollbar { width: 8px; }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   .main { flex: 1; margin-left: var(--sidebar-w); transition: margin-left .25s; }
   body.sb-collapsed { --sidebar-w: 0px; }
   body.sb-collapsed .main { margin-left: 0; }
@@ -48,7 +46,7 @@
   .sidebar-inner { min-width: 286px; padding: 22px 0 60px; }
   .logo { text-align: center; padding: 0 18px 18px; border-bottom: 2px solid var(--border); margin-bottom: 12px; }
   .logo .ic { font-size: 38px; margin-bottom: 4px; filter: drop-shadow(0 0 14px rgba(99,102,241,.55)); }
-  .logo h1 { font-size: 16px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; font-weight: 900; }
+  .logo h1 { font-size: 16px; color: var(--primary);  font-weight: 900; }
   .logo .sub { font-size: 10px; color: var(--gray); margin-top: 5px; letter-spacing: 1.2px; }
   .sidebar-search { padding: 10px 16px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
   .sidebar-search input { width: 100%; padding: 8px 11px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 12.5px; }
@@ -82,7 +80,7 @@
   .nav-plain a:hover, .nav-plain a.active { color: var(--light-strong); font-weight: 800; border-left-color: var(--primary-glow); background: rgba(99,102,241,.18); }
 
   /* ===== TOPBAR ===== */
-  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(6,7,13,.85); border-bottom: 1px solid var(--border); padding: 10px 18px 10px 16px; display:flex; align-items:center; gap:12px; }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); padding: 10px 18px 10px 16px; display:flex; align-items:center; gap:12px; }
   .sb-toggle { background: var(--card); border:1px solid var(--border); color: var(--light); width: 38px; height: 38px; border-radius: 9px; cursor: pointer; font-size: 18px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition: all .2s; }
   .sb-toggle:hover { border-color: var(--primary); color: var(--primary-glow); }
   .crumb { font-size: 13px; color: var(--gray); flex: 1; }
@@ -101,10 +99,10 @@
   @keyframes fade { from { opacity: 0; transform: translateY(6px);} to { opacity:1; transform:none; } }
 
   /* ===== HERO ===== */
-  .hero { background: linear-gradient(135deg, rgba(99,102,241,.16), rgba(245,158,11,.07)); border: 1px solid var(--border); border-radius: 16px; padding: 34px; margin-bottom: 24px; position: relative; overflow: hidden; }
+  .hero { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 34px; margin-bottom: 24px; position: relative; overflow: hidden; }
   .hero::after { content:"👨‍🏫"; position:absolute; right:26px; bottom:-20px; font-size:170px; opacity:.06; }
   .hero h1 { font-size: 28px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
-  .hero h1 .g { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero h1 .g { color: var(--primary);  }
   .hero p { color: var(--light); max-width: 800px; }
   .meta-row { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 18px; }
   .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 9px 15px; font-size: 13px; }
@@ -169,9 +167,9 @@
 
   /* ===== CODE BLOCK ===== */
   .code-block { background: var(--terminal); border:1px solid var(--border); border-radius:11px; margin:14px 0; overflow:hidden; }
-  .code-block .cbhead { background: var(--card-2); border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
+  .code-block .cbhead { background: #1e293b; border-bottom:1px solid var(--border); padding:7px 14px; font-size:11.5px; color:var(--gray); display:flex; justify-content:space-between; align-items:center; }
   .code-block .cbhead .dot { color: var(--primary); }
-  pre.code { padding:14px 16px; overflow-x:auto; font-size:13px; line-height:1.65; color:var(--light); white-space:pre; }
+  pre.code { padding:14px 16px; overflow-x:auto; font-size:13px; line-height:1.65; color:#e2e8f0; white-space:pre; }
   pre.code .cm { color: var(--code-gray); font-style:italic; }
   pre.code .kw { color: var(--code-purple); }
   pre.code .st { color: var(--code-green); }
@@ -195,7 +193,7 @@
   .codepad { width:100%; min-height:140px; background:var(--terminal); border:1px solid var(--border); border-radius:9px; color:var(--code-green); font-family:'JetBrains Mono','Consolas',monospace; font-size:13px; line-height:1.6; padding:11px 13px; resize:vertical; white-space:pre; tab-size:4; }
   .codepad:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(99,102,241,.13); }
   .ebtns { display:flex; gap:9px; margin:11px 0 4px; flex-wrap:wrap; }
-  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#06070d; }
+  .ebtn { font-family:inherit; font-size:13px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; border:none; background:var(--primary); color:#fff; }
   .ebtn:hover { background:var(--primary-glow); }
   .ebtn.ghost { background:transparent; border:1px solid var(--border); color:var(--gray); }
   .echk { margin-top:11px; display:none; }
@@ -225,7 +223,7 @@
   .qexp code { background:var(--terminal); color:var(--code-yellow); padding:1px 5px; border-radius:4px; }
 
   /* ===== ĐỀ THI ===== */
-  .exam { background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(99,102,241,.05)); border:1px solid var(--accent); border-radius:14px; padding:20px 22px; margin:20px 0; }
+  .exam { background: var(--card); border:1px solid var(--accent); border-radius:14px; padding:20px 22px; margin:20px 0; }
   .exam .eh { font-weight:900; color: var(--accent-2); margin-bottom:6px; display:flex; align-items:center; gap:10px; font-size:16px; flex-wrap:wrap; }
   .exam .eh .et { font-size:10.5px; font-weight:900; letter-spacing:1px; text-transform:uppercase; background:var(--accent); color:#1a1206; padding:3px 10px; border-radius:20px; }
   .exam .emeta { display:flex; gap:14px; flex-wrap:wrap; font-size:12.5px; color:var(--gray); margin: 6px 0 12px; }
@@ -262,7 +260,7 @@
   .progress-wrap { background: var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:18px 0; }
   .progress-wrap .pt { font-weight:800; color:var(--light-strong); margin-bottom:10px; }
   .progress-bar { height:10px; background: var(--card-2); border-radius:6px; overflow:hidden; margin-bottom:8px; }
-  .progress-fill { height:100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width:0%; transition: width .6s; border-radius:6px; }
+  .progress-fill { height:100%; background: var(--card); width:0%; transition: width .6s; border-radius:6px; }
   .progress-wrap .ps { font-size:12px; color:var(--gray); }
 
   /* ===== ĐỀ ÁN ĐỀ XUẤT (Capstone ideas) ===== */
@@ -292,7 +290,7 @@
   .ideas-filter { display:flex; gap:8px; flex-wrap:wrap; margin: 14px 0 4px; }
   .ideas-filter .chip { font-size:12px; padding:6px 14px; border-radius:20px; border:1px solid var(--border); background:var(--card); color:var(--gray); cursor:pointer; transition:all .15s; }
   .ideas-filter .chip:hover { border-color:var(--primary); color:var(--light); }
-  .ideas-filter .chip.active { background: var(--primary); color:#06070d; border-color:var(--primary); font-weight:700; }
+  .ideas-filter .chip.active { background: var(--primary); color:#fff; border-color:var(--primary); font-weight:700; }
 
   footer.foot { border-top: 1px solid var(--border); padding: 24px 44px; color: var(--gray); font-size: 12.5px; }
   footer.foot a { color: var(--primary-glow); }
@@ -1193,7 +1191,7 @@ LESSON_DETAIL['s1-b8'] = { crumb: CRUMB_M1(8), html: `
 </div>
 <h2 class="sec">💻 Nội dung</h2>
 <h3 class="mini">Bài tập lớn tổng hợp</h3>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 BÀI TẬP LỚN M1 — Mạng nơ-ron 2 lớp bằng NumPy <span class="et">Cá nhân</span></div>
   <p>Tổng hợp toàn bộ Toán: xây mạng 2 lớp hoàn chỉnh bằng NumPy tay.</p>
   <ul>
@@ -2998,7 +2996,7 @@ git commit -m <span class="st">"feat: add survival pipeline (ETL + test + Docker
 git push origin feature/survival-pipeline
 <span class="cm"># → Mở PR trên GitHub, gắn @reviewer, mô tả + screenshot docker run</span></pre></div>
 <div class="box danger"><span class="bt">🚫 Không hardcode API key trong code!</span> Mọi URL/key/secret → biến môi trường + <code class="ic">.env</code> (loại trừ khỏi Git bằng <code class="ic">.gitignore</code>). Nộp kèm <code class="ic">.env.example</code> với giá trị giả. Hardcode key rồi push lên GitHub = key bị scrape bot trong vài phút. (Liên hệ HK1 M9 Security.)</div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 MINI-CAPSTONE HK0 — Survival Pipeline <span class="et">Cá nhân</span></div>
   <p>Dựng 1 ETL pipeline chạy được end-to-end, đóng gói Docker, nộp qua PR. Tổng hợp toàn bộ B1-B15.</p>
   <ul>
@@ -3432,7 +3430,7 @@ LESSON_DETAIL['s2-b8'] = { crumb: CRUMB('s2',M2_NAME,'Buổi 8 · Mini-project')
   <div class="tl-row"><div class="tl-time">55–150'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc">Học viên làm, giáo viên đi vòng hỗ trợ.</div></div></div>
   <div class="tl-row"><div class="tl-time">150–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Dặn dò</span> Nộp project + ôn CK</div><div class="tdesc">Nộp GitHub. Thông báo lịch CK môn.</div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 MINI-PROJECT M2 — EDA &amp; DataCleaner <span class="et">Cá nhân</span></div>
   <p>Tổng hợp kỹ năng B1–B5 thành một pipeline xử lý dữ liệu.</p>
   <ul>
@@ -3847,7 +3845,7 @@ LESSON_DETAIL['s3-b10'] = { crumb: CRUMB('s3',M3_NAME,'Buổi 10 · Project'), h
   <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc">Giáo viên đi vòng hỗ trợ.</div></div></div>
   <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Nộp GitHub. Chuẩn bị M4.</div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 MID-TERM PROJECT HK1 — XGBoost <span class="et">Cá nhân · Bảo vệ</span></div>
   <p>Dùng toàn bộ M3 giải bài toán dự đoán kinh doanh trên dữ liệu bảng.</p>
   <ul><li>Dataset Kaggle: giá nhà / churn / doanh thu.</li><li>EDA → Pipeline → so sánh ≥ 3 mô hình → GridSearchCV.</li><li>Báo cáo: metrics + feature importance + confusion matrix.</li></ul>
@@ -4265,7 +4263,7 @@ LESSON_DETAIL['s4-b10'] = { crumb: CRUMB('s4',M4_NAME,'Buổi 10 · Project'), h
   <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc"></div></div></div>
   <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Chuẩn bị M5.</div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 PROJECT YOLO — Nhận diện ký hiệu kỹ thuật <span class="et">Cá nhân / Nhóm 2</span></div>
   <p>Case Study cốt lõi: nhận diện Bơm/Van/Bình khí trên bản vẽ PDF.</p>
   <ul><li>200–500 ảnh (PDF→PNG 300 DPI); gán nhãn CVAT/Roboflow.</li><li>Train YOLOv8n/s; report mAP50 &amp; mAP50-95.</li><li>Augment rotation/noise/contrast → đo cải thiện.</li><li>Script inference trên file PDF mới.</li></ul>
@@ -4524,7 +4522,7 @@ LESSON_DETAIL['s5-b8'] = { crumb: CRUMB('s5',M5_NAME,'Buổi 8 · Final HK1'), h
   <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Build app + deploy</div><div class="tdesc">Deploy HF Spaces / Streamlit Cloud.</div></div></div>
   <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Bảo vệ cuối kì.</div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 FINAL PROJECT HK1 — Web App AI demo <span class="et">Cá nhân · Bảo vệ cuối kì</span></div>
   <p>Tự train mô hình CV (YOLO) hoặc ML bảng, đóng gói thành Web App công khai.</p>
   <ul><li>Hướng A: app nhận diện ảnh YOLO bạn train. Hướng B: app dự đoán dữ liệu bảng.</li><li>Streamlit/Gradio + README + deploy công khai.</li><li>Trình bày 20': bài toán, dữ liệu, mô hình, demo sống.</li></ul>
@@ -4803,7 +4801,7 @@ LESSON_DETAIL['s6-b10'] = { crumb: CRUMB('s6',M6_NAME,'Buổi 10 · Project'), h
   <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc"></div></div></div>
   <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc">Chuẩn bị M7.</div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 PROJECT — Agent tra cứu nội bộ <span class="et">Cá nhân</span></div>
   <p>Lắp Context + Tool + Memory thành agent hoàn chỉnh.</p>
   <ul><li>Ingest 20-50 tài liệu → FAISS.</li><li>Tool search_docs trả top-k chunk.</li><li>Vòng lặp ReAct + trích nguồn.</li><li>Memory giữ 5 lượt hội thoại.</li><li>Test 10 câu đã biết đáp án → recall nguồn.</li></ul>
@@ -5200,7 +5198,7 @@ df = pd.read_sql(<span class="st">"""
 <span class="cm"># Giờ dùng Pandas làm sạch/visualize như bình thường</span>
 print(df.head())</pre></div>
 <div class="box pro"><span class="bt">📌 Tuyệt chiêu cuối</span> <code class="ic">pd.read_sql(query, engine)</code> = cầu nối hoàn hảo giữa sức mạnh SQL (truy xuất/JOIN/aggregate trên DB) và Python (làm sạch/ML/visualize). Viết query phức tạp ở SQL, kéo đúng kết quả về DataFrame — không kéo nguyên bảng rồi mới xử lý.</div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 MINI-PROJECT M6 — EDA từ Database <span class="et">Cá nhân</span></div>
   <p>Kết nối DB thật, viết query phức tạp, kéo về DataFrame, EDA + làm sạch.</p>
   <ul><li>Kết nối PostgreSQL/SQLite bằng SQLAlchemy.</li><li>Viết query có JOIN + GROUP BY + Window Function.</li><li><code>pd.read_sql()</code> kéo kết quả về.</li><li>Làm sạch NaN/outlier + EDA (≥ 4 biểu đồ).</li></ul>
@@ -5460,7 +5458,7 @@ LESSON_DETAIL['s7-b8'] = { crumb: CRUMB('s7',M7_NAME,'Buổi 8 · Mid-term HK2')
   <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Làm project</div><div class="tdesc"></div></div></div>
   <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Bảo vệ</span></div><div class="tdesc"></div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 MID-TERM PROJECT HK2 — Multi-Agent + Eval <span class="et">Nhóm 2-3 · Bảo vệ</span></div>
   <p>Pipeline ≥ 2 agent với đánh giá tự động.</p>
   <ul><li>Điều phối LangGraph (router/supervisor).</li><li>Eval set ≥ 20 mẫu + LLM-as-judge + 5 spot-check tay.</li><li>Báo cáo trước/sau tối ưu (điểm, trễ, chi phí).</li><li>Phân tích lỗi cụ thể.</li></ul>
@@ -5690,7 +5688,7 @@ LESSON_DETAIL['s8-b8'] = { crumb: CRUMB('s8',M8_NAME,'Buổi 8 · Project'), htm
   <div class="tl-row"><div class="tl-time">55–160'</div><div class="tl-act"><div class="tname"><span class="pill prac">Thực hành</span> Bọc bảo mật</div><div class="tdesc"></div></div></div>
   <div class="tl-row"><div class="tl-time">160–175'</div><div class="tl-act"><div class="tname"><span class="pill wrap">Nộp</span></div><div class="tdesc"></div></div></div>
 </div>
-<div class="exam" style="background:linear-gradient(135deg,rgba(52,211,153,.08),rgba(99,102,241,.05));border-color:var(--ok)">
+<div class="exam" style="background:rgba(99,102,241,.05);border-color:var(--ok)">
   <div class="eh">🏆 PROJECT — Bọc bảo mật + governance <span class="et">Cá nhân / Nhóm</span></div>
   <p>Lấy agent tra cứu M6, bổ sung bảo mật + quản trị hoàn chỉnh.</p>
   <ul><li>Key qua secret manager; RBAC (2 vai trò).</li><li>Allow-list tool + validate; audit log.</li><li>Mask PII trước API.</li><li>Human approval cho 1 thao tác rủi ro cao.</li><li>Test ≥ 3 kịch bản prompt injection.</li></ul>
@@ -6143,7 +6141,7 @@ function renderM10Exams(){
    ============================================================ */
 const M11_NAME = 'M11 ĐATN';
 const CAPSTONE_CRITERIA = `
-<div class="exam" style="background:linear-gradient(135deg,rgba(245,158,11,.10),rgba(99,102,241,.06));border-color:var(--accent)">
+<div class="exam" style="background:rgba(245,158,11,.06);border-color:var(--accent)">
   <div class="eh">🎓 TIÊU CHÍ CHẤM ĐỒ ÁN TỐT NGHIỆP <span class="et">Hội đồng</span></div>
   <div class="emeta"><span>Trọng số: <b>100% môn</b></span><span>Nhóm <b>2-3</b></span><span>Bảo vệ <b>30'</b></span></div>
   <ul>

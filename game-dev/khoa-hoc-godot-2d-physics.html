@@ -7,26 +7,26 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
-    --primary: #478CBF;        /* godot blue */
-    --primary-glow: #6bb0e0;
-    --accent: #ff7043;         /* coil orange */
-    --accent-2: #ffca28;
-    --l0: #6cc644; --l1: #478CBF; --l2: #b07cff; --l3: #ff7043; --l4: #f6c945;
-    --ok: #2ea043; --warn: #d29922; --danger: #f85149; --info: #58a6ff;
-    --dark: #0d1117; --darker: #010409; --light: #c9d1d9; --light-strong: #f0f6fc; --gray: #8b949e;
-    --card: #161b22; --card-2: #1c2128; --border: #30363d; --terminal: #0a0e14;
-    --code-green: #7ee787; --code-yellow: #ffd43b; --code-blue: #79c0ff; --code-red: #ff7b72; --code-purple: #d2a8ff; --code-orange: #ffa657;
+    --primary: #2563eb;        /* godot blue */
+    --primary-glow: #1d4ed8;
+    --accent: #f1f5f9;         /* coil orange */
+    --accent-2: #ea580c;
+    --l0: #0284c7; --l1: #059669; --l2: #d97706; --l3: #6d28d9; --l4: #db2777;
+    --ok: #10b981; --warn: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+    --dark: #ffffff; --darker: #f8fafc; --light: #334155; --light-strong: #0f172a; --gray: #64748b;
+    --card: #ffffff; --card-2: #f8fafc; --border: #e2e8f0; --terminal: #0f172a;
+    --code-green: #86efac; --code-yellow: #fde047; --code-blue: #7dd3fc; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-orange: #ffa657;
   }
   body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden;
-    background-image: radial-gradient(circle at 16% 22%, rgba(71,140,191,0.10) 0%, transparent 45%), radial-gradient(circle at 84% 72%, rgba(255,112,67,0.06) 0%, transparent 45%); background-attachment: fixed; }
+ }
   code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
   .container { display: flex; min-height: 100vh; }
 
-  .sidebar { width: 340px; background: linear-gradient(180deg, var(--dark) 0%, #050810 100%); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(71,140,191,0.18); }
-  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+  .sidebar { width: 340px; background: var(--card); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(71,140,191,0.18); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
   .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
   .logo .g-icon { font-size: 44px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(71,140,191,0.6)); }
-  .logo h1 { font-size: 19px; background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 900; }
+  .logo h1 { font-size: 19px; color: var(--primary);    font-weight: 900; }
   .logo p { font-size: 10px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
   .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
   .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
@@ -44,15 +44,15 @@
   .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
 
   .main-content { margin-left: 340px; flex: 1; max-width: calc(100% - 340px); }
-  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(1,4,9,0.82); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
   .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent); }
   .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; }
   .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
 
-  .hero { background: linear-gradient(135deg, rgba(71,140,191,0.2), rgba(255,112,67,0.10)); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
   .hero::after { content:"🌀"; position:absolute; right:10px; bottom:-22px; font-size:155px; opacity:.08; }
   .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
-  .hero h1 .grad { background: linear-gradient(135deg, var(--primary-glow), var(--accent)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+  .hero h1 .grad { color: var(--primary);  }
   .hero p { color: var(--light); max-width: 780px; }
   .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
   .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
@@ -60,7 +60,7 @@
 
   section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
   .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
-  .level-divider .line { flex: 1; height: 2px; background: linear-gradient(90deg, transparent, var(--border)); }
+  .level-divider .line { flex: 1; height: 2px; background: var(--border); }
   .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 1.5px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
   .tag-l0 { background: rgba(108,198,68,.14); color: var(--l0); border:1px solid var(--l0);}
   .tag-l1 { background: rgba(71,140,191,.16); color: var(--primary-glow); border:1px solid var(--l1);}
@@ -100,7 +100,7 @@
   .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
   .code-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
   .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
-  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: var(--light); white-space: pre; tab-size: 4; }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: #e2e8f0; white-space: pre; tab-size: 4; }
   pre.code .c { color: var(--gray); font-style: italic; } pre.code .s { color: var(--code-green); } pre.code .k { color: var(--code-red); }
   pre.code .n { color: var(--code-blue); } pre.code .f { color: var(--code-purple); } pre.code .d { color: var(--code-yellow); } pre.code .t { color: var(--code-orange); }
 
@@ -125,7 +125,7 @@
   .quiz .opt.correct { background: rgba(46,160,67,.14); border-color: var(--ok); } .quiz .opt.wrong { background: rgba(248,81,73,.12); border-color: var(--danger); }
   .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
   .quiz .explain.show { display:block; }
-  .quiz button.check { background: var(--primary); color:#fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check { background: var(--primary); color: #fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
   .quiz button.check:hover { background: var(--primary-glow); }
 
   .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
@@ -136,7 +136,7 @@
   .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
   .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
   .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
-  .fc-front { background: var(--card); } .fc-back { background: linear-gradient(135deg, rgba(71,140,191,.2), rgba(255,112,67,.12)); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-front { background: var(--card); } .fc-back { background: var(--card); transform: rotateY(180deg); overflow-y:auto; }
   .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
   .fc-tag.t0 { background: rgba(108,198,68,.18); color: var(--l0); } .fc-tag.t1 { background: rgba(71,140,191,.2); color: var(--primary-glow); }
   .fc-tag.t2 { background: rgba(176,124,255,.18); color: var(--l2); } .fc-tag.t3 { background: rgba(255,112,67,.18); color: var(--l3); } .fc-tag.t4 { background: rgba(246,201,69,.18); color: var(--l4); }
@@ -145,14 +145,14 @@
   footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
 
   /* ---------- SLINKY LAB ---------- */
-  .lab-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--primary),var(--accent)); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s; }
+  .lab-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: var(--card); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(0,0,0,.45); display: flex; align-items: center; gap: 8px; transition: transform .15s; }
   .lab-fab:hover { transform: translateY(-2px); } .lab-fab.hidden { display: none; }
   .lab-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: 380px; max-width: calc(100vw - 24px); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(0,0,0,.6); display: none; flex-direction: column; overflow: hidden; }
   .lab-panel.open { display: flex; }
-  .lab-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: linear-gradient(135deg, rgba(71,140,191,.3), rgba(255,112,67,.18)); border-bottom: 1px solid var(--border); cursor: move; }
+  .lab-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--card); border-bottom: 1px solid var(--border); cursor: move; }
   .lab-head .lab-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
   .lab-head button { background: rgba(255,255,255,.08); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
-  #slinkyCanvas { display:block; width:100%; height:300px; background: radial-gradient(circle at 50% 30%, #10202e, #0a0e14); touch-action:none; cursor: grab; }
+  #slinkyCanvas { display:block; width:100%; height:300px; background: var(--card); touch-action:none; cursor: grab; }
   #slinkyCanvas:active { cursor: grabbing; }
   .lab-controls { padding: 10px 14px 14px; }
   .lab-controls .row { display:flex; align-items:center; gap:8px; margin-bottom:7px; font-size:12px; color: var(--gray); }
@@ -168,7 +168,7 @@
   @media (max-width: 980px) {
     .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
     .main-content { margin-left: 0; max-width: 100%; }
-    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color:#fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color: #fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
     .content-inner, .topbar { padding-left: 18px; padding-right: 18px; } .topbar { padding-left: 66px; }
     .lab-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); }
   }
@@ -1134,7 +1134,7 @@ add_child(spring)</pre>
         <h3 class="sec">▶ Chơi ngay (bản web)</h3>
         <div class="box slinky"><span class="box-title">Đây là chính game bạn sắp dựng trong Godot</span>Bản web này chạy đúng mô hình Verlet + luật chơi mà phần Godot bên dưới hiện thực hóa. Chơi thử để "thấy" mục tiêu, rồi dựng lại bằng GDScript.</div>
         <div style="border:1px solid var(--border); border-radius:12px; overflow:hidden; background:#0a0e14; margin:16px 0;">
-          <canvas id="mgCanvas" width="560" height="360" style="display:block; width:100%; height:auto; aspect-ratio:560/360; touch-action:none; cursor:grab; background:radial-gradient(circle at 50% 25%, #122131, #0a0e14);"></canvas>
+          <canvas id="mgCanvas" width="560" height="360" style="display:block; width:100%; height:auto; aspect-ratio:560/360; touch-action:none; cursor:grab; background:#0a0e14;"></canvas>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:-6px;">
           <button onclick="mgReset()" style="background:var(--card-2);color:var(--light);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">↺ Chơi lại màn</button>
@@ -1854,11 +1854,11 @@ initSlinky();
 
 <!-- ===== LEVEL EDITOR ===== -->
 <style>
-  .led-fab { position: fixed; left: 22px; bottom: 22px; z-index: 400; background: linear-gradient(135deg,var(--accent),var(--primary)); color:#fff; border:none; border-radius:999px; padding:12px 18px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 6px 22px rgba(0,0,0,.45); }
+  .led-fab { position: fixed; left: 22px; bottom: 22px; z-index: 400; background: var(--card); color:#fff; border:none; border-radius:999px; padding:12px 18px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 6px 22px rgba(0,0,0,.45); }
   .led-fab.hidden { display:none; }
   .led-panel { position: fixed; left: 22px; bottom: 22px; z-index: 401; width: min(600px, calc(100vw - 24px)); background: var(--card); border:1px solid var(--border); border-radius:14px; box-shadow:0 18px 60px rgba(0,0,0,.6); display:none; flex-direction:column; overflow:hidden; }
   .led-panel.open { display:flex; }
-  .led-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:linear-gradient(135deg,rgba(255,112,67,.25),rgba(71,140,191,.2)); border-bottom:1px solid var(--border); cursor:move; font-size:13px; font-weight:800; color:var(--light-strong); }
+  .led-head { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background: var(--card); border-bottom:1px solid var(--border); cursor:move; font-size:13px; font-weight:800; color:var(--light-strong); }
   .led-head button { background:rgba(255,255,255,.08); color:var(--light); border:1px solid var(--border); border-radius:6px; padding:4px 10px; cursor:pointer; font-family:inherit; font-weight:700; }
   .led-tools { display:flex; flex-wrap:wrap; gap:5px; padding:10px 12px 4px; }
   .led-tools button { background:var(--card-2); color:var(--light); border:1px solid var(--border); border-radius:7px; padding:5px 9px; font-size:12px; cursor:pointer; font-family:inherit; }
