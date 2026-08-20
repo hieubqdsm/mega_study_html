@@ -83,6 +83,16 @@
   .code-ic { color: var(--accent-2); }
   .formula { background: var(--card); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:12px 16px; margin:14px 0; font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:15px; }
 
+  figure.fig { margin: 18px 0; }
+  figure.fig img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; display: block; }
+  figure.fig.sm { max-width: 440px; }
+  figure.fig.xs { max-width: 330px; }
+  figure.fig figcaption { font-size: 12px; color: var(--gray); margin-top: 6px; line-height: 1.5; }
+  .sprite-row { display:flex; align-items:flex-end; gap:12px; margin: 14px 0; flex-wrap: wrap; }
+  .sprite-row figure { margin:0; text-align:center; }
+  .sprite-row img { image-rendering: pixelated; background: var(--card-2); border:1px solid var(--border); border-radius: 8px; padding: 8px; width: 72px; height: auto; display:block; }
+  .sprite-row figcaption { font-size: 11px; color: var(--gray); margin-top: 4px; }
+
   .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
   .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
   .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
@@ -317,6 +327,7 @@
           <li>Giải nén → chạy file executable. <strong>Xong</strong> — thật sự không cần cài đặt.</li>
           <li>Cửa sổ <strong>Project Manager</strong> hiện ra → <strong>New Project</strong> → đặt tên (vd <code class="ic">hoc-godot</code>) → chọn thư mục → renderer chọn <strong>Compatibility</strong> (nhẹ, chạy mọi máy — nếu máy mạnh muốn bóng đổ đẹp thì Forward+) → <strong>Create &amp; Edit</strong>.</li>
         </ol>
+        <figure class="fig sm"><img src="assets-godot-can-ban/new-project-button.webp" alt="Project Manager — tạo project mới" loading="lazy"><figcaption>Project Manager khi mở Godot lần đầu — bấm New Project để tạo dự án. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <h3 class="sec">Chạy thử đầu tiên — "Hello Godot"</h3>
         <ol>
@@ -340,6 +351,8 @@
         <p>Trong Godot, <strong>mọi thứ là Node</strong>. Mỗi node chỉ làm <strong>đúng một việc</strong>: <code class="ic">Sprite2D</code> hiển thị ảnh, <code class="ic">AudioStreamPlayer</code> phát âm thanh, <code class="ic">Timer</code> đếm giờ, <code class="ic">CollisionShape2D</code> mô tả vùng va chạm... Node có <strong>thuộc tính</strong> (vị trí, màu, tốc độ — chỉnh trong Inspector) và có thể phát <strong>tín hiệu</strong> (chương 9).</p>
 
         <p>Các node lồng nhau theo <strong>cây cha–con</strong>. Một cây như thế được lưu thành một <strong>Scene</strong> (tệp <code class="ic">.tscn</code>). Game của bạn là một cây lớn:</p>
+        <figure class="fig sm"><img src="assets-godot-can-ban/nodes_and_scenes_02_scene_dock.webp" alt="Panel Scene với cây node" loading="lazy"><figcaption>Panel <strong>Scene</strong> (trái trên) — cây node của scene đang mở. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig xs"><img src="assets-godot-can-ban/nodes_and_scenes_03_create_node_window.webp" alt="Cửa sổ Create New Node" loading="lazy"><figcaption>Cửa sổ <strong>Create</strong> — gõ tên node cần thêm (vd Sprite2D) rồi Create. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Cây scene của game "Né Quỷ"</span></div>
 <pre class="code"><span class="f">Main</span> (Node)                  <span class="c"># scene chính — điều phối game</span>
 ├── <span class="f">Player</span> (Area2D)          <span class="c"># instance của player.tscn</span>
@@ -355,6 +368,7 @@
 
         <h3 class="sec">Instance — "prefab" của Godot</h3>
         <p>Lưu Player thành <code class="ic">player.tscn</code> riêng, rồi <strong>nhúng (instance)</strong> nó vào Main bằng nút chuột phải → <em>Instantiate Child Scene</em> (hoặc nút ⛓ trên panel Scene). Sửa <code class="ic">player.tscn</code> → <strong>mọi bản nhúng tự cập nhật</strong>. Quy tắc: <strong>mọi thứ lặp lại (nhân vật, quỷ, đồng xu) đều deserve một scene riêng</strong>.</p>
+        <figure class="fig sm"><img src="assets-godot-can-ban/instance_scene.webp" alt="Nút Instantiate Child Scene" loading="lazy"><figcaption>Nút <strong>⛓ Instantiate Child Scene</strong> trên panel Scene — nhúng scene này vào scene khác. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <div class="box info"><span class="box-title">Đặt tên node = đặt địa chỉ</span><code class="ic">$TenNode</code> trong code trỏ tới node con theo <strong>tên</strong>. Đổi tên node = code cũ bỏ tham chiếu. Ngay từ đầu: đặt tên rõ (ScoreLabel, không phải Label), không trùng tên ở cùng cấp.</div>
 
@@ -394,6 +408,7 @@
             <tr><td><strong>F5 / F6 / F8</strong></td><td>Chạy game / Chạy scene / Dừng</td></tr>
           </tbody>
         </table>
+        <figure class="fig xs"><img src="assets-godot-can-ban/grid_snap_button.webp" alt="Nút Snap trên toolbar 2D" loading="lazy"><figcaption>Thanh công cụ 2D: nút <strong>Snap</strong> (nam châm + lưới) giúp dàn node thẳng hàng đều tăm tắp. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <div class="box tip"><span class="box-title">Inspector là "code không cần code"</span>Đổi màu (<code class="ic">modulate</code>), lật ảnh (<code class="ic">flip_h</code>), tốc độ... đều chỉnh ngay trong Inspector. Ô nào đã đổi có mũi tên ↩ — bấm để trả về mặc định. Từ chương 5, biến <code class="ic">@export</code> của bạn cũng hiện ở đây.</div>
 
@@ -407,6 +422,7 @@
 ├── ui/          <span class="c"># hud.tscn + hud.gd</span>
 └── main.tscn    <span class="c"># scene chính</span></pre>
         </div>
+        <figure class="fig sm"><img src="assets-godot-can-ban/folder-content.webp" alt="FileSystem dock với thư mục" loading="lazy"><figcaption><strong>FileSystem</strong> sau khi tổ chức — kéo thả để nhóm tệp theo folder ngay từ đầu. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <div class="checklist">
           <h4>✓ Checklist chương 3</h4>
@@ -462,6 +478,7 @@
 
         <h3 class="sec">Script đầu tiên</h3>
         <p>Chọn root node của scene → nút ➕ kèm hình tờ giấy (hoặc chuột phải → <em>Attach Script</em>) → giữ mặc định → Godot tạo <code class="ic">ten_node.gd</code> và mở tab Script. Gõ thử:</p>
+        <figure class="fig sm"><img src="assets-godot-can-ban/scripting_first_script_attach_script.webp" alt="Nút Attach Script" loading="lazy"><figcaption>Chuột phải node → <strong>Attach Script</strong> — đặt tên mặc định theo node là được. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> hello.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
 <pre class="code"><span class="k">extends</span> Node2D          <span class="c"># script này gắn vào 1 node kiểu Node2D</span>
 
@@ -470,6 +487,7 @@
     position.x += <span class="n">100</span>       <span class="c"># dịch node sang phải 100px lúc mở game</span></pre>
         </div>
         <p>F6 → nhìn panel <strong>Output</strong> (dưới) thấy dòng chữ, node dịch đi 100px. Bạn vừa viết chương trình đầu tiên trong Godot!</p>
+        <figure class="fig xs"><img src="assets-godot-can-ban/scripting_first_script_print_hello_world.webp" alt="Output hiện dòng print" loading="lazy"><figcaption>Panel <strong>Output</strong> hiện dòng chữ từ <code class="ic">print()</code> — người bạn debug trọn đời. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <h3 class="sec">Biến — hộp đựng có dán nhãn</h3>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> bien.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
@@ -749,6 +767,8 @@ get_tree().<span class="f">call_group</span>(<span class="s">"mobs"</span>, <spa
 
         <h3 class="sec">Bước 1 — định nghĩa Action trong Input Map</h3>
         <p><strong>Project → Project Settings → Input Map</strong>. Thêm action <code class="ic">move_left</code>, <code class="ic">move_right</code>, <code class="ic">move_up</code>, <code class="ic">move_down</code>, <code class="ic">jump</code> → bấm <strong>+</strong> gán phím (mũi tên, WASD, thậm chí gamepad — 1 action nhận nhiều phím). Godot có sẵn bộ <code class="ic">ui_left/ui_accept...</code> cho UI; game của bạn nên có action riêng.</p>
+        <figure class="fig sm"><img src="assets-godot-can-ban/input-mapping-add-action.webp" alt="Thêm action trong Input Map" loading="lazy"><figcaption>Thêm action <code class="ic">move_left</code>… rồi bấm <strong>+</strong> để gán phím. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig sm"><img src="assets-godot-can-ban/input-mapping-completed.webp" alt="Input Map hoàn chỉnh" loading="lazy"><figcaption>Bộ action hoàn chỉnh cho "Né Quỷ" — mỗi action nhận nhiều phím (mũi tên + WASD). <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="box tip"><span class="box-title">Vì sao không code phím trái tim?</span>Dùng action: đổi phím = 30 giây trong Settings (không đụng code); gamepad + touch gắn vào cùng action; người chơi có thể tự remap. <strong>Không bao giờ</strong> hard-code <code class="ic">KEY_A</code> cho gameplay.</div>
 
         <h3 class="sec">Bước 2 — đọc action trong code</h3>
@@ -805,6 +825,8 @@ Input.<span class="f">is_action_just_pressed</span>(<span class="s">"jump"</span
           <li>Thêm animation (vd <code class="ic">walk</code>, <code class="ic">up</code>) → kéo dàn frame ảnh vào thanh frame (hoặc Add frames from sprite sheet).</li>
           <li>Chỉnh FPS; bấm ▶ xem thử ngay trong editor.</li>
         </ol>
+        <figure class="fig sm"><img src="assets-godot-can-ban/new_spriteframes.webp" alt="Tạo tài nguyên SpriteFrames" loading="lazy"><figcaption>Inspector → <strong>Sprite Frames → New SpriteFrames</strong> rồi bấm mở panel Animation. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig"><img src="assets-godot-can-ban/spriteframes_panel.webp" alt="Panel SpriteFrames" loading="lazy"><figcaption>Panel <strong>Animation</strong> (dưới): kéo frame vào thanh thời gian, chỉnh FPS, ▶ xem thử. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> anim_sprite.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
 <pre class="code">$AnimatedSprite2D.<span class="f">play</span>()                       <span class="c"># play animation đang chọn</span>
 $AnimatedSprite2D.<span class="f">play</span>(<span class="s">"walk"</span>)                <span class="c"># play cụ thể</span>
@@ -1006,7 +1028,9 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
         <div class="box info"><span class="box-title">Chuẩn bị</span>Tải bộ ảnh mẫu trong trang docs <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html" target="_blank">Your first 2D game</a> (mục "art assets" — có sẵn animation grey_*.png và nhạc/sfx), hoặc tự vẽ/cắt đâu cũng được. Tạo project <code class="ic">ne-quy</code>, action <code class="ic">move_left/right/up/down</code> gán mũi tên + WASD.</div>
 
         <h3 class="sec">Dựng scene</h3>
-        <p><strong>Player.tscn</strong>: root <code class="ic">Area2D</code> (đặt tên <code class="ic">Player</code>) → con: <code class="ic">AnimatedSprite2D</code> + <code class="ic">CollisionShape2D</code> (capsule hoặc circle đè vừa ảnh). Tạo animations <code class="ic">walk</code> (dãy grey_mow_*) và <code class="ic">up</code> (grey_up_*) trong SpriteFrames.</p>
+        <p><strong>Player.tscn</strong>: root <code class="ic">Area2D</code> (đặt tên <code class="ic">Player</code>) → con: <code class="ic">AnimatedSprite2D</code> + <code class="ic">CollisionShape2D</code> (capsule hoặc circle đè vừa ảnh). Tạo animations <code class="ic">walk</code> (dãy grey_walk*) và <code class="ic">up</code> (grey_up*) trong SpriteFrames.</p>
+        <figure class="fig sm"><img src="assets-godot-can-ban/player_scene_nodes.webp" alt="Cây node Player" loading="lazy"><figcaption>Cây Player: <code>Area2D</code> + <code>AnimatedSprite2D</code> + <code>CollisionShape2D</code>. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig sm"><img src="assets-godot-can-ban/player_coll_shape1.webp" alt="CollisionShape2D đè lên sprite" loading="lazy"><figcaption>Chỉnh <code>CollisionShape2D</code> (capsule) đè vừa sprite — viền đỏ chỉ hiện trong editor. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="box info"><span class="box-title">Vì sao Area2D chứ không phải CharacterBody2D?</span>Nhân vật game này cần <em>phát hiện</em> chạm quỷ để thua — không cần chặn/đẩy. Area2D là cảm biến đúng nghĩa, lại nhẹ. (CharacterBody2D sẽ dùng ở game B — platformer.)</div>
 
         <h3 class="sec">player.gd — nguyên bản theo docs</h3>
@@ -1056,6 +1080,7 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
     $CollisionShape2D.<span class="f">set_deferred</span>(<span class="s">"disabled"</span>, <span class="n">true</span>)</pre>
         </div>
         <div class="box warn"><span class="box-title">set_deferred — cái bẫy kinh điển</span>Đang đứng trong callback vật lý (body_entered) mà tắt collision ngay → engine đang tính bước vật lý, đổi hình dạng giữa chừng gây lỗi/crash. <code class="ic">set_deferred</code> = "để hết bước này hẵng đổi". Cũng nhờ disable mà hit không phát 2 lần.</div>
+        <figure class="fig sm"><img src="assets-godot-can-ban/player_signal_connection.webp" alt="Kết nối signal body_entered" loading="lazy"><figcaption>Node dock → Signals → đúp <code>body_entered(body)</code> → chọn Player → Godot tự sinh hàm <code>_on_body_entered</code>. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <div class="exercise">
           <div class="ex-head">✏️ Thực hành 16.1 <span class="lvl">dễ</span></div>
@@ -1074,6 +1099,9 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
           <li>Inspector của Mob: <strong>Gravity Scale = 0</strong> (quỷ không rơi!), <strong>Collision → Mask bỏ tick ô 1</strong> → quỷ không dính vào nhau.</li>
           <li>Group: Node dock → Groups → thêm nhóm <code class="ic">mobs</code> — để game over xóa sạch.</li>
         </ul>
+        <figure class="fig sm"><img src="assets-godot-can-ban/mob_animations.webp" alt="3 animation của Mob" loading="lazy"><figcaption>SpriteFrames của Mob: <code>fly</code> / <code>swim</code> / <code>walk</code> — mỗi loại 2 frame. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig sm"><img src="assets-godot-can-ban/set_collision_mask.webp" alt="Bỏ tick mask 1" loading="lazy"><figcaption>Inspector → Collision → <strong>Mask bỏ tick ô 1</strong> + Gravity Scale = 0 — quỷ không dính nhau, không rơi. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig xs"><img src="assets-godot-can-ban/scene_group_mobs.webp" alt="Thêm node vào group mobs" loading="lazy"><figcaption>Node dock → Groups → gán <code>mobs</code> để xóa hàng loạt bằng <code>call_group</code>. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> mob.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
 <pre class="code"><span class="k">extends</span> RigidBody2D
 
@@ -1088,7 +1116,9 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
 
         <h3 class="sec">Main.tscn — sân khấu</h3>
         <p>Root <code class="ic">Node</code> (đặt tên <code class="ic">Main</code>) → thêm: instance <code class="ic">Player</code> · <code class="ic">MobTimer</code> (Wait 0.5) · <code class="ic">ScoreTimer</code> (Wait 1) · <code class="ic">StartTimer</code> (Wait 2, One Shot ✓) · <code class="ic">StartPosition</code> (Marker2D, đặt giữa dưới) · <code class="ic">MobPath</code> (Path2D).</p>
+        <figure class="fig sm"><img src="assets-godot-can-ban/main_scene_nodes.webp" alt="Cây node Main" loading="lazy"><figcaption>Cây Main hoàn chỉnh — các Timer, StartPosition, MobPath cùng Player instance. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <p>Vẽ <strong>MobPath</strong>: chọn MobPath → thêm Curve2D trong Inspector → bấm các điểm tạo <strong>hình chữ nhật khép kín bao quanh viewport, theo chiều kim đồng hồ</strong> (con là <code class="ic">PathFollow2D</code> đặt tên MobSpawnLocation, bật <em>Rotates</em>). Path2D là "đường ray" — quỷ nhảy lên ray ở điểm bất kỳ rồi lao vào giữa.</p>
+        <figure class="fig"><img src="assets-godot-can-ban/draw_path2d.gif" alt="Hoạt hình vẽ Path2D" loading="lazy"><figcaption>Vẽ MobPath: bấm thêm điểm (Curve2D) thành vòng chữ nhật khép kín quanh viewport — <strong>theo chiều kim đồng hồ</strong>. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
 
         <h3 class="sec">Spawn — trái tim của game</h3>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> main.gd (phần spawn)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
@@ -1121,6 +1151,8 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
 
         <h3 class="sec">HUD.tscn</h3>
         <p>Root <code class="ic">CanvasLayer</code> (tên <code class="ic">HUD</code>) → con: <code class="ic">ScoreLabel</code> (Label, anchor Center Top) · <code class="ic">Message</code> (Label, Autowrap = Word) · <code class="ic">StartButton</code> (Button) · <code class="ic">MessageTimer</code> (Timer 2s, One Shot). Font: Theme Overrides → kéo Xolonium-Regular.ttf (có trong assets).</p>
+        <figure class="fig xs"><img src="assets-godot-can-ban/ui_anchor.webp" alt="Anchor preset" loading="lazy"><figcaption><strong>Anchor preset</strong> — neo Control về góc/giữa để UI co giãn đẹp theo màn hình. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+        <figure class="fig sm"><img src="assets-godot-can-ban/custom_font_load_font.webp" alt="Nạp font tùy chỉnh" loading="lazy"><figcaption>Theme Overrides → Font → kéo file <code>.ttf</code> vào, chỉnh Font Size — HUD chữ to dễ đọc. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> hud.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
 <pre class="code"><span class="k">extends</span> CanvasLayer
 
@@ -1196,6 +1228,7 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
           <li>Nổ khi chết: Player thêm con <code class="ic">GPUParticles2D</code> (One Shot ✓, Emitting ✗; particles.png làm texture) — code: <code class="ic">$GPUParticles2D.emitting = true</code> trong <code class="ic">_on_body_entered</code>, ẩn player, và xóa particle node sau 1s bằng SceneTree timer.</li>
           <li>Đặt <code class="ic">main.tscn</code> làm scene chính (Project Settings → Run → Main Scene) → <strong>F5</strong> chơi game hoàn chỉnh đầu tiên của bạn! 🏆</li>
         </ul>
+        <figure class="fig sm"><img src="assets-godot-can-ban/completed_main_scene.webp" alt="Main scene hoàn chỉnh" loading="lazy"><figcaption>Main scene hoàn chỉnh với HUD — giờ chỉ còn F5 và chơi. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
         <div class="box tip"><span class="box-title">Chơi thử bản web</span>Mini-game cuối trang là "Né Quỷ" thu nhỏ (không cần Godot) — so sánh cảm giác với bản bạn tự làm để hiểu mỗi tham số (tốc độ 150–250, spawn 0.5s, ±45°) ảnh hưởng thế nào.</div>
       </section>
 
@@ -1325,6 +1358,14 @@ $Music.<span class="f">stop</span>()                   <span class="c"># tắt k
         <div class="mg-wrap">
           <h3>🕹 Né Quỷ — bản web thu nhỏ</h3>
           <p class="mg-sub"><strong>Phím mũi tên / WASD</strong> để di chuyển · trên điện thoại: <strong>quét ngón tay</strong>. Quỷ 🔴 xuất hiện từ rìa, càng về sau càng đông. Bấm vào màn hình để bắt đầu.</p>
+          <figure class="fig"><img src="assets-godot-can-ban/dodge_preview.gif" alt="Gameplay Dodge the Creeps" loading="lazy"><figcaption>Bản gốc "Dodge the Creeps" trong docs — mục tiêu bạn tự làm lại bằng Godot ở CH16–18. <em>(Ảnh: Godot Docs, CC BY 3.0)</em></figcaption></figure>
+          <div class="sprite-row">
+            <figure><img src="assets-godot-can-ban/playerGrey_walk1.png" alt="Player walk"><figcaption>walk 1</figcaption></figure>
+            <figure><img src="assets-godot-can-ban/playerGrey_up1.png" alt="Player up"><figcaption>up 1</figcaption></figure>
+            <figure><img src="assets-godot-can-ban/enemyFlyingAlt_1.png" alt="Mob fly"><figcaption>fly</figcaption></figure>
+            <figure><img src="assets-godot-can-ban/enemySwimming_1.png" alt="Mob swim"><figcaption>swim</figcaption></figure>
+            <figure><img src="assets-godot-can-ban/enemyWalking_1.png" alt="Mob walk"><figcaption>walk</figcaption></figure>
+          </div>
           <canvas id="mgCanvas" width="640" height="400"></canvas>
           <div class="mg-btns">
             <button onclick="mgRestart()">▶ Chơi / Chơi lại</button>
@@ -1632,7 +1673,7 @@ Input.<span class="f">is_action_just_pressed</span>(<span class="s">"jump"</span
       </section>
 
       <footer class="foot">
-        🤖 Godot 4 Căn Bản — biên soạn từ <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html" target="_blank">Godot Docs (Step by Step, Your first 2D game)</a>, <a class="inline" href="https://gdquest.github.io/learn-gdscript/" target="_blank">GDQuest Learn GDScript From Zero</a>, Clear Code &amp; Brackeys. Godot là engine mã nguồn mở (MIT); assets mẫu "Dodge the Creeps" thuộc tài liệu chính thức Godot. Bản Markdown: <a class="inline" href="khoa-hoc-godot-can-ban.md">khoa-hoc-godot-can-ban.md</a>.
+        🤖 Godot 4 Căn Bản — biên soạn từ <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html" target="_blank">Godot Docs (Step by Step, Your first 2D game)</a>, <a class="inline" href="https://gdquest.github.io/learn-gdscript/" target="_blank">GDQuest Learn GDScript From Zero</a>, Clear Code &amp; Brackeys. Ảnh chụp editor, ảnh động và sprites trong khóa: <strong>Godot Engine Documentation</strong> — giấy phép <strong>CC BY 3.0</strong>, ghi công "Juan Linietsky, Ariel Manzur and the Godot community". Bản Markdown: <a class="inline" href="khoa-hoc-godot-can-ban.md">khoa-hoc-godot-can-ban.md</a>.
       </footer>
     </div>
   </main>
