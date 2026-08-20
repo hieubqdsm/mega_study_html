@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Godot 4 Căn Bản — Từ Zero Đến Game Đầu Tiên</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #2563eb;        /* corporate blue */
+    --primary-glow: #1d4ed8;
+    --accent: #047857;         /* emerald — accent "căn bản" */
+    --accent-2: #059669;
+    --l0: #0284c7; --l1: #059669; --l2: #d97706; --l3: #6d28d9; --l4: #db2777;
+    --ok: #10b981; --warn: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+    --dark: #ffffff; --darker: #f8fafc; --light: #334155; --light-strong: #0f172a; --gray: #64748b;
+    --card: #ffffff; --card-2: #f8fafc; --border: #e2e8f0; --terminal: #0f172a;
+    --code-green: #86efac; --code-yellow: #fde047; --code-blue: #7dd3fc; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-orange: #ffa657;
+  }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden; }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 340px; background: var(--card); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(37,99,235,0.15); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .g-icon { font-size: 44px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(37,99,235,0.4)); }
+  .logo h1 { font-size: 19px; color: var(--primary); font-weight: 900; }
+  .logo p { font-size: 10px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+  .nav-menu { list-style: none; padding: 0 14px; } .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #fff; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--l1); } .nav-l1 .badge { background: var(--l1); }
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-l4 { color: var(--l4); } .nav-l4 .badge { background: var(--l4); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(37,99,235,0.10); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  .main-content { margin-left: 340px; flex: 1; max-width: calc(100% - 340px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent); }
+  .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; white-space: nowrap; }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero::after { content:"🎮"; position:absolute; right:10px; bottom:-22px; font-size:155px; opacity:.08; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { color: var(--primary); }
+  .hero p { color: var(--light); max-width: 780px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: var(--border); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 1.5px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(2,132,199,.12); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(5,150,105,.12); color: var(--l1); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(217,119,6,.12); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(109,40,217,.12); color: var(--l3); border:1px solid var(--l3);}
+  .tag-l4 { background: rgba(219,39,119,.12); color: var(--l4); border:1px solid var(--l4);}
+
+  h2.ch-title { font-size: 25px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; } ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(248,250,252,.6); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .code-ic { color: var(--accent-2); }
+  .formula { background: var(--card); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:12px 16px; margin:14px 0; font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:15px; }
+
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(59,130,246,.07); border-color: rgba(59,130,246,.35); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(16,185,129,.07); border-color: rgba(16,185,129,.35); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.4); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(239,68,68,.07); border-color: rgba(239,68,68,.35); } .box.danger::before{content:"🚫";}
+  .box.lab { background: rgba(4,120,87,.08); border-color: rgba(4,120,87,.35); } .box.lab::before{content:"🗂";}
+  .box.ver { background: rgba(37,99,235,.08); border-color: rgba(37,99,235,.3); } .box.ver::before{content:"🔀";}
+  .box.game { background: rgba(109,40,217,.08); border-color: rgba(109,40,217,.35); } .box.game::before{content:"🎮";}
+
+  .code-block { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .code-head .fname { font-size: 12px; color: var(--gray); display:flex; align-items:center; gap:8px; }
+  .code-head .dots { display:flex; gap:6px; } .code-head .dots i { width:11px;height:11px;border-radius:50%; display:inline-block; }
+  .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
+  .code-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: #e2e8f0; white-space: pre; tab-size: 4; }
+  pre.code .c { color: #94a3b8; font-style: italic; } pre.code .s { color: var(--code-green); } pre.code .k { color: var(--code-red); }
+  pre.code .n { color: var(--code-blue); } pre.code .f { color: var(--code-purple); } pre.code .d { color: var(--code-yellow); } pre.code .t { color: var(--code-orange); }
+
+  .checklist { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+  .checklist h4 { color: var(--primary-glow); margin-bottom: 10px; font-size: 15px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 14px; }
+  .checklist input { margin-top: 5px; accent-color: var(--primary); }
+  .checklist input:checked + span { color: var(--gray); text-decoration: line-through; }
+
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .exercise .lvl { font-size: 11px; font-weight:700; color:#fff; background: var(--accent); padding: 2px 10px; border-radius: 12px; }
+  .exercise .lvl.hard { background: var(--l3); }
+  details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; }
+  details summary::-webkit-details-marker { display:none; } details summary::before { content: "▸ "; } details[open] summary::before { content: "▾ "; }
+  details.answer summary { background: rgba(4,120,87,.1); color: var(--accent); } details .body { padding: 8px 14px 12px; }
+
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; }
+  .quiz .q { margin-bottom: 18px; } .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 14px; background: var(--card); }
+  .quiz .opt:hover { border-color: var(--primary); } .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(16,185,129,.14); border-color: var(--ok); } .quiz .opt.wrong { background: rgba(239,68,68,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color: #fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-count { font-size: 12px; color: var(--gray); margin-left: 4px; }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 180px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); } .fc-back { background: var(--card); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(2,132,199,.15); color: var(--l0); } .fc-tag.t1 { background: rgba(5,150,105,.15); color: var(--l1); }
+  .fc-tag.t2 { background: rgba(217,119,6,.15); color: var(--l2); } .fc-tag.t3 { background: rgba(109,40,217,.15); color: var(--l3); } .fc-tag.t4 { background: rgba(219,39,119,.15); color: var(--l4); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; } .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; } .fc-a code { background: rgba(37,99,235,.1); color: var(--primary-glow); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  /* ---------- MINI-GAME "NÉ QUỶ" ---------- */
+  .mg-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 24px 0; }
+  .mg-wrap h3 { color: var(--light-strong); margin-bottom: 4px; }
+  .mg-sub { font-size: 13px; color: var(--gray); margin-bottom: 14px; }
+  #mgCanvas { display:block; width:100%; height:auto; aspect-ratio: 640/400; background:#0b1220; border-radius: 10px; touch-action:none; cursor: default; }
+  .mg-btns { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; align-items:center; }
+  .mg-btns button { background: var(--primary); color:#fff; border:none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 800; cursor:pointer; font-family: inherit; }
+  .mg-btns button.ghost { background: var(--card-2); color: var(--light); border:1px solid var(--border); }
+  .mg-btns button:hover { filter: brightness(1.08); }
+  .mg-best { font-size: 13px; color: var(--gray); margin-left: auto; }
+  .mg-best b { color: var(--accent); }
+
+  /* ---------- SCENE LAB (floating panel) ---------- */
+  .lab-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: var(--primary); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(37,99,235,.4); display: flex; align-items: center; gap: 8px; transition: transform .15s; }
+  .lab-fab:hover { transform: translateY(-2px); } .lab-fab.hidden { display: none; }
+  .lab-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: 400px; max-width: calc(100vw - 24px); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(15,23,42,.35); display: none; flex-direction: column; overflow: hidden; }
+  .lab-panel.open { display: flex; }
+  .lab-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--card); border-bottom: 1px solid var(--border); cursor: move; }
+  .lab-head .lab-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
+  .lab-head button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
+  .lab-body { padding: 10px 14px 14px; overflow-y: auto; max-height: 60vh; }
+  .lab-goal-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+  .lab-goal-row button { background: var(--card-2); color: var(--light); border:1px solid var(--border); border-radius: 7px; padding: 5px 10px; font-size: 12px; cursor:pointer; font-family:inherit; font-weight:700; }
+  .lab-goal-row button.active { border-color: var(--accent); color: var(--accent); background: rgba(4,120,87,.1); }
+  .lab-tree { background: var(--terminal); color:#e2e8f0; border-radius: 8px; padding: 10px 12px; font-family:'JetBrains Mono',monospace; font-size: 12.5px; min-height: 84px; margin-bottom: 8px; white-space: pre; }
+  .lab-tree .nodeitem { cursor: pointer; padding: 1px 4px; border-radius: 4px; }
+  .lab-tree .nodeitem:hover { background: rgba(255,255,255,.08); }
+  .lab-tree .nodeitem.sel { background: rgba(37,99,235,.35); outline: 1px solid var(--primary); }
+  .lab-tree .empty { color:#64748b; font-style: italic; }
+  .lab-palette { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+  .lab-palette button { background: var(--card-2); color: var(--light); border:1px solid var(--border); border-radius: 7px; padding: 4px 8px; font-size: 11.5px; cursor:pointer; font-family:inherit; }
+  .lab-palette button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  .lab-btns { display:flex; gap:8px; margin-top:6px; }
+  .lab-btns button { flex:1; border:none; border-radius:7px; padding:8px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; background: var(--card-2); color:var(--light); border:1px solid var(--border)!important; }
+  .lab-btns .check { background: var(--accent); color:#fff; border:none!important; }
+  .lab-result { margin-top:10px; font-size:12.5px; border-radius:8px; padding:10px 12px; background: var(--card-2); border:1px solid var(--border); display:none; }
+  .lab-result.show { display:block; }
+  .lab-result .ok { color: var(--ok); font-weight:800; } .lab-result .miss { color: var(--danger); font-weight:800; }
+  .lab-hint { font-size: 11px; color: var(--gray); padding: 0 14px 12px; }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color: #fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; } .topbar { padding-left: 66px; }
+    .lab-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="g-icon">🤖</div>
+      <h1>GODOT 4 CĂN BẢN</h1>
+      <p>TỪ ZERO → GAME ĐẦU TIÊN</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; Lộ trình</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">L0</span> BẮT ĐẦU TỪ SỐ 0</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> Godot là gì &amp; vì sao đáng học</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> Node &amp; Scene — viên gạch đầu tiên</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> Làm quen Editor</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> Tư duy lập trình (chưa từng code)</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">L1</span> GDSCRIPT TỪ ZERO</li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> Biến, kiểu dữ liệu &amp; toán tử</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> Hàm &amp; rẽ nhánh</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> Mảng, Dictionary &amp; vòng lặp</a></li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> Vòng lặp game, delta &amp; Vector2</a></li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> Signals — node nói chuyện nhau</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">L2</span> CÔNG CỤ 2D NỀN TẢNG</li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> Input: phím, chuột, cảm ứng</a></li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> Sprite &amp; Animation</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> Va chạm 2D cơ bản</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> CharacterBody2D &amp; platformer</a></li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> TileMap &amp; Camera2D</a></li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> UI, HUD &amp; âm thanh</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L3</span> CAPSTONE — 2 GAME</li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> "Né Quỷ" #1 — Player</a></li>
+      <li><a href="#ch17"><span class="chapter-num">17</span> "Né Quỷ" #2 — Mob &amp; spawn</a></li>
+      <li><a href="#ch18"><span class="chapter-num">18</span> "Né Quỷ" #3 — HUD &amp; hoàn thiện</a></li>
+      <li><a href="#ch19"><span class="chapter-num">19</span> "Hái Sao" — platformer mini</a></li>
+
+      <li class="nav-section-title nav-l4"><span class="badge">L4</span> ĐI TIẾP</li>
+      <li><a href="#ch20"><span class="chapter-num">20</span> Bản đồ phía trước</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">🎮</span> CHƠI THỬ</li>
+      <li><a href="#minigame"><span class="chapter-num">🎮</span> Mini-game "Né Quỷ"</a></li>
+
+      <li class="nav-section-title nav-l4"><span class="badge">📚</span> ÔN TẬP</li>
+      <li><a href="#quiz"><span class="chapter-num">❓</span> Quiz</a></li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🤖 <b>Godot 4 Căn Bản</b> — từ zero đến game đầu tiên (không cần biết lập trình)</div>
+      <div class="pill">Godot 4.x · GDScript 2.0</div>
+    </div>
+
+    <div class="content-inner">
+      <div class="hero" id="gioi-thieu">
+        <h1>Godot <span class="grad">Căn Bản</span><br>Từ Zero Đến Game Đầu Tiên</h1>
+        <p>Khóa nhập môn <strong>căn bản tổng quát</strong> cho người chưa từng lập trình, chưa từng chạm game engine: cài Godot → tư duy <strong>node/scene</strong> → <strong>GDScript</strong> như Python → input, animation, UI, tilemap, âm thanh → tự tay hoàn thành <strong>2 game</strong>: <strong>"Né Quỷ"</strong> (đi theo tutorial kinh điển <em>Dodge the Creeps</em> của docs chính thức) và platformer mini <strong>"Hái Sao"</strong>. Có <strong>mini-game chơi ngay trong trang</strong> và <strong>🗂 Scene Lab</strong> luyện dựng cây node.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>20</b> chương · 5 cấp độ</div>
+          <div class="meta-pill"><b>0%</b> kinh nghiệm cần thiết</div>
+          <div class="meta-pill"><b>🎮 2</b> game tự làm</div>
+          <div class="meta-pill"><b>🗂 Scene Lab</b> + Flashcards + Quiz</div>
+        </div>
+      </div>
+
+      <div class="box info"><span class="box-title">🎯 Bạn sẽ làm được gì sau khóa</span>Nhập môn xong bạn sẽ: hiểu <strong>cách Godot tổ chức game</strong> (node/scene/signal), đọc-viết được <strong>GDScript cơ bản</strong>, di chuyển nhân vật, dựng map, làm HUD, thêm âm thanh, <strong>tự làm trọn 2 game nhỏ từ A đến Z</strong> và biết đường đi tiếp (vật lý, RPG, 3D, xuất bản).</div>
+
+      <div class="box lab"><span class="box-title">🗂 Scene Lab — thử ngay</span>Bấm nút <strong>🗂 Scene Lab</strong> (góc dưới phải) để luyện dựng <strong>cây node</strong> — việc quan trọng nhất khi học Godot: chọn mục tiêu (Player / Mob / HUD / Main), thêm node từ bảng chọn, bấm <strong>Kiểm tra</strong> để xem đúng thiếu gì. Đó chính là cấu trúc thật của game "Né Quỷ" bạn sẽ làm ở L3.</div>
+
+      <div class="box game"><span class="box-title">🎮 Chơi thử kết quả</span>Cuối trang có <a class="inline" href="#minigame">mini-game "Né Quỷ"</a> — phiên bản web của capstone: di chuyển nhân vật 🟢 né quỷ 🔴, điểm tăng mỗi giây, càng chơi càng nhanh. Chơi trước để biết mình đang tiến về đâu!</div>
+
+      <div class="box info"><span class="box-title">Yêu cầu &amp; phạm vi</span><strong>Không cần biết lập trình hay Godot trước</strong> — chỉ cần máy tính (kể cả máy yếu) + chuột bàn phím. Khóa dùng <strong>Godot 4.x</strong> (bản chuẩn GDScript) — tải miễn phí tại <a class="inline" href="https://godotengine.org/download" target="_blank">godotengine.org</a>. Tập trung <strong>2D căn bản</strong>; 3D chỉ giới thiệu ở chương cuối. Vật lý chuyên sâu (RigidBody, joints...) nằm ở khóa <a class="inline" href="khoa-hoc-godot-2d-physics.html">Godot 2D Physics</a> trong cùng repo — khỏi trùng lặp.</div>
+
+      <div class="box info"><span class="box-title">Lộ trình 5 cấp độ</span>
+        <strong style="color:var(--l0)">L0 Bắt đầu từ số 0</strong> (1–4: engine, node/scene, editor, tư duy code) → <strong style="color:var(--l1)">L1 GDScript từ zero</strong> (5–9: biến → hàm → mảng → delta/Vector2 → signals) → <strong style="color:var(--l2)">L2 Công cụ 2D</strong> (10–15: input, animation, va chạm, platformer, tilemap, UI, audio) → <strong style="color:var(--l3)">L3 Capstone</strong> (16–19: 2 game hoàn chỉnh) → <strong style="color:var(--l4)">L4 Đi tiếp</strong> (20).
+      </div>
+
+      <div class="box tip"><span class="box-title">📚 Nguồn biên soạn (đều miễn phí)</span>
+        <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html" target="_blank">Godot Docs — Step by Step</a> ·
+        <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html" target="_blank">Your first 2D game (Dodge the Creeps)</a> ·
+        <a class="inline" href="https://gdquest.github.io/learn-gdscript/" target="_blank">GDQuest — Learn GDScript From Zero</a> (27 bài luyện tương tác) ·
+        <a class="inline" href="https://www.youtube.com/watch?v=nAh_Kx5Zh5Q" target="_blank">Clear Code — Ultimate Introduction to Godot 4</a> (video 11+ tiếng) ·
+        <a class="inline" href="https://www.youtube.com/watch?v=LOhfqjmasi0" target="_blank">Brackeys — How to make a Video Game</a>. Bản Markdown gọn của khóa: <a class="inline" href="khoa-hoc-godot-can-ban.md">khoa-hoc-godot-can-ban.md</a>.
+      </div>
+
+      <!-- ===================== LEVEL 0 ===================== -->
+      <div class="level-divider" id="lv0"><div class="line"></div><span class="tag tag-l0">L0 · Bắt đầu từ số 0</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Godot là gì &amp; vì sao đáng học</h2>
+        <p class="ch-sub">Engine làm game mã nguồn mở — nhẹ, miễn phí, cực hợp người mới.</p>
+
+        <p><strong>Godot</strong> là game engine <strong>mã nguồn mở 100%</strong> (giấy phép MIT): dùng thương mại thoải mái, <strong>không đóng phí, không bị chia doanh thu</strong>, không ràng buộc cửa hàng nào. Làm được cả game 2D lẫn 3D — và 2D là điểm rất mạnh của Godot.</p>
+
+        <h3 class="sec">Vì sao người mới nên chọn Godot?</h3>
+        <table>
+          <thead><tr><th></th><th>Godot</th><th>Unity (để so sánh)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Giá</strong></td><td>Miễn phí hoàn toàn (MIT)</td><td>Cá nhân miễn phí, có điều kiện doanh thu</td></tr>
+            <tr><td><strong>Dung lượng</strong></td><td>~100MB, 1 file chạy thẳng, không cần cài</td><td>Vài GB + cài đặt + account</td></tr>
+            <tr><td><strong>Ngôn ngữ</strong></td><td>GDScript (giống Python — dễ cho người mới)</td><td>C# (phải cài .NET)</td></tr>
+            <tr><td><strong>2D</strong></td><td>2D "thật" — pixel là pixel</td><td>2D dựng trên 3D</td></tr>
+            <tr><td><strong>Máy yếu</strong></td><td>Chạy mượt máy cũ</td><td>Cần cấu hình khá</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Cài đặt — 3 phút</h3>
+        <ol>
+          <li>Vào <a class="inline" href="https://godotengine.org/download" target="_blank">godotengine.org/download</a>, tải bản <strong>Godot 4.x Standard</strong> (GDScript) cho hệ điều hành của bạn.</li>
+          <li>Giải nén → chạy file executable. <strong>Xong</strong> — thật sự không cần cài đặt.</li>
+          <li>Cửa sổ <strong>Project Manager</strong> hiện ra → <strong>New Project</strong> → đặt tên (vd <code class="ic">hoc-godot</code>) → chọn thư mục → renderer chọn <strong>Compatibility</strong> (nhẹ, chạy mọi máy — nếu máy mạnh muốn bóng đổ đẹp thì Forward+) → <strong>Create &amp; Edit</strong>.</li>
+        </ol>
+
+        <h3 class="sec">Chạy thử đầu tiên — "Hello Godot"</h3>
+        <ol>
+          <li>Panel <strong>Scene</strong> (trái trên) → bấm <strong>2D Scene</strong> → được root <code class="ic">Node2D</code>.</li>
+          <li>Kéo file <code class="ic">icon.svg</code> (có sẵn trong FileSystem) vào giữa viewport → Godot tự tạo <code class="ic">Sprite2D</code>.</li>
+          <li>Bấm <strong>F6</strong> (chạy scene hiện tại) → một cửa sổ game hiện ra với logo Godot. 🎉</li>
+        </ol>
+        <div class="box tip"><span class="box-title">F5 vs F6</span><strong>F5</strong> chạy cả game (từ scene chính của project), <strong>F6</strong> chạy đúng scene đang mở — khi học, dùng F6 để thử nhanh từng scene.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 1.1 <span class="lvl">dễ</span></div>
+          <p>Tạo project mới, thêm Sprite2D như trên, chạy F6. Rồi kéo sprite ra góc màn hình, lưu (<strong>Ctrl+S</strong>, đặt tên <code class="ic">main.tscn</code>), chạy lại — vị trí mới được ghi nhớ. Đó là file scene (.tscn) làm việc đấy.</p>
+        </div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Node &amp; Scene — viên gạch của mọi thứ</h2>
+        <p class="ch-sub">Hiểu node/scene là hiểu 80% Godot. Thật.</p>
+
+        <p>Trong Godot, <strong>mọi thứ là Node</strong>. Mỗi node chỉ làm <strong>đúng một việc</strong>: <code class="ic">Sprite2D</code> hiển thị ảnh, <code class="ic">AudioStreamPlayer</code> phát âm thanh, <code class="ic">Timer</code> đếm giờ, <code class="ic">CollisionShape2D</code> mô tả vùng va chạm... Node có <strong>thuộc tính</strong> (vị trí, màu, tốc độ — chỉnh trong Inspector) và có thể phát <strong>tín hiệu</strong> (chương 9).</p>
+
+        <p>Các node lồng nhau theo <strong>cây cha–con</strong>. Một cây như thế được lưu thành một <strong>Scene</strong> (tệp <code class="ic">.tscn</code>). Game của bạn là một cây lớn:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Cây scene của game "Né Quỷ"</span></div>
+<pre class="code"><span class="f">Main</span> (Node)                  <span class="c"># scene chính — điều phối game</span>
+├── <span class="f">Player</span> (Area2D)          <span class="c"># instance của player.tscn</span>
+│   ├── <span class="f">AnimatedSprite2D</span>
+│   └── <span class="f">CollisionShape2D</span>
+├── <span class="f">MobTimer</span> (Timer)
+├── <span class="f">MobPath</span> (Path2D)
+│   └── <span class="f">MobSpawnLocation</span> (PathFollow2D)
+└── <span class="f">HUD</span> (CanvasLayer)       <span class="c"># instance của hud.tscn</span>
+    ├── <span class="f">ScoreLabel</span> (Label)
+    └── <span class="f">StartButton</span> (Button)</pre>
+        </div>
+
+        <h3 class="sec">Instance — "prefab" của Godot</h3>
+        <p>Lưu Player thành <code class="ic">player.tscn</code> riêng, rồi <strong>nhúng (instance)</strong> nó vào Main bằng nút chuột phải → <em>Instantiate Child Scene</em> (hoặc nút ⛓ trên panel Scene). Sửa <code class="ic">player.tscn</code> → <strong>mọi bản nhúng tự cập nhật</strong>. Quy tắc: <strong>mọi thứ lặp lại (nhân vật, quỷ, đồng xu) đều deserve một scene riêng</strong>.</p>
+
+        <div class="box info"><span class="box-title">Đặt tên node = đặt địa chỉ</span><code class="ic">$TenNode</code> trong code trỏ tới node con theo <strong>tên</strong>. Đổi tên node = code cũ bỏ tham chiếu. Ngay từ đầu: đặt tên rõ (ScoreLabel, không phải Label), không trùng tên ở cùng cấp.</div>
+
+        <div class="box lab"><span class="box-title">🗂 Luyện trong Scene Lab</span>Mở <strong>Scene Lab</strong> (góc phải dưới) → chọn mục tiêu <strong>Player</strong> → thêm <code class="ic">Area2D</code> làm root, thêm con <code class="ic">AnimatedSprite2D</code> + <code class="ic">CollisionShape2D</code> → Kiểm tra. Làm hết 4 mục tiêu để thuộc lòng cấu trúc của cả game "Né Quỷ".</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 2.1 <span class="lvl">dễ</span></div>
+          <p>Tạo scene <code class="ic">player.tscn</code>: root <strong>CharacterBody2D</strong> (nút + → search "CharacterBody2D") → thêm con <strong>Sprite2D</strong> (gán icon.svg) và <strong>CollisionShape2D</strong> (chọn Shape = New CircleShape2D, chỉnh bán kính đè ảnh). Lưu, F6 — chưa có gì động, nhưng khung nhân vật đã xong.</p>
+        </div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Làm quen Editor</h2>
+        <p class="ch-sub">5 vùng màn hình + vài phím tắt là đủ để làm game.</p>
+
+        <h3 class="sec">Bản đồ editor</h3>
+        <table>
+          <thead><tr><th>Vùng</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Scene</strong> (trái trên)</td><td>Cây node của scene đang mở; nút ➕ thêm node, ⛓ instance scene, 👁 hiện/ẩn</td></tr>
+            <tr><td><strong>FileSystem</strong> (trái dưới)</td><td>Toàn bộ tệp dự án ở <code class="ic">res://</code> — kéo thả để tổ chức folder</td></tr>
+            <tr><td><strong>Viewport</strong> (giữa)</td><td>Nơi dàn cảnh 2D/3D; trên cùng là tab <strong>2D / 3D / Script</strong></td></tr>
+            <tr><td><strong>Inspector</strong> (phải)</td><td>Mọi thuộc tính của node đang chọn — chỉnh không cần code</td></tr>
+            <tr><td><strong>Dock dưới</strong></td><td>Tab <strong>Node</strong> (Signals/Groups của node chọn), tab <strong>Debugger</strong> (xem lỗi + print), <strong>Audio</strong>, <strong>Animation</strong></td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Phím &amp; thao tác Viewport 2D cần biết</h3>
+        <table>
+          <thead><tr><th>Phím</th><th>Chức năng</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Space / chuột giữa + kéo</strong></td><td>Pan (dịch khung nhìn)</td></tr>
+            <tr><td><strong>Lăn chuột</strong></td><td>Zoom</td></tr>
+            <tr><td><strong>Q / W / E / R</strong></td><td>Chọn / Di chuyển / Xoay / Phóng to node</td></tr>
+            <tr><td><strong>Ctrl+S / Ctrl+Z</strong></td><td>Lưu / Hoàn tác</td></tr>
+            <tr><td><strong>F5 / F6 / F8</strong></td><td>Chạy game / Chạy scene / Dừng</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box tip"><span class="box-title">Inspector là "code không cần code"</span>Đổi màu (<code class="ic">modulate</code>), lật ảnh (<code class="ic">flip_h</code>), tốc độ... đều chỉnh ngay trong Inspector. Ô nào đã đổi có mũi tên ↩ — bấm để trả về mặc định. Từ chương 5, biến <code class="ic">@export</code> của bạn cũng hiện ở đây.</div>
+
+        <h3 class="sec">Tổ chức thư mục từ ngày đầu</h3>
+        <p>Trong FileSystem, tạo folder (chuột phải → New Folder) và kéo tệp vào:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> res:// — thư mục dự án</span></div>
+<pre class="code">res://
+├── assets/      <span class="c"># ảnh, âm thanh, font (chia nhỏ img/ audio/ nếu nhiều)</span>
+├── player/      <span class="c"># player.tscn + player.gd</span>
+├── mobs/        <span class="c"># mob.tscn + mob.gd</span>
+├── ui/          <span class="c"># hud.tscn + hud.gd</span>
+└── main.tscn    <span class="c"># scene chính</span></pre>
+        </div>
+
+        <div class="checklist">
+          <h4>✓ Checklist chương 3</h4>
+          <label><input type="checkbox"><span>Tạo được project mới và mở editor không lúng túng</span></label>
+          <label><input type="checkbox"><span>Nêu được vai trò của Scene / FileSystem / Viewport / Inspector / Dock dưới</span></label>
+          <label><input type="checkbox"><span>Pan/zoom viewport, di chuyển node bằng W, chạy thử bằng F6</span></label>
+          <label><input type="checkbox"><span>Đã tạo folder assets/ player/ mobs/ ui/ và tổ chức tệp</span></label>
+        </div>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> Tư duy lập trình — dành cho người chưa từng code</h2>
+        <p class="ch-sub">15 phút "học cách nghĩ" trước khi học cú pháp — công sức bỏ ra ở đây x10 giá trị sau này.</p>
+
+        <h3 class="sec">Code là danh sách chỉ dẫn</h3>
+        <p>Máy tính là một người làm việc <strong>rất nhanh nhưng rất đen</strong>: nó làm chính xác những gì bạn viết, theo <strong>thứ tự từ trên xuống</strong>, không đoán ý bạn. Công thức nấu mì gói:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> tu_duy.txt</span></div>
+<pre class="code"><span class="c"># Nước sôi chưa?         → nếu chưa, đợi</span>
+<span class="c"># Thả mì vào nồi</span>
+<span class="c"># Đếm 3 phút</span>
+<span class="c"># Nếu muốn nhạt hơn → cho ít gia vị, ngược lại đủ gói</span>
+<span class="c"># Vớt mì ra bát</span></pre>
+        </div>
+        <p>Game cũng chỉ là một danh sách chỉ dẫn như thế, nhưng được <strong>chạy lặp lại ~60 lần mỗi giây</strong>: <em>đọc phím người chơi → cập nhật vị trí → kiểm tra va chạm → vẽ màn hình</em>. Vòng lặp đó gọi là <strong>game loop</strong> — và Godot đã lo phần lặp; bạn chỉ viết từng bước một (các hàm <code class="ic">_process</code>, <code class="ic">_physics_process</code> ở chương 8).</p>
+
+        <h3 class="sec">Lỗi là bạn, không phải địch</h3>
+        <p>Người mới thường sợ dòng đỏ trong Output. Sự thật: <strong>lỗi là trợ giảng</strong> — nó nói chính xác chỗ nào sai. Ví dụ:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> error mẫu trong Debugger</span></div>
+<pre class="code">PARSE ERROR: Identifier <span class="s">"speeed"</span> not declared in the current scope.
+   at line 5 in res://player/player.gd</pre>
+        </div>
+        <p>Dịch: "Không biết <code class="ic">speeed</code> là cái gì, dòng 5". → Đánh máy sai <code class="ic">speed</code>. Bấm vào dòng lỗi, editor nhảy tới chỗ sai, sửa, chạy lại. <strong>Debug = in ra giấy</strong>: khi không hiểu vì sao, dùng <code class="ic">print()</code> để nhìn giá trị thật.</p>
+
+        <div class="box info"><span class="box-title">Công thức học một khái niệm mới</span>1) Đọc giải thích ngắn → 2) <strong>gõ lại</strong> ví dụ (đừng copy-paste — tay nhớ lâu hơn mắt) → 3) đổi một thứ nhỏ (số, tên, thứ tự) → 4) chạy và quan sát khác biệt → 5) làm bài thực hành cuối chương. Đúng chu trình này là kiến thức "dính" vào người.</div>
+
+        <div class="box tip"><span class="box-title">🧪 Muốn luyện code thuần (không cần Godot)</span>GDQuest làm app miễn phí <a class="inline" href="https://gdquest.github.io/learn-gdscript/" target="_blank">Learn GDScript From Zero</a> — 27 bài từ "code trông thế nào" tới dictionary, làm bài ngay trên trình duyệt, chấm tự động. Rất hợp làm bài tập nhà song song L1 của khóa này.</div>
+
+        <div class="checklist">
+          <h4>✓ Bạn đã sẵn sàng code khi...</h4>
+          <label><input type="checkbox"><span>Hiểu máy chạy chỉ dẫn tuần tự & game = vòng lặp input → cập nhật → vẽ</span></label>
+          <label><input type="checkbox"><span>Nhìn lỗi đỏ không panic: đọc dòng, bấm tới, sửa, chạy lại</span></label>
+          <label><input type="checkbox"><span>Biết dùng print() để "soi" giá trị đang là bao nhiêu</span></label>
+        </div>
+      </section>
+      <!-- ===================== LEVEL 1 ===================== -->
+      <div class="level-divider" id="lv1"><div class="line"></div><span class="tag tag-l1">L1 · GDScript từ zero</span><div class="line"></div></div>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Biến, kiểu dữ liệu &amp; toán tử</h2>
+        <p class="ch-sub">"Hộp đựng đồ có dán nhãn" — nền của mọi chương sau.</p>
+
+        <h3 class="sec">Script đầu tiên</h3>
+        <p>Chọn root node của scene → nút ➕ kèm hình tờ giấy (hoặc chuột phải → <em>Attach Script</em>) → giữ mặc định → Godot tạo <code class="ic">ten_node.gd</code> và mở tab Script. Gõ thử:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> hello.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D          <span class="c"># script này gắn vào 1 node kiểu Node2D</span>
+
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:      <span class="c"># chạy đúng 1 LẦN khi scene sẵn sàng</span>
+    <span class="f">print</span>(<span class="s">"Xin chào Godot!"</span>)
+    position.x += <span class="n">100</span>       <span class="c"># dịch node sang phải 100px lúc mở game</span></pre>
+        </div>
+        <p>F6 → nhìn panel <strong>Output</strong> (dưới) thấy dòng chữ, node dịch đi 100px. Bạn vừa viết chương trình đầu tiên trong Godot!</p>
+
+        <h3 class="sec">Biến — hộp đựng có dán nhãn</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> bien.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> ten := <span class="s">"Bình"</span>            <span class="c"># := tự suy kiểu (String) — khuyến nghị</span>
+<span class="k">var</span> diem := <span class="n">0</span>                 <span class="c"># int</span>
+<span class="k">var</span> mau: <span class="t">float</span> = <span class="n">97.5</span>          <span class="c"># khai báo kiểu tường minh</span>
+<span class="k">const</span> GRAVITY := <span class="n">1500.0</span>       <span class="c"># hằng số — không cho gán lại</span>
+diem = diem + <span class="n">10</span>              <span class="c"># gán lại được</span>
+
+<span class="d">@export</span> <span class="k">var</span> speed := <span class="n">300.0</span>        <span class="c"># HIỆN TRONG INSPECTOR — chỉnh không cần sửa code!</span>
+<span class="d">@onready</span> <span class="k">var</span> sprite := $Sprite2D     <span class="c"># tham chiếu node con (chờ scene sẵn sàng)</span></pre>
+        </div>
+
+        <h3 class="sec">Kiểu dữ liệu thường gặp</h3>
+        <table>
+          <thead><tr><th>Kiểu</th><th>Chứa gì</th><th>Ví dụ</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">int</code></td><td>Số nguyên</td><td>điểm <code class="ic">0</code>, mạng <code class="ic">3</code></td></tr>
+            <tr><td><code class="ic">float</code></td><td>Số thập phân</td><td>tốc độ <code class="ic">2.5</code>, máu <code class="ic">97.5</code></td></tr>
+            <tr><td><code class="ic">String</code></td><td>Chuỗi chữ</td><td><code class="ic">"Game Over"</code></td></tr>
+            <tr><td><code class="ic">bool</code></td><td>Đúng/sai</td><td><code class="ic">true</code>, <code class="ic">false</code> — còn sống?</td></tr>
+            <tr><td><code class="ic">Vector2</code></td><td>Cặp số (x, y)</td><td>vị trí, vận tốc — ngôi sao của game 2D (ch8)</td></tr>
+            <tr><td><code class="ic">Array</code></td><td>Danh sách có thứ tự</td><td>danh sách quỷ (ch7)</td></tr>
+            <tr><td><code class="ic">Dictionary</code></td><td>Tra cứu theo khóa</td><td><code class="ic">{"hp": 10}</code> (ch7)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Toán tử &amp; chuỗi</h3>
+        <ul>
+          <li>Số học: <code class="ic">+ - * /</code> và <code class="ic">%</code> (chia lấy dư — <code class="ic">7 % 2</code> = 1).</li>
+          <li>So sánh: <code class="ic">== != &lt; > &lt;= >=</code> — trả về <code class="ic">bool</code>.</li>
+          <li>Nối chuỗi: <code class="ic">str("Điểm: ", diem)</code> hoặc đẹp hơn: <code class="ic">"Điểm: %d" % diem</code> (<code class="ic">%d</code> số nguyên, <code class="ic">%.1f</code> 1 chữ số thập phân).</li>
+        </ul>
+
+        <h3 class="sec">Ngẫu nhiên — gia vị của game</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> random.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="f">randi_range</span>(<span class="n">1</span>, <span class="n">6</span>)        <span class="c"># xúc xắc 1-6</span>
+<span class="f">randf_range</span>(<span class="n">0.8</span>, <span class="n">1.2</span>)     <span class="c"># số thực 0.8 → 1.2 (tốc độ quỷ ngẫu nhiên)</span>
+<span class="f">randf</span>()                  <span class="c"># 0.0 → 1.0 (xác suất 30%: if randf() &lt; 0.3)</span></pre>
+        </div>
+        <div class="box ver"><span class="box-title">Godot 4 vs 3</span>Godot 3 phải gọi <code class="ic">randomize()</code> trước; <strong>Godot 4 tự xáo ngẫu nhiên mỗi lần chạy</strong> — gọi thẳng. Video/tutorial cũ mà thấy <code class="ic">.instance()</code>, <code class="ic">get_node().connect("sig", self, "fn")</code>… là cú pháp 3.x, không chạy trên 4.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 5.1 <span class="lvl">dễ</span></div>
+          <p>Trong <code class="ic">_ready()</code>: tạo biến <code class="ic">a</code> = số ngẫu nhiên 1→6, biến <code class="ic">b</code> = số ngẫu nhiên 1→6, in tổng theo dạng <code class="ic">"Tổng xúc xắc: 7"</code>.</p>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body">
+<pre class="code"><span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    <span class="k">var</span> a := <span class="f">randi_range</span>(<span class="n">1</span>, <span class="n">6</span>)
+    <span class="k">var</span> b := <span class="f">randi_range</span>(<span class="n">1</span>, <span class="n">6</span>)
+    <span class="f">print</span>(<span class="s">"Tổng xúc xắc: %d"</span> % (a + b))</pre>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> Hàm &amp; rẽ nhánh</h2>
+        <p class="ch-sub">Đóng gói "việc" thành tên gọi — và cho game biết đường rẽ.</p>
+
+        <h3 class="sec">Hàm = việc nhỏ có tên</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> ham.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">func</span> <span class="f">take_damage</span>(amount: <span class="t">int</span>, is_poison: <span class="t">bool</span>) -> <span class="t">void</span>:
+    <span class="c"># amount, is_poison = THAM SỐ (đầu vào); -> void = không trả gì</span>
+    health -= amount * (<span class="n">2</span> <span class="k">if</span> is_poison <span class="k">else</span> <span class="n">1</span>)
+    <span class="k">if</span> health &lt;= <span class="n">0</span>:
+        <span class="f">die</span>()
+    <span class="k">elif</span> health &lt; <span class="n">30</span>:
+        <span class="f">print</span>(<span class="s">"⚠️ Nguy hiểm!"</span>)
+    <span class="k">else</span>:
+        <span class="f">print</span>(<span class="s">"Máu: "</span>, health)
+
+<span class="k">func</span> <span class="f">die</span>() -> <span class="t">void</span>:
+    <span class="f">print</span>(<span class="s">"Game Over"</span>)
+
+<span class="k">func</span> <span class="f">tinh_diem</span>(so_sao: <span class="t">int</span>, phan_thuong: <span class="t">int</span>) -> <span class="t">int</span>:
+    <span class="k">return</span> so_sao * <span class="n">10</span> + phan_thuong   <span class="c"># TRẢ VỀ giá trị</span></pre>
+        </div>
+        <ul>
+          <li><strong>Thụt lề bằng Tab</strong> tạo "khối" thuộc về hàm/if — sai một Tab là logic khác.</li>
+          <li><code class="ic">return</code> trả giá trị và thoát hàm ngay; hàm kiểu <code class="ic">void</code> không cần return.</li>
+          <li>Gọi: <code class="ic">take_damage(10, true)</code> — gọi được cả trong hàm khác.</li>
+          <li>Rút gọn if/else 1 dòng: <code class="ic">x if dieu_kien else y</code>.</li>
+        </ul>
+
+        <h3 class="sec">Các hàm đặc biệt Godot tự gọi</h3>
+        <table>
+          <thead><tr><th>Hàm</th><th>Godot gọi khi nào</th><th>Dùng để</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">_ready()</code></td><td>Node vào cây, 1 lần</td><td>Khởi tạo, lấy kích thước màn, hide()</td></tr>
+            <tr><td><code class="ic">_process(delta)</code></td><td>Mỗi frame (~60 lần/s)</td><td>Di chuyển, đếm giờ, logic hiển thị</td></tr>
+            <tr><td><code class="ic">_physics_process(delta)</code></td><td>Mỗi bước vật lý (cố định)</td><td>Di chuyển body, xử lý va chạm</td></tr>
+            <tr><td><code class="ic">_input(event)</code> / <code class="ic">_unhandled_input(event)</code></td><td>Có sự kiện input</td><td>Bắt chuột/phím thô (ch10)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 6.1 <span class="lvl">vừa</span></div>
+          <p>Viết hàm <code class="ic">xep_hang(diem: int) -> String</code>: ≥ 90 → "S", ≥ 75 → "A", ≥ 50 → "B", còn lại "C". In thử với 5 giá trị.</p>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body">
+<pre class="code"><span class="k">func</span> <span class="f">xep_hang</span>(diem: <span class="t">int</span>) -> <span class="t">String</span>:
+    <span class="k">if</span> diem >= <span class="n">90</span>: <span class="k">return</span> <span class="s">"S"</span>
+    <span class="k">elif</span> diem >= <span class="n">75</span>: <span class="k">return</span> <span class="s">"A"</span>
+    <span class="k">elif</span> diem >= <span class="n">50</span>: <span class="k">return</span> <span class="s">"B"</span>
+    <span class="k">return</span> <span class="s">"C"</span>   <span class="c"># không cần else — chạy tới đây nghĩa là các trường hợp trên đều sai</span></pre>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Mảng, Dictionary &amp; vòng lặp</h2>
+        <p class="ch-sub">Quản lý "nhiều thứ": 100 con quỷ, bảng cấu hình, lưu game.</p>
+
+        <h3 class="sec">Array — danh sách có thứ tự</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> array.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> quy := [<span class="s">"gai"</span>, <span class="s">"quỷ"</span>, <span class="s">"dơi"</span>]
+<span class="f">print</span>(quy.<span class="f">size</span>())          <span class="c"># 3</span>
+<span class="f">print</span>(quy[<span class="n">0</span>])              <span class="c"># "gai" — đánh số từ 0!</span>
+quy.<span class="f">append</span>(<span class="s">"sếp cuối"</span>)   <span class="c"># thêm cuối</span>
+quy.<span class="f">remove_at</span>(<span class="n">0</span>)          <span class="c"># xóa phần tử 0</span>
+<span class="f">print</span>(quy.<span class="f">pick_random</span>())   <span class="c"># ngẫu nhiên 1 con — dùng hoài!</span></pre>
+        </div>
+
+        <h3 class="sec">Vòng lặp</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> loop.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">for</span> q <span class="k">in</span> quy:                  <span class="c"># duyệt từng phần tử</span>
+    <span class="f">print</span>(<span class="s">"Gặp: "</span>, q)
+
+<span class="k">for</span> i <span class="k">in</span> <span class="f">range</span>(<span class="n">3</span>):             <span class="c"># i = 0, 1, 2</span>
+    <span class="f">spawn_coin</span>(i)
+
+<span class="k">var</span> hp := <span class="n">5</span>
+<span class="k">while</span> hp > <span class="n">0</span>:               <span class="c"># lặp CHỈ KHI điều kiện còn đúng</span>
+    hp -= <span class="n">1</span>
+    <span class="f">print</span>(<span class="s">"Còn "</span>, hp, <span class="s">" tim"</span>)</pre>
+        </div>
+        <div class="box danger"><span class="box-title">Vòng lặp vô hạn</span><code class="ic">while</code> mà điều kiện chẳng bao giờ sai → game đứng im (treo). Nếu lỡ chạy — F8 dừng, kiểm tra biến trong điều kiện có thay đổi không.</div>
+
+        <h3 class="sec">Dictionary — tra cứu theo khóa</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> dict.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> config := {<span class="s">"speed"</span>: <span class="n">300</span>, <span class="s">"color"</span>: <span class="s">"xanh"</span>}
+config[<span class="s">"speed"</span>] = <span class="n">350</span>              <span class="c"># ghi</span>
+<span class="f">print</span>(config[<span class="s">"speed"</span>])              <span class="c"># đọc: 350</span>
+<span class="k">for</span> k <span class="k">in</span> config:                   <span class="c"># duyệt khóa</span>
+    <span class="f">print</span>(k, <span class="s">"="</span>, config[k])
+
+<span class="c"># Save game là 1 Dictionary: {"best": 120, "level": 3}</span></pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 7.1 <span class="lvl">vừa</span></div>
+          <p>Cho <code class="ic">var diem := [7, 9, 4, 10, 6]</code>. Dùng vòng lặp in ra từng điểm <strong>và</strong> đếm có bao nhiêu điểm ≥ 7 (đậu).</p>
+          <details class="answer"><summary>Xem đáp án</summary><div class="body">
+<pre class="code"><span class="k">var</span> dau := <span class="n">0</span>
+<span class="k">for</span> d <span class="k">in</span> diem:
+    <span class="f">print</span>(<span class="s">"Điểm: "</span>, d)
+    <span class="k">if</span> d >= <span class="n">7</span>:
+        dau += <span class="n">1</span>
+<span class="f">print</span>(<span class="s">"Đậu: %d/5"</span> % dau)</pre>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> Vòng lặp game: delta &amp; Vector2</h2>
+        <p class="ch-sub">Hai khái niệm "người mới hay sai nhất" — nắm chắc là code game ngon.</p>
+
+        <h3 class="sec">delta — thời gian của một frame</h3>
+        <p>Máy A chạy 30fps, máy B 144fps. Nếu mỗi frame bạn cộng vị trí +5px thì máy B nhân vật nhanh gấp ~5 lần máy A! Giải pháp: nhân với <code class="ic">delta</code> (số giây frame trước kéo dài) — tốc độ trở thành <strong>px/giây</strong>, như nhau mọi máy:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> delta.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node2D
+<span class="d">@export</span> <span class="k">var</span> speed := <span class="n">300.0</span>          <span class="c"># px/giây</span>
+
+<span class="k">func</span> <span class="f">_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    position += Vector2.RIGHT * speed * delta   <span class="c"># ĐÚNG: luôn 300px/s</span>
+    <span class="c"># position += Vector2.RIGHT * speed        # SAI: nhanh chậm tùy máy!</span></pre>
+        </div>
+        <div class="box danger"><span class="box-title">Quy tắc vàng</span>Mọi chuyển động theo thời gian: <strong>nhân delta</strong>. Chọn hàm: hiển thị/đếm giờ → <code class="ic">_process(delta)</code>; di chuyển physics body & va chạm → <code class="ic">_physics_process(delta)</code> (timestep cố định 60Hz của engine).</div>
+
+        <h3 class="sec">Vector2 — kiểu "quốc dân" của game 2D</h3>
+        <p>Vị trí là Vector2, vận tốc là Vector2, hướng là Vector2. Phép tính trực tiếp như số thường:</p>
+        <table>
+          <thead><tr><th>Công thức</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">Vector2(3, 4)</code></td><td>Điểm/vector (x=3, y=4). Trục y <strong>hướng XUỐNG</strong> trong 2D!</td></tr>
+            <tr><td><code class="ic">a + b</code>, <code class="ic">a * 2</code></td><td>Cộng/trừ từng thành phần; nhân độ dài (tăng tốc gấp đôi)</td></tr>
+            <tr><td><code class="ic">v.length()</code></td><td>Độ dài — "quãng đường"</td></tr>
+            <tr><td><code class="ic">v.normalized()</code></td><td>Cùng hướng nhưng độ dài = 1 — <strong>chống đi chéo nhanh hơn</strong></td></tr>
+            <tr><td><code class="ic">v.rotated(a)</code></td><td>Xoay vector qua góc a (radian)</td></tr>
+            <tr><td><code class="ic">v.angle()</code></td><td>Góc của vector</td></tr>
+            <tr><td><code class="ic">Vector2.from_angle(a)</code></td><td>Tạo vector đơn vị theo góc (đạn bắn theo rotation)</td></tr>
+            <tr><td><code class="ic">Vector2.ZERO / UP / DOWN / LEFT / RIGHT</code></td><td>Hằng có sẵn; <code class="ic">TAU</code> = 2π = cả vòng tròn</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> vector.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Đạn bay theo hướng nòng súng:</span>
+position += Vector2.<span class="f">from_angle</span>(rotation) * speed * delta
+
+<span class="c"># Chạy về phía người chơi:</span>
+<span class="k">var</span> huong := (player.position - position).<span class="f">normalized</span>()
+position += huong * speed * delta
+
+<span class="c"># Kéo về vị trí ban đầu mượt dần (lerp):</span>
+position = position.<span class="f">lerp</span>(diem_dich, <span class="n">5.0</span> * delta)</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 8.1 <span class="lvl">vừa</span></div>
+          <p>Sprite bay theo đường tròn: trong <code class="ic">_process</code>, tăng <code class="ic">var t += delta</code> rồi đặt <code class="ic">position = Vector2(200, 150) + Vector2.from_angle(t) * 100</code>. Chạy F6 và ngắm nghía.</p>
+          <details class="answer"><summary>Vì sao chạy được?</summary><div class="body"><code class="ic">from_angle(t)</code> xoay liên tục theo thời gian t → cộng vào tâm (200,150) với bán kính 100 → chuyển động tròn đều, đúng 1 vòng mỗi <code class="ic">TAU</code> ≈ 6.28 giây (đổi <code class="ic">t * 2.0</code> để nhanh gấp đôi).</div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Signals — node nói chuyện với nhau</h2>
+        <p class="ch-sub">Cơ chế "phát – nghe" giúp game không rối thành mớ spaghetti.</p>
+
+        <h3 class="sec">Vấn đề signals giải quyết</h3>
+        <p>Mob chạm Player → cần: ẩn player, nổ particle, dừng timer, hiện Game Over. Nếu Mob phải tự biết và gọi cả 4 việc đó, mọi thứ dính chặt nhau. <strong>Signal</strong> đảo chiều: Mob chỉ <em>hét lên</em> "tui chạm người rồi!" — ai cần thì <em>lắng nghe</em> và tự xử lý (observer pattern).</p>
+
+        <h3 class="sec">Dùng signal có sẵn</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> signal.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Cách 1 — bằng Editor (khuyên dùng khi mới học):</span>
+<span class="c"># Chọn node → dock dưới tab Node → Signals → đúp chuột signal (vd timeout)</span>
+<span class="c"># → chọn node nhận → Godot TỰ SINH hàm _on_ten_node_timeout() cho bạn</span>
+
+<span class="c"># Cách 2 — bằng code:</span>
+<span class="k">func</span> <span class="f">_ready</span>() -> <span class="t">void</span>:
+    $StartButton.pressed.<span class="f">connect</span>(_on_start_pressed)   <span class="c"># Godot 4: connect(Callable)</span>
+
+<span class="k">func</span> <span class="f">_on_start_pressed</span>() -> <span class="t">void</span>:
+    <span class="f">print</span>(<span class="s">"Bấm Start!"</span>)</pre>
+        </div>
+        <p>Signal thường gặp: <code class="ic">Button.pressed</code> · <code class="ic">Timer.timeout</code> · <code class="ic">Area2D.body_entered(body)</code> / <code class="ic">body_exited</code> · <code class="ic">AnimatedSprite2D.animation_finished</code> · <code class="ic">VisibleOnScreenNotifier2D.screen_exited</code>.</p>
+
+        <h3 class="sec">Tự khai báo signal</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> custom_signal.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Area2D
+<span class="k">signal</span> hit                    <span class="c"># khai báo ở đầu script</span>
+
+<span class="k">func</span> <span class="f">_on_body_entered</span>(_body): <span class="c"># quỷ đâm vào</span>
+    hit.<span class="f">emit</span>()               <span class="c"># PHÁT tín hiệu — không quan tâm ai nghe</span></pre>
+        </div>
+        <p>Bên Main: kết nối <code class="ic">hit</code> → hàm <code class="ic">game_over()</code>. Player không cần biết Main là gì — bố cục gọn rối đều được.</p>
+
+        <h3 class="sec">Groups — "địa chỉ nhóm" &amp; Timer</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> groups_timer.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Node dock → Groups → gán node vào nhóm "mobs" (hoặc add_to_group("mobs"))</span>
+get_tree().<span class="f">call_group</span>(<span class="s">"mobs"</span>, <span class="s">"queue_free"</span>)   <span class="c"># xóa SẠCH mọi quỷ</span>
+<span class="k">if</span> body.<span class="f">is_in_group</span>(<span class="s">"player"</span>): ...            <span class="c"># hỏi thành viên nhóm</span>
+
+<span class="c"># Chờ 1 giây trong code (không cần Timer node):</span>
+<span class="k">await</span> get_tree().<span class="f">create_timer</span>(<span class="n">1.0</span>).timeout
+<span class="c"># Timer node: wait_time=1.0, one_shot, autostart → signal timeout</span></pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 9.1 <span class="lvl">vừa</span></div>
+          <p>Tạo scene: Node2D + Button + Label. Kết nối <code class="ic">pressed</code> của Button (bằng Editor) sao cho mỗi lần bấm, Label hiện số lần bấm tăng dần.</p>
+          <details class="answer"><summary>Gợi ý code</summary><div class="body">
+<pre class="code"><span class="k">var</span> count := <span class="n">0</span>
+<span class="k">func</span> <span class="f">_on_button_pressed</span>() -> <span class="t">void</span>:
+    count += <span class="n">1</span>
+    $Label.text = <span class="s">"Bấm %d lần"</span> % count</pre>
+          </div></details>
+        </div>
+      </section>
+      <!-- ===================== LEVEL 2 ===================== -->
+      <div class="level-divider" id="lv2"><div class="line"></div><span class="tag tag-l2">L2 · Công cụ 2D nền tảng</span><div class="line"></div></div>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> Input: phím, chuột, cảm ứng</h2>
+        <p class="ch-sub">"Action" thay phím cứng — code 1 lần, chơi được mọi thiết bị.</p>
+
+        <h3 class="sec">Bước 1 — định nghĩa Action trong Input Map</h3>
+        <p><strong>Project → Project Settings → Input Map</strong>. Thêm action <code class="ic">move_left</code>, <code class="ic">move_right</code>, <code class="ic">move_up</code>, <code class="ic">move_down</code>, <code class="ic">jump</code> → bấm <strong>+</strong> gán phím (mũi tên, WASD, thậm chí gamepad — 1 action nhận nhiều phím). Godot có sẵn bộ <code class="ic">ui_left/ui_accept...</code> cho UI; game của bạn nên có action riêng.</p>
+        <div class="box tip"><span class="box-title">Vì sao không code phím trái tim?</span>Dùng action: đổi phím = 30 giây trong Settings (không đụng code); gamepad + touch gắn vào cùng action; người chơi có thể tự remap. <strong>Không bao giờ</strong> hard-code <code class="ic">KEY_A</code> cho gameplay.</div>
+
+        <h3 class="sec">Bước 2 — đọc action trong code</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> input.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># 4 hướng thành Vector2 sẵn (đã chuẩn hóa) — gọn nhất cho top-down:</span>
+<span class="k">var</span> dir := Input.<span class="f">get_vector</span>(<span class="s">"move_left"</span>, <span class="s">"move_right"</span>, <span class="s">"move_up"</span>, <span class="s">"move_down"</span>)
+
+<span class="c"># Trục 1 chiều (trái = -1, phải = 1):</span>
+<span class="k">var</span> x := Input.<span class="f">get_axis</span>(<span class="s">"move_left"</span>, <span class="s">"move_right"</span>)
+
+Input.<span class="f">is_action_pressed</span>(<span class="s">"move_right"</span>)         <span class="c"># đang GIỮ</span>
+Input.<span class="f">is_action_just_pressed</span>(<span class="s">"jump"</span>)    <span class="c"># VỪA bấm (1 frame) — nhảy/bắn</span></pre>
+        </div>
+        <div class="box warn"><span class="box-title">just_pressed ≠ pressed</span>Nhảy/bắn/menu dùng <code class="ic">just_pressed</code> (bắn 1 phát mỗi lần bấm). Dùng <code class="ic">pressed</code> cho nhảy sẽ nhảy liên tục từng frame khi giữ phím.</div>
+
+        <h3 class="sec">Chuột &amp; cảm ứng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> mouse_touch.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> pos := <span class="f">get_global_mouse_position</span>()      <span class="c"># world position dưới con trỏ</span>
+
+<span class="k">func</span> <span class="f">_unhandled_input</span>(event):                 <span class="c"># bắt sự kiện thô</span>
+    <span class="k">if</span> event <span class="k">is</span> InputEventMouseButton <span class="k">and</span> event.pressed:
+        <span class="f">print</span>(<span class="s">"Bấm tại "</span>, event.position)</pre>
+        </div>
+        <p>Mobile: Project Settings → <strong>Emulate Mouse From Touch</strong> (mặc định bật) — code chuột chạy luôn với ngón tay. Nút ảo: <code class="ic">TouchScreenButton</code> gắn action như thường. Kéo node: theo dõi <code class="ic">InputEventScreenDrag</code> và tính delta.</p>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 10.1 <span class="lvl">dễ</span></div>
+          <p>Định nghĩa 4 action di chuyển + gán WASD/mũi tên. Sprite chạy theo <code class="ic">get_vector</code> với speed 300 (nhân delta!). Bonus: giữ <em>Shift</em> chạy nhanh gấp đôi.</p>
+          <details class="answer"><summary>Gợi ý</summary><div class="body">
+<pre class="code"><span class="k">func</span> <span class="f">_process</span>(delta):
+    <span class="k">var</span> dir := Input.<span class="f">get_vector</span>(<span class="s">"move_left"</span>, <span class="s">"move_right"</span>, <span class="s">"move_up"</span>, <span class="s">"move_down"</span>)
+    <span class="k">var</span> s := speed * (<span class="n">2.0</span> <span class="k">if</span> Input.<span class="f">is_key_pressed</span>(KEY_SHIFT) <span class="k">else</span> <span class="n">1.0</span>)
+    position += dir * s * delta</pre>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Sprite &amp; Animation</h2>
+        <p class="ch-sub">Từ ảnh tĩnh → nhân vật biết chạy, biết nổ, biết nhấp nháy.</p>
+
+        <h3 class="sec">Sprite2D — hiển thị ảnh</h3>
+        <ul>
+          <li>Thả ảnh PNG/WebP/SVG vào FileSystem (Godot tự import) → kéo vào <code class="ic">texture</code> của Sprite2D.</li>
+          <li><code class="ic">flip_h / flip_v</code>: lật — nhân vật quay trái/phải chỉ cần 1 bộ ảnh.</li>
+          <li><code class="ic">modulate</code>: nhuộm màu — <code class="ic">modulate = Color.RED</code> làm flash đỏ khi trúng đòn; giảm alpha (<code class="ic">modulate:a</code>) để mờ dần.</li>
+          <li><code class="ic">region_enabled</code> + Region: cắt 1 ô từ ảnh lưới lớn (spritesheet).</li>
+        </ul>
+
+        <h3 class="sec">AnimatedSprite2D — animation theo frame</h3>
+        <ol>
+          <li>Thêm <code class="ic">AnimatedSprite2D</code> → Inspector → <strong>Sprite Frames → New SpriteFrames</strong> → bấm mở panel <strong>Animation</strong> (dưới).</li>
+          <li>Thêm animation (vd <code class="ic">walk</code>, <code class="ic">up</code>) → kéo dàn frame ảnh vào thanh frame (hoặc Add frames from sprite sheet).</li>
+          <li>Chỉnh FPS; bấm ▶ xem thử ngay trong editor.</li>
+        </ol>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> anim_sprite.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">$AnimatedSprite2D.<span class="f">play</span>()                       <span class="c"># play animation đang chọn</span>
+$AnimatedSprite2D.<span class="f">play</span>(<span class="s">"walk"</span>)                <span class="c"># play cụ thể</span>
+$AnimatedSprite2D.<span class="f">stop</span>()
+$AnimatedSprite2D.flip_h = velocity.x &lt; <span class="n">0</span>        <span class="c"># lật theo hướng chạy</span>
+$AnimatedSprite2D.sprite_frames.<span class="f">get_animation_names</span>()  <span class="c"># list animation</span></pre>
+        </div>
+
+        <h3 class="sec">AnimationPlayer — keyframe mọi thứ</h3>
+        <p>Khi cần animation <strong>thuộc tính</strong> (đổi màu, chạy chữ, mở cửa): thêm <code class="ic">AnimationPlayer</code> → tab Animation → New → bấm biểu tượng chìa khóa cạnh thuộc tính trong Inspector để chốt keyframe tại thời điểm con chạy. Code: <code class="ic">$AnimationPlayer.play("ten")</code>.</p>
+
+        <h3 class="sec">Tween — hiệu ứng 1 dòng code</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> tween.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># Mờ dần rồi xóa node (0.5 giây):</span>
+<span class="k">var</span> tw := <span class="f">create_tween</span>()
+tw.<span class="f">tween_property</span>($Sprite2D, <span class="s">"modulate:a"</span>, <span class="n">0.0</span>, <span class="n">0.5</span>)
+tw.<span class="f">tween_callback</span>($Sprite2D.queue_free)
+
+<span class="c"># Nảy lên kiểu bóng (scale + TRANS_BOUNCE):</span>
+<span class="f">create_tween</span>().<span class="f">tween_property</span>(self, <span class="s">"scale"</span>, Vector2(<span class="n">1.3</span>, <span class="n">0.7</span>), <span class="n">0.15</span>)\
+  .<span class="f">set_trans</span>(Tween.TRANS_BOUNCE).<span class="f">set_loops</span>(<span class="n">3</span>)</pre>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 11.1 <span class="lvl">vừa</span></div>
+          <p>Làm coin xoay + nhấp nhô: Sprite2D hình tròn, trong <code class="ic">_ready</code> tạo tween lặp: xoay 360° trong 1s + scale lên 1.2 rồi về 1.0 (dùng <code class="ic">set_loops()</code> và <code class="ic">tween_property</code> nối tiếp).</p>
+        </div>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Va chạm 2D cơ bản</h2>
+        <p class="ch-sub">Bốn loại "thân" — biết chọn đúng là hết 90% bài toán va chạm.</p>
+
+        <h3 class="sec">4 loại body</h3>
+        <table>
+          <thead><tr><th>Node</th><th>Ai điều khiển</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">StaticBody2D</code></td><td>Không ai — bất động</td><td>Tường, sàn, địa hình</td></tr>
+            <tr><td><code class="ic">CharacterBody2D</code></td><td>Bạn (code velocity)</td><td>Nhân vật, quỷ kiểu platformer</td></tr>
+            <tr><td><code class="ic">RigidBody2D</code></td><td>Engine vật lý (lực, trọng lực)</td><td>Thùng rơi, bóng nảy — xem khóa 2D Physics</td></tr>
+            <tr><td><code class="ic">Area2D</code></td><td>Không chặn — chỉ <em>cảm biến</em></td><td>Hút coin, vùng kích hoạt, đạn, "Né Quỷ" player</td></tr>
+          </tbody>
+        </table>
+        <p>Mỗi body cần một con <code class="ic">CollisionShape2D</code>: chọn hình <strong>gần đúng và đơn giản nhất</strong> — nhân vật = capsule, đạn/coin = circle, tường = rectangle. Vẽ đè lên sprite nhưng vô hình khi chạy (xem shapes khi debug bằng nút ô vuông trong toolbar).</p>
+
+        <h3 class="sec">Area2D — "cảm biến" nhiều nhất dùng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> coin.gd — hút đồng xu</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Area2D
+
+<span class="k">func</span> <span class="f">_on_area_2d_body_entered</span>(body):    <span class="c"># connect signal body_entered</span>
+    <span class="k">if</span> body.<span class="f">is_in_group</span>(<span class="s">"player"</span>):
+        body.<span class="f">add_score</span>(<span class="n">1</span>)
+        <span class="f">queue_free</span>()                    <span class="c"># coin biến mất</span></pre>
+        </div>
+        <p>Signals chính: <code class="ic">body_entered(body)</code> / <code class="ic">body_exited</code> (body = Character/RigidBody chạm vùng) và <code class="ic">area_entered(area)</code> (Area2D chạm Area2D).</p>
+
+        <h3 class="sec">Layers &amp; Masks — 2 con số nhỏ, gọn game</h3>
+        <ul>
+          <li><strong>Layer</strong> = "tôi <em>thuộc</em> lớp nào" (định danh); <strong>Mask</strong> = "tôi <em>muốn phát hiện/va</em> với lớp nào".</li>
+          <li>Game nhỏ: để mặc định hết layer 1 — mọi thứ va mọi thứ, ổn.</li>
+          <li> Khi cần: VD 1=world, 2=player, 3=enemy, 4=player_bullet → bullet chỉ mask 3 (không đâm nhau), enemy mask 1+4.</li>
+          <li>Lưu ý "Né Quỷ": quỷ bỏ tick mask 1 → <strong>không dính vào nhau</strong> khi bay ngang.</li>
+        </ul>
+        <div class="box info"><span class="box-title">Sâu hơn về vật lý?</span>RigidBody, lực/xung lực, joints (lò xo!), stability… là chủ đề của khóa <a class="inline" href="khoa-hoc-godot-2d-physics.html">Godot 2D Physics</a> trong repo — khóa này chỉ cần 4 loại body ở trên.</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> CharacterBody2D — platformer movement</h2>
+        <p class="ch-sub">Template di chuyển kinh điển: chạy, rơi, nhảy.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> player_platformer.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> CharacterBody2D
+
+<span class="d">@export</span> <span class="k">var</span> speed := <span class="n">300.0</span>
+<span class="d">@export</span> <span class="k">var</span> jump_force := <span class="n">-400.0</span>     <span class="c"># âm = hướng LÊN (trục y hướng xuống!)</span>
+<span class="d">@export</span> <span class="k">var</span> gravity := <span class="n">1500.0</span>
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="c"># 1. Ngang: đọc input</span>
+    velocity.x = Input.<span class="f">get_axis</span>(<span class="s">"move_left"</span>, <span class="s">"move_right"</span>) * speed
+    <span class="c"># 2. Nhảy</span>
+    <span class="k">if</span> <span class="f">is_on_floor</span>() <span class="k">and</span> Input.<span class="f">is_action_just_pressed</span>(<span class="s">"jump"</span>):
+        velocity.y = jump_force
+    <span class="c"># 3. Trọng lực tự cộng</span>
+    velocity.y += gravity * delta
+    <span class="c"># 4. Di chuyển + tự trượt tường/sàn</span>
+    <span class="f">move_and_slide</span>()</pre>
+        </div>
+        <ul>
+          <li>Godot 4: gán vào thuộc tính <code class="ic">velocity</code> sẵn có rồi gọi <code class="ic">move_and_slide()</code> <strong>không tham số</strong>.</li>
+          <li><code class="ic">is_on_floor() / is_on_wall() / is_on_ceiling()</code> — chỉ đúng <strong>sau khi</strong> gọi move_and_slide.</li>
+          <li>Sàn = StaticBody2D/TileMap có collision; nhân vật tự đứng, tự trượt dọc tường khi lao vào.</li>
+        </ul>
+
+        <h3 class="sec">Game top-down thì sao?</h3>
+        <p>Không trọng lực: bỏ bước 2–3, <code class="ic">velocity = dir * speed</code> với <code class="ic">dir</code> từ <code class="ic">Input.get_vector</code>. Hoặc như "Né Quỷ" (player là Area2D): <code class="ic">position += velocity * delta</code> trong <code class="ic">_process</code>.</p>
+
+        <div class="box tip"><span class="box-title">Cảm giác "sạch" (game feel)</span>
+          <strong>Coyote time</strong>: cho phép nhảy thêm ~0.1s sau khi rời mép (đếm thời gian <code class="ic">is_on_floor()</code> cuối); <strong>jump buffer</strong>: nhớ phím nhảy ~0.1s trước khi chạm sàn; <strong>rơi nhanh hơn bay</strong>: nhân gravity 1.5 khi <code class="ic">velocity.y &gt; 0</code>. 3 dòng này nâng cảm giác platformer rõ rệt.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 13.1 <span class="lvl">vừa</span></div>
+          <p>Thêm nhảy đôi: cho phép nhảy 1 lần nữa khi đang trên không (đếm số lần nhảy, reset khi chạm sàn).</p>
+          <details class="answer"><summary>Gợi ý</summary><div class="body">
+<pre class="code"><span class="k">var</span> jumps_left := <span class="n">2</span>                          <span class="c"># trong _physics_process:</span>
+<span class="k">if</span> <span class="f">is_on_floor</span>(): jumps_left = <span class="n">2</span>
+<span class="k">if</span> Input.<span class="f">is_action_just_pressed</span>(<span class="s">"jump"</span>) <span class="k">and</span> jumps_left > <span class="n">0</span>:
+    velocity.y = jump_force
+    jumps_left -= <span class="n">1</span></pre>
+          </div></details>
+        </div>
+      </section>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> TileMap &amp; Camera2D</h2>
+        <p class="ch-sub">Vẽ map cả buổi trong 10 phút — và camera biết bám diễn viên.</p>
+
+        <h3 class="sec">TileMapLayer (Godot 4.3+)</h3>
+        <ol>
+          <li>Thêm node <code class="ic">TileMapLayer</code> → Inspector → <strong>Tile Set → New TileSet</strong>.</li>
+          <li>Kéo spritesheet (ảnh lưới ô vuông, vd 16×16/32×32) vào vùng Tile Set → chỉnh Selection size đúng cỡ ô → tự cắt.</li>
+          <li>Vẽ trong viewport: chuột trái vẽ, chuột phải (hoặc B) xóa, Shift+chuột trái hút mẫu ô.</li>
+          <li><strong>Va chạm</strong>: TileSet → Physics Layers → Add Layer → chọn tab Physics trong panel TileMap → quét ô nào đặc thì ô đó thành tường.</li>
+        </ol>
+        <div class="box ver"><span class="box-title">TileMap vs TileMapLayer</span>Tutorial cũ dùng 1 node <code class="ic">TileMap</code> chứa nhiều layer bên trong; Godot 4.3 tách thành từng node <code class="ic">TileMapLayer</code> riêng — mỗi node một việc (chuẩn Godot). Cách dùng gần giống nhau; khóa này dùng TileMapLayer.</div>
+        <p>Mẹo tổ chức: 2 TileMapLayer — <strong>Background</strong> (cỏ, trang trí — không physics) đặt dưới, <strong>Ground</strong> (đất, gai — có physics) đặt trên. Thứ tự node trong cây = thứ tự vẽ.</p>
+
+        <h3 class="sec">Camera2D — khung biết đi theo</h3>
+        <table>
+          <thead><tr><th>Thuộc tính</th><th>Tác dụng</th></tr></thead>
+          <tbody>
+            <tr><td>(làm con của Player)</td><td>Tự bám theo nhân vật — cách phổ biến nhất</td></tr>
+            <tr><td><code class="ic">position_smoothing_enabled</code> + speed</td><td>Bám mượt như dây chun thay vì cứng đờ</td></tr>
+            <tr><td><code class="ic">limit_left/right/top/bottom</code></td><td>Khoá camera trong mép map — không lộ ra ngoài nền</td></tr>
+            <tr><td><code class="ic">zoom</code></td><td>Phóng to/nhỏ (<code class="ic">zoom = Vector2(2,2)</code> = nhìn gần hơn)</td></tr>
+          </tbody>
+        </table>
+        <p>Lưu ý Godot 4: camera <strong>tự động active</strong> — không cần nút Current như Godot 3.</p>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 14.1 <span class="lvl">vừa</span></div>
+          <p>Vẽ 1 map nhỏ (sàn + vài bậc + 2 tường), đặt Player (CH13) + Camera2D con của Player. Chạy: nhảy lên bậc, camera bám theo, không thấy ra ngoài map (đặt limit khớp kích thước map).</p>
+        </div>
+      </section>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> UI, HUD &amp; âm thanh</h2>
+        <p class="ch-sub">Điểm số, nút Start, nhạc nền — phần khiến game "thật" hẳn ra.</p>
+
+        <h3 class="sec">Node UI đều là Control</h3>
+        <table>
+          <thead><tr><th>Node</th><th>Dùng cho</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">Label</code></td><td>Chữ: điểm, thông báo</td></tr>
+            <tr><td><code class="ic">Button</code></td><td>Nút — signal <code class="ic">pressed</code> (ch9)</td></tr>
+            <tr><td><code class="ic">TextureRect / ColorRect</code></td><td>Ảnh / khối màu nền UI</td></tr>
+            <tr><td><code class="ic">ProgressBar</code></td><td>Than máu / nạp skill</td></tr>
+            <tr><td><code class="ic">VBoxContainer / HBoxContainer</code></td><td>Tự xếp dọc / ngang các con</td></tr>
+            <tr><td><code class="ic">CanvasLayer</code></td><td><strong>Lớp vẽ</strong> — UI đặt trong này mới không bị camera kéo chạy</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Anchor preset</strong> (menu neo hiện ra khi chọn node Control, đầu Inspector): neo về Center Top / Center / Center Bottom… để UI tự co giãn theo mọi kích thước màn hình. Đổi font trong <strong>Theme Overrides → Font</strong> (kéo file .ttf vào, chỉnh Font Size) — dùng font pixel cho game retro đẹp ngay.</p>
+
+        <h3 class="sec">Âm thanh</h3>
+        <ul>
+          <li><code class="ic">AudioStreamPlayer</code> — nhạc nền & âm "không định vị": loop bật trong tab Import (Loop Mode) + <code class="ic">autoplay</code>.</li>
+          <li><code class="ic">AudioStreamPlayer2D</code> — sfx có vị trí: càng xa nguồn nghe càng nhỏ.</li>
+          <li>Định dạng: <strong>.ogg</strong> cho nhạc (nhẹ, loop tốt), <strong>.wav</strong> cho sfx ngắn (nhanh).</li>
+          <li>Âm lượng: <code class="ic">volume_db</code>; tách bus Music/SFX trong panel Audio → chỉnh riêng từng loại.</li>
+        </ul>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> audio.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code">$Music.<span class="f">play</span>()                    <span class="c"># phát nhạc (autoplay thì khỏi gọi)</span>
+$DeathSound.<span class="f">play</span>()             <span class="c"># tiếng quỷ đâm trúng</span>
+$Music.<span class="f">stop</span>()                   <span class="c"># tắt khi game over</span></pre>
+        </div>
+
+        <div class="checklist">
+          <h4>✓ Checklist hết L2 — sẵn sàng capstone khi...</h4>
+          <label><input type="checkbox"><span>Di chuyển nhân vật bằng action + get_vector/get_axis (ch10)</span></label>
+          <label><input type="checkbox"><span>Play/stop animation + lật sprite theo hướng (ch11)</span></label>
+          <label><input type="checkbox"><span>Phân biệt 4 loại body, làm coin pickup bằng Area2D (ch12)</span></label>
+          <label><input type="checkbox"><span>Viết chuyển động platformer chuẩn velocity + move_and_slide (ch13)</span></label>
+          <label><input type="checkbox"><span>Vẽ map TileMapLayer có va chạm + camera bám mượt (ch14)</span></label>
+          <label><input type="checkbox"><span>Làm HUD CanvasLayer với Label/Button + gắn nhạc, sfx (ch15)</span></label>
+        </div>
+      </section>
+      <!-- ===================== LEVEL 3 ===================== -->
+      <div class="level-divider" id="lv3"><div class="line"></div><span class="tag tag-l3">L3 · Capstone — 2 game hoàn chỉnh</span><div class="line"></div></div>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> "Né Quỷ" #1 — Scene Player</h2>
+        <p class="ch-sub">Game A đi theo tutorial kinh điển "Dodge the Creeps" của docs Godot — bắt đầu từ nhân vật.</p>
+
+        <div class="box info"><span class="box-title">Chuẩn bị</span>Tải bộ ảnh mẫu trong trang docs <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/first_2d_game/index.html" target="_blank">Your first 2D game</a> (mục "art assets" — có sẵn animation grey_*.png và nhạc/sfx), hoặc tự vẽ/cắt đâu cũng được. Tạo project <code class="ic">ne-quy</code>, action <code class="ic">move_left/right/up/down</code> gán mũi tên + WASD.</div>
+
+        <h3 class="sec">Dựng scene</h3>
+        <p><strong>Player.tscn</strong>: root <code class="ic">Area2D</code> (đặt tên <code class="ic">Player</code>) → con: <code class="ic">AnimatedSprite2D</code> + <code class="ic">CollisionShape2D</code> (capsule hoặc circle đè vừa ảnh). Tạo animations <code class="ic">walk</code> (dãy grey_mow_*) và <code class="ic">up</code> (grey_up_*) trong SpriteFrames.</p>
+        <div class="box info"><span class="box-title">Vì sao Area2D chứ không phải CharacterBody2D?</span>Nhân vật game này cần <em>phát hiện</em> chạm quỷ để thua — không cần chặn/đẩy. Area2D là cảm biến đúng nghĩa, lại nhẹ. (CharacterBody2D sẽ dùng ở game B — platformer.)</div>
+
+        <h3 class="sec">player.gd — nguyên bản theo docs</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> player.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Area2D
+
+<span class="k">signal</span> hit
+
+<span class="d">@export</span> <span class="k">var</span> speed = <span class="n">400</span>
+<span class="k">var</span> screen_size
+
+<span class="k">func</span> <span class="f">_ready</span>():
+    screen_size = get_viewport_rect().size   <span class="c"># kích thước màn hình game</span>
+    hide()                                    <span class="c"># ẩn tới khi bấm Start</span>
+
+<span class="k">func</span> <span class="f">_process</span>(delta):
+    <span class="k">var</span> velocity = Vector2.ZERO
+    <span class="k">if</span> Input.<span class="f">is_action_pressed</span>(<span class="s">"move_right"</span>): velocity.x += <span class="n">1</span>
+    <span class="k">if</span> Input.<span class="f">is_action_pressed</span>(<span class="s">"move_left"</span>):  velocity.x -= <span class="n">1</span>
+    <span class="k">if</span> Input.<span class="f">is_action_pressed</span>(<span class="s">"move_down"</span>):  velocity.y += <span class="n">1</span>
+    <span class="k">if</span> Input.<span class="f">is_action_pressed</span>(<span class="s">"move_up"</span>):    velocity.y -= <span class="n">1</span>
+
+    <span class="k">if</span> velocity.length() > <span class="n">0</span>:                    <span class="c"># đang di chuyển</span>
+        velocity = velocity.<span class="f">normalized</span>() * speed  <span class="c"># chéo không nhanh hơn</span>
+        $AnimatedSprite2D.<span class="f">play</span>()
+    <span class="k">else</span>:
+        $AnimatedSprite2D.<span class="f">stop</span>()
+
+    position += velocity * delta
+    position = position.<span class="f">clamp</span>(Vector2.ZERO, screen_size)  <span class="c"># khỏi ra khỏi màn</span>
+
+    <span class="k">if</span> velocity.x != <span class="n">0</span>:                             <span class="c"># chọn animation theo hướng</span>
+        $AnimatedSprite2D.animation = <span class="s">"walk"</span>
+        $AnimatedSprite2D.flip_h = velocity.x &lt; <span class="n">0</span>     <span class="c"># gán bool 1 dòng</span>
+    <span class="k">elif</span> velocity.y != <span class="n">0</span>:
+        $AnimatedSprite2D.animation = <span class="s">"up"</span>
+        $AnimatedSprite2D.flip_v = velocity.y &gt; <span class="n">0</span>
+
+<span class="k">func</span> <span class="f">start</span>(pos):                                   <span class="c"># gọi mỗi ván mới</span>
+    position = pos
+    <span class="f">show</span>()
+    $CollisionShape2D.<span class="f">set_deferred</span>(<span class="s">"disabled"</span>, <span class="n">false</span>)
+
+<span class="k">func</span> <span class="f">_on_body_entered</span>(_body):                      <span class="c"># quỷ đâm vào — connect body_entered</span>
+    hide()
+    hit.<span class="f">emit</span>()
+    $CollisionShape2D.<span class="f">set_deferred</span>(<span class="s">"disabled"</span>, <span class="n">true</span>)</pre>
+        </div>
+        <div class="box warn"><span class="box-title">set_deferred — cái bẫy kinh điển</span>Đang đứng trong callback vật lý (body_entered) mà tắt collision ngay → engine đang tính bước vật lý, đổi hình dạng giữa chừng gây lỗi/crash. <code class="ic">set_deferred</code> = "để hết bước này hẵng đổi". Cũng nhờ disable mà hit không phát 2 lần.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 16.1 <span class="lvl">dễ</span></div>
+          <p>Trong <code class="ic">player.gd</code>, thay 4 dòng <code class="ic">is_action_pressed</code> bằng 1 dòng <code class="ic">Input.get_vector(...)</code> — hành vi giữ nguyên (đây chính là khác biệt style, hai cách đều đúng; docs chọn cách dài cho người mới dễ theo từng dòng).</p>
+        </div>
+      </section>
+
+      <!-- ===== CH17 ===== -->
+      <section class="chapter" id="ch17">
+        <h2 class="ch-title"><span class="num">CH 17</span> "Né Quỷ" #2 — Mob &amp; spawn ngẫu nhiên</h2>
+        <p class="ch-sub">Quỷ bay từ viền màn hình vào trong — bằng Path2D + một chút lượng giác.</p>
+
+        <h3 class="sec">Mob.tscn</h3>
+        <p>Root <code class="ic">RigidBody2D</code> (đặt tên <code class="ic">Mob</code>) → con <code class="ic">AnimatedSprite2D</code> (3 animation: <code class="ic">fly</code>/<code class="ic">swim</code>/<code class="ic">walk</code>, speed 3) + <code class="ic">CollisionShape2D</code> (capsule xoay 90°) + <code class="ic">VisibleOnScreenNotifier2D</code>.</p>
+        <ul>
+          <li>Inspector của Mob: <strong>Gravity Scale = 0</strong> (quỷ không rơi!), <strong>Collision → Mask bỏ tick ô 1</strong> → quỷ không dính vào nhau.</li>
+          <li>Group: Node dock → Groups → thêm nhóm <code class="ic">mobs</code> — để game over xóa sạch.</li>
+        </ul>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> mob.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> RigidBody2D
+
+<span class="k">func</span> <span class="f">_ready</span>():
+    <span class="k">var</span> mob_types = $AnimatedSprite2D.sprite_frames.<span class="f">get_animation_names</span>()
+    $AnimatedSprite2D.animation = mob_types.<span class="f">pick_random</span>()   <span class="c"># mặt ngẫu nhiên!</span>
+    $AnimatedSprite2D.<span class="f">play</span>()
+
+<span class="k">func</span> <span class="f">_on_visible_on_screen_notifier_2d_screen_exited</span>():   <span class="c"># connect signal</span>
+    <span class="f">queue_free</span>()     <span class="c"># bay khỏi màn → xóa — không để quỷ chất đống vô tội vạ</span></pre>
+        </div>
+
+        <h3 class="sec">Main.tscn — sân khấu</h3>
+        <p>Root <code class="ic">Node</code> (đặt tên <code class="ic">Main</code>) → thêm: instance <code class="ic">Player</code> · <code class="ic">MobTimer</code> (Wait 0.5) · <code class="ic">ScoreTimer</code> (Wait 1) · <code class="ic">StartTimer</code> (Wait 2, One Shot ✓) · <code class="ic">StartPosition</code> (Marker2D, đặt giữa dưới) · <code class="ic">MobPath</code> (Path2D).</p>
+        <p>Vẽ <strong>MobPath</strong>: chọn MobPath → thêm Curve2D trong Inspector → bấm các điểm tạo <strong>hình chữ nhật khép kín bao quanh viewport, theo chiều kim đồng hồ</strong> (con là <code class="ic">PathFollow2D</code> đặt tên MobSpawnLocation, bật <em>Rotates</em>). Path2D là "đường ray" — quỷ nhảy lên ray ở điểm bất kỳ rồi lao vào giữa.</p>
+
+        <h3 class="sec">Spawn — trái tim của game</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> main.gd (phần spawn)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> Node
+
+<span class="d">@export</span> <span class="k">var</span> mob_scene: PackedScene     <span class="c"># kéo mob.tscn vào ô này trong Inspector!</span>
+
+<span class="k">func</span> <span class="f">_on_mob_timer_timeout</span>():
+    <span class="k">var</span> mob = mob_scene.<span class="f">instantiate</span>()             <span class="c"># đúc 1 con quỷ từ khuôn</span>
+    <span class="k">var</span> mob_spawn_location = get_node(<span class="s">"MobPath/MobSpawnLocation"</span>)
+    mob_spawn_location.progress_ratio = <span class="f">randf</span>()    <span class="c"># vị trí ngẫu nhiên 0→1 trên đường</span>
+    mob.position = mob_spawn_location.position
+
+    <span class="k">var</span> direction = mob_spawn_location.rotation + PI / <span class="n">2</span>   <span class="c"># vuông góc đường ray</span>
+    direction += <span class="f">randf_range</span>(-PI / <span class="n">4</span>, PI / <span class="n">4</span>)      <span class="c"># lệch tối đa ±45°</span>
+    mob.rotation = direction
+
+    <span class="k">var</span> velocity = Vector2(<span class="f">randf_range</span>(<span class="n">150.0</span>, <span class="n">250.0</span>), <span class="n">0.0</span>)
+    mob.linear_velocity = velocity.<span class="f">rotated</span>(direction)   <span class="c"># tốc độ 150-250, hướng vừa tính</span>
+
+    add_child(mob)                                   <span class="c"># thả quỷ vào game</span></pre>
+        </div>
+        <div class="box info"><span class="box-title">Vì sao + PI/2 lại hướng vào trong?</span>PathFollow2D xoay theo tiếp tuyến của đường; vuông góc với tiếp tuyến (±90°) là phương vuông góc bờ — vì path vẽ <strong>thuận kim đồng hồ</strong> nên +90° chỉa thẳng vào giữa màn. Lượng giác 2 dòng, hiệu ứng "quỷ tràn từ rìa" cực kỳ tự nhiên.</div>
+      </section>
+
+      <!-- ===== CH18 ===== -->
+      <section class="chapter" id="ch18">
+        <h2 class="ch-title"><span class="num">CH 18</span> "Né Quỷ" #3 — HUD, điểm &amp; hoàn thiện</h2>
+        <p class="ch-sub">Nối mọi mảnh lại: nút Start, điểm mỗi giây, Game Over, nhạc + nổ.</p>
+
+        <h3 class="sec">HUD.tscn</h3>
+        <p>Root <code class="ic">CanvasLayer</code> (tên <code class="ic">HUD</code>) → con: <code class="ic">ScoreLabel</code> (Label, anchor Center Top) · <code class="ic">Message</code> (Label, Autowrap = Word) · <code class="ic">StartButton</code> (Button) · <code class="ic">MessageTimer</code> (Timer 2s, One Shot). Font: Theme Overrides → kéo Xolonium-Regular.ttf (có trong assets).</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> hud.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">extends</span> CanvasLayer
+
+<span class="k">signal</span> start_game                             <span class="c"># tự chế: báo Main "người chơi bấm Start"</span>
+
+<span class="k">func</span> <span class="f">show_message</span>(text):
+    $Message.text = text
+    $Message.<span class="f">show</span>()
+    $MessageTimer.<span class="f">start</span>()
+
+<span class="k">func</span> <span class="f">show_game_over</span>():
+    <span class="f">show_message</span>(<span class="s">"Game Over"</span>)
+    <span class="k">await</span> $MessageTimer.timeout              <span class="c"># chờ 2s — code tuyến tính như đọc truyện</span>
+    $Message.text = <span class="s">"Né Quỷ!"</span>
+    $Message.<span class="f">show</span>()
+    <span class="k">await</span> get_tree().<span class="f">create_timer</span>(<span class="n">1.0</span>).timeout   <span class="c"># chờ thêm 1s</span>
+    $StartButton.<span class="f">show</span>()
+
+<span class="k">func</span> <span class="f">update_score</span>(score):
+    $ScoreLabel.text = <span class="f">str</span>(score)
+
+<span class="k">func</span> <span class="f">_on_start_button_pressed</span>():              <span class="c"># connect pressed → ẩn nút + phát tín hiệu</span>
+    $StartButton.hide()
+    start_game.<span class="f">emit</span>()
+
+<span class="k">func</span> <span class="f">_on_message_timer_timeout</span>():
+    $Message.hide()</pre>
+        </div>
+
+        <h3 class="sec">main.gd — dàn đạo</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> main.gd (hoàn thiện)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> score
+
+<span class="k">func</span> <span class="f">game_over</span>():                            <span class="c"># connect từ signal hit của Player</span>
+    $ScoreTimer.<span class="f">stop</span>()
+    $MobTimer.<span class="f">stop</span>()
+    $HUD.<span class="f">show_game_over</span>()
+    $Music.<span class="f">stop</span>()
+    $DeathSound.<span class="f">play</span>()
+
+<span class="k">func</span> <span class="f">new_game</span>():                             <span class="c"># connect từ signal start_game của HUD</span>
+    score = <span class="n">0</span>
+    $Player.<span class="f">start</span>($StartPosition.position)
+    $MobTimer.<span class="f">start</span>()
+    $ScoreTimer.<span class="f">start</span>()
+    $HUD.<span class="f">update_score</span>(score)
+    $HUD.<span class="f">show_message</span>(<span class="s">"Sẵn sàng..."</span>)
+    <span class="k">await</span> $StartTimer.timeout               <span class="c"># đếm ngược 2s tạo kịch tính</span>
+    $HUD.<span class="f">update_score</span>(score)
+    $Music.<span class="f">play</span>()
+
+<span class="k">func</span> <span class="f">_on_score_timer_timeout</span>():
+    score += <span class="n">1</span>                            <span class="c"># sống sót thêm 1 giây = +1 điểm</span>
+    $HUD.<span class="f">update_score</span>(score)</pre>
+        </div>
+
+        <h3 class="sec">Nối dây — bảng signal của cả game</h3>
+        <table>
+          <thead><tr><th>Signal (từ → )</th><th>Gọi hàm ở</th></tr></thead>
+          <tbody>
+            <tr><td>StartButton.<code class="ic">pressed</code> → HUD</td><td><code class="ic">_on_start_button_pressed()</code> → phát <code class="ic">start_game</code></td></tr>
+            <tr><td>HUD.<code class="ic">start_game</code> → Main</td><td><code class="ic">new_game()</code></td></tr>
+            <tr><td>Player.<code class="ic">hit</code> → Main</td><td><code class="ic">game_over()</code></td></tr>
+            <tr><td>Player.<code class="ic">body_entered</code> → Player</td><td><code class="ic">_on_body_entered()</code> (ch16)</td></tr>
+            <tr><td>MobTimer/ScoreTimer.<code class="ic">timeout</code> → Main</td><td><code class="ic">_on_mob_timer_timeout()</code> / <code class="ic">_on_score_timer_timeout()</code></td></tr>
+            <tr><td>Mob.<code class="ic">screen_exited</code> → Mob</td><td><code class="ic">queue_free()</code> (ch17)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Polish — 10 phút đáng giá nhất</h3>
+        <ul>
+          <li>Thêm <code class="ic">Music</code> (AudioStreamPlayer, autoplay, nhạc loop .ogg — assets mẫu có sẵn) + <code class="ic">DeathSound</code> vào Main.</li>
+          <li>Nổ khi chết: Player thêm con <code class="ic">GPUParticles2D</code> (One Shot ✓, Emitting ✗; particles.png làm texture) — code: <code class="ic">$GPUParticles2D.emitting = true</code> trong <code class="ic">_on_body_entered</code>, ẩn player, và xóa particle node sau 1s bằng SceneTree timer.</li>
+          <li>Đặt <code class="ic">main.tscn</code> làm scene chính (Project Settings → Run → Main Scene) → <strong>F5</strong> chơi game hoàn chỉnh đầu tiên của bạn! 🏆</li>
+        </ul>
+        <div class="box tip"><span class="box-title">Chơi thử bản web</span>Mini-game cuối trang là "Né Quỷ" thu nhỏ (không cần Godot) — so sánh cảm giác với bản bạn tự làm để hiểu mỗi tham số (tốc độ 150–250, spawn 0.5s, ±45°) ảnh hưởng thế nào.</div>
+      </section>
+
+      <!-- ===== CH19 ===== -->
+      <section class="chapter" id="ch19">
+        <h2 class="ch-title"><span class="num">CH 19</span> "Hái Sao" — platformer mini</h2>
+        <p class="ch-sub">Game B: tự thiết kế (không theo docs) — tổng hợp toàn bộ L2.</p>
+
+        <h3 class="sec">Đề bài</h3>
+        <p>Một màn platformer: chạy + nhảy (CH13), map TileMapLayer (CH14), camera mượt, <strong>10 đồng sao</strong> (Area2D — CH12), 2 quỷ đi tuần, chạm quỷ = về checkpoint, đủ sao → mở cổng đích → thắng. HUD đếm sao + kỷ lục (CH15).</p>
+
+        <h3 class="sec">Cấu trúc scene</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Cây scene "Hái Sao"</span></div>
+<pre class="code"><span class="f">Main</span> (Node2D)
+├── <span class="f">Background</span> (TileMapLayer — không physics)
+├── <span class="f">Ground</span> (TileMapLayer — có physics)
+├── <span class="f">Player</span> (CharacterBody2D) + Camera2D
+├── <span class="f">Stars</span> (Node2D) ── 10 × instance <span class="f">star.tscn</span>
+│      └── <span class="f">Star</span> (Area2D + Sprite2D + CollisionShape2D + tween xoay)
+├── <span class="f">Enemies</span> (Node2D) ── 2 × instance <span class="f">enemy.tscn</span>
+│      └── <span class="f">Enemy</span> (CharacterBody2D + AnimatedSprite2D + CollisionShape2D)
+├── <span class="f">Checkpoints</span> (Node2D) ── Marker2D vài điểm
+├── <span class="f">Goal</span> (Area2D — cửa thoát, khóa tới khi đủ sao)
+└── <span class="f">HUD</span> (CanvasLayer + Label "⭐ 0/10" + Label kỷ lục)</pre>
+        </div>
+
+        <h3 class="sec">3 mảnh code chính</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> star.gd · enemy.gd (đi tuần)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c"># star.gd</span>
+<span class="k">extends</span> Area2D
+<span class="k">func</span> <span class="f">_ready</span>():
+    <span class="f">create_tween</span>().<span class="f">set_loops</span>().<span class="f">tween_property</span>(self, <span class="s">"rotation"</span>, TAU, <span class="n">1.5</span>)
+<span class="k">func</span> <span class="f">_on_body_entered</span>(body):
+    <span class="k">if</span> body.<span class="f">is_in_group</span>(<span class="s">"player"</span>):
+        body.<span class="f">collect_star</span>()      <span class="c"># HUD cập nhật; đủ 10 → mở Goal</span>
+        <span class="f">queue_free</span>()
+
+<span class="c"># enemy.gd — đi tuần giữa 2 điểm A↔B</span>
+<span class="k">extends</span> CharacterBody2D
+<span class="d">@export</span> <span class="k">var</span> speed := <span class="n">80.0</span>
+<span class="d">@export</span> <span class="k">var</span> diem_a := Vector2(<span class="n">100</span>, <span class="n">0</span>)     <span class="c"># chỉnh trong Inspector cho từng con</span>
+<span class="d">@export</span> <span class="k">var</span> diem_b := Vector2(<span class="n">400</span>, <span class="n">0</span>)
+<span class="k">var</span> den_a := <span class="n">true</span>
+
+<span class="k">func</span> <span class="f">_physics_process</span>(delta):
+    <span class="k">var</span> dich = global_position.<span class="f">lerp</span>(diem_a <span class="k">if</span> den_a <span class="k">else</span> diem_b, <span class="n">1</span> - <span class="f">pow</span>(<span class="n">0.001</span>, delta))
+    velocity = (dich - global_position) * speed / <span class="n">50.0</span>
+    <span class="f">move_and_slide</span>()
+    $AnimatedSprite2D.flip_h = velocity.x &lt; <span class="n">0</span></pre>
+        </div>
+        <p>Chạm quỷ: trong Player, connect <code class="ic">body_entered</code> từ Area2D overlay (hoặc dùng <code class="ic">move_and_slide()</code> rồi kiểm tra <code class="ic">get_slide_collision()</code>) → teleport về checkpoint gần nhất + mất 1 tim. Đơn giản hơn: quỷ là Area2D, body_entered là đủ.</p>
+
+        <h3 class="sec">Lưu kỷ lục — lần đầu làm game "nhớ" người chơi</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> save.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">const</span> SAVE_PATH = <span class="s">"user://haisao.json"</span>    <span class="c"># user:// = thư mục riêng của game (an toàn)</span>
+
+<span class="k">func</span> <span class="f">save_best</span>(thoi_gian: <span class="t">float</span>) -> <span class="t">void</span>:
+    <span class="k">var</span> f = FileAccess.<span class="f">open</span>(SAVE_PATH, FileAccess.WRITE)
+    f.<span class="f">store_line</span>(<span class="f">str</span>({<span class="s">"best"</span>: thoi_gian}))     <span class="c"># Dictionary → text</span>
+
+<span class="k">func</span> <span class="f">load_best</span>() -> <span class="t">float</span>:
+    <span class="k">if</span> <span class="k">not</span> FileAccess.<span class="f">file_exists</span>(SAVE_PATH):
+        <span class="k">return</span> <span class="n">0.0</span>
+    <span class="k">var</span> text = FileAccess.<span class="f">open</span>(SAVE_PATH, FileAccess.READ).<span class="f">get_line</span>()
+    <span class="k">return</span> <span class="f">str_to_var</span>(text)[<span class="s">"best"</span>]              <span class="c"># text → Dictionary</span></pre>
+        </div>
+        <div class="box tip"><span class="box-title">Tự chế &gt; làm theo</span>Game B không có code mẫu từng dòng — đó là <em>cố ý</em>. Bạn đã có mọi mảnh (L1+L2); việc tự ghép, tự gặp lỗi, tự sửa chính là bài kiểm tra tốt nghiệp. Kẹc đâu thì quay lại chương tương ứng hoặc tra docs.</div>
+
+        <div class="checklist">
+          <h4>✓ Checklist "Hái Sao"</h4>
+          <label><input type="checkbox"><span>Nhân vật chạy/nhảy mượt, có coyote time hoặc jump buffer</span></label>
+          <label><input type="checkbox"><span>Map vẽ bằng tile, camera bám có smoothing + limit</span></label>
+          <label><input type="checkbox"><span>Hái đủ 10 sao → cổng đích mở → chạm đích hiện "Thắng!"</span></label>
+          <label><input type="checkbox"><span>Chạm quỷ về checkpoint (không chết mạng cả map)</span></label>
+          <label><input type="checkbox"><span>HUD ⭐ x/10 + kỷ lục lưu bằng FileAccess</span></label>
+          <label><input type="checkbox"><span>Nhạc nền + 2 sfx (hái sao, chạm quỷ)</span></label>
+        </div>
+      </section>
+
+      <!-- ===================== LEVEL 4 ===================== -->
+      <div class="level-divider" id="lv4"><div class="line"></div><span class="tag tag-l4">L4 · Đi tiếp</span><div class="line"></div></div>
+
+      <!-- ===== CH20 ===== -->
+      <section class="chapter" id="ch20">
+        <h2 class="ch-title"><span class="num">CH 20</span> Bản đồ phía trước</h2>
+        <p class="ch-sub">Bạn đã có nền — giờ là thời điểm chọn hướng sâu.</p>
+
+        <h3 class="sec">3D — quen mà lạ</h3>
+        <p>Tư duy node giữ nguyên, chỉ đổi bộ node: <code class="ic">Node3D</code>, <code class="ic">MeshInstance3D</code> (hình khối), <code class="ic">Camera3D</code>, <code class="ic">DirectionalLight3D</code> (nắng), <code class="ic">WorldEnvironment</code> (trời/sương). Docs có tiếp theo <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/first_3d_game/index.html" target="_blank">Your first 3D game</a> (game bắn xe tăng đơn giản) — làm khi đã vững 2D.</p>
+
+        <h3 class="sec">Chia sẻ game cho bạn bè — Export</h3>
+        <ol>
+          <li><strong>Project → Export → Add…</strong> chọn nền tảng: Windows / Linux / macOS / <strong>Web</strong> (chạy trong trình duyệt).</li>
+          <li>Lần đầu: bấm <strong>Download and Install Export Templates</strong> (~ vài trăm MB, một lần duy nhất).</li>
+          <li>Bấm <strong>Export Project</strong> → được file <code class="ic">.exe</code> / <code class="ic">.zip</code> web — gửi trực tiếp cho bạn bè chơi.</li>
+          <li>Xuất Android/iOS có quảng cáo: nằm ở khóa <a class="inline" href="khoa-hoc-godot-2d-physics.html">Godot 2D Physics</a> (L4) trong repo này.</li>
+        </ol>
+
+        <h3 class="sec">Lộ trình trong repo này</h3>
+        <table>
+          <thead><tr><th>Bước</th><th>File</th><th>Học gì</th></tr></thead>
+          <tbody>
+            <tr><td>1 — bạn đang ở đây</td><td><code class="ic">khoa-hoc-godot-can-ban</code></td><td>Nền Godot + GDScript + 2 game đầu</td></tr>
+            <tr><td>2 — vật lý chuyên sâu</td><td><a class="inline" href="khoa-hoc-godot-2d-physics.html">khoa-hoc-godot-2d-physics</a></td><td>RigidBody, lực, joints, Slinky, xuất bản mobile + ads</td></tr>
+            <tr><td>3 — project RPG lớn</td><td><a class="inline" href="godot-hackslash-rpg-guide.html">godot-hackslash-rpg-guide</a></td><td>Hoàn thiện game isometric hack &amp; slash</td></tr>
+            <tr><td>4 — nghĩ như designer</td><td><a class="inline" href="khoa-hoc-game-design.html">khoa-hoc-game-design</a></td><td>Thiết kế mức, juice, cân bằng, cảm xúc người chơi</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Nguồn ngoài đáng theo</h3>
+        <ul>
+          <li><a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html" target="_blank">Godot Docs</a> — Step by Step, GDScript basics, Style Guide (viết code đẹp).</li>
+          <li><a class="inline" href="https://gdquest.github.io/learn-gdscript/" target="_blank">GDQuest — Learn GDScript From Zero</a> — luyện code thuần 27 bài.</li>
+          <li><a class="inline" href="https://www.youtube.com/watch?v=nAh_Kx5Zh5Q" target="_blank">Clear Code — Ultimate Introduction to Godot 4</a> — 11+ tiếng, gần như "đại học Godot" miễn phí.</li>
+          <li><a class="inline" href="https://www.youtube.com/playlist?list=PLPV2KyIb3jR7ecat0FBEMv2EZgsDg6Wcv" target="_blank">Brackeys Godot playlist</a> — video ngắn, sản xuất đẹp.</li>
+        </ul>
+
+        <div class="box game"><span class="box-title">🏁 Quy tắc vàng</span>Làm game <strong>nhỏ mà HOÀN CHỈNH</strong> (menu + thắng/thua + âm thanh + 1 cơ chế hay) tốt hơn game lớn bỏ dở. Mỗi tuần 1 game nhỏ: Pong → Breakout → runner → tower defense… Sau 5 game, bạn sẽ không nhận ra mình nữa.</div>
+      </section>
+      <!-- ===================== MINI-GAME ===================== -->
+      <div class="level-divider" id="lvgame"><div class="line"></div><span class="tag tag-l3">🎮 Chơi thử — "Né Quỷ" bản web</span><div class="line"></div></div>
+
+      <section class="chapter" id="minigame">
+        <h2 class="ch-title"><span class="num">🎮</span> Mini-game "Né Quỷ"</h2>
+        <p class="ch-sub">Cùng luật với capstone CH16–18: di chuyển, né quỷ tràn từ rìa, sống sót càng lâu điểm càng cao.</p>
+
+        <div class="mg-wrap">
+          <h3>🕹 Né Quỷ — bản web thu nhỏ</h3>
+          <p class="mg-sub"><strong>Phím mũi tên / WASD</strong> để di chuyển · trên điện thoại: <strong>quét ngón tay</strong>. Quỷ 🔴 xuất hiện từ rìa, càng về sau càng đông. Bấm vào màn hình để bắt đầu.</p>
+          <canvas id="mgCanvas" width="640" height="400"></canvas>
+          <div class="mg-btns">
+            <button onclick="mgRestart()">▶ Chơi / Chơi lại</button>
+            <button class="ghost" onclick="mgPause()">⏸ Tạm dừng</button>
+            <span class="mg-best" id="mgBest">Kỷ lục: <b>0</b></span>
+          </div>
+          <p class="mg-sub" style="margin-top:10px">💡 Đây chính là logic bạn code bằng Godot ở CH16–18 (spawn theo hướng ngẫu nhiên vào giữa, tốc độ tăng dần, điểm mỗi giây) — viết lại bằng JavaScript để chạy ngay trong trang.</p>
+        </div>
+      </section>
+
+      <!-- ===================== QUIZ ===================== -->
+      <div class="level-divider" id="lvquiz"><div class="line"></div><span class="tag tag-l4">📚 Ôn tập</span><div class="line"></div></div>
+
+      <section class="chapter" id="quiz">
+        <h2 class="ch-title"><span class="num">❓</span> Quiz — 12 câu</h2>
+        <p class="ch-sub">Chọn đáp án rồi bấm Kiểm tra. Sai cũng được — đọc giải thích là học thêm.</p>
+
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra kiến thức sau 20 chương</div>
+
+          <div class="q" data-answer="b">
+            <p>1. Trong Godot, "mọi thứ là node". Một Scene (.tscn) thực chất là gì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q1" value="a"> Một tệp ảnh nền của game</label>
+            <label class="opt" data-key="b"><input type="radio" name="q1" value="b"> Một cây node được lưu thành tệp, có thể nhúng (instance) vào scene khác</label>
+            <label class="opt" data-key="c"><input type="radio" name="q1" value="c"> Một cấp độ (level) của game</label>
+            <div class="explain">Scene = cây node lưu thành .tscn. Instance scene này vào scene khác = cách tái sử dụng (như prefab). CH2.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>2. Phím nào chạy <em>scene đang mở</em> để thử nhanh?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q2" value="a"> F5</label>
+            <label class="opt" data-key="b"><input type="radio" name="q2" value="b"> F8</label>
+            <label class="opt" data-key="c"><input type="radio" name="q2" value="c"> F6</label>
+            <div class="explain">F5 chạy game từ scene chính, F6 chạy đúng scene đang mở, F8 dừng. CH1.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>3. Vì sao chuyển động trong <code>_process(delta)</code> phải nhân với <code>delta</code>?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q3" value="a"> Để code ngắn hơn</label>
+            <label class="opt" data-key="b"><input type="radio" name="q3" value="b"> Để tốc độ theo giây đồng nhất trên máy 30fps lẫn 144fps</label>
+            <label class="opt" data-key="c"><input type="radio" name="q3" value="c"> Để Godot tự lưu game</label>
+            <div class="explain">delta = thời gian của frame trước. Nhân delta biến "px/frame" thành "px/giây" — máy nhanh máy chậm đều như nhau. CH8.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>4. <code class="ic">@export var speed := 300.0</code> có tác dụng gì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q4" value="a"> Biến hiện trong Inspector — chỉnh giá trị không cần sửa code</label>
+            <label class="opt" data-key="b"><input type="radio" name="q4" value="b"> Biến chỉ đọc, không đổi được</label>
+            <label class="opt" data-key="c"><input type="radio" name="q4" value="c"> Tự tăng tốc theo thời gian</label>
+            <div class="explain">@export đẩy biến ra Inspector — bạn tinh chỉnh "cảm giác" game cực nhanh. CH5.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>5. Cách Godot 4 kết nối signal bằng code?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q5" value="a"> <code>connect("pressed", self, "_on")</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q5" value="b"> <code>pressed += _on</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q5" value="c"> <code>pressed.connect(_on)</code></label>
+            <div class="explain">Godot 4 nhận Callable: <code>signal.connect(ham)</code>. Cách A là cú pháp Godot 3. CH9.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>6. Muốn "nổ tung" particle rồi tự xóa node sau 1 giây, cách gọn nhất?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q6" value="a"> Tạo Timer node trong editor</label>
+            <label class="opt" data-key="b"><input type="radio" name="q6" value="b"> <code>await get_tree().create_timer(1.0).timeout</code> rồi queue_free()</label>
+            <label class="opt" data-key="c"><input type="radio" name="q6" value="c"> Không thể — node tự xóa</label>
+            <div class="explain">SceneTree timer + await = chờ trong code không cần node; queue_free() xóa node an toàn cuối frame. CH9, CH18.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>7. Nhân vật top-down cần "phát hiện chạm quỷ để thua" (không cần chặn nhau). Body nào hợp nhất?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q7" value="a"> Area2D</label>
+            <label class="opt" data-key="b"><input type="radio" name="q7" value="b"> StaticBody2D</label>
+            <label class="opt" data-key="c"><input type="radio" name="q7" value="c"> RigidBody2D</label>
+            <div class="explain">Area2D = cảm biến, có body_entered — đủ yêu cầu và nhẹ. Chính là lựa chọn của docs cho Player "Dodge the Creeps". CH12, CH16.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>8. Di chuyển CharacterBody2D chuẩn Godot 4?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q8" value="a"> Gán <code>position += v</code> trong _process</label>
+            <label class="opt" data-key="b"><input type="radio" name="q8" value="b"> Gán <code>velocity</code> rồi gọi <code>move_and_slide()</code> trong _physics_process</label>
+            <label class="opt" data-key="c"><input type="radio" name="q8" value="c"> Gọi <code>apply_force()</code></label>
+            <div class="explain">CharacterBody2D: velocity + move_and_slide() (không tham số ở Godot 4). apply_force là của RigidBody2D. CH13.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>9. Trong game "Né Quỷ", Path2D + PathFollow2D dùng để làm gì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q9" value="a"> Vẽ đường đi platformer</label>
+            <label class="opt" data-key="b"><input type="radio" name="q9" value="b"> Cho camera bay quanh map</label>
+            <label class="opt" data-key="c"><input type="radio" name="q9" value="c"> Chọn điểm spawn ngẫu nhiên trên viền rồi tính hướng bắn vào giữa</label>
+            <div class="explain">progress_ratio = randf() nhảy tới vị trí bất kỳ trên đường; rotation của PathFollow2D + PI/2 (±45°) cho hướng vào giữa. CH17.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>10. UI (điểm số, nút Start) nên đặt trong node nào để không bị camera kéo chạy?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q10" value="a"> CanvasLayer</label>
+            <label class="opt" data-key="b"><input type="radio" name="q10" value="b"> Node2D</label>
+            <label class="opt" data-key="c"><input type="radio" name="q10" value="c"> Camera2D</label>
+            <div class="explain">CanvasLayer là lớp vẽ riêng trên gameplay — HUD kinh điển của mọi game Godot. CH15, CH18.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>11. Vì sao trong <code>_on_body_entered</code> phải dùng <code>set_deferred("disabled", true)</code> thay vì gán trực tiếp?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q11" value="a"> Cho nhanh hơn</label>
+            <label class="opt" data-key="b"><input type="radio" name="q11" value="b"> Vì đang ở giữa bước vật lý — đổi collision ngay có thể gây lỗi; deferred chờ hết bước</label>
+            <label class="opt" data-key="c"><input type="radio" name="q11" value="c"> Không khác biệt gì</label>
+            <div class="explain">Đổi hình dạng/collision giữa bước vật lý không an toàn — set_deferred xếp việc lại cuối bước. CH16.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>12. Lưu kỷ lục ra đâu để an toàn và tồn tại giữa các lần chơi?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q12" value="a"> <code>res://save.json</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q12" value="b"> Biến toàn cục</label>
+            <label class="opt" data-key="c"><input type="radio" name="q12" value="c"> <code>user://save.json</code> bằng FileAccess</label>
+            <div class="explain">user:// là thư mục dữ liệu người chơi (không nằm trong game khi export); res:// chỉ đọc sau export; biến mất khi tắt game. CH19.</div>
+          </div>
+
+          <button class="check" onclick="checkQuiz(this)">Kiểm tra</button>
+        </div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards — 24 thẻ</h2>
+        <p class="ch-sub">Bấm vào thẻ để lật. Lọc theo cấp độ. Ôn trước khi ngủ = nhớ lâu gấp 2.</p>
+
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'l0')">L0 Nhập môn</button>
+          <button class="fc-filter" onclick="filterFC(this,'l1')">L1 GDScript</button>
+          <button class="fc-filter" onclick="filterFC(this,'l2')">L2 Công cụ 2D</button>
+          <button class="fc-filter" onclick="filterFC(this,'l3')">L3 Capstone</button>
+          <button class="fc-filter" onclick="filterFC(this,'l4')">L4 Đi tiếp</button>
+          <span class="fc-count" id="fcCount">24 thẻ</span>
+        </div>
+
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Scene (.tscn) là gì? Instance là gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Scene = cây node lưu thành tệp. Instance = nhúng scene vào scene khác; sửa gốc → mọi bản nhúng cập nhật (prefab).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">F5, F6, F8?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">F5 chạy cả game (scene chính) · F6 chạy scene đang mở · F8 dừng.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">5 vùng chính của editor?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Scene · FileSystem · Viewport · Inspector · Dock dưới (Node/Debugger/Audio).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Godot miễn phí thật không? Giấy phép gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">MIT — mã nguồn mở 100%, dùng thương mại tự do, không phí, không chia doanh thu.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q"><code>:=</code> khác <code>=</code> chỗ nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>var x := 5</code> tự suy kiểu (x là int); <code>=</code> chỉ gán. Khai báo có kiểu giúp editor bắt lỗi sớm.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">@export và @onready làm gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">@export: biến hiện trong Inspector. @onready: gán sau khi node sẵn sàng — chuẩn pattern <code>@onready var s := $Sprite2D</code>.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Array vs Dictionary — khi nào dùng cái nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Array: danh sách có thứ tự (ds quỷ, frame). Dictionary: tra theo khóa (config, save game: {"best": 10}).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">_process vs _physics_process?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">_process: mỗi frame, thời gian thay đổi — cho hiển thị. _physics_process: timestep cố định 60Hz — cho physics body + va chạm.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">normalized() để làm gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Độ dài về 1, giữ hướng — đi chéo không nhanh hơn đi thẳng; chuẩn hóa trước khi nhân speed.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Signal là gì? Phát &amp; nghe thế nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Tín hiệu phát–nghe. Phát: <code>ten_signal.emit()</code>. Nghe: <code>node.ten_signal.connect(ham)</code> hoặc Node dock → Signals.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Xóa sạch mọi node nhóm "mobs"?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>get_tree().call_group("mobs", "queue_free")</code> — một dòng dọn sân.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Vì sao dùng Input Map action thay phím cứng?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Đổi phím không sửa code; 1 action nhận nhiều phím + gamepad + touch; người chơi tự remap.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">just_pressed vs pressed?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">just_pressed = đúng frame bấm xuống (nhảy, bắn, chọn menu). pressed = đang giữ (di chuyển).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">4 loại physics body &amp; vai trò?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">StaticBody2D (tường) · CharacterBody2D (bạn lái) · RigidBody2D (engine mô phỏng) · Area2D (cảm biến không chặn).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Layer vs Mask?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Layer = tôi thuộc lớp nào (định danh). Mask = tôi muốn va/phát hiện lớp nào. A thấy B khi mask(A) chứa layer(B).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">AnimatedSprite2D + cái gì để tạo animation?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Tài nguyên SpriteFrames (panel Animation): dàn frame + FPS; code play("ten")/stop(); flip_h/v để lật.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Tween dùng khi nào? Ví dụ 1 dòng?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Hiệu ứng mượt theo thời gian: <code>create_tween().tween_property(node, "modulate:a", 0.0, 0.5)</code> (mờ dần nửa giây).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">TileMap: bật va chạm cho tile thế nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">TileSet → Physics Layers → Add Layer → tab Physics của panel TileMap → đánh dấu tile đặc (thành tường).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Player "Né Quỷ" vì sao là Area2D?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Chỉ cần <em>biết</em> chạm quỷ (signal body_entered → thua), không cần chặn/đẩy — Area2D cảm biến là đủ và nhẹ.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Mob tự xóa khi bay khỏi màn bằng gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">VisibleOnScreenNotifier2D + signal screen_exited → queue_free() — chống rò rỉ node.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">HUD có signal nào tự chế? Ai nghe?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">start_game — phát khi bấm Start; Main kết nối vào new_game() để khởi động ván mới.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Spawn quỷ: hướng vào giữa tính thế nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">rotation của PathFollow2D + PI/2, cộng lệch randf_range(-PI/4, PI/4); tốc độ Vector2(randf_range(150,250),0).rotated(direction).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Xuất game chia sẻ bạn bè: các bước?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Project → Export → Add preset (Windows/Web/…) → tải Export Templates (1 lần) → Export Project → gửi file.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Quy tắc vàng sau khóa này?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Game nhỏ HOÀN CHỈNH (menu + thắng thua + âm thanh) &gt; game lớn bỏ dở. Mỗi tuần 1 game nhỏ.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra nhanh khi đang code — nên in/giữ mở song song editor.</p>
+
+        <h3 class="sec">Node 2D thường gặp</h3>
+        <table>
+          <thead><tr><th>Nhóm</th><th>Node</th></tr></thead>
+          <tbody>
+            <tr><td>Hiển thị</td><td>Node2D · Sprite2D · AnimatedSprite2D · Camera2D · TileMapLayer · Line2D · GPUParticles2D</td></tr>
+            <tr><td>Body</td><td>StaticBody2D · CharacterBody2D (velocity + move_and_slide) · RigidBody2D · Area2D — kèm CollisionShape2D</td></tr>
+            <tr><td>UI</td><td>CanvasLayer · Label · Button · TextureRect · ProgressBar · VBox/HBoxContainer</td></tr>
+            <tr><td>Khác</td><td>Timer · Path2D/PathFollow2D · Marker2D · AudioStreamPlayer(/2D) · VisibleOnScreenNotifier2D · AnimationPlayer · Tween</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">GDScript — 12 dòng vàng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> cheatsheet.gd</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">var</span> x := <span class="n">5</span>                          <span class="c"># khai báo tự suy kiểu</span>
+<span class="d">@export</span> <span class="k">var</span> speed := <span class="n">300.0</span>           <span class="c"># chỉnh trong Inspector</span>
+<span class="d">@onready</span> <span class="k">var</span> sprite := $Sprite2D        <span class="c"># node con theo tên</span>
+<span class="k">func</span> <span class="f">_ready</span>(): ...                   <span class="c"># 1 lần — khởi tạo</span>
+<span class="k">func</span> <span class="f">_process</span>(delta): ...            <span class="c"># mỗi frame — nhân delta!</span>
+<span class="k">func</span> <span class="f">_physics_process</span>(delta): ...   <span class="c"># 60Hz — body/va chạm</span>
+<span class="k">signal</span> ten_signal                    <span class="c"># khai báo → ten_signal.emit() / .connect(fn)</span>
+Input.<span class="f">get_vector</span>(<span class="s">"l"</span>,<span class="s">"r"</span>,<span class="s">"u"</span>,<span class="s">"d"</span>)   <span class="c"># Vector2 4 hướng</span>
+Input.<span class="f">is_action_just_pressed</span>(<span class="s">"jump"</span>)    <span class="c"># bấm 1 lần</span>
+<span class="k">var</span> mob = mob_scene.<span class="f">instantiate</span>()     <span class="c"># đúc từ PackedScene → add_child(mob)</span>
+<span class="f">queue_free</span>()                         <span class="c"># xóa node an toàn</span>
+<span class="k">await</span> get_tree().<span class="f">create_timer</span>(<span class="n">1.0</span>).timeout  <span class="c"># chờ 1 giây</span></pre>
+        </div>
+
+        <h3 class="sec">Vector2 &amp; tiện ích</h3>
+        <table>
+          <thead><tr><th>Công thức</th><th>Ý nghĩa</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">v.normalized() · v.length() · v.rotated(a) · v.angle()</code></td><td>Hướng/độ dài/xoay/góc — bộ tứ dùng nhiều nhất</td></tr>
+            <tr><td><code class="ic">Vector2.from_angle(a) · (b-a).normalized()</code></td><td>Hướng theo góc; hướng từ a tới b</td></tr>
+            <tr><td><code class="ic">position.clamp(Vector2.ZERO, screen)</code></td><td>Giữ trong màn hình ("Né Quỷ")</td></tr>
+            <tr><td><code class="ic">position.lerp(dich, 5*delta)</code></td><td>Trôi mượt về đích</td></tr>
+            <tr><td><code class="ic">randf_range(150,250) · randi_range(1,6) · arr.pick_random()</code></td><td>Ngẫu nhiên</td></tr>
+            <tr><td><code class="ic">FileAccess "user://save.json"</code></td><td>Lưu/đọc (WRITE/READ + store_line/get_line + str_to_var)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box game"><span class="box-title">Hết khóa! 🎓🎉</span>Bạn đã đi từ "chưa từng code" → <strong>2 game hoàn chỉnh tự tay làm</strong>. Bước tiếp theo trong repo: <a class="inline" href="khoa-hoc-godot-2d-physics.html">Godot 2D Physics</a> (vật lý + Slinky + xuất mobile + ads) → <a class="inline" href="godot-hackslash-rpg-guide.html">Hack &amp; Slash RPG</a> → <a class="inline" href="khoa-hoc-game-design.html">Game Design</a>. Và đừng quên quy tắc vàng: <strong>mỗi tuần một game nhỏ hoàn chỉnh</strong>. Chúc ra game! 🤖</div>
+      </section>
+
+      <footer class="foot">
+        🤖 Godot 4 Căn Bản — biên soạn từ <a class="inline" href="https://docs.godotengine.org/en/stable/getting_started/step_by_step/index.html" target="_blank">Godot Docs (Step by Step, Your first 2D game)</a>, <a class="inline" href="https://gdquest.github.io/learn-gdscript/" target="_blank">GDQuest Learn GDScript From Zero</a>, Clear Code &amp; Brackeys. Godot là engine mã nguồn mở (MIT); assets mẫu "Dodge the Creeps" thuộc tài liệu chính thức Godot. Bản Markdown: <a class="inline" href="khoa-hoc-godot-can-ban.md">khoa-hoc-godot-can-ban.md</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== SCENE LAB ===== -->
+<button class="lab-fab" id="labFab" onclick="toggleLab(true)">🗂 Scene Lab</button>
+<div class="lab-panel" id="labPanel">
+  <div class="lab-head" id="labHead">
+    <span class="lab-title">🗂 Scene Lab — dựng cây node</span>
+    <button onclick="toggleLab(false)">✕</button>
+  </div>
+  <div class="lab-body">
+    <div class="lab-goal-row" id="labGoals">
+      <button data-goal="player" class="active">Player (Né Quỷ)</button>
+      <button data-goal="mob">Mob (Né Quỷ)</button>
+      <button data-goal="hud">HUD (Né Quỷ)</button>
+      <button data-goal="haisao">Main "Hái Sao"</button>
+    </div>
+    <div class="lab-tree" id="labTree"><span class="empty">Chưa có node — chọn loại node bên dưới để tạo root.</span></div>
+    <div class="lab-palette" id="labPalette">
+      <button data-type="Node">Node</button>
+      <button data-type="Node2D">Node2D</button>
+      <button data-type="Area2D">Area2D</button>
+      <button data-type="StaticBody2D">StaticBody2D</button>
+      <button data-type="CharacterBody2D">CharacterBody2D</button>
+      <button data-type="RigidBody2D">RigidBody2D</button>
+      <button data-type="Sprite2D">Sprite2D</button>
+      <button data-type="AnimatedSprite2D">AnimatedSprite2D</button>
+      <button data-type="CollisionShape2D">CollisionShape2D</button>
+      <button data-type="Camera2D">Camera2D</button>
+      <button data-type="TileMapLayer">TileMapLayer</button>
+      <button data-type="CanvasLayer">CanvasLayer</button>
+      <button data-type="Label">Label</button>
+      <button data-type="Button">Button</button>
+      <button data-type="Timer">Timer</button>
+      <button data-type="Path2D">Path2D</button>
+      <button data-type="PathFollow2D">PathFollow2D</button>
+      <button data-type="Marker2D">Marker2D</button>
+      <button data-type="AudioStreamPlayer">AudioStreamPlayer</button>
+      <button data-type="GPUParticles2D">GPUParticles2D</button>
+      <button data-type="VisibleOnScreenNotifier2D">VisibleOnScreenNotifier2D</button>
+    </div>
+    <div class="lab-btns">
+      <button class="check" onclick="labCheck()">✓ Kiểm tra</button>
+      <button onclick="labDelete()">🗑 Xóa node chọn</button>
+      <button onclick="labReset()">↺ Xóa hết</button>
+    </div>
+    <div class="lab-result" id="labResult"></div>
+  </div>
+  <div class="lab-hint">Bấm loại node để thêm vào cây (node đầu = root, sau đó thêm làm con của node đang chọn). Bấm node trong cây để chọn. Mục tiêu: đúng loại root + đủ các con yêu cầu.</div>
+</div>
+
+<script>
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll(){ let cur=''; document.querySelectorAll('section[id], div[id].level-divider, div[id].hero').forEach(s=>{ if(s.getBoundingClientRect().top<150) cur=s.id; }); navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+cur)); }
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase().trim(); document.querySelectorAll('#navMenu li').forEach(li=>{ if(li.classList.contains('nav-section-title')){li.style.display='';return;} li.style.display=li.textContent.toLowerCase().includes(q)?'':'none'; }); });
+navLinks.forEach(a=>a.addEventListener('click',()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+function copyCode(btn){ const txt=btn.closest('.code-block').querySelector('pre.code').innerText; navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent='✓ Đã copy';setTimeout(()=>btn.textContent=o,1400);}); }
+function checkQuiz(btn){ btn.closest('.quiz').querySelectorAll('.q').forEach(q=>{ const c=q.dataset.answer; const ch=q.querySelector('input:checked'); q.querySelectorAll('.opt').forEach(o=>{o.classList.remove('correct','wrong'); if(o.dataset.key===c)o.classList.add('correct');}); if(ch&&ch.value!==c)ch.closest('.opt').classList.add('wrong'); const ex=q.querySelector('.explain'); if(ex)ex.classList.add('show'); }); }
+function flipCard(el){ el.classList.toggle('flipped'); }
+function filterFC(btn,cat){ document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); let n=0; document.querySelectorAll('.flashcard').forEach(c=>{const ok=(cat==='all'||c.dataset.cat===cat); c.style.display=ok?'':'none'; c.classList.remove('flipped'); if(ok)n++;}); const el=document.getElementById('fcCount'); if(el)el.textContent=n+' thẻ'; }
+
+/* ============ SCENE LAB ============ */
+const LAB_GOALS = {
+  player: { name:'Player (Né Quỷ)', root:'Area2D',
+    children:[{type:'AnimatedSprite2D', hint:'hiện hình + animation'},{type:'CollisionShape2D', hint:'vùng va chạm'}],
+    why:'Area2D vì chỉ cần CẢM BIẾN chạm quỷ (body_entered), không cần chặn.' },
+  mob: { name:'Mob (Né Quỷ)', root:'RigidBody2D',
+    children:[{type:'AnimatedSprite2D'},{type:'CollisionShape2D'},{type:'VisibleOnScreenNotifier2D', hint:'tự xóa khi bay khỏi màn'}],
+    why:'RigidBody2D + linear_velocity: engine bay giùm; nhớ Gravity Scale = 0.' },
+  hud: { name:'HUD (Né Quỷ)', root:'CanvasLayer',
+    children:[{type:'Label', hint:'điểm + thông điệp'},{type:'Button', hint:'Start'},{type:'Timer', hint:'MessageTimer'}],
+    why:'CanvasLayer = lớp vẽ trên gameplay, camera không kéo đi được.' },
+  haisao: { name:'Main "Hái Sao"', root:'Node2D',
+    children:[{type:'TileMapLayer', hint:'map'},{type:'CharacterBody2D', hint:'Player'},{type:'Area2D', hint:'cửa đích / quỷ'},{type:'CanvasLayer', hint:'HUD'},{type:'Marker2D', hint:'checkpoint'}],
+    why:'Node2D root + con là scene instance — mỗi con có thể là scene riêng.' }
+};
+const labTree = [];           // [{type, children:[]}]
+let labSel = null;            // node đang chọn
+let labGoal = 'player';
+
+document.querySelectorAll('#labGoals button').forEach(b=>b.addEventListener('click',()=>{ labGoal=b.dataset.goal; document.querySelectorAll('#labGoals button').forEach(x=>x.classList.remove('active')); b.classList.add('active'); labSel=labTree[0]||null; renderLab(); document.getElementById('labResult').classList.remove('show'); }));
+document.querySelectorAll('#labPalette button').forEach(b=>b.addEventListener('click',()=>{ const node={type:b.dataset.type, children:[]};
+  if(labTree.length===0){ labTree.push(node); labSel=node; }
+  else if(!labSel){ labTree[0].children.push(node); labSel=node; }
+  else { labSel.children.push(node); labSel=node; }
+  renderLab();
+}));
+function labDelete(){
+  if(!labSel) return;
+  if(labSel===labTree[0]){ labTree.length=0; labSel=null; }
+  else{
+    const del=(arr)=>{ for(let i=0;i<arr.length;i++){ if(arr[i]===labSel){ arr.splice(i,1); return true; } if(del(arr[i].children)) return true; } return false; };
+    del(labTree); labSel=labTree[0]||null;
+  }
+  renderLab();
+}
+function labReset(){ labTree.length=0; labSel=null; renderLab(); document.getElementById('labResult').classList.remove('show'); }
+function labFlat(){ const flat=[]; const walk=n=>{ flat.push(n.type); n.children.forEach(walk); }; labTree.forEach(walk); return flat; }
+function renderLab(){ const el=document.getElementById('labTree');
+  if(labTree.length===0){ el.innerHTML='<span class="empty">Chưa có node — chọn loại node bên dưới để tạo root.</span>'; return; }
+  let html='';
+  const walk=(n,d)=>{ html+='  '.repeat(d)+'<span class="nodeitem'+(n===labSel?' sel':'')+'">'+(d===0?'▸ ':'└ ')+n.type+(n.children.length?' {' : '')+'</span>\n';
+    n.children.forEach(c=>walk(c,d+1));
+    if(n.children.length) html+='  '.repeat(d)+'  }\n'; };
+  labTree.forEach(n=>walk(n,0));
+  el.innerHTML=html;
+}
+document.getElementById('labTree').addEventListener('click',e=>{ const t=e.target.closest('.nodeitem'); if(!t) return;
+  const items=[]; const walk=n=>{ items.push(n); n.children.forEach(walk); }; labTree.forEach(walk);
+  const idx=[...document.getElementById('labTree').querySelectorAll('.nodeitem')].indexOf(t);
+  if(idx>=0&&items[idx]){ labSel=items[idx]; renderLab(); }
+});
+function labCheck(){ const g=LAB_GOALS[labGoal]; const res=document.getElementById('labResult');
+  if(labTree.length===0){ res.innerHTML='Chưa dựng gì cả — bấm loại node để thêm root <b>'+g.root+'</b> trước.'; res.classList.add('show'); return; }
+  const flat=labFlat();
+  const okRoot = labTree[0].type===g.root;
+  const miss = g.children.filter(c=>!flat.includes(c.type));
+  let html='<div><b>'+g.name+'</b> — ';
+  if(okRoot && miss.length===0){ html+='<span class="ok">✓ Chính xác!</span></div><div style="margin-top:4px">💡 '+g.why+'</div>'; }
+  else { html+='<span class="miss">Chưa đúng:</span></div><ul style="margin:6px 0 0 18px">';
+    if(!okRoot) html+='<li>Root phải là <b>'+g.root+'</b> (hiện là <b>'+labTree[0].type+'</b>)</li>';
+    miss.forEach(c=>html+='<li>Thiếu con <b>'+c.type+'</b>'+(c.hint?' — '+c.hint:'')+'</li>');
+    html+='</ul>'; }
+  res.innerHTML=html; res.classList.add('show');
+}
+function toggleLab(open){ document.getElementById('labPanel').classList.toggle('open',open); document.getElementById('labFab').classList.toggle('hidden',open); if(open) renderLab(); }
+(function(){ const panel=document.getElementById('labPanel'), head=document.getElementById('labHead'); let d=false,ox=0,oy=0;
+  head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup',()=>d=false);
+})();
+</script>
+
+<!-- ===== PLAYABLE MINI-GAME: Né Quỷ ===== -->
+<script>
+(function(){
+  const cv = document.getElementById('mgCanvas'); if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const P_R = 13;
+  let state = 'ready';        // ready | playing | over | paused
+  let player = { x: W/2, y: H/2 };
+  let keys = {};
+  let mobs = [];
+  let score = 0, best = 0, spawnT = 0, spawnEvery = 0.9, timeAlive = 0, shake = 0;
+  try { best = +(localStorage.getItem('nequyBest')||0); } catch(e){}
+  const bestEl = document.getElementById('mgBest');
+  function showBest(){ if(bestEl) bestEl.innerHTML = 'Kỷ lục: <b>'+best+'</b>'; }
+  showBest();
+
+  const MOB_COLORS = ['#f87171','#fb923c','#c084fc'];
+  function spawnMob(){
+    const side = Math.floor(Math.random()*4);
+    let x, y;
+    if(side===0){ x=Math.random()*W; y=-20; } else if(side===1){ x=W+20; y=Math.random()*H; }
+    else if(side===2){ x=Math.random()*W; y=H+20; } else { x=-20; y=Math.random()*H; }
+    const ang = Math.atan2(H/2-y, W/2-x) + (Math.random()-0.5)*Math.PI/2;
+    const spd = 60 + Math.random()*60 + Math.min(90, timeAlive*2);
+    mobs.push({ x, y, vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd, c:MOB_COLORS[Math.floor(Math.random()*3)], r:8+Math.random()*6 });
+  }
+  window.mgRestart = function(){
+    player = { x: W/2, y: H/2 }; mobs=[]; score=0; spawnT=0; spawnEvery=0.9; timeAlive=0; shake=0;
+    state='playing';
+  };
+  window.mgPause = function(){ if(state==='playing') state='paused'; };
+  cv.addEventListener('pointerdown', e=>{ if(state!=='playing') window.mgRestart(); e.preventDefault(); });
+  window.addEventListener('keydown', e=>{ keys[e.key.toLowerCase()]=true;
+    if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase())) e.preventDefault();
+  });
+  window.addEventListener('keyup', e=>{ keys[e.key.toLowerCase()]=false; });
+  /* kéo cảm ứng: nhân vật bám theo ngón */
+  let touch = null;
+  cv.addEventListener('touchstart', e=>{ if(state!=='playing') window.mgRestart(); const r=cv.getBoundingClientRect(); touch={x:(e.touches[0].clientX-r.left)*(W/r.width), y:(e.touches[0].clientY-r.top)*(H/r.height)}; }, {passive:true});
+  cv.addEventListener('touchmove', e=>{ const r=cv.getBoundingClientRect(); touch={x:(e.touches[0].clientX-r.left)*(W/r.width), y:(e.touches[0].clientY-r.top)*(H/r.height)}; }, {passive:true});
+  cv.addEventListener('touchend', ()=>{ touch=null; });
+
+  function step(dt){
+    if(state!=='playing') return;
+    timeAlive += dt;
+    const spd = 260;
+    let dx=0, dy=0;
+    if(keys['arrowleft']||keys['a']) dx-=1;
+    if(keys['arrowright']||keys['d']) dx+=1;
+    if(keys['arrowup']||keys['w']) dy-=1;
+    if(keys['arrowdown']||keys['s']) dy+=1;
+    if(dx&&dy){ dx*=0.7071; dy*=0.7071; }
+    if(touch){ player.x += (touch.x-player.x)*0.35; player.y += (touch.y-player.y)*0.35; }
+    else { player.x += dx*spd*dt; player.y += dy*spd*dt; }
+    player.x = Math.max(P_R, Math.min(W-P_R, player.x));
+    player.y = Math.max(P_R, Math.min(H-P_R, player.y));
+    score = Math.floor(timeAlive);
+    spawnEvery = Math.max(0.32, 0.9 - timeAlive*0.012);
+    spawnT += dt;
+    while(spawnT >= spawnEvery){ spawnT -= spawnEvery; spawnMob(); }
+    for(const m of mobs){ m.x += m.vx*dt; m.y += m.vy*dt; }
+    mobs = mobs.filter(m=> m.x>-60 && m.x<W+60 && m.y>-60 && m.y<H+60);
+    for(const m of mobs){
+      if(Math.hypot(m.x-player.x, m.y-player.y) < m.r+P_R-3){
+        state='over'; shake=14;
+        if(score>best){ best=score; try{ localStorage.setItem('nequyBest', best); }catch(e){} }
+        showBest();
+        break;
+      }
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    let ox=0, oy=0;
+    if(shake>0){ ox=(Math.random()-0.5)*shake; oy=(Math.random()-0.5)*shake; shake*=0.85; if(shake<0.5)shake=0; }
+    ctx.save(); ctx.translate(ox,oy);
+    ctx.strokeStyle='rgba(148,163,184,.07)'; ctx.lineWidth=1;
+    for(let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    for(const m of mobs){
+      ctx.fillStyle=m.c;
+      ctx.beginPath(); ctx.arc(m.x,m.y,m.r,0,7); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,.85)';
+      ctx.beginPath(); ctx.arc(m.x-3,m.y-2,1.8,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x+3,m.y-2,1.8,0,7); ctx.fill();
+    }
+    ctx.fillStyle='#4ade80';
+    ctx.shadowColor='rgba(74,222,128,.6)'; ctx.shadowBlur=12;
+    ctx.beginPath(); ctx.arc(player.x,player.y,P_R,0,7); ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#052e16';
+    ctx.beginPath(); ctx.arc(player.x-4.5,player.y-3,2.2,0,7); ctx.fill();
+    ctx.beginPath(); ctx.arc(player.x+4.5,player.y-3,2.2,0,7); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle='rgba(255,255,255,.9)'; ctx.font='bold 16px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('⏱ '+score, 14, 26);
+    ctx.textAlign='right'; ctx.fillStyle='rgba(255,255,255,.5)';
+    ctx.fillText('Kỷ lục '+best, W-14, 26);
+    if(state==='ready'){ overlay('NÉ QUỶ','Bấm vào đây hoặc ▶ để chơi · Phím mũi tên / WASD / quét ngón tay'); }
+    if(state==='paused'){ overlay('⏸ TẠM DỪNG','Bấm ▶ Chơi / Chơi lại để tiếp tục'); }
+    if(state==='over'){ overlay('💥 GAME OVER — '+score+' điểm', (score>=best&&score>0) ? '🏆 KỶ LỤC MỚI! Bấm để chơi lại' : 'Bấm để thử lại'); }
+  }
+  function overlay(t1, t2){
+    ctx.fillStyle='rgba(2,6,23,.72)'; ctx.fillRect(0,0,W,H);
+    ctx.textAlign='center';
+    ctx.fillStyle='#fff'; ctx.font='bold 30px sans-serif'; ctx.fillText(t1, W/2, H/2-14);
+    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.font='14px sans-serif'; ctx.fillText(t2, W/2, H/2+22);
+  }
+  let running=false, lastTs=0;
+  function loop(ts){ if(!running) return; const dt=Math.min(0.05,(ts-lastTs)/1000||0.016); lastTs=ts; step(dt); draw(); requestAnimationFrame(loop); }
+  draw();
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ const was=running; running=e.isIntersecting; if(running&&!was){ lastTs=0; requestAnimationFrame(loop); } }); },{threshold:0.15});
+    io.observe(cv);
+  } else { running=true; requestAnimationFrame(loop); }
+})();
+</script>
+
+
+
+
+</body>
+</html>

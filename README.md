@@ -64,6 +64,7 @@ mega_study_html/
 │   └── giao_trinh_agentic_ai.html
 │
 ├── game-dev/                     # 🎮 Game Development
+│   ├── khoa-hoc-godot-can-ban.*          # 🤖 Godot 4 căn bản — từ zero đến 2 game đầu (HTML+MD)
 │   ├── khoa-hoc-godot-2d-physics.* · khoa-hoc-game-design.*
 │   ├── godot-hackslash-rpg-guide.html · unity_glossary.html
 │
