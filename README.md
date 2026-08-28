@@ -65,6 +65,7 @@ mega_study_html/
 │
 ├── game-dev/                     # 🎮 Game Development
 │   ├── khoa-hoc-godot-can-ban.*          # 🤖 Godot 4 căn bản — từ zero đến 2 game đầu (HTML+MD)
+│   ├── khoa-hoc-unity-can-ban.*          # 🎮 Unity 6 căn bản — từ zero đến game 2D Ruby + 3D Nhà Ma (HTML+MD)
 │   ├── khoa-hoc-godot-2d-physics.* · khoa-hoc-game-design.*
 │   ├── godot-hackslash-rpg-guide.html · unity_glossary.html
 │

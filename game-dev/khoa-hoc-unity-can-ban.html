@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unity 6 Căn Bản — Từ Zero Đến Game 2D &amp; 3D Đầu Tiên</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #2563eb;        /* corporate blue */
+    --primary-glow: #1d4ed8;
+    --accent: #0e7490;         /* cyan — accent "Unity căn bản" */
+    --accent-2: #0891b2;
+    --l0: #0284c7; --l1: #059669; --l2: #d97706; --l3: #6d28d9; --l4: #db2777;
+    --ok: #10b981; --warn: #f59e0b; --danger: #ef4444; --info: #3b82f6;
+    --dark: #ffffff; --darker: #f8fafc; --light: #334155; --light-strong: #0f172a; --gray: #64748b;
+    --card: #ffffff; --card-2: #f8fafc; --border: #e2e8f0; --terminal: #0f172a;
+    --code-green: #86efac; --code-yellow: #fde047; --code-blue: #7dd3fc; --code-red: #fca5a5; --code-purple: #c4b5fd; --code-orange: #ffa657;
+  }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--darker); color: var(--light); line-height: 1.75; overflow-x: hidden; }
+  code, pre, .term { font-family: 'JetBrains Mono', 'Consolas', 'Courier New', monospace; }
+  .container { display: flex; min-height: 100vh; }
+
+  .sidebar { width: 340px; background: var(--card); padding: 26px 0 60px; position: fixed; height: 100vh; overflow-y: auto; border-right: 2px solid var(--primary); z-index: 100; transition: transform 0.3s; box-shadow: 4px 0 30px rgba(37,99,235,0.15); }
+  .sidebar::-webkit-scrollbar { width: 8px; } .sidebar::-webkit-scrollbar-track { background: var(--darker); } .sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  .logo { text-align: center; padding: 0 20px 22px; border-bottom: 2px solid var(--border); margin-bottom: 16px; }
+  .logo .g-icon { font-size: 44px; margin-bottom: 8px; filter: drop-shadow(0 0 16px rgba(37,99,235,0.4)); }
+  .logo h1 { font-size: 19px; color: var(--primary); font-weight: 900; }
+  .logo p { font-size: 10px; color: var(--gray); margin-top: 6px; letter-spacing: 1.5px; }
+  .sidebar-search { padding: 0 20px 14px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .sidebar-search input { width: 100%; padding: 9px 12px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; color: var(--light); font-size: 13px; }
+  .sidebar-search input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+  .nav-menu { list-style: none; padding: 0 14px; } .nav-menu li { margin-bottom: 3px; }
+  .nav-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; padding: 14px 12px 7px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+  .nav-section-title .badge { font-size: 9px; padding: 2px 7px; border-radius: 10px; color: #fff; font-weight: 900; }
+  .nav-l0 { color: var(--l0); } .nav-l0 .badge { background: var(--l0); }
+  .nav-l1 { color: var(--l1); } .nav-l1 .badge { background: var(--l1); }
+  .nav-l2 { color: var(--l2); } .nav-l2 .badge { background: var(--l2); }
+  .nav-l3 { color: var(--l3); } .nav-l3 .badge { background: var(--l3); }
+  .nav-l4 { color: var(--l4); } .nav-l4 .badge { background: var(--l4); }
+  .nav-menu a { display: flex; align-items: center; padding: 8px 12px; color: var(--gray); text-decoration: none; border-radius: 6px; transition: all 0.2s; font-size: 12.5px; border-left: 3px solid transparent; }
+  .nav-menu a:hover, .nav-menu a.active { background: rgba(37,99,235,0.10); color: var(--primary-glow); border-left-color: var(--primary); transform: translateX(4px); }
+  .nav-menu .chapter-num { display: inline-flex; align-items:center; justify-content:center; width: 26px; height: 26px; background: var(--card); border-radius: 50%; margin-right: 10px; font-size: 11px; font-weight: bold; border: 1px solid var(--primary); color: var(--primary-glow); flex-shrink: 0; }
+
+  .main-content { margin-left: 340px; flex: 1; max-width: calc(100% - 340px); }
+  .topbar { position: sticky; top: 0; z-index: 50; backdrop-filter: blur(10px); background: rgba(255,255,255,.9); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .topbar .crumb { font-size: 13px; color: var(--gray); } .topbar .crumb b { color: var(--accent); }
+  .topbar .pill { font-size: 11px; color: var(--gray); border:1px solid var(--border); border-radius: 20px; padding: 4px 12px; white-space: nowrap; }
+  .content-inner { padding: 38px 48px 120px; max-width: 1000px; }
+
+  .hero { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; margin-bottom: 34px; position: relative; overflow: hidden; }
+  .hero::after { content:"🎮"; position:absolute; right:10px; bottom:-22px; font-size:155px; opacity:.08; }
+  .hero h1 { font-size: 31px; color: var(--light-strong); margin-bottom: 12px; line-height: 1.25; }
+  .hero h1 .grad { color: var(--primary); }
+  .hero p { color: var(--light); max-width: 780px; }
+  .hero .meta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .meta-pill { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; }
+  .meta-pill b { color: var(--accent); display:block; font-size: 18px; }
+
+  section.chapter { margin-bottom: 56px; scroll-margin-top: 80px; }
+  .level-divider { display: flex; align-items: center; gap: 16px; margin: 60px 0 30px; scroll-margin-top: 80px; }
+  .level-divider .line { flex: 1; height: 2px; background: var(--border); }
+  .level-divider .tag { font-size: 13px; font-weight: 900; letter-spacing: 1.5px; padding: 8px 20px; border-radius: 30px; text-transform: uppercase; }
+  .tag-l0 { background: rgba(2,132,199,.12); color: var(--l0); border:1px solid var(--l0);}
+  .tag-l1 { background: rgba(5,150,105,.12); color: var(--l1); border:1px solid var(--l1);}
+  .tag-l2 { background: rgba(217,119,6,.12); color: var(--l2); border:1px solid var(--l2);}
+  .tag-l3 { background: rgba(109,40,217,.12); color: var(--l3); border:1px solid var(--l3);}
+  .tag-l4 { background: rgba(219,39,119,.12); color: var(--l4); border:1px solid var(--l4);}
+
+  h2.ch-title { font-size: 25px; color: var(--light-strong); margin-bottom: 6px; display:flex; align-items:center; gap:12px; }
+  h2.ch-title .num { font-size: 13px; background: var(--card); border:1px solid var(--primary); color: var(--primary-glow); padding: 4px 10px; border-radius: 8px; white-space: nowrap; }
+  .ch-sub { color: var(--gray); font-size: 14px; margin-bottom: 22px; }
+  h3.sec { font-size: 19px; color: var(--accent); margin: 28px 0 12px; padding-left: 12px; border-left: 4px solid var(--accent); }
+  h4.sub { font-size: 16px; color: var(--primary-glow); margin: 20px 0 8px; }
+  p { margin-bottom: 12px; } ul, ol { margin: 0 0 14px 22px; } li { margin-bottom: 6px; }
+  a.inline { color: var(--info); text-decoration: none; border-bottom: 1px dashed var(--info); }
+  strong { color: var(--light-strong); }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card-2); color: var(--accent); }
+  tr:nth-child(even) td { background: rgba(248,250,252,.6); }
+  code.ic { background: var(--card-2); color: var(--code-purple); padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid var(--border); }
+  .formula { background: var(--card); border:1px solid var(--border); border-left:4px solid var(--accent); border-radius:8px; padding:12px 16px; margin:14px 0; font-family:'JetBrains Mono',monospace; color:var(--accent); font-size:15px; }
+
+  figure.fig { margin: 18px 0; }
+  figure.fig img { max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; background: #fff; display: block; }
+  figure.fig.sm { max-width: 440px; }
+  figure.fig.xs { max-width: 330px; }
+  figure.fig figcaption { font-size: 12px; color: var(--gray); margin-top: 6px; line-height: 1.5; }
+
+  .box { border-radius: 10px; padding: 16px 18px 16px 46px; margin: 18px 0; position: relative; border: 1px solid; font-size: 14px; }
+  .box::before { position: absolute; left: 14px; top: 15px; font-size: 18px; }
+  .box .box-title { font-weight: 800; margin-bottom: 4px; display:block; color: var(--light-strong); }
+  .box.info { background: rgba(59,130,246,.07); border-color: rgba(59,130,246,.35); } .box.info::before{content:"💡";}
+  .box.tip { background: rgba(16,185,129,.07); border-color: rgba(16,185,129,.35); } .box.tip::before{content:"✅";}
+  .box.warn { background: rgba(245,158,11,.08); border-color: rgba(245,158,11,.4); } .box.warn::before{content:"⚠️";}
+  .box.danger { background: rgba(239,68,68,.07); border-color: rgba(239,68,68,.35); } .box.danger::before{content:"🚫";}
+  .box.lab { background: rgba(14,116,144,.08); border-color: rgba(14,116,144,.35); } .box.lab::before{content:"🗂";}
+  .box.ver { background: rgba(37,99,235,.08); border-color: rgba(37,99,235,.3); } .box.ver::before{content:"🔀";}
+  .box.game { background: rgba(109,40,217,.08); border-color: rgba(109,40,217,.35); } .box.game::before{content:"🎮";}
+
+  .code-block { margin: 16px 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--terminal); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: var(--card); border-bottom: 1px solid var(--border); }
+  .code-head .fname { font-size: 12px; color: var(--gray); display:flex; align-items:center; gap:8px; }
+  .code-head .dots { display:flex; gap:6px; } .code-head .dots i { width:11px;height:11px;border-radius:50%; display:inline-block; }
+  .code-head .dots i:nth-child(1){background:#ff5f56;} .code-head .dots i:nth-child(2){background:#ffbd2e;} .code-head .dots i:nth-child(3){background:#27c93f;}
+  .code-actions button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .code-actions button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  pre.code { padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.65; color: #e2e8f0; white-space: pre; tab-size: 4; }
+  pre.code .c { color: #94a3b8; font-style: italic; } pre.code .s { color: var(--code-green); } pre.code .k { color: var(--code-red); }
+  pre.code .n { color: var(--code-blue); } pre.code .f { color: var(--code-purple); } pre.code .d { color: var(--code-yellow); } pre.code .t { color: var(--code-orange); }
+
+  .checklist { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 18px 0; }
+  .checklist h4 { color: var(--primary-glow); margin-bottom: 10px; font-size: 15px; }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; cursor: pointer; font-size: 14px; }
+  .checklist input { margin-top: 5px; accent-color: var(--primary); }
+  .checklist input:checked + span { color: var(--gray); text-decoration: line-through; }
+
+  .exercise { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 18px 20px; margin: 20px 0; }
+  .exercise .ex-head { font-weight: 800; color: var(--accent); margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+  .exercise .lvl { font-size: 11px; font-weight:700; color:#fff; background: var(--accent); padding: 2px 10px; border-radius: 12px; }
+  .exercise .lvl.hard { background: var(--l3); }
+  details.answer { margin-top: 12px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  details summary { cursor: pointer; padding: 9px 14px; font-size: 13px; font-weight: 700; user-select: none; list-style: none; }
+  details summary::-webkit-details-marker { display:none; } details summary::before { content: "▸ "; } details[open] summary::before { content: "▾ "; }
+  details.answer summary { background: rgba(14,116,144,.1); color: var(--accent); } details .body { padding: 8px 14px 12px; }
+
+  .quiz { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; margin: 22px 0; }
+  .quiz .q-head { font-weight: 800; color: var(--primary-glow); margin-bottom: 14px; }
+  .quiz .q { margin-bottom: 18px; } .quiz .q p { font-weight: 600; margin-bottom: 8px; }
+  .quiz .opt { display:block; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; font-size: 14px; background: var(--card); }
+  .quiz .opt:hover { border-color: var(--primary); } .quiz .opt input { margin-right: 10px; }
+  .quiz .opt.correct { background: rgba(16,185,129,.14); border-color: var(--ok); } .quiz .opt.wrong { background: rgba(239,68,68,.12); border-color: var(--danger); }
+  .quiz .explain { display:none; margin-top: 8px; font-size: 13px; color: var(--gray); padding: 10px 12px; background: var(--card); border-radius: 8px; border-left: 3px solid var(--info); }
+  .quiz .explain.show { display:block; }
+  .quiz button.check { background: var(--primary); color: #fff; border:none; border-radius:8px; padding: 9px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family: inherit; }
+  .quiz button.check:hover { background: var(--primary-glow); }
+
+  .fc-filters { display:flex; flex-wrap:wrap; gap:8px; margin: 14px 0 6px; }
+  .fc-filter { background: var(--card); border:1px solid var(--border); color: var(--gray); padding: 6px 14px; border-radius: 20px; font-size: 12.5px; cursor:pointer; font-family: inherit; }
+  .fc-filter:hover, .fc-filter.active { border-color: var(--primary); color: var(--primary-glow); }
+  .fc-count { font-size: 12px; color: var(--gray); margin-left: 4px; }
+  .fc-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr)); gap: 14px; margin: 16px 0; }
+  .flashcard { background: transparent; perspective: 1000px; height: 180px; cursor: pointer; }
+  .fc-inner { position: relative; width:100%; height:100%; transition: transform .5s; transform-style: preserve-3d; }
+  .flashcard.flipped .fc-inner { transform: rotateY(180deg); }
+  .fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius: 12px; padding: 16px; display:flex; flex-direction:column; justify-content:center; border:1px solid var(--border); }
+  .fc-front { background: var(--card); } .fc-back { background: var(--card); transform: rotateY(180deg); overflow-y:auto; }
+  .fc-tag { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 8px; align-self:flex-start; margin-bottom: 8px; font-weight:800; }
+  .fc-tag.t0 { background: rgba(2,132,199,.15); color: var(--l0); } .fc-tag.t1 { background: rgba(5,150,105,.15); color: var(--l1); }
+  .fc-tag.t2 { background: rgba(217,119,6,.15); color: var(--l2); } .fc-tag.t3 { background: rgba(109,40,217,.15); color: var(--l3); } .fc-tag.t4 { background: rgba(219,39,119,.15); color: var(--l4); }
+  .fc-q { font-weight: 700; color: var(--light-strong); font-size: 15px; line-height: 1.5; } .fc-a { font-size: 13px; color: var(--light); line-height: 1.6; } .fc-a code { background: rgba(37,99,235,.1); color: var(--primary-glow); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+  footer.foot { border-top: 1px solid var(--border); padding: 30px 48px; color: var(--gray); font-size: 13px; }
+
+  /* ---------- MINI-GAME "CỨU ROBOT" ---------- */
+  .mg-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; margin: 24px 0; }
+  .mg-wrap h3 { color: var(--light-strong); margin-bottom: 4px; }
+  .mg-sub { font-size: 13px; color: var(--gray); margin-bottom: 14px; }
+  #mgCanvas { display:block; width:100%; height:auto; aspect-ratio: 640/400; background:#0b1220; border-radius: 10px; touch-action:none; cursor: default; }
+  .mg-btns { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; align-items:center; }
+  .mg-btns button { background: var(--primary); color:#fff; border:none; border-radius: 8px; padding: 10px 22px; font-size: 14px; font-weight: 800; cursor:pointer; font-family: inherit; }
+  .mg-btns button.ghost { background: var(--card-2); color: var(--light); border:1px solid var(--border); }
+  .mg-btns button:hover { filter: brightness(1.08); }
+  .mg-best { font-size: 13px; color: var(--gray); margin-left: auto; }
+  .mg-best b { color: var(--accent); }
+
+  /* ---------- COMPONENT LAB (floating panel) ---------- */
+  .lab-fab { position: fixed; right: 22px; bottom: 22px; z-index: 400; background: var(--primary); color: #fff; border: none; border-radius: 999px; padding: 13px 20px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: inherit; box-shadow: 0 6px 22px rgba(37,99,235,.4); display: flex; align-items: center; gap: 8px; transition: transform .15s; }
+  .lab-fab:hover { transform: translateY(-2px); } .lab-fab.hidden { display: none; }
+  .lab-panel { position: fixed; right: 22px; bottom: 22px; z-index: 401; width: 400px; max-width: calc(100vw - 24px); background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 18px 60px rgba(15,23,42,.35); display: none; flex-direction: column; overflow: hidden; }
+  .lab-panel.open { display: flex; }
+  .lab-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--card); border-bottom: 1px solid var(--border); cursor: move; }
+  .lab-head .lab-title { font-weight: 800; font-size: 13px; color: var(--light-strong); }
+  .lab-head button { background: var(--card-2); color: var(--light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 700; }
+  .lab-body { padding: 10px 14px 14px; overflow-y: auto; max-height: 60vh; }
+  .lab-goal-row { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+  .lab-goal-row button { background: var(--card-2); color: var(--light); border:1px solid var(--border); border-radius: 7px; padding: 5px 10px; font-size: 12px; cursor:pointer; font-family:inherit; font-weight:700; }
+  .lab-goal-row button.active { border-color: var(--accent); color: var(--accent); background: rgba(14,116,144,.1); }
+  .lab-list { background: var(--terminal); color:#e2e8f0; border-radius: 8px; padding: 10px 12px; font-family:'JetBrains Mono',monospace; font-size: 12.5px; min-height: 84px; margin-bottom: 8px; }
+  .lab-list .comp { display:inline-block; background: rgba(37,99,235,.25); border:1px solid rgba(125,211,252,.35); border-radius: 6px; padding: 2px 8px; margin: 2px; color:#7dd3fc; }
+  .lab-list .comp.base { background: rgba(148,163,184,.15); border-color: rgba(148,163,184,.35); color:#cbd5e1; }
+  .lab-list .empty { color:#64748b; font-style: italic; }
+  .lab-palette { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+  .lab-palette button { background: var(--card-2); color: var(--light); border:1px solid var(--border); border-radius: 7px; padding: 4px 8px; font-size: 11.5px; cursor:pointer; font-family:inherit; }
+  .lab-palette button:hover { border-color: var(--primary); color: var(--primary-glow); }
+  .lab-btns { display:flex; gap:8px; margin-top:6px; }
+  .lab-btns button { flex:1; border:none; border-radius:7px; padding:8px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit; background: var(--card-2); color:var(--light); border:1px solid var(--border)!important; }
+  .lab-btns .check { background: var(--accent); color:#fff; border:none!important; }
+  .lab-result { margin-top:10px; font-size:12.5px; border-radius:8px; padding:10px 12px; background: var(--card-2); border:1px solid var(--border); display:none; }
+  .lab-result.show { display:block; }
+  .lab-result .ok { color: var(--ok); font-weight:800; } .lab-result .miss { color: var(--danger); font-weight:800; }
+  .lab-hint { font-size: 11px; color: var(--gray); padding: 0 14px 12px; }
+
+  .menu-toggle { display: none; }
+  @media (max-width: 980px) {
+    .sidebar { transform: translateX(-100%); } .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; max-width: 100%; }
+    .menu-toggle { display: flex; position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--primary); color: #fff; border:none; width: 44px; height: 44px; border-radius: 10px; font-size: 20px; cursor: pointer; align-items:center; justify-content:center; }
+    .content-inner, .topbar { padding-left: 18px; padding-right: 18px; } .topbar { padding-left: 66px; }
+    .lab-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); }
+  }
+</style>
+</head>
+<body>
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<div class="container">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="g-icon">🎮</div>
+      <h1>UNITY 6 CĂN BẢN</h1>
+      <p>TỪ ZERO → GAME 2D &amp; 3D</p>
+    </div>
+    <div class="sidebar-search"><input type="text" id="navSearch" placeholder="🔍 Tìm chương, chủ đề..."></div>
+    <ul class="nav-menu" id="navMenu">
+      <li><a href="#gioi-thieu"><span class="chapter-num">★</span> Giới thiệu &amp; Lộ trình</a></li>
+
+      <li class="nav-section-title nav-l0"><span class="badge">L0</span> BẮT ĐẦU TỪ SỐ 0</li>
+      <li><a href="#ch1"><span class="chapter-num">1</span> Unity là gì &amp; vì sao đáng học</a></li>
+      <li><a href="#ch2"><span class="chapter-num">2</span> Cài đặt — Hub &amp; project đầu</a></li>
+      <li><a href="#ch3"><span class="chapter-num">3</span> Làm quen Editor</a></li>
+      <li><a href="#ch4"><span class="chapter-num">4</span> GameObject, Component &amp; Prefab</a></li>
+
+      <li class="nav-section-title nav-l1"><span class="badge">L1</span> C# TỪ ZERO</li>
+      <li><a href="#ch5"><span class="chapter-num">5</span> Script đầu tiên</a></li>
+      <li><a href="#ch6"><span class="chapter-num">6</span> Biến, kiểu dữ liệu &amp; toán tử</a></li>
+      <li><a href="#ch7"><span class="chapter-num">7</span> Rẽ nhánh, vòng lặp &amp; hàm</a></li>
+      <li><a href="#ch8"><span class="chapter-num">8</span> OOP căn bản cho game</a></li>
+      <li><a href="#ch9"><span class="chapter-num">9</span> Vòng lặp game, delta &amp; input</a></li>
+
+      <li class="nav-section-title nav-l2"><span class="badge">L2</span> CÔNG CỤ 2D + RUBY</li>
+      <li><a href="#ch10"><span class="chapter-num">10</span> Sprite &amp; Sprite Editor</a></li>
+      <li><a href="#ch11"><span class="chapter-num">11</span> Tilemap &amp; Tile Palette</a></li>
+      <li><a href="#ch12"><span class="chapter-num">12</span> Animation — Animator</a></li>
+      <li><a href="#ch13"><span class="chapter-num">13</span> UI — Canvas, TMP &amp; nút</a></li>
+      <li><a href="#ch14"><span class="chapter-num">14</span> Âm thanh</a></li>
+      <li><a href="#ch15"><span class="chapter-num">15</span> Vật lý 2D &amp; trigger</a></li>
+      <li><a href="#ch16"><span class="chapter-num">16</span> Capstone 2D — "Ruby"</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">L3</span> 3D + NHÀ MA</li>
+      <li><a href="#ch17"><span class="chapter-num">17</span> 3D căn bản</a></li>
+      <li><a href="#ch18"><span class="chapter-num">18</span> Nhà Ma #1 — Player &amp; camera</a></li>
+      <li><a href="#ch19"><span class="chapter-num">19</span> Nhà Ma #2 — Enemy &amp; kết thúc</a></li>
+      <li><a href="#ch20"><span class="chapter-num">20</span> Build &amp; xuất bản</a></li>
+
+      <li class="nav-section-title nav-l4"><span class="badge">L4</span> ĐI TIẾP</li>
+      <li><a href="#ch21"><span class="chapter-num">21</span> Bản đồ phía trước</a></li>
+
+      <li class="nav-section-title nav-l3"><span class="badge">🎮</span> CHƠI THỬ</li>
+      <li><a href="#minigame"><span class="chapter-num">🎮</span> Mini-game "Cứu Robot"</a></li>
+
+      <li class="nav-section-title nav-l4"><span class="badge">📚</span> ÔN TẬP</li>
+      <li><a href="#quiz"><span class="chapter-num">❓</span> Quiz</a></li>
+      <li><a href="#flashcards"><span class="chapter-num">🃏</span> Flashcards</a></li>
+      <li><a href="#cheatsheet"><span class="chapter-num">📋</span> Cheatsheet</a></li>
+    </ul>
+  </aside>
+
+  <main class="main-content">
+    <div class="topbar">
+      <div class="crumb">🎮 <b>Unity 6 Căn Bản</b> — từ zero đến game 2D &amp; 3D đầu tiên (không cần biết lập trình)</div>
+      <div class="pill">Unity 6 LTS · C#</div>
+    </div>
+
+    <div class="content-inner">
+      <div class="hero" id="gioi-thieu">
+        <h1>Unity <span class="grad">Căn Bản</span><br>Từ Zero Đến Game 2D &amp; 3D Đầu Tiên</h1>
+        <p>Khóa nhập môn <strong>căn bản tổng quát</strong> cho người chưa từng lập trình: cài Unity Hub → tư duy <strong>GameObject/Component/Prefab</strong> → <strong>C#</strong> từ đầu → sprite, tilemap, animation, UI, âm thanh → tự tay hoàn thành <strong>2 game</strong>: <strong>"Ruby"</strong> (RPG 2D theo project chính thức <em>Ruby's Adventure</em>) và <strong>"Nhà Ma"</strong> (stealth 3D theo course chính thức <em>Haunted House</em>, Unity 6.3). Lớp tra cứu: <strong>Unity 6.5 Manual 3.534 trang offline</strong> ngay trong repo. Có <strong>mini-game chơi ngay trong trang</strong> và <strong>🗂 Component Lab</strong> luyện ghép component.</p>
+        <div class="meta-row">
+          <div class="meta-pill"><b>21</b> chương · 5 cấp độ</div>
+          <div class="meta-pill"><b>0%</b> kinh nghiệm cần thiết</div>
+          <div class="meta-pill"><b>🎮 2</b> game tự làm (2D + 3D)</div>
+          <div class="meta-pill"><b>3.534</b> trang manual tra cứu</div>
+        </div>
+      </div>
+
+      <div class="box info"><span class="box-title">🎯 Bạn sẽ làm được gì sau khóa</span>Nhập môn xong bạn sẽ: hiểu <strong>cách Unity tổ chức game</strong> (GameObject + component + prefab + scene), đọc-viết được <strong>C# cơ bản</strong> trên MonoBehaviour, làm sprite/tilemap/animation/UI/âm thanh, <strong>tự làm trọn game 2D kiểu Ruby's Adventure + game 3D stealth kiểu Haunted House</strong>, build WebGL chia sẻ bạn bè qua Unity Play, và biết lộ trình Junior Programmer phía trước.</div>
+
+      <div class="box lab"><span class="box-title">🗂 Component Lab — thử ngay</span>Bấm nút <strong>🗂 Component Lab</strong> (góc dưới phải): chọn GameObject mục tiêu (Player Ruby / Robot / Enemy / Main Camera) rồi <strong>thêm đúng các component</strong> từ bảng chọn, bấm <strong>Kiểm tra</strong>. Trong Unity, việc đầu tiên khi tạo bất cứ thứ gì luôn là "Add Component" — đây là thao tác sống còn của engine này.</div>
+
+      <div class="box game"><span class="box-title">🎮 Chơi thử kết quả</span><a class="inline" href="#minigame">Mini-game "Cứu Robot"</a> cuối trang là bản web thu nhỏ của capstone 2D: di chuyển Ruby, chạm vào robot hỏng để sửa, né bọ quỷ — đủ 5 robot là thắng. Chơi trước để biết mình đang tiến về đâu!</div>
+
+      <div class="box info"><span class="box-title">Yêu cầu &amp; phạm vi</span><strong>Không cần biết lập trình hay Unity trước</strong> — cần máy tính cấu hình khá (8GB RAM trở lên nên có), ~10GB dung lượng (Hub + Editor + project). Khóa dùng <strong>Unity 6 LTS (6000.x)</strong> + hệ Input cũ (đơn giản, đúng tutorial chính thức; Input System mới nhắc ở L4). 2D học trước rồi mới 3D — đúng tinh thần Unity Learn. Đã học <a class="inline" href="khoa-hoc-godot-can-ban.html">khóa Godot căn bản</a> trong repo? Nhiều chương có box so sánh hai engine cho bạn đối chiếu.</div>
+
+      <div class="box info"><span class="box-title">Lộ trình 5 cấp độ</span>
+        <strong style="color:var(--l0)">L0 Bắt đầu từ số 0</strong> (1–4: engine, editor, GameObject/Component/Prefab) → <strong style="color:var(--l1)">L1 C# từ zero</strong> (5–9: script → biến → hàm → OOP → delta/input) → <strong style="color:var(--l2)">L2 Công cụ 2D + Ruby</strong> (10–16: sprite, tilemap, animation, UI, audio, physics 2D, capstone 2D) → <strong style="color:var(--l3)">L3 3D + Nhà Ma</strong> (17–20: 3D căn bản, capstone 3D, build) → <strong style="color:var(--l4)">L4 Đi tiếp</strong> (21).
+      </div>
+
+      <div class="box tip"><span class="box-title">📚 Nguồn biên soạn (đều miễn phí)</span>
+        <a class="inline" href="https://learn.unity.com/pathway/unity-essentials" target="_blank">Unity Learn — Unity Essentials</a> ·
+        <a class="inline" href="https://learn.unity.com/course/create-with-code" target="_blank">Create with Code</a> (33,5h) ·
+        <a class="inline" href="https://learn.unity.com/" target="_blank">Ruby's Adventure 2D Beginner</a> (+ <a class="inline" href="https://www.youtube.com/watch?v=mkBPGC0BVXg" target="_blank">video full chính thức</a>) ·
+        <a class="inline" href="https://learn.unity.com/course/3d-stealth-game-haunted-house" target="_blank">3D Stealth Game: Haunted House</a> (Unity 6.3) ·
+        pathway <a class="inline" href="https://learn.unity.com/pathway/junior-programmer" target="_blank">Junior Programmer</a> · tra cứu: <a class="inline" href="unity-manual-vi/Manual/index.html" target="_blank">Unity 6.5 Manual offline</a> trong repo. Bản MD gọn: <a class="inline" href="khoa-hoc-unity-can-ban.md">khoa-hoc-unity-can-ban.md</a>.
+      </div>
+
+      <!-- ===================== LEVEL 0 ===================== -->
+      <div class="level-divider" id="lv0"><div class="line"></div><span class="tag tag-l0">L0 · Bắt đầu từ số 0</span><div class="line"></div></div>
+
+      <!-- ===== CH1 ===== -->
+      <section class="chapter" id="ch1">
+        <h2 class="ch-title"><span class="num">CH 1</span> Unity là gì &amp; vì sao đáng học</h2>
+        <p class="ch-sub">Engine phổ biến nhất thế giới — và C# là kỹ năng dùng được cả ngoài game.</p>
+
+        <p><strong>Unity</strong> là game engine thương mại <strong>phổ biến nhất hành tinh</strong>: phần lớn game mobile, vô số game indie và cả những tựa 3D cỡ vừa được làm bằng Unity. Ngôn ngữ lập trình là <strong>C#</strong> — ngôn ngữ của cả hệ sinh thái Microsoft (.NET), nên kiến thức học ở đây chuyển dịch được sang làm app, web, tự động hoá. Giấy phép <strong>Personal: miễn phí</strong> cho cá nhân/doanh thu dưới 200k USD/năm.</p>
+
+        <h3 class="sec">Unity vs Godot (đã có khóa trong repo này)</h3>
+        <table>
+          <thead><tr><th></th><th>Unity</th><th>Godot</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cài đặt</strong></td><td>Unity Hub + Editor (~ vài GB)</td><td>1 file ~100MB chạy thẳng</td></tr>
+            <tr><td><strong>Ngôn ngữ</strong></td><td>C# (kiểu tường minh, dấu ;)</td><td>GDScript (giống Python)</td></tr>
+            <tr><td><strong>Tư duy</strong></td><td>GameObject + component phẳng</td><td>Node lồng thành cây</td></tr>
+            <tr><td><strong>Hệ sinh thái</strong></td><td>Asset Store khổng lồ, việc làm nhiều</td><td>Nhẹ, mã mở MIT, 2D "thật"</td></tr>
+            <tr><td><strong>Nên chọn khi</strong></td><td>Ngắm việc làm / 3D / mobile / AR-VR</td><td>Game nhỏ, solo dev, máy yếu</td></tr>
+          </tbody>
+        </table>
+        <div class="box info"><span class="box-title">Học cả hai là chuẩn</span>Tư duy engine (scene, object, component/node, animation, UI, build) trùng ~70% giữa các engine. Học cái thứ hai nhanh hơn gấp nhiều lần cái đầu — repo này có đủ chuỗi khóa Godot để bạn đối chiếu từng khái niệm.</div>
+
+        <h3 class="sec">Phiên bản dùng trong khóa</h3>
+        <p><strong>Unity 6 LTS (6000.x)</strong> — bản hỗ trợ dài hạn, tài liệu Unity Learn mới nhất đã cập nhật theo (Haunted House dạy trên 6.3). Gặp tutorial cũ 2019–2022 vẫn đọc được, chỉ nhớ vài chỗ đổi tên — quan trọng nhất: <code class="ic">Rigidbody.velocity</code> giờ là <code class="ic">linearVelocity</code> ở Unity 6.</p>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Khởi động 1.1 <span class="lvl">dễ</span></div>
+          <p>Vào <a class="inline" href="https://unity.com/products" target="_blank">unity.com</a> đọc 3 dòng giới thiệu Unity 6 rồi trả lời: (a) Unity miễn phí tới khi nào? (b) Unity Learn có tốn tiền không? (Trả lời: Personal miễn phí dưới 200k USD/năm; Unity Learn hoàn toàn miễn phí.)</p>
+        </div>
+      </section>
+
+      <!-- ===== CH2 ===== -->
+      <section class="chapter" id="ch2">
+        <h2 class="ch-title"><span class="num">CH 2</span> Cài đặt — Unity Hub &amp; project đầu tiên</h2>
+        <p class="ch-sub">Hub là "trạm điều khiển": cài Editor, quản lý phiên bản, mở project.</p>
+
+        <h3 class="sec">Ba bước cài</h3>
+        <ol>
+          <li>Tải <strong>Unity Hub</strong> từ <a class="inline" href="https://unity.com/download" target="_blank">unity.com/download</a> → cài → đăng ký Unity ID miễn phí (cần để dùng Personal license).</li>
+          <li>Trong Hub, tab <strong>Installs → Install Editor</strong> → chọn <strong>Unity 6 LTS</strong> → modular: nếu chưa có IDE, tick thêm <strong>Visual Studio</strong> (Windows) / VS Code (các nền). ~vài GB, làm cà phê.</li>
+          <li>Hub → <strong>New project</strong> → chọn template <strong>Universal 2D</strong> (khóa đi tới đây trước) hoặc <strong>Universal 3D</strong> (URP) → đặt tên <code class="ic">hoc-unity</code> → Create.</li>
+        </ol>
+        <div class="box tip"><span class="box-title">Template nào cho người mới?</span><strong>Universal 2D/3D (URP)</strong> = render pipeline hiện đại, template mặc định của Unity 6 — dùng luôn. "Built-in" chỉ gặp lại khi theo tutorial cũ. Kỳ này không cần quan tâm HD.</div>
+
+        <h3 class="sec">Lần đầu mở project</h3>
+        <ul>
+          <li>Mặc định có scene <code class="ic">Assets/Scenes/SampleScene</code> — <strong>Ctrl+S</strong> lưu scene bất cứ lúc nào.</li>
+          <li>Bấm <strong>▶ Play (Ctrl+P)</strong> để "chạy game" — khác Godot: Unity <em>luôn</em> chạy từ scene đang mở, không phân biệt F5/F6. <strong>Pause ⏸</strong> (Ctrl+Shift+P) đóng băng, <strong>Step ⏭</strong> tiến từng frame — debug thân yêu.</li>
+          <li>Thử ngay: Hierarchy (trái trên) → chuột phải → <strong>2D Object → Sprites → Square</strong> → bấm Play — một ô vuông hiện ở Game view. Bạn vừa "làm game".</li>
+        </ul>
+        <div class="box warn"><span class="box-title">Chỉnh sửa trong Play Mode = mất khi thoát</span>Đang bấm Play mà sửa scene thì <strong>thay đổi bị vứt bỏ</strong> khi dừng (Unity cảnh báo bằng viền xanh). Quy tắc: dừng Play rồi mới sửa — hoặc cố tình dùng để thử số liệu nhanh.</div>
+      </section>
+
+      <!-- ===== CH3 ===== -->
+      <section class="chapter" id="ch3">
+        <h2 class="ch-title"><span class="num">CH 3</span> Làm quen Editor</h2>
+        <p class="ch-sub">6 cửa sổ + vài phím tắt là đủ làm game. Hình thức giống mọi engine.</p>
+
+        <h3 class="sec">Bản đồ 6 cửa sổ</h3>
+        <table>
+          <thead><tr><th>Cửa sổ</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Hierarchy</strong> (trái trên)</td><td>Mọi GameObject trong scene; chuột phải tạo mới; kéo thả làm cha con</td></tr>
+            <tr><td><strong>Scene</strong> (giữa)</td><td>Sân khấu 2D/3D để dàn cảnh — nơi bạn làm việc chính</td></tr>
+            <tr><td><strong>Game</strong> (giữa, tab cạnh Scene)</td><td>Đúng hình người chơi thấy; đổi tỉ lệ màn hình ở thanh trên</td></tr>
+            <tr><td><strong>Inspector</strong> (phải)</td><td>Chuỗi component của object đang chọn — thêm/bớt/sửa ở đây</td></tr>
+            <tr><td><strong>Project</strong> (dưới)</td><td>Assets của bạn: script, ảnh, prefab, scene... (= FileSystem của Godot)</td></tr>
+            <tr><td><strong>Console</strong> (dưới, tab cạnh)</td><td>Kết quả <code class="ic">Debug.Log</code> + lỗi — nơi soi vấn đề đầu tiên</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Phím &amp; thao tác cần biết</h3>
+        <table>
+          <thead><tr><th>Phím</th><th>Chức năng</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Q / W / E / R</strong></td><td>Xem-di chuyển / Công cụ Move / Rotate / Scale (giống Godot!)</td></tr>
+            <tr><td><strong>F</strong></td><td>Tập trung (zoom tới) object đang chọn</td></tr>
+            <tr><td><strong>Chuột phải + WASD</strong></td><td>Bay quanh scene 3D (giữ chuột phải mới bay được)</td></tr>
+            <tr><td><strong>Alt + kéo chuột / lăn</strong></td><td>Xoay quanh / zoom</td></tr>
+            <tr><td><strong>Ctrl+P / Ctrl+Shift+P</strong></td><td>Play / Pause</td></tr>
+            <tr><td><strong>Ctrl+D</strong></td><td>Nhân bản object đang chọn</td></tr>
+          </tbody>
+        </table>
+        <div class="box tip"><span class="box-title">Layout</span>Kéo thả các cửa sổ để tự bố trí; làm rối thì <strong>Window → Layouts → Default</strong> về mặc định. Cửa sổ nào mất tích: Window → General → (tên cửa sổ).</div>
+
+        <div class="checklist">
+          <h4>✓ Checklist chương 3</h4>
+          <label><input type="checkbox"><span>Nêu được vai trò 6 cửa sổ: Hierarchy/Scene/Game/Inspector/Project/Console</span></label>
+          <label><input type="checkbox"><span>Dùng QWER + F thao tác Scene; bay quanh 3D bằng chuột phải + WASD</span></label>
+          <label><input type="checkbox"><span>Play/Pause/Step và biết luật "sửa trong Play = mất"</span></label>
+          <label><input type="checkbox"><span>Tạo folder Scripts/ Sprites/ Prefabs/ Scenes/ trong Project</span></label>
+        </div>
+      </section>
+
+      <!-- ===== CH4 ===== -->
+      <section class="chapter" id="ch4">
+        <h2 class="ch-title"><span class="num">CH 4</span> GameObject, Component &amp; Prefab — viên gạch của Unity</h2>
+        <p class="ch-sub">Khác Godot "mọi thứ là node trong cây" — Unity: "mọi thứ là GameObject + component ghép".</p>
+
+        <h3 class="sec">GameObject = vật chứa, Component = hành vi</h3>
+        <p>Một GameObject tự thân chẳng làm gì — nó là <strong>hộp chứa component</strong>. Mỗi component đúng 1 việc: <code class="ic">Transform</code> (vị trí/xoay/kích thước — <strong>luôn có sẵn</strong>, xóa không được), <code class="ic">SpriteRenderer</code> (hiện ảnh 2D), <code class="ic">Rigidbody2D</code> (vật lý), <code class="ic">BoxCollider2D</code> (va chạm), <code class="ic">AudioSource</code> (âm thanh)... và <strong>script bạn viết cũng là một component</strong>.</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Inspector của "Ruby" nhìn như thế này</span></div>
+<pre class="code"><span class="f">Ruby</span> (GameObject)
+├─ <span class="t">Transform</span>            <span class="c"># luôn có — Position / Rotation / Scale</span>
+├─ <span class="t">SpriteRenderer</span>       <span class="c"># hiện sprite Ruby</span>
+├─ <span class="t">Rigidbody2D</span>         <span class="c"># tham gia vật lý 2D</span>
+├─ <span class="t">CircleCollider2D</span>    <span class="c"># vùng va chạm tròn</span>
+└─ <span class="t">RubyController</span> (Script)  <span class="c"># code di chuyển — bạn viết ở CH16</span></pre>
+        </div>
+        <p>Thêm component: nút <strong>Add Component</strong> dưới cùng Inspector (hoặc chuột phải object → COMPONENT). Bánh răng ⚙ của component → Remove Component / Reset.</p>
+
+        <h3 class="sec">Prefab — khuôn tái sử dụng</h3>
+        <p>Kéo GameObject từ Hierarchy <strong>vào cửa sổ Project</strong> → thành file <strong>.prefab</strong> (màu xanh). Từ đó kéo ra bao nhiêu bản trong các scene cũng được. Bấm đúp prefab → vào <strong>Prefab Mode</strong> sửa khuôn gốc → mọi bản sinh ra tự cập nhật. Đây chính là "instance scene" của Godot.</p>
+
+        <h3 class="sec">Cha–con, Tag &amp; Layer</h3>
+        <ul>
+          <li>Kéo object A thả vào object B trong Hierarchy → A thành con của B; con kế thừa chuyển động của cha (tay theo thân).</li>
+          <li><strong>Tag</strong>: nhãn định danh ("Player", "Enemy") — soi bằng <code class="ic">CompareTag("Player")</code>.</li>
+          <li><strong>Layer</strong>: nhóm phục vụ render thứ tự &amp; <strong>bảng va chạm</strong> (Layer Collision Matrix trong Project Settings → Physics 2D) — trò "đạn không bắn đồng đội" làm bằng này.</li>
+        </ul>
+        <div class="box ver"><span class="box-title">Đối chiếu Godot ↔ Unity</span>Node ≈ GameObject + các component gộp lại · Scene (.tscn) ≈ Scene + Prefab · Inspector giống nhau · Signal ≈ UnityEvent (Button.OnClick) + C# event/delegate. Ai học từ khóa Godot sẽ thấy L1–L2 của khóa này quen quen một cách dễ chịu.</div>
+
+        <div class="box lab"><span class="box-title">🗂 Luyện trong Component Lab</span>Mở <strong>Component Lab</strong> → chọn mục tiêu <strong>Player (Ruby)</strong> → thêm Rigidbody2D, CircleCollider2D, SpriteRenderer, Script → Kiểm tra. Làm đủ 4 mục tiêu (Robot, Enemy, Main Camera) để quen tay "Add Component" trước khi đụng Unity thật.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 4.1 <span class="lvl">dễ</span></div>
+          <p>Tạo GameObject trống (chuột phải → Create Empty), thêm component <code class="ic">AudioSource</code> và một Script mới tên <code class="ic">Hello</code> (Add Component → New Script). Vào Play — Console in gì? (Chưa có gì — script trắng; CH5 sẽ làm nó nói chuyện.)</p>
+        </div>
+      </section>
+      <!-- ===================== LEVEL 1 ===================== -->
+      <div class="level-divider" id="lv1"><div class="line"></div><span class="tag tag-l1">L1 · C# từ zero</span><div class="line"></div></div>
+
+      <!-- ===== CH5 ===== -->
+      <section class="chapter" id="ch5">
+        <h2 class="ch-title"><span class="num">CH 5</span> Script đầu tiên</h2>
+        <p class="ch-sub">MonoBehaviour — cây cầu giữa code C# của bạn và thế giới Unity.</p>
+
+        <h3 class="sec">Tạo &amp; gắn script</h3>
+        <p>Project → chuột phải folder <code class="ic">Scripts</code> → <strong>Create → Scripting → MonoBehaviour Script</strong> → đặt tên <code class="ic">Hello</code> (tên class PHẢI trùng tên file). Kéo file script thả vào GameObject trong Hierarchy — giờ script là một component của object đó.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Hello.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">using</span> <span class="t">UnityEngine</span>;
+
+<span class="k">public class</span> <span class="t">Hello</span> : <span class="t">MonoBehaviour</span>     <span class="c">// kế thừa MonoBehaviour mới "hưởng" Unity</span>
+{
+    <span class="k">public float</span> speed = <span class="n">5f</span>;              <span class="c">// public → hiện trong Inspector!</span>
+
+    <span class="k">void</span> <span class="f">Start</span>()                          <span class="c">// chạy ĐÚNG 1 LẦN, trước frame đầu</span>
+    {
+        <span class="t">Debug</span>.<span class="f">Log</span>(<span class="s">"Xin chào Unity!"</span>);
+    }
+
+    <span class="k">void</span> <span class="f">Update</span>()                         <span class="c">// chạy MỖI frame (~60 lần/giây)</span>
+    {
+        transform.position += <span class="t">Vector3</span>.right * speed * <span class="t">Time</span>.deltaTime;
+    }
+}</pre>
+        </div>
+        <p>Bấm Play → Console hiện dòng chữ, object trôi dần sang phải. Bạn vừa viết chương trình C# đầu tiên! 🎉</p>
+
+        <h3 class="sec">5 khác biệt C# vs GDScript (cho ai từ khóa Godot)</h3>
+        <table>
+          <thead><tr><th>C# (Unity)</th><th>GDScript (Godot)</th></tr></thead>
+          <tbody>
+            <tr><td>Có dấu <code class="ic">;</code> cuối mỗi lệnh</td><td>Không cần</td></tr>
+            <tr><td>Khối lệnh trong <code class="ic">{ }</code></td><td>Thụt lề Tab</td></tr>
+            <tr><td>Khai báo kiểu tường minh: <code class="ic">int x = 5;</code></td><td><code class="ic">var x := 5</code> tự suy</td></tr>
+            <tr><td><code class="ic">void Start() / Update()</code></td><td><code class="ic">func _ready() / _process(delta)</code></td></tr>
+            <tr><td>In: <code class="ic">Debug.Log(...)</code></td><td><code class="ic">print(...)</code></td></tr>
+          </tbody>
+        </table>
+        <div class="box warn"><span class="box-title">Sai cú pháp thì sao?</span>Console báo đỏ kèm <strong>số dòng + mô tả</strong> (vd "error CS1002: ; expected at line 12") — bấm để nhảy tới chỗ sai. Lỗi thường gặp nhất người mới: quên <code class="ic">;</code>, quên <code class="ic">{ }</code>, viết <code class="ic">0.5</code> thay vì <code class="ic">0.5f</code> cho float.</div>
+      </section>
+
+      <!-- ===== CH6 ===== -->
+      <section class="chapter" id="ch6">
+        <h2 class="ch-title"><span class="num">CH 6</span> Biến, kiểu dữ liệu &amp; toán tử</h2>
+        <p class="ch-sub">"Hộp đựng có dán nhãn" — y hệt mọi ngôn ngữ, chỉ thêm luật kiểu chặt.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Bien.cs (đoạn code minh hoạ)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">int</span> diem = <span class="n">0</span>;                      <span class="c">// số nguyên</span>
+<span class="k">float</span> tocDo = <span class="n">2.5f</span>;                <span class="c">// thập phân — NHỚ chữ f</span>
+<span class="k">bool</span> conSong = <span class="k">true</span>;
+<span class="k">string</span> ten = <span class="s">"Bình"</span>;
+<span class="k">const int</span> MANG_TOI_DA = <span class="n">3</span>;        <span class="c">// hằng số</span>
+
+<span class="k">int</span>[] mang = <span class="k">new int</span>[<span class="n">3</span>];           <span class="c">// mảng 3 ô</span>
+<span class="k">var</span> ds = <span class="k">new</span> <span class="t">List</span>&lt;<span class="k">int</span>&gt;();          <span class="c">// danh sách co giãn — cần using System.Collections.Generic;</span>
+ds.<span class="f">Add</span>(<span class="n">10</span>);  ds.<span class="f">RemoveAt</span>(<span class="n">0</span>);
+
+<span class="t">Debug</span>.<span class="f">Log</span>($<span class="s">"Người chơi {ten} còn {diem} điểm"</span>);   <span class="c">// nội suy $"" — tiện nhất</span></pre>
+        </div>
+
+        <h3 class="sec">Hiện biến trong Inspector</h3>
+        <ul>
+          <li><code class="ic">public int mau = 3;</code> → hiện Inspector, ai cũng sửa được.</li>
+          <li><code class="ic">[SerializeField] private int mau = 3;</code> → hiện Inspector nhưng code ngoài class không đụng được — <strong>chuẩn mực</strong> nên theo.</li>
+          <li>Đổi giá trị trong Inspector khi đang Play → về mặc định khi dừng (nhớ luật CH2).</li>
+        </ul>
+        <div class="box tip"><span class="box-title">Đặt tên có nghề</span>Biến <code class="ic">camelCase</code> (<code class="ic">tocDoDiChuyen</code>), hàm/lớp <code class="ic">PascalCase</code> (<code class="ic">RubyController</code>). Tên rõ nghĩa là documentation miễn phí cho chính bạn 3 tháng sau.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 6.1 <span class="lvl">dễ</span></div>
+          <p>Khai báo <code class="ic">[SerializeField] float banKinh = 2f;</code> trong <code class="ic">Hello.cs</code>, vào Unity chỉnh giá trị 5 trong Inspector, Play và in ra: <code class="ic">Debug.Log($"Bán kính: {banKinh}");</code></p>
+        </div>
+      </section>
+
+      <!-- ===== CH7 ===== -->
+      <section class="chapter" id="ch7">
+        <h2 class="ch-title"><span class="num">CH 7</span> Rẽ nhánh, vòng lặp &amp; hàm</h2>
+        <p class="ch-sub">Cho game biết đường rẽ — và đóng gói việc thành tên gọi.</p>
+
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> ReNhanh.cs (minh hoạ)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">void</span> <span class="f">TruMau</span>(<span class="k">int</span> satThuong, <span class="k">bool</span> doc = <span class="k">false</span>)
+{
+    mau -= satThuong * (doc ? <span class="n">2</span> : <span class="n">1</span>);       <span class="c">// if rút gọn: điều kiện ? A : B</span>
+    <span class="k">if</span> (mau &lt;= <span class="n">0</span>)
+        <span class="f">Chet</span>();
+    <span class="k">else if</span> (mau &lt; <span class="n">30</span>)
+        <span class="t">Debug</span>.<span class="f">Log</span>(<span class="s">"⚠️ Nguy hiểm!"</span>);
+    <span class="k">else</span>
+        <span class="t">Debug</span>.<span class="f">Log</span>($<span class="s">"Máu: {mau}"</span>);
+}
+
+<span class="c">// vòng lặp</span>
+<span class="k">for</span> (<span class="k">int</span> i = <span class="n">0</span>; i &lt; <span class="n">3</span>; i++) <span class="f">Spawn</span>(i);      <span class="c">// 0, 1, 2</span>
+<span class="k">foreach</span> (<span class="k">var</span> quy <span class="k">in</span> dsQuy) quy.<span class="f">DiChuyen</span>();  <span class="c">// duyệt collection — dùng nhiều nhất</span></pre>
+        </div>
+
+        <h3 class="sec">Các hàm đặc biệt Unity tự gọi</h3>
+        <table>
+          <thead><tr><th>Hàm</th><th>Unity gọi khi nào</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">Start()</code></td><td>1 lần, trước frame đầu — khởi tạo, cache component</td></tr>
+            <tr><td><code class="ic">Update()</code></td><td>Mỗi frame — input, logic hiển thị</td></tr>
+            <tr><td><code class="ic">FixedUpdate()</code></td><td>Mỗi 0.02s cố định — <strong>vật lý để đây</strong></td></tr>
+            <tr><td><code class="ic">OnTriggerEnter2D(other)</code></td><td>Có object chạm trigger (CH15)</td></tr>
+            <tr><td><code class="ic">OnDestroy()</code></td><td>Object bị hủy — dọn dẹp</td></tr>
+          </tbody>
+        </table>
+        <div class="box danger"><span class="box-title">Vòng lặp vô hạn</span>Điều kiện <code class="ic">while</code> mà chẳng bao giờ sai → Unity đứng im (treo). May mắn: Task Manager đóng Editor, mở lại autosave. Nhớ kiểm tra biến điều kiện có thay đổi trong thân vòng lặp.</div>
+      </section>
+
+      <!-- ===== CH8 ===== -->
+      <section class="chapter" id="ch8">
+        <h2 class="ch-title"><span class="num">CH 8</span> OOP căn bản cho game</h2>
+        <p class="ch-sub">Class, public/private, GetComponent — 3 thứ dùng mỗi ngày trong Unity.</p>
+
+        <h3 class="sec">Class = bản vẽ</h3>
+        <p><code class="ic">class</code> gói <strong>field</strong> (dữ liệu) + <strong>method</strong> (hành vi). <code class="ic">public</code> = ai cũng dùng được; <code class="ic">private</code> (mặc định) = chỉ trong class. Mọi script Unity đều là class kế thừa <code class="ic">MonoBehaviour</code> — nhờ thế mới có Start/Update và hiện được trong Inspector.</p>
+
+        <h3 class="sec">GetComponent — nói chuyện với component cạnh</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> LayComponent.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">public class</span> <span class="t">LayComponent</span> : <span class="t">MonoBehaviour</span>
+{
+    <span class="k">private</span> <span class="t">Rigidbody2D</span> rb;          <span class="c">// cache — chuẩn mực</span>
+
+    <span class="k">void</span> <span class="f">Start</span>()
+    {
+        rb = <span class="f">GetComponent</span>&lt;<span class="t">Rigidbody2D</span>&gt;();   <span class="c">// tìm trên CÙNG object</span>
+    }
+
+    <span class="k">void</span> <span class="f">Update</span>()
+    {
+        <span class="c">// Bắn ray tìm component trên object KHÁC:</span>
+        <span class="k">var</span> ruby = <span class="t">GameObject</span>.<span class="f">FindWithTag</span>(<span class="s">"Player"</span>)
+                     .<span class="f">GetComponent</span>&lt;<span class="t">RubyController</span>&gt;();
+    }
+}</pre>
+        </div>
+        <div class="box warn"><span class="box-title">GetComponent mỗi frame = chậm</span>Tìm component là thao tác tốn kém — gọi 1 lần trong <code class="ic">Start()</code> bỏ vào field (cache) như trên, đừng gọi trong Update. Nguyên tắc số 1 hiệu năng Unity cho người mới.</div>
+
+        <h3 class="sec">Vector2/3 — kiểu "quốc dân"</h3>
+        <ul>
+          <li><code class="ic">Vector3(x, y, z)</code>; 2D dùng Vector3 hay Vector2 đều được (z=0). Hằng có sẵn: <code class="ic">Vector3.right/left/up/down/zero/one</code>.</li>
+          <li>Hay dùng: <code class="ic">v.normalized</code> (độ dài 1), <code class="ic">Vector3.Distance(a,b)</code>, <code class="ic">Vector3.Lerp(a, b, t)</code> (trôi mượt), <code class="ic">Vector3.Angle(a,b)</code>.</li>
+          <li>Xoay 2D: <code class="ic">Quaternion.Euler(0, 0, gocDo)</code> — góc quanh trục Z.</li>
+        </ul>
+      </section>
+
+      <!-- ===== CH9 ===== -->
+      <section class="chapter" id="ch9">
+        <h2 class="ch-title"><span class="num">CH 9</span> Vòng lặp game, delta &amp; input</h2>
+        <p class="ch-sub">Update vs FixedUpdate, Time.deltaTime, và đọc phím người chơi.</p>
+
+        <h3 class="sec">deltaTime — quy tắc vàng đầu tiên</h3>
+        <p>Máy 30fps và 144fps chạy cùng code thì chuyển động lệch nhau 5 lần, trừ khi nhân <code class="ic">Time.deltaTime</code> (số giây frame trước kéo dài) — biến "đơn vị/frame" thành "đơn vị/giây":</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> DiChuyen.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">void</span> <span class="f">Update</span>()
+{
+    <span class="c">// ĐÚNG: nhân deltaTime — tốc độ như nhau mọi máy</span>
+    transform.position += <span class="t">Vector3</span>.right * speed * <span class="t">Time</span>.deltaTime;
+}
+<span class="k">void</span> <span class="f">FixedUpdate</span>()
+{
+    <span class="c">// Vật lý (Rigidbody, lực) đặt ở ĐÂY — timestep cố định 0.02s</span>
+    rb.<span class="f">AddForce</span>(<span class="t">Vector2</span>.up * luc);
+}</pre>
+        </div>
+        <div class="box info"><span class="box-title">Chờ &amp; hẹn trong Unity (khác Godot)</span>Unity không có <code class="ic">await get_tree().create_timer</code>; tương đương là <strong>Coroutine</strong>: <code class="ic">IEnumerator DemNguoc() { yield return new WaitForSeconds(1f); ... }</code> gọi bằng <code class="ic">StartCoroutine(DemNguoc());</code> — hoặc gọn hơn: <code class="ic">Invoke("TenHam", 1f);</code>. Học kỹ hơn ở capstone.</div>
+
+        <h3 class="sec">Input — đọc phím (hệ cũ, đơn giản)</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> InputCu.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">float</span> x = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Horizontal"</span>);   <span class="c">// -1 / 0 / 1 (A,D, ←→)</span>
+<span class="k">float</span> y = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Vertical"</span>);     <span class="c">// W,S, ↑↓</span>
+<span class="k">var</span> huong = <span class="k">new</span> <span class="t">Vector3</span>(x, y, <span class="n">0</span>).normalized;   <span class="c">// chống đi chéo nhanh hơn</span>
+
+<span class="k">if</span> (<span class="t">Input</span>.<span class="f">GetKeyDown</span>(<span class="t">KeyCode</span>.Space)) <span class="f">Ban</span>();     <span class="c">// bấm 1 lần</span>
+<span class="k">if</span> (<span class="t">Input</span>.<span class="f">GetKey</span>(<span class="t">KeyCode</span>.LeftShift)) ...        <span class="c">// đang giữ</span>
+
+<span class="k">var</span> chuot = <span class="t">Camera</span>.main.<span class="f">ScreenToWorldPoint</span>(<span class="t">Input</span>.mousePosition); <span class="c">// vị trí chuột trong thế giới</span></pre>
+        </div>
+        <div class="box ver"><span class="box-title">Input System mới?</span>Unity có hệ Input mới (event-driven, hỗ trợ mọi thiết bị) — mạnh nhưng rườm thêm cho người mới. Toàn bộ Unity Learn beginner (kể cả Haunted House 6.3) vẫn dạy hệ cũ trước. Khóa này theo hệ cũ; Input System nhắc ở CH21.</div>
+
+        <div class="exercise">
+          <div class="ex-head">✏️ Thực hành 9.1 <span class="lvl">vừa</span></div>
+          <p>Ô vuông (CH2) chạy 4 hướng bằng GetAxisRaw + normalized, giữ Shift chạy nhanh gấp đôi, bấm Space reset về (0,0,0).</p>
+          <details class="answer"><summary>Gợi ý</summary><div class="body">
+<pre class="code"><span class="k">float</span> x = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Horizontal"</span>);
+<span class="k">float</span> y = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Vertical"</span>);
+<span class="k">var</span> huong = <span class="k">new</span> <span class="t">Vector3</span>(x, y, <span class="n">0</span>).normalized;
+<span class="k">float</span> s = speed * (<span class="t">Input</span>.<span class="f">GetKey</span>(<span class="t">KeyCode</span>.LeftShift) ? <span class="n">2f</span> : <span class="n">1f</span>);
+transform.position += huong * s * <span class="t">Time</span>.deltaTime;
+<span class="k">if</span> (<span class="t">Input</span>.<span class="f">GetKeyDown</span>(<span class="t">KeyCode</span>.Space)) transform.position = <span class="t">Vector3</span>.zero;</pre>
+          </div></details>
+        </div>
+      </section>
+      <!-- ===================== LEVEL 2 ===================== -->
+      <div class="level-divider" id="lv2"><div class="line"></div><span class="tag tag-l2">L2 · Công cụ 2D + Capstone "Ruby"</span><div class="line"></div></div>
+
+      <!-- ===== CH10 ===== -->
+      <section class="chapter" id="ch10">
+        <h2 class="ch-title"><span class="num">CH 10</span> Sprite &amp; Sprite Editor</h2>
+        <p class="ch-sub">Đưa ảnh vào game — và cắt spritesheet thành từng động tác.</p>
+
+        <h3 class="sec">Import &amp; dùng</h3>
+        <ol>
+          <li>Kéo file PNG vào folder Sprites trong Project — Unity tự import.</li>
+          <li>Kéo sprite từ Project thẳng vào Scene → tự tạo GameObject có <code class="ic">SpriteRenderer</code>.</li>
+          <li>Chọn file → tab Inspector chỉnh import: <strong>Filter Mode: Point (no filter)</strong> cho pixel art + <strong>Compression: None</strong> (đỡ mờ).</li>
+        </ol>
+        <div class="box info"><span class="box-title">Pixels Per Unit (PPU)</span>Số pixel ảnh ứng với 1 unit thế giới (mặc định 100). Sprite 32×32 với PPU 32 sẽ to bằng sprite 100×100 với PPU 100. <strong>Chọn 1 PPU cho cả project</strong> (pixel art thường = kích thước tile, vd 16/32/64) để mọi thứ khớp nhau.</div>
+
+        <h3 class="sec">Sprite Editor — cắt spritesheet</h3>
+        <p>Chọn spritesheet (ảnh chứa nhiều frame) → Inspector → <strong>Sprite Editor</strong> → <strong>Slice</strong>: <em>Automatic</em> (tự tách theo viền) hoặc <em>Grid By Cell Size</em> (lưới cố định 32×32 — chuẩn pixel art) → Slice → Apply. Ảnh 1 file bỗng thành mớ sprite con (mũi tên mở rộng cạnh tên file), sẵn sàng cho animation ở CH12.</p>
+
+        <h3 class="sec">Sắp chồng nhau — Sorting</h3>
+        <p>2D không có "Z" như 3D — thứ tự vẽ do <code class="ic">Sorting Layer</code> (đặt tên layer: Background → Characters → FX) và trong cùng layer thì <code class="ic">Order in Layer</code> (số cao vẽ trên). SpriteRenderer còn có <code class="ic">flipX</code> (lật hướng nhìn), <code class="ic">color</code> (nhuộm đỏ khi trúng đòn).</p>
+      </section>
+
+      <!-- ===== CH11 ===== -->
+      <section class="chapter" id="ch11">
+        <h2 class="ch-title"><span class="num">CH 11</span> Tilemap &amp; Tile Palette</h2>
+        <p class="ch-sub">Vẽ map cả buổi trong 10 phút — khỏi đặt từng ô thủ công.</p>
+
+        <h3 class="sec">Quy trình 4 bước</h3>
+        <ol>
+          <li>Hierarchy → chuột phải → <strong>2D Object → Tilemap → Rectangular</strong> (tạo Grid cha + Tilemap con).</li>
+          <li>Window → 2D → <strong>Tile Palette</strong> → Create New Palette (đặt folder) → kéo spritesheet vào vùng palette — Unity hỏi cắt theo grid, khớp cỡ ô là ra bộ gạch.</li>
+          <li>Trong palette bấm chọn ô gạch → quét chuột trên Scene để vẽ; chuột phải xóa; Shift+chuột hút mẫu.</li>
+          <li>Va chạm: chọn Tilemap → Add Component <strong>Tilemap Collider 2D</strong> (gạch nào cũng thành tường) — nên thêm tiếp <strong>Composite Collider 2D</strong> + Rigidbody2D (Body Type: Static) để gộp biên liền mạch, vật thể trượt mượt.</li>
+        </ol>
+        <div class="box tip"><span class="box-title">Nhiều lớp Tilemap</span>Tạo 2 Tilemap con trong cùng Grid: <strong>Background</strong> (không collider — cỏ, nền) và <strong>Ground</strong> (có collider — tường, gai). Giữ sorting layer khác nhau. Vẽ occlusion kiểu "phòng trong nhà"? Dùng thêm layer "Walls" vẽ trên đầu nhân vật.</div>
+        <div class="box ver"><span class="box-title">Đối chiếu Godot</span>Tile Palette ≈ panel TileSet của Godot; Tilemap Collider 2D ≈ Physics Layers trong TileSet. Rule Tile (gạch thông minh tự chọn viền) là package "2D Tilemap Extras" — Godot không có sẵn tương đương.</div>
+      </section>
+
+      <!-- ===== CH12 ===== -->
+      <section class="chapter" id="ch12">
+        <h2 class="ch-title"><span class="num">CH 12</span> Animation — Animator Controller</h2>
+        <p class="ch-sub">Máy trạng thái hoạt hình: Idle ↔ Walk ↔ Hit, điều khiển từ code.</p>
+
+        <h3 class="sec">Tạo animation đầu tiên</h3>
+        <ol>
+          <li>Chọn object có SpriteRenderer → Window → Animation → <strong>Animation</strong> (đặt cạnh Console cho tiện).</li>
+          <li>Bấm <strong>Create</strong> → lưu clip <code class="ic">Walk</code> trong folder Animations.</li>
+          <li>Kéo dàn frame (từ spritesheet CH10) vào timeline; chỉnh <strong>Samples</strong> (fps) 8–12 cho pixel art; bấm ▶ xem thử.</li>
+          <li>Tạo thêm clip <code class="ic">Idle</code> (dropdown clip → Create New Clip). Mỗi object có 1 <strong>Animator Controller</strong> tự sinh.</li>
+        </ol>
+
+        <h3 class="sec">Máy trạng thái &amp; điều khiển từ code</h3>
+        <p>Window → Animation → <strong>Animator</strong>: mỗi clip là 1 <strong>state</strong> (màu cam = mặc định). Kéo mũi tên giữa các state = transition. Tạo <strong>Parameter</strong> (vd Bool <code class="ic">isWalking</code>, Trigger <code class="ic">hit</code>) rồi ở transition đặt <strong>Condition</strong> dựa theo parameter:</p>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> AnimTuCode.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">private</span> <span class="t">Animator</span> anim;                    <span class="c">// cache trong Start()</span>
+
+<span class="k">void</span> <span class="f">Update</span>()
+{
+    anim.<span class="f">SetBool</span>(<span class="s">"isWalking"</span>, x != <span class="n">0</span> || y != <span class="n">0</span>);
+    anim.<span class="f">SetTrigger</span>(<span class="s">"hit"</span>);                <span class="c">// bắn 1 lần rồi tự reset</span>
+    anim.<span class="f">SetFloat</span>(<span class="s">"speed"</span>, tocDoHienTai);      <span class="c">// blend mượt theo số</span>
+}</pre>
+        </div>
+        <div class="box warn"><span class="box-title">Cái bẫy Exit Time</span>Transition mặc định có <strong>Exit Time</strong> (chờ hết clip mới đổi) — khi muốn đổi state <em>ngay theo input</em>, chọn transition và <strong>bỏ tick Has Exit Time</strong>, điều khiển hoàn toàn bằng Conditions.</div>
+      </section>
+
+      <!-- ===== CH13 ===== -->
+      <section class="chapter" id="ch13">
+        <h2 class="ch-title"><span class="num">CH 13</span> UI — Canvas, TextMeshPro &amp; nút bấm</h2>
+        <p class="ch-sub">Điểm số, thanh máu, nút Start — phần khiến game "thật" hẳn ra.</p>
+
+        <h3 class="sec">Canvas — mẹ của mọi UI</h3>
+        <p>Hierarchy → chuột phải → <strong>UI</strong> → bất kỳ thứ gì (Text, Button, Image...) → Unity tự tạo <strong>Canvas</strong> (chế độ Screen Space - Overlay: UI vẽ trên gameplay, không bị camera kéo) + <strong>EventSystem</strong> (thụ lý bấm/phím cho UI). Mọi UI phải nằm trong Canvas.</p>
+        <ul>
+          <li><strong>Text - TextMeshPro</strong>: chữ đẹp — lần đầu dùng sẽ hỏi Import TMP Essentials → đồng ý. Lần lượt: đặt chữ, cỡ font, màu, alignment.</li>
+          <li><strong>Anchor</strong> (hộp neo khi chọn UI): neo về góc/giữa màn để co giãn đẹp; giữ Alt + bấm anchor = căn position luôn.</li>
+          <li><strong>Button</strong>: khung <strong>On Click ()</strong> trong Inspector → kéo GameObject chứa script → chọn hàm <code class="ic">public</code> — <em>không cần viết code nối</em> (khác Godot nối signal tay).</li>
+        </ul>
+
+        <h3 class="sec">Thanh máu &amp; điểm số</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> HUD.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">using</span> <span class="t">UnityEngine.UI</span>;               <span class="c">// Slider, Image</span>
+<span class="k">using</span> <span class="t">TMPro</span>;                          <span class="c">// TextMeshProUGUI</span>
+
+<span class="k">public</span> <span class="t">Slider</span> thanhMau;              <span class="c">// kéo Slider vào ô này trong Inspector</span>
+<span class="k">public</span> <span class="t">TextMeshProUGUI</span> diemText;
+
+<span class="k">void</span> <span class="f">CapNhat</span>(<span class="k">int</span> mauHienTai, <span class="k">int</span> diem)
+{
+    thanhMau.value = (<span class="k">float</span>)mauHienTai / mauToiDa;  <span class="c">// 0→1</span>
+    diemText.text = $<span class="s">"⭐ {diem}/10"</span>;
+}</pre>
+        </div>
+        <p>Thanh máu: UI → Slider → bỏ Handle Slide Area (xóa con), Fill đổi màu đỏ; hoặc Image với <strong>Image Type: Filled</strong> — đơn giản hơn nữa.</p>
+      </section>
+
+      <!-- ===== CH14 ===== -->
+      <section class="chapter" id="ch14">
+        <h2 class="ch-title"><span class="num">CH 14</span> Âm thanh</h2>
+        <p class="ch-sub">AudioSource + AudioClip — nhạc nền, sfx, âm 3D theo vị trí.</p>
+
+        <h3 class="sec">Quy trình</h3>
+        <ol>
+          <li>Kéo file <code class="ic">.ogg</code> (nhạc) / <code class="ic">.wav</code> (sfx ngắn) vào Project.</li>
+          <li>GameObject → Add Component <strong>Audio Source</strong> → kéo AudioClip vào ô AudioClip.</li>
+          <li>Nhạc nền: tick <strong>Play On Awake</strong> + <strong>Loop</strong>; <strong>Spatial Blend = 0</strong> (2D — nghe đều 2 tai).</li>
+          <li>Âm theo vị trí (bước chân quỷ): Spatial Blend = 1 (3D) — càng xa nghe càng nhỏ.</li>
+        </ol>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> AmThanh.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">private</span> <span class="t">AudioSource</span> am;                <span class="c">// cache trong Start()</span>
+
+am.<span class="f">Play</span>();                               <span class="c">// phát nguyên clip</span>
+am.<span class="f">PlayOneShot</span>(suaRobotClip);          <span class="c">// chồng tiếng (nhiều cái cùng lúc)</span>
+am.<span class="f">Stop</span>();
+am.pitch = <span class="n">1.2f</span>;                          <span class="c">// đổi cao độ — 1 clip thành nhiều hiệu ứng</span></pre>
+        </div>
+        <div class="box info"><span class="box-title">AudioListener ở đâu?</span>Mặc định nằm trên Main Camera — "tai" của người chơi, 1 scene chỉ 1 cái. Nghe không có tiếng? Kiểm tra: AudioListener trùng 2 cái, clip sai, volume mixer.</div>
+      </section>
+
+      <!-- ===== CH15 ===== -->
+      <section class="chapter" id="ch15">
+        <h2 class="ch-title"><span class="num">CH 15</span> Vật lý 2D &amp; trigger — mảnh ghép quan trọng nhất</h2>
+        <p class="ch-sub">Rigidbody2D, Collider, Is Trigger — 90% tương tác game 2D làm bằng này.</p>
+
+        <h3 class="sec">Bộ ba Rigidbody2D + Collider + (thỉnh thoảng) Script</h3>
+        <table>
+          <thead><tr><th>Thành phần</th><th>Vai trò</th></tr></thead>
+          <tbody>
+            <tr><td><code class="ic">Rigidbody2D</code> Dynamic</td><td>Engine mô phỏng trọn vẹn (rơi, bị đẩy) — thùng, vật phẩm văng</td></tr>
+            <tr><td><code class="ic">Rigidbody2D</code> Kinematic</td><td>Bạn tự điều khiển qua code — <strong>nhân vật Ruby dùng kiểu này</strong></td></tr>
+            <tr><td><code class="ic">BoxCollider2D / CircleCollider2D</code></td><td>Hình va chạm; tick <strong>Is Trigger</strong> = "không chặn, chỉ phát hiện"</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Di chuyển nhân vật chuẩn Ruby</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> RubyController.cs (lõi)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">public class</span> <span class="t">RubyController</span> : <span class="t">MonoBehaviour</span>
+{
+    <span class="k">public float</span> tocDo = <span class="n">3f</span>;
+    <span class="k">private</span> <span class="t">Rigidbody2D</span> rb;
+
+    <span class="k">void</span> <span class="f">Start</span>() { rb = <span class="f">GetComponent</span>&lt;<span class="t">Rigidbody2D</span>&gt;(); }
+
+    <span class="k">void</span> <span class="f">FixedUpdate</span>()                          <span class="c">// vật lý — dùng FixedUpdate</span>
+    {
+        <span class="k">float</span> x = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Horizontal"</span>);
+        <span class="k">float</span> y = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Vertical"</span>);
+        <span class="k">var</span> v = <span class="k">new</span> <span class="t">Vector2</span>(x, y).normalized * tocDo;
+        rb.linearVelocity = v;                  <span class="c">// Unity 6 (bản cũ là rb.velocity)</span>
+    }
+}</pre>
+        </div>
+        <div class="box ver"><span class="box-title">Unity 6 đổi tên</span><code class="ic">rb2d.velocity</code> → <code class="ic">rb.linearVelocity</code> (cả 2D lẫn 3D). Tutorial Ruby chính thức viết bằng bản cũ — gặp <code class="ic">velocity</code> đỏ lỗi thì đổi thành <code class="ic">linearVelocity</code> là xong.</div>
+
+        <h3 class="sec">Trigger — "cảm biến" nhiều nhất dùng</h3>
+        <div class="code-block"><div class="code-head"><span class="dots"><i></i><i></i><i></i></span> <span class="fname">SuaRobot.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="c">// Gắn trên ROBOT (Collider tick Is Trigger). Ruby (Rigidbody2D) đi vào → hàm tự chạy</span>
+<span class="k">void</span> <span class="f">OnTriggerEnter2D</span>(<span class="t">Collider2D</span> other)
+{
+    <span class="k">if</span> (other.<span class="f">CompareTag</span>(<span class="s">"Player"</span>))
+    {
+        other.<span class="f">GetComponent</span>&lt;<span class="t">RubyController</span>&gt;().<span class="f">SuaRobot</span>(<span class="n">1</span>);
+        <span class="f">Destroy</span>(gameObject);                    <span class="c">// robot biến mất</span>
+    }
+}
+<span class="c">// Bộ họ trigger: OnTriggerEnter2D / Stay2D / Exit2D (vào / đứng trong / rời)</span></pre>
+        </div>
+        <div class="box info"><span class="box-title">Trigger vs Collider thường</span>Collider thường = chặn nhau (tường). Trigger = xuyên qua nhưng "biết" (nhặt đồ, vùng gai, cửa). Quy tắc: ít nhất 1 trong 2 phải có Rigidbody2D thì trigger mới hoạt động — người chơi có sẵn là đủ.</div>
+      </section>
+
+      <!-- ===== CH16 ===== -->
+      <section class="chapter" id="ch16">
+        <h2 class="ch-title"><span class="num">CH 16</span> Capstone 2D — "Ruby"</h2>
+        <p class="ch-sub">Game A theo project chính thức Ruby's Adventure: sửa robot, né gai, né bọ.</p>
+
+        <div class="box game"><span class="box-title">Về Ruby's Adventure</span>Project chính thức Unity Learn: Ruby đi sửa những chú robot hỏng trong thị trấn, né vùng gai và bọ quỷ. Đủ mọi kỹ năng L2: controller, tilemap, animation, trigger, UI, audio, particles, build. Assets tải trong trang project; có <a class="inline" href="https://www.youtube.com/watch?v=mkBPGC0BVXg" target="_blank">video full chính thức</a> xem làm theo từng bước.</div>
+
+        <h3 class="sec">P1 — Ruby &amp; thế giới (1 buổi)</h3>
+        <ul>
+          <li>Project Universal 2D; import assets; Tilemap vẽ map thị trấn (CH11) + Grid Composite Collider.</li>
+          <li><strong>Ruby</strong>: sprite + Rigidbody2D (Body Type: Dynamic, Gravity Scale 0, Collision Detection: Continuous) + CircleCollider2D + RubyController (CH15) + Animator Idle/Walk 4 hướng (CH12).</li>
+          <li>Camera follow: đơn giản nhất — kéo Main Camera làm con của Ruby (giữ Position.z = -10); mượt hơn: script <code class="ic">LateUpdate() { transform.position = ruby.position + offset; }</code> hoặc Cinemachine (L4).</li>
+        </ul>
+
+        <h3 class="sec">P2 — Robot, gai, bọ &amp; HUD (1–2 buổi)</h3>
+        <ul>
+          <li><strong>Robot hỏng</strong> = prefab: sprite robot + BoxCollider2D (Is Trigger) + script SuaRobot (CH15) + ParticleSystem "tia lửa". Ruby chạm → sửa (đổi sprite thành robot xanh, đếm +1), đủ N robot → thắng.</li>
+          <li><strong>Vùng gai</strong> (damage zone): trigger trừ máu Ruby — viết <code class="ic">ChangeHealth(-1)</code> + i-frames 1s (timer, nhấp nháy màu) chống trừ liên tục.</li>
+          <li><strong>Bọ quỷ</strong> đi tuần: Rigidbody2D + va chạm tường (<code class="ic">OnCollisionEnter2D</code>) → đảo chiều, chạm Ruby = trừ máu. Thêm góc nhìn (Dot product) cho khó hơn.</li>
+          <li><strong>HUD</strong>: Slider máu + TMP đếm robot (CH13); nhạc nền + sfx sửa/trúng đòn (CH14).</li>
+        </ul>
+
+        <h3 class="sec">P3 — Build &amp; chia sẻ (30 phút)</h3>
+        <p>File → <strong>Build Settings</strong> → Add Open Scenes → Platform <strong>WebGL</strong> → Build → được thư mục web, mở <code class="ic">index.html</code> là chơi. Muốn link gửi bạn bè: đăng <a class="inline" href="https://play.unity.com" target="_blank">Unity Play</a> → upload → có link chơi ngay trên trình duyệt.</p>
+
+        <div class="checklist">
+          <h4>✓ Checklist "Ruby" hoàn chỉnh</h4>
+          <label><input type="checkbox"><span>Ruby chạy 4 hướng mượt (linearVelocity + normalized), animation theo hướng</span></label>
+          <label><input type="checkbox"><span>Map tilemap có tường chắn thật sự (Composite Collider)</span></label>
+          <label><input type="checkbox"><span>Sửa đủ robot → hiện "Thắng!"; gai trừ máu có i-frames</span></label>
+          <label><input type="checkbox"><span>Bọ đi tuần, chạm = mất máu</span></label>
+          <label><input type="checkbox"><span>HUD máu + đếm robot + nhạc + sfx</span></label>
+          <label><input type="checkbox"><span>Build WebGL chạy được (mở index.html hoặc up Unity Play)</span></label>
+        </div>
+      </section>
+      <!-- ===================== LEVEL 3 ===================== -->
+      <div class="level-divider" id="lv3"><div class="line"></div><span class="tag tag-l3">L3 · 3D + Capstone "Nhà Ma"</span><div class="line"></div></div>
+
+      <!-- ===== CH17 ===== -->
+      <section class="chapter" id="ch17">
+        <h2 class="ch-title"><span class="num">CH 17</span> 3D căn bản — từ 2D sang 3D</h2>
+        <p class="ch-sub">Thêm chiều Z, camera phối cảnh, vật liệu và ánh sáng — không đáng sợ như tưởng.</p>
+
+        <h3 class="sec">Điều gì đổi khi sang 3D?</h3>
+        <table>
+          <thead><tr><th>2D</th><th>3D</th></tr></thead>
+          <tbody>
+            <tr><td>Sprite + SpriteRenderer</td><td>Model 3D (Mesh Filter + Mesh Renderer) — bắt đầu bằng Cube/Sphere/Capsule sẵn có</td></tr>
+            <tr><td>Vector2, quay quanh Z</td><td>Vector3, xoay 3 trục (Quaternion)</td></tr>
+            <tr><td>Sorting Layer quyết định vẽ</td><td>Độ sâu thật — camera Perspective với FOV</td></tr>
+            <tr><td>Ánh sáng ít quan trọng</td><td><strong>Ánh sáng = 70% vẻ đẹp 3D</strong> (Directional Light + Point Light)</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Material — "vỏ bọc" của vật thể</h3>
+        <p>Project → Create → <strong>Material</strong> (URP) → chỉnh Base Map (màu), <strong>Emission</strong> (phát sáng — đèn neon!) → kéo thả material lên object. Template Universal 3D mở sẵn mẫu PBR (kim loại/nhựa/đá) trong folder Materials.</p>
+
+        <h3 class="sec">Làm quen trong 30 phút</h3>
+        <ol>
+          <li>Scene 3D mới: Cube làm sàn (scale 10, 1, 10) + vài Cube tường + Sphere.</li>
+          <li>Directional Light: xoay thử — thấy bóng đổ đổi hướng. Giảm Intensity → chạng vạng tối.</li>
+          <li>Material đỏ emission vàng cho Sphere; Point Light xanh cạnh đó — không khí "neon".</li>
+          <li>Sphere thêm Rigidbody → Play → lăn rơi xuống sàn. Physics 3D y hệt 2D, chỉ thêm chiều Z.</li>
+        </ol>
+        <div class="box tip"><span class="box-title">Điều hướng 3D</span>Giữ <strong>chuột phải + WASD</strong> để bay, Q/E lên xuống, Shift nhanh, lăn chuột zoom, F tập trung object — tập 2 phút là thành phản xạ.</div>
+      </section>
+
+      <!-- ===== CH18 ===== -->
+      <section class="chapter" id="ch18">
+        <h2 class="ch-title"><span class="num">CH 18</span> "Nhà Ma" #1 — Người chơi &amp; camera</h2>
+        <p class="ch-sub">Capstone 3D theo course chính thức 3D Stealth Game: Haunted House (Unity 6.3).</p>
+
+        <div class="box game"><span class="box-title">Về Haunted House</span>Course chính thức Unity Learn (4 giờ, 9 tutorial + bài publish): lẻn qua quỷ đá gargoyle và hồn ma để thoát khỏi biệt thự bị ám — chơi được cả 2 nhân vật John Lemon và Ivan von Vamp. Kế thừa tinh thần huyền thoại "John Lemon's Haunted Jaunt" đã nghỉ hưu. Có demo chơi ngay trên Unity Play.</div>
+
+        <h3 class="sec">Scene — dựng biệt thự tối</h3>
+        <ul>
+          <li>Sàn + tường bằng Cube kéo scale (hoặc ProBuilder nếu muốn khéo); material tối màu, thảm, cửa ra vào ở đầu kia.</li>
+          <li>Đèn: Point Light vàng mờ rải vài góc + Directional Light gần tắt — không khí ma hãy đến.</li>
+          <li>Post-processing (URP Volume): Bloom nhẹ + Vignette = "điện ảnh" chỉ bằng 2 cú tick.</li>
+        </ul>
+
+        <h3 class="sec">Player — đi và camera bám</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> PlayerController.cs (khung)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">public class</span> <span class="t">PlayerController</span> : <span class="t">MonoBehaviour</span>
+{
+    <span class="k">public float</span> tocDo = <span class="n">4f</span>;
+
+    <span class="k">void</span> <span class="f">Update</span>()
+    {
+        <span class="k">float</span> x = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Horizontal"</span>);
+        <span class="k">float</span> z = <span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Vertical"</span>);
+        <span class="k">var</span> huong = <span class="k">new</span> <span class="t">Vector3</span>(x, <span class="n">0</span>, z).normalized;
+        transform.position += huong * tocDo * <span class="t">Time</span>.deltaTime;
+        <span class="k">if</span> (huong != <span class="t">Vector3</span>.zero)
+            transform.rotation = <span class="t">Quaternion</span>.<span class="f">LookRotation</span>(huong);   <span class="c">// quay mặt theo hướng đi</span>
+    }
+}</pre>
+        </div>
+        <ul>
+          <li>Player: model (assets course hoặc Capsule + mắt vẽ tạm) + <strong>Capsule Collider</strong> + <strong>Rigidbody</strong> (chọn Freeze Rotation XZ để không lăn nhào!) + Animator Idle/Walk.</li>
+          <li>Camera bám: làm con của player với offset (0, 3, -4) xoay nhìn xuống nhẹ — hoặc script bám mượt trong <code class="ic">LateUpdate()</code>.</li>
+          <li>Điều khiển "theo hướng camera" (chơi ngon hơn): thay Vector3 thủ công bằng <code class="ic">Camera.main.transform.forward/right</code>.</li>
+        </ul>
+      </section>
+
+      <!-- ===== CH19 ===== -->
+      <section class="chapter" id="ch19">
+        <h2 class="ch-title"><span class="num">CH 19</span> "Nhà Ma" #2 — Kẻ địch, kết thúc &amp; audio</h2>
+        <p class="ch-sub">Stealth = phát hiện vs lẩn trốn: gargoyle canh gác, hồn ma tuần tra, vùng thoát.</p>
+
+        <h3 class="sec">Quỷ đá gargoyle — canh gác kiểu "quét ánh nhìn"</h3>
+        <ul>
+          <li>Phát hiện player = <strong>góc nhìn + khoảng cách</strong>: trong update của enemy, tính vector tới player, so <code class="ic">Vector3.Angle(transform.forward, denPlayer)</code> &lt; góc nhìn (vd 45°) VÀ <code class="ic">Vector3.Distance</code> &lt; tầm (vd 8f) → phát hiện!</li>
+          <li>Đuổi theo bằng <strong>NavMeshAgent</strong>: Window → AI → Navigation → đánh dấu sàn là Walkable → <strong>Bake</strong>; enemy thêm component NavMeshAgent; khi phát hiện: <code class="ic">agent.SetDestination(player.position);</code> — quỷ tự tìm đường né vật cản.</li>
+          <li>Chạm player (OnTriggerEnter trong Capsule Collider to bản của enemy) → thua, hiện "Bị bắt!" + <code class="ic">SceneManager.LoadScene(SceneManager.GetActiveScene().name)</code> chơi lại.</li>
+        </ul>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Gargoyle.cs (lõi)</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">void</span> <span class="f">Update</span>()
+{
+    <span class="k">var</span> denRuby = player.position - transform.position;
+    <span class="k">bool</span> trongTam = denRuby.magnitude &lt; tamNhin;
+    <span class="k">bool</span> trongGoc = <span class="t">Vector3</span>.<span class="f">Angle</span>(transform.forward, denRuby) &lt; <span class="n">45f</span>;
+    <span class="k">if</span> (trongTam &amp;&amp; trongGoc)          <span class="c">// PHÁT HIỆN — đuổi!</span>
+        agent.<span class="f">SetDestination</span>(player.position);
+    <span class="k">else</span>
+        agent.<span class="f">ResetPath</span>();                <span class="c">// mất dấu — về nghỉ</span>
+}</pre>
+        </div>
+
+        <h3 class="sec">Hồn ma bay + kết thúc + audio</h3>
+        <ul>
+          <li><strong>Hồn ma</strong>: không cần NavMesh — bay theo vòng waypoint (mảng Transform, <code class="ic">MoveTowards</code> từng điểm, loop vô hạn), xuyên tường vì là ma 🎃.</li>
+          <li><strong>Vùng thoát</strong>: BoxCollider Is Trigger ở cửa ra → <code class="ic">OnTriggerEnter</code> của player chạm → hiện "THOÁT THÀNH CÔNG!" + nút chơi lại.</li>
+          <li><strong>Audio</strong>: nhạc căng 2D nền; footsteps 3D spatial blend 1 phát từ enemy (nghe hướng — thông minh!); tiếng "vèo" khi bị phát hiện.</li>
+        </ul>
+        <div class="box tip"><span class="box-title">Cân bằng stealth trong 5 phút</span>Tầm nhìn 8→5 cho dễ thở; thêm vòng tròn phát hiện ("cai ngục thấy bạn" icon trên đầu) cho công bằng; enemy mất dấu sau 3s mất dấu rồi mới thôi đuổi — game "sống" hẳn lên.</div>
+      </section>
+
+      <!-- ===== CH20 ===== -->
+      <section class="chapter" id="ch20">
+        <h2 class="ch-title"><span class="num">CH 20</span> Build &amp; xuất bản — chia sẻ với bạn bè</h2>
+        <p class="ch-sub">Từ project trên máy → file chơi được everywhere.</p>
+
+        <h3 class="sec">Build Settings</h3>
+        <ol>
+          <li><strong>File → Build Settings</strong> → kéo các scene vào <strong>Scenes In Build</strong> (scene 1 = scene mở game; thêm scene Menu nếu có).</li>
+          <li>Chọn Platform: <strong>WebGL</strong> (chạy trình duyệt — chia sẻ dễ nhất) · Windows/Mac · Android (cài module trong Hub).</li>
+          <li><strong>Build</strong> → chọn thư mục rỗng → chờ → WebGL: mở <code class="ic">index.html</code> (chrome cần chạy web server local — Unity in sẵn lệnh); Windows: file <code class="ic">.exe</code> gửi trực tiếp.</li>
+        </ol>
+
+        <h3 class="sec">Unity Play — "itch.io mini" của riêng bạn</h3>
+        <p><a class="inline" href="https://play.unity.com" target="_blank">play.unity.com</a> → đăng nhập Unity ID → upload bản WebGL → được <strong>link chơi ngay trên trình duyệt</strong> kèm trang game. Gửi nhóm bạn test trong 1 phút — hai capstone của khóa đều hợp với Unity Play.</p>
+
+        <div class="box info"><span class="box-title">Trước khi build — checklist 2 phút</span>Kiểm tra: màn hình game (Game view đổi Free Aspect → 16:9); icon + tên game (Project Settings → Player); khóa hay mở chuột cho WebGL; nút Thoát/Menu hoạt động. Người chơi không kiên nhẫn nổi với "màn hình đen chờ 30 giây" — tối ưu Loading sau cũng chưa muộn.</div>
+      </section>
+
+      <!-- ===================== LEVEL 4 ===================== -->
+      <div class="level-divider" id="lv4"><div class="line"></div><span class="tag tag-l4">L4 · Đi tiếp</span><div class="line"></div></div>
+
+      <!-- ===== CH21 ===== -->
+      <section class="chapter" id="ch21">
+        <h2 class="ch-title"><span class="num">CH 21</span> Bản đồ phía trước</h2>
+        <p class="ch-sub">Bạn đã có nền 2D + 3D — giờ chọn chiều sâu.</p>
+
+        <h3 class="sec">Lộ trình chính thức Unity Learn</h3>
+        <table>
+          <thead><tr><th>Bước</th><th>Nội dung</th></tr></thead>
+          <tbody>
+            <tr><td>1 — bạn đang ở đây</td><td><code class="ic">khoa-hoc-unity-can-ban</code> — nền editor + C# + 2 game đầu</td></tr>
+            <tr><td>2 — sâu về code</td><td><a class="inline" href="https://learn.unity.com/pathway/junior-programmer" target="_blank">Junior Programmer</a> (12 tuần): OOP, data persistence, tối ưu, portfolio — "zero to job-ready"</td></tr>
+            <tr><td>3 — chuyên môn</td><td>Creative Core (shader, lighting) · các specialization 2D/3D trên Unity Learn</td></tr>
+            <tr><td>4 — trong repo</td><td><a class="inline" href="unity-manual-vi/Manual/index.html" target="_blank">Unity 6.5 Manual 3.534 trang offline</a> — tra mọi thứ không cần mạng + <a class="inline" href="unity_glossary.html">Unity Glossary</a></td></tr>
+            <tr><td>5 — tư duy thiết kế</td><td><a class="inline" href="khoa-hoc-game-design.html">Game Design Toàn Diện</a> + so sánh engine với <a class="inline" href="khoa-hoc-godot-can-ban.html">khóa Godot</a> trong cùng repo</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">Kỹ năng đáng học tiếp theo</h3>
+        <ul>
+          <li><strong>Cinemachine</strong> — camera điện ảnh (bám, rung, cắt cảnh) miễn phí chính thức.</li>
+          <li><strong>Input System mới</strong> — event-driven, hỗ trợ gamepad/touch đầy đủ (học sau khi vững hệ cũ).</li>
+          <li><strong>DOTween</strong> — tween miễn phí nổi tiếng (mờ dần, nảy, iu-ting).</li>
+          <li><strong>Addressables</strong> — tải nội dung theo cần (game lớn); <strong>Photon/Mirror/Netcode</strong> — multiplayer.</li>
+          <li>Asset Store: mỗi tháng có asset miễn phí tặng — nhận đều tay.</li>
+        </ul>
+
+        <div class="box game"><span class="box-title">🏁 Quy tắc vàng (như khóa Godot)</span>Làm game <strong>nhỏ mà HOÀN CHỈNH</strong> (menu + thắng thua + âm thanh + build chia sẻ được) tốt hơn game lớn bỏ dở. Mỗi tuần 1 game nhỏ: Pong → Breakout → runner → tower defense → top-down shooter. Sau 5 game, bạn sẽ không nhận ra mình nữa.</div>
+      </section>
+      <!-- ===================== MINI-GAME ===================== -->
+      <div class="level-divider" id="lvgame"><div class="line"></div><span class="tag tag-l3">🎮 Chơi thử — "Cứu Robot" bản web</span><div class="line"></div></div>
+
+      <section class="chapter" id="minigame">
+        <h2 class="ch-title"><span class="num">🎮</span> Mini-game "Cứu Robot"</h2>
+        <p class="ch-sub">Cùng luật với capstone CH16: di chuyển Ruby, chạm robot hỏng để sửa, né bọ quỷ, đủ 5 robot là thắng.</p>
+
+        <div class="mg-wrap">
+          <h3>🕹 Cứu Robot — bản web thu nhỏ</h3>
+          <p class="mg-sub"><strong>Phím mũi tên / WASD</strong> di chuyển · điện thoại: <strong>quét ngón tay</strong>. Chạm robot xám để sửa (xanh lên) · né bọ đỏ (3 tim) · sửa đủ 5 nhanh nhất có thể. Bấm vào màn hình để bắt đầu.</p>
+          <canvas id="mgCanvas" width="640" height="400"></canvas>
+          <div class="mg-btns">
+            <button onclick="mgRestart()">▶ Chơi / Chơi lại</button>
+            <button class="ghost" onclick="mgPause()">⏸ Tạm dừng</button>
+            <span class="mg-best" id="mgBest">Kỷ lục: <b>—</b></span>
+          </div>
+          <p class="mg-sub" style="margin-top:10px">💡 Trong Unity, đúng logic này = RubyController (di chuyển) + trigger robot (OnTriggerEnter2D + Destroy/đổi sprite) + bọ trừ máu — bạn code ở CH15–16.</p>
+        </div>
+      </section>
+
+      <!-- ===================== QUIZ ===================== -->
+      <div class="level-divider" id="lvquiz"><div class="line"></div><span class="tag tag-l4">📚 Ôn tập</span><div class="line"></div></div>
+
+      <section class="chapter" id="quiz">
+        <h2 class="ch-title"><span class="num">❓</span> Quiz — 12 câu</h2>
+        <p class="ch-sub">Chọn đáp án rồi bấm Kiểm tra. Sai cũng được — đọc giải thích là học thêm.</p>
+
+        <div class="quiz">
+          <div class="q-head">🧠 Kiểm tra kiến thức sau 21 chương</div>
+
+          <div class="q" data-answer="b">
+            <p>1. Trong Unity, "hành vi" của một GameObject (hiện ảnh, vật lý, va chạm...) đến từ đâu?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q1" value="a"> Từ các node con trong cây Hierarchy</label>
+            <label class="opt" data-key="b"><input type="radio" name="q1" value="b"> Từ các component được gắn vào nó (Transform, SpriteRenderer, script...)</label>
+            <label class="opt" data-key="c"><input type="radio" name="q1" value="c"> Từ tên của GameObject</label>
+            <div class="explain">Unity: GameObject = vật chứa, hành vi nằm trong component gắn vào. Khác Godot (node lồng cây). CH4.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>2. Sửa scene trong lúc đang bấm Play thì chuyện gì xảyra khi dừng Play?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q2" value="a"> Thay đổi được giữ lại</label>
+            <label class="opt" data-key="b"><input type="radio" name="q2" value="b"> Unity hỏi có lưu không</label>
+            <label class="opt" data-key="c"><input type="radio" name="q2" value="c"> Thay đổi bị vứt bỏ — quay lại trạng thái trước Play</label>
+            <div class="explain">Play Mode là "bản thử": chỉnh sửa bị reset khi dừng (trừ khi dùng công cụ debugger đặc biệt). CH2.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>3. Prefab là gì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q3" value="a"> Khuôn GameObject lưu trong Project — kéo ra bao nhiêu bản cũng được, sửa khuôn thì mọi bản cập nhật</label>
+            <label class="opt" data-key="b"><input type="radio" name="q3" value="b"> Một loại material đặc biệt</label>
+            <label class="opt" data-key="c"><input type="radio" name="q3" value="c"> Bản lưu ảnh nén</label>
+            <div class="explain">Prefab = "instance scene" của Godot: kéo GameObject vào Project để tạo khuôn. CH4.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>4. Khai báo float nào đúng cú pháp C#?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q4" value="a"> <code>float x = 1.5;</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q4" value="b"> <code>float x = 1.5f;</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q4" value="c"> <code>x := 1.5</code></label>
+            <div class="explain">Số thập phân mặc định là double — cần suffix <code>f</code> cho float. Quên <code>f</code> là lỗi CS0664 kinh điển. CH6.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>5. Vì sao chuyển động trong <code>Update()</code> phải nhân <code>Time.deltaTime</code>?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q5" value="a"> Để code ngắn hơn</label>
+            <label class="opt" data-key="b"><input type="radio" name="q5" value="b"> Để Unity tự lưu game</label>
+            <label class="opt" data-key="c"><input type="radio" name="q5" value="c"> Để tốc độ theo giây đồng nhất trên máy 30fps lẫn 144fps</label>
+            <div class="explain">deltaTime = thời gian frame trước; nhân vào biến "đơn vị/frame" thành "đơn vị/giây". CH9.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>6. Vật lý (Rigidbody, AddForce) nên xử lý ở hàm nào?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q6" value="a"> <code>FixedUpdate()</code> — timestep cố định</label>
+            <label class="opt" data-key="b"><input type="radio" name="q6" value="b"> <code>Update()</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q6" value="c"> <code>Start()</code></label>
+            <div class="explain">FixedUpdate chạy 50Hz đều đặn — vật lý ổn định; Update lệch theo fps. CH9.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>7. Chuẩn mực khi dùng GetComponent?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q7" value="a"> Gọi trong Update mỗi frame</label>
+            <label class="opt" data-key="b"><input type="radio" name="q7" value="b"> Gọi 1 lần trong Start() và cache vào field</label>
+            <label class="opt" data-key="c"><input type="radio" name="q7" value="c"> Không bao giờ được dùng</label>
+            <div class="explain">Tìm component tốn kém — cache 1 lần. Nguyên tắc hiệu năng số 1. CH8.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>8. Muốn "robot biến mất khi Ruby chạm vào", cấu hình + hàm nào đúng?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q8" value="a"> Collider thường + OnCollisionEnter3D</label>
+            <label class="opt" data-key="b"><input type="radio" name="q8" value="b"> Rigidbody Kinematic + OnCollisionEnter2D rồi teleport robot</label>
+            <label class="opt" data-key="c"><input type="radio" name="q8" value="c"> Collider tick Is Trigger + OnTriggerEnter2D(other) → Destroy(gameObject)</label>
+            <div class="explain">Trigger = xuyên qua nhưng phát hiện — chuẩn cho nhặt đồ/sửa robot. CH15–16.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>9. Unity 6 gọi thuộc tính vận tốc của Rigidbody2D là gì (bản cũ là <code>velocity</code>)?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q9" value="a"> <code>linearVelocity</code></label>
+            <label class="opt" data-key="b"><input type="radio" name="q9" value="b"> <code>speed2D</code></label>
+            <label class="opt" data-key="c"><input type="radio" name="q9" value="c"> <code>moveVector</code></label>
+            <div class="explain">Unity 6 đổi tên velocity → linearVelocity — tutorial cũ viết velocity sẽ đỏ lỗi, đổi tên là chạy. CH15.</div>
+          </div>
+
+          <div class="q" data-answer="b">
+            <p>10. Animation: muốn đổi state NGAY theo input (không chờ hết clip), phải làm gì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q10" value="a"> Tăng Samples của clip</label>
+            <label class="opt" data-key="b"><input type="radio" name="q10" value="b"> Chọn transition → bỏ tick Has Exit Time → điều khiển bằng Conditions/parameter</label>
+            <label class="opt" data-key="c"><input type="radio" name="q10" value="c"> Xóa Animator Controller</label>
+            <div class="explain">Exit Time mặc định chờ hết clip — bỏ tick để parameter (SetBool/SetTrigger) quyết định tức thì. CH12.</div>
+          </div>
+
+          <div class="q" data-answer="c">
+            <p>11. Quỷ đá phát hiện player bằng cách so gì?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q11" value="a"> Chỉ khoảng cách</label>
+            <label class="opt" data-key="b"><input type="radio" name="q11" value="b"> Tag "Player"</label>
+            <label class="opt" data-key="c"><input type="radio" name="q11" value="c"> Khoảng cách VÀ góc nhìn (Vector3.Angle &lt; ngưỡng)</label>
+            <div class="explain">Stealth = tầm nhìn + góc quét; phát hiện rồi mới SetDestination bằng NavMeshAgent. CH19.</div>
+          </div>
+
+          <div class="q" data-answer="a">
+            <p>12. Muốn có link gửi bạn bè chơi bản WebGL ngay trên trình duyệt?</p>
+            <label class="opt" data-key="a"><input type="radio" name="q12" value="a"> Upload lên Unity Play (play.unity.com)</label>
+            <label class="opt" data-key="b"><input type="radio" name="q12" value="b"> Gửi file .exe</label>
+            <label class="opt" data-key="c"><input type="radio" name="q12" value="c"> Không thể — chỉ chạy trong Unity Editor</label>
+            <div class="explain">Build WebGL → upload Unity Play → link chơi ngay. CH20.</div>
+          </div>
+
+          <button class="check" onclick="checkQuiz(this)">Kiểm tra</button>
+        </div>
+      </section>
+
+      <!-- ===================== FLASHCARDS ===================== -->
+      <section class="chapter" id="flashcards">
+        <h2 class="ch-title"><span class="num">🃏</span> Flashcards — 24 thẻ</h2>
+        <p class="ch-sub">Bấm vào thẻ để lật. Lọc theo cấp độ.</p>
+
+        <div class="fc-filters">
+          <button class="fc-filter active" onclick="filterFC(this,'all')">Tất cả</button>
+          <button class="fc-filter" onclick="filterFC(this,'l0')">L0 Nhập môn</button>
+          <button class="fc-filter" onclick="filterFC(this,'l1')">L1 C#</button>
+          <button class="fc-filter" onclick="filterFC(this,'l2')">L2 Công cụ 2D</button>
+          <button class="fc-filter" onclick="filterFC(this,'l3')">L3 3D</button>
+          <button class="fc-filter" onclick="filterFC(this,'l4')">L4 Đi tiếp</button>
+          <span class="fc-count" id="fcCount">24 thẻ</span>
+        </div>
+
+        <div class="fc-grid">
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">6 cửa sổ chính của editor?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Hierarchy · Scene · Game · Inspector · Project · Console.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Component nào có sẵn trên MỌI GameObject, xóa không được?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>Transform</code> — vị trí/rotation/scale.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">QWER trong Unity làm gì? (giống engine nào đã học?)</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Q xem-di chuyển view, W move, E rotate, R scale — y hệt Godot. F = tập trung object.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l0" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t0">L0</span><div class="fc-q">Tag vs Layer?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Tag = nhãn định danh (CompareTag("Player")). Layer = nhóm cho render + bảng va chạm (đạn không bắn đồng đội).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Start() vs Update() vs FixedUpdate()?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Start: 1 lần đầu. Update: mỗi frame (input, hiển thị). FixedUpdate: 50Hz cố định (vật lý).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Vì sao <code>float x = 0.5;</code> lỗi?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">0.5 mặc định là double; float cần suffix f: <code>0.5f</code>.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">public vs [SerializeField] private?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Cả hai hiện trong Inspector; private giữ đóng gói OOP — chuẩn mực là [SerializeField] private.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Nội suy chuỗi trong C#?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>Debug.Log($"Máu: {mau}");</code> — dấu $ phía trước chuỗi.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">GetComponent đúng chuẩn?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Gọi 1 lần trong Start() → cache vào field: <code>rb = GetComponent&lt;Rigidbody2D&gt;();</code></div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Chờ 1 giây rồi làm gì đó (khác Godot await)?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>Invoke("TenHam", 1f);</code> hoặc Coroutine: <code>yield return new WaitForSeconds(1f)</code>.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">GetAxisRaw vs GetKey?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">GetAxisRaw("Horizontal") trả -1/0/1 từ trục (đi chuyển mượt); GetKey/GetKeyDown(KeyCode.X) hỏi phím cụ thể (nhảy, bắn).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l1" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t1">L1</span><div class="fc-q">Vector3.Distance / .normalized / Lerp?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Khoảng cách 2 điểm / độ dài về 1 giữ hướng / trôi mượt từ a tới b theo t.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Pixels Per Unit quyết định gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Bao nhiêu pixel ảnh = 1 unit thế giới. Cả project dùng 1 PPU để mọi sprite khớp.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Sắp xếp vẽ 2D trong Unity?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Sorting Layer trước, rồi Order in Layer (số cao vẽ trên) — 2D không dùng Z.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Tilemap có va chạm bằng cách nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Tilemap Collider 2D (+ Composite Collider 2D để gộp biên mượt).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Trigger hoạt động cần điều kiện gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">ít nhất 1 trong 2 object phải có Rigidbody2D; hàm: OnTriggerEnter2D(Collider2D other).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">UI: Button gọi hàm mà không cần code nối?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Inspector → On Click () → kéo GameObject → chọn hàm public (UnityEvent).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l2" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t2">L2</span><div class="fc-q">Nhạc nền cấu hình thế nào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">AudioSource: Play On Awake ✓ + Loop ✓ + Spatial Blend 0 (2D).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Rigidbody 3D: cách để nhân vật không lăn nhào?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Constraints → Freeze Rotation X/Z (giữ Y nếu cần quay người).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">NavMeshAgent dùng để làm gì? Cần setup gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Cho enemy tự tìm đường: Window → AI → Navigation → Bake lưới; code agent.SetDestination(player.position).</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">Quay GameObject nhìn theo hướng đi?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>transform.rotation = Quaternion.LookRotation(huong);</code></div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l3" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t3">L3</span><div class="fc-q">WebGL build xong, gửi bạn bè bằng gì?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Upload Unity Play (play.unity.com) — có link chơi ngay trên trình duyệt.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Pathway chính thức sau khóa này?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a">Junior Programmer (12 tuần, zero→job-ready) rồi Creative Core / chuyên môn 2D-3D.</div></div>
+          </div></div>
+
+          <div class="flashcard" data-cat="l4" onclick="flipCard(this)"><div class="fc-inner">
+            <div class="fc-face fc-front"><span class="fc-tag t4">L4</span><div class="fc-q">Tra cứu API Unity offline trong repo?</div></div>
+            <div class="fc-face fc-back"><div class="fc-a"><code>unity-manual-vi/</code> — 3.534 trang Unity 6.5 Manual mirror.</div></div>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ===================== CHEATSHEET ===================== -->
+      <section class="chapter" id="cheatsheet">
+        <h2 class="ch-title"><span class="num">📋</span> Cheatsheet</h2>
+        <p class="ch-sub">Tra nhanh khi đang code — nên in/giữ mở song song editor.</p>
+
+        <h3 class="sec">Component thường gặp</h3>
+        <table>
+          <thead><tr><th>Nhóm</th><th>Component</th></tr></thead>
+          <tbody>
+            <tr><td>Hiển thị 2D/3D</td><td>SpriteRenderer · Animator · Mesh Renderer · Camera · Light · ParticleSystem</td></tr>
+            <tr><td>Vật lý 2D</td><td>Rigidbody2D (Dynamic/Kinematic) · Box/CircleCollider2D · Tilemap Collider 2D (+Composite)</td></tr>
+            <tr><td>Vật lý 3D</td><td>Rigidbody (Freeze Rotation!) · Box/Capsule Collider · NavMeshAgent</td></tr>
+            <tr><td>UI &amp; audio</td><td>Canvas · TextMeshProUGUI · Slider · Button (OnClick) · AudioSource · AudioListener</td></tr>
+          </tbody>
+        </table>
+
+        <h3 class="sec">C# — 12 dòng vàng</h3>
+        <div class="code-block"><div class="code-head"><span class="fname"><span class="dots"><i></i><i></i><i></i></span> Cheatsheet.cs</span><div class="code-actions"><button onclick="copyCode(this)">Copy</button></div></div>
+<pre class="code"><span class="k">public class</span> <span class="t">X</span> : <span class="t">MonoBehaviour</span>            <span class="c"># mọi script kế thừa MonoBehaviour</span>
+<span class="k">void</span> <span class="f">Start</span>() / <span class="f">Update</span>() / <span class="f">FixedUpdate</span>()     <span class="c"># 1 lần / mỗi frame / vật lý 50Hz</span>
+<span class="d">[SerializeField]</span> <span class="k">private float</span> speed = <span class="n">3f</span>;    <span class="c"># hiện Inspector, giữ đóng gói</span>
+transform.position += v * speed * <span class="t">Time</span>.deltaTime;   <span class="c"># luôn nhân deltaTime (trong Update)</span>
+rb = <span class="f">GetComponent</span>&lt;<span class="t">Rigidbody2D</span>&gt;();               <span class="c"># cache trong Start()</span>
+rb.linearVelocity = <span class="k">new</span> <span class="t">Vector2</span>(x, y) * tocDo;   <span class="c"># Unity 6 (cũ: velocity)</span>
+<span class="t">Input</span>.<span class="f">GetAxisRaw</span>(<span class="s">"Horizontal"</span>)                  <span class="c"># -1/0/1</span>
+<span class="t">Input</span>.<span class="f">GetKeyDown</span>(<span class="t">KeyCode</span>.Space)                   <span class="c"># bấm 1 lần</span>
+<span class="k">void</span> <span class="f">OnTriggerEnter2D</span>(<span class="t">Collider2D</span> other)        <span class="c"># trigger chạm (Is Trigger ✓)</span>
+<span class="t">Debug</span>.<span class="f">Log</span>($<span class="s">"x={x}"</span>);  <span class="f">Destroy</span>(gameObject);       <span class="c"># in + xóa object</span>
+anim.<span class="f">SetBool</span>(<span class="s">"isWalking"</span>, x != <span class="n">0</span>);  anim.<span class="f">SetTrigger</span>(<span class="s">"hit"</span>);
+<span class="f">Invoke</span>(<span class="s">"TenHam"</span>, <span class="n">1f</span>);  agent.<span class="f">SetDestination</span>(player.position);</pre>
+        </div>
+
+        <h3 class="sec">Quy trình nhanh</h3>
+        <table>
+          <thead><tr><th>Việc</th><th>Đường</th></tr></thead>
+          <tbody>
+            <tr><td>Cắt spritesheet</td><td>Chọn ảnh → Sprite Editor → Slice (Grid) → Apply</td></tr>
+            <tr><td>Vẽ map</td><td>2D Object → Tilemap + Window → 2D → Tile Palette</td></tr>
+            <tr><td>Tạo animation</td><td>Chọn object → Window → Animation → kéo frame vào clip</td></tr>
+            <tr><td>Tạo prefab</td><td>Kéo GameObject từ Hierarchy vào Project</td></tr>
+            <tr><td>Build chia sẻ</td><td>File → Build Settings → WebGL → Build → upload Unity Play</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box game"><span class="box-title">Hết khóa! 🎓🎉</span>Bạn đã đi từ "chưa từng code" → <strong>game 2D + game 3D hoàn chỉnh tự tay làm</strong> bằng Unity. Bước tiếp trong repo: <a class="inline" href="unity-manual-vi/Manual/index.html">Unity 6.5 Manual 3.534 trang</a> để tra sâu · pathway <a class="inline" href="https://learn.unity.com/pathway/junior-programmer" target="_blank">Junior Programmer</a> để lên trình · <a class="inline" href="khoa-hoc-godot-can-ban.html">khóa Godot căn bản</a> để biết engine thứ hai. Và quy tắc vàng: <strong>mỗi tuần một game nhỏ hoàn chỉnh</strong>. Chúc ra game! 🎮</div>
+      </section>
+
+      <footer class="foot">
+        🎮 Unity 6 Căn Bản — biên soạn từ Unity Learn chính thức (<a class="inline" href="https://learn.unity.com/pathway/unity-essentials" target="_blank">Unity Essentials</a>, <a class="inline" href="https://learn.unity.com/course/create-with-code" target="_blank">Create with Code</a>, <a class="inline" href="https://www.youtube.com/watch?v=mkBPGC0BVXg" target="_blank">Ruby's Adventure</a>, <a class="inline" href="https://learn.unity.com/course/3d-stealth-game-haunted-house" target="_blank">Haunted House</a>) + <a class="inline" href="unity-manual-vi/Manual/index.html" target="_blank">Unity 6.5 Manual mirror</a> trong repo. Unity® là nhãn hiệu của Unity Technologies — khóa học này không liên kết chính thức. Bản Markdown: <a class="inline" href="khoa-hoc-unity-can-ban.md">khoa-hoc-unity-can-ban.md</a>.
+      </footer>
+    </div>
+  </main>
+</div>
+
+<!-- ===== COMPONENT LAB ===== -->
+<button class="lab-fab" id="labFab" onclick="toggleLab(true)">🗂 Component Lab</button>
+<div class="lab-panel" id="labPanel">
+  <div class="lab-head" id="labHead">
+    <span class="lab-title">🗂 Component Lab — Add Component đúng bài</span>
+    <button onclick="toggleLab(false)">✕</button>
+  </div>
+  <div class="lab-body">
+    <div class="lab-goal-row" id="labGoals">
+      <button data-goal="ruby" class="active">Player Ruby</button>
+      <button data-goal="robot">Robot hỏng</button>
+      <button data-goal="enemy">Bọ quỷ</button>
+      <button data-goal="camera">Main Camera</button>
+    </div>
+    <div class="lab-list" id="labList"></div>
+    <div class="lab-palette" id="labPalette">
+      <button data-type="Rigidbody2D">Rigidbody2D</button>
+      <button data-type="BoxCollider2D">BoxCollider2D</button>
+      <button data-type="CircleCollider2D">CircleCollider2D</button>
+      <button data-type="CapsuleCollider">CapsuleCollider</button>
+      <button data-type="SpriteRenderer">SpriteRenderer</button>
+      <button data-type="Animator">Animator</button>
+      <button data-type="AudioSource">AudioSource</button>
+      <button data-type="Camera">Camera</button>
+      <button data-type="AudioListener">AudioListener</button>
+      <button data-type="NavMeshAgent">NavMeshAgent</button>
+      <button data-type="ParticleSystem">ParticleSystem</button>
+      <button data-type="Script">Script (controller)</button>
+    </div>
+    <div class="lab-btns">
+      <button class="check" onclick="labCheck()">✓ Kiểm tra</button>
+      <button onclick="labUndo()">↩ Bỏ component cuối</button>
+      <button onclick="labReset()">↺ Xóa hết</button>
+    </div>
+    <div class="lab-result" id="labResult"></div>
+  </div>
+  <div class="lab-hint">Trong Unity thật: chọn GameObject → nút Add Component. Bấm component trong danh sách để thêm; Transform đã có sẵn.</div>
+</div>
+
+<script>
+const navLinks = [...document.querySelectorAll('.nav-menu a')];
+function onScroll(){ let cur=''; document.querySelectorAll('section[id], div[id].level-divider, div[id].hero').forEach(s=>{ if(s.getBoundingClientRect().top<150) cur=s.id; }); navLinks.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+cur)); }
+window.addEventListener('scroll', onScroll, {passive:true});
+document.getElementById('navSearch').addEventListener('input', e=>{ const q=e.target.value.toLowerCase().trim(); document.querySelectorAll('#navMenu li').forEach(li=>{ if(li.classList.contains('nav-section-title')){li.style.display='';return;} li.style.display=li.textContent.toLowerCase().includes(q)?'':'none'; }); });
+navLinks.forEach(a=>a.addEventListener('click',()=>{ if(window.innerWidth<=980) document.querySelector('.sidebar').classList.remove('open'); }));
+function copyCode(btn){ const txt=btn.closest('.code-block').querySelector('pre.code').innerText; navigator.clipboard.writeText(txt).then(()=>{const o=btn.textContent;btn.textContent='✓ Đã copy';setTimeout(()=>btn.textContent=o,1400);}); }
+function checkQuiz(btn){ btn.closest('.quiz').querySelectorAll('.q').forEach(q=>{ const c=q.dataset.answer; const ch=q.querySelector('input:checked'); q.querySelectorAll('.opt').forEach(o=>{o.classList.remove('correct','wrong'); if(o.dataset.key===c)o.classList.add('correct');}); if(ch&&ch.value!==c)ch.closest('.opt').classList.add('wrong'); const ex=q.querySelector('.explain'); if(ex)ex.classList.add('show'); }); }
+function flipCard(el){ el.classList.toggle('flipped'); }
+function filterFC(btn,cat){ document.querySelectorAll('.fc-filter').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); let n=0; document.querySelectorAll('.flashcard').forEach(c=>{const ok=(cat==='all'||c.dataset.cat===cat); c.style.display=ok?'':'none'; c.classList.remove('flipped'); if(ok)n++;}); const el=document.getElementById('fcCount'); if(el)el.textContent=n+' thẻ'; }
+
+/* ============ COMPONENT LAB ============ */
+const LAB_GOALS = {
+  ruby:   { name:'Player Ruby', comps:['Rigidbody2D','CircleCollider2D','SpriteRenderer','Script'],
+            why:'Kinematic Rigidbody2D + CircleCollider2D để trượt mượt trên tilemap; Script = RubyController. CH15–16.' },
+  robot:  { name:'Robot hỏng (collectible)', comps:['Rigidbody2D','BoxCollider2D','SpriteRenderer','Animator'],
+            why:'Collider tick Is Trigger → OnTriggerEnter2D khi Ruby chạm; Animator đổi sprite hỏng → xanh. CH16.' },
+  enemy:  { name:'Bọ quỷ (enemy)', comps:['Rigidbody2D','BoxCollider2D','SpriteRenderer','Animator','Script'],
+            why:'Rigidbody2D đi tuần + đảo chiều khi chạm tường (OnCollisionEnter2D); Script = EnemyController. CH16.' },
+  camera: { name:'Main Camera', comps:['Camera','AudioListener'],
+            why:'Camera nhìn thế giới; AudioListener = "tai" người chơi — 1 scene đúng 1 cái. CH14.' }
+};
+let labSel = [];      // component đã thêm (bỏ Transform luôn có sẵn)
+let labGoal = 'ruby';
+
+function labRender(){
+  const el = document.getElementById('labList');
+  let html = '<span class="comp base">Transform (luôn có)</span>';
+  labSel.forEach(c => html += `<span class="comp">${c}</span>`);
+  if (labSel.length===0) html += '\n<span class="empty">Chưa thêm gì — bấm component bên dưới.</span>';
+  el.innerHTML = html;
+}
+document.querySelectorAll('#labGoals button').forEach(b=>b.addEventListener('click',()=>{
+  labGoal=b.dataset.goal; labSel=[];
+  document.querySelectorAll('#labGoals button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active'); labRender();
+  document.getElementById('labResult').classList.remove('show');
+}));
+document.querySelectorAll('#labPalette button').forEach(b=>b.addEventListener('click',()=>{
+  const t=b.dataset.type;
+  if(!labSel.includes(t)) labSel.push(t);
+  labRender();
+}));
+function labUndo(){ labSel.pop(); labRender(); }
+function labReset(){ labSel=[]; labRender(); document.getElementById('labResult').classList.remove('show'); }
+function labCheck(){
+  const g=LAB_GOALS[labGoal]; const res=document.getElementById('labResult');
+  const miss = g.comps.filter(c=>!labSel.includes(c));
+  let html=`<div><b>${g.name}</b> — `;
+  if(miss.length===0){ html+=`<span class="ok">✓ Chính xác!</span></div><div style="margin-top:4px">💡 ${g.why}</div>`; }
+  else { html+=`<span class="miss">Chưa đủ:</span></div><ul style="margin:6px 0 0 18px">`;
+    miss.forEach(c=>html+=`<li>Thiếu <b>${c}</b></li>`); html+='</ul>'; }
+  res.innerHTML=html; res.classList.add('show');
+}
+function toggleLab(open){ document.getElementById('labPanel').classList.toggle('open',open); document.getElementById('labFab').classList.toggle('hidden',open); if(open) labRender(); }
+(function(){ const panel=document.getElementById('labPanel'), head=document.getElementById('labHead'); let d=false,ox=0,oy=0;
+  head.addEventListener('mousedown',e=>{ if(e.target.closest('button'))return; d=true; const r=panel.getBoundingClientRect(); panel.style.right='auto';panel.style.bottom='auto';panel.style.left=r.left+'px';panel.style.top=r.top+'px'; ox=e.clientX-r.left;oy=e.clientY-r.top; e.preventDefault(); });
+  window.addEventListener('mousemove',e=>{ if(!d)return; panel.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-ox))+'px'; panel.style.top=Math.max(0,Math.min(innerHeight-40,e.clientY-oy))+'px'; });
+  window.addEventListener('mouseup',()=>d=false);
+})();
+</script>
+
+<!-- ===== PLAYABLE MINI-GAME: Cứu Robot ===== -->
+<script>
+(function(){
+  const cv = document.getElementById('mgCanvas'); if(!cv) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const P_R = 14;
+  let state = 'ready';
+  let player = { x: W/2, y: H/2 };
+  let keys = {};
+  let robots = [], bugs = [];
+  let hearts = 3, invT = 0, timeAlive = 0, fixedCount = 0, shake = 0;
+  let best = null;
+  try { best = JSON.parse(localStorage.getItem('cuurobotBest')||'null'); } catch(e){}
+  const bestEl = document.getElementById('mgBest');
+  function showBest(){ if(bestEl) bestEl.innerHTML = 'Kỷ lục: <b>' + (best ? best.toFixed(1)+'s' : '—') + '</b>'; }
+  showBest();
+
+  function reset(){
+    player = { x: W/2, y: H/2 };
+    robots = [];
+    for(let i=0;i<5;i++){
+      let x, y, ok=false;
+      while(!ok){ x = 60+Math.random()*(W-120); y = 60+Math.random()*(H-120);
+        ok = Math.hypot(x-player.x, y-player.y) > 90; }
+      robots.push({ x, y, r:16, fixed:false, t:Math.random()*7 });
+    }
+    bugs = [];
+    for(let i=0;i<3;i++){
+      const a = Math.random()*7;
+      bugs.push({ x: 40+Math.random()*(W-80), y: 40+Math.random()*(H-80), vx:Math.cos(a), vy:Math.sin(a), r:11, sp:60+Math.random()*50 });
+    }
+    hearts = 3; invT = 0; timeAlive = 0; fixedCount = 0; shake = 0;
+  }
+  window.mgRestart = function(){ reset(); state='playing'; };
+  window.mgPause = function(){ if(state==='playing') state='paused'; };
+  cv.addEventListener('pointerdown', e=>{ if(state!=='playing') window.mgRestart(); e.preventDefault(); });
+  window.addEventListener('keydown', e=>{ keys[e.key.toLowerCase()]=true;
+    if(['arrowup','arrowdown','arrowleft','arrowright',' '].includes(e.key.toLowerCase())) e.preventDefault();
+  });
+  window.addEventListener('keyup', e=>{ keys[e.key.toLowerCase()]=false; });
+  let touch=null;
+  cv.addEventListener('touchstart', e=>{ if(state!=='playing') window.mgRestart(); const r=cv.getBoundingClientRect(); touch={x:(e.touches[0].clientX-r.left)*(W/r.width), y:(e.touches[0].clientY-r.top)*(H/r.height)}; }, {passive:true});
+  cv.addEventListener('touchmove', e=>{ const r=cv.getBoundingClientRect(); touch={x:(e.touches[0].clientX-r.left)*(W/r.width), y:(e.touches[0].clientY-r.top)*(H/r.height)}; }, {passive:true});
+  cv.addEventListener('touchend', ()=>{ touch=null; });
+
+  function step(dt){
+    if(state!=='playing') return;
+    timeAlive += dt;
+    if(invT>0) invT -= dt;
+    const spd = 250;
+    let dx=0, dy=0;
+    if(keys['arrowleft']||keys['a']) dx-=1;
+    if(keys['arrowright']||keys['d']) dx+=1;
+    if(keys['arrowup']||keys['w']) dy-=1;
+    if(keys['arrowdown']||keys['s']) dy+=1;
+    if(dx&&dy){ dx*=0.7071; dy*=0.7071; }
+    if(touch){ player.x += (touch.x-player.x)*0.35; player.y += (touch.y-player.y)*0.35; }
+    else { player.x += dx*spd*dt; player.y += dy*spd*dt; }
+    player.x = Math.max(P_R, Math.min(W-P_R, player.x));
+    player.y = Math.max(P_R, Math.min(H-P_R, player.y));
+    // robot bập bềnh + sửa khi chạm
+    for(const rb of robots){
+      rb.t += dt*3;
+      if(!rb.fixed && Math.hypot(rb.x-player.x, rb.y-player.y) < rb.r+P_R-2){
+        rb.fixed = true; fixedCount++;
+      }
+    }
+    // bug đi tuần
+    for(const b of bugs){
+      b.x += b.vx*b.sp*dt; b.y += b.vy*b.sp*dt;
+      if(b.x<b.r||b.x>W-b.r) b.vx*=-1;
+      if(b.y<b.r||b.y>H-b.r) b.vy*=-1;
+      if(invT<=0 && Math.hypot(b.x-player.x, b.y-player.y) < b.r+P_R-3){
+        hearts--; invT=1.2; shake=12;
+        if(hearts<=0){ state='over';
+          if(best===null || timeAlive<best){ best=timeAlive; try{ localStorage.setItem('cuurobotBest', JSON.stringify(best)); }catch(e){} showBest(); }
+        }
+      }
+    }
+    if(fixedCount>=robots.length){
+      state='won';
+      if(best===null || timeAlive<best){ best=timeAlive; try{ localStorage.setItem('cuurobotBest', JSON.stringify(best)); }catch(e){} showBest(); }
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    let ox=0, oy=0;
+    if(shake>0){ ox=(Math.random()-0.5)*shake; oy=(Math.random()-0.5)*shake; shake*=0.85; if(shake<0.5)shake=0; }
+    ctx.save(); ctx.translate(ox,oy);
+    ctx.strokeStyle='rgba(148,163,184,.07)'; ctx.lineWidth=1;
+    for(let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+    for(let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+    // robots
+    for(const rb of robots){
+      const bob = Math.sin(rb.t)*2;
+      ctx.fillStyle = rb.fixed ? '#22c55e' : '#94a3b8';
+      ctx.fillRect(rb.x-12, rb.y-14+bob, 24, 26);
+      ctx.strokeStyle = rb.fixed ? '#166534' : '#475569'; ctx.lineWidth=2;
+      ctx.strokeRect(rb.x-12, rb.y-14+bob, 24, 26);
+      // mắt
+      ctx.fillStyle = '#0f172a';
+      if(rb.fixed){ // mắt hạnh phúc ^ ^
+        ctx.beginPath(); ctx.arc(rb.x-5, rb.y-4+bob, 2.5, Math.PI, 0); ctx.stroke();
+        ctx.beginPath(); ctx.arc(rb.x+5, rb.y-4+bob, 2.5, Math.PI, 0); ctx.stroke();
+      } else { // mắt X + tia lửa
+        ctx.fillRect(rb.x-7, rb.y-7+bob, 2, 2); ctx.fillRect(rb.x-3, rb.y-7+bob, 2, 2);
+        ctx.fillRect(rb.x+3, rb.y-7+bob, 2, 2); ctx.fillRect(rb.x+7, rb.y-7+bob, 2, 2);
+        ctx.fillStyle = '#fbbf24';
+        ctx.fillRect(rb.x-2, rb.y-20+bob, 4, 4);
+      }
+    }
+    // bugs
+    for(const b of bugs){
+      ctx.fillStyle='#ef4444';
+      ctx.beginPath(); ctx.arc(b.x,b.y,b.r,0,7); ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,.4)'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(b.x-3.5,b.y-2,2,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(b.x+3.5,b.y-2,2,0,7); ctx.fill();
+      ctx.fillStyle='#0f172a';
+      ctx.beginPath(); ctx.arc(b.x-3.5,b.y-2,0.9,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(b.x+3.5,b.y-2,0.9,0,7); ctx.fill();
+    }
+    // Ruby player
+    const flash = invT>0 && Math.floor(invT*10)%2===0;
+    if(!flash){
+      ctx.fillStyle='#f43f5e';
+      ctx.shadowColor='rgba(244,63,94,.55)'; ctx.shadowBlur=12;
+      ctx.beginPath(); ctx.arc(player.x,player.y,P_R,0,7); ctx.fill();
+      ctx.shadowBlur=0;
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(player.x-4,player.y-3,2.6,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(player.x+4,player.y-3,2.6,0,7); ctx.fill();
+      ctx.fillStyle='#0f172a';
+      ctx.beginPath(); ctx.arc(player.x-4,player.y-3,1.1,0,7); ctx.fill();
+      ctx.beginPath(); ctx.arc(player.x+4,player.y-3,1.1,0,7); ctx.fill();
+    }
+    ctx.restore();
+    // HUD
+    ctx.fillStyle='rgba(255,255,255,.9)'; ctx.font='bold 15px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('🔧 '+fixedCount+'/'+robots.length, 14, 26);
+    ctx.fillText('❤️'.repeat(Math.max(0,hearts)), 14, 48);
+    ctx.textAlign='right'; ctx.fillStyle='rgba(255,255,255,.5)';
+    ctx.fillText('⏱ '+timeAlive.toFixed(1)+'s', W-14, 26);
+    if(state==='ready'){ overlay('CỨU ROBOT','Bấm vào đây hoặc ▶ để chơi · Sửa đủ 5 robot, né bọ đỏ'); }
+    if(state==='paused'){ overlay('⏸ TẠM DỪNG','Bấm ▶ Chơi / Chơi lại để tiếp tục'); }
+    if(state==='won'){ overlay('🏆 SỬA XONG — '+timeAlive.toFixed(1)+'s', (best===timeAlive?'KỶ LỤC MỚI! ':'')+'Bấm để chơi lại'); }
+    if(state==='over'){ overlay('💥 HẾT TIM!', 'Sửa được '+fixedCount+'/'+robots.length+' · Bấm để thử lại'); }
+  }
+  function overlay(t1, t2){
+    ctx.fillStyle='rgba(2,6,23,.72)'; ctx.fillRect(0,0,W,H);
+    ctx.textAlign='center';
+    ctx.fillStyle='#fff'; ctx.font='bold 30px sans-serif'; ctx.fillText(t1, W/2, H/2-14);
+    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.font='14px sans-serif'; ctx.fillText(t2, W/2, H/2+22);
+  }
+  let running=false, lastTs=0;
+  function loop(ts){ if(!running) return; const dt=Math.min(0.05,(ts-lastTs)/1000||0.016); lastTs=ts; step(dt); draw(); requestAnimationFrame(loop); }
+  reset(); draw();
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{ es.forEach(e=>{ const was=running; running=e.isIntersecting; if(running&&!was){ lastTs=0; requestAnimationFrame(loop); } }); },{threshold:0.15});
+    io.observe(cv);
+  } else { running=true; requestAnimationFrame(loop); }
+})();
+</script>
+
+
+
+
+</body>
+</html>
