@@ -133,6 +133,7 @@
     <a href="#ch-editing-midi">8. Editing MIDI</a>
     <a href="#ch-launching">9. Launching Clips</a>
     <a href="#ch-mixing">10. Mixing</a>
+    <a href="#ch-managing-files">11. Managing Files and Sets</a>
   </nav>
 
   <main class="content">
@@ -753,6 +754,325 @@
   <div class="frame"><iframe src="https://www.youtube.com/embed/xPHX-zDsjuo" title="Ableton — Mix and automate your track (Beginner Series Ep. 7)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
   <div class="cap">Video của Ableton (Beginner Series Ep. 7) — mix &amp; automation cơ bản trong Live.</div>
 </div>
+
+<!-- ============ CH 11: MANAGING FILES AND SETS (EN ch.5) ============ -->
+<h2 class="sec" id="ch-managing-files">Chương 11 · Managing Files and Sets (Quản lý tệp &amp; Live Set)</h2>
+<p class="lead">Làm nhạc với Live cần nhiều loại tệp: từ tệp chứa <a href="#mf-midi-files">MIDI</a> và <a href="#mf-sample-files">audio</a>, tới các tệp đặc thù của chương trình như <a href="#mf-live-clips">Live Clip</a> và <a href="#mf-live-sets">Live Set</a>. Chương này (chương 5 trong bản gốc tiếng Anh) giải thích tất cả những gì bạn cần biết khi làm việc với từng loại tệp trong Live.</p>
+
+<h3 id="mf-sample-files">11.1 Sample Files (Tệp sample)</h3>
+<p>Một <span class="term">sample</span> <span class="gloss">— mẫu âm thanh số, ví dụ một đoạn WAV/MP3</span> là tệp chứa dữ liệu audio. Live chơi được cả định dạng không nén (WAV, AIF và Sound Designer II trên Mac) lẫn định dạng nén (MP3, AAC, Ogg Vorbis, Ogg FLAC và FLAC).</p>
+<p>Vì Live phát sample trực tiếp từ đĩa, bạn có thể làm việc với số lượng lớn sample (dung lượng lớn) mà không vướng giới hạn RAM. Tuy nhiên lưu ý: đĩa gần đầy và/hoặc phân mảnh nặng (trên Windows) có thể gây tắc nghẽn tốc độ đọc đĩa; tốc độ quay của ổ cứng cơ cũng ảnh hưởng hiệu năng. Xem thêm phần <a href="../manual-en/computer-audio-resources-and-strategies/index.html#managing-the-disk-load">quản lý tải đĩa</a> (EN).</p>
+<p>Live có thể kết hợp các sample không nén mono/stereo với độ dài, sample rate hay bit depth bất kỳ mà không cần chuyển đổi trước. Để phát sample nén, Live giải mã và ghi ra một tệp sample tạm chưa nén — thường nhanh đến mức bạn chơi được ngay, không phải chờ giải mã xong.</p>
+<p class="note"><strong>Lưu ý:</strong> khi thêm một sample dài vào Project, Live có thể báo rằng cần phân tích xong mới phát được sample. Xem mục <a href="#mf-asd">phân tích (.asd)</a> bên dưới.</p>
+
+<h4>11.1.1 The Decoding Cache (Bộ nhớ đệm giải mã)</h4>
+<p>Để tiết kiệm tài nguyên, Live giữ các tệp sample đã giải mã (của sample nén) trong <em>cache</em>. Bạn hầu như không cần bảo trì cache — Live tự xóa tệp cũ để chừa chỗ cho tệp mới. Tuy nhiên bạn có thể đặt giới hạn trong mục <strong>Decoding Cache</strong> của File &amp; Folder Settings: cache không bao giờ vượt quá <em>Maximum Cache Size</em>, và luôn chừa lại <em>Minimum Free Space</em> trên đĩa. Nút <em>Cleanup</em> bên cạnh sẽ xóa mọi tệp không được Live Set hiện tại dùng.</p>
+<figure><img src="images/DecodingCachePrefs.png" alt="Decoding Cache" loading="lazy"><figcaption>Cài đặt Decoding Cache.</figcaption></figure>
+
+<h4 id="mf-asd">11.1.2 Analysis Files (.asd) — Tệp phân tích</h4>
+<p><em>Analysis file</em> là tệp nhỏ mà Live tạo ra lần đầu tiên một sample được đưa vào chương trình. Tệp chứa dữ liệu Live thu thập để tối ưu chất lượng kéo giãn (stretch), hiển thị waveform nhanh hơn và tự động dò <a href="../manual-en/audio-clips-tempo-and-warping/index.html#auto-warping-long-samples">tempo của sample dài</a> (EN).</p>
+<p>Khi thêm sample dài vào Project, Live có thể báo cần phân tích xong mới phát được. Điều này <em>không</em> xảy ra nếu sample đã được phân tích (Live tìm thấy analysis file) hoặc nếu tùy chọn <em>Auto-Warp Long Samples</em> trong Record, Warp &amp; Launch Settings đã tắt.</p>
+<p>Analysis file còn có thể lưu <em>thiết lập clip mặc định</em> cho sample:</p>
+<p>Nhấn nút <a href="#ch-clip-view">Save</a> trong Clip View sẽ ghi thiết lập hiện tại của clip vào analysis file của sample. Lần sau kéo sample vào Live, nó xuất hiện với đầy đủ thiết lập clip. Cách này đặc biệt hữu ích để giữ Warp Marker cùng sample. Lưu ý: lưu thiết lập mặc định vào analysis file <em>khác</em> với lưu clip thành Live Clip.</p>
+<p>Analysis file là cách tiện để lưu thông tin mặc định cho một sample cụ thể; nhưng trong một Live Set bạn vẫn có thể dùng thiết lập khác nhau cho từng clip — ngay cả khi các clip cùng tham chiếu một sample trên đĩa. Còn nếu kéo một bản <em>mới</em> của sample vào Live Set, Live sẽ dùng thiết lập lưu trong analysis file cho clip mới tạo.</p>
+<p>Tên analysis file giống tên sample kèm phần mở rộng <strong>.asd</strong>, nằm cùng thư mục với sample.</p>
+<p><img src="images/SampleWithASDInBrowser.png" alt="Sample có .asd" loading="lazy" style="height:34px;display:inline;vertical-align:middle"> Sample có tệp .asd hiển thị như thế này trong Browser.</p>
+<p><img src="images/SampleWithoutASDInBrowser.png" alt="Sample không có .asd" loading="lazy" style="height:34px;display:inline;vertical-align:middle"> Sample không có .asd trông như thế này.</p>
+<p>Bản thân analysis file không xuất hiện trong Browser của Live.</p>
+<p>Bạn có thể tắt tạo .asd bằng tùy chọn <em>Create Analysis Files</em> trong File &amp; Folder Settings. Mọi dữ liệu (trừ thiết lập clip mặc định) đều có thể được Live tạo lại nếu thiếu .asd — nhưng sẽ tốn thời gian với sample dài.</p>
+
+<h4>11.1.3 Exporting Audio and Video (Xuất audio &amp; video)</h4>
+<p>Lệnh <em>Export Audio/Video</em> trong menu File cho phép xuất audio output của Live thành sample mới. Tệp kết quả có thể dùng để ghi đĩa CD nghe, đĩa dữ liệu (backup hoặc dùng với ứng dụng audio khác). Nếu Set có video, lệnh này cũng xuất được thành tệp video mới, đặt cùng thư mục với audio đã render.</p>
+
+<h5>11.1.3.1 Selection Options</h5>
+<figure><img src="images/RenderDialogSelectionOptions.png" alt="Selection Options" loading="lazy"><figcaption>Selection Options trong Render Dialog.</figcaption></figure>
+<p>Trình chọn <em>Rendered Track</em> của hộp thoại Export cho phép chọn tín hiệu audio nào sẽ được render:</p>
+<figure><img src="images/RenderDialogRenderedTrackMenu.png" alt="Rendered Track" loading="lazy"><figcaption>Trình chọn Rendered Track.</figcaption></figure>
+<ul>
+<li><em>Main</em> — tín hiệu sau fader ở đầu ra Main của Live. Nếu bạn đang nghe qua Main output, chắc chắn tệp render chứa đúng thứ bạn nghe.</li>
+<li><em>All Individual Tracks</em> — tín hiệu sau fader ở đầu ra từng track, gồm cả return track và MIDI track có instrument. Live tạo một sample riêng cho mỗi track; các sample cùng độ dài nên dễ canh trong phần mềm multitrack khác.</li>
+<li><em>Selected Tracks Only</em> — giống All Individual Tracks nhưng chỉ render các track đã chọn trước khi mở hộp thoại Export.</li>
+<li><em>(từng track đơn lẻ)</em> — tín hiệu sau fader ở đầu ra của track đang chọn.</li>
+</ul>
+<p>Các trường còn lại trong nhóm Selection xác định thời điểm bắt đầu và độ dài vật liệu xuất:</p>
+<ul>
+<li><em>Render Start</em> — vị trí bắt đầu render.</li>
+<li><em>Render Length</em> — độ dài sample sau render.</li>
+</ul>
+<p class="note"><strong>Mẹo:</strong> cách nhanh để đặt cả Render Start và Length là bôi đen một khoảng thời gian trong Arrangement View trước khi gọi Export Audio/Video. Nhớ rằng tệp render chỉ chứa những gì bạn <em>nghe</em> trước lúc render — ví dụ nếu đang phát kết hợp clip Session View và vật liệu Arrangement thì tệp render sẽ ghi đúng kết hợp đó, bất kể view nào đang mở lúc render.</p>
+
+<h5>11.1.3.2 Rendering Options</h5>
+<figure><img src="images/RenderDialogRenderingOptions.png" alt="Rendering Options" loading="lazy"><figcaption>Tùy chọn render audio.</figcaption></figure>
+<ul>
+<li><em>Include Return and Main Effects</em> — bật thì Live render riêng từng track đã chọn kèm các return track mà track đó dùng, cùng hiệu ứng trên Main track. Rất hữu ích khi render để biểu diễn trực tiếp hoặc giao stem cho kỹ sư mix/remixer.</li>
+<li><em>Render as Loop</em> — Live tạo sample dùng được như loop. Ví dụ Set có delay: nếu bật, Live render hai lượt — lượt một không ghi âm mà chỉ tính hiệu ứng delay; lượt hai ghi âm và bao gồm cả "đuôi" delay từ lượt một.</li>
+<li><em>Convert to Mono</em> — tạo tệp mono thay vì stereo.</li>
+<li><em>Normalize</em> — sample kết quả được normalize (khuếch đại để đỉnh cao nhất chạm trần headroom tối đa).</li>
+<li><em>Create Analysis File</em> — tạo .asd chứa thông tin phân tích cho sample vừa render. Nếu định dùng lại sample này trong Live, hãy bật.</li>
+<li><em>Sample Rate</em> — nếu chọn sample rate bằng hoặc cao hơn rate của Project (đặt trong tab Audio của Settings), Live xuất một bước ở rate đã chọn. Nếu xuất ở rate <em>thấp hơn</em>, Live xuất ở rate của Project rồi downsample ở bước hai bằng quy trình chất lượng cao — có thể mất vài giây.</li>
+</ul>
+
+<h5>11.1.3.3 Encoding Options</h5>
+<figure><img src="images/EncodingOptions.png" alt="Encoding Options" loading="lazy"><figcaption>Tùy chọn mã hóa audio.</figcaption></figure>
+<ul>
+<li><em>Encode PCM</em> — bật sẽ tạo tệp audio không hủy (lossless).</li>
+<li><em>File Type</em> — PCM hỗ trợ WAV, AIFF và FLAC.</li>
+<li><em>Bit Depth, Dither Options</em> — nếu render ở bit depth thấp hơn 32-bit, hãy chọn một chế độ dither. Dither thêm một lượng nhiễu nhỏ vào audio nhưng giảm artefact khi hạ bit depth. Mặc định là Triangular — chế độ "an toàn" nhất nếu tệp còn được xử lý tiếp. Rectangular cho nhiễu dither ít hơn nhưng sai số lượng tử hóa cao hơn. Ba chế độ Pow-r tăng dần lượng dither nhưng đẩy nhiễu lên ngoài dải nghe được. Lưu ý: dither chỉ nên áp dụng <em>một lần</em> cho mỗi tệp audio. Nếu định xử lý tiếp, tốt nhất render 32-bit để khỏi cần dither ở giai đoạn này; đặc biệt các chế độ Pow-r không bao giờ dùng cho vật liệu sẽ gửi sang mastering — chỉ dành cho output cuối.</li>
+<li><em>Encode MP3</em> — tạo tệp MP3 CBR 320 kbps. Có thể xuất PCM và MP3 đồng thời; nếu không bật cái nào, nút Export bị vô hiệu.</li>
+</ul>
+
+<h5>11.1.3.4 Video Rendering Options</h5>
+<figure><img src="images/RenderDialogVideoOptions.png" alt="Video Options" loading="lazy"><figcaption>Tùy chọn render video.</figcaption></figure>
+<ul>
+<li><em>Create Video</em> — tạo tệp video cùng thư mục với audio đã render. Chỉ bật được khi Arrangement View có clip video; và không thể chỉ render video không — luôn ra video kèm audio.</li>
+<li><em>Video Encoder</em> — chọn encoder dùng để render video; tùy encoder đã cài trên máy.</li>
+<li><em>Video Encoder Settings</em> — mở cửa sổ cài đặt của encoder đã chọn; một số encoder không có gì để chỉnh nên nút bị vô hiệu.</li>
+</ul>
+<p>Sau khi nhấn Export, Live render audio trước rồi mới tới video (tùy encoder, video có thể render nhiều lượt). Thanh tiến trình hiển thị trạng thái.</p>
+<p>Trừ khi bạn đặt kích thước/tỉ lệ khung hình riêng trong cài đặt encoder, tệp video sẽ phát đúng như khi phát trong Live, và có luôn audio đã render.</p>
+<p>Xem thêm chương <a href="../manual-en/working-with-video/index.html#working-with-video">Working with Video</a> (EN).</p>
+
+<h5>11.1.3.5 Real-Time Rendering (Render theo thời gian thực)</h5>
+<p>Bình thường render chạy offline. Nhưng nếu Set có <a href="../manual-en/live-audio-effect-reference/index.html#external-audio-effect">External Audio Effect</a> hoặc <a href="../manual-en/live-instrument-reference/index.html#external-instrument">External Instrument</a> nối ra thiết bị hiệu ứng/synth phần cứng thì quy trình khác: render đầu ra Main diễn ra theo thời gian thực. Nếu render từng track riêng, các track không đi ra thiết bị ngoài sẽ render offline; các track có thiết bị ngoài sẽ render real-time. Live tự dò tín hiệu của từng track. Khi bắt đầu render bạn có các tùy chọn:</p>
+<figure><img src="images/RenderRealTimeWaiting.png" alt="Real-time waiting" loading="lazy"><figcaption>Chờ thiết bị ngoài yên tĩnh.</figcaption></figure>
+<ul>
+<li><em>Skip</em> — mặc định Live chờ 10 giây trước khi render real-time để âm thanh từ thiết bị ngoài fade out. Cần thêm thời gian (ví dụ chờ đuôi reverb dài) thì gõ số lớn hơn; chắc chắn thiết bị không phát tiếng thì nhấn Skip để render ngay.</li>
+</ul>
+<p>Khi đã bắt đầu, hộp thoại chuyển sang thanh tiến trình ghi âm:</p>
+<figure><img src="images/RenderRealTimeRecording.png" alt="Real-time recording" loading="lazy"><figcaption>Đang render theo thời gian thực.</figcaption></figure>
+<ul>
+<li><em>Auto-Restart on drop-outs</em> — render real-time ngốn CPU hơn và có thể bị drop-out (khe hở/glitch nhỏ). Live phát hiện drop-out và tự render lại từ đầu nếu tùy chọn này bật.</li>
+<li><em>Restart</em> — tự tay render lại.</li>
+<li><em>Cancel</em> — dừng và xóa tệp render dở.</li>
+</ul>
+<p>Số lần render (nếu hơn một) cũng được liệt kê. Nếu drop-out liên tục, hãy đóng bớt ứng dụng khác. Xem chương <a href="../manual-en/computer-audio-resources-and-strategies/index.html#computer-audio-resources-and-strategies">Computer Audio Resources</a> (EN) để có thêm mẹo.</p>
+
+<h3 id="mf-midi-files">11.2 MIDI Files (Tệp MIDI)</h3>
+<p><em>MIDI file</em> chứa các lệnh khiến synthesizer/instrument tương thích MIDI (như Simpler của Live) tạo ra âm nhạc. MIDI file được xuất từ sequencer phần cứng và phần mềm. Nhập MIDI file vào Live khác với sample: dữ liệu MIDI được <em>nhúng</em> vào Live Set, và MIDI clip kết quả mất mọi tham chiếu tới tệp gốc. MIDI file hiện icon riêng trong Browser.</p>
+<figure><img src="images/MIDIFileInBrowserL12.png" alt="MIDI file" loading="lazy"><figcaption>MIDI file trong Browser.</figcaption></figure>
+<p>Có thể nhập MIDI file qua Browser hoặc lệnh <em>Import MIDI File…</em> trong menu Create. Trong Arrangement View, tệp sẽ chèn tại vị trí Insert Marker; trong Session View thì chèn vào clip slot đang chọn.</p>
+
+<h4>11.2.1 Exporting MIDI Files (Xuất tệp MIDI)</h4>
+<p>MIDI clip của Live có thể xuất thành Standard MIDI File bằng lệnh <em>Export MIDI Clip</em> trong menu File — mở hộp thoại lưu tệp để chọn vị trí.</p>
+<p>Xuất MIDI file khác với lưu clip thành Live Clip.</p>
+
+<h3 id="mf-live-clips">11.3 Live Clips</h3>
+<p>Từng audio/MIDI clip riêng lẻ có thể xuất ra đĩa ở định dạng <span class="term">Live Clip</span> <span class="gloss">— ý tưởng nhạc tái sử dụng được ở mọi Project</span> để dễ lấy lại và dùng lại. Audio clip chỉ chứa <em>tham chiếu</em> tới sample trên đĩa (không chứa dữ liệu audio) nên rất nhẹ — dễ xây dựng bộ sưu tập riêng.</p>
+<p>Để lưu một clip từ Live Set đang mở ra đĩa, cứ kéo nó vào mục <a href="#ch-browser">Places</a> của Browser, thả vào Current Project hoặc thư mục user bất kỳ. Với audio clip, Live sẽ xử lý việc copy sample theo lựa chọn trong trình chọn <a href="#mf-collect-export">Collect Files on Export</a>. Sau đó gõ tên mới hoặc xác nhận tên Live gợi ý bằng <kbd>Enter</kbd>.</p>
+<figure><img src="images/LiveClipInBrowserL12.png" alt="Live Clip" loading="lazy"><figcaption>Live Clip trong Browser.</figcaption></figure>
+<p>Live Clip là cách tuyệt vời để lưu ý tưởng dùng sau: nó giữ nguyên clip gốc với toàn bộ thiết lập clip và envelope, <em>và cả</em> device của track gốc. Để tái tạo chuỗi device của Live Clip, kéo nó vào track trống (không clip/device) hoặc vào vùng trống không track trong Session/Arrangement View. Live Clip thả vào track đã có device/clip sẽ chỉ mang thiết lập clip chứ không mang device. Ví dụ: thả Live Clip bassline lên track sẵn có đang chạy bass instrument, thay vì tạo track mới.</p>
+<p>Các clip thuộc mọi Live Set sẵn trên đĩa cũng là Live Clip. Xem mục <a href="#mf-merging">gộp Set</a>.</p>
+<p class="note"><strong>Lưu ý:</strong> lưu thiết lập clip mặc định vào .asd của sample <em>khác</em> với lưu Live Clip. .asd chú thích sample bằng giá trị mặc định hợp lý (warp, gain, pitch) để sample phát đúng cách khi thêm vào Set; còn Live Clip là một <em>ý tưởng nhạc riêng biệt</em> trên đĩa — bạn có thể tạo nhiều biến thể từ cùng một audio clip (warp/pitch/envelope/hiệu ứng khác nhau) và lưu thành các Live Clip riêng, sắp xếp &amp; nghe thử độc lập trong Browser dù cùng tham chiếu một sample.</p>
+
+<h3 id="mf-live-sets">11.4 Live Sets</h3>
+<p>Loại tài liệu bạn tạo và làm việc trong Live gọi là <span class="term">Live Set</span> <span class="gloss">— "bài hát" của bạn, tệp .als</span>. Set phải được lưu trong Project để Live theo dõi &amp; quản lý mọi thành phần của nó: Live Clip, preset, sample…</p>
+
+<h4>11.4.1 Tạo, mở và lưu Set</h4>
+<p>Dùng lệnh <em>New Live Set</em> (menu File) để tạo Set mới; <em>Open Live Set</em> / <em>Open Recent Set</em> để mở Set có sẵn. Trong Browser, nhấp đúp hoặc nhấn <kbd>Enter</kbd> lên một Live Set để mở.</p>
+<p><em>Save Live Set</em> lưu Set hiện tại nguyên trạng, gồm mọi clip và thiết lập.</p>
+<p><em>Save Live Set As</em> lưu dưới tên/vị trí khác; <em>Save a Copy</em> tạo bản sao của Set hiện tại với tên/vị trí mới.</p>
+
+<h4>11.4.2 Truy cập Undo History của Set</h4>
+<p><em>Undo History</em> liệt kê mọi thao tác kể từ khi mở Set, cho phép hoàn tác hoặc làm lại tới một mốc bất kỳ — đảo ngược/hồi phục nhiều bước cùng lúc thay vì undo/redo từng bước.</p>
+<p>Mở bằng mục <em>Undo History</em> trong menu View hoặc phím tắt <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>Z</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>Z</kbd> (Mac).</p>
+<figure><img src="images/UndoHistoryL12.png" alt="Undo History" loading="lazy"><figcaption>Undo History của một Set.</figcaption></figure>
+<p>Mở ra, bạn thấy mọi thao tác theo thứ tự xảy ra — mới nhất trên cùng. Chọn một thao tác (nhấp hoặc dùng phím mũi tên rồi <kbd>Enter</kbd>) để đưa Set về đúng mốc đó: các thao tác phía trên bị xám (đã undo), phía dưới vẫn có hiệu lực. Chọn lại thao tác xám để áp dụng lại nó cùng các thao tác đã undo bên dưới.</p>
+<p class="note">Undo History <em>không</em> được lưu khi đóng Set và được làm mới mỗi lần mở. Việc tạo/mở Set là thao tác đầu tiên trong lịch sử nên không thể undo.</p>
+
+<h4 id="mf-merging">11.4.3 Merging Sets (Gộp Set)</h4>
+<p>Gộp Set rất tiện khi kết hợp công việc từ nhiều phiên bản/đoạn nhạc. Để thêm toàn bộ track (trừ return track) từ Set này vào Set khác: kéo Set từ Browser vào Set hiện tại, thả lên thanh tiêu đề track bất kỳ hoặc vùng thả bên cạnh/dưới các track. Các track của Set bị thả sẽ được tái tạo đầy đủ — clip ở cả hai View, device và automation.</p>
+<figure><img src="images/SessionViewDropZonesForLiveSet.png" alt="Session drop zone" loading="lazy"><figcaption>Vùng thả trong Session View để nhập Live Set.</figcaption></figure>
+<figure><img src="images/ArrangementViewDropZonesForLiveSet.png" alt="Arrangement drop zone" loading="lazy"><figcaption>Vùng thả trong Arrangement View để nhập Live Set.</figcaption></figure>
+<p>Muốn nhập từng track riêng, hãy "mở xếp" (unfold) Live Set trong Browser như một thư mục:</p>
+<figure><img src="images/LiveSetUnfoldedShowingTracks.png" alt="Unfold set" loading="lazy"><figcaption>Mở xếp Set để thấy nội dung.</figcaption></figure>
+<p>Giờ kéo từng track thả như mô tả trên. Các <a href="../manual-en/using-grooves/index.html#using-grooves">groove</a> (EN) lưu cùng Set cũng có mặt như một thư mục trong Set đã mở xếp.</p>
+<p>Chỉ cần chuỗi device (device + hiệu ứng audio/MIDI của nó) từ Set khác? Kéo icon <em>Devices</em> từ Set trong Browser vào.</p>
+<figure><img src="images/DevicesIcon11.1.png" alt="Devices icon" loading="lazy"><figcaption>Icon Devices trong Live Set đã mở xếp.</figcaption></figure>
+<p>Cũng có thể kéo <a href="#ch-mixing">Group Track</a> và Group Track lồng nhau từ Browser; Group Track mở xếp được trong Browser để nạp từng track bên trong.</p>
+<p>Ngoài mở xếp Set, bạn mở xếp tiếp từng track bên trong để lấy từng clip Session View của track đó:</p>
+<figure><img src="images/LiveSetUnfoldedShowingClips.png" alt="Unfold clips" loading="lazy"><figcaption>Lộ các clip Session View trong Set.</figcaption></figure>
+<p>Bạn duyệt, nghe thử và nhập các clip này như thể chúng là Live Clip riêng lẻ — nghĩa là bất kỳ Live Set nào cũng có thể làm kho âm cho Set khác: gợi ý tái sử dụng sáng tạo.</p>
+
+<h4>11.4.4 Xuất clip Session thành Set mới</h4>
+<p>Xuất một nhóm clip Session View thành Live Set mới bằng cách kéo vào Browser. Chọn nhiều clip (nhấp-kéo, hoặc dùng <kbd>Shift</kbd> / <kbd>Ctrl</kbd> (Win) / <kbd>Option</kbd> (Mac)), rồi kéo thả vào Current Project hay thư mục user; xác nhận tên Live gợi ý hoặc gõ tên riêng.</p>
+
+<h4>11.4.5 Template Sets (Set mẫu)</h4>
+<p>Lệnh <em>Save Live Set As Default Set…</em> (menu File) lưu Set hiện tại làm mẫu mặc định — Live dùng trạng thái này làm khởi điểm cho Set mới. Có thể dùng để cấu hình sẵn:</p>
+<ul>
+<li>Thiết lập input/output đa kênh.</li>
+<li>Device preset như EQ, Compressor trên mọi track.</li>
+<li><a href="../manual-en/midi-and-key-remote-control/index.html#computer-keyboard-remote-control">Gán phím máy tính</a> (EN).</li>
+<li><a href="../manual-en/midi-and-key-remote-control/index.html#midi-remote-control">Gán MIDI</a> (EN).</li>
+</ul>
+<p>Bất kỳ template Set nào trong Browser cũng có thể đặt làm mặc định qua mục <em>Set Default Live Set</em> trong menu ngữ cảnh hoặc menu File.</p>
+<p>Ngoài mẫu mặc định, bạn có thể tạo thêm template cho từng loại dự án với cấu hình track/device riêng: lưu bằng <em>Save Live Set As Template…</em>. Các Set lưu làm mẫu xuất hiện trong nhóm Templates của Browser và thư mục Templates trong User Library (thư mục này tự tạo lần đầu lưu mẫu). Mẫu sẽ nạp đúng cấu hình đã lưu nhưng tên là Untitled.als — sẵn sàng làm Set mới.</p>
+<figure><img src="images/MulitpleUserTemplates.png" alt="User templates" loading="lazy"><figcaption>Nhiều template Set trong User Library.</figcaption></figure>
+
+<h4>11.4.6 Xem &amp; đổi tham chiếu tệp của Live Set</h4>
+<p>Để xem danh sách tệp được Set hiện tại tham chiếu: chọn <em>Manage Files</em> (menu File) → <em>Manage Set</em> → <em>View Files</em>. Live hiển thị một dòng cho mỗi tệp; nhấp tam giác để bung dòng, liệt kê mọi clip/instrument trong Set thực sự dùng tệp đó. Bạn có thể:</p>
+<ul>
+<li><strong>Thay tệp</strong> — kéo tệp từ Browser thả lên một dòng trong danh sách để Set tham chiếu tệp mới thay tệp cũ. Với sample dùng trong audio clip, Live giữ thuộc tính clip; Warp Marker giữ nguyên nếu sample mới dài bằng hoặc dài hơn sample cũ, không thì bị bỏ. Lưu ý: thay sample sẽ ảnh hưởng <em>mọi</em> clip trong Set đang tham chiếu sample đó.</li>
+</ul>
+<figure><img src="images/SamplesUseBySetListOneLine.png" alt="Drop target" loading="lazy"><figcaption>Mỗi dòng trong danh sách là một điểm thả tệp.</figcaption></figure>
+<ul>
+<li><strong>Hot-swap tệp</strong> — nút Hot-Swap bên trái mỗi dòng cho phép duyệt nhanh các phương án thay cho tệp đang tham chiếu; giống như kéo-thả nhưng nhanh hơn.</li>
+</ul>
+<figure><img src="images/SamplesUseBySetListBrowseButton.png" alt="Hot-swap" loading="lazy"><figcaption>Nút Hot-Swap trong danh sách tham chiếu tệp.</figcaption></figure>
+<ul>
+<li><strong>Sửa sample bằng ứng dụng ngoài</strong> (chọn trong tab File/Folder của Settings) — nút Edit mở sample trong ứng dụng đó; sample ở trạng thái offline chừng nào công tắc Edit còn bật. Với sample trong audio clip, bộ Warp Marker chỉ giữ nguyên nếu độ dài sample không đổi. Nút Edit chỉ có cho sample, không cho loại tệp khác như <a href="../manual-en/max-for-live/index.html#max-for-live">thiết bị Max for Live</a> (EN).</li>
+</ul>
+<figure><img src="images/SamplesUseBySetListEditSwitch.png" alt="Edit switch" loading="lazy"><figcaption>Công tắc Edit trong danh sách tham chiếu tệp.</figcaption></figure>
+<ul>
+<li><strong>Xem vị trí tệp</strong> — cột Location cho biết tệp đang <a href="#mf-missing">thiếu</a>, nằm trong User Library, trong Project hay "bên ngoài" (external). Bung dòng ra để thấy cụ thể tệp được dùng ở đâu trong Set.</li>
+</ul>
+<figure><img src="images/SamplesUseBySetListLocationColumn.png" alt="Location column" loading="lazy"><figcaption>Cột Location trong danh sách tham chiếu tệp.</figcaption></figure>
+
+<h3 id="mf-live-projects">11.5 Live Projects</h3>
+<p><span class="term">Live Project</span> <span class="gloss">— thư mục gom các tệp liên quan tới một dự án nhạc</span> là thư mục chứa các tệp Live thuộc về nhau. Ví dụ quá trình làm một bài: mở Set trống; thu audio (tạo sample mới); kéo sample từ bộ sưu tập vào; lưu các phiên bản khác nhau của Set để so sánh; có khi lưu Live Clip hay preset "thuộc" bài này. Thư mục Project sẽ quản mọi tệp của bài — và <em><a href="#mf-manage-project">File Manager</a></em> của Live cung cấp công cụ để quản lý chúng.</p>
+
+<h4>11.5.1 Projects và Live Sets</h4>
+<p>Khi lưu Live Set với tên mới hoặc ở thư mục mới, Live tạo thư mục Project mới và đặt Set vào đó — trừ khi bạn lưu vào một Project sẵn có. Ví dụ minh họa:</p>
+<p>Chúng ta thu vài đoạn audio vào một Set mới, lưu với tên "Tango" lên Desktop (Desktop có trong Browser vì đã thêm làm thư mục user). Kết quả trong Browser:</p>
+<figure><img src="images/ProjectTangoInLiveBrowser.png" alt="Tango project" loading="lazy"><figcaption>Live Set và các bản thu trong thư mục Project.</figcaption></figure>
+<p>Thư mục Project ("Tango Project") chứa Live Set ("Tango.als") và thư mục Samples, bên trong có thư mục Recorded với hai sample. Project hiện tại cũng hiển thị trên thanh tiêu đề cửa sổ Live.</p>
+<p>Tiếp theo, thu thêm một track nữa rồi lưu dưới tên mới để không mất bản cũ — dùng mặc định của Save As, bản mới nằm trong thư mục Tango Project:</p>
+<figure><img src="images/ProjectTangoWithPiano.png" alt="Tango with piano" loading="lazy"><figcaption>Phiên bản thứ hai của Set được thêm vào Project.</figcaption></figure>
+<p>Tango Project giờ có hai Live Set, và Samples/Recorded chứa sample của cả hai.</p>
+<p>Giờ thử thứ khác: <em>New Live Set</em>, thu một bản samba. Vì chẳng liên quan tango, ta lưu ra ngoài Tango Project — ví dụ lên Desktop. Live tạo Project mới tên Samba Project cạnh Tango Project.</p>
+<figure><img src="images/ProjectSamba.png" alt="Samba project" loading="lazy"><figcaption>Project mới xuất hiện cạnh Tango Project.</figcaption></figure>
+<p>Cách mở một Project? Cứ mở bất kỳ Set nào bên trong nó. Nhấp đúp "Tango with Piano.als" mở Set đó cùng Project tương ứng (hiện trên thanh tiêu đề).</p>
+<p>Giả sử trong lúc làm "Tango with Piano.als", bài tiến triển thành thứ hoàn toàn khác và đáng có Project riêng — ta "Save As…" tên mới ở vị trí ngoài Project hiện tại (Desktop):</p>
+<figure><img src="images/ProjectElectroWithPiano.png" alt="Electro project" loading="lazy"><figcaption>Project mới được tạo khi lưu Set ra ngoài Project gốc.</figcaption></figure>
+<p>Project mới <em>chưa</em> có thư mục Samples: "Electro with Piano.als" vẫn tham chiếu sample piano từ Tango Project. Không sao — trừ khi Tango Project bị di chuyển/xóa; khi đó "Electro with Piano.als" sẽ thiếu sample. Phòng tránh bằng cách <a href="#mf-collect">gom tệp ngoài</a> vào Project; nếu lỡ xảy ra, công cụ <a href="#mf-missing">tìm tệp thiếu</a> của Live sẽ giúp.</p>
+<p>Set trong Project không nhất thiết phải nằm ngay một cấp dưới Project: trong thư mục Project bạn có thể tạo thư mục con và di chuyển tệp tùy ý — có thể phải dùng File Manager để "dạy lại" Project về <a href="#mf-faq-preset">những thay đổi</a> đó.</p>
+<p>Nói chung Live cố tránh các tình huống như Live Set "mồ côi" (không Project) gây rối cho cả người dùng lẫn công cụ quản lý tệp. Nhưng Live không thể kiểm soát khi Set/tệp bị di chuyển lộn xộn qua Explorer (Windows)/Finder (Mac).</p>
+<p><em>Ghi chú cho người dùng Live cũ</em>: Live không cho ghi đè lên Set tạo bởi các phiên bản major cũ để tránh lỗi tương thích — bạn sẽ được yêu cầu "Save As…". Cách này cũng đảm bảo Set mới lưu nằm trong thư mục Project.</p>
+
+<h4>11.5.2 Projects và Preset</h4>
+<p>Mặc định, preset instrument/hiệu ứng mới lưu vào Project hiện tại. Nhưng nhiều lúc hợp lý hơn là lưu vào thư mục khác hoặc User Library để dùng từ Project khác. Sau khi <a href="../manual-en/working-with-instruments-and-effects/index.html#saving-presets">lưu</a> (EN), kéo preset giữa các thư mục; hoặc kéo thẳng thanh tiêu đề device lên một thư mục trong sidebar, chờ content pane mở rồi thả vào.</p>
+<p>Khi lưu preset có chứa sample sang vị trí mới, Live có thể copy sample tùy thiết lập <em>Collect Files on Export</em> trong Library Settings. Sau đó gõ tên mới cho device hoặc xác nhận tên Live gợi ý bằng <kbd>Enter</kbd>.</p>
+
+<h4 id="mf-manage-project">11.5.3 Quản lý tệp trong Project</h4>
+<p>File Manager của Live cung cấp vài công cụ tiện cho việc quản lý Project. Mở một Live Set thuộc Project cần quản lý → <em>Manage Files</em> (menu File) → <em>Manage Project</em>. File Manager trình bày tổng quan nội dung Project và công cụ để:</p>
+<ul>
+<li>Tìm tệp còn thiếu của Project.</li>
+<li><a href="#mf-collect">Gom tệp ngoài</a> vào thư mục Project.</li>
+<li>Liệt kê <a href="#mf-unused">tệp không dùng</a> trong Project.</li>
+<li><a href="#mf-packs">Đóng gói Project</a> thành Pack.</li>
+</ul>
+
+<h3 id="mf-missing">11.6 Locating Missing Files (Tìm tệp bị thiếu)</h3>
+<p>Khi nạp một Live Set, Live Clip hay preset có tham chiếu tới tệp không còn ở vị trí cũ, Status Bar (dưới cùng màn hình) hiển thị cảnh báo. Clip và ô sample của instrument tham chiếu sample thiếu sẽ bị đánh dấu <strong>Offline</strong>, Live phát im lặng thay cho sample đó.</p>
+<p>File Manager có công cụ sửa các liên kết gãy này — nhấp vào thông báo Status Bar để truy cập (đây là lối tắt của File → Manage Files → Manage Set → nút Locate trong mục Missing Files). File Manager liệt kê các tệp thiếu kèm điều khiển.</p>
+<figure><img src="images/FileManagerMissingFilesForCurrentSet.png" alt="Missing files" loading="lazy"><figcaption>Danh sách tệp thiếu trong File Manager.</figcaption></figure>
+
+<h4>11.6.1 Sửa thủ công</h4>
+<p>Để sửa tay một tham chiếu gãy: tìm tệp bị thiếu trong Browser, kéo sang File Manager thả lên dòng tương ứng. Live không quan tâm tệp bạn đưa có đúng là tệp bị thiếu hay không.</p>
+
+<h4>11.6.2 Sửa tự động</h4>
+<p>Live có chức năng tìm kiếm tự động để sửa tham chiếu. Nhấn nút <em>Go</em> trong mục Automatic Search; nhấp nút tam giác bên cạnh để mở tùy chọn chi tiết:</p>
+<figure><img src="images/FileManagerMissingFileSearchOptions.png" alt="Auto search" loading="lazy"><figcaption>Tùy chọn sửa tự động trong File Manager.</figcaption></figure>
+<ul>
+<li><em>Search Folder</em> — đưa thư mục do người dùng định nghĩa và mọi thư mục con vào vùng tìm (chọn qua nút Set Folder).</li>
+<li><em>Search Project</em> — đưa thư mục Project của Set vào vùng tìm.</li>
+<li><em>Search Library</em> — đưa Library của Live vào vùng tìm.</li>
+</ul>
+<p>Với mỗi tệp thiếu, tìm kiếm tự động có thể ra một số ứng viên:</p>
+<ul>
+<li><em>Không tìm thấy</em> — chọn thư mục khác thử lại, hoặc tự tìm sample thủ công.</li>
+<li><em>Tìm được một</em> — Live chấp nhận luôn, coi như xong.</li>
+<li><em>Tìm được nhiều</em> — Live cần bạn: nhấn nút Hot-Swap (thứ ngoài cùng bên trái mỗi dòng) để Browser trình bày các ứng viên ở chế độ Hot-Swap; nhấp đúp ứng viên để nạp — có thể vừa nghe nhạc vừa làm.</li>
+</ul>
+
+<h3 id="mf-collect">11.7 Collecting External Files (Gom tệp ngoài vào Project)</h3>
+<p>Để tránh tham chiếu gãy, bạn có thể gom (copy) toàn bộ tệp ngoài dùng trong Set vào thư mục Project — thay vì tham chiếu đường dẫn gốc (sẽ gãy nếu tệp bị di chuyển), tệp nằm ngay trong Project.</p>
+<p>Gom tệp qua tùy chọn <em>Collect All and Save</em> trong menu File, hoặc qua File Manager.</p>
+<p>Dùng menu File: hộp thoại Collect All and Save cho chọn nhóm tệp nào sẽ copy vào Project theo vị trí của chúng:</p>
+<figure><img src="images/CollectAllAndSaveL12.png" alt="Collect all and save" loading="lazy"><figcaption>Hộp thoại Collect All and Save.</figcaption></figure>
+<p>Không nhất thiết gom hết từ mọi vị trí — Project sẽ phình to đáng kể, nhất là khi Set dùng nhiều instrument multisample. Nếu chắc chắn không gỡ/di chuyển Pack hay User Library thì khỏi gom từ các vị trí đó, vì khả năng đường dẫn gãy là rất thấp.</p>
+<p>Nhấn <em>OK</em> để xác nhận. Tệp được thêm vào thư mục con tương ứng trong Samples (audio) hoặc Presets (device) của Project.</p>
+<p>Để gom qua File Manager: mở bằng mục <em>Manage Files</em> (menu File) hoặc <em>File Manager</em> (menu View), rồi nhấn <em>Manage Set</em>.</p>
+<figure><img src="images/FileManagerManageSetL12.png" alt="Manage set" loading="lazy"><figcaption>Nút Manage Set trong File Manager.</figcaption></figure>
+<p>Trong mục <em>External Files</em>, bạn thấy tổng quan các tệp đang dùng trong Set, nhóm theo vị trí:</p>
+<figure><img src="images/FileManagerExternalFilesL12.png" alt="External files" loading="lazy"><figcaption>Mục External Files.</figcaption></figure>
+<p>Live coi mọi tệp nằm ngoài thư mục Project là "ngoài" — gồm tệp từ Pack, Project khác, User Library và nơi khác trên máy.</p>
+<p>Mỗi vị trí hiển thị số tệp và tổng dung lượng. Nút <em>Show</em> mở các tệp của vị trí đó trong Browser. Bật công tắc bên phải mục <em>Collect Into Project</em> cho nhóm tệp muốn copy, rồi nhấn <em>Collect and Save</em> ở đáy File Manager để xác nhận.</p>
+<figure><img src="images/FileManagerCollectAndSaveL12.png" alt="Collect and save" loading="lazy"><figcaption>Nút Collect and Save copy tệp vào thư mục Project.</figcaption></figure>
+
+<h4 id="mf-collect-export">11.7.1 Collect Files on Export</h4>
+<p>Bạn có thể chuyển clip, preset và track từ Live Set đang mở vào một số thư mục trong <a href="#ch-browser">mục Places của Browser</a> — như User Library hay thư mục tự thêm — hữu ích khi chia sẻ giữa các Project hoặc thêm preset vào User Library.</p>
+<p>Trình chọn <em>Collect Files on Export</em> trong Library Settings quyết định tệp có bị copy khi chuyển từ Set vào Browser hay không:</p>
+<ul>
+<li><em>Always</em> — tự động copy vào thư mục đích, không hỏi. Đây là mặc định.</li>
+<li><em>Ask</em> — hiện hộp thoại khi chuyển: <em>Copy</em> để lưu kèm tệp phụ thuộc; <em>Don't Copy</em> để chuyển nhưng giữ tham chiếu gốc; <em>Cancel</em> để hủy. Chọn Copy/Don't Copy xong, mục được tô sáng trong Browser — đổi tên hoặc giữ nguyên, nhấp hoặc <kbd>Enter</kbd> xác nhận (nếu chọn Copy thì tệp phụ thuộc được copy lúc này).</li>
+<li><em>Never</em> — không copy, dùng nguyên tham chiếu gốc.</li>
+</ul>
+<p>Mỗi lần chỉ chuyển được một clip/preset vào thư mục Browser, nhưng chuyển được nhiều track. Chuyển preset: tệp lưu với <a href="https://help.ableton.com/hc/en-us/articles/209769625" target="_blank" rel="noopener">phần mở rộng đặc thù của Live ↗</a>. Chuyển clip/track: tạo tệp .alc (clip) hoặc .als (track). Nếu Collect Files on Export = Always (hoặc Ask + Copy), một thư mục Project kèm thư mục con cũng được tạo.</p>
+<p>Thiết lập này cũng áp dụng khi dùng <a href="../manual-en/working-with-instruments-and-effects/index.html#saving-presets">nút Save Preset trên thanh tiêu đề device</a> (EN) để thêm preset chứa sample vào User Library.</p>
+
+<h4>11.7.2 Gom &amp; tìm tệp hàng loạt</h4>
+<p>Nên định kỳ xử lý các vấn đề quản lý tệp để khỏi xử lý tham chiếu gãy về sau. File Manager có thể tìm tệp thiếu và gom tệp ngoài không những cho Live Set đang mở mà cả cho User Library, Project hiện tại và Project khác.</p>
+<p>Để quản tệp của User Library/Project hiện tại: mở File Manager (Manage Files hoặc View → File Manager) rồi nhấn <em>Manage User Library</em> hoặc <em>Manage Project</em>.</p>
+<figure><img src="images/FileManagerUserLibraryL12.png" alt="Manage user library" loading="lazy"><figcaption>Có thể quản lý tệp cho User Library.</figcaption></figure>
+<p>Cũng có thể nhấp chuột phải vào thư mục Project trong Browser rồi chọn <em>Manage Project</em>.</p>
+<figure><img src="images/BrowserProjectFolderManageProjectL12.png" alt="Manage project context" loading="lazy"><figcaption>Mục Manage Project cho thư mục Project trong Browser.</figcaption></figure>
+<p>Nhớ nhấn <em>Collect and Save</em> ở đáy File Manager sau khi quản lý xong để xác nhận thay đổi.</p>
+
+<h3 id="mf-unused">11.8 Finding Unused Files (Tìm tệp không dùng)</h3>
+<p>File Manager giúp nhanh chóng tìm tệp không dùng trong Project và mở trong Browser để nghe thử hoặc xóa. Mở File Manager → <em>Manage Project</em> → bung mục <em>Unused Files</em>.</p>
+<figure><img src="images/FileManagerUnusedFilesL12.png" alt="Unused files" loading="lazy"><figcaption>Mục Unused Files của một Project.</figcaption></figure>
+<p>Live coi mọi tệp trong Project không được Set/clip/preset tham chiếu là "không dùng" — kể cả khi tệp đang được dùng trong Project khác.</p>
+<p>Tệp không dùng được nhóm theo thư mục tương ứng trong Project; trong File Manager hiển thị theo loại sample (bản thu, sample freeze…) và "tệp khác" thay vì tên thư mục chính xác. Nút <em>Show</em> bên phải mỗi loại mở tệp trong Browser.</p>
+<figure><img src="images/BrowserUnusedFilesL12.png" alt="Unused in browser" loading="lazy"><figcaption>Tệp không dùng từ thư mục Recorded của Project trong Browser.</figcaption></figure>
+<p>Sau đó <a href="#ch-browser">nghe thử sample</a> và xóa nếu cần bằng phím <kbd>Delete</kbd> hoặc lệnh Delete trong menu ngữ cảnh.</p>
+<p class="note"><strong>Lưu ý:</strong> xóa tệp từ Project này có thể gây tham chiếu gãy nếu tệp đang dùng ở Project khác. Để tránh mất oan, hãy gom tệp ngoài vào từng Project trước khi dọn tệp không dùng.</p>
+<p>Cũng tìm được tệp không dùng trong User Library: nhấn <em>Manage User Library</em> trong File Manager rồi bung mục Unused Files.</p>
+<figure><img src="images/FileManagerManageUserLibraryL12.png" alt="Manage user library btn" loading="lazy"><figcaption>Nút Manage User Library.</figcaption></figure>
+<figure><img src="images/FileManagerUnusedFilesUserLibraryL12.png" alt="Unused in library" loading="lazy"><figcaption>Tệp không dùng trong User Library.</figcaption></figure>
+<p>Như với Project, dùng nút <em>Show</em> để xem và truy cập các tệp này trong Browser.</p>
+
+<h3 id="mf-packs">11.9 Packing Projects into Packs (Đóng gói Project thành Pack)</h3>
+<p>Biến bất kỳ Live Project nào thành <span class="term">Pack</span> <span class="gloss">— tệp .alp nén, cài lại được</span> qua File Manager — cách tiện để lưu trữ Project dùng sau hoặc chia sẻ với cộng sự. Cài một Pack từ Project sẽ phục hồi nguyên thư mục, kèm Set (hoặc mọi Set nếu Project có nhiều .als).</p>
+<p>Để tạo Pack: mở File Manager → <em>Manage Project</em>.</p>
+<figure><img src="images/FileManagerManageProjectL12.png" alt="Manage project" loading="lazy"><figcaption>Nút Manage Project trong File Manager.</figcaption></figure>
+<p>Trong mục Packing, nhấn <em>Create Pack</em> để tạo tệp .alp — Live hỏi chỗ lưu. Chọn thư mục nào cũng được, nên có một thư mục riêng cho mọi Pack tự tạo, giống khuyến nghị cho <a href="https://help.ableton.com/hc/en-us/articles/206471044" target="_blank" rel="noopener">Pack của bên thứ ba ↗</a>.</p>
+<figure><img src="images/FileManagerPackingSectionL12.png" alt="Packing" loading="lazy"><figcaption>Mục Packing.</figcaption></figure>
+<p class="note">Nếu Project có tệp ngoài, chúng <em>không</em> tự động nằm trong Pack — nên <a href="#mf-collect">gom vào trước</a> để tránh tham chiếu gãy.</p>
+<p>Quá trình đóng gói có thể mất chút thời gian nếu Project có nhiều Set/sample/device. Xong sẽ có thông báo trong Live và tệp .alp xuất hiện trong thư mục đã chọn.</p>
+<figure><img src="images/FileManagerPackCreatedL12.png" alt="Pack created" loading="lazy"><figcaption>Thông báo khi Pack được tạo.</figcaption></figure>
+<p>Live dùng nén lossless nên .alp có thể nhỏ hơn tới 50% so với thư mục gốc, tùy số tệp. Project gốc không bị ảnh hưởng — giữ nguyên hoặc xóa tùy bạn.</p>
+<p>Cài lại Pack bất cứ lúc nào để phục hồi thư mục Project:</p>
+<ul>
+<li>Nhấp đúp tệp .alp.</li>
+<li>Kéo tệp .alp vào Live.</li>
+<li>Chọn <em>Install Pack…</em> trong menu File.</li>
+</ul>
+<p>Hộp thoại hiện ra để chọn vị trí giải nén. Để dễ truy cập, nên lưu Project vào cùng thư mục với .alp; thêm thư mục đó vào <a href="#ch-browser">Places của Browser</a> rồi kéo tệp từ Project vào Live.</p>
+<figure><img src="images/FileManagerProjectPacksL12.png" alt="Project packs" loading="lazy"><figcaption>Có thể thêm thư mục chứa Pack/Project vào Places.</figcaption></figure>
+
+<h3>11.10 File Management FAQs (Hỏi đáp quản lý tệp)</h3>
+
+<h4>11.10.1 Làm sao tạo Project?</h4>
+<p>Project tự động được tạo bất kỳ lúc nào bạn lưu Live Set — <em>trừ khi</em> lưu vào một Project sẵn có.</p>
+
+<h4 id="mf-faq-preset">11.10.2 Lưu preset vào Project hiện tại thế nào?</h4>
+<p>Kéo từ thanh tiêu đề device thả vào nhãn Current Project trong Browser. Sau đó dùng các công cụ quản lý tệp để gom sample được tham chiếu, v.v.</p>
+
+<h4>11.10.3 Làm việc với nhiều phiên bản của một Set?</h4>
+<p>Lưu các phiên bản của cùng một Live Set vào cùng một Project — thường là Project tạo ra khi lưu bản đầu tiên. Project có nhiều Set chỉ giữ <em>một</em> bản copy của mỗi sample dùng chung, tiết kiệm đĩa và gọn gàng.</p>
+
+<h4>11.10.4 Nên lưu Live Set ở đâu?</h4>
+<p>Lưu ở đâu cũng được, nhưng lưu vào thư mục Project sẵn có dễ gây rối — chỉ dành cho trường hợp đặc biệt (ví dụ bản khác của bài đã có trong Project đó).</p>
+
+<h4>11.10.5 Dùng cấu trúc thư mục riêng trong Project?</h4>
+<p>Tự do tổ chức, nhưng cần File Manager liên kết lại các tệp đã di chuyển:</p>
+<ol>
+<li>Sắp xếp lại tệp/thư mục trong Project qua Browser hoặc hệ điều hành.</li>
+<li>Đến thư mục Project trong Browser, chọn Manage Project qua menu ngữ cảnh.</li>
+<li>Nếu sample đổi chỗ, mục Missing Samples của File Manager sẽ báo — nhấn Locate để tìm.</li>
+<li>Vì sample đều trong Project, bung Automatic Search, bật Search Project và Fully Rescan Folders, rồi nhấn Go.</li>
+<li>Khi tìm xong, nhấn Collect and Save ở đáy File Manager để cập nhật Project.</li>
+</ol>
 
 </article>
 
