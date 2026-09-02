@@ -119,7 +119,7 @@
     <a href="#ch-first-steps">2. First Steps</a>
     <a href="#ch-concepts">3. Live Concepts</a>
     <a href="#ch-browser">4. Working with the Browser</a>
-    <a href="#top" class="cur">5. Session View</a>
+    <a href="#ch-session">5. Session View</a>
     <div class="sub">
       <a href="#sv-session-tracks-clips">Track, Clip &amp; ô clip</a>
       <a href="#sv-scenes">Scene (Cảnh)</a>
@@ -6184,7 +6184,30 @@
 <script>
   var tt=document.getElementById('tocToggle');
   if(tt) tt.addEventListener('click',function(){document.body.classList.toggle('toc-open');});
-  document.querySelectorAll('.toc a').forEach(function(a){a.addEventListener('click',function(){document.body.classList.remove('toc-open');});});
+  document.querySelectorAll('.toc a').forEach(function(a){a.addEventListener('click',function(){
+    document.body.classList.remove('toc-open');
+    var id=this.getAttribute('href').slice(1);
+    document.querySelectorAll('.toc a.cur').forEach(function(c){c.classList.remove('cur');});
+    this.classList.add('cur');
+    if(id.indexOf('sv-')===0){var p=document.querySelector('.toc a[href="#ch-session"]');if(p)p.classList.add('cur');}
+  });});
+  // scroll-spy: highlight muc muc luc theo chuong dang doc
+  var tocLinks={};
+  document.querySelectorAll('.toc a').forEach(function(a){var h=a.getAttribute('href');if(h&&h.charAt(0)==='#'&&h.length>1)tocLinks[h.slice(1)]=a;});
+  function tocSpy(){
+    var cur=null,line=window.scrollY+140;
+    document.querySelectorAll('h2.sec[id]').forEach(function(h){
+      if(h.getBoundingClientRect().top+window.scrollY<=line)cur=h.id;
+    });
+    Object.keys(tocLinks).forEach(function(k){tocLinks[k].classList.remove('cur');});
+    if(!cur){var fk=Object.keys(tocLinks)[0];if(fk)tocLinks[fk].classList.add('cur');return;}
+    if(tocLinks[cur]){
+      tocLinks[cur].classList.add('cur');
+      if(cur.indexOf('sv-')===0&&tocLinks['ch-session'])tocLinks['ch-session'].classList.add('cur');
+    }
+  }
+  window.addEventListener('scroll',tocSpy);tocSpy();
+
   var toTop=document.getElementById('toTop');
   window.addEventListener('scroll',function(){if(window.scrollY>600) toTop.classList.add('show'); else toTop.classList.remove('show');});
   toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
