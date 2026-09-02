@@ -4606,7 +4606,95 @@
 <p>Ba model đèn A/B/C cho các cá tính méo của đèn ampli thật: <b>A</b> — Bias thấp thì không méo, bật khi input vượt ngưỡng, sinh hài sáng; <b>C</b> — "đèn tồi" méo mọi lúc; <b>B</b> ở giữa. <b>Tone</b> đặt phân bố phổ của méo (đẩy lên vùng cao hay qua trung xuống thấp). <b>Drive</b> đặt bao nhiêu tín hiệu vào đèn — nhiều hơn bẩn hơn. <b>Bias</b> điều khiển cường độ đèn, đẩy tín hiệu vào cõi phi tuyến danh tiếng — Bias rất cao thì tín hiệu bắt đầu vỡ hẳn.</p>
 <p>Bias modulate được (dương/âm) bởi envelope follower qua núm <b>Envelope</b> — càng sâu, điểm Bias càng phụ thuộc mức vào: Envelope âm tạo hiệu ứng giãn (giảm méo trên tín hiệu to), dương làm âm to bẩn hơn. <b>Attack/Release</b> đặt tốc envelope phản ứng đổi âm lượng — định hình tính động của méo (Envelope = 0 thì vô hiệu). <b>Output</b> cắt/boost mức ra. Bật <b>Hi-Quality</b> (menu ngữ cảnh) giảm aliasing — chất lượng tốt hơn với tín hiệu cao tần, tốn CPU chút.</p>
 
-<p class="note"><em>⏳ Còn tiếp: các device 28.14 Echo → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+<h3>28.14 Echo</h3>
+<figure><img src="images/EchoL12.png" alt="Echo" loading="lazy"><figcaption>Hiệu ứng Echo.</figcaption></figure>
+<p>Echo là delay modulation: hai đường trễ độc lập, điều khiển đầy đủ envelope và filter modulation. Nút <b>Channel Mode</b> chọn Stereo, Ping Pong hoặc Mid/Side. Điều khiển đường trễ <b>Left/Right</b> đặt thời gian trễ theo phân phách hoặc ms (tùy công tắc Sync); Mid/Side thì thay bằng núm Mid/Side. <b>Sync Mode</b> chọn Notes/Triplet/Dotted/16th (chỉ nghe khi Sync bật). <b>Stereo Link</b> bật: chỉnh trễ/Sync/Sync Mode của một kênh áp cả hai. <b>Delay Offset</b> rút/dài thời gian trễ phân số — tạo "swing" kiểu drum machine (Stereo Link vẫn chỉnh Offset riêng mỗi đường).</p>
+<p><b>Input</b> đặt gain tín hiệu khô; nút "D" thêm méo cho tín hiệu khô. <b>Feedback</b> đặt lượng output mỗi kênh phản hồi vào đường trễ; nút "Ø" đảo pha tín hiệu phản hồi trước khi cộng lại.</p>
+
+<h4>28.14.1 Tab Echo</h4>
+<p>Tab Echo trực quan hóa và điều khiển đường trễ + filter.</p>
+<figure><img src="images/EchoTunnelL12.png" alt="Tunnel" loading="lazy"><figcaption>Hình "đường hầm" của Echo.</figcaption></figure>
+<p>Các vòng tròn của Echo Tunnel là các lần lặp, đi từ ngoài vào tâm; khoảng cách giữa vòng = thời gian giữa các lần lặp; chấm trắng giữa tạo lưới tham chiếu 1/8 cố định. Kéo trong khung để chỉnh thời gian trễ mỗi đường.</p>
+<figure><img src="images/EchoFilterL12.png" alt="Filter" loading="lazy"><figcaption>Filter của Echo.</figcaption></figure>
+<p>Công tắc <b>Filter</b> bật high-pass + low-pass: HP + Res (bên trái) cho high-pass; LP + Res (phải) cho low-pass. Filter Display vẽ đường cong filter — hiện/ẩn bằng nút tam giác; chỉnh tham số bằng kéo hai chấm filter trong khung.</p>
+
+<h4>28.14.2 Tab Modulation</h4>
+<p>Tab chứa LFO modulate tần số filter và thời gian trễ, cộng envelope follower trộn được với LFO.</p>
+<figure><img src="images/EchoModulationTabL12.png" alt="Modulation" loading="lazy"><figcaption>Tab Modulation của Echo.</figcaption></figure>
+<p>Sáu dạng sóng modulation: sine, triangle, sawtooth up/down, square, noise — dạng sóng hiện trong khung, kéo để chỉnh tần số modulation. Sync bật: modulation theo tempo (Rate đặt theo phân phách); tắt: Freq đặt theo Hz. <b>Phase</b> đặt lệch pha sóng trái/phải (180° ngược hoàn toàn). <b>Mod Delay</b> đặt mức modulate thời gian trễ; <b>Modulation x4</b> nhân bốn độ sâu — trễ ngắn tạo flanger sâu. <b>Mod Filter</b> đặt mức modulate filter. <b>Env Mix</b> trộn LFO ↔ envelope follower (100% chỉ envelope; 0% chỉ LFO).</p>
+
+<h4>28.14.3 Tab Character</h4>
+<p>Các tham số kiểm soát động lực và thêm "khuyết tật" cho âm.</p>
+<figure><img src="images/EchoCharacterTabL12.png" alt="Character" loading="lazy"><figcaption>Tab Character của Echo.</figcaption></figure>
+<p><b>Gate</b> bật gate ở input: mute thành phần dưới ngưỡng — Threshold đặt mức phải vượt để mở; Release đặt thời gian đóng sau khi xuống dưới ngưỡng. <b>Ducking</b> bật: giảm tín hiệu wet tương ứng khi có input (tác động khi input vượt Threshold; Release đặt thời gian ngừng duck). <b>Noise</b> thêm nhiễu mô phỏng máy cũ (Amount + Morph giữa các loại nhiễu). <b>Wobble</b> thêm modulate trễ bất đều mô phỏng delay băng (Amount + Morph). <b>Repitch</b> bật: đổi trễ kèm biến thiên cao độ như delay phần cứng; tắt: crossfade giữa trễ cũ/mới.</p>
+<p class="note"><strong>Lưu ý:</strong> để tiết kiệm CPU, Echo tự tắt ít nhất 8 giây sau khi input ngừng phát — nhưng không tự tắt nếu Noise và Gate cùng bật.</p>
+
+<h4>28.14.4 Điều khiển toàn cục</h4>
+<p><b>Reverb</b> đặt lượng reverb thêm vào; <b>Reverb Location</b> chọn vị trí trong chuỗi: pre delay, post delay hoặc trong vòng feedback; <b>Decay</b> dài/ngắn đuôi reverb. <b>Stereo</b> đặt độ rộng stereo của wet (0% mono, &gt;100% mở rộng). <b>Output</b> đặt gain; <b>Dry/Wet</b> cân khô/wet — return track để 100%; menu ngữ cảnh của Dry/Wet có Equal-Loudness (mix 50/50 nghe cùng độ to).</p>
+
+<h3>28.15 EQ Eight</h3>
+<figure><img src="images/EQEightL12.png" alt="EQ8" loading="lazy"><figcaption>Hiệu ứng EQ Eight.</figcaption></figure>
+<p>EQ tối đa 8 filter tham số mỗi kênh vào — thay đổi âm sắc. Ba chế độ xử lý: <b>Stereo</b> (một đường cong cho cả hai kênh), <b>L/R</b> (đường cong riêng trái/phải), <b>M/S</b> (Mid/Side cho tín hiệu thu M/S). Mọi chế độ: phổ output hiện sau đường cong khi bật Analyze. L/R và M/S hiện đồng thời hai đường cong để đối chiếu, chỉ đường cong đang kích hoạt chỉnh được — công tắc Edit báo và chuyển.</p>
+<p>Mỗi filter chọn một trong tám đáp ứng (từ trên xuống trong trình chọn): Low cut 48/12 dB/oct; Low shelf; Peak; Notch; High shelf; High cut 12/48 dB/oct. Mỗi dải bật/tắt riêng bằng activator dưới trình chọn — tắt dải không dùng để tiết kiệm CPU; gán cùng tham số cho hai filter trở lên để lặp cực gắt.</p>
+<p>Chỉnh đường cong: kéo chấm filter trong khung — ngang đổi tần số, dọc đổi gain; kéo bao nhiều chấm để chỉnh đồng loạt (chuột hoặc phím mũi tên); giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) khi kéo để chỉnh Q (cộng hưởng/băng thông) — Low cut/Notch/High cut không có gain, kéo dọc chỉnh Q. Nút mở rộng trên thanh tiêu đề chuyển khung hiển thị giữa Device View và cửa sổ chính — ở view mở rộng chỉnh đồng thời cả 8 filter.</p>
+<figure><img src="images/EQEightExpandedViewL12.png" alt="Expanded" loading="lazy"><figcaption>Điều khiển EQ Eight với khung mở rộng.</figcaption></figure>
+<p>Tắt Analyze để làm việc hoàn toàn "bằng tai". <b>Adaptive Q</b> bật: Q tăng theo lượng boost/cut — output ổn định hơn, theo hành vi EQ analog kinh điển. <b>Audition</b> (icon tai nghe): nhấp-giữ chấm filter để nghe riêng tác động filter đó. Chọn dải bằng nhấp gần số của nó rồi chỉnh bằng núm Freq/Gain/Q (hoặc gõ số). Boost tăng mức, cut giảm — dùng <b>Gain</b> toàn cục tối ưu mức ra. <b>Scale</b> điều chỉnh gain của mọi filter có gain.</p>
+
+<h4>Tùy chọn menu ngữ cảnh EQ Eight</h4>
+<p><b>Oversampling</b> — xử lý nội bộ gấp đôi sample rate hiện tại: filter mượt hơn khi chỉnh tần số cao (tốn CPU nhẹ).</p>
+
+<h3>28.16 EQ Three</h3>
+<figure><img src="images/EQThreeL12.png" alt="EQ3" loading="lazy"><figcaption>Hiệu ứng EQ Three.</figcaption></figure>
+<p>Như EQ của mixer DJ tốt: chỉnh độc lập mức thấp/trung/cao. Mỗi dải −∞…+6 dB — cắt hẳn kick/bassline của một track mà phần còn lại nguyên vẹn. Nút On/Off dưới núm gain tắt/mở từng dải (rất tiện khi gán phím). Ba LED xác nhận có tín hiệu trong từng dải — dải tắt vẫn biết còn hoạt động (ngưỡng LED −24 dB).</p>
+<p>Dải tần mỗi band qua hai crossover: <b>FreqLo</b>/<b>FreqHi</b> (500 Hz–2000 Hz: low 0–500, mid 500–2000, high 2000 trở lên). Công tắc <b>24 dB/48 dB</b> đặt độ sắc bộ lọc tại crossover — 48 lọc quyết liệt hơn nhưng tốn CPU hơn.</p>
+<p class="note"><strong>Lưu ý:</strong> filter tối ưu để nghe như dãy filter analog mạnh chứ không phải filter số sạch; 48 dB đặc biệt không tuyến tính hoàn hảo — còn tô màu nhẹ cho input ngay cả khi mọi núm 0,00 dB (điển hình của loại filter này, một phần âm riêng của EQ Three). Cần tuyến tính hơn: dùng 24 dB hoặc EQ Eight.</p>
+
+<h3>28.17 Erosion</h3>
+<figure><img src="images/ErosionL12.png" alt="Erosion" loading="lazy"><figcaption>Hiệu ứng Erosion.</figcaption></figure>
+<p>Thêm suy giảm số cho tín hiệu vào bằng cách modulate một trễ ngắn bằng tổ hợp sóng sine + nhiễu đã lọc — từ artefact nhiễu tới méo kiểu downsampling.</p>
+<p>Khung hiển thị phổ của tín hiệu trong lúc phát cùng hình ảnh modulation, kiêm bộ điều khiển X-Y cho Freq/Amount: kéo trục X đổi tần số sine và tần số giữa của filter nhiễu; trục Y đổi lượng modulation (giữ Alt/Option đổi thành độ rộng filter nhiễu — vô tác dụng khi chỉ dùng sine). <b>Noise Blend</b> trộn sóng mang sine/nhiễu (0% chỉ sine, 100% chỉ nhiễu; icon sine/nhiễu dưới khung sáng theo tỉ lệ; trong khung, sine là đường dọc liền, nhiễu là chấm ngang). <b>Filter Width</b> đặt băng thông filter nhiễu (Blend 0% thì xám). <b>Stereo Width</b> từ mono (0%) sang stereo (100%) cho nguồn modulation. <em>Lưu ý:</em> Set tạo trước 12.4 sẽ nạp version cũ — giờ tên Erosion Legacy.</p>
+
+<h3>28.18 External Audio Effect</h3>
+<figure><img src="images/ExternalAudioEffectL12.png" alt="External" loading="lazy"><figcaption>Hiệu ứng External Audio Effect.</figcaption></figure>
+<p>Khác các hiệu ứng khác: không tự xử lý audio mà cho dùng bộ xử lý hiệu ứng <em>ngoài</em> (phần cứng) ngay trong chuỗi device. <b>Audio To</b> chọn output trên phần cứng audio đi ra thiết bị ngoài; <b>Audio From</b> chọn input đưa tín hiệu đã xử lý về Live (danh sách tùy Audio Settings — vào qua "Configure…" đáy trình chọn). Dưới mỗi trình chọn có chỉ báo Peak — nhấp để reset. Núm <b>Gain</b> cạnh trình chọn chỉnh mức ra/vào — đặt cẩn thận tránh clip cả trên phần cứng lẫn khi quay về máy. <b>Dry/Wet</b> cân xử lý/khô (return track để 100%). Nút <b>Invert</b> đảo pha tín hiệu xử lý trở về.</p>
+<p>Phần cứng gây latency mà Live không tự dò được — bù thủ công bằng <b>Hardware Latency</b>; nút cạnh thanh trượt chọn đơn vị ms hoặc sample: nối <em>số</em> → chỉnh theo sample (giữ đúng số sample khi đổi sample rate); nối <em>analog</em> → chỉnh theo ms (giữ đúng thời gian khi đổi sample rate). Chỉnh theo sample mịn hơn — dùng analog vẫn nên "canh tinh" theo sample cho latency thấp nhất, nhưng nhớ chuyển về ms trước khi đổi sample rate. <em>Lưu ý:</em> tắt Delay Compensation (menu Options) thì thanh Hardware Latency vô hiệu. Hướng dẫn bù latency chính xác: bài <a href="https://help.ableton.com/hc/en-us/articles/115000234830-Driver-Error-Compensation-FAQ" target="_blank" rel="noopener">Driver Error Compensation FAQ ↗</a>.</p>
+
+<h3>28.19 Filter Delay</h3>
+<figure><img src="images/FilterDelayL12.png" alt="Filter delay" loading="lazy"><figcaption>Hiệu ứng Filter Delay.</figcaption></figure>
+<p>Ba đường trễ độc lập, mỗi đường có cặp low/high-pass liên kết ở trước — áp trễ chỉ cho một số tần số của tín hiệu vào; feedback của mỗi đường cũng quay lại qua filter. Ba đường bật/tắt độc lập: delay 1 cho kênh trái, delay 2 cho cả hai, delay 3 cho phải; Pan bên phải ghi đè output của từng đường (không thì mỗi đường xuất đúng kênh lấy input).</p>
+<p>Filter mỗi đường có nút On bên trái bộ X-Y; X-Y chỉnh đồng thời low/high-pass: dọc = băng thông, ngang = tần số dải. <b>Sync</b> bật: chọn thời gian trễ theo phân phách (nút số = nốt 1/16; 4 = một phách); đổi % Delay Time tạo "swing". Sync tắt: trễ theo ms (kéo lên/xuống hoặc gõ giá trị). <b>Feedback</b> đặt lượng output trả về input — quá cao gây dao động cực to, coi chừng tai và loa! Mỗi kênh có volume riêng tới +6 dB bù cho lọc gắt ở input. <b>Dry</b> chỉnh mức khô — return track để tối thiểu.</p>
+
+<h3>28.20 Gate</h3>
+<figure><img src="images/GateL12.png" alt="Gate" loading="lazy"><figcaption>Hiệu ứng Gate.</figcaption></figure>
+<p>Gate chỉ cho qua tín hiệu vượt ngưỡng — khử tạp âm mức thấp giữa các âm (hiss, hum), hoặc đắp âm bằng cách nâng ngưỡng để cắt đuôi reverb/delay, cụt decay tự nhiên của nhạc cụ.</p>
+<p>Khung hiển thị: mức vào xám nhạt, mức ra xám đậm viền trắng — thấy lượng gating từng lúc, dễ đặt tham số. <b>Threshold</b> đặt độ nhạy (đường ngang xanh trong khung, kéo được). <b>Return</b> (hysteresis) đặt chênh lệch mức mở/cửa cửa — cao giảm "chatter" khi tín hiệu quanh ngưỡng (đường ngang cam). <b>Flip</b> bật: gate đảo — chỉ cho qua tín hiệu <em>dưới</em> ngưỡng.</p>
+<p>Gate chỉ phản ứng sau khi tín hiệu xảy ra, cộng envelope nên luôn hơi trễ — gate số giải bằng trễ input chút xíu: ba mức <b>Lookahead</b> 0/1/10 ms. <b>Attack</b> đặt thời gian đóng→mở khi tín hiệu vượt ngưỡng (quá ngắn gây click sắc, dài làm mềm attack). Tín hiệu tụt dưới ngưỡng: <b>Hold</b> giữ cửa mở thêm, hết Hold thì đóng trong <b>Release</b>. <b>Floor</b> đặt mức suy giảm khi cửa đóng: −inf = mute; 0,00 dB = không ảnh hưởng; ở giữa attenuate tương ứng.</p>
+<p>Sidechain: gate tín hiệu dựa trên mức tín hiệu khác — mở Sidechain bằng nút gấp thanh tiêu đề.</p>
+<figure><img src="images/GateSidechainL12.png" alt="Sidechain" loading="lazy"><figcaption>Sidechain của Gate.</figcaption></figure>
+<p>Bật Sidechain, chọn track khác làm trigger thay cho tín hiệu đang gate; Gain chỉnh mức sidechain; Dry/Wet trộn sidechain + gốc (100% chỉ sidechain). Tăng gain không tăng âm nguồn. Phải: EQ sidechain — gate kích bởi một dải tần thay vì toàn tín hiệu (trong tín hiệu bị gate hoặc, kèm sidechain ngoài, trong audio track khác). Nút tai nghe: nghe riêng sidechain (display hiện mức sidechain màu xanh).</p>
+<p>Ứng dụng: chồng pattern nhịp từ nguồn này lên nguồn khác — pad giữ dài bị kích theo nhịp drum loop: chèn Gate vào track pad, chọn track drum loop làm sidechain.</p>
+
+<h3>28.21 Glue Compressor</h3>
+<figure><img src="images/GlueL12.png" alt="Glue" loading="lazy"><figcaption>Hiệu ứng Glue Compressor.</figcaption></figure>
+<p>Compressor mô phỏng analog làm cùng Cytomic, dựa trên bus compressor kinh điển của một mixer nổi tiếng thập niên 80. Như <a href="#ch-audio-effects">Compressor</a> gốc, dùng cho nén đơn track được, nhưng thiết kế chính cho Main/Group Track — "dán" nhiều nguồn thành mix gắn kết.</p>
+<p><b>Threshold</b> đặt chỗ bắt đầu nén; <b>Ratio</b> đặt tỉ lệ vào/ra. Không có knee chỉnh được — knee sắc dần theo ratio. <b>Attack</b> (ms) đặt thời gian đạt nén tối đa; <b>Release</b> (s) đặt thời gian trở lại bình thường; Release = A (Auto): tự chỉnh theo audio vào — thực ra dùng hai tốc: chậm làm nền + nhanh phản ứng transient; đôi khi hơi chậm với biến đổi đột ngột nhưng là cách dịu dàng xử lý đa dạng vật liệu.</p>
+<p><b>Dry/Wet</b> cân nén/khô; cách khác kiểm soát lượng nén: <b>Range</b> đặt mức nén tối đa — khoảng −60…−70 dB mô phỏng phần cứng gốc; −40…−15 dB thay thế Dry/Wet; 0 dB không nén. <b>Makeup</b> bù gain — giá trị tương ứng kim trong khung cho mức gần như trước khi nén. <b>Soft clip</b> bật waveshaper cố định trị transient cực to (output tối đa −0,5 dB; bật Oversampling thì đỉnh vẫn có thể vượt 0 dB) — không phải limiter trong suốt, hoạt động là có méo; để tắt trừ khi cần đúng thứ méo "có màu" này. Kim hiển thị cho gain reduction (dB); LED Clip đỏ khi output vượt 0 dB, vàng khi Soft clip đang cắt đỉnh.</p>
+
+<h4>28.21.1 Tham số sidechain</h4>
+<figure><img src="images/GlueSidechainL12.png" alt="Sidechain" loading="lazy"><figcaption>Glue Compressor với phần Sidechain.</figcaption></figure>
+<p>Như Compressor: nén tín hiệu dựa trên mức tín hiệu khác hoặc dải tần — mở bằng nút gấp. Bên trái: bật <b>Sidechain</b>, chọn <a href="#ch-routing">điểm routing nội bộ</a> làm trigger; Gain chỉnh mức; Dry/Wet trộn (100% chỉ sidechain). Bên phải: EQ sidechain — kích bởi dải tần cụ thể (trong tín hiệu bị nén hoặc track khác khi kết hợp sidechain ngoài). Nút tai nghe nghe riêng sidechain.</p>
+
+<h5>Tùy chọn menu ngữ cảnh</h5>
+<p><b>Oversampling</b> — xử lý nội bộ gấp đôi sample rate: giảm aliasing và độ gắt transient (tốn CPU nhẹ; bật thì mức có thể vượt 0 dB ngay cả khi Soft clip bật).</p>
+
+<h3>28.22 Grain Delay</h3>
+<figure><img src="images/GrainDelayL12.png" alt="Grain" loading="lazy"><figcaption>Hiệu ứng Grain Delay.</figcaption></figure>
+<p>Cắt tín hiệu vào thành hạt li ti ("grain") trễ riêng từng hạt, có thể khác cao độ so với nguồn. Ngẫu nhiên hóa pitch + trễ tạo khối âm và nhịp phức tạp dường như chẳng liên quan nguồn — rất hữu ích tạo âm và texture mới (và xua khách ghé nhà, hù thú cưng nhỏ — đùa thôi!).</p>
+<p>Mỗi tham số route được lên trục X/Y của bộ điều khiển: trục X chọn ở hàng tham số dưới, trục Y ở hàng bên trái. <b>Sync</b> bật: trễ theo phân phách (nút số = 1/16; 4 = một phách); % Delay Time tạo swing; tắt Sync: ms (kéo/gõ). Delay Time route được lên trục X.</p>
+<p><b>Spray</b> thêm đổi trễ ngẫu nhiên: thấp "nhòe" tín hiệu theo thời gian, thêm chất nhiễu; cao phá hẳn cấu trúc nguồn — mức hỗn loạn nhịp tùy chọn (khuyến nghị cho dân vô chính phủ). Kích thước/độ dài mỗi hạt theo <b>Frequency</b> — âm của Pitch và Spray phụ thuộc nhiều vào nó. <b>Pitch</b> transpose cao độ hạt — như pitch shifter thô. <b>Random Pitch</b> thêm biến thiên ngẫu nhiên từng hạt: thấp tạo chorus "đột biến"; cao làm mất hẳn cao độ gốc — tương tác với Pitch chính cho các mức ổn định/bất ổn trong kết cấu cao độ. <b>Feedback</b> đặt lượng output trả về input — quá cao gây dao động cực to, coi chừng tai và loa! Dry/Wet route được lên trục Y.</p>
+
+<p class="note"><em>⏳ Còn tiếp: các device 28.23 Hybrid Reverb → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 
 
