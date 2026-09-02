@@ -151,6 +151,7 @@
     <a href="#ch-clip-envelopes">26. Clip Envelopes</a>
     <a href="#ch-video">27. Working with Video</a>
     <a href="#ch-max4live">31. Max for Live</a>
+    <a href="#ch-midi-effects">29. Live MIDI Effect Reference</a>
     <a href="#ch-remote">33. MIDI and Key Remote Control</a>
     <a href="#ch-sync">36. Synchronizing with Link, Tempo Follower, and MIDI</a>
     <a href="#ch-cpu">37. Computer Audio Resources and Strategies</a>
@@ -4158,6 +4159,135 @@
 <p>Menu ngữ cảnh có ở nhiều vùng trong Live để nhanh chóng tới lệnh/thao tác thường dùng — mở bằng chuột phải hoặc Shift+F10 (Windows) / VO+Shift+M (Mac).</p>
 
 <p>Some commands only appear in the context menu. Among these are: various options for <a href="../working-with-the-browser/index.html#working-with-the-browser">working with the browser</a>, special grid marker commands for <a href="../audio-clips-tempo-and-warping/index.html#auto-warping-long-samples">directing Auto-Warp</a>, detailed options for <a href="../arrangement-view/index.html#using-the-editing-grid">zoom-adaptive and fixed grid line width</a>, copying and pasting for <a href="../live-instrument-reference/index.html#operator">Operator’s envelopes and oscillators</a>, and numerous device-specific commands.</p>
+
+<!-- ============ CH 29: LIVE MIDI EFFECT REFERENCE (EN ch.29) ============ -->
+<h2 class="sec" id="ch-midi-effects">Chương 29 · Live MIDI Effect Reference (Từ điển hiệu ứng MIDI của Live)</h2>
+<p class="lead">Live kèm bộ hiệu ứng MIDI built-in thiết kế riêng: biến đổi cao độ, độ dài và velocity của MIDI vào theo nhiều cách. Dùng riêng để thêm biến thể cho pattern, hoặc xếp chồng nhiều hiệu ứng tạo chuỗi nốt phức tạp hơn.</p>
+<p>Mọi hiệu ứng MIDI có điều khiển cao độ đều hỗ trợ nhận biết scale: bật công tắc Use Current Scale trên thanh tiêu đề device là chỉnh cao độ theo bậc scale thay vì nửa cung — mọi transpose nằm gọn trong vùng hòa âm xác định.</p>
+<p>Cơ bản về dùng hiệu ứng: xem chương <a href="#ch-devices">Working with Instruments and Effects</a>.</p>
+
+<h3>29.1 Arpeggiator (Rải hợp âm)</h3>
+<figure><img src="images/ArpeggiatorL12.png" alt="Arpeggiator" loading="lazy"><figcaption>Hiệu ứng Arpeggiator.</figcaption></figure>
+<p>Arpeggiator tạo pattern nhịp từ nốt của hợp âm hoặc nốt đơn — đầy đủ cả tính năng chuẩn lẫn độc quyền.</p>
+<p>Arpeggiator là yếu tố kinh điển của nhạc synth thập niên 80. Tên bắt nguồn từ khái niệm arpeggio: nốt của hợp âm chơi tuần tự thay vì đồng thời — từ tiếng Ý "arpeggiare": chơi nốt trên đàn hạc.</p>
+<p>Trình chọn <b>Style</b> quyết định thứ tự nốt trong pattern; chọn style là khung hiển thị vẽ pattern; nút Previous/Next Style Pattern duyệt vòng.</p>
+<p>Đa số style là chuẩn (Up, Down, Converge, Diverge…), thêm hai kiểu độc quyền:</p>
+<ul>
+<li><b>Play Order</b> — sắp nốt theo thứ tự được chơi; chỉ "ra" khi đã chơi nhiều hơn một nốt/hợp âm.</li>
+<li><b>Chord Trigger</b> — lặp nốt vào thành hợp âm khối.</li>
+</ul>
+<p>Ba kiểu random:</p>
+<ul>
+<li><b>Random</b> — chuỗi ngẫu nhiên liên tục từ nốt vào.</li>
+<li><b>Random Other</b> — ngẫu nhiên nhưng không lặp một nốt cho tới khi mọi nốt khác đã dùng.</li>
+<li><b>Random Once</b> — sinh một pattern ngẫu nhiên rồi lặp cho tới khi MIDI vào đổi, lúc đó tạo pattern mới.</li>
+</ul>
+<p>Pattern chạy theo tốc độ của <b>Rate</b> (mili-giây hoặc phân chia phách đồng bộ tempo, tùy công tắc Sync/Free).</p>
+<p>Transpose pattern bằng <b>Distance</b> (khoảng transpose theo nửa cung/bậc scale) và <b>Steps</b> (số lần transpose): pattern phát gốc trước rồi lặp ở transpose cao dần (Distance dương) hoặc thấp dần (âm). Ví dụ Distance +12 st, Steps 2: pattern bắt đầu C3 phát C3 → C4 → C5.</p>
+<p>Muốn transpose trong scale xác định: chọn <b>Root</b> và <b>Scale</b>; hoặc bật Use Current Scale để theo scale của clip (khi đó Root/Scale vô hiệu vì clip quyết định).</p>
+<p><b>Gate</b> đặt độ dài nốt theo % của Rate; trên 100% nốt chồng nhau tạo hiệu ứng legato.</p>
+<p><b>Hold</b> (khi chơi bằng MIDI controller): giữ pattern chạy tiếp khi thả phím — lặp tới khi bấm phím khác; giữ bộ phím đầu rồi bấm thêm phím để thêm nốt vào pattern đang giữ; chơi lại nốt lần hai để bỏ nốt — dựng buildup và sắp lại pattern dần dần.</p>
+<p><b>Pattern Offset</b> dịch chuỗi nốt đi số bước chỉ định — tưởng tượng pattern là vòng tròn nốt chạy theo chiều kim đồng hồ từ điểm xuất phát; Pattern Offset xoay ngược mỗi lần một nốt, đổi nốt xuất phát (offset 1: nốt thứ hai chạy trước, nốt đầu chạy cuối).</p>
+<p>Thêm swing bằng <b>Gate Groove</b> — groove trong Arpeggiator hoạt động như groove của clip; cường độ theo thanh Global Groove Amount trong <a href="#ch-grooves">Groove Pool</a> hoặc Control Bar.</p>
+<p>Pattern chạy lại theo chu kỳ tùy <b>Retrigger</b>:</p>
+<ul>
+<li>Off — không bao giờ chạy lại.</li>
+<li>Note — chạy lại khi có nốt mới.</li>
+<li>Beat — chạy lại theo bar/phách chỉ định bởi Interval.</li>
+</ul>
+<p>LED cạnh Retrigger nháy mỗi lần pattern chạy lại.</p>
+<p><b>Repeats</b> đặt số lần lặp pattern — mặc định ∞ (chơi mãi); đặt 1–2 mô phỏng quạt guitar; phối Repeats với Retrigger tạo arpeggio có khoảng lặng nhịp.</p>
+<p>Bật công tắc <b>Velocity</b> để mở điều khiển velocity: Decay đặt thời gian về tới giá trị Target — Decay dài + Target 0 = fade-out dần. Retrigger bật thì dốc velocity chạy lại mỗi lần pattern chạy lại; phối velocity + Beat retrigger thêm biến hóa nhịp cho dốc velocity.</p>
+
+<h3>29.2 CC Control</h3>
+<figure><img src="images/CCControlL12.png" alt="CC Control" loading="lazy"><figcaption>Hiệu ứng CC Control.</figcaption></figure>
+<p>Gửi thông điệp MIDI CC ra thiết bị phần cứng: ba núm cố định (Mod Wheel, Pitch Bend, Pressure), một nút tùy chỉnh gửi on/off hoặc min/max (Custom A) và mười hai núm tùy chỉnh (Custom B–M).</p>
+<p>Ba núm cố định:</p>
+<p><em>Mod Wheel</em> — lượng modulation thiết bị nhận áp dụng.</p>
+<p><em>Pitch Bend</em> — gửi pitch bend: âm chỉnh xuống, dương chỉnh lên.</p>
+<p><em>Pressure</em> — lượng channel pressure/aftertouch của thiết bị nhận.</p>
+<p>Nút <b>Custom A</b> gửi on/off hoặc min/max (bật/tắt nút để chuyển); mặc định cho pedal sustain (CC 64) nhưng gán được MIDI parameter khác qua menu CC Type Chooser.</p>
+<p><b>Custom B–M</b> đổi tên và gán parameter bất kỳ qua CC Type Chooser; tên/gán hiển thị trên Push và lưu thành preset. Giá trị đặt bằng lane automation hoặc modulate real-time qua núm — tiện dựng kết cấu và ứng tấu.</p>
+<p>Thanh tiêu đề: hai công tắc chuyển nhóm 1–8 / 9–16 và nút <b>Send</b> gửi mọi giá trị CC hiện hành. Bật <b>Learn</b> để gửi CC từ nguồn MIDI vào vào núm tùy chỉnh bất kỳ — cá nhân hóa nhanh, đồng thời dễ nhận diện controller ngoài đang gửi CC nào.</p>
+<p class="note"><strong>Lưu ý:</strong> nếu CC automation đã tồn tại cho CC nào đó đang gửi, dữ liệu MIDI hai nguồn được gộp.</p>
+
+<h3>29.3 Chord (Sinh hợp âm)</h3>
+<figure><img src="images/ChordL12.png" alt="Chord" loading="lazy"><figcaption>Hiệu ứng Chord.</figcaption></figure>
+<p>Như tên gọi: tạo hợp âm từ cao độ nốt vào cộng tối đa sáu cao độ thêm.</p>
+<p><b>Shift 1–6</b> gán cao độ góp vào hợp âm trong ±36 nửa cung so với nốt gốc — Shift 1 = +4, Shift 2 = +7 cho hợp âm trưởng lấy nốt vào làm root. Cao độ đặt thứ tự nào cũng được (Shift nào giữ pitch nào không quan trọng); LED cạnh mỗi núm Shift nháy khi nốt tương ứng phát.</p>
+<p class="note"><strong>Lưu ý:</strong> một cao độ không gán vào nhiều Shift — đặt Shift 2 và Shift 3 cùng +8 st không được; pitch đã có chỗ rồi thì lần gán sau bị vô hiệu.</p>
+<p>Ngoài đặt tay, bật <b>Learn</b> trên thanh tiêu đề rồi chơi hợp âm trên controller: phím giữ đầu tiên là root (không vào Shift), các cao độ sau vào Shift theo thứ tự; giữ thêm phím mới (vẫn giữ phím cũ) để thêm; xong tắt Learn.</p>
+<p>Bật công tắc <b>Velocity</b> hoặc <b>Chance</b> để chỉnh động lực học từng nốt sinh ra bằng thanh trượt dưới mỗi Shift:</p>
+<ul>
+<li><b>Velocity</b> — velocity của nốt sinh, điều khiển tương đối 1–200%; 100% giữ nguyên velocity vào. Đa dạng velocity giữa các nốt tạo overtone tinh tế hoặc đổi hẳn thế cân bằng của hợp âm.</li>
+<li><b>Chance</b> — xác suất nốt sinh phát khi nốt vào kích hoạt (0–100%); 100% là nốt nào cũng sinh.</li>
+</ul>
+<p>Dùng cả hai cùng lúc là cách hay để thêm biến thể động lực cho hợp âm.</p>
+<p><b>Strum</b> thêm trễ tới 400 ms giữa các nốt của hợp âm: dương quét từ nốt gốc rồi Shift 1→6; âm đảo ngược. Bật Play Duplicate Notes When Strumming (menu ngữ cảnh thanh tiêu đề) để thêm nốt trùng khi quét.</p>
+<p>Hai điều khiển tinh chỉnh quét:</p>
+<ul>
+<li><b>Tension</b> — tốc độ quét: dương chậm rồi nhanh dần; âm nhanh rồi chậm dần.</li>
+<li><b>Crescendo</b> — dốc velocity cho nốt quét: dương đi lên, âm đi xuống.</li>
+</ul>
+<p>Mặc định tính theo nửa cung; bật Use Current Scale để tính theo bậc scale.</p>
+<p>Bật Send Per Note Events to Generated Notes (menu ngữ cảnh) để gửi dữ liệu MPE cho các nốt của hợp âm sinh ra; kèm scale awareness thì pitch bend từng nốt theo scale của clip — hợp âm bẻ vẫn nằm trong vùng hòa âm.</p>
+
+<h3>29.4 Note Length (Độ dài nốt)</h3>
+<figure><img src="images/NoteLengthL12.png" alt="Note Length" loading="lazy"><figcaption>Hiệu ứng Note Length.</figcaption></figure>
+<p>Đổi độ dài nốt MIDI vào; còn kích hoạt nốt từ Note Off thay vì Note On thường lệ.</p>
+<p>Công tắc <b>Trigger Source</b> chọn Note On hay Note Off. Note On: độ dài nốt vào do <b>Gate</b> và <b>Length</b> quyết định — Gate định cách áp giá trị Length: 100% phát đúng độ dài Length; 200% gấp đôi; 50% giảm một nửa. Công tắc Time Mode chỉnh theo mili-giây hoặc phân chia phách đồng bộ tempo.</p>
+<p>Kích hoạt từ Note Off (lúc nhả nốt): thời điểm nốt vào bị trễ đúng bằng độ dài nốt — nốt bắt đầu đúng lúc nó lẽ ra kết thúc nếu theo Note On; qua độ trễ đầu đó thì áp timing của Gate/Length.</p>
+<p>Ba tham số thêm khi dùng Note Off:</p>
+<ul>
+<li><b>Release Velocity</b> — velocity của nốt ra; % đặt cân bằng giữa velocity Note On và Note Off của nốt vào (keyboard không hỗ trợ Note Off velocity thì để 0%).</li>
+<li><b>Decay Time</b> — thời gian velocity nốt vào suy giảm về 0, tính từ lúc nhận Note On; giá trị tại thời điểm Note Off thành velocity nốt ra.</li>
+<li><b>Key Scale</b> — đổi độ dài nốt ra theo cao độ nốt vào: dương — nốt dưới C3 dài dần, trên C3 ngắn dần; âm đảo lại.</li>
+</ul>
+<p>Bật <b>Latch</b> để khoá nốt: Note On — nốt chơi tới Note On kế tiếp; Note Off — nốt kích hoạt khi mọi phím (hoặc pedal sustain) đã nhả và có Note Off mới. Cả hai trường hợp Gate/Length vô hiệu vì độ dài theo thông điệp Note; riêng Note Off thì Release Velocity/Decay Time/Key Scale cũng vô hiệu.</p>
+
+<h3>29.5 Pitch (Dịch cao độ)</h3>
+<figure><img src="images/PitchL12.png" alt="Pitch" loading="lazy"><figcaption>Hiệu ứng Pitch.</figcaption></figure>
+<p>Transpose nốt MIDI vào ±128 nửa cung hoặc ±30 bậc scale.</p>
+<p>Núm <b>Pitch</b> đặt khoảng transpose (mặc định nửa cung; bật Use Current Scale để theo bậc scale). Nút <b>Step Up/Down</b> tăng/giảm Pitch theo bước của <b>Step Width</b> (1–48 nửa cung hoặc 1–30 bậc scale) — mọi điều khiển gán được <a href="#ch-remote">Key/MIDI mapping</a> để chỉnh real-time.</p>
+<p><b>Lowest</b> và <b>Range</b> định dải cao độ được đi qua hiệu ứng; trình chọn <b>Mode</b> xử lý nốt ngoài dải:</p>
+<ul>
+<li><b>Block</b> — chặn nốt ngoài dải (LED cạnh Range nháy khi xảy ra).</li>
+<li><b>Fold</b> — transpose nốt ngoài dải về phía trong.</li>
+<li><b>Limit</b> — giới hạn trong dải: nốt dưới đáy transpose lên đúng nốt đáy, nốt trên trần transpose xuống trần.</li>
+</ul>
+
+<h3>29.6 Random (Ngẫu nhiên hóa)</h3>
+<figure><img src="images/RandomL12.png" alt="Random" loading="lazy"><figcaption>Hiệu ứng Random.</figcaption></figure>
+<p>Thêm yếu tố bất ngờ cho chuỗi nốt bằng cách ngẫu nhiên hóa cao độ nốt vào.</p>
+<p><b>Chance</b> — xác suất nốt vào bị đổi cao độ: coi như dry/wet của độ ngẫu nhiên.</p>
+<p>Giá trị ngẫu nhiên do hai biến tạo: <b>Choices</b> (số cao độ khả dụng, 1–24) và <b>Interval</b> (số khoảng khả dụng giữa các cao độ); nhân hai giá trị ra tổng dải cao độ so với nốt vào. Ví dụ: Chance 50%, Choices 1, Interval 12 — chơi C3 liên tục: một nửa nốt phát C3, nửa kia C4, không theo thứ tự. Đổi Choices 12, Interval 1: một nửa C3, nửa kia rơi vào nốt bất kỳ giữa C#3 và C4. Hai ví dụ với Mode = Random, Sign = Add (mặc định).</p>
+<p><b>Mode</b>: Random — cao độ không thứ tự; Alt — duyệt vòng tuần tự cố định. Ở Alt, Chance hành xử khác: 100% — nốt ra luôn là nốt kế trong chuỗi; 0% — luôn là nốt vào. Ví dụ Alt, Chance 100%, Choices 12, Interval 1: C3 đầu phát C3, mỗi C3 kế cao thêm nửa cung tới C4 rồi lặp lại từ C3. Chance 100%, Choices/Interval 2: C3 vào lần lượt C3 ↔ D3 — hoàn hảo mô phỏng kéo violin lên/xuống, hoặc luân phiên mẫu trống tay phải/trái.</p>
+<p><b>Sign</b> — sinh cao độ so với nốt vào: Add (cao hơn), Sub (thấp hơn), Bi (cả hai).</p>
+<p>LED bên phải Chance báo cách gán: + nháy khi sinh cao hơn, 0 khi giữ nguyên, − khi thấp hơn.</p>
+<p>Bật Use Current Scale để giới hạn cao độ ngẫu nhiên trong scale của clip — giá trị ra luôn trong vùng hòa âm; dùng Alt với scale tạo hiệu ứng step sequencer đơn giản mà khó đoán.</p>
+
+<h3>29.7 Scale (Ánh xạ scale)</h3>
+<figure><img src="images/ScaleL12.png" alt="Scale" loading="lazy"><figcaption>Hiệu ứng Scale.</figcaption></figure>
+<p>Ánh xạ lại nốt theo scale định nghĩa — mỗi nốt vào được gán nốt ra tương đương trong ma trận: chuyển mọi nốt C vào thành D ra, chẳng hạn.</p>
+<p><b>Note Matrix</b> lưới 13×13, mỗi hàng/cột ứng 12 nốt của một quãng tám: cột = nốt vào, hàng = nốt ra. Ô đen ứng phím đen; ô sáng quyết định map theo scale. Ánh xạ bắt đầu từ nốt gốc ở góc dưới-trái: đặt gốc bằng <b>Base</b>, chọn scale bằng <b>Scale Name</b>; hoặc bật Use Current Scale để theo nốt gốc + scale của clip (khi đó Base/Scale Name vô hiệu).</p>
+<p>Tự tạo scale bằng Scale Name = User: mặc định mỗi ô sáng map sang nốt tương ứng trong quãng tám (C→C, C#→C#…); kéo ô sáng bằng chuột hoặc xóa bằng nhấp chuột để tùy chọn nốt thuộc scale — bỏ nốt khỏi ma trận là nốt đó không còn xuất ra dù có chơi.</p>
+<p>Thanh <b>Transpose</b> nâng/hạ nốt vào ±36 nửa cung — dịch giai điệu Đô trưởng sang Sol trưởng bằng +7 st, ví dụ.</p>
+<p>Scale Name = User: bật <b>Fold</b> để tự gập nốt khi khoảng cách với nốt gốc hơn 6 nửa cung — C3 map sang A3 thì bật Fold C3 sẽ map A2.</p>
+<p><b>Lowest</b>/<b>Range</b> định dải nốt áp ánh xạ: mặc định mọi quãng tám; giới hạn dải để remap sáng tạo một số nốt, giữ nguyên phần còn lại — Lowest C2, Range +36: chỉ C2–B4 được remap (scale Đô trưởng). Phối với Transpose để chỉ transpose một dải: cùng thiết lập đó, Transpose +7 st — chỉ C2–B4 bị dịch, nốt khác nguyên vẹn.</p>
+
+<h3>29.8 Velocity</h3>
+<figure><img src="images/VelocityL12.png" alt="Velocity" loading="lazy"><figcaption>Hiệu ứng Velocity.</figcaption></figure>
+<p>Đổi velocity (1–127) của nốt MIDI vào để giá trị ra nằm trong dải chỉ định.</p>
+<p>Lưới <b>Velocity Curve</b> cho thấy velocity vào trong dải Lowest/Range (trục X) được remap theo dải Out Low/Out Hi (trục Y) — đường cong kết quả định cách đổi giá trị. Ví dụ Out Low 80, Out Hi 127: mọi velocity ra bị đẩy lên dải cao dù nốt gốc chơi nhẹ. Lowest/Out Low = 0 và Range/Out Hi = 127 thì hiệu ứng gần như bypass.</p>
+<p>Remap cho Note On (Velocity), Note Off (Rel. Vel.) hoặc cả hai qua trình chọn <b>Operation</b>.</p>
+<p>Velocity vào ngoài dải xử lý theo công tắc <b>Mode</b>:</p>
+<ul>
+<li><b>Clip</b> — kẹp về trong dải.</li>
+<li><b>Gate</b> — loại hẳn (LED dưới lưới nháy khi nốt bị chặn).</li>
+<li><b>Fixed</b> — Out Hi quyết định mọi giá trị ra bất kể velocity vào.</li>
+</ul>
+<p><b>Random</b> thêm modulation ngẫu nhiên cho mọi velocity vào — biên độ theo giá trị đặt, chịu ảnh hưởng dải Output: Out Hi 127, Out Low 60, Random 50 — velocity dịch lên/xuống tối đa 50 trong dải 60–127. Random dương hiện vùng xám quanh đường cong velocity báo ảnh hưởng của khoảng ngẫu nhiên.</p>
+<p><b>Drive</b> và <b>Compand</b> tạo đường cong velocity phức tạp hơn: Drive đẩy mọi giá trị ra hai cực (dương — đẩy lên phần cao, đa số nốt chơi to; âm — xuống phần thấp, đa số chơi nhẹ); Compand giãn (dương — đẩy giá trị ra về hai biên) hoặc nén (âm — kéo giá trị ra về giữa) trong ranh giới đường cong. Dùng riêng lẻ hoặc cùng nhau để đắp đường cong velocity sắc nét hơn trong dải tổng.</p>
 
 </article>
 
