@@ -145,6 +145,7 @@
     <a href="#ch-bounce">20. Bounce to Audio</a>
     <a href="#ch-comping">21. Comping</a>
     <a href="#ch-stems">22. Stem Separation</a>
+    <a href="#ch-devices">23. Working with Instruments and Effects</a>
     <a href="#ch-racks">24. Instrument, Drum and Effect Racks</a>
     <a href="#ch-automation">25. Automation and Editing Envelopes</a>
     <a href="#ch-clip-envelopes">26. Clip Envelopes</a>
@@ -2790,6 +2791,292 @@
 <h4>24.8.1 Trích xuất chain (Extract)</h4>
 <p>Mọi chain kéo ra khỏi Rack mẹ đặt vào track/Rack khác được — từ chain list hoặc mixer Session View. Return chain của Drum Rack cũng trích được — kéo vào mixer thì tạo return track mới. Drum chain có thêm tính năng: kéo từ mixer sang track mới, chain <em>mang theo nốt MIDI</em> của nó. Ví dụ đang làm drum loop MIDI trong một track, muốn chuyển riêng snare sang track riêng: chọn thanh tiêu đề chain snare trong mixer, kéo ra vùng thả — tạo track mới với toàn bộ nội dung chain snare (device lẫn dữ liệu MIDI). Chỉ muốn lấy device: kéo từ chain list thay vì mixer.</p>
 <figure><img src="images/DrumRackExtract.png" alt="Extract" loading="lazy"><figcaption>Trích drum chain trong mixer lấy cả dữ liệu MIDI.</figcaption></figure>
+
+<!-- ============ CH 23: WORKING WITH INSTRUMENTS AND EFFECTS (EN ch.23) ============ -->
+<h2 class="sec" id="ch-devices">Chương 23 · Working with Instruments and Effects (Làm việc với nhạc cụ &amp; hiệu ứng)</h2>
+<p class="lead">Mọi track trong Live chứa được nhiều <span class="term">device</span> <span class="gloss">— thiết bị: hiệu ứng hoặc nhạc cụ, đơn vị xử lý trong chuỗi device của track</span>, chia ba loại:</p>
+<ul>
+<li><em>Hiệu ứng MIDI</em> — tác động tín hiệu MIDI, chỉ đặt trong MIDI track.</li>
+<li><em>Hiệu ứng audio</em> — tác động tín hiệu audio; đặt trong audio track, return track và Main track; cũng thêm vào MIDI track miễn nằm <em>sau</em> một instrument.</li>
+<li><em>Instrument</em> — nhận MIDI xuất audio; đặt trong MIDI track.</li>
+</ul>
+<p>Tìm hiểu từng device và cách vận hành: xem các chương <a href="../manual-en/live-audio-effect-reference/index.html#live-audio-effect-reference">Live Audio Effect Reference</a>, <a href="../manual-en/live-midi-effect-reference/index.html#live-midi-effect-reference">Live MIDI Effect Reference</a>, <a href="../manual-en/live-instrument-reference/index.html#live-instrument-reference">Live Instrument Reference</a> (EN). Nhóm instrument/hiệu ứng tùy chỉnh: chương <a href="#ch-racks">Rack</a>. Thông tin loại track: chương <a href="#ch-routing">Routing and I/O</a> (kể cả dùng return track chia sẻ hiệu ứng một device cho nhiều track). Thực hành với device bằng cách gán tham số cho <a href="../manual-en/midi-and-key-remote-control/index.html#midi-and-key-remote-control">điều khiển từ xa MIDI/phím</a> (EN).</p>
+
+<h3>23.1 Device View</h3>
+<p>Device View là nơi chèn, xem và chỉnh device của track đang chọn — nhấp đúp thanh tiêu đề track để mở, hiện ở đáy cửa sổ Live.</p>
+<figure><img src="images/DeviceViewDevicesL12.png" alt="Device view" loading="lazy"><figcaption>Device View.</figcaption></figure>
+<p>Mặc định Device View hoặc Clip View chỉ dùng một trong hai tùy thứ đang tiêu điểm. Muốn chỉnh device lẫn nốt/sample mà không chuyển view: xếp chồng Clip View trên Device View — dùng nút cạnh Clip/Device View Selector góc dưới-phải cửa sổ.</p>
+<figure><img src="images/StackedDeviceClipViewL12.png" alt="Stacked" loading="lazy"><figcaption>Clip và Device View xếp chồng.</figcaption></figure>
+<figure><img src="images/ClipDeviceViewSelectorsL12.png" alt="Selectors" loading="lazy"><figcaption>Clip và Device View Selector.</figcaption></figure>
+<p>Phím tắt: <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>3</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>3</kbd> (Mac) hiện/ẩn Clip View; <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>4</kbd> / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>4</kbd> hiện/ẩn Device View.</p>
+<p>Để tiết kiệm chỗ, device gấp lại bằng nhấp đúp thanh tiêu đề hoặc lệnh Fold trong menu ngữ cảnh.</p>
+<figure><img src="images/FoldedDevicesL12.png" alt="Folded" loading="lazy"><figcaption>Device gập được.</figcaption></figure>
+
+<h3>23.2 Dùng device</h3>
+<p>Device của Live truy cập qua <a href="#ch-browser">Browser</a>: sidebar có nhãn cho device built-in, <a href="../manual-en/max-for-live-devices/index.html#max-for-live-devices">Max for Live</a> (EN) và <a href="#dv-plugins">plug-in bên thứ ba</a>.</p>
+<figure><img src="images/DeviceCategoriesBrowserL12.png" alt="Labels" loading="lazy"><figcaption>Nhãn device trong sidebar Browser.</figcaption></figure>
+<p>Cách dễ nhất đặt device vào track: nhấp đúp nó trong Browser — thêm vào track đang chọn (chưa chọn track nào thì tạo track mới). Hoặc: nhấp vào track đích, chọn device/preset trong Browser rồi bấm <kbd>Enter</kbd>.</p>
+<p>Cũng kéo device vào track/vùng thả của hai view, hoặc thẳng vào Device View. Kéo sample vào Device View của MIDI track tạo instrument Simpler nạp sẵn sample.</p>
+<p>Muốn đưa tín hiệu ngoài vào track: bật <em>Arm</em> của track trong mixer để nghe input qua chuỗi device (với thiết lập Auto monitoring mặc định). MIDI track thường tự bật khi chèn instrument vào.</p>
+<figure><img src="images/ArmButtonsL12.png" alt="Arm" loading="lazy"><figcaption>Nút Arm của MIDI và Audio track.</figcaption></figure>
+<p>Đó là cách chơi instrument qua hiệu ứng của track, hoặc dùng MIDI keyboard điều khiển instrument của track; từ đó chuyển sang <a href="#ch-recording">thu clip mới</a> dễ dàng. Thiết lập nghe khác: xem phần <a href="#ch-routing">Monitoring</a>.</p>
+<p>Thêm device: kéo vào hoặc nhấp đúp tên để nối vào chuỗi. Tín hiệu trong chuỗi luôn chạy trái → phải.</p>
+<p>Hiệu ứng audio thả ở đâu trong chuỗi device của audio track cũng được — nhớ thứ tự hiệu ứng quyết định âm kết quả; MIDI track cũng vậy.</p>
+<p>Thả instrument vào MIDI track: tín hiệu <em>sau</em> instrument (bên phải) là <em>audio</em> — chỉ hiệu ứng audio xử lý được; tín hiệu <em>trước</em> (bên trái) là <em>MIDI</em> — chỉ hiệu ứng MIDI. Nghĩa là chuỗi device của MIDI track giữ được cả ba loại: hiệu ứng MIDI → instrument → hiệu ứng audio.</p>
+<figure><img src="images/DeviceSignalFlowMIDITrackL12.png" alt="Signal flow" loading="lazy"><figcaption>Chuỗi device MIDI track chứa được cả ba loại device.</figcaption></figure>
+<p>Bỏ device khỏi chuỗi: nhấp thanh tiêu đề rồi <kbd>Backspace</kbd>/<kbd>Delete</kbd> hoặc Edit → Delete. Đổi thứ tự: kéo device bằng thanh tiêu đề thả cạnh device khác trong Device View. Chuyển hẳn sang track khác: kéo từ Device View vào Session/Arrangement View.</p>
+<p>Lệnh Cut/Copy/Paste/Duplicate dùng được với device; device dán chèn vào <em>trước</em> device đang chọn — dán cuối chuỗi bằng cách nhấp vào khoảng trống sau device cuối hoặc dùng phím mũi tên phải đưa lựa chọn tới đó. Nói chung đặt/sắp/xóa device không làm đứt dòng audio.</p>
+<p>Device trong track có meter mức vào/ra — tìm device "có vấn đề" trong chuỗi: tín hiệu yếu/mất lộ ngay trên meter, rồi chỉnh thiết lập hoặc tắt/bỏ device.</p>
+<figure><img src="images/MetersBetweenDevicesL12.png" alt="Meters" loading="lazy"><figcaption>Meter mức giữa các device trong chuỗi.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> giữa các device không thể xảy ra clipping vì headroom gần như vô hạn. Clipping chỉ xảy ra khi tín hiệu quá mạnh gửi tới <em>output vật lý</em> hoặc ghi vào tệp sample.</p>
+<p>Sau khi đọc về device,rất đáng xem <a href="#ch-clip-envelopes">clip envelope</a> — automate/modulate tham số device riêng cho từng clip.</p>
+
+<h4>23.2.1 Thanh tiêu đề device</h4>
+<p>Điều khiển trên thanh tiêu đề: bật/tắt device, <a href="#dv-presets">lưu</a> và <a href="#dv-hotswap">hot-swap</a> preset, <a href="#dv-default">tạo preset mặc định</a>, mở menu ngữ cảnh.</p>
+<p>Một số điều khiển chỉ có ở vài device — như công tắc <a href="#ch-concepts">nhận biết scale</a> cho device bám theo scale của clip, hay công tắc Learn của device <a href="../manual-en/live-midi-effect-reference/index.html#chord">Chord</a> (EN).</p>
+<p>Bật/tắt device bằng công tắc Activator.</p>
+<figure><img src="images/DeviceActiveSwitchL12.png" alt="Activator" loading="lazy"><figcaption>Công tắc Activator của device.</figcaption></figure>
+<p>Tắt device như xóa tạm thời: tín hiệu bỏ qua không xử lý, device không ngốn CPU. Device của Live nhìn chung không ảnh hưởng CPU trừ khi đang bật. Xem thêm phần quản lý tải CPU trong chương Computer Audio Resources (EN); lệnh Freeze Track ở đó đặc biệt hữu ích với device ngốn CPU.</p>
+<p>Một số device có view mở rộng phía trên Device View — như mục Gain Stage/Modulation Matrix của <a href="../manual-en/live-audio-effect-reference/index.html#roar">Roar</a> (EN) hay Frequency Display của <a href="../manual-en/live-audio-effect-reference/index.html#eq-eight">EQ Eight</a> (EN). Device có view kiểu này có nút mũi tên bên phải Activator để hiện/ẩn.</p>
+<figure><img src="images/ExpandedViewToggleL12.png" alt="Toggle" loading="lazy"><figcaption>Nút mở view của Roar.</figcaption></figure>
+<figure><img src="images/RoarExpandedViewL12.png" alt="Roar view" loading="lazy"><figcaption>View mở rộng của Roar.</figcaption></figure>
+<p>Vài view mở rộng ngay bên trong device — như mục LFO/Envelope Follower của <a href="../manual-en/live-audio-effect-reference/index.html#phaser-flanger">Phaser-Flanger</a> (EN); kiểu này báo bằng icon tam giác trên thanh tiêu đề.</p>
+<figure><img src="images/ExpandedViewTogglePhaserL12.png" alt="Phaser toggle" loading="lazy"><figcaption>Nút mở view của Phaser-Flanger.</figcaption></figure>
+<figure><img src="images/PhaserExpandedViewL12.png" alt="Phaser view" loading="lazy"><figcaption>View mở rộng của Phaser-Flanger.</figcaption></figure>
+<p>Mỗi device có menu ngữ cảnh chứa lệnh chung (Cut, Copy, Rename…) và lệnh riêng của device đó — như tùy chọn Mono Sidechain của <a href="../manual-en/live-audio-effect-reference/index.html#auto-filter">Auto Filter</a> (EN).</p>
+<figure><img src="images/ContextMenuOptionsAutoFilterL12.png" alt="Context" loading="lazy"><figcaption>Tùy chọn menu ngữ cảnh của Auto Filter.</figcaption></figure>
+<p>Mở menu: nhấp chuột phải thanh tiêu đề hoặc nút Show Options.</p>
+<figure><img src="images/ShowOptionsAutoFilterL12.png" alt="Show options" loading="lazy"><figcaption>Nút Show Options.</figcaption></figure>
+
+<h4>23.2.2 So sánh A/B của device</h4>
+<p>Mọi device built-in của Live có hai <em>trạng thái</em> A và B, mỗi trạng thái lưu bộ giá trị tham số riêng — lưu và so sánh thay đổi khi tạo/chỉnh preset: một bản không muốn ghi đè lưu sang trạng thái kia rồi thử nghiệm tiếp.</p>
+<figure><img src="images/ABDeviceStatesL12.png" alt="A/B" loading="lazy"><figcaption>Device lưu được hai bộ giá trị tham số.</figcaption></figure>
+<p>So sánh bằng trạng thái rất hữu ích cho EQ và compression — chỉnh nhỏ nghe ra khác biệt rõ; thử biến thể tham số nhẹ để nghe ảnh hưởng, hoặc đối chiếu với giá trị mặc định.</p>
+<p>Device nạp lần đầu: giá trị mặc định dùng cho cả A lẫn B. Chỉnh một tham số: B giữ giá trị ban đầu, thay đổi chỉ áp cho A.</p>
+<p>Copy giá trị A sang B: lệnh <em>Compare: Copy A to B</em> (menu Edit, menu ngữ cảnh hoặc Show Options).</p>
+<figure><img src="images/ABCopyStateL12.png" alt="Copy" loading="lazy"><figcaption>Copy giá trị tham số từ trạng thái này sang trạng thái kia.</figcaption></figure>
+<p>Chuyển A → B: lệnh <em>Compare: Switch to B</em> hoặc phím <kbd>P</kbd>; đang ở B thì "(B)" hiện cạnh tên device.</p>
+<figure><img src="images/ABSwitchStateL12.png" alt="Switch" loading="lazy"><figcaption>Trạng thái B của device.</figcaption></figure>
+<p>Các lệnh Compare có ở cả hai trạng thái — cách dùng A/B tùy bạn: giữ giá trị mặc định ở một bên làm tham chiếu, hoặc thiết kế hai preset nghe hoàn toàn khác nhau. <em>Lưu ý:</em> các lệnh này không có cho Rack, Max for Live và plug-in.</p>
+<p>Vì A và B là trạng thái riêng, <a href="#ch-automation">automation tham số</a> tạo ở trạng thái này không chia sẻ với trạng thái kia: automate trong A thì automation bị tắt khi chuyển sang B, và không tự bật lại khi về A.</p>
+<figure><img src="images/ABAutomationDisabledL12.png" alt="Automation off" loading="lazy"><figcaption>Automation tắt khi chuyển trạng thái device.</figcaption></figure>
+<p>Kích hoạt lại automation bị tắt: lệnh <em>Re-Enable Automation</em> trong menu ngữ cảnh tham số, khi đang chọn trạng thái muốn dùng.</p>
+<figure><img src="images/ABRenableAutomationL12.png" alt="Re-enable" loading="lazy"><figcaption>Kích hoạt lại automation qua menu ngữ cảnh.</figcaption></figure>
+<p>Lệnh dùng được từ bất kỳ trạng thái nào; nhớ automation thuộc riêng A/B nên mỗi lần chuyển trạng thái nó lại bị tắt.</p>
+<p>Chỉ giá trị của trạng thái <em>đang chọn</em> được copy/nhân đôi: copy device khi đang chọn A — device mới dùng giá trị A của bản gốc cho cả A lẫn B, bất kể B của bản gốc có giá trị khác.</p>
+<figure><img src="images/ABCopiedDeviceL12.png" alt="Copied" loading="lazy"><figcaption>Chỉ giá trị trạng thái đang chọn (trái) được copy (phải).</figcaption></figure>
+<p>Tương tự, lưu preset vào User Library thì giá trị của trạng thái đang chọn áp cho cả A lẫn B.</p>
+<p class="note"><strong>Lưu ý:</strong> trạng thái device truy cập được qua <a href="https://docs.cycling74.com/apiref/lom/device/" target="_blank" rel="noopener">Live API với Max for Live ↗</a>.</p>
+
+<h4 id="dv-presets">23.2.3 Preset của device Live</h4>
+<p>Device Live lưu/ghi thiết lập tham số thành <em>preset</em>. Mỗi device hiện trong content pane của Browser như một thư mục — mở ra thấy các preset.</p>
+<figure><img src="images/PresetsInBrowserL12.png" alt="Presets" loading="lazy"><figcaption>Preset trong Browser.</figcaption></figure>
+<p>Thư mục đại diện preset mặc định của device — thiết lập nhà máy hoặc <a href="#dv-default">mặc định tự lưu</a>; preset bên trong là thiết lập tùy chỉnh. Preset nằm trong Core Library và Pack; bạn cũng <a href="#dv-saving">tự tạo và lưu preset riêng</a>.</p>
+<p>Duyệt và nạp preset nhanh bằng bàn phím:</p>
+<ul>
+<li>Mũi tên lên/xuống: cuộn.</li>
+<li>Mũi tên trái/phải: đóng/mở thư mục device.</li>
+<li><kbd>Enter</kbd>: nạp preset vào track đang chọn.</li>
+</ul>
+<p>Cũng nhấp đúp preset để nạp, hoặc kéo-thả preset lên thanh tiêu đề track / chuỗi device.</p>
+<p class="note"><strong>Lưu ý:</strong> nhìn chung khuyến nghị nạp preset qua Browser; nhưng cũng kéo được <a href="https://help.ableton.com/hc/en-us/articles/209769625" target="_blank" rel="noopener">loại tệp device riêng của Live ↗</a> (.adg, .adv, .amxd…) thẳng vào Live Set từ Explorer (Win) / Finder (Mac).</p>
+<p>Thay preset trên track: kéo preset mới từ Browser thả đè lên preset cũ trong chuỗi device.</p>
+
+<h4 id="dv-hotswap">23.2.4 Hot-Swap preset</h4>
+<p><em>Hot-Swap mode</em> thay preset nhanh: preset trên track liên kết với Browser để nghe thử và nạp preset khác. Bắt đầu: nhấn <kbd>Q</kbd> hoặc nút <em>Hot-Swap Presets</em> trên thanh tiêu đề device.</p>
+<figure><img src="images/HotSwapPresetsButtonL12.png" alt="Hot-swap" loading="lazy"><figcaption>Nút Hot-Swap Presets.</figcaption></figure>
+<p>Nhấn <kbd>Q</kbd>: preset đang chọn trên track sẵn sàng hoán đổi; chưa chọn preset nào thì hoán đổi hiệu ứng audio đầu tiên (audio track) hoặc instrument (MIDI track).</p>
+<p>Vào Hot-Swap: preset được chọn trong Browser và thư mục device bung ra. Thay bằng preset khác cùng thư mục, hoặc sang thư mục khác đổi luôn preset của device khác. Chỉ hot-swap được preset cùng loại device — không thể đổi hiệu ứng audio lấy hiệu ứng MIDI.</p>
+<figure><img src="images/HotSwapBrowserPresetsL12.png" alt="Swap browser" loading="lazy"><figcaption>Duyệt và thay preset trong Hot-Swap Mode.</figcaption></figure>
+<p>Mũi tên lên/xuống duyệt; <kbd>Enter</kbd> nạp preset đang chọn hoặc nhấp đúp preset muốn nạp. Muốn thiết lập mặc định của device: chọn thư mục cha của device và nạp nó thay vì một preset.</p>
+<p class="note"><strong>Lưu ý:</strong> tự động nạp preset trong Hot-Swap bằng cách thêm mục -EnableHotSwapOnSelection vào tệp <a href="https://help.ableton.com/hc/en-us/articles/6003224107292" target="_blank" rel="noopener">Options.txt ↗</a> — chọn preset mới trong Browser là preset cũ bị thay ngay.</p>
+<p>Thoát Hot-Swap bằng một trong các cách: <kbd>Q</kbd>, <kbd>Esc</kbd>, nút X trên thanh Hot-Swap ở đỉnh content pane, nút X trên thanh tiêu đề device, hoặc rời Browser sang view khác.</p>
+
+<h5>23.2.4.1 Hot-Swap sample</h5>
+<p>Ngoài thay nguyên preset, hoán đổi được sample đã nạp trong <a href="#ch-racks">pad Drum Rack</a>, Drum Sampler, Impulse, Sampler và Simpler — qua nút <em>Hot-Swap Sample</em> ở các vị trí:</p>
+<ul>
+<li>Drum Rack pad — dưới-phải mỗi pad.</li>
+<li>Drum Sampler — dưới-phải khung Waveform.</li>
+<li>Impulse — dưới-phải mỗi ô sample.</li>
+<li>Sampler — trên-trái Zone Editor khi mở.</li>
+<li>Simpler — dưới-phải khung Sample.</li>
+</ul>
+<p class="note"><strong>Lưu ý:</strong> nút chỉ hiện khi rê chuột lên vùng tương ứng (riêng Sampler luôn hiện) — ví dụ rê lên Waveform Display để thấy nút trong Drum Sampler.</p>
+<figure><img src="images/HotSwapSampleDrumSamplerL12.png" alt="Sample swap" loading="lazy"><figcaption>Nút Hot-Swap Sample của Drum Sampler.</figcaption></figure>
+<p>Bấm nút mở thư mục chứa sample trong Browser: thay bằng sample cùng thư mục hoặc thư mục khác; <kbd>Enter</kbd> nạp sample đang chọn hoặc nhấp đúp để nạp.</p>
+<figure><img src="images/HotSwapSampleBrowserL12.png" alt="Swap" loading="lazy"><figcaption>Sample trong device hoán đổi qua Browser.</figcaption></figure>
+<p>Thoát: bấm lại nút Hot-Swap Sample, nút X trên thanh Hot-Swap, <kbd>Esc</kbd>, <kbd>Q</kbd>, hoặc rời Browser sang view khác.</p>
+
+<h4 id="dv-saving">23.2.5 Lưu preset</h4>
+<p>Tạo và lưu bao nhiêu preset tùy ý trong <em>User Library</em> của Browser.</p>
+<figure><img src="images/SavePresetsButtonL12.png" alt="Save preset" loading="lazy"><figcaption>Nút Save Preset.</figcaption></figure>
+<p>Nhấn Save Preset để lưu thiết lập hiện tại của device (kèm info text tùy chỉnh) thành preset mới — chuyển sang Browser: <kbd>Enter</kbd> dùng tên Live gợi ý, hoặc gõ tên riêng; <kbd>Esc</kbd> hủy. Cũng lưu preset vào thư mục cụ thể trong Places (thư mục Current Project chẳng hạn) bằng cách kéo từ thanh tiêu đề device thả vào vị trí mong muốn trong Browser.</p>
+<p>Chi tiết về Browser: chương <a href="#ch-browser">Working with the Browser</a>. Về lưu preset theo Project: mục Projects and Presets trong chương <a href="#ch-managing-files">Managing Files and Sets</a>.</p>
+
+<h4 id="dv-default">23.2.6 Preset mặc định (Default)</h4>
+<p>Preset lưu vào thư mục <em>Defaults</em> trong User Library sẽ nạp thay cho thiết lập chung của device. Các thư mục Defaults còn cho phép:</p>
+<ul>
+<li>Tùy biến cách Live phản hồi thao tác: thả sample, slicing, chuyển audio → MIDI.</li>
+<li>Khiến MIDI/audio track mới tạo nạp sẵn device với thiết lập tham số riêng.</li>
+<li>Nạp plug-in VST/Audio Units với bộ tham số đã cấu hình sẵn trong panel của Live.</li>
+</ul>
+<figure><img src="images/DefaultsFolderL12.png" alt="Defaults" loading="lazy"><figcaption>Thư mục preset mặc định trong User Library.</figcaption></figure>
+<p>Lưu thiết lập hiện tại của device Live làm mặc định: mở menu ngữ cảnh trên header device → "Save as Default Preset" — chạy cho mọi instrument, hiệu ứng MIDI/audio của Live (kể cả <a href="#ch-racks">Rack</a>). Đã có mặc định cho device đó thì Live hỏi trước khi ghi đè.</p>
+<p>Tạo cấu hình mặc định cho plug-in VST/AU:</p>
+<ul>
+<li>Nạp plug-in vào track.</li>
+<li>Trong <a href="#dv-configure">Configure Mode</a> của plug-in, dựng bộ tham số mong muốn.</li>
+<li>Mở menu ngữ cảnh header track → "Save as Default Configuration".</li>
+</ul>
+<p>Cài cả VST lẫn AU của cùng plug-in: tạo được cấu hình mặc định riêng cho từng loại. <em>Lưu ý:</em> mặc định cho plug-in không lưu <em>giá trị</em> tham số — chỉ lưu cấu hình tham số trong panel của Live.</p>
+<p>Tạo preset mặc định cho MIDI/audio track:</p>
+<ul>
+<li>Nạp device muốn làm mặc định lên track (hoặc không device nếu muốn track trống).</li>
+<li>Chỉnh tham số theo ý.</li>
+<li>Menu ngữ cảnh header track → "Save as Default Audio/MIDI Track".</li>
+</ul>
+<p>Đặt hành vi khi kéo sample vào Drum Rack hoặc Device View của MIDI track:</p>
+<ul>
+<li>Tạo Simpler/Sampler trống, chỉnh tham số theo ý.</li>
+<li>Kéo device đã chỉnh vào thư mục "On Drum Rack" hoặc "On Device View" trong Defaults/Dropping Samples của User Library. Mặc định pad Drum Rack cũng lưu được qua menu ngữ cảnh của pad.</li>
+</ul>
+<p>Đặt hành vi khi slicing audio:</p>
+<ul>
+<li>Tạo Drum Rack trống; thêm Simpler/Sampler trống tạo một chain.</li>
+<li>Thêm hiệu ứng MIDI/audio tùy ý vào chain; chỉnh tham số.</li>
+<li>Gán <a href="#ch-racks">Macro Control</a> cho các điều khiển trong chain.</li>
+<li>Kéo cả Drum Rack vào thư mục Defaults/Slicing của User Library.</li>
+</ul>
+<p>Tạo nhiều preset slicing và chọn trong trình chọn Slicing Preset của hộp thoại slicing.</p>
+<p>Preset mặc định cho <a href="#ch-audio-to-midi">chuyển Drums/Harmony/Melody sang MIDI</a>:</p>
+<ul>
+<li>Tạo MIDI track chứa instrument muốn dùng làm mặc định cho loại chuyển đổi đó (mặc định cho drums phải chứa Drum Rack).</li>
+<li>Thêm hiệu ứng; chỉnh tham số.</li>
+<li>Dùng nhiều device thì gom vào Rack.</li>
+<li>Kéo cả Rack vào thư mục tương ứng trong Defaults/Audio to MIDI của User Library.</li>
+</ul>
+<p>Ngoài mặc định toàn chương trình, còn tạo được mặc định riêng cho từng Project — hữu ích khi một Set dùng cấu hình device/track chuyên biệt và muốn các biến thể của Set cũng truy cập các preset đó mà không ghi đè mặc định chung. Cách làm:</p>
+<ul>
+<li>Tạo lại thư mục Defaults và các thư mục con cần trong thư mục Project.</li>
+<li>Chỉnh tham số device/thiết lập track tương ứng loại mặc định muốn.</li>
+<li>Lưu device/track vào thư mục thích hợp trong Defaults của Project.</li>
+</ul>
+<p>Từ đó, nạp Set thuộc Project này thì mặc định lưu trong thư mục Project được dùng thay cho User Library. <em>Lưu ý:</em> các mục menu ngữ cảnh lưu mặc định ghi vào User Library chính — không dùng để lưu mặc định theo Project.</p>
+
+<h3 id="dv-plugins">23.3 Dùng plug-in</h3>
+<p>Bộ device dùng trong Live mở rộng bằng <em>plug-in</em>. Live hỗ trợ định dạng VST của Steinberg và Audio Units (AU — chỉ macOS): VST2, VST3, Audio Units 2, Audio Units 3 (từ Live 11.2).</p>
+<p>Làm với plug-in VST/AU giống device Live: instrument VST/AU chỉ đặt trong MIDI track — nhận MIDI, xuất audio như instrument Live; hiệu ứng plug-in chỉ đặt trong audio track hoặc sau instrument. Chi tiết xem mục <a href="#dv-devices">Dùng device Live</a> phía trên.</p>
+<p>Bỏ quét plug-in khi khởi động Live: giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) khi mở chương trình tới khi đóng splash screen — có ích khi truy tìm nguyên nhân crash.</p>
+<figure><img src="images/PlugInListBrowserL12.png" alt="Plug-ins" loading="lazy"><figcaption>Plug-in trong Browser.</figcaption></figure>
+<p>Plug-in AU/VST duyệt và nhập qua nhãn Plug-Ins của Browser; instrument plug-in nhận ra bằng icon keyboard.</p>
+<p class="note"><strong>Lưu ý:</strong> preset plug-in chỉ có trong Browser với Audio Units; đôi khi preset nhà máy của AU chỉ hiện sau khi đặt device vào track và bật Hot-Swap.</p>
+<p><em>Lưu ý:</em> lần đầu chạy Live chưa có plug-in nào trong nhãn Plug-Ins — phải "kích hoạt" nguồn plug-in trước: cho Live biết plug-in nào muốn dùng và nằm đâu trên máy. Chi tiết ở phần <a href="#dv-vst">thư mục VST</a> và <a href="#dv-au">Audio Units</a> dưới đây.</p>
+<p><em>Ghi chú người dùng Intel® Mac:</em> máy Intel® Mac không chạy native plug-in VST/AU viết cho PowerPC; chỉ dùng được plug-in loại Universal hoặc Intel®.</p>
+<p>Cài/gỡ plug-in khi chương trình đang chạy: Live chưa nhận thay đổi cho tới lần khởi động sau. Dùng nút <em>Rescan</em> trong Plug-Ins Settings để quét lại khi đang chạy — device mới cài có ngay trong Browser.</p>
+<p>Nghi ngờ cơ sở dữ liệu plug-in hỏng cũng rescan được; giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) khi bấm Rescan xóa hẳn database và quét sạch từ đầu.</p>
+
+<h4>23.3.1 Plug-in trong Device View</h4>
+<figure><img src="images/VstPlugInTrackViewL12.png" alt="VST view" loading="lazy"><figcaption>Plug-in VST trong Device View.</figcaption></figure>
+<p>Kéo plug-in từ Browser vào track, nó hiện trong Device View. Plug-in tối đa 64 tham số chỉnh được: panel của Live trình bày mọi tham số thành thanh trượt ngang; hơn 64 tham số mở panel trống — tự cấu hình hiện tham số cần truy cập. Giao diện gốc của plug-in <a href="#dv-plugin-window">mở trong cửa sổ riêng</a> được.</p>
+<figure><img src="images/VstPlugHideButtonL12.png" alt="Unfold" loading="lazy"><figcaption>Nút gấp/mở plug-in.</figcaption></figure>
+<p>Hiện/ẩn tham số plug-in qua nút <img src="images/Device_fold.png" alt="Fold" style="height:15px;display:inline;vertical-align:middle"> trên thanh tiêu đề.</p>
+<p>Trường điều khiển X-Y điều khiển hai tham số cùng lúc — rất hợp để điều khiển trực tiếp; gán hai tham số bất kỳ qua menu thả ngay bên dưới nó.</p>
+
+<h5 id="dv-plugin-window">23.3.1.1 Panel plug-in trong cửa sổ riêng</h5>
+<figure><img src="images/VstPlugInEditButtonL12.png" alt="Edit button" loading="lazy"><figcaption>Nút Show/Hide Plug-In Window.</figcaption></figure>
+<p>Nút Show/Hide Plug-In Window mở cửa sổ nổi hiển thị panel gốc VST/AU — đổi tham số trên cửa sổ nổi như đổi trong panel Live và ngược lại.</p>
+<p>Vài thiết lập Plug-Ins Settings quan trọng:</p>
+<ul>
+<li><em>Auto-Open Plug-In Windows</em> — cửa sổ plug-in tự mở khi nạp plug-in từ Browser vào track.</li>
+<li><em>Multiple Plug-In Windows</em> — mở cùng lúc bao nhiêu cửa sổ tùy ý; tùy chọn tắt vẫn giữ được cửa sổ trước bằng cách giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi mở cửa sổ mới.</li>
+<li><em>Auto-Hide Plug-In Windows</em> — chỉ hiện cửa sổ của plug-in thuộc track đang chọn.</li>
+</ul>
+<p>Ẩn/hiện cửa sổ plug-in đang mở: View → Show/Hide Plug-In Windows hoặc <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>P</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>P</kbd> (Mac) — phím tắt chỉ chạy nếu cửa sổ đã mở tay trước đó hoặc Auto-Open đang bật. Cửa sổ mở hiển thị tên track chứa plug-in trên thanh tiêu đề.</p>
+
+<h5 id="dv-configure">23.3.1.2 Configure Mode</h5>
+<figure><img src="images/VstPlugInConfigureModeL12.png" alt="Configure" loading="lazy"><figcaption>Nút Configure.</figcaption></figure>
+<p>Configure Mode tùy biến panel của Live chỉ hiện tham số plug-in cần truy cập:</p>
+<ul>
+<li>Vào Configure Mode bằng nút "Configure" trên header device.</li>
+<li>Nhấp một tham số trong cửa sổ plug-in để thêm vào panel Live — với vài plug-in phải thật sự đổi giá trị tham số. Một số plug-in không "công bố" hết tham số cho Live — những tham số đó không thêm được.</li>
+</ul>
+<p>Trong Configure Mode: kéo-thả sắp lại/dời tham số trong panel; <kbd>Delete</kbd> xóa — xóa tham số có automation/clip envelope/mapping MIDI/phím/Macro thì Live cảnh báo trước.</p>
+<p>Tham số gán là riêng cho từng instance plug-in trong Set và lưu cùng Set. Muốn lưu trọn bộ cấu hình: <a href="#ch-racks">tạo Rack</a> chứa plug-in đã cấu hình — Rack lưu vào User Library và nạp vào Set khác được; cũng lưu cấu hình tham số làm <a href="#dv-default">preset mặc định</a>.</p>
+<p>Vài plug-in không có cửa sổ riêng, chỉ hiện tham số qua panel Live — với những plug-in này không xóa tham số được trong Configure Mode (vẫn dời/sắp được).</p>
+<p>Mấy cách thêm tham số plug-in vào panel không cần Configure Mode:</p>
+<ul>
+<li>Chỉnh tham số trên cửa sổ nổi tạo mục tạm trong trình chọn clip envelope/automation và trình chọn của trường X-Y — mục biến mất khi chỉnh tham số khác. Muốn giữ vĩnh viễn (thêm hẳn vào panel): chỉnh automation/clip envelope của tham số đó, chọn tham số khác trong trình chọn, hoặc chọn tham số tạm trong một trình chọn của X-Y.</li>
+<li>Đổi tham số trên cửa sổ nổi <em>trong lúc thu</em>: automation tự ghi; dừng thu, các tham số đã automate tự thêm vào panel của mọi plug-in bị chỉnh.</li>
+<li>Trong chế độ mapping MIDI/phím/Macro: chỉnh tham số bất kỳ trên cửa sổ plug-in tạo nó trong panel Live; mục mới tự được chọn để map ngay.</li>
+</ul>
+<p>Plug-in đã vào track (và tùy chọn cấu hình xong) dùng như device Live:</p>
+<ul>
+<li>Map thông điệp MIDI controller lên mọi tham số trong panel.</li>
+<li>Kéo/copy device trong chuỗi hoặc sang track khác theo quy tắc hiệu ứng audio/instrument.</li>
+<li>Automate/modulate tham số liên tục bằng clip envelope.</li>
+<li>Dùng tính năng I/O đa kênh của một số plug-in bằng cách gán làm nguồn/đích trong thiết lập routing của track — xem chương <a href="#ch-routing">Routing and I/O</a>.</li>
+<li>Tạo info text riêng cho plug-in.</li>
+</ul>
+
+<h4>23.3.2 Tham số sidechain</h4>
+<p>Bình thường, tín hiệu đang xử lý và tín hiệu kích hoạt device là một. Với sidechain, xử lý tín hiệu này dựa trên mức của tín hiệu khác. Device plug-in hỗ trợ sidechain truy cập tham số bên trái device.</p>
+<figure><img src="images/PlugInSidechainParametersL12.png" alt="Sidechain" loading="lazy"><figcaption>Tham số sidechain của plug-in.</figcaption></figure>
+<p>Trình chọn cho phép chọn bất kỳ điểm routing nội bộ nào của Live — nguồn đã chọn đóng vai trò kích hoạt device, thay cho tín hiệu đang xử lý.</p>
+<p>Núm <b>Gain</b> chỉnh mức vào của sidechain ngoài; núm <b>Mix</b> trộn sidechain với tín hiệu gốc làm trigger: 100% kích hoạt hoàn toàn bằng nguồn sidechain; 0% sidechain bị bypass. <em>Lưu ý:</em> tăng gain không tăng âm lượng nguồn trong mix — audio sidechain chỉ là trigger, không bao giờ nghe thấy.</p>
+<p>Nút <b>Mute</b> chỉ nghe output của device, bỏ qua input nguồn sidechain.</p>
+
+<h3 id="dv-vst">23.4 Plug-in VST</h3>
+
+<h4>23.4.1 Thư mục plug-in VST</h4>
+<p>Lần đầu chạy Live cần kích hoạt nguồn VST trước khi dùng. Tùy nền tảng, có thể phải cho Live biết vị trí thư mục VST chứa device muốn dùng. Thiết lập: bấm Activate trong panel Plug-Ins của Browser, hoặc mở Plug-Ins Settings bằng <kbd>Ctrl</kbd> <kbd>,</kbd> (Win) / <kbd>Cmd</kbd> <kbd>,</kbd> (Mac) — vào mục Plug-In Sources.</p>
+<figure><img src="images/VstPluginFolderWinL12.png" alt="VST Win" loading="lazy"><figcaption>Nguồn VST plug-in trên Windows.</figcaption></figure>
+<p>Windows:</p>
+<ol>
+<li>Mục <em>VST Plug-In Custom Folder</em>: bấm <em>Browse</em> mở hộp thoại tìm thư mục phù hợp.</li>
+<li>Chọn xong và Live quét xong, đường dẫn hiển thị ra (trên Windows, Live có thể tự tìm đường dẫn trong registry không cần Browse).</li>
+<li>Đặt <em>Use VST Plug-In Custom Folder</em> = "On" để thư mục đã chọn thành nguồn VST hoạt động (tắt = không dùng VST trong Live).</li>
+</ol>
+<figure><img src="images/VstPlugInFolderMacL12.png" alt="VST Mac" loading="lazy"><figcaption>Nguồn VST plug-in trên macOS.</figcaption></figure>
+<p>macOS:</p>
+<ol>
+<li>VST thường cài trong /Library/Audio/Plug-Ins/VST (home và local); bật/tắt qua tùy chọn <em>Use VST plug-ins in System Folders</em>.</li>
+<li>Có thư mục VST khác (chỉ dùng với Live chẳng hạn): dùng thêm hoặc thay cho System folders — bấm Browse cạnh VST Plug-In Custom Folder để chọn.</li>
+<li>Tắt VST trong thư mục này qua <em>Use VST Plug-In Custom folder</em>.</li>
+</ol>
+<p>Cấu hình xong, Browser hiển thị mọi plug-in tìm thấy trong thư mục VST đã chọn và mọi thư mục con.</p>
+<p>Dùng được VST rải nhiều thư mục: tạo <em>alias</em> (macOS/Windows) của thư mục chứa VST thêm, đặt alias vào VST Plug-In Custom folder (hoặc thư mục VST System trên macOS) đã chọn trong Plug-Ins Settings — alias trỏ sang phân vùng/ổ đĩa khác cũng được; Live quét thư mục VST cùng các alias bên trong.</p>
+<p class="note"><strong>Lưu ý:</strong> vài VST có lỗi hoặc không tương thích Live — lúc quét có thể làm chương trình crash. Chạy lại Live, hộp thoại báo plug-in gây ra vấn đề; tùy tình huống, chọn quét lại hoặc vô hiệu hóa plug-in lỗi. Quét lại mà crash lần nữa thì Live tự vô hiệu hóa: không hiện trong Browser và không quét lại cho tới khi cài lại.</p>
+
+<h4>23.4.2 Preset &amp; bank VST</h4>
+<p>Mỗi instance VST "sở hữu" một <em>bank preset</em>; một preset chứa trọn bộ giá trị điều khiển của plug-in.</p>
+<p>Chọn preset từ bank bằng trình chọn dưới thanh tiêu đề. Số preset mỗi bank cố định; bạn luôn làm việc "trong" preset đang chọn — mọi thay đổi điều khiển trở thành một phần preset đó.</p>
+<figure><img src="images/VstProgramChooserL12.png" alt="Chooser" loading="lazy"><figcaption>Trình chọn preset VST.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> preset VST khác preset device Live — preset Live dùng chung cho mọi instance và Set; preset VST "thuộc về" riêng instance này.</p>
+<p>Đổi tên preset hiện tại: chọn thanh tiêu đề VST rồi Edit → Rename Plug-In Preset; gõ tên mới, <kbd>Enter</kbd> xác nhận.</p>
+<figure><img src="images/RenamingAVstProgramL12.png" alt="Rename" loading="lazy"><figcaption>Đổi tên preset VST.</figcaption></figure>
+<p>Preset/bank VST nhập từ tệp: nút Load Preset or Bank mở hộp thoại chọn tệp.</p>
+<figure><img src="images/VstProgramBankLoadAndSaveL12.png" alt="Load save" loading="lazy"><figcaption>Nút Load (trái) và Save Preset or Bank (phải).</figcaption></figure>
+<p><em>Riêng Windows:</em> chọn trong bộ lọc File Type muốn tìm VST Preset (VST Program Files) hay VST Bank (VST Bank Files).</p>
+<p>Lưu preset đang chọn thành tệp: nút Save Preset or Bank → hộp thoại lưu tệp; chọn "VST Preset" trong menu Format (Mac)/File Type (Windows), chọn thư mục và tên. Lưu cả bank: làm tương tự nhưng chọn "VST Bank".</p>
+
+<h3 id="dv-au">23.5 Plug-in Audio Units</h3>
+<p>Audio Units chỉ có trên macOS; nhìn chung hoạt động như VST.</p>
+<figure><img src="images/AudioUnitsPlugInL12.png" alt="AU" loading="lazy"><figcaption>Một plug-in Audio Units.</figcaption></figure>
+<p>Lần đầu mở Live, AU không hiện trong Browser. Kích hoạt: bấm Activate trong nhãn Plug-Ins, hoặc vào Plug-Ins Settings (<kbd>Ctrl</kbd> <kbd>,</kbd> / <kbd>Cmd</kbd> <kbd>,</kbd>) → mục Plug-In Sources → bật <em>Use Audio Units</em> — AU xuất hiện trong Browser. Muốn thôi không dùng AU thì tắt lại sau.</p>
+<figure><img src="images/AudioUnitsPlugInActivationL12.png" alt="Activation" loading="lazy"><figcaption>Kích hoạt plug-in Audio Units.</figcaption></figure>
+<p>AU đôi khi cho chọn giữa các mode của device — ví dụ các mức chất lượng render reverb; trình chọn các mode này chỉ truy cập qua panel gốc của plug-in (nút Show/Hide Plug-In Window).</p>
+<figure><img src="images/AudioUnitsPlugInEditButtonL12.png" alt="Edit" loading="lazy"><figcaption>Mở cửa sổ plug-in Audio Units.</figcaption></figure>
+<p>AU có preset hoạt động như preset hiệu ứng Live; một số preset AU chỉ đọc nên không kéo đi chỗ khác trong Browser được.</p>
+<p>Preset AU phần mở rộng .aupreset, lưu theo tên nhà sản xuất:</p>
+<p>(Home)/Library/Audio/Presets/(Tên nhà sản xuất)/(Tên plug-in)</p>
+
+<h3>23.6 Bù trễ device (Delay Compensation)</h3>
+<p>Live tự bù trễ do instrument/hiệu ứng của Live và plug-in gây ra (kể cả trên return track) — trễ phát sinh từ thời gian device xử lý tín hiệu vào và cho ra kết quả. Thuật toán bù giữ các track đồng bộ đồng thời giảm tối thiểu độ trễ giữa thao tác của người chơi và âm thanh nghe được.</p>
+<p>Bù trễ bật mặc định, thường không cần chỉnh. Bật/tắt tay bằng tùy chọn Delay Compensation trong menu Options.</p>
+<p>Delay Compensation bật thì có tùy chọn <em>Reduced Latency When Monitoring</em> — bật/tắt bù trễ cho track đang monitor input: bật = track monitor có latency thấp nhất nhưng có thể lệch với vài track khác (return track vẫn được bù); tắt = mọi track đồng bộ nhưng track monitor có thể latency cao hơn.</p>
+<p class="note"><strong>Lưu ý:</strong> hiệu ứng đồng bộ tempo và device lấy thông tin thời gian từ đồng hồ trong của Live có thể nghe lệch nếu đặt <em>sau</em> device gây trễ trong chuỗi.</p>
+<p>Track delay đơn lẻ cao bất thường hoặc plug-in báo latency lớn khiến phần mềm ì ạch. Khó chịu về latency khi thu/phát instrument: thử tắt bù trễ — nhưng thường không khuyến nghị; chỉnh track delay riêng cũng giúp, lưu ý điều khiển Track Delay không khả dụng khi bù trễ đang tắt.</p>
+<p class="note"><strong>Lưu ý:</strong> bù trễ có thể tăng tải CPU tùy số track và device đang dùng.</p>
 
 </article>
 
