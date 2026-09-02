@@ -145,6 +145,8 @@
     <a href="#ch-bounce">20. Bounce to Audio</a>
     <a href="#ch-comping">21. Comping</a>
     <a href="#ch-stems">22. Stem Separation</a>
+    <a href="#ch-automation">25. Automation and Editing Envelopes</a>
+    <a href="#ch-clip-envelopes">26. Clip Envelopes</a>
     <a href="#ch-video">27. Working with Video</a>
     <a href="#ch-max4live">31. Max for Live</a>
     <a href="#ch-credits">42. Credits</a>
@@ -2363,6 +2365,249 @@
 <p>Dưới hai tab là tham số định hình pattern:</p>
 <p><em>Steps</em> — độ dài pattern (ngắn hơn vùng chọn thì lặp và cuộn vòng). <em>Density</em> — số lần pattern lặp trong vùng chọn (không vừa thì nốt cuộn vòng). <em>Division</em> — độ dài một bước trong pattern.</p>
 <figure><img src="images/MaxEuclideanAfter.png" alt="After" loading="lazy"><figcaption>Nốt sinh bằng Euclidean.</figcaption></figure>
+
+<!-- ============ CH 25: AUTOMATION AND EDITING ENVELOPES (EN ch.25) ============ -->
+<h2 class="sec" id="ch-automation">Chương 25 · Automation and Editing Envelopes (Tự động hóa &amp; chỉnh envelope)</h2>
+<p class="lead">Làm việc với mixer và device của Live, bạn sẽ muốn sự di chuyển của các núm điều khiển trở thành một phần bản nhạc. Chuyển động của một điều khiển theo timeline bài hoặc clip Session gọi là <span class="term">automation</span> <span class="gloss">— tự động hóa: giá trị điều khiển tự đổi theo thời gian</span>. Gần như mọi điều khiển mixer/device trong Live đều automate được — kể cả tempo bài.</p>
+
+<h3>25.1 Thu automation trong Arrangement View</h3>
+<p>Hai cách thu automation vào Arrangement:</p>
+<ol>
+<li>Chỉnh tham số thủ công trong lúc thu vật liệu mới trực tiếp vào Arrangement.</li>
+<li>Thu màn trình diễn Session View <a href="#ch-session">vào Arrangement</a> — nếu clip Session có automation.</li>
+</ol>
+<p>Khi thu Session→Arrangement, automation trong clip Session <em>luôn luôn</em> được ghi vào Arrangement, cùng mọi chỉnh tay tham số trên các track đang thu từ Session.</p>
+<p>Khi thu trực tiếp vào Arrangement, nút <b>Automation Arm</b> quyết định chỉnh tay tham số có được ghi hay không.</p>
+<figure><img src="images/AutomationArm.png" alt="Automation arm" loading="lazy"><figcaption>Nút Automation Arm.</figcaption></figure>
+<p>Automation Arm bật: mọi thay đổi của điều khiển khi nút Arrangement Record đang bật thành automation của Arrangement. Thử thu automation cho một fader volume mixer; phát lại để thấy và nghe hiệu quả của chuyển động. Một đèn LED nhỏ xuất hiện trên tay nắm fader báo điều khiển đã được automate. Thử tương tự với pan track và công tắc Track Activator — LED nằm góc trên trái của chúng.</p>
+<figure><img src="images/AutomatedMixControls.png" alt="Automated" loading="lazy"><figcaption>Volume, Pan và Track Activator đã được automate.</figcaption></figure>
+
+<h3>25.2 Thu automation trong Session View</h3>
+<p>Automation cũng thu được vào clip Session:</p>
+<figure><img src="images/SessionAutomationRecordingBreakouts.png" alt="Session automation" loading="lazy"><figcaption>Điều khiển thu automation Session.</figcaption></figure>
+<ol>
+<li>Bật Automation Arm để chuẩn bị.</li>
+<li>Bật Arm cho track cần thu — nút Clip Record xuất hiện trong slot trống của track đã arm.</li>
+<li>Bấm Session Record để bắt đầu thu automation.</li>
+</ol>
+<p>Cũng thu được automation vào <em>mọi</em> clip Session đang phát, bất kể có nằm trong track đã arm không — qua công tắc Session Automation Recording trong Record, Warp &amp; Launch Settings.</p>
+<figure><img src="images/SessionAutomationRecordingPref.png" alt="Pref" loading="lazy"><figcaption>Thiết lập Session Automation Recording.</figcaption></figure>
+<p>Nhờ vậy overdub được automation Session vào MIDI clip sẵn có mà không thu thêm nốt.</p>
+<p>Automation trong Session View thành automation <em>theo track</em> khi clip được thu hoặc copy vào Arrangement View.</p>
+
+<h4>25.2.1 Các chế độ thu automation Session</h4>
+<p>Hành vi thu tùy cách chỉnh tham số khi thu. Dùng chuột: thả chuột là dừng ghi ngay — hành vi "touch". Chỉnh qua núm/fader của MIDI controller: ghi tiếp diễn chừng nào bạn còn chỉnh; thả ra thì ghi cho tới hết loop clip rồi tự "punch out" — hành vi "latch".</p>
+
+<h3>25.3 Xóa automation</h3>
+<p>Xóa toàn bộ dữ liệu automation: nhấp chuột phải điều khiển đã automate → Delete Automation, hoặc <kbd>Ctrl</kbd> <kbd>Backspace</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Delete</kbd> (Mac). LED tắt, giá trị điều khiển giữ nguyên suốt timeline Arrangement và trong mọi clip Session. Xóa từng đoạn bằng cách <a href="#au-editing">chỉnh envelope breakpoint</a>.</p>
+
+<h3>25.4 Đè lên automation (Override)</h3>
+<p>Thực tế thường muốn thử chuyển động mới mà không ghi đè automation sẵn có trong Arrangement. Trong thế giới <a href="#ch-editing-midi">Undo vô hạn</a> không gì là vĩnh viễn, nhưng dễ tắt tạm thời automation của một điều khiển: đổi giá trị một điều khiển đã automate khi <em>không</em> thu — LED tắt báo automation đang không hoạt động: automation bị <em>đè</em> bởi thiết lập thủ công hiện tại.</p>
+<p>Khi một/nhiều điều khiển đã automate không hoạt động, nút <b>Re-Enable Automation</b> trên Control Bar sáng lên.</p>
+<figure><img src="images/ReenableAutomationButton.png" alt="Re-enable" loading="lazy"><figcaption>Nút Re-Enable Automation.</figcaption></figure>
+<p>Nút này vừa nhắc trạng thái hiện tại của điều khiển khác với trạng thái ghi trong clip Session/Arrangement, vừa bấm để kích hoạt lại toàn bộ automation — trở về đúng trạng thái "trên băng". Kích hoạt lại từng tham số qua mục Re-Enable Automation trong menu ngữ cảnh của tham số đó; trong Session View, chạy lại clip chứa automation là đủ.</p>
+
+<h3 id="au-editing">25.5 Vẽ &amp; chỉnh automation</h3>
+<p>Trong Arrangement View và clip Session View, automation xem và chỉnh được dưới dạng <span class="term">breakpoint envelope</span> <span class="gloss">— đường gãy khúc với các điểm ngắt kéo được</span>.</p>
+<p>Cách chỉnh automation trong Arrangement:</p>
+<figure><img src="images/ArrangerEnvelopeWithBreakouts.png" alt="Envelopes" loading="lazy"><figcaption>Automation envelope trong Arrangement View.</figcaption></figure>
+<ol>
+<li>Hiện envelope: bật Automation Mode bằng nút công tắc phía trên header track, hoặc phím <kbd>A</kbd>. Bấm lại để tắt.</li>
+<li>Nhấp một điều khiển mixer/device của track — envelope của điều khiển đó hiển thị trên track clip.</li>
+<li>Envelope nằm trong lane automation chính của track, "phủ trên" waveform/MIDI — tiện canh breakpoint với nội dung. Trục dọc = giá trị điều khiển, trục ngang = thời gian. Với công tắc/nút radio, trục giá trị "rời rạc" (bật/tắt…).</li>
+<li>Trình chọn Device chọn mixer của track, một device, hoặc "None" để ẩn envelope; đèn LED cạnh tên cho biết device nào đang có automation. Chọn "Show Automated Parameters Only" ở đáy trình chọn cho gọn.</li>
+<li>Trình chọn Automation Control chọn điều khiển từ device đã chọn; điều khiển đã automate có LED cạnh tên.</li>
+<li>Nút <img src="images/Add_Automation.png" alt="Add" style="height:15px;display:inline;vertical-align:middle"> đưa envelope vào lane riêng bên dưới clip — chọn tiếp tham số khác để xem đồng thời. Giữ <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi bấm: chuyển envelope đang chọn cùng mọi envelope đã automate vào lane riêng. Device = "None" thì nút ẩn.</li>
+<li>Nút <img src="images/Remove_Automation.png" alt="Remove" style="height:15px;display:inline;vertical-align:middle"> ẩn lane tương ứng (ẩn lane không tắt envelope). Giữ Alt/Cmd khi bấm: bỏ lane đang chọn cùng các lane phía sau trong track.</li>
+<li>Khi envelope vào lane riêng, công tắc <img src="images/Track_folded1.png" alt="Fold" style="height:15px;display:inline;vertical-align:middle"> hiện/ẩn tất cả lane automation thêm.</li>
+</ol>
+<p>Nhấp chuột phải header lane automation mở menu tùy chọn xem envelope, kèm lệnh xóa nhanh mọi envelope của track hoặc từng device.</p>
+<p>Phím mũi tên trái từ lane automation quay về track chính (gấp hết lane); mũi tên trái/phải trên track chính gấp/mở lane automation của nó.</p>
+<p>Chỉnh automation cho clip Session View được trình bày chi tiết trong chương <a href="#ch-clip-envelopes">Clip Envelopes</a>.</p>
+
+<h4>25.5.1 Vẽ envelope</h4>
+<p>Bật Draw Mode để nhấp-kéo "vẽ" đường envelope.</p>
+<figure><img src="images/DrawModeSwitch.png" alt="Draw mode" loading="lazy"><figcaption>Công tắc Draw Mode.</figcaption></figure>
+<p>Bật/tắt: menu Options → Draw Mode, công tắc trên Control Bar, hoặc phím <kbd>B</kbd>; giữ <kbd>B</kbd> khi chỉnh chuột để bật/tắt tạm.</p>
+<figure><img src="images/DrawingAnEnvelope.png" alt="Drawing" loading="lazy"><figcaption>Đang vẽ envelope.</figcaption></figure>
+<p>Vẽ tạo bước rộng bằng lưới hiển thị — chỉnh lưới bằng các <a href="#ch-arrangement">phím tắt tiện dụng</a>. Giữ <kbd>Shift</kbd> khi kéo dọc để chỉnh giá trị automation của mỗi bước với độ mịn hơn. Muốn vẽ tự do: ẩn lưới (Snap to Grid hoặc <kbd>Ctrl</kbd> <kbd>4</kbd> / <kbd>Cmd</kbd> <kbd>4</kbd>); tạm thời vẽ tự do khi đang hiện lưới: giữ <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi vẽ.</p>
+
+<h4>25.5.2 Chỉnh breakpoint</h4>
+<p>Tắt Draw Mode, khung envelope khác đi: đoạn thẳng và breakpoint trở thành đối tượng kéo-thả; nhấp-kéo trên nền envelope để bôi chọn. Cách chỉnh:</p>
+<ul>
+<li>Nhấp lên một đoạn thẳng để tạo breakpoint mới tại đó.</li>
+<li>Nhấp đúp vào chỗ trong khung envelope không nằm trên đoạn thẳng: tạo breakpoint mới.</li>
+<li>Nhấp lên breakpoint để xóa.</li>
+<li>Giá trị automation hiện ra khi tạo/rê/kéo breakpoint cho nhanh; rê/kéo đoạn thẳng đang chọn thì hiển thị giá trị của breakpoint gần con trỏ nhất.</li>
+</ul>
+<figure><img src="images/AutomationBreakpointValue.png" alt="Value" loading="lazy"><figcaption>Giá trị automation của một breakpoint.</figcaption></figure>
+<ul>
+<li>Nhấp-kéo breakpoint để dời; breakpoint đang kéo nằm trong vùng chọn thì mọi breakpoint được chọn dời theo. Khi kéo, một đường đen mảnh dọc hiện ra giúp canh vị trí so với vạch lưới.</li>
+<li>Nhấp chuột phải breakpoint → Edit Value để gõ giá trị chính xác; chọn nhiều breakpoint thì dời tương đối. Tạo breakpoint tại giá trị chính xác bằng Add Value trên breakpoint xem trước.</li>
+<li>Nhấp gần (không trúng) đoạn thẳng, hoặc giữ <kbd>Shift</kbd> nhấp trực tiếp, để chọn đoạn; giữ chuột trái kéo đoạn tới chỗ mới. Đoạn nằm trong vùng chọn thời gian: Live chèn breakpoint tại mép vùng chọn và cả đoạn dời cùng nhau.</li>
+</ul>
+<figure><img src="images/DraggingMultipleBreakpoints.png" alt="Multiple" loading="lazy"><figcaption>Kéo một breakpoint bất kỳ trong vùng chọn để dời tất cả.</figcaption></figure>
+<ul>
+<li>Breakpoint tạo gần vạch lưới tự hút vào vạch; giữ <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi kéo ngang để bỏ hút lưới.</li>
+<li>Breakpoint/đoạn thẳng hút vào vị trí có breakpoint lân cận; kéo "đè qua" breakpoint lân cận theo phương ngang để xóa nó.</li>
+<li>Giữ <kbd>Shift</kbd> khi kéo để khóa theo trục ngang hoặc dọc.</li>
+<li>Giữ <kbd>Shift</kbd> khi kéo dọc: chỉnh giá trị mịn hơn.</li>
+<li>Giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) kéo đoạn thẳng để uốn cong; giữ Alt/Option + nhấp đúp để trả về đoạn thẳng.</li>
+</ul>
+<figure><img src="images/CurvedAutomation.png" alt="Curved" loading="lazy"><figcaption>Đoạn envelope cong.</figcaption></figure>
+
+<h4>25.5.3 Kéo giãn &amp; nghiêng envelope</h4>
+<figure><img src="images/AutomationTransformHandles.png" alt="Handles" loading="lazy"><figcaption>Các tay cầm cho phép kéo giãn/nghiêng envelope.</figcaption></figure>
+<p>Rê chuột lên vùng chọn thời gian, tay cầm hiện quanh mép ngoài. Kéo-thả các tay cầm biến đổi automation đã chọn:</p>
+<ul>
+<li>Tay cầm giữa-trên và giữa-dưới: kéo giãn theo trục dọc — hình chữ nhật báo mức giãn, hút vào biên trên/dưới và khi góc giao nhau; giữ <kbd>Shift</kbd> chỉnh mịn; kéo vượt biên thì envelope bị cắt.</li>
+</ul>
+<figure><img src="images/AutomationTransformRectangle.png" alt="Rectangle" loading="lazy"><figcaption>Hình chữ nhật báo mức kéo giãn/nghiêng khi kéo tay cầm.</figcaption></figure>
+<ul>
+<li>Tay cầm giữa-trái và giữa-phải: kéo giãn theo trục ngang — kéo đè lên breakpoint ngoài vùng chọn sẽ xóa chúng; giữ <kbd>Shift</kbd> khi giãn để dời chúng tỉ lệ theo tay cầm. Giữ Alt/Cmd khi kéo ngang bỏ hút lưới.</li>
+<li>Tay cầm góc: nghiêng automation — hình chữ nhật báo độ nghiêng; giữ Shift chỉnh mịn.</li>
+<li>Giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) khi kéo: phản chiếu chuyển động sang tay cầm đối diện — như kéo cả hai ngược chiều cùng lúc.</li>
+</ul>
+
+<h4>25.5.4 Đơn giản hóa envelope</h4>
+<p>Envelope có quá nhiều breakpoint (ví dụ sau khi thu), lệnh <b>Simplify Envelope</b> rất hữu ích: tính số breakpoint tối ưu để diễn tả envelope đã chọn, bỏ breakpoint thừa — thay bằng đoạn thẳng hoặc cong khi phù hợp.</p>
+<figure><img src="images/AutomationSimplifyEnvelope.png" alt="Simplify" loading="lazy"><figcaption>Simplify Envelope bỏ breakpoint không cần thiết.</figcaption></figure>
+<p>Bôi vùng thời gian trên automation cần đơn giản hóa, chọn Simplify Envelope từ menu ngữ cảnh.</p>
+
+<h4>25.5.5 Chèn hình dạng automation</h4>
+<figure><img src="images/AutomationShapesEnvelope.png" alt="Shapes" loading="lazy"><figcaption>Hình automation chèn vào envelope.</figcaption></figure>
+<p>Automation shapes giúp nhanh chóng tạo pattern automation nhịp phức tạp, hoặc chuyển động chậm tinh tế như swell, build, drop.</p>
+<p>Nhiều hình định sẵn áp lên vùng chọn thời gian: nhấp chuột phải vùng chọn rồi chọn hình trong menu ngữ cảnh.</p>
+<figure><img src="images/AutomationShapes.png" alt="Shape menu" loading="lazy"><figcaption>Hai hàng chứa hai loại hình automation.</figcaption></figure>
+<p>Hai loại hình. Hàng trên: các sóng phổ biến — sine, tam giác, răng cưa, răng cưa ngược, vuông; khi chèn được co ngang theo vùng chọn và dọc theo dải tham số đã automate; không có vùng chọn thì co ngang theo cỡ lưới hiện tại.</p>
+<p>Hàng dưới: hai bộ dốc (ramp) và hình ADSR — hơi khác: khi chèn sẽ nối vào giá trị automation trước/sau vùng chọn, như đường chấm chỉ dẫn.</p>
+
+<h4>25.5.6 Khóa envelope</h4>
+<p>Dời clip trong Arrangement View, Live thường dời cả automation theo clip. Đôi khi muốn khóa envelope theo vị trí bài thay vì theo clip — công tắc <b>Lock Envelopes</b> làm đúng việc đó (cũng chọn được từ menu Options).</p>
+<figure><img src="images/LockEnvelopesSwitch.png" alt="Lock" loading="lazy"><figcaption>Công tắc Lock Envelopes.</figcaption></figure>
+
+<h4>25.5.7 Lệnh menu Edit với automation</h4>
+<p>Làm việc với automation trong Arrangement, vài lệnh Edit hành xử khác tùy vùng chọn nằm trên track clip hay lane automation.</p>
+<p>Cut/Copy/Duplicate/Delete áp lên vùng chọn envelope trong một lane chỉ tác động envelope đó — clip và automation khác trong vùng thời gian đó không ảnh hưởng; làm việc được với envelope nhiều lane cùng lúc.</p>
+<p>Muốn lệnh áp cho cả clip lẫn mọi envelope liên quan: tắt Lock Envelopes và áp lệnh lên vùng chọn ở track clip.</p>
+<p class="note"><strong>Lưu ý:</strong> Live cho copy/paste chuyển động envelope không chỉ từ thời điểm này sang thời điểm khác mà còn từ tham số này sang tham số khác — tham số có thể hoàn toàn chẳng liên quan gì nhau, kết quả khó đoán (nhưng có thể thú vị).</p>
+
+<h4>25.5.8 Chỉnh tempo automation</h4>
+<p>Kéo giãn/nén audio động để bám mọi tempo và biến hóa tempo là đặc sản của Live. Trong Live, tempo bài cũng chỉ là một điều khiển được automate.</p>
+<p>Chỉnh envelope tempo: bung track Main trong Arrangement View, chọn "Mixer" ở trình chọn envelope trên và "Song Tempo" ở trình chọn dưới.</p>
+<figure><img src="images/TempoEnvelope.png" alt="Tempo envelope" loading="lazy"><figcaption>Envelope tempo.</figcaption></figure>
+<p>Khi chỉnh, có thể scale hiển thị trục giá trị bằng hai ô số dưới trình chọn envelope: trái = tempo tối thiểu, phải = tối đa (BPM).</p>
+<p class="note"><strong>Lưu ý:</strong> hai điều khiển này cũng quyết định <a href="../manual-en/midi-and-key-remote-control/index.html#midi-remote-control">dải giá trị của MIDI controller</a> (EN) gán cho tempo.</p>
+
+<!-- ============ CH 26: CLIP ENVELOPES (EN ch.26) ============ -->
+<h2 class="sec" id="ch-clip-envelopes">Chương 26 · Clip Envelopes (Envelope trong clip)</h2>
+<p class="lead">Mọi clip trong Live đều có <span class="term">clip envelope</span> <span class="gloss">— đường tự động hóa gắn riêng trong clip, không phụ thuộc track</span> riêng của mình. Khía cạnh clip chịu ảnh hưởng tùy loại và thiết lập clip: clip envelope diễn tả dữ liệu MIDI controller, hoặc <em>automate</em>/<em>modulate</em> tham số device. Chương này trình bày cách vẽ/chỉnh mọi clip envelope trước, rồi đi vào chi tiết từng ứng dụng.</p>
+
+<h3>26.1 Trình soạn Clip Envelope</h3>
+<p>Mở tab <b>Envelopes</b> của Clip View bằng nhấp tiêu đề tab có icon <img src="images/Automation.png" alt="E" style="height:15px;display:inline;vertical-align:middle">. Tab chứa hai trình chọn envelope để xem và chỉnh.</p>
+<figure><img src="images/ClipViewEnvelopesBox.png" alt="Envelopes tab" loading="lazy"><figcaption>Tab Envelopes của Clip View cho một clip Session.</figcaption></figure>
+<p>Menu bên trái là trình chọn <b>Device</b> — chọn nhóm điều khiển chung; nội dung khác nhau theo loại clip:</p>
+<ul>
+<li>Audio clip: "Clip" (điều khiển sample của clip), mọi hiệu ứng trong chuỗi device của track, và mixer.</li>
+<li>MIDI clip: "MIDI Ctrl" (dữ liệu MIDI controller), mọi device trong chuỗi, và mixer.</li>
+</ul>
+<p>Menu bên phải — trình chọn <b>Control</b> — chọn điều khiển của mục đã chọn bên Device. Ở cả hai trình chọn, tham số có envelope đã chỉnh có LED cạnh tên; chọn "Only show adjusted envelopes" để gọn.</p>
+<p>Chọn clip Session trong Clip View: dưới hai trình chọn có công tắc <b>Automation</b> và <b>Modulation</b> — chuyển giữa <a href="#ce-mixer">automate và modulate</a> tham số device/mixer. <em>Lưu ý:</em> clip Arrangement không có hai công tắc này vì trong Clip View chỉ modulate được; thêm automation cho clip Arrangement thực hiện ở <a href="#ch-automation">lane automation</a> của track.</p>
+<p>Kỹ thuật vẽ/chỉnh clip envelope giống hệt <a href="#ch-automation">automation envelope</a> trong Arrangement View. Xem <a href="#ch-automation">Thu automation trong Session View</a> về cách thu.</p>
+<p>Xóa clip envelope (đặt về giá trị mặc định): nhấp chuột phải trong Envelope Editor hoặc <kbd>Ctrl</kbd> <kbd>Backspace</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Delete</kbd> (Mac) → Clear Envelope.</p>
+<p>Muốn tự reset một số thông điệp MIDI control ở đầu clip mới: chọn "MIDI Envelope Auto-Reset" trong menu Options hoặc menu ngữ cảnh Sample Editor.</p>
+<p>Giờ xem vài ứng dụng của clip envelope.</p>
+
+<h3>26.2 Audio Clip Envelope</h3>
+<p>Clip envelope mở rộng triết lý "đàn hồi" của Live với audio, kết hợp hiệu ứng audio biến Live thành công cụ sound-design hùng mạnh. Dùng clip envelope với audio clip, tạo vô số biến thể thú vị từ cùng một clip theo thời gian thực — từ chỉnh tinh tế tới âm thanh mới hoàn toàn chẳng liên quan gốc.</p>
+
+<h4>26.2.1 Clip envelope không phá hủy</h4>
+<p>Tạo âm mới từ sample mà không đụng tới tệp sample trên đĩa. Live tính toán modulation theo thời gian thực — một Live Set có thể có hàng trăm clip nghe hoàn toàn khác nhau nhưng cùng dùng một sample.</p>
+<p>Tất nhiên xuất được âm mới bằng cách <a href="#ch-managing-files">render</a> hoặc <a href="#ch-recording">resample</a>. Trong Arrangement View, dùng lệnh <a href="#ch-arrangement">Consolidate</a> để tạo sample mới.</p>
+
+<h4>26.2.2 Đổi cao độ &amp; tinh chỉnh từng nốt</h4>
+<p>Kéo sample loop từ Browser vào Live, đảm bảo <a href="#ch-warping">công tắc Warp</a> bật, phát clip. Chọn "Clip" (Device) và "Transposition" (Control) — giờ chỉnh độ transpose của từng nốt trong sample trong khi nghe.</p>
+<p>Cách nhanh: bật <a href="#ch-automation">Draw Mode</a> vẽ bước theo lưới; tắt Draw Mode để chỉnh breakpoint/đoạn thẳng — tiện làm mượt bước thô bằng cách dịch breakpoint theo phương ngang.</p>
+<figure><img src="images/TransposeEnvStepsAndBreakpoints.png" alt="Transpose" loading="lazy"><figcaption>Envelope Transposition dạng bước (trên) và dốc (dưới).</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> thiết lập warp quyết định động cơ time-warping của Live bám hình envelope chính xác ra sao. Muốn phản hồi tức thì hơn: giảm Grain Size ở Tones/Texture Mode, hoặc chọn Granulation Resolution nhỏ hơn ở Beats Mode.</p>
+<p>Tinh chỉnh cao độ từng nốt: giữ <kbd>Shift</kbd> khi vẽ/dời breakpoint để có độ phân giải mịn. Cuộn khung nhìn: giữ <kbd>Ctrl</kbd> <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> (Mac) khi kéo.</p>
+<p>Cao độ được modulate theo kiểu <em>cộng</em>: output của envelope transpose cộng thẳng vào giá trị núm Transpose; kết quả bị cắt trong dải khả dụng (−48…48 nửa cung).</p>
+
+<h4>26.2.3 Im lặng hoặc giảm từng nốt trong sample</h4>
+<p>Chọn "Clip" (Device) và "Gain" (Control). Vẽ bước trong Draw Mode hoặc tạo hình bằng breakpoint để áp hình âm lượng tùy ý lên sample.</p>
+<figure><img src="images/VolumeEnvAndResult.png" alt="Volume env" loading="lazy"><figcaption>Áp envelope âm lượng lên sample.</figcaption></figure>
+<p>Output của envelope âm lượng tính theo phần trăm <em>tương đối</em> của giá trị núm Clip Gain hiện tại — kết quả không bao giờ vượt quá mức âm lượng tuyệt đối đã đặt, nhưng kéo được âm nghe được xuống im lặng.</p>
+
+<h4>26.2.4 Xáo trộn beat (Sample Offset)</h4>
+<p>Ứng dụng sáng tạo nhất: modulate <b>sample offset</b>. Hợp nhất với sample nhịp, chỉ có ở clip chạy Beats Warp Mode.</p>
+<p>Thử với drum loop 1 bar: chọn Beats Mode; tab Envelopes, chọn "Clip" (Device) và "Sample Offset" (Control) — Envelope Editor hiện với lưới dọc phủ lên. Trong Draw Mode, đặt bước khác 0 để nghe loop bị xáo trộn. Chuyện gì xảy ra?</p>
+<p>Hãy tưởng tượng audio được đọc bởi đầu từ băng, vị trí đầu từ bị envelope modulate: envelope càng cao, đầu từ càng lệch xa vị trí giữa; giá trị dương đẩy đầu từ về "tương lai", âm kéo về "quá khứ". May mắn là Live tính modulation theo phách chứ không theo xentimet: mỗi vạch lưới dọc = độ lệch một nốt 1/16, biên độ modulation từ +8/16 tới −8/16.</p>
+<p>Sample offset modulation là công cụ chọn để nhanh chóng tạo biến thể thú vị cho beat loop. Không khuyến khích dùng cho việc cắt-ghép "phân tích" — làm trong Arrangement View dễ hơn nhiều và kết quả consolidate thành clip mới được.</p>
+<figure><img src="images/TypicalOffsetEnvelopeShapes.png" alt="Offset shapes" loading="lazy"><figcaption>Bước lặp và làm chậm thời gian bằng envelope Sample Offset.</figcaption></figure>
+<p>Vài cử chỉ envelope offset cho hiệu ứng đặc trưng: hình "cầu thang máy" đi xuống lặp hiệu quả bước ở đầu envelope; dốc mượt đi xuống làm chậm thời gian, tạo slur đẹp khi độ dốc không đúng 45 độ — thử với Granulation Resolution 1/32.</p>
+
+<h4>26.2.5 Dùng clip làm template</h4>
+<p>Khi khai thác clip envelope sáng tạo, clip chứa chúng có "cuộc sống" riêng, độc lập với sample gốc. Sẽ đến lúc bạn tự hỏi: clip này nghe thế nào với sample khác? Chọn clip hiển thị trong Clip View rồi kéo sample mong muốn từ Browser/Session/Arrangement thả vào Clip View — mọi thiết lập clip (kể cả envelope) giữ nguyên, chỉ sample bị thay.</p>
+
+<h3 id="ce-mixer">26.3 Clip envelope cho mixer &amp; device</h3>
+<p>Clip envelope automate hoặc modulate điều khiển mixer/device. Vì điều khiển có thể bị cả hai loại envelope (cộng cả <a href="#ch-automation">automation envelope</a> của Arrangement) điều khiển cùng lúc — nguồn nhầm lẫn tiềm năng. Nhưng modulation khác automation ở một điểm quan trọng: automation envelope định nghĩa giá trị <em>tuyệt đối</em> của điều khiển tại mọi thời điểm; modulation envelope chỉ <em>ảnh hưởng</em> giá trị đã định nghĩa đó. Khác biệt này cho hai loại cộng tác êm_thắm trên cùng tham số. Phân biệt: automation màu <b>đỏ</b>, modulation màu <b>xanh</b>; với núm xoay, automation dời vị trí tuyệt đối ("kim"), modulation hiển thị bằng đoạn xanh trên vòng.</p>
+<p>Tưởng tượng: đã thu volume automation cho audio clip để fade out dần trong 4 bar. Điều gì xảy ra nếu tạo modulation envelope tăng dần volume mixer trong 4 bar? Ban đầu fade-out thành crescendo (modulation tăng volume trong dải automation cho phép); nhưng khi giá trị automation giảm gặp giá trị modulation tăng, fade-out bắt đầu — automation ép giá trị tuyệt đối (và dải hoạt động của modulation) xuống.</p>
+<p>Hai loại envelope đều có cho clip Session — công tắc dưới trình chọn chuyển giữa chúng cho tham số đang chọn. Trong Arrangement, clip chỉ có modulation; automation nằm trên <a href="#ch-automation">lane automation</a> của track.</p>
+<figure><img src="images/ClipAutomationModulationToggle.png" alt="Toggle" loading="lazy"><figcaption>Chuyển giữa chỉnh envelope automation và modulation.</figcaption></figure>
+<p>Trong clip: tham số có automation envelope có LED <b>đỏ</b> trong trình chọn Control; có modulation envelope có LED <b>xanh</b>; có cả hai LED nghĩa là đang bị automate lẫn modulate.</p>
+<figure><img src="images/ClipAutomationModulationChooserLEDs.png" alt="LEDs" loading="lazy"><figcaption>LED báo envelope automation/modulation sẵn có của tham số.</figcaption></figure>
+
+<h4>26.3.1 Modulate volume &amp; send của mixer</h4>
+<p>Có hai modulation envelope ảnh hưởng âm lượng: <b>Clip Gain</b> và <b>Track Volume</b> — sau đây là modulation cho tầng gain của mixer, ảnh hưởng tín hiệu sau hiệu ứng. Tránh nhầm: chấm nhỏ dưới tay nắm fader volume báo mức âm lượng thực sau modulation.</p>
+<figure><img src="images/ModulatedVolumeSlider.png" alt="Volume slider" loading="lazy"><figcaption>Modulate volume mixer — chấm nhỏ dưới tay nắm fader là mức thực.</figcaption></figure>
+<p>Nâng/hạ fader, chấm di chuyển theo tương đối. Modulate Send cũng dễ — modulation là phần trăm tương đối: envelope không mở send rộng hơn núm Send, nhưng giảm được giá trị send thực tới −∞ dB.</p>
+<figure><img src="images/ModulatedSendKnob.png" alt="Send" loading="lazy"><figcaption>Modulate Send — đoạn xanh trên vòng núm báo giá trị sau modulation.</figcaption></figure>
+
+<h4>26.3.2 Modulate Pan</h4>
+<p>Envelope Pan modulate tầng pan theo kiểu tương đối: vị trí núm pan quyết định cường độ modulation. Núm ở giữa: modulation chạy được từ hết trái sang hết phải; xoay núm dần sang trái/phải thì biên modulation tự giảm; núm xoay hết sang trái thì envelope pan không còn tác dụng.</p>
+
+<h4>26.3.3 Modulate điều khiển device</h4>
+<p>Mọi device trong track của clip đều liệt kê ở trình chọn Device; modulate tham số device giống modulate mixer. Điều cần nhớ về tương tác modulation/automation: khác với <a href="../manual-en/working-with-instruments-and-effects/index.html#using-devices">device preset</a> (EN), clip envelope không <em>định nghĩa</em> giá trị điều khiển — chỉ <em>thay đổi</em> tương đối so với thiết lập hiện tại.</p>
+
+<h3>26.4 MIDI Controller Clip Envelope</h3>
+<p>Với MIDI clip thu trực tiếp trong Live hay lấy từ tệp, Live đều cho chỉnh và tạo dữ liệu MIDI controller cho clip dạng clip envelope.</p>
+<p>Chọn "MIDI Ctrl" (Device) và controller cụ thể (Control). Tạo envelope mới cho controller bất kỳ bằng vẽ bước/breakpoint; cũng chỉnh được envelope của dữ liệu controller nhập theo tệp MIDI hoặc tạo khi thu clip — controller đã có envelope có LED cạnh tên.</p>
+<p>Live hỗ trợ hầu hết số MIDI controller tới 119 (cuộn menu bên phải). <em>Lưu ý:</em> device nhận thông điệp có không tuân theo quy ước MIDI chuẩn — "Pitch Bend" hay "Pan" không phải lúc nào cũng cho kết quả như tên gọi.</p>
+<figure><img src="images/MIDIClipEnvelope.png" alt="MIDI envelope" loading="lazy"><figcaption>Một clip envelope MIDI controller.</figcaption></figure>
+<p>Nhiều kỹ thuật trong phần tách liên kết envelope khỏi clip dưới đây áp dụng được cho MIDI controller envelope.</p>
+
+<h3>26.5 Tách liên kết envelope khỏi clip (Unlink)</h3>
+<p>Clip envelope có thiết lập loop/vùng riêng. Khả năng tách (unlink) envelope khỏi clip mở ra vô số lựa chọn sáng tạo — một vài ví dụ sau đây.</p>
+
+<h4>26.5.1 Lập trình fade-out cho Live Set</h4>
+<p>Ví dụ đơn giản: đang dựng Live Set, muốn fade-out 8 bar xảy ra khi một audio clip cụ thể chạy — nhưng chỉ có loop 1 bar.</p>
+<figure><img src="images/ClipEnvFadeOutOverLoopWBreakouts.png" alt="Fade out" loading="lazy"><figcaption>Dùng clip envelope tạo fade-out qua nhiều vòng lặp.</figcaption></figure>
+<ol>
+<li>Chọn envelope Clip Gain hoặc Mixer Track Volume, và <em>unlink</em> khỏi sample.</li>
+<li>Loop brace của envelope giờ có màu — báo envelope đã có thiết lập loop/vùng riêng; điều khiển loop/vùng trong tab Envelopes "sống lại". Bật công tắc Loop của envelope, thấy công tắc Loop ở tab Clip không ảnh hưởng: sample vẫn loop còn envelope phát kiểu "one-shot".</li>
+<li>Gõ "8" vào ô độ dài loop của envelope (ô ngoài cùng bên trái).</li>
+<li>Thu nhỏ khung envelope hết cỡ: nhấp thước thời gian của envelope rồi kéo lên.</li>
+<li>Chèn breakpoint ở cuối vùng rồi kéo xuống đáy.</li>
+</ol>
+<p>Phát clip: nghe loop 1 bar fade out dần trong 8 bar.</p>
+
+<h4>26.5.2 Tạo loop dài từ loop ngắn</h4>
+<p>Tiến thêm một bước: phần khác của set muốn dùng lại loop 1 bar đó — vì nó hay — nhưng lặp lại nhàm chán; muốn biến thành loop dài hơn.</p>
+<p>Lấy clip vừa fade-out 8 bar: bật công tắc Loop của envelope âm lượng — phát clip nghe fade-out 8 bar lặp lại. Vẽ/chỉnh envelope bất kỳ phủ lên loop sample; tất nhiên không chỉ volume — filter sweep mỗi 4 bar thế nào?</p>
+<p class="note"><strong>Lưu ý:</strong> tạo được bao nhiêu thời gian tùy ý trong Envelope Editor — kéo loop brace vượt giới hạn hiển thị, hoặc nhập giá trị vào ô số vùng/loop. Mỗi envelope chọn độ dài loop tùy ý, kể cả độ dài lẻ như 3.2.1 — chẳng khó tưởng tượng độ phức tạp (và rối!) khi một clip có nhiều envelope độ dài lẻ.</p>
+<figure><img src="images/SampleAndEnvelopeOffsetMarker.png" alt="Markers" loading="lazy"><figcaption>Start marker của sample (trái) và envelope (phải).</figcaption></figure>
+<p>Để kiểm soát độ phức tạp, cần một điểm quy chiếu chung: start marker xác định điểm sample/envelope bắt đầu chạy khi clip khởi động. Start/end marker và loop brace chịu quantize theo <a href="#ch-arrangement">lưới thích ứng zoom</a>, như vẽ envelope.</p>
+
+<h4>26.5.3 Áp pattern nhịp lên sample</h4>
+<p>Đến giờ ta nói về áp envelope dài lên loop nhỏ; cũng nghĩ ngược lại được. Một sample bài hát dài vài phút có thể được clip phát với envelope âm lượng loop 1 bar — envelope giờ đóng vai pattern "đục lỗ" vào nhạc, ví dụ bỏ mỗi phách thứ ba. Còn tham số nào khác pattern đó modulate hay ho? Tự nghĩ thêm.</p>
+
+<h4>26.5.4 Clip envelope làm LFO</h4>
+<p>Nếu thích tổng hợp âm thanh, hãy coi clip envelope có loop cục bộ như một LFO — chạy đồng bộ tempo dự án; cũng đặt được chu kỳ loop đủ lệch để envelope mất đồng bộ. Ẩn lưới để chỉnh điểm bắt đầu/kết thúc loop envelope độc lập với lưới nhịp.</p>
+<p><a href="#ch-automation">Tay cầm Stretch/Skew</a> và <a href="#ch-automation">automation shapes</a> cho phép thiết kế hình LFO sáng tạo.</p>
+
+<h4>26.5.5 Warp envelope đang liên kết</h4>
+<p>Ở chế độ Linked, clip envelope phản ánh thay đổi của <a href="#ch-warping">Warp Marker</a> trong clip — dời warp marker thì envelope dài/ngắn theo. Ngoài ra chỉnh Warp Marker được ngay trong trình soạn envelope.</p>
+<figure><img src="images/ClipEnvelopesAndWarpMarkers.png" alt="Warp+env" loading="lazy"><figcaption>Clip envelope và Warp Marker chỉnh cùng nhau được.</figcaption></figure>
 
 </article>
 
