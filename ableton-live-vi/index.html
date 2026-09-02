@@ -5154,7 +5154,106 @@
 <p>Mô hình của Collision linh hoạt hơn nhiều vật lý thật: mô phỏng cực chuẩn marimba/vibraphone/glockenspiel, nhưng "dùng sai" tham số cũng ra âm mà nhạc cụ acoustic không bao giờ làm được. Lập trình nhạc cụ thật: nghĩ chuỗi sự kiện tạo âm trên nhạc cụ mallet rồi hình dung thành các mục trong Collision — đầu gõ (Mallet) đánh thanh đã chỉnh tông (Resonator 1); cộng hưởng của thanh được khuếch đại bằng ống cộng hưởng (Resonator 2) — mô hình truyền thống = Mallet + hai resonator nối tiếp (1 &gt; 2). Muốn âm "không thật": Noise Exciter với envelope dài tạo texture lênh láng kiểu granular, mô phỏng vibraphone kéo vĩ hoặc ly thủy tinh; thử resonator song song (1 + 2); dùng LFO + controller (kể cả MPE) modulate.</p>
 <p class="note"><em>Cảnh báo:</em> mô hình của Collision là bản "lý tưởng hóa" — dễ lập trình resonator nhạy với input hơn bất kỳ resonator vật lý nào; một số tổ hợp tham số đổi thể tích dữ dội — giữ mức ra thấp khi thử âm mới.</p>
 
-<p class="note"><em>⏳ Còn tiếp: instrument 30.2 Collision → 30.13 Wavetable sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
+<h3>30.3 Drift (Synth subtractive gọn nhẹ)</h3>
+<figure><img src="images/DriftL12.png" alt="Drift" loading="lazy"><figcaption>Instrument Drift.</figcaption></figure>
+<p>Drift là synth đa dụng, điều khiển trực quan, giao diện gọn, hỗ trợ MPE đầy đủ — dựa trên tổng hợp subtractive, dựng để sound design nhanh mà tốn CPU tối thiểu. Sáu mục chính: oscillator, filter động, envelope, hai mục modulation (LFO + Mod) và global.</p>
+
+<h4>30.3.1 Subtractive synthesis</h4>
+<p>Kỹ thuật bắt đầu từ waveform rồi đắp bằng filter thành hình màu mới; Drift cộng rất nhiều modulation để tinh chỉnh — điều khiển "chữ ký" <b>Drift</b> thêm biến thiên pitch/tần số cho từng voice: xung dao động lệch dây nhẹ khắp tông.</p>
+
+<h4>30.3.2 Mục Oscillator</h4>
+<figure><img src="images/DriftOscSectionL12.png" alt="Osc" loading="lazy"><figcaption>Mục Oscillator của Drift.</figcaption></figure>
+<p>Hai oscillator riêng + pitch modulation + khung sóng + mixer oscillator + bộ tạo nhiễu.</p>
+<p><b>Osc 1</b> — menu waveform: Sine, Triangle, Shark Tooth (riêng của Drift — dạng Moog analog kinh điển cùng tên), Saturated (hợp bass), Saw, Pulse, Rectangle. <b>Oct</b> đổi quãng tám; <b>Shape</b> đổi nội dung hài của sóng — hiệu ứng giống PWM (mỗi waveform phản ứng Shape khác nhau; xem kết quả trong khung sóng). Menu Shape Mod Source chọn nguồn modulate Shape: Env 1, Env 2/Cyc, LFO, Key (dương — nốt cao nhiều modulate hơn; âm ngược), Velocity, Modwheel, Pressure, Slide; mức −100…+100% qua Shape Mod Amount (giữa 1–100% Shape Mod còn tự tạo modulation dù Shape = 0%).</p>
+<p><b>Osc 2</b> — Sine, Triangle, Saturated, Saw, Rectangle; Oct + Detune (nửa cung). <b>Pitch Mod</b> — hai nguồn modulate pitch cả hai oscillator (cùng danh sách nguồn); Amount −100…+100%. Dùng LFO chế độ Ratio để modulate pitch còn tạo được tông FM.</p>
+<p><b>Khung sóng</b> hiện output tổng hợp của Osc 1 + Osc 2 + nhiễu (nếu bật). <b>Mixer</b>: ba công tắc bật Osc 1/2 + Noise (tạp âm trắng); gain riêng từng nguồn — filter bật thì gain cao chạm "headroom" tối đa của filter, thôi hoạt động tuyến tính: méo phức như phần cứng analog. Mạch filter có hai điểm bão hòa: trước và sau filter — gain từ −6,0 dB mặc định tăng lên thì điểm một kích hoạt; trên 0,0 dB điểm hai kicks in. Mũi tên phải gain: bật/tắt xử lý qua filter cho oscillator/nhiễu (tắt = bypass hoàn toàn). <b>R</b> — Retrigger oscillator: bật, pha hai oscillator reset cùng chỗ mỗi nốt; tắt = free-running.</p>
+
+<h4>30.3.3 Mục Filter</h4>
+<figure><img src="images/DriftFilterL12.png" alt="Filter" loading="lazy"><figcaption>Mục Filter của Drift.</figcaption></figure>
+<p>Low-pass + key tracking + resonance + high-pass + hai modulation tần số. <b>Freq</b> đặt cutoff; <b>Type</b> đổi hai loại low-pass: Type I (12 dB/oct — DFM-1 phản hồi méo nội bộ nhiều, dải tông từ sweep tinh tế tới drive ấm) và Type II (24 dB/oct — Cytomic MS2, Sallen-Key + soft clip giới hạn cộng hưởng). <b>Key</b> — mức nốt ảnh hưởng cutoff (0 = không; 1,00 = nốt thấp cutoff thấp, nốt cao cutoff cao). <b>Res</b> cộng hưởng; <b>HP</b> cutoff high-pass. Nhấp trong mục Filter để chỉnh envelope qua X-Y ở mục Envelopes: chấm trái kéo ngang = tần số HP; chấm phải ngang = tần số LP, dọc = resonance. <b>Freq Mod</b> — tới hai nguồn modulate cutoff LP (Amount −100…+100%).</p>
+
+<h4>30.3.4 Mục Envelope</h4>
+<figure><img src="images/DriftEnvelopesL12.png" alt="Env" loading="lazy"><figcaption>Mục Envelope của Drift.</figcaption></figure>
+<p>Hai envelope: một điều biên độ, một chuyên cho modulation. <b>Envelope 1</b> — ADSR điều biên độ output toàn mục Oscillator: Attack (0 → đỉnh), Decay (đỉnh → sustain), Sustain (mức giữ tới khi nhả), Release (về 0 sau khi nhả) — chỉnh núm hoặc kéo trực tiếp trong khung; nút 1/2 đổi envelope đang chỉnh. <b>Envelope 2</b> — cũng ADSR nhưng mặc định không map biên độ: nguồn cho mọi tùy chọn modulation của Drift. Đảo qua <b>Cycling Envelope</b> bằng công tắc trái Attack — hoạt động như LFO chạy lại với mỗi nốt MIDI: <b>Tilt</b> dịch điểm giữa envelope (cực đoan ảnh hưởng cả dốc), <b>Hold</b> thời gian giữ mức tối đa; bốn chế độ thời gian: Rate, Ratio, Time, Sync (Hz / tỉ lệ / ms / phân phách).</p>
+<figure><img src="images/DriftCycEnvL12.png" alt="Cyc" loading="lazy"><figcaption>Cycling Envelope.</figcaption></figure>
+
+<h4>30.3.5 Mục LFO</h4>
+<figure><img src="images/DriftLFOL12.png" alt="LFO" loading="lazy"><figcaption>Mục LFO của Drift.</figcaption></figure>
+<p>Cũng bốn chế độ thời gian (Rate/Ratio/Time/Sync). Chín dạng sóng: Sine, Triangle, Saw Up/Down, Square, Sample &amp; Hold, Wander (S&amp;H nội suy chữ S giữa hai giá trị theo tốc LFO), Linear Envelope (decay một lần tuyến tính), Exponential Envelope (decay một lần mũ). <b>R</b> — Retrigger; <b>Amount</b> cường độ tổng; LFO Modulation Source + Amount — modulate chính LFO bằng nguồn khác.</p>
+
+<h4>30.3.6 Mục Mod</h4>
+<figure><img src="images/DriftModL12.png" alt="Mod" loading="lazy"><figcaption>Mục Mod của Drift.</figcaption></figure>
+<p>Tới ba cặp nguồn → đích: nguồn gồm Env 1, Env 2/Cyc, LFO, Key, Velocity, Modwheel, Pressure, Slide; đích gồm Osc 1 Gain/Shape, Osc 2 Gain/Detune, Noise Gain, LP Frequency/Resonance, HP Frequency, LFO Rate, Cyc Env Rate, Main Volume — Amount −100…+100%.</p>
+
+<h4>30.3.7 Mục Global</h4>
+<figure><img src="images/DriftGlobalL12.png" alt="Global" loading="lazy"><figcaption>Mục Global của Drift.</figcaption></figure>
+<p><b>Mode</b> — bốn Voice Mode: <b>Poly</b> (một voice/note, tới 32); <b>Mono</b> (một nốt, render 4 voice — Mono Thickness chỉnh volume 3 voice phụ; nốt mới choke nốt cũ còn giữ); <b>Stereo</b> (2 voice/note pan trái/phải — Stereo Spread chỉnh khoảng cách); <b>Unison</b> (4 voice lệch dây nhẹ — Unison Strength chỉnh độ lệch). <b>Voices</b> đặt số voice tối đa — tùy mode mà polyphony khác (32 voice: Poly 32 nốt, Stereo 16, Unison 8). <b>Drift</b> — biến thiên riêng từng voice (pitch, cutoff...): mỗi voice random hóa khác nhau; tăng Drift widen khoảng cách oscillator/filter — lệch hơn. Mono mode có <b>Legato</b> (nốt mới đổi pitch không reset envelope) và <b>Glide</b> (thời gian trượt). <b>Volume</b> + Vel &gt; Vol; <b>Transpose</b> ±48 st; <b>Note PB</b> bật pitch bend từng nốt (tắt để dùng MPE controller mà pitch không đổi theo vị trí ngón); <b>PB Range</b> dải pitch bend toàn cục.</p>
+
+<h3>30.4 Drum Sampler</h3>
+<figure><img src="images/DrumSamplerL12.png" alt="Drum Sampler" loading="lazy"><figcaption>Instrument Drum Sampler.</figcaption></figure>
+<p>Instrument chơi one-shot sample trong Drum Rack — tính năng sampler cốt lõi (điểm bắt đầu/độ dài, envelope AHD, pitch) + mục filter, modulation và bộ hiệu ứng playback riêng.</p>
+
+<h4>30.4.1 Mục Sample Controls</h4>
+<figure><img src="images/DrumSamplerSampleControlsL12.png" alt="Sample" loading="lazy"><figcaption>Mục Sample Controls của Drum Sampler.</figcaption></figure>
+<p>Nạp sample: nhấp đúp tệp trong Browser hoặc kéo-thả lên khung waveform. <b>Sample Start</b> đặt điểm bắt đầu (% độ dài — giữ Shift kéo mịn, khung tự zoom); <b>Sample Length</b> đặt độ dài vùng phát (%); <b>Sample Gain</b> −70…+24 dB — cả ba cập nhật waveform trong khung. Envelope AHD: <b>Attack</b> (0 → đỉnh); <b>Hold</b> (thời gian giữ đỉnh ở chế độ Trigger — đặt inf để phát hết sample; vô hiệu ở Gate); <b>Decay</b> (đỉnh về 0 sau Hold ở Trigger, hoặc sau khi nhả ở Gate). <b>Transpose</b> ±48 st, <b>Detune</b> ±50 cent. Hai <b>Envelope Mode</b>: Trigger (nhả phím sample vẫn phát hết Hold) và Gate (nhả fade theo Decay).</p>
+<p>Rê lên khung waveform mở thêm điều khiển: nút <b>Swap to Next/Previous Similar Sample</b> duyệt sample <a href="#ch-concepts">nghe na ná</a> gốc (chuột phải → Show Similar Files xem danh sách trong Browser); <em>Return to Reference</em> về tệp ban đầu; <em>Save as Similarity Reference</em> đặt tệp hiện tại làm mốc hoán đổi; nút hot-swap thay sample (thay cả instrument bằng hot-swap thanh tiêu đề).</p>
+<figure><img src="images/DrumSamplerSampleOptionsL12.png" alt="Options" loading="lazy"><figcaption>Hoán đổi sample tương tự và Hot-Swap.</figcaption></figure>
+
+<h4>30.4.2 Mục Playback Effects</h4>
+<figure><img src="images/DrumSamplerPlaybackEffectsL12.png" alt="FX" loading="lazy"><figcaption>Mục Playback Effects của Drum Sampler.</figcaption></figure>
+<p>Chín hiệu ứng đắp sample — mỗi cái hai tham số (núm riêng hoặc X/Y: dọc = tham số 1, ngang = 2); công tắc bật/tắt + menu loại:</p>
+<ul>
+<li><b>Stretch</b> — đổi độ dài không đổi pitch, sinh artefact granular lo-fi: Factor (bội tốc phát), Grain Size (ms).</li>
+<li><b>Loop</b> — lặp một đoạn sample: Loop Offset (điểm đầu so với sample start), Loop Length (ms).</li>
+<li><b>Pitch Env</b> — envelope modulate pitch: Amount ±100% (dương cao, âm thấp), Decay (thời gian pitch về gốc).</li>
+<li><b>Punch</b> — ducking attack cố định nhấn transient: Amount + Release.</li>
+<li><b>8-Bit</b> — filter + giảm bit + giảm sample rate tái tạo chip 8-bit: Sample Rate + Decay Time (low-pass built-in).</li>
+<li><b>FM</b> — sóng sine modulate pitch: Amount + Frequency.</li>
+<li><b>Ring Mod</b> — Amount + Frequency (thấp = tremolo; cao = artefact ring mod kinh điển).</li>
+<li><b>Sub Osc</b> — chồng sub oscillator (envelope theo attack/decay của device): Amount + Frequency 30–120 Hz.</li>
+<li><b>Noise Osc</b> — chồng oscillator nhiễu: Amount + Color (tần số lọc).</li>
+</ul>
+<p><em>Lưu ý:</em> tham số thời gian/tần số của Stretch/Loop/FM/Ring Mod/Sub Osc/Noise Osc chịu ảnh hưởng pitch toàn cục và nốt MIDI — pitch hiệu ứng bám theo pitch sample. Decay modulation của FM/Ring Mod theo decay toàn cục (decay ngắn = modulate chỉ transient).</p>
+
+<h4>30.4.3 Mục Filter</h4>
+<figure><img src="images/DrumSamplerFilterSectionL12.png" alt="Filter" loading="lazy"><figcaption>Mục Filter của Drum Sampler.</figcaption></figure>
+<p>Bốn loại: low-pass 12 dB, low-pass 24 dB, high-pass 24 dB, peak; LP/HP có Resonance + Frequency; peak có Peak Filter Gain + Frequency.</p>
+
+<h4>30.4.4 Mục Global</h4>
+<figure><img src="images/DrumSamplerGlobalSectionL12.png" alt="Global" loading="lazy"><figcaption>Mục Global của Drum Sampler.</figcaption></figure>
+<p><b>Volume</b> ±36 dB; <b>Pan</b>; <b>Velocity to Volume</b>. Modulation: nguồn Velocity hoặc Slide (MPE) — đích: Filter (cutoff), Attack/Hold/Decay (từng giai đoạn envelope), FX1/FX2 (hai tham số hiệu ứng playback đang chọn); <b>Modulation Amount</b> đặt mức.</p>
+
+<h4>30.4.5 Tùy chọn menu ngữ cảnh</h4>
+<p>Riêng của Drum Sampler: <b>Enable Per-Note Pitch Bend</b> (mặc định bật); <b>Envelope Follows Pitch</b> — scale envelope theo pitch sample (envelope luôn ảnh hưởng đúng phần sample kể cả transpose); <b>Drum Sampler &gt; Simpler</b> — thay bằng Simpler giữ vị trí start/length. Trong <a href="#ch-racks">Drum Rack</a>: <b>Save as Default Pad</b> (menu ngữ cảnh pad) đặt Drum Sampler làm mặc định — thả sample vào pad trống là tự nạp Drum Sampler.</p>
+<figure><img src="images/DrumSamplerDefaultPadL12.png" alt="Default pad" loading="lazy"><figcaption>Mục Save as Default Pad.</figcaption></figure>
+
+<h3>30.5 Electric (Piano điện physical modeling)</h3>
+<figure><img src="images/ElectricL12.png" alt="Electric" loading="lazy"><figcaption>Instrument Electric.</figcaption></figure>
+<p>Piano điện phần mềm làm cùng Applied Acoustics Systems — dựa trên instrument kinh điển thập niên 70, từng bộ phận mô hình hóa bằng physical modeling tiên tiến: giải realtime phương trình mô tả bộ phận hoạt động, không sample/wavetable — CPU tính âm trực tiếp theo tham số. Hơn cả tái tạo cổ điển: chỉnh tham số vượt quá instrument thật để có âm mới kinh ngạc vẫn giữ chất acoustic ấm.</p>
+
+<h4>30.5.1 Kiến trúc &amp; giao diện</h4>
+<p>Cơ chế piano điện rất đơn giản: phím kích hoạt búa đánh vào nĩa (fork); âm nĩa được khuếch đại bởi pickup cuộn từ rồi ra output — giống guitar điện. Nĩa gồm hai phần: tine bar (chỗ búa đánh) và tone bar (resonator kim loại đã chỉnh tông đúng pitch). Kích hoạt xong nĩa tự ngân lâu; nhả phím áp damper làm mute nhanh hơn. Giao diện bốn mục: Hammer, Fork, Damper/Pickup (âm và tông) + Global (pitch bend, polyphony...) — nhấp từng mục hoặc icon để mở.</p>
+<figure><img src="images/ElectricInstrumentIconsL12.png" alt="Icons" loading="lazy"><figcaption>Icon Hammer, Fork, Damper/Pickup của Electric.</figcaption></figure>
+
+<h4>30.5.2 Mục Hammer</h4>
+<figure><img src="images/ElectricHammerSectionL12.png" alt="Hammer" loading="lazy"><figcaption>Mục Hammer của Electric.</figcaption></figure>
+<p><b>Stiffness</b> — độ cứng vùng đánh: cao = bề mặt cứng, sáng hơn; thấp = mềm, dịu; chỉnh tiếp bằng velocity/nốt (Vel/Key). <b>Noise</b> — nhiễu va chạm búa-nĩa: Pitch (tần số giữa), Decay (thời gian tắt), Key (mức âm nhiễu theo nốt). <b>Force</b> — lực va chạm: Amount thấp = va chạm mềm, cao = cứng; modulate bằng velocity/nốt.</p>
+
+<h4>30.5.3 Mục Fork</h4>
+<figure><img src="images/ElectricForkSectionL12.png" alt="Fork" loading="lazy"><figcaption>Mục Fork của Electric.</figcaption></figure>
+<p><b>Tine</b> — phần nĩa búa đánh trực tiếp: Color (biên độ tương đối partial cao/thấp — thấp — hài thấp, cao hài cao); Decay (thời gian tắt khi còn giữ phím); Key modulate volume. <b>Tone</b> — cộng hưởng thứ cấp của nĩa; Decay như Tine. <b>Release</b> (áp cả hai) — decay sau khi nhả phím.</p>
+
+<h4>30.5.4 Mục Damper/Pickup</h4>
+<figure><img src="images/ElectricDamperPickupL12.png" alt="Damper" loading="lazy"><figcaption>Mục Damper/Pickup của Electric.</figcaption></figure>
+<p><b>Pickup</b> mô phỏng cuộn từ khuếch đại nĩa: <b>Symmetry</b> — vị trí dọc (50% = ngay trước nĩa, sáng nhất; thấp xuống dưới, cao lên trên); <b>Distance</b> — khoảng cách (gần = overdrive hơn); nút <b>R/W</b> — R: pickup electro-dynamic; W: electro-static. <b>Input</b> — lượng tín hiệu nĩa vào pickup (ảnh hưởng méo); <b>Output</b> — lượng tín hiệu ra; tổ hợp hai tham số cho kết quả rất khác (input thấp + output cao sạch hơn input cao + output thấp); Key modulate output.</p>
+<p><b>Damper</b> — cơ chế điều tiết sustain: nhấn phím nâng damper khỏi nĩa, nhả áp vào mute. Damper tự tạo chút tiếng khi áp/nhả — tham số mô phỏng tiếng này: <b>Tone</b> (độ cứng — thấp mềm dịu, cao cứng sáng); <b>Level</b> (lượng tiếng); <b>Att/Rel</b> (−100 = tiếng chỉ ở attack; +100 = chỉ ở release; giữa = đều hai).</p>
+
+<h4>30.5.5 Mục Global</h4>
+<figure><img src="images/ElectricGlobalSectionL12.png" alt="Global" loading="lazy"><figcaption>Mục Global của Electric.</figcaption></figure>
+<p><b>Volume</b>; <b>Voices</b> (mỗi voice tốn CPU — cân bằng giữa chơi được và hiệu năng); <b>Semi/Detune</b> (thô ±nửa cung / tinh ±50 cent); <b>Stretch</b> — stretch tuning như piano thật (0% = temperament cân bằng; nĩa/dây rung thực tế lệch mô hình lý thuyết nên cân bằng nghe "sai" trên piano — stretch nâng nốt cao hạ nốt thấp cho sáng; âm = đảo); <b>Pitch Bend</b> (dải toàn cục) + <b>Note PB</b> (dải pitch bend từng nốt MPE).</p>
+
+<p class="note"><em>⏳ Còn tiếp: instrument 30.6 External Instrument → 30.13 Wavetable sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 
 </article>
