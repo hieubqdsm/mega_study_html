@@ -4693,7 +4693,135 @@
 <p>Mỗi tham số route được lên trục X/Y của bộ điều khiển: trục X chọn ở hàng tham số dưới, trục Y ở hàng bên trái. <b>Sync</b> bật: trễ theo phân phách (nút số = 1/16; 4 = một phách); % Delay Time tạo swing; tắt Sync: ms (kéo/gõ). Delay Time route được lên trục X.</p>
 <p><b>Spray</b> thêm đổi trễ ngẫu nhiên: thấp "nhòe" tín hiệu theo thời gian, thêm chất nhiễu; cao phá hẳn cấu trúc nguồn — mức hỗn loạn nhịp tùy chọn (khuyến nghị cho dân vô chính phủ). Kích thước/độ dài mỗi hạt theo <b>Frequency</b> — âm của Pitch và Spray phụ thuộc nhiều vào nó. <b>Pitch</b> transpose cao độ hạt — như pitch shifter thô. <b>Random Pitch</b> thêm biến thiên ngẫu nhiên từng hạt: thấp tạo chorus "đột biến"; cao làm mất hẳn cao độ gốc — tương tác với Pitch chính cho các mức ổn định/bất ổn trong kết cấu cao độ. <b>Feedback</b> đặt lượng output trả về input — quá cao gây dao động cực to, coi chừng tai và loa! Dry/Wet route được lên trục Y.</p>
 
-<p class="note"><em>⏳ Còn tiếp: các device 28.23 Hybrid Reverb → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+<h3>28.23 Hybrid Reverb</h3>
+<figure><img src="images/HybridReverbL12.png" alt="Hybrid" loading="lazy"><figcaption>Hiệu ứng Hybrid Reverb.</figcaption></figure>
+<p>Kết hợp hai cách làm reverb trong một device: convolution + nhiều thuật toán reverb số. Với nhiều tùy chọn routing và tham số, tạo reverb độc đáo, soundscape kiểu drone, hoặc biến hình hoàn toàn mọi vật liệu nguồn.</p>
+<p>Ngoài bộ impulse response (IR) sẵn có, nhập được bất kỳ tệp audio nào làm IR — mở rộng cả trời sound design; các điều khiển riêng đắp hình IR tùy chọn. Động cơ thuật toán có nhiều chế độ reverb, mỗi chế độ bộ tham số và tính chất âm riêng — từ sạch mượt tới kim loại như chiêng. Hai động cơ dùng độc lập, hoặc nối tiếp/song song với quan hệ âm lượng chỉnh liên tục; mục EQ đắp thêm (áp chọn từng động cơ); một điều khiển làm suy giảm tín hiệu mô phỏng máy reverb số cũ.</p>
+
+<h4>28.23.1 Dòng tín hiệu</h4>
+<p>Tưởng tượng tín hiệu chảy trái → phải: input → hai động cơ reverb (quan hệ giữa chúng do phần routing quyết định) → EQ → output. Điều khiển động cơ convolution màu <b>vàng</b>, thuật toán màu <b>xanh</b>.</p>
+
+<h4>28.23.2 Phần Input</h4>
+<p><b>Send</b> đặt gain tín hiệu cấp cho reverb (tín hiệu khô không ảnh hưởng, vẫn đi qua device). <b>Predelay</b> đặt trễ trước phản xạ sớm đầu — ấn tượng kích thước phòng thật phụ thuộc một phần vào đây; "tự nhiên" thường 1–25 ms; chọn theo thời gian hoặc phách (Predelay Sync). <b>Feedback</b> đặt lượng output của predelay phản hồi về input (hai chế độ thời gian có feedback riêng).</p>
+<p>Hai tab: Reverb và EQ. Tab Reverb chứa mọi điều khiển của hai động cơ; trình chọn Routing ở giữa có bốn lựa chọn:</p>
+<ul>
+<li><b>Serial</b> — output convolution vào thuật toán; convolution luôn chạy, Blend đặt lượng convolution cấp cho thuật toán (100/0 = thuần convolution; 0/100 = thuật toán được nuôi bằng output convolution).</li>
+<li><b>Parallel</b> — hai động cơ tách nhau; Blend cân mức (100/0 thuần convolution, 0/100 thuần thuật toán).</li>
+<li><b>Algorithm</b> — chỉ thuật toán. <b>Convolution</b> — chỉ convolution.</li>
+</ul>
+<p>Giao diện đổi động: động cơ không dùng thì điều khiển xám. Blend chỉ tác dụng ở Serial/Parallel.</p>
+
+<h4>28.23.3 Động cơ Convolution</h4>
+<figure><img src="images/HybridReverbConvolutionSectionL12.png" alt="Convolution" loading="lazy"><figcaption>Phần Convolution của Hybrid Reverb.</figcaption></figure>
+<p>Convolution dùng thu âm không gian thật (impulse response) — đặt âm của bạn vào gần như bất kỳ không gian nào có bản thu: từ phòng hòa nhạc/xưởng thu nổi tiếng thế giới, tới... trống snare, thùng rác, bản thu nhạc cụ và giọng hát!</p>
+<p>Chọn IR trong menu Convolution IR (menu trên chọn nhóm, menu dưới chọn IR cụ thể); nút mũi tên duyệt — hết nhóm tự chuyển nhóm kế. Waveform IR hiện trong khung chính, đổi theo Attack/Decay/Size. Các nhóm: Early Reflections, Real Places, Chambers and Large Rooms, Made for Drums, Halls, Plates, Springs, Bigger Spaces, Textures, User. Thêm IR riêng: kéo-thả tệp audio vào khung waveform (thả tệp trong thư mục nhiều audio thì cả thư mục thành IR). <em>Lưu ý:</em> bỏ Hybrid Reverb khỏi track rồi thêm lại thì User samples mất — thả lại để phục hồi.</p>
+<p><b>Attack/Decay</b> đặt attack/decay của envelope IR; <b>Size</b> chỉnh kích thước tương đối của IR.</p>
+
+<h4>28.23.4 Động cơ Thuật toán</h4>
+<figure><img src="images/HybridReverbAlgorithmSectionL12.png" alt="Algorithm" loading="lazy"><figcaption>Phần thuật toán của Hybrid Reverb.</figcaption></figure>
+<p>Thuần đường trễ số, không dùng sample. Bên phải Blend là điều khiển thuật toán — tham số hiện ra tùy chọn trong trình chọn Algorithm. Năm thuật toán: <b>Dark Hall, Quartz, Shimmer, Tides, Prism</b>; mọi thuật toán đều có Decay (thời gian đuôi tụt về −60 dB), Size (kích thước phòng ảo), Delay (predelay thêm cho phần thuật toán, ms) và Freeze: nút Freeze cắt input và đặt decay vô hạn — reverb ngân mãi; Freeze In cộng input vào reverb đã đóng băng — dồn chất reverb.</p>
+
+<h5>28.23.4.1 Dark Hall</h5>
+<p>Hall mượt, kinh điển, hợp đa số hall trung–dài. Tham số riêng: <b>Damping</b> — lọc cao trong thuật toán (cao = tối); <b>Mod</b> — chuyển động trong đuôi reverb (nhiều = chorus, bớt cộng hưởng); <b>Shape</b> — biến không gian ảo từ nhỏ-cộng hưởng tới lớn-tán xạ; <b>Bass X</b> — tần số crossover phần thấp của đuôi (scale bằng Bass Mult); <b>Bass Mult</b> — scale decay phần thấp. Decay dài + Size cực nhỏ tạo cộng hưởng kim loại như chiêng.</p>
+
+<h5>28.23.4.2 Quartz</h5>
+<p>Hall có echo nghe được trong đuôi; phản xạ sớm tái hiện input rất rõ — hợp giọng, trống, tín hiệu transient rõ, và làm echo. Thêm: Damping; <b>Lo Damp</b> — lọc thấp (cao = sáng); Mod; <b>Diffusion</b> — mật độ đuôi (thấp thưa, cao dày); <b>Distance</b> — khoảng cách ảo của phản xạ (thấp = gần, dày; cao = xa, echo cách nhau lâu).</p>
+
+<h5>28.23.4.3 Shimmer</h5>
+<p>Reverb từ delay tán xạ xếp dày + pitch shifter trong feedback; diffusion thấp = delay thuần, cao = reverb dày lush. Hiệu ứng Shimmer crossfade tín hiệu pitch-shift vào feedback — đuôi leo/trượt tần số. Thêm: Damping, Mod, <b>Pitch</b> (pitch-shift feedback theo nửa cung), Diffusion (&lt;10% cho delay kiểu dub — rất vui với trống!), <b>Shimmer</b> (cường độ: 0% không pitch-shift; cao dần tín hiệu pitched rõ dần; 100% lên vật liệu giai điệu tạo hòa âm cao độ thú vị). Ở chế độ này Size chỉnh khoảng cách giữa các echo trên vật liệu gõ.</p>
+
+<h5>28.23.4.4 Tides</h5>
+<p>Reverb mượt + modulate phổ output bằng filter multiband — hiệu ứng dải tần gợn sóng. Thêm: Damping; <b>Wave</b> (morph dạng sóng modulate: nhiễu 0% → sine 50% → vuông 100%); <b>Tide</b> (cường độ texture do modulation đuôi); <b>Phase</b> (lệch pha trái/phải, 180° ngược hoàn toàn); <b>Rate</b> (tốc modulate theo phân phách, kèm biến thể Triplet/16th/Dotted).</p>
+
+<h5>28.23.4.5 Prism</h5>
+<p>Reverb tán xạ sáng, độc đáo, "nhân tạo", dựa trên nhiễu velvet (phổ phẳng) — dễ dùng làm reverb "bóng ma": thêm chiều sâu mà không canh vật liệu nguồn; hợp decay ngắn phi tuyến cho trống/transient, hoặc decay dài cho âm sạch kiểu số. Thêm: <b>Low Mult</b>/<b>High Mult</b> (scale decay phần thấp/cao của đuôi); <b>X over</b> (crossover giữa hai phần). Mẹo: snare reverb gated kiểu thập niên 80 — Decay và Size nhỏ.</p>
+
+<h4>28.23.5 Phần EQ</h4>
+<figure><img src="images/HybridReverbEQSectionL12.png" alt="EQ" loading="lazy"><figcaption>Phần EQ của Hybrid Reverb.</figcaption></figure>
+<p>Ở tab thứ hai; bật/tắt nhanh bằng nút trong tab. Mặc định EQ đặt sau cả hai động cơ; bật <b>Pre Algo</b> đặt EQ trước động cơ thuật toán (bất kể routing). Bốn dải: dải thấp/cao đổi giữa pass filter và shelf (chế độ pass có nhiều dốc từ 6 tới 96 dB/oct); hai peak giữa phủ toàn dải tần — từ boost rộng tới cắt bán hẹp.</p>
+
+<h4>28.23.6 Phần Output</h4>
+<p><b>Stereo</b> đặt độ rộng wet (0% mono, &gt;100% mở). <b>Vintage</b> làm suy giảm dần âm — mô phỏng sample rate/bit depth thấp của máy reverb số cũ; bốn mức: Subtle, Old, Older, Extreme. <b>Bass Mono</b> chuyển tần số dưới 180 Hz của output sang mono — bass chặt hơn. <b>Dry/Wet</b> — return track để 100%.</p>
+
+<h3>28.24 Limiter</h3>
+<figure><img src="images/LimiterL12.png" alt="Limiter" loading="lazy"><figcaption>Hiệu ứng Limiter.</figcaption></figure>
+<p>Bộ xử lý dải động chất lượng mastering bảo đảm output không vượt mức định — lý tưởng cho Main track, chống clip ở bộ chuyển đổi số-analog. Limiter về bản chất là compressor tỉ lệ vô hạn (lý thuyết nén xem phần <a href="#ch-audio-effects">Compressor</a>).</p>
+<p>Khung hiển thị chứa <b>Ceiling</b> (mức tối đa tuyệt đối output — input không có đỉnh cao hơn trần thì không giới hạn gì) và meter <b>Gain Reduction</b>. <b>Link</b> đặt bao nhiêu gain reduction chia sẻ giữa hai kênh (L/R hoặc M/S tùy Routing Mode): 100% — kênh nào cần nén thì cả hai cùng nén, ảnh stereo ổn định; 0% — xử lý độc lập từng kênh (hữu ích khi trái/phải là nguồn riêng, hoặc tạo hiệu ứng "wobble" stereo).</p>
+<p><b>Input Gain</b> (trái) boost/attenuate trước khi giới hạn. Bật <b>Maximize</b>: Ceiling thành Threshold — chỉnh dải động và độ to bằng một núm (hạ Threshold = khuếch output lên tương ứng); Input Gain thành Output — đặt mức output mục tiêu. <b>Release</b> đặt thời gian ngừng giới hạn sau khi xuống dưới trần: nhanh = to và đấm hơn; chậm = mượt nhưng hụt dải động (meter GR về không nhanh/chậm theo). Bật <b>Auto</b>: tự phân tích audio và cập nhật release liên tục (khi đó núm Release vô hiệu).</p>
+<p><b>Lookahead</b> (phải) đặt 1,5/3/6 ms — phản ứng đỉnh nhanh cỡ nào: ngắn nén được nhiều hơn nhưng dễ méo (nhất là bass); dài bắt đỉnh rất nhanh (lookahead kéo theo latency — càng dài càng trễ). <b>Ceiling Mode</b>: Standard; <b>Soft Clip</b> — soft-clip khi tín hiệu tới gần trần, thêm màu và lực cho transient (LED trên nháy khi clip); <b>True Peak</b> — chặn đỉnh giữa-mẫu (inter-sample). <b>Routing Mode</b>: L/R — nén độc lập trái/phải (nén nhiều hơn, hơi méo ảnh stereo); M/S — encode mid/side trước khi giới hạn, decode ở output (giữ ảnh stereo, latency cao hơn).</p>
+<p class="note"><strong>Lưu ý:</strong> thêm hiệu ứng sau Limiter có thể tăng gain. Để output cuối không bao giờ clip: đặt Limiter là device cuối trong chuỗi Main track và giữ volume Main dưới 0 dB.</p>
+
+<h3>28.25 Looper</h3>
+<figure><img src="images/LooperL12.png" alt="Looper" loading="lazy"><figcaption>Hiệu ứng Looper.</figcaption></figure>
+<p>Dựa trên máy loop thời gian thực kinh điển: thu và loop audio, overdub vô hạn đồng bộ với Set. Set không phát: Looper phân tích audio vào và đặt tempo Live khớp; định trước độ dài loop thì tempo tự chỉnh cho khớp số bar. Audio nhập vào Looper làm nền overdub, hoặc xuất ra làm clip mới.</p>
+<p>Nửa trên là khung hiển thị lớn dễ đọc khi diễn: thu — cả khung đỏ; sau thu — hiện vị trí trong loop và tổng độ dài theo bar/phách. Nút transport hoạt động như transport Live: <b>Record</b> thu audio vào (đè audio sẵn có); <b>Overdub</b> cộng thêm lớp dài bằng bản thu gốc; <b>Play</b> phát buffer không thu; <b>Stop</b> dừng. Transport Live đang chạy: Looper như clip — chịu launch quantization (trình chọn Quantization); Live dừng: Looper chạy tức thì bất kể Quantization.</p>
+<p><b>Clear</b> xóa buffer (Overdub + transport chạy: chỉ xóa nội dung, giữ tempo/độ dài; chế độ khác: reset cả tempo và độ dài). <b>Undo</b> xóa mọi thứ overdub từ lần bật Overdub gần nhất (bản thu gốc + lượt trước giữ nguyên); sau Undo nút thành Redo.</p>
+<p>Nút to dưới transport là <b>Multi-Purpose Transport Button</b>: buffer trống — nhấp đơn bắt đầu thu; đang thu/overdub/dừng — nhấp đơn chuyển phát; đang phát — nhấp chuyển overdub (nhấp tiếp tục đổi qua lại); nhấp đôi nhanh — dừng; giữ 2 giây khi phát — Undo/Redo; giữ 2 giây khi dừng — xóa buffer. Tối ưu cho pedal chân: vào <a href="#ch-remote">MIDI Map Mode</a>, nhấp nút rồi đạp pedal, thoát.</p>
+<figure><img src="images/LooperPedalStates.png" alt="States" loading="lazy"><figcaption>Sơ đồ hành vi nút đa năng.</figcaption></figure>
+<p>Trình chọn <b>Tempo Control</b>: None (tempo nội bộ độc lập); Follow song tempo (phát theo tempo toàn cục); Set &amp; Follow (đặt tempo toàn cục theo vật liệu thu, về sau theo theo tempo toàn cục). <b>Record Length</b> đặt độ dài thu: bài đang chạy — "x bars" (mặc định) thu tới khi bấm nút khác; chọn số bar cố định thì thu đúng thời gian rồi tự chuyển Play/Overdub (theo nút cạnh trình chọn). Bài không chạy — "x bars": Looper đoán tempo khi bấm Overdub/Play/Stop (có thể nhanh/chậm gấp đôi); định số bar trước thì tempo chỉnh cho vừa.</p>
+<p><b>Song Control</b>: None (không ảnh hưởng transport toàn cục); Start Song (vào Play/Overdub là Live chạy — Stop không tác động); Start &amp; Stop Song (khóa transport Live vào nút Looper). Chạy transport Live qua Looper tự chỉnh vị trí phát của mọi app kết nối <a href="#ch-sync">Link</a> — cùng tempo và đúng vị trí phrase.</p>
+<p>Nút <b>×2</b> nhân đôi buffer (vật liệu đã thu nhân đôi theo — thu chuỗi ý tưởng 1 bar rồi chồng chuỗi 2 bar, ví dụ); <b>÷2</b> giảm một nửa (giữ nửa đang phát, bỏ nửa kia). Vùng <b>"Drag me!"</b> xuất buffer ra tệp/clip mới (Warp mặc định Re-Pitch); kéo audio vào vùng này thay nội dung buffer — làm nền overdub tiếp.</p>
+<p><b>Speed</b> chỉnh tốc phát (= cao độ); mũi tên lên/xuống đổi quãng tám (nhân/đôi tốc — theo Quantization). <b>Reverse</b> phát ngược vật liệu đã thu (vật liệu overdub <em>sau khi bật</em> phát xuôi; tắt Reverse thì đổi ngược lại). <b>Feedback</b> đặt lượng tín hiệu cũ phản hồi khi overdub: 100% không bao giờ nhỏ đi; 50% mỗi vòng nhỏ một nửa; áp dụng từ vòng kế (Play không tác động). Trình chọn <b>Input → Output</b>: Always / Never (return track) / Rec/OVR (nghe input khi thu/overdub — nhiều Looper nhiều pedal không lo monitor) / Rec/OVR/Stop (như Insert của Beat Repeat — thu vật liệu chen ngang lúc đang diễn).</p>
+
+<h4>28.25.1 Feedback Routing</h4>
+<p>Looper vừa là nguồn vừa là đích của <a href="#ch-routing">routing nội bộ</a> — overdub tự phản hồi qua device của track khác mỗi vòng: (1) chèn Looper vào track; (2) thu ít nhất một lượt; (3) tạo audio track mới; (4) Audio From/To trên: chọn track chứa Looper; (5) Audio From/To dưới: chọn "Insert-Looper"; (6) Monitoring = In; (7) thêm hiệu ứng vào track mới; (8) bật Overdub — output Looper chạy qua chuỗi device track mới rồi quay về chính nó: mỗi lượt overdub xử lý thêm một tầng.</p>
+
+<h3>28.26 Multiband Dynamics</h3>
+<figure><img src="images/MultibandDynamicsL12.png" alt="Multiband" loading="lazy"><figcaption>Hiệu ứng Multiband Dynamics.</figcaption></figure>
+<p>Công cụ linh hoạt sửa dải động của vật liệu — thiết kế chủ yếu cho mastering: nén/giãn lên/xuống tối đa ba dải tần độc lập, crossover chỉnh được, envelope riêng mỗi dải; mỗi dải có ngưỡng trên và dưới — hai loại xử lý động chạy đồng thời mỗi dải.</p>
+
+<h4>28.26.1 Lý thuyết xử lý động lực</h4>
+<p>"Nén" thường hiểu là hạ mức tín hiệu vượt ngưỡng — cách <a href="#ch-audio-effects">Compressor</a> hoạt động, chính xác là <em>nén xuống</em> (đẩy tín hiệu to xuống, thu hẹp dải động). Cũng có thể thu hẹp dải động bằng cách nâng mức tín hiệu <em>dưới</em> ngưỡng — <em>nén lên</em>, ít gặp hơn nhiều.</p>
+<figure><img src="images/MultibandCompressionDiagram.png" alt="Compression" loading="lazy"><figcaption>Nén xuống và nén lên.</figcaption></figure>
+<p>Ngược của nén là giãn: expander chuẩn hạ mức tín hiệu dưới ngưỡng — cách <a href="#ch-audio-effects">Gate</a> hoạt động, chính xác là <em>giãn xuống</em> (đẩy im xuống, nới dải động); giãn lên (nâng tín hiệu trên ngưỡng) ít gặp.</p>
+<figure><img src="images/MultibandExpansionDiagram.png" alt="Expansion" loading="lazy"><figcaption>Giãn xuống và giãn lên.</figcaption></figure>
+<p>Tóm tắt: nén xuống (phổ biến) — làm to nhỏ đi; nén lên (hiếm) — làm nhỏ to lên; giãn xuống (phổ biến) — làm nhỏ nhỏ đi; giãn lên (hiếm) — làm to to lên. Multiband Dynamics cho cả bốn loại; ba dải × hai ngưỡng = một instance chạy đồng thời <em>sáu</em> loại xử lý động.</p>
+
+<h4>28.26.2 Giao diện &amp; điều khiển</h4>
+<p>Nút <b>High/Low</b> bật/tắt dải cao/thấp (tắt cả hai = đơn dải, chỉ Mid tác động); thanh tần số dưới hai nút chỉnh crossover. Mỗi dải có activator và solo; Input chỉnh mức trước xử lý, Output (phải khung) sau xử lý. Khung hiển thị: thanh to = output, thanh nhỏ = input trước xử lý (không xử lý thì hai meter thẳng hàng; đáy khung thang dB).</p>
+<p>Rê lên mép khối trái/phải con trỏ thành ngoặc — kéo ngang chỉnh ngưỡng (khối trái = dưới Below, phải = trên Above); giữ <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> chỉnh cùng ngưỡng mọi dải; Alt/Option chỉnh đồng thời Above + Below một dải; Shift chỉnh mịn. Rê giữa khối con trỏ thành mũi tên lên/xuống — kéo chỉnh âm lượng vùng đã chọn (Ctrl/Cmd mọi dải; Alt/Option cả Above+Below; Shift mịn; nhấp đúp về mặc định). Về kỹ thuật: hạ khối trên Above = nén xuống, nâng = giãn lên; hạ khối dưới Below = giãn xuống, nâng = nén lên — mọi chỉnh đều là chỉnh ratio.</p>
+<p>Cột phải khung cũng chỉnh ngưỡng/ratio; nút T/B/A chuyển hiển thị Time (attack/release), Below, Above. Above: Attack — thời gian đạt nén/giãn tối đa sau khi vượt ngưỡng; Release — trở lại bình thường sau khi xuống dưới. Below: đảo ngược (khi tụt dưới/vượt trên ngưỡng). <b>Soft Knee</b> — nén/giãn dần khi tới ngưỡng. <b>RMS/Peak</b>: Peak phản ứng đỉnh ngắn; RMS bớt nhạy, xử lý khi vượt ngưỡng lâu hơn một chút. <b>Output</b> toàn cục; <b>Time</b> scale toàn bộ attack/release cùng lúc; <b>Amount</b> đặt cường độ nén/giãn mọi dải (0% = ratio 1, không tác động).</p>
+
+<h4>28.26.3 Tham số sidechain</h4>
+<figure><img src="images/MultibandDynamicsSidechainL12.png" alt="Sidechain" loading="lazy"><figcaption>Multiband Dynamics với Sidechain.</figcaption></figure>
+<p>Áp xử lý động theo mức tín hiệu khác hoặc dải tần: mở Sidechain (nút gấp), chọn <a href="#ch-routing">điểm routing nội bộ</a> làm trigger; Gain chỉnh mức; Dry/Wet trộn (100% chỉ sidechain); tai nghe nghe riêng sidechain.</p>
+
+<h4>28.26.4 Mẹo Multiband Dynamics</h4>
+<p><b>Nén đa dải cơ bản:</b> chỉ dùng ngưỡng trên — như compressor "xuống" truyền thống: chỉnh crossover theo vật liệu rồi nén xuống (kéo khối trên xuống hoặc ratio &gt; 1).</p>
+<p><b>De-essing (bỏ xè):</b> bỏ "gắt" do cao quá to: bật riêng dải trên, crossover ~5 kHz, chỉnh ngưỡng/ratio nén xuống tinh tế (solo dải để nghe; attack/release nhanh là đẹp).</p>
+<p><b>"Uncompressing":</b> kỹ sư mastering hay bị đòi phép màu — trả lực cho mix đã nén chết (hết transient) và max kín (hết headroom). Giãn lên đôi khi hồi sinh được: hạ Input lấy headroom → ngưỡng Above thấp hơn đỉnh cao nhất → giãn lên nhẹ từng dải (thận trọng — quá tay transient cực to) → chỉnh attack/release (khác nén xuống: attack <em>rất nhanh</em> làm tăng lực transient; chậm nghe bệt). <em>Lưu ý:</em> thêm maximizer/limiter boost gain sau đó có thể phá nốt những đỉnh vừa cứu.</p>
+
+<h3>28.27 Overdrive</h3>
+<figure><img src="images/OverdriveL12.png" alt="Overdrive" loading="lazy"><figcaption>Hiệu ứng Overdrive.</figcaption></figure>
+<p>Méo tri ân các pedal kinh điển của guitarists — khác nhiều máy méo: drive cực mạnh mà không hy sinh dải động. Band-pass trước tầng méo điều khiển bằng X-Y (dọc = băng thông, ngang = vị trí dải; hoặc hộp thanh trượt dưới). <b>Drive</b> đặt lượng méo (0% không có nghĩa là không méo!). <b>Tone</b> là EQ sau méo (cao = nhiều thành phần cao). <b>Dynamics</b> chỉnh lượng nén khi méo tăng: thấp — méo nhiều kéo nén nội bộ + makeup theo; cao — nén ít. <b>Dry/Wet</b> — return track để 100%.</p>
+
+<h3>28.28 Pedal</h3>
+<figure><img src="images/PedalL12.png" alt="Pedal" loading="lazy"><figcaption>Hiệu ứng Pedal.</figcaption></figure>
+<p>Méo guitar — kết hợp <a href="#ch-audio-effects">Tuner</a>, <a href="#ch-audio-effects">Amp</a>, <a href="#ch-audio-effects">Cabinet</a> là bộ xử lý guitar hoàn chỉnh; cũng dùng phi truyền thống cho vocal, synth, trống.</p>
+<p><b>Gain</b> đặt lượng méo cho tín hiệu khô (0% vẫn chưa phải không méo — nên vặn về 0 rồi tăng dần tới mức ra vừa ý; đặt <a href="#ch-audio-effects">Utility</a> trước Pedal để hạ tín hiệu sâu hơn). <b>Output</b> toàn cục. Ba <b>Pedal Type</b>: Overdrive (ấm mượt), Distortion (chặt, quyết liệt), Fuzz (bấp bênh, âm "amp vỡ").</p>
+<p>EQ ba dải sau méo (adaptive — Q tăng theo lượng boost): <b>Bass</b> peak 100 Hz (thêm "đấm" cho bass/trống, hoặc cut thấp guitar); <b>Mid</b> — EQ boost ba vị trí (500 Hz / 1 kHz / 2 kHz; dải hẹp ở vị trí thấp, rộng ở cao — như pedal guitar thật); <b>Treble</b> shelf 3,3 kHz (bớt gắt hoặc tăng nếu thích). Mẹo: để trung tính và dùng EQ Eight sau cho mịn. <b>Sub</b> bật low-shelf boost dưới 250 Hz (dùng cùng Bass: Sub on + Bass −100%, hoặc Sub off + Bass +100%). <b>Dry/Wet</b> cân xử lý/khô. <b>Hi-Quality</b> (menu ngữ cảnh) giảm aliasing.</p>
+
+<h4>28.28.1 Mẹo Pedal</h4>
+<p><b>Vị trí trong chuỗi:</b> tín hiệu vào ảnh hưởng đáp ứng méo — Compressor trước Pedal cho kết quả cân bằng; EQ/filter gain + cộng hưởng cao trước Pedal ra méo "gào".</p>
+<p><b>Kick techno:</b> kick decay dài (Kit-Core 909 vặn decay) → pedal Distort + Sub bật + Gain vừa. Thêm "whack": Mid Frequency sang phải nhất + tăng Mid; thêm "thump": tăng Bass; bớt "air": giảm Treble.</p>
+<p><b>Fizzle cho nhóm trống:</b> pedal Fuzz, Gain 50%, tắt Sub; Bass/Mid −100%, Mid Frequency theo tai, Treble 100%; Output −20 dB; Dry/Wet từ 0% tăng dần tới độ "xèo" vừa ý.</p>
+<p><b>Loa vỡ:</b> Fuzz, tắt Sub, Bass min, Treble 25%, Mid 100%, Mid Frequency phải nhất, Gain 100%.</p>
+<p><b>Sưởi sub bass:</b> pedal OD + Sub bật + Bass lên; tăng dần Gain; Mid cut/boost tùy.</p>
+
+<h3>28.29 Phaser-Flanger</h3>
+<figure><img src="images/PhaserFlangerL12.png" alt="Phaser" loading="lazy"><figcaption>Hiệu ứng Phaser-Flanger.</figcaption></figure>
+<p>Gộp flanger + phaser vào một device với chế độ riêng, thêm chế độ Doubler — lush, biểu cảm, hai LFO + envelope follower cho vô vàn modulation.</p>
+<p>Ba chế độ trong khung: <b>Phaser</b> (notch filter "lang thang" bằng cách phản hồi phiên bản dịch pha của input — dịch pha bằng all-pass modulate, âm lush); <b>Flanger</b> (comb filter liên tục đổi bằng trễ modulate thời gian + feedback); <b>Doubler</b> (hiệu ứng track nhân đôi — cộng tín hiệu trễ modulate vào input).</p>
+<p>Khung hiển thị: hình ảnh hóa + nút chọn chế độ. Phaser: hiện số notch và vị trí phổ; tham số ở phần dưới: <b>Notches</b> (số all-pass), <b>Center</b> (tần số giữa của notch), <b>Spread</b> (khoảng cách notch qua Q của all-pass), <b>Blend</b> (trộn routing giữa Center và Spread). Flanger: hình ảnh hóa cho thấy modulate tác động delay — trí trái nhất = giá trị Time; sang phải delay ngắn lại, trái dài ra; <b>Time</b> chỉnh delay. Doubler: modulate lưỡng cực — phải delay tăng, trái giảm.</p>
+<p>Mở rộng bằng nút gấp thanh tiêu đề: tùy chọn thêm cho LFO chính + LFO thứ hai + envelope follower + high-pass Safe Bass, cùng hình ảnh hóa LFO chính (tốc, dạng sóng, quan hệ pha stereo).</p>
+<figure><img src="images/PhaserFlangerExpandedViewL12.png" alt="Expanded" loading="lazy"><figcaption>Phaser-Flanger mở rộng.</figcaption></figure>
+<p>LFO chính: <b>Freq/Rate</b> đặt tốc (nút Modulation Sync đổi Hz ↔ đồng bộ tempo). Dạng sóng: Sine, Triangle (mặc định), Saw Up/Down, Rectangle, Random, Random S&amp;H, cộng Triangle Analog (vuông lọc thấp, đổi hình dạng/biên độ mạnh theo tốc LFO), Triangle 8/16 (chia một chu kỳ tam giác thành 8/16 bước rời rạc). <b>LFO Stereo Mode</b>: Phase (giá trị Phase đổi quan hệ pha trái/phải — 180° đảo hoàn toàn) hoặc Spin (detune tốc hai LFO). <b>Duty Cycle</b> nén thang thời gian chu kỳ về đầu (100%) hoặc cuối (−100%) chu kỳ — giống Pulse Width cho sóng vuông; 0% không ảnh hưởng; không tác dụng với Random/S&amp;H.</p>
+<p>LFO2 luôn sóng tam giác: <b>LFO2 Mix</b> (0% chỉ LFO chính, 100% chỉ LFO2) và <b>LFO2 Freq/Rate</b> (Hz hoặc đồng bộ qua Modulation Sync 2).</p>
+<p>Tham số toàn cục: <b>Amount</b> (lượng modulate delay — cho cả hai LFO); <b>Feedback</b> (phản hồi output mỗi kênh — cực hơn, comb filter mạnh; Doubler còn tạo delay nghe được khi dừng phát; nút Ø đảo pha feedback — với feedback cao ra âm "rỗng". <em>Cảnh báo:</em> feedback cao + thiết kế nào đó có thể tăng thể tích cực nhanh — bảo vệ tai và thiết bị!); <b>Output</b>; <b>Warmth</b> (thêm méo + lọc nhẹ cho ấm); <b>Dry/Wet</b> (return track 100%).</p>
+<p>Envelope follower: dịch biên độ audio thành nguồn modulation — bật Env Fol, đặt Envelope Amount khác 0 (âm đảo pha envelope); Attack/Release chỉnh tốc phản ứng. <b>Safe Bass</b>: high-pass giảm hiệu ứng với thành phần dưới tần số chọn (5–3000 Hz) — dễ mix vật liệu bass nặng hơn.</p>
+
+<p class="note"><em>⏳ Còn tiếp: các device 28.30 Redux → 28.42 Vocoder sẽ được dịch bổ sung trong lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 
 
