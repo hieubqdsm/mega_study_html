@@ -154,7 +154,9 @@
     <a href="#ch-remote">33. MIDI and Key Remote Control</a>
     <a href="#ch-sync">36. Synchronizing with Link, Tempo Follower, and MIDI</a>
     <a href="#ch-cpu">37. Computer Audio Resources and Strategies</a>
+    <a href="#ch-audio-facts">38. Audio Fact Sheet</a>
     <a href="#ch-midi-facts">39. MIDI Fact Sheet</a>
+    <a href="#ch-accessibility">40. Accessibility and Keyboard Navigation</a>
     <a href="#ch-credits">42. Credits</a>
   </nav>
 
@@ -3422,6 +3424,218 @@
 <li>Phím gán nút radio: duyệt qua các phương án.</li>
 </ul>
 <p class="note"><strong>Lưu ý:</strong> đừng nhầm chức năng này với khả năng dùng <a href="#ch-routing">bàn phím máy tính làm MIDI keyboard "giả"</a> sinh nốt MIDI cho instrument.</p>
+
+<!-- ============ CH 38: AUDIO FACT SHEET (EN ch.38) ============ -->
+<h2 class="sec" id="ch-audio-facts">Chương 38 · Audio Fact Sheet (Sự thật kỹ thuật về audio trong Live)</h2>
+<p class="lead">Một phần lớn nỗ lực phát triển của Ableton dành để kiểm thử khách quan và cẩn thận hiệu năng audio nền tảng của Live, từ đó cải tiến liên tục động cơ audio ở tầng thấp. Chương này giúp người dùng hiểu chính xác audio của mình bị (hoặc không bị) thay đổi ra sao khi dùng những tính năng hay bị hiểu lầm, kèm mẹo đạt chất lượng cao nhất.</p>
+<p>Trọng tâm nghiên cứu là hành vi <em>khách quan</em> (đo đếm được) — không tuyên bố gì về thứ bạn <em>nghe</em> được (không thể dự đoán môi trường nghe, phần cứng, độ nhạy tai… của bạn), và không so sánh Live với phần mềm audio khác. Đây là bản tóm tắt các sự thật đo được về những gì Live thực sự <em>làm</em> trong các điều kiện khác nhau.</p>
+
+<h3>38.1 Kiểm thử &amp; phương pháp</h3>
+<p>Tính đến nay, mọi phiên bản Live đều trải qua bộ kiểm thử tự động phủ mọi khía cạnh chức năng; thêm tính năng là thêm test — không bao giờ phát hành bản cập nhật chưa qua hết mọi test.</p>
+
+<h3>38.2 Các thao tác trung tính (Neutral)</h3>
+<p>Thủ tục trong Live <em>không gây thay đổi nào</em> chất lượng audio gọi là <span class="term">neutral operation</span> <span class="gloss">— thao tác trung tính: tín hiệu nguyên vẹn bit-cho-bit</span>. Dùng các hàm này không bao giờ làm suy giảm tín hiệu. Áp neutral lên audio thu trong Live: audio giữ nguyên từ lúc chuyển đổi analog-số. Áp neutral lên tệp nhập vào: giống hệt tệp trên đĩa. Áp neutral khi xuất: chất lượng tệp ra ít nhất bằng những gì nghe khi phát.</p>
+<p>Danh sách dưới đây mang tính tham chiếu trừu tượng: mọi thao tác đều trung tính, nhưng mỗi cái gần như chắc chắn xảy ra trong ngữ cảnh chứa cả thao tác phi trung tính — ví dụ chạy tín hiệu qua device hiệu ứng là phi trung tính, nên neutral xảy ra sau nó vẫn cho audio đã bị đổi; ngay cả đổi gain, về kỹ thuật, cũng phi trung tính.</p>
+
+<h4>38.2.1 Render không dither</h4>
+<p>Lệnh <a href="#ch-managing-files">Export Audio/Video</a> render audio ra tệp trên đĩa — trung tính khi: sample rate tệp render trùng với sample rate phần cứng trong Settings; và chưa áp thao tác phi trung tính nào.</p>
+<p>Kiểm thử: nạp 3 loại tệp chưa xử lý (tạp âm trắng, sine tần cố định, sine sweep) độ dài từ 16/24/32-bit, render ra tệp với các độ phân giải bit khác nhau; thử triệt pha (phase cancellation) tệp gốc với tệp ra cho thấy: render cùng bit depth với gốc → triệt pha hoàn toàn; render bit cao hơn → triệt hoàn toàn; render bit thấp hơn → méo tối thiểu có thể trong hệ 32-bit.</p>
+
+<h4>38.2.2 Khớp sample rate / không transpose</h4>
+<p>Phát tệp audio chưa kéo giãn là thao tác trung tính, miễn sample rate tệp trùng Settings và phát không transpose — xác minh bằng triệt pha bản render. "Phát" ở đây chỉ tính audio bên trong Live, trước khi tới phần cứng.</p>
+
+<h4>38.2.3 Warp Beats/Tones/Texture/Re-Pitch khi không kéo giãn</h4>
+<p>Tempo clip bằng tempo Set thì clip phát không kéo giãn; khi đó nếu <a href="#ch-warping">Warp Mode</a> là Beats, Tones, Texture hoặc Re-Pitch (không phải Complex/Complex Pro) thì phát là trung tính.</p>
+<p>Warp do đổi tempo Set là <em>phi vĩnh viễn</em>: audio phát không warp ở một tempo nào thì luôn phát không warp ở tempo đó — kể cả tempo đổi đi rồi đổi lại. Ví dụ: thu track ở 120 BPM, hạ tempo để thu đoạn solo khó, trả về 120 — các track gốc phát trung tính trở lại; chỉ bản thu ở tempo chậm bị kéo giãn.</p>
+<p>Thu tempo automation trong Arrangement trung tính hay không tùy Warp Mode: Beats với preserve transient có thể sinh artefact — bỏ bằng preserve 1/16 thay transient, hoặc dùng Repitch.</p>
+<p class="note"><strong>Lưu ý:</strong> <a href="#ch-grooves">groove</a> hoạt động bằng cách đổi vị trí Warp Marker — clip audio có groove luôn phi trung tính ngay cả ở tempo gốc.</p>
+<p>Tính trung tính của phát clip không kéo giãn được xác minh bằng triệt pha bản render.</p>
+
+<h4>38.2.4 Cộng tín hiệu tại điểm mix đơn</h4>
+<p>Live cộng tín hiệu độ chính xác kép (64-bit) ở mọi điểm trộn: input clip, return track, Main track và Rack — mix trong Live trung tính cho tín hiệu trộn tại một điểm cộng đơn. Kiểm thử: nạp từng cặp tệp 24-bit (tạp âm trắng/sine + bản đảo pha), cộng 8 lần, render 32-bit — triệt pha hoàn toàn mọi test.</p>
+<p class="note"><strong>Lưu ý:</strong> 64-bit áp cho từng điểm cộng <em>đơn</em>; xử lý nội bộ của Live vẫn 32-bit — tín hiệu trộn qua nhiều điểm cộng có thể suy giảm cực nhỏ. Kết hợp "cộng 64-bit trong kiến trúc 32-bit" cân bằng lý tưởng giữa chất lượng và tiêu tốn CPU/RAM.</p>
+
+<h4>38.2.5 Thu tín hiệu ngoài (bit depth ≥ bộ chuyển A/D)</h4>
+<p>Thu audio vào Live trung tính nếu bit depth trong Settings bằng hoặc cao hơn bộ chuyển A/D dùng để thu. "Trung tính" ở đây = giống hệt audio mà bộ A/D giao cho Live.</p>
+
+<h4>38.2.6 Thu nguồn nội bộ ở 32-bit</h4>
+<p>Audio thu qua routing nội bộ giống hệt nguồn nếu thu ở 32-bit — khuyến nghị 32-bit cho thu instrument plug-in và tín hiệu qua hiệu ứng. Nguồn vốn bit thấp hơn thì thu nội bộ ở bit đó cũng trung tính (không dùng hiệu ứng); thu 16-bit chưa xử lý ở 32-bit không tăng chất lượng. Xác minh bằng triệt pha.</p>
+
+<h4>38.2.7 Freeze track</h4>
+<p><a href="#ch-cpu">Freeze</a> tạo tệp audio 32-bit — không thấp hơn chất lượng audio trước khi freeze. Vài trường hợp đặc biệt phi trung tính cần biết:</p>
+<ul>
+<li>Track Arrangement freeze gồm cả audio dài hơn clip (đuôi reverb/delay); track Session freeze luôn đúng 2 chu kỳ loop — audio vượt quá 2 chu kỳ khi phát thường sẽ bị cắt sau freeze.</li>
+<li>Hiệu ứng theo thời gian (reverb, delay) tính real-time khi chưa freeze nên dừng phát giữa chừng đuôi vẫn ngân; đuôi freeze là audio render nên dừng phắt khi dừng phát.</li>
+<li>Automation tham số được render vào tệp cho clip Arrangement freeze; clip Session freeze "chụp snapshot" mọi giá trị tham số tại vị trí 1.1.1 của Arrangement và giữ suốt clip — tương tự hành vi clip thường: chạy clip Session thì Arrangement automation bị "punch out" tới khi bấm Back to Arrangement.</li>
+<li>Clip freeze luôn phát với Warp bật, chế độ Beats — chịu cùng hành vi phi trung tính như mọi tệp audio warp.</li>
+<li>Device có tham số ngẫu nhiên (như Chance của Beat Repeat) hết ngẫu nhiên sau freeze — giá trị ngẫu nhiên lúc freeze được render cứng vào tệp.</li>
+</ul>
+
+<h4>38.2.8 Hiệu ứng bypass</h4>
+<p>Hiệu ứng bị bypass được loại khỏi dòng tín hiệu — đúng cho cả hiệu ứng built-in lẫn plug-in VST/AU: audio ở đầu ra hiệu ứng bypass giống hệt đầu vào. <em>Lưu ý:</em> hiệu ứng có tham số vốn cần trễ (Lookahead của Compressor) vẫn giữ độ trễ đó khi bypass để duy trì bù trễ tự động với phần còn lại của dự án — đa số trường hợp hoàn toàn không nghe ra.</p>
+<p>Kiểm thử: nạp mỗi hiệu ứng của Live vào audio track, deactivate hết, render — so với render track không device: triệt pha hoàn toàn.</p>
+
+<h4>38.2.9 Routing</h4>
+<p><a href="#ch-routing">Routing</a> trong Live trung tính: tín hiệu ở đích giống hệt ở nguồn. Lưu ý kiến trúc routing linh hoạt cho phép lấy tín hiệu trước/sau hiệu ứng hoặc mixer của track, hoặc gom output từng ô sample trong Impulse — những trường hợp này tín hiệu nghe được khác trước vì được gom trước khi hết chuỗi gốc.</p>
+
+<h4>38.2.10 Split clip</h4>
+<p>Clip trung tính giữ nguyên tính trung tính sau khi <a href="#ch-arrangement">split</a> — split chỉ ảnh hưởng vị trí phát trong sample, không đụng dữ liệu sample; phát qua ranh giới split liền mạch chính xác tới từng sample. Kiểm thử nhiều điều kiện (split clip chưa warp với loop bật/tắt; clip warp nhưng không kéo giãn với loop bật/tắt): render so với bản không split — triệt pha hoàn toàn.</p>
+
+<h3>38.3 Các thao tác phi trung tính</h3>
+<p>Thủ tục <em>gây thay đổi</em> chất lượng audio gọi là <em>non-neutral</em> — dùng ắt đổi tín hiệu: tệp nhập vào sẽ khác tệp trên đĩa; tệp xuất ra sẽ khác những gì nghe khi phát real-time.</p>
+
+<h4>38.3.1 Phát ở chế độ Complex/Complex Pro</h4>
+<p>Thuật toán <a href="#ch-warping">Complex/Complex Pro</a> dùng công nghệ hoàn toàn khác Beats/Tones/Texture/Re-Pitch. Complex nghe thường hay hơn với tệp trộn nhiều loại vật liệu nhưng <em>không bao giờ</em> trung tính — ngay cả ở tempo gốc. Cộng thêm ngốn CPU: chỉ dùng khi các Warp Mode khác không đủ tốt.</p>
+
+<h4>38.3.2 Đổi sample rate / transpose</h4>
+<p>Đổi sample rate (khi phát real-time lẫn render) phi trung tính: phát tệp ở sample rate khác Settings gây suy giảm. Transpose là một dạng đổi sample rate nên cũng phi trung tính.</p>
+<p>Giảm thiểu: nên đổi sample rate offline thay vì trộn tệp khác sample rate trong một Set; xuất sample về đúng sample rate dự định dùng rồi nhập vào — không mất chất lượng. Render ở sample rate khác với sample rate làm việc cũng phi trung tính; việc đổi khi xuất dùng thư viện <a href="https://soxr.sourceforge.net" target="_blank" rel="noopener">SoX Resampler ↗</a> chất lượng rất cao (giấy phép <a href="https://gnu.org/licenses" target="_blank" rel="noopener">GNU LGPL v2.1 ↗</a>) — tệp downsample méo cực thấp.</p>
+
+<h4>38.3.3 Volume automation</h4>
+<p>Automate mức volume đổi gain — tất yếu phi trung tính. Song Live cập nhật đường cong volume automation cho từng mẫu audio → méo cực thấp, không sinh artefact nghe được như vài cài đặt khác.</p>
+
+<h4>38.3.4 Dithering</h4>
+<p>Render xuống bit depth thấp hơn nên áp dither để tối thiểu artefact — dither (một loại nhiễu rất nhỏ) vốn phi trung tính nhưng là "cái ác cần thiết" khi hạ độ phân giải bit.</p>
+<p class="note"><strong>Lưu ý:</strong> xử lý tín hiệu nội bộ của Live toàn 32-bit — chỉ cần một lần đổi gain là audio trở thành 32-bit, dù gốc là 16/24-bit. Dither không bao giờ áp quá một lần cho một tệp: trừ khi master và hoàn thiện trong Live, luôn render 32-bit và bỏ hẳn dither.</p>
+
+<h4>38.3.5 Thu tín hiệu ngoài (bit &lt; bộ A/D)</h4>
+<p>Thu audio phi trung tính nếu bit depth trong Settings <em>thấp hơn</em> bộ A/D — không khuyến nghị.</p>
+
+<h4>38.3.6 Thu nguồn nội dưới 32-bit</h4>
+<p>Thu qua routing nội bộ mất chất lượng nếu dưới 32-bit — khuyến nghị 32-bit cho instrument plug-in và tín hiệu qua hiệu ứng. Nguồn vốn bit thấp thì thu ở bit đó vẫn trung tính (không hiệu ứng); thu 16-bit chưa xử lý ở 32-bit không tăng chất lượng.</p>
+
+<h4>38.3.7 Consolidate</h4>
+<p><a href="#ch-arrangement">Consolidate</a> tạo tệp audio mới phi trung tính so với dữ liệu gốc: tệp mới được normalize — volume clip chỉnh để phát đúng âm lượng như trước khi gộp; normalize là đổi gain (phi trung tính). Tệp mới còn tạo theo sample rate/bit depth của Settings, có thể khác tệp gốc.</p>
+
+<h4>38.3.8 Fade của clip</h4>
+<p>Bật Create Fades on Clip Edges: fade ngắn (tối đa 4 ms) áp đầu/cuối clip tránh click; fade "declick" này cũng áp cho clip Session qua nút Clip Fade; clip Arrangement có fade/crossfade chỉnh được. Mọi tùy chọn fade đều phi trung tính.</p>
+
+<h4>38.3.9 Pan</h4>
+<p>Live dùng pan constant-power với đường cong gain hình sin: giữa = 0 dB; pan hết trái/phải tăng +3 dB. Muốn giảm thay đổi âm lượng này, thu hẹp bề rộng stereo trước khi pan cực đoan — qua núm Width của device Utility.</p>
+
+<h4>38.3.10 Groove</h4>
+<p>Clip warp cùng tempo Set phát trung tính trong đa số điều kiện — nhưng có <a href="#ch-grooves">groove</a> là phi trung tính ở mọi tempo.</p>
+
+<h3>38.4 Mẹo đạt chất lượng âm tối ưu</h3>
+<ul>
+<li>Quyết định sample rate của dự án <em>trước</em> khi làm, đừng đổi giữa chừng.</li>
+<li>Thu audio bằng linh kiện chất lượng cao (interface, cáp…) ở sample rate và bit depth cao nhất interface/máy chịu được.</li>
+<li>Tránh dùng sample khác sample rate trong cùng dự án; muốn dùng thì convert trước ở ứng dụng offline chuyên dụng về đúng sample rate của interface.</li>
+<li>Tắt cả Warp lẫn Fade trong Clip View cho mọi audio clip.</li>
+<li>Không chỉnh Transpose và Detune của clip nào.</li>
+<li>Luôn render 32-bit.</li>
+</ul>
+<p class="note"><strong>Lưu ý:</strong> các thực hành này đảm bảo chất lượng tối đa nhưng tắt một số chức năng của Live — đặc biệt là kéo giãn và đồng bộ.</p>
+
+<h3>38.5 Kết luận</h3>
+<p>Mong chương này giúp hiểu chính xác audio bị ảnh hưởng thế nào khi thực hiện các thủ tục trong Live. Trọng tâm là những hàm từng gây nhầm lẫn qua nhiều năm; danh sách trung tính/phi trung tính tất nhiên chưa đầy đủ tuyệt đối.</p>
+
+<!-- ============ CH 40: ACCESSIBILITY AND KEYBOARD NAVIGATION (EN ch.40) ============ -->
+<h2 class="sec" id="ch-accessibility">Chương 40 · Accessibility and Keyboard Navigation (Trợ năng &amp; điều hướng bàn phím)</h2>
+<p class="lead">Live 12 mang tính năng trợ năng mới trên macOS và Windows: hỗ trợ screen reader (trình đọc màn hình) và công nghệ hỗ trợ khác dùng giao thức trợ năng gốc của hai hệ điều hành; thêm tùy chọn tương phản cao cho theme mới, <a href="#ch-shortcuts">điều hướng bàn phím</a> gọn gàng hơn và menu Settings bố trí khoa học hơn.</p>
+<p>Phần lớn view, điều khiển và device của Live chạy được với screen reader; một số tính năng chưa tối ưu: Modulation Matrix của Wavetable, vài tham số nâng cao của Operator. Vài tính năng khác chưa hỗ trợ screen reader: gắn thẻ/lọc trong Browser, chỉnh MPE trong Clip View, Max for Live, một số plug-in bên thứ ba. Câu hỏi thường gặp: <a href="https://help.ableton.com/hc/en-us/articles/11762577169948" target="_blank" rel="noopener">Accessibility in Ableton Live FAQ ↗</a>.</p>
+
+<h3>40.1 Thiết lập menu &amp; điều hướng bàn phím</h3>
+<p>Các tùy chọn trợ năng/điều hướng nằm trong Settings và menu Options, Navigate. Ngoài điều hướng cải thiện, nhiều <a href="#ch-shortcuts">phím tắt</a> cho thao tác thường dùng.</p>
+
+<h4>40.1.1 Dùng phím Tab để điều hướng</h4>
+<p>Bật <em>Use Tab Key to Move Focus</em> (menu Navigate hoặc Display &amp; Input Settings):</p>
+<ul>
+<li><kbd>Tab</kbd> — tới điều khiển kế tiếp; <kbd>Shift</kbd> <kbd>Tab</kbd> — về điều khiển trước.</li>
+<li><kbd>Ctrl</kbd> <kbd>Tab</kbd> (Win) / <kbd>Option</kbd> <kbd>Tab</kbd> (Mac) — điều khiển kế tiếp cùng hàng trong mixer Session/Arrangement; thêm <kbd>Shift</kbd> để đi ngược.</li>
+</ul>
+<p>Tắt tùy chọn này thì <kbd>Tab</kbd> chuyển Session ⇄ Arrangement như các phiên bản cũ.</p>
+<p>Thêm:</p>
+<ul>
+<li><em>Wrap Tab Navigation</em> — <kbd>Tab</kbd> chạm điều khiển cuối của một vùng thì quay về điều khiển đầu (thay vì dừng); đang ở điều khiển đầu thì <kbd>Shift</kbd> <kbd>Tab</kbd> nhảy tới điều khiển cuối.</li>
+<li><em>Move Clips with Arrow Keys</em> (mặc định bật) — mũi tên trái/phải dời clip/vùng chọn thời gian trong Arrangement; tắt đi thì mũi tên trái gộp vùng chọn về điểm bắt đầu, mũi tên phải về điểm kết thúc.</li>
+</ul>
+
+<h4>40.1.2 Menu Settings</h4>
+<p>Mở Settings: <kbd>Ctrl</kbd> <kbd>,</kbd> (Win) / <kbd>Cmd</kbd> <kbd>,</kbd> (Mac). <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> di chuyển giữa các tùy chọn trong tab (chạy bất kể Use Tab Key bật hay không). Điều khiển đang tiêu điểm: mũi tên lên/xuống đổi trạng thái công tắc, chỉnh giá trị, duyệt phương án; <kbd>Enter</kbd> đảo trạng thái công tắc.</p>
+<p>Giữa các tab của Settings Page Chooser: <kbd>Ctrl</kbd> <kbd>Tab</kbd> / <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Tab</kbd> (Mac dùng Option), hoặc mũi tên lên/xuống khi chooser đang tiêu điểm; <kbd>Shift</kbd> <kbd>Tab</kbd> từ điều khiển đầu tiên của tab quay về chooser. Đóng Settings bằng <kbd>Esc</kbd>.</p>
+<p class="note"><strong>Lưu ý:</strong> đổi ngôn ngữ UI trong Display &amp; Input Settings thì phải khởi động lại Live.</p>
+
+<h4>40.1.3 Menu Options</h4>
+<p>Settings trợ năng nữa nằm trong mục phụ Accessibility của menu Options — mở bằng bàn phím: <kbd>Alt</kbd> <kbd>O</kbd> (Win) / với VoiceOver (Mac): <kbd>VO</kbd> <kbd>M</kbd> rồi <kbd>O</kbd>. Mục chứa các bật/tắt thông báo của screen reader: Speak Menu Commands, Speak Minimum and Maximum Slider Values, Speak Time in Seconds…</p>
+
+<h4>40.1.4 Speak Help Text</h4>
+<p>Phần lớn điều khiển/vùng trong Live có mô tả trong <a href="#ch-first-steps">Info View</a>. Windows: bật thông báo mô tả bằng tùy chọn Speak Help Text của screen reader. macOS: bật help text trong verbosity settings của VoiceOver Utility, hoặc bấm <kbd>VO</kbd> <kbd>Shift</kbd> <kbd>H</kbd>.</p>
+
+<h3>40.2 Thiết lập audio</h3>
+<p>Mở Settings (<kbd>Ctrl</kbd> <kbd>,</kbd> / <kbd>Cmd</kbd> <kbd>,</kbd>), mũi tên tới trang Audio; <kbd>Tab</kbd> di giữa các tùy chọn để cấu hình thiết bị. macOS: input/output nối được mọi thiết bị CoreAudio, đổi driver trong menu Driver Type nếu cần. Windows: chọn driver ưa thích (ASIO4ALL chẳng hạn) và quản lý thiết bị qua chương trình của driver.</p>
+
+<h3>40.3 Nối thiết bị MIDI</h3>
+<p>Live tự dò thiết bị MIDI — phần lớn không cần cấu hình thêm. Một số controller kèm control surface script để tích hợp vào Live (hỗ trợ screen reader tùy bên thứ ba). Mục MIDI trong trang Link, Tempo &amp; MIDI có 6 menu Control Surface — chọn bằng <a href="#ch-accessibility">điều hướng bàn phím</a>, kèm đặt cổng in/out. Xem thêm chương <a href="#ch-remote">MIDI and Key Remote Control</a>.</p>
+
+<h3>40.4 Điều hướng trong Live</h3>
+<p>Điều hướng được phần lớn menu/view/điều khiển bằng bàn phím. <em>Lưu ý:</em> các phím tắt dạng <kbd>Tab</kbd> trong phần này cần bật Use Tab Key to Move Focus.</p>
+
+<h4>40.4.1 Menu Navigate</h4>
+<p>Menu Navigate chứa mọi view chính và tùy chọn điều hướng, đa số có phím tắt riêng. Mở: <kbd>Alt</kbd> <kbd>N</kbd> (Win) / <kbd>VO</kbd> <kbd>M</kbd> rồi <kbd>N</kbd> (VoiceOver Mac).</p>
+
+<h5>40.4.1.1 Control Bar — <kbd>Alt</kbd> <kbd>0</kbd> / <kbd>Option</kbd> <kbd>0</kbd></h5>
+<p>Control Bar gồm thiết lập dự án, transport, công cụ chuột/phím, view trạng thái — nhóm theo cụm truy cập được; <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> di giữa các cụm (kèm Speak Help Text để tìm hiểu từng tùy chọn). Control Bar nhớ điều khiển tiêu điểm sau cùng — quay lại từ view khác là focus về đúng nó.</p>
+
+<h5>40.4.1.2 Session View — <kbd>Alt</kbd> <kbd>1</kbd> / <kbd>Option</kbd> <kbd>1</kbd></h5>
+<p><a href="#ch-session">Session View</a> — cách làm nhạc phi tuyến của Live, gồm 4 phần chính:</p>
+<p><b>Track Title Bars</b> — thanh tiêu đề mọi track; mũi tên trái/phải di chuyển; nhấp chuột phải mở menu ngữ cảnh với lệnh hữu ích + phím tắt.</p>
+<p><b>Clip Slots</b> — nhóm theo track (dọc) và scene (ngang); slot track audio chứa audio clip, MIDI track chứa MIDI clip. Tiêu điểm trên slot MIDI track: chèn MIDI clip trống bằng <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>M</kbd> / <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>M</kbd>; chạy clip đang chọn bằng <kbd>Enter</kbd> (transport đang chạy thì clip vào theo quantization của Control Bar). Slot trong return track không chứa/chạy clip.</p>
+<p><b>Scenes</b> — chạy đồng loạt clip kề nhau qua số scene trên track Main; mũi tên lên/xuống di chuyển; <kbd>Enter</kbd> chạy scene.</p>
+<p><b>Mixer</b> — <a href="#ch-routing">routing</a> và tùy chọn <a href="#ch-mixing">mixer</a> từng track; hiện phần tử nào tùy chỉnh qua Mixer Controls (menu View hoặc menu thả cạnh Mixer view control góc dưới-phải): input/output, send, volume, tùy chọn track, crossfader, performance impact — ba mục sau ẩn mặc định.</p>
+<p>Mũi tên di giữa tiêu đề track/slot/scene; <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> nhảy từ track/slot sang mixer và giữa các điều khiển mixer của track. <em>Next/Previous Neighbor</em> (menu Navigate) hay <kbd>Ctrl</kbd> <kbd>Tab</kbd> / <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Tab</kbd> (Option trên Mac) đưa tiêu điểm sang cùng điều khiển của track khác. <kbd>Esc</kbd> đưa tiêu điểm từ phần tử trong track về thanh tiêu đề track.</p>
+
+<h5>40.4.1.3 Arrangement View — <kbd>Alt</kbd> <kbd>2</kbd> / <kbd>Option</kbd> <kbd>2</kbd></h5>
+<p><a href="#ch-arrangement">Arrangement View</a> — view timeline để dàn audio, MIDI và automation.</p>
+<p><b>Di giữa các track:</b> mũi tên lên/xuống; <kbd>Ctrl</kbd> <kbd>Tab</kbd> (Win) / <kbd>Option</kbd> <kbd>Tab</kbd> (Mac) giữa các mixer track; <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> trong điều khiển mixer của track.</p>
+<p><b>Di trong timeline:</b> mũi tên trái/phải theo lưới hiện tại; <kbd>+</kbd>/<kbd>−</kbd> nới/rút lưới; <kbd>Ctrl</kbd> (Win) / <kbd>Option</kbd> (Mac) + mũi tên trái/phải tới mép clip/locator kế trước/kế sau trong lane nội dung.</p>
+<p><b>Locator:</b> di tới vị trí rồi <kbd>Tab</kbd> tới nút Set Locator, <kbd>Enter</kbd> đặt; <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> giữa các locator; <kbd>Delete</kbd> xóa.</p>
+<p><b>Xử lý nội dung:</b> giữ <kbd>Shift</kbd> + mũi tên để chọn; mũi tên trái/phải dời nội dung chọn; <kbd>Ctrl</kbd> <kbd>X</kbd>/<kbd>C</kbd>/<kbd>V</kbd>/<kbd>D</kbd> cắt/copy/dán/nhân đôi (Mac dùng <kbd>Cmd</kbd>); <kbd>Delete</kbd> xóa.</p>
+<p><b>Chỉnh mép clip:</b> đưa insert marker tới mép clip, <kbd>Enter</kbd>, mũi tên trái/phải chỉnh độ dài, <kbd>Enter</kbd> xác nhận hoặc <kbd>Esc</kbd> hủy.</p>
+<p><b>Xuất audio:</b> chọn vùng rồi <kbd>Ctrl</kbd> <kbd>R</kbd> / <kbd>Cmd</kbd> <kbd>R</kbd> mở hộp thoại xuất — mặc định render Main track.</p>
+<p class="note"><strong>Lưu ý:</strong> chỉnh fade của audio clip chưa hỗ trợ screen reader.</p>
+
+<h5>40.4.1.4 Clip View — <kbd>Alt</kbd> <kbd>3</kbd> / <kbd>Option</kbd> <kbd>3</kbd></h5>
+<p><a href="#ch-clip-view">Clip View</a> đặt/chỉnh thuộc tính clip — nhấp đúp clip hoặc <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>3</kbd> / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>3</kbd>. Gồm hai vùng: <b>clip panel</b> (tùy chọn thuộc tính nốt — <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>P</kbd> / <kbd>Option</kbd> <kbd>Shift</kbd> <kbd>P</kbd> đưa tiêu điểm về) và <b>editor</b> (waveform/MIDI/envelope/MPE; lần đầu mở clip hiện Sample Editor cho audio, MIDI Note Editor cho MIDI — <kbd>Alt</kbd> <kbd>3</kbd> / <kbd>Option</kbd> <kbd>3</kbd> đưa tiêu điểm về editor).</p>
+<p><b>MIDI Note Editor:</b> bật MIDI Note Editor Preview (menu Options) để nghe nốt khi thêm/chọn/dời; đặt insert marker rồi giữ <kbd>Shift</kbd> + mũi tên trái/phải chọn thời gian; <kbd>Enter</kbd> chọn mọi nốt trong vùng; <kbd>Ctrl</kbd>/<kbd>Option</kbd> + mũi tên trái/phải tới biên nốt trước/sau.</p>
+<p><b>Di giữa nốt MIDI:</b> <kbd>Ctrl</kbd>/<kbd>Option</kbd> + mũi tên lên/xuống nhảy nốt trước/sau; + mũi tên trái/phải nhảy nốt cùng cao độ trước/sau; thêm <kbd>Shift</kbd> để mở rộng vùng chọn nốt.</p>
+<p><b>Sửa nốt MIDI:</b> mũi tên lên/xuống transpose; <kbd>Shift</kbd> + lên/xuống transpose quãng tám; <kbd>Shift</kbd> + trái/phải ngắn/dài theo lưới; trái/phải dời theo lưới; <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + lên/xuống chỉnh velocity; <kbd>Ctrl</kbd> <kbd>Alt</kbd>/<kbd>Cmd</kbd> <kbd>Option</kbd> + lên/xuống chỉnh xác suất (probability).</p>
+<p><b>Audio clip:</b> <kbd>Ctrl</kbd>/<kbd>Option</kbd> + trái/phải dời insert marker; giữ <kbd>Shift</kbd> bắt đầu vùng chọn rồi mũi tên mở/rút; mũi tên trái/phải dời Warp Marker đang chọn; <kbd>Ctrl</kbd> <kbd>I</kbd>/<kbd>Cmd</kbd> <kbd>I</kbd> chèn + chọn Warp Marker tại vị trí hiện tại; <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd>/<kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>I</kbd> chèn transient.</p>
+<p class="note"><strong>Lưu ý:</strong> chỉnh MPE chưa hỗ trợ screen reader.</p>
+
+<h5>40.4.1.5 Device View — <kbd>Alt</kbd> <kbd>4</kbd> / <kbd>Option</kbd> <kbd>4</kbd></h5>
+<p><a href="#ch-devices">Device View</a> hiển thị chuỗi device của track (MIDI track: hiệu ứng MIDI + instrument + hiệu ứng audio; audio/group/return/Main track: hiệu ứng audio). Mỗi device là một "nhóm" với screen reader; mũi tên trái/phải di giữa device. Cut/Copy/Paste/Duplicate/Delete bằng <kbd>Ctrl</kbd> <kbd>X</kbd>/<kbd>C</kbd>/<kbd>V</kbd>/<kbd>D</kbd> (Mac <kbd>Cmd</kbd>) và <kbd>Delete</kbd>. <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> duyệt điều khiển của device đang chọn. <em>Lưu ý:</em> đa số device hỗ trợ trợ năng cơ bản; device phức tạp chưa tối ưu cho screen reader.</p>
+
+<h5>40.4.1.6 Browser — <kbd>Alt</kbd> <kbd>5</kbd> / <kbd>Option</kbd> <kbd>5</kbd></h5>
+<p><a href="#ch-browser">Browser</a> — thư viện instrument/device/tệp, gồm 4 phần: search bar, filter, sidebar, content pane.</p>
+<p><kbd>Ctrl</kbd> <kbd>F</kbd> / <kbd>Cmd</kbd> <kbd>F</kbd> đưa tiêu điểm về ô tìm kiếm từ bất cứ đâu (tự chọn nhãn All); kết quả hiện trong content pane. <kbd>Tab</kbd> chuyển vùng: từ search bar → nút Show/Hide Filter View → menu Filter View → sidebar; từ sidebar → filter (nếu hiện) → content pane; mũi tên xuống cũng đưa tiêu điểm từ search bar sang content pane.</p>
+<p>Sidebar chứa các nhãn (Core Library, Live Packs, Collections…); mũi tên lên/xuống giữa nhãn; chọn nhãn thì nội dung hiện trong content pane; mũi tên trái/phải di giữa sidebar ↔ content pane. Content pane liệt kê device/tệp theo nhãn; <kbd>Shift</kbd> + lên/xuống đa chọn; mũi tên phải mở thư mục, trái gấp.</p>
+<p>Một số mục (clip, instrument preset) có <a href="#ch-browser">nghe thử</a>: bật Browser File Preview (menu Options); tắt preview vẫn nghe được bằng mũi tên phải khi mục đang chọn. <em>Lưu ý:</em> lọc và gắn thẻ chưa hỗ trợ screen reader.</p>
+
+<h5>40.4.1.7 Groove Pool — <kbd>Alt</kbd> <kbd>6</kbd> / <kbd>Option</kbd> <kbd>6</kbd></h5>
+<p>Thời gian và "feel" của clip chỉnh bằng <em>groove</em> qua <a href="#ch-grooves">Groove Pool</a>; <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> giữa tham số groove, mũi tên lên/xuống chỉnh giá trị.</p>
+
+<h5>40.4.1.8 Learn View — <kbd>Alt</kbd> <kbd>7</kbd> / <kbd>Option</kbd> <kbd>7</kbd></h5>
+<p>Learn View chứa các bài học ngắn về nhiều khía cạnh của Live.</p>
+
+<h3>40.5 Chỉnh envelope automation &amp; modulation</h3>
+<p>Dùng bàn phím thêm/sửa/xóa breakpoint trong envelope automation và modulation; screen reader phản hồi từng thao tác. Áp trong <a href="#ch-automation">lane automation</a> của Arrangement lẫn <a href="#ch-clip-envelopes">Envelope Editor</a> của clip.</p>
+
+<h4>40.5.1 Di giữa các breakpoint</h4>
+<p>Điều hướng envelope bằng insert marker (vị trí hiện tại trên lưới): mũi tên trái/phải dời; giá trị automation/modulation tại vị trí hiện hiển thị theo.</p>
+<figure><img src="images/AccessibilityAutomationValueL12.png" alt="Value" loading="lazy"><figcaption>Giá trị automation hiện tại vị trí insert marker.</figcaption></figure>
+<p>Tạo breakpoint tại insert marker: <kbd>Enter</kbd> — bấm <kbd>Enter</kbd> lần nữa xác nhận, hoặc dời breakpoint bằng mũi tên rồi <kbd>Enter</kbd> đặt chỗ mới. <kbd>Alt</kbd>/<kbd>Option</kbd> + mũi tên trái/phải nhảy tới breakpoint trước/sau. Breakpoint đang tiêu điểm hiển thị màu khác với envelope chính (cùng màu khi rê chuột).</p>
+<figure><img src="images/FocusedBreakpointColorL12.png" alt="Focused" loading="lazy"><figcaption>Một breakpoint đang tiêu điểm.</figcaption></figure>
+
+<h4>40.5.2 Chọn &amp; sửa breakpoint</h4>
+<p>Chọn breakpoint có sẵn tại insert marker: <kbd>Enter</kbd>. Giữ <kbd>Alt</kbd>/<kbd>Option</kbd> + nhấp breakpoint: đưa insert marker tới nó và chọn. <kbd>Tab</kbd>/<kbd>Shift</kbd> <kbd>Tab</kbd> chọn breakpoint kế/trước. Breakpoint được chọn có hiệu ứng nhấp nháy báo đang chọn/sửa được.</p>
+<figure><img src="images/SelectedBreakpointHighlightL12.png" alt="Selected" loading="lazy"><figcaption>Breakpoint nhấp nháy khi được chọn.</figcaption></figure>
+<p>Dời breakpoint rồi Undo (<kbd>Ctrl</kbd> <kbd>Z</kbd> / <kbd>Cmd</kbd> <kbd>Z</kbd>): breakpoint vừa bị dời đổi tạm sang màu tiêu điểm — dễ nhận cái nào bị ảnh hưởng, nhất là khi các breakpoint thẳng hàng dọc.</p>
+<figure><img src="images/BreakpointRestoredHoverColorL12.png" alt="Restored" loading="lazy"><figcaption>Breakpoint vừa dời dùng tạm màu khác.</figcaption></figure>
+<p>Đổi giá trị của breakpoint đang chọn: gõ số hoặc mũi tên lên/xuống; <kbd>Enter</kbd> xác nhận, <kbd>Esc</kbd> hủy — cả hai đều bỏ chọn. <kbd>Delete</kbd> xóa breakpoint đang chọn.</p>
+
+<h4>40.5.3 Chuyển envelope automation trong Arrangement</h4>
+<p>Duyệt mọi envelope automation của device trên một track: <kbd>Alt</kbd>/<kbd>Option</kbd> + mũi tên lên/xuống. Duyệt mọi tham số device (có và không có envelope): thêm <kbd>Shift</kbd>.</p>
 
 </article>
 
