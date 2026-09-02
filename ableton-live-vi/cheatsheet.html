@@ -64,6 +64,8 @@
   .chip span{color:var(--ink-soft);}
 
   .note{font-size:12.5px;color:var(--ink-soft);background:var(--code);border-radius:8px;padding:8px 12px;margin-top:8px;}
+  .warn-box{font-size:13px;border:1.5px solid var(--accent2);background:rgba(184,114,46,.08);border-radius:10px;padding:10px 13px;margin-top:10px;line-height:1.65;}
+  .warn-box img{width:100%;height:auto;border:1px solid var(--rule);border-radius:8px;margin:8px 0 0;display:block;}
   footer{max-width:1080px;margin:0 auto;padding:22px 20px 44px;font-size:12px;color:var(--ink-soft);border-top:1px solid var(--rule);}
 </style>
 </head>
@@ -105,7 +107,10 @@
       </div>
       <img src="images/concepts_ArrangementAndSessionSelectorsL12.jpg" alt="Bộ chọn Session/Arrangement" loading="lazy">
       <div class="cap">Ba nút chuyển view trên Control Bar.</div>
-      <p class="note">📌 Luôn có nút <b>Back to Arrangement</b> để quay về bản Arrangement sau khi jam/tự phát từ Session.</p>
+      <div class="warn-box">
+        <b>⚠️ Bẫy kinh điển — Back to Arrangement:</b> đã bấm clip ở Session xong, sang Arrangement bấm <kbd>Play</kbd> mà <b>không nghe theo bản đã dàn trong Arrangement</b>? Đó là vì Session đang "chiếm quyền" điều khiển các track. Lúc này nút <b>Back to Arrangement</b> trên Control Bar sẽ <b>sáng cam</b> — bấm vào nó (hoặc phím <kbd>F10</kbd>) để Arrangement phát lại đúng nội dung của nó. Mỗi track bị chiếm quyền cũng có nút cam riêng ở số track để trả lại từng track.
+        <img src="images/concepts_BackToArrangementButtonSessionL12.jpg" alt="Nút Back to Arrangement" loading="lazy">
+      </div>
     </div>
 
     <!-- ===== PHÍM TẮT ===== -->
@@ -115,6 +120,7 @@
         <tr><td><kbd>Spacebar</kbd></td><td>Phát / dừng · <kbd>Shift Space</kbd> phát tiếp từ chỗ dừng</td></tr>
         <tr><td><kbd>Home</kbd> / nhấp đúp <kbd>Stop</kbd></td><td>Về đầu bài</td></tr>
         <tr><td><kbd>Tab</kbd></td><td>Đổi Session ⇄ Arrangement</td></tr>
+        <tr><td><kbd>F10</kbd></td><td><b>Back to Arrangement</b> — "trả quyền" cho Arrangement sau khi jam Session (xem khối ⚠️ bên trên)</td></tr>
         <tr><td><kbd>Ctrl Alt 5</kbd> / <kbd>Cmd Option 5</kbd></td><td>Ẩn/hiện Browser</td></tr>
         <tr><td><kbd>Ctrl Alt M</kbd> / <kbd>Cmd Option M</kbd></td><td>Mở mixer</td></tr>
         <tr><td><kbd>Ctrl ,</kbd> / <kbd>Cmd ,</kbd></td><td>Cửa sổ Settings</td></tr>
@@ -129,8 +135,8 @@
       <ul>
         <li>Mỗi <b>cột</b> = 1 <b>Track</b> (kênh) · mỗi <b>hàng</b> = 1 <b>Scene</b> (cảnh).</li>
         <li>Ô giao nhau = <b>Clip Slot</b> — chứa <b>Clip</b> (đoạn audio/MIDI chạy độc lập).</li>
-        <li>Nhấp <b>▶ tam giác</b> để chạy clip; nút <b>■ vuông</b> dưới track để dừng; nút <b>Master ▶</b> bên phải chạy cả scene.</li>
-        <li><b>Thu mới:</b> bật <b>Arm</b> track (nhấn nút trên track) → bật <b>Session Record</b> trên Control Bar → chơi. Giữ <span class="win"><kbd>Ctrl</kbd></span><span class="mac"><kbd>Cmd</kbd></span> khi Arm để arm nhiều track.</li>
+        <li>Nhấp <b>▶ tam giác</b> trong ô để chạy clip · nút <b>■ vuông</b> dưới track để dừng clip của track đó · nút <b>▶</b> trên cột Master (bên phải) để chạy nguyên cả hàng (scene) một lúc.</li>
+        <li><b>Thu mới vào ô clip:</b> bấm nút <b>Arm</b> của track (nút tròn nhỏ trên track, sáng lên = track sẵn sàng thu) → bấm nút <b>Record</b> trên thanh Control Bar → chơi nhạc/keyboard. Giữ <span class="win"><kbd>Ctrl</kbd></span><span class="mac"><kbd>Cmd</kbd></span> khi bấm Arm để mở nhiều track cùng lúc.</li>
         <li>Kéo clip sang Arrangement (hoặc thu trực tiếp khi đang phát) để ghép thành bài.</li>
       </ul>
       <img src="images/session_SessionViewSceneL12.jpg" alt="Lưới Session View" loading="lazy">
@@ -167,7 +173,7 @@
         <tr><td><kbd>+</kbd> <kbd>−</kbd> · cuộn + <kbd>Ctrl</kbd></td><td>Thu phóng; <kbd>Ctrl Alt</kbd>+kéo để di chuyển khung nhìn</td></tr>
         <tr><td><kbd>H</kbd> / <kbd>W</kbd></td><td>Tối ưu chiều cao / chiều rộng track</td></tr>
       </table>
-      <p>Viền trên clip audio kéo ra là <b>fade in/out</b>; hai clip chồng nhau tự tạo <b>crossfade</b>. Đặt <b>Locator</b> (nhấp đúp thanh scrub) để nhảy nhanh; nhấp đúp locator khi đang dừng = phát từ đó.</p>
+      <p>Viền trên clip audio kéo nhẹ ra là <b>fade in/out</b> (nhớp lên/xuống êm hơn); hai clip audio chồng nhau tự tạo <b>crossfade</b>. <b>Locator</b> = cọc đánh dấu để nhảy nhanh tới đoạn bất kỳ: nhấp đúp vào thanh scrub (dải mỏng phía trên track có vạch thời gian) để đặt; nhấp đúp vào locator khi đang dừng = phát bài từ đúng cọc đó.</p>
     </div>
 
     <!-- ===== CLIP VIEW ===== -->
@@ -199,7 +205,7 @@
     <div class="card">
       <h2>🚀 Launching — chạy clip đúng nhịp</h2>
       <ul>
-        <li><b>Global Launch Quantization</b> (menu gần nút Metronome): chọn <b>1 Bar</b> — clip bạn bấm sẽ tự vào đúng đầu ô nhịp tiếp theo. Người mới nên để 1 Bar.</li>
+        <li><b>Global Launch Quantization</b> (menu thả nhỏ cạnh nút Metronome 🥁): để <b>1 Bar</b> — nghĩa là bạn bấm pad lúc nào cũng được, Live sẽ chờ tới <b>đầu ô nhịp kế tiếp</b> mới chạy clip, nên lúc nào cũng "vào nhịp". Người mới nên để 1 Bar.</li>
         <li><b>Launch Mode</b> của từng clip (menu trong Clip View): <b>Trigger</b> (bấm là chạy lại từ đầu), <b>Gate</b> (giữ mới chạy), <b>Toggle</b> (bấm bật/tắt), <b>Repeat</b> (lặp liên tục).</li>
         <li><b>Legato</b> — clip mới "kế thừa" vị trí đang phát của clip cũ cùng track.</li>
         <li><b>Follow Action</b> — đặt clip tự chạy clip khác / dừng sau X beat (làm autopilot cho scene).</li>
@@ -215,7 +221,7 @@
       <div class="cap">Mỗi track: fader volume, Pan, Mute, Solo, Arm, meter.</div>
       <ul>
         <li>Mở mixer: <span class="win"><kbd>Ctrl Alt M</kbd></span><span class="mac"><kbd>Cmd Option M</kbd></span>.</li>
-        <li>Nghe từng track riêng: <b>Solo</b> · tạm tắt: <b>Mute</b>. Volume về 0dB = không khuếch đại.</li>
+        <li>Nghe riêng một track: bấm <b>Solo</b> (tai nghe) · tạm tắt một track: bấm <b>Mute</b>. Lưu ý fader về <b>0 dB</b> là mức chuẩn (không khuếch thêm, không phải im lặng).</li>
         <li>Máy yếu? Xem <b>Performance Impact</b> (6 ô sáng mỗi track) → <b>Freeze</b> track nặng nhất hoặc bỏ bớt device.</li>
         <li>Gom track liên quan: chọn nhiều track → <b>Group Track</b> để điều khiển chung.</li>
       </ul>
@@ -228,7 +234,7 @@
         <li><b>Mở Live → New Live Set</b> (chọn template Empty hoặc mặc định).</li>
         <li><b>Kéo sample vào Session View</b> từ Browser (<kbd>Ctrl Alt 5</kbd> nếu ẩn) — thử vài clip ở vài track.</li>
         <li><b>Jam:</b> bấm clip/scene, chỉnh Launch Quantization 1 Bar để mọi thứ vào nhịp.</li>
-        <li><b>Thu/pull vào Arrangement:</b> <kbd>Tab</kbd> → bật Record → jam lại, hoặc kéo clip thủ công vào timeline.</li>
+        <li><b>Thu/pull vào Arrangement:</b> <kbd>Tab</kbd> → bật Record → jam lại (mọi thứ bạn bấm sẽ được ghi vào timeline), hoặc kéo clip thủ công vào timeline. Jam xong mà nút <b>Back to Arrangement</b> sáng cam thì bấm nó (<kbd>F10</kbd>) để Arrangement phát đúng bản đã thu.</li>
         <li><b>Sửa:</b> <kbd>Ctrl E</kbd> split, <kbd>Ctrl J</kbd> consolidate, kéo fade, quantize MIDI (<kbd>Ctrl U</kbd>), mix volume/pan.</li>
         <li><b>Xuất bài:</b> <kbd>Ctrl Shift R</kbd> / <kbd>Cmd Shift R</kbd> → chọn WAV/AIFF/MP3.</li>
       </ol>
@@ -252,6 +258,7 @@
         <span class="chip"><b>Pack</b> <span>— bộ âm thanh cài thêm</span></span>
         <span class="chip"><b>Follow Action</b> <span>— clip tự hành động kế tiếp</span></span>
         <span class="chip"><b>Legato</b> <span>— clip mới kế thừa vị trí phát</span></span>
+        <span class="chip"><b>Back to Arrangement</b> <span>— nút "trả quyền" cho Arrangement (F10)</span></span>
         <span class="chip"><b>Automation</b> <span>— tự động đổi thông số theo thời gian</span></span>
       </div>
     </div>
@@ -265,7 +272,7 @@
         <li>Dùng <b>Launchkey Mini</b>: pad = chạy clip, nút <b>›</b> = chạy scene, Stop/Solo/Mute riêng, giữ <kbd>Shift</kbd>+Record để thu.</li>
         <li>Chưa quen? Để tempo chậm (80–100 BPM), loop 4 beat, chỉ dùng trống + bass trước.</li>
       </ul>
-      <p class="note">Đọc sâu từng phần: mở <a href="index.html">bản Manual đầy đủ 10 chương →</a></p>
+      <p class="note">Đọc sâu từng phần: mở <a href="index.html">bản Manual đầy đủ 11 chương →</a></p>
     </div>
 
   </div>
@@ -273,7 +280,7 @@
 
 <footer>
   ⚡ Cheat sheet tóm lược từ <b>Ableton Live Reference Manual v12</b> — nội dung gốc © Ableton AG, bản dịch tiếng Việt phục vụ học tập cá nhân, phi thương mại.
-  Xem bản gốc: <a href="https://www.ableton.com/en/manual/" target="_blank" rel="noopener">ableton.com/en/manual ↗</a> · <a href="index.html">Manual tiếng Việt 10 chương</a>
+  Xem bản gốc: <a href="https://www.ableton.com/en/manual/" target="_blank" rel="noopener">ableton.com/en/manual ↗</a> · <a href="index.html">Manual tiếng Việt 11 chương</a>
 </footer>
 
 </body>
