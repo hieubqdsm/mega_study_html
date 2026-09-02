@@ -134,6 +134,14 @@
     <a href="#ch-launching">9. Launching Clips</a>
     <a href="#ch-mixing">10. Mixing</a>
     <a href="#ch-managing-files">11. Managing Files and Sets</a>
+    <a href="#ch-warping">12. Audio Clips, Tempo &amp; Warping</a>
+    <a href="#ch-editing-mpe">14. Editing MPE</a>
+    <a href="#ch-audio-to-midi">15. Converting Audio to MIDI</a>
+    <a href="#ch-grooves">16. Using Grooves</a>
+    <a href="#ch-tuning">17. Using Tuning Systems</a>
+    <a href="#ch-bounce">20. Bounce to Audio</a>
+    <a href="#ch-comping">21. Comping</a>
+    <a href="#ch-stems">22. Stem Separation</a>
   </nav>
 
   <main class="content">
@@ -1073,6 +1081,603 @@
 <li>Vì sample đều trong Project, bung Automatic Search, bật Search Project và Fully Rescan Folders, rồi nhấn Go.</li>
 <li>Khi tìm xong, nhấn Collect and Save ở đáy File Manager để cập nhật Project.</li>
 </ol>
+
+<!-- ============ CH 12: AUDIO CLIPS, TEMPO, AND WARPING (EN ch.9) ============ -->
+<h2 class="sec" id="ch-warping">Chương 12 · Audio Clips, Tempo &amp; Warping (Kéo giãn audio theo nhịp)</h2>
+<p class="lead">Audio trong Live có thể được xử lý và kéo giãn theo nhiều cách sáng tạo. Quá trình chỉnh thời gian và nhịp điệu của audio clip gọi là <span class="term">warping</span> <span class="gloss">— "uốn" audio cho khớp nhịp như cao su dẻo</span>. Warping cho phép bạn coi audio như vật liệu đàn hồi: kéo giãn thời gian và đồng bộ tempo mượt mà, không nối ghép.</p>
+<p>Audio clip có thể warp bằng nhiều <a href="#warp-warp-modes">Warp Mode</a> — đổi thời gian mà không đổi cao độ (pitch) hoặc ngược lại, thậm chí giả lập băng từ analog (đổi cả pitch lẫn tốc độ cùng lúc). Nhờ đó trộn các audio clip có BPM khác nhau dễ như chơi.</p>
+
+<h3 id="warp-tempo">12.1 Tempo (Nhịp tốc)</h3>
+
+<h4>12.1.1 Đặt tempo</h4>
+<figure><img src="images/TempoControlL12.png" alt="Tempo field" loading="lazy"><figcaption>Ô tempo trên Control Bar.</figcaption></figure>
+<p>Ô tempo trên Control Bar chỉnh tốc độ phát của Live Set. Bạn thậm chí có thể <a href="../manual-en/automation-and-editing-envelopes/index.html#editing-the-tempo-automation">automate tempo</a> (EN) để tạo biến hóa nhịp êm hoặc đột ngột theo timeline bài hát.</p>
+<p>Ô này hiển thị cả tempo thô (BPM) lẫn phần tinh (đến 1/100 BPM). Hai giá trị có thể <a href="../manual-en/midi-and-key-remote-control/index.html#midi-and-key-remote-control">gán phím/MIDI</a> (EN) riêng — hữu ích để đổi tempo chính xác khi biểu diễn.</p>
+<p>Có mấy cách đồng bộ tempo giữa Live và nguồn ngoài: cho phần cứng chạy theo tempo Live hoặc ngược lại qua MIDI Clock/Link, hoặc cho Live bám theo nguồn audio ngoài bằng Tempo Follower. Xem chương <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#synchronizing-with-link-tempo-follower-and-midi">Synchronizing with Link, Tempo Follower, and MIDI</a> (EN).</p>
+
+<h4>12.1.2 Tap Tempo — gõ nhịp lấy tempo</h4>
+<figure><img src="images/TapButtonL12.png" alt="Tap button" loading="lazy"><figcaption>Nút Tap.</figcaption></figure>
+<p>Ngoài gõ số, bạn có thể đặt tempo bằng cách bấm nút Tap Tempo theo nhịp — bằng chuột hoặc phím máy tính. Bấm một nhịp một lần, tempo của Live Set sẽ bám theo nhịp bạn gõ.</p>
+<p>Muốn dùng phím thay cho chuột, gán phím cho nút Tap Tempo qua <a href="../manual-en/midi-and-key-remote-control/index.html#computer-keyboard-remote-control">Key Map Mode</a> (EN):</p>
+<ol>
+<li>Bấm công tắc <b>KEY</b> trên Control Bar để bật Key Map Mode.</li>
+<li>Chọn nút Tap Tempo.</li>
+<li>Nhấn phím bạn muốn dùng để gõ nhịp.</li>
+<li>Bấm công tắc KEY lần nữa để thoát.</li>
+</ol>
+<p>Giờ phím đã gán sẵn sàng dùng để tap tempo.</p>
+<figure><img src="images/KeyMapModeSwitchL12.png" alt="Key map" loading="lazy"><figcaption>Công tắc Key Map Mode.</figcaption></figure>
+<p>Tương tự, có thể gán nút Tap Tempo vào nốt MIDI hoặc pedal đạp chân qua <a href="../manual-en/midi-and-key-remote-control/index.html#the-mapping-browser">MIDI Map Mode</a> (EN).</p>
+<p>Live phản hồi tap ngay lập tức; càng gõ nhiều, tempo dò được càng chính xác.</p>
+<p>Nếu bật tùy chọn <em>Start Playback with Tap Tempo</em> trong Record, Warp &amp; Launch Settings, bạn có thể dùng tap để <a href="../manual-en/arrangement-view/index.html#transport-and-playback">kích hoạt phát bài</a> (EN) luôn: với nhịp 4/4, gõ 4 cái là bài chạy ở đúng tempo vừa gõ.</p>
+<p>Khi dùng tap để khởi động transport, vị trí phát của mọi app kết nối qua <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#setting-up-link-and-link-audio">Link</a> (EN) tự động đồng bộ — các app luôn cùng tempo và thẳng hàng trong cụm nhạc (phrase) hiện tại.</p>
+
+<h4>12.1.3 Nudge tempo (đẩy nhẹ tempo)</h4>
+<figure><img src="images/TempoNudgeL12.png" alt="Nudge" loading="lazy"><figcaption>Nút Phase Nudge Up/Down.</figcaption></figure>
+<p>Live <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#synchronizing-with-link-tempo-follower-and-midi">đồng bộ dễ dàng</a> (EN) qua Link hoặc MIDI ngoài, nhưng đôi khi bạn cần căn Set với nguồn ngoài không cố định tempo — nhạc công chơi live hay đĩa DJ. Chừng nào tempo Set khớp <em>khoảng</em> với nguồn ngoài, nút <b>Phase Nudge Up/Down</b> cho phép tăng/giảm tạm tốc độ phát của Live để bám theo biến hóa. Giống Tap Tempo, hai nút này gán được phím/MIDI.</p>
+
+<h4>12.1.4 Clip theo tempo (Follower) và dẫn tempo (Leader)</h4>
+<p>Mặc định, clip đã warp <em>theo</em> (follow) tempo của Set; nhưng clip trong Arrangement View có thể đặt làm <em>dẫn</em> (lead) qua công tắc Lead/Follow trong bảng <a href="#ch-clip-view">Audio Utilities</a> của Clip View.</p>
+<figure><img src="images/TempoFollowSwitch.png" alt="Follow" loading="lazy"><figcaption>Clip đã warp mặc định theo tempo Set.</figcaption></figure>
+<p>Khi clip đặt ở chế độ Lead, Set phát đúng tempo suy ra từ <a href="#warp-warp-markers">Warp Marker</a> của clip. Nhiều clip được đặt lead, nhưng mỗi thời điểm chỉ một clip quyết định tempo: khi nhiều track đều có clip lead, clip đang phát ở track dưới cùng được ưu tiên. Ô tempo trên Control Bar cũng bị vô hiệu.</p>
+<figure><img src="images/TempoLeadSwitch.png" alt="Lead" loading="lazy"><figcaption>Bật Lead để phát theo tempo gốc của clip.</figcaption></figure>
+<p>Tempo automation tự tạo để bám biến thiên giữa tempo các clip và tempo Set — hiển thị trên Main track nhưng không sửa được; sắp xếp lại clip lead thì automation cũng dời theo. Muốn giữ lại và chỉnh automation, dùng mục <em>Unfollow Tempo Automation</em> trong menu ngữ cảnh của ô tempo: mọi clip lead chuyển thành follower và automation trên Main track thành chỉnh được.</p>
+<figure><img src="images/UnfollowTempoAutomation.png" alt="Unfollow" loading="lazy"><figcaption>Unfollow Tempo Automation để chỉnh được automation.</figcaption></figure>
+<p>Automation từ clip lead sẽ ghi đè tempo từ nguồn audio đang sync bằng <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#synchronizing-via-tempo-follower">Tempo Follower</a> (EN).</p>
+<p class="note"><strong>Lưu ý:</strong> khi công tắc <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#synchronizing-external-midi-devices-to-live">EXT</a> (EN) của Live bật, công tắc Lead/Follow bị vô hiệu.</p>
+
+<h3 id="warp-warping">12.2 Warping</h3>
+<p>Khả năng phát mọi sample khớp tempo đã chọn là tính năng quan trọng của Live. Warping cho phép beat-match mượt mà, thử nghiệm nhịp điệu, sound design, và đồng bộ track khi phát cũng như khi biểu diễn.</p>
+<p>Các thuộc tính warp của audio clip nằm trong bảng <a href="#ch-clip-view">Audio Utilities</a> của Clip View — nhấp đúp audio clip trong Session/Arrangement View để mở.</p>
+<figure><img src="images/AudioClipWarpControlsL12.png" alt="Warp controls" loading="lazy"><figcaption>Các điều khiển warping trong tab Audio.</figcaption></figure>
+<p>Công tắc <b>Warp</b> bật/tắt warping cho audio clip.</p>
+<p>Tắt Warp: sample phát ở tempo gốc, không chịu ảnh hưởng tempo Set — hợp với sample không mang nhịp như percussion one-shot, texture, hiệu ứng âm thanh, lời nói.</p>
+<p>Bật Warp: các sample có cấu trúc nhịp (loop, nguyên bài hát) đồng bộ với tempo Set.</p>
+
+<h4>12.2.1 Tùy chọn warping trong Settings</h4>
+<p>Ngoài công tắc Warp cho từng clip, hành vi warp khi nạp sample cấu hình trong Record, Warp &amp; Launch Settings. Khi sample nhập vào lần đầu, Live tự quyết nó ngắn hay dài rồi áp dụng các tùy chọn dưới đây.</p>
+<p>Tùy chọn <em>Loop/Warp Short Samples</em> chọn trạng thái warp mặc định cho sample ngắn:</p>
+<ul>
+<li><em>Unwarped One Shot</em> — không warp khi nạp.</li>
+<li><em>Warped One Shot</em> — warp theo Warp Mode mặc định nhưng không loop.</li>
+<li><em>Warped Loop</em> — warp và loop.</li>
+<li><em>Auto</em> — Live tự chọn một trong các phương án trên tùy sample (mặc định).</li>
+</ul>
+<p><em>Auto-Warp Long Samples</em>: chọn sample dài có tự warp khi nạp hay không (mặc định bật). Khi auto-warp, một <a href="#warp-warp-markers">Warp Marker</a> được thêm ở beat đầu mỗi bar. Tắt tùy chọn này thì sample dài nạp vào ở trạng thái chưa warp.</p>
+<p><em>Default Warp Mode</em>: chọn <a href="#warp-warp-modes">Warp Mode</a> tự áp dụng khi warp. Warp Mode quyết định thuật toán kéo giãn — ảnh hưởng trực tiếp âm thanh clip. Ban đầu, Beats là mặc định.</p>
+
+<h4>12.2.2 Nhập sample</h4>
+<p>Kéo sample từ thư mục máy vào Set, hoặc dùng lệnh <em>Import Audio File…</em> (menu Create) khi đang chọn một audio track để nhập MP3, AAC, Ogg Vorbis, Ogg FLAC, FLAC. Lệnh này chèn tệp tại insert marker trong Arrangement View hoặc vào clip slot đang chọn trong Session View.</p>
+<p>Tệp nhập lần đầu vào Live sẽ được phân tích và chưa phát/chỉnh được cho tới khi xong. Sau đó sample mở được trong Sample Editor và trong đa số trường hợp đã sync tempo với Set.</p>
+
+<h4 id="warp-warp-markers">12.2.3 Warp Markers (Đinh warp)</h4>
+<p>Warp Marker cho phép "ghim" một điểm trong sample (chẳng hạn transient) vào một vị trí nhất định trên timeline. Dùng marker để vẽ bản đồ thời gian trung thực của audio hoặc thay đổi nhịp của nó. Khi sample nhập lần đầu, vài Warp Marker ban đầu được tạo sẵn; bạn có thể thêm bao nhiêu tùy ý.</p>
+<p>Nhấp đúp vào nửa trên của Sample Editor để thêm Warp Marker tại đó; hoặc dùng <kbd>Ctrl</kbd> <kbd>I</kbd> (Win) / <kbd>Cmd</kbd> <kbd>I</kbd> (Mac) đặt marker tại insert marker. Marker dời được bằng phím mũi tên hoặc kéo-thả.</p>
+<figure><img src="images/WarpMarkerL12.png" alt="Warp markers" loading="lazy"><figcaption>Warp Marker trong Sample Editor.</figcaption></figure>
+<p>Khi một Warp Marker đang được chọn, giữ <kbd>Shift</kbd> rồi kéo để di chuyển waveform — chỉnh tinh điểm bắt đầu audio bên dưới marker.</p>
+<p>Xóa marker: nhấp đúp vào nó, hoặc chọn khoảng thời gian tương ứng trong Sample Editor rồi bấm <kbd>Backspace</kbd> (Win) / <kbd>Delete</kbd> (Mac).</p>
+<p>Muốn Sample Editor <a href="../manual-en/clip-view/index.html#zooming-and-scrolling-in-the-clip-views-editor">tự cuộn</a> (EN) trong lúc phát, bật công tắc Follow trên Control Bar. Follow tạm dừng nếu bạn chỉnh trong Sample Editor — phát lại hoặc nhấp vào Arrangement/vùng scrub của clip để Follow chạy tiếp.</p>
+<figure><img src="images/FollowSwitchL12.png" alt="Follow" loading="lazy"><figcaption>Công tắc Follow trên Control Bar.</figcaption></figure>
+
+<h5>12.2.3.1 Transient và Pseudo-Warp Marker</h5>
+<p>Khi nạp sample vào track, Live tự phân tích audio và tìm các <span class="term">transient</span> <span class="gloss">— đỉnh biên độ báo chỗ nốt/beat bắt đầu</span>. Transient thường là chỗ lý tưởng để đặt Warp Marker.</p>
+<p>Transient hiển thị thành vạch xám nhỏ trên đầu Sample Editor.</p>
+<figure><img src="images/TransientMarkers.png" alt="Transients" loading="lazy"><figcaption>Vạch transient trong Sample Editor.</figcaption></figure>
+<p>Tạo/xóa transient thủ công qua lệnh trong menu Create hoặc phím tắt <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>I</kbd> (Mac) và <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>Backspace</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>Delete</kbd> (Mac). Muốn bỏ mọi transient tự tạo, dùng <em>Reset Transients</em> trong menu ngữ cảnh Sample Editor.</p>
+<p>Tạo Warp Marker cho mọi transient trong vùng chọn: lệnh <em>Insert Warp Markers</em> (menu Create) hoặc <kbd>Ctrl</kbd> <kbd>I</kbd> / <kbd>Cmd</kbd> <kbd>I</kbd>. Vùng chọn không có transient thì marker đặt ở đầu và cuối vùng.</p>
+<p><em>Pseudo-Warp Marker</em> hiện khi rê chuột lên vạch transient — giống Warp Marker thật nhưng màu xám thay vì vàng. Nhấp đúp hoặc kéo pseudo-marker để chuyển thành Warp Marker thật; nếu sau marker mới không còn Warp Marker nào khác thì tempo clip cũng đổi theo. Giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi chuyển để tạo luôn marker ở các transient liền kề. Giữ <kbd>Shift</kbd> kéo pseudo-marker để di chuyển transient tới vị trí mới.</p>
+
+<h5>12.2.3.2 Lưu Warp Marker cùng tệp sample</h5>
+<p>Warp Marker tự lưu cùng Live Set; nhưng bạn có thể lưu luôn vào tệp sample để lần nào kéo vào track cũng thấy chúng trong Sample Editor: bấm nút <a href="#ch-clip-view">Save</a> trên thanh tiêu đề clip. Chỉ lưu được thiết lập mặc định cho sample của riêng bạn — không cho nội dung Core Library/Pack của Live.</p>
+<p>Sample đã lưu kèm Warp Marker thì Auto-Warp không tác động; vẫn có thể chủ động warp lại bằng các lệnh <a href="#warp-auto-warp">Warp From…</a> trong menu ngữ cảnh.</p>
+
+<h4>12.2.4 Warp sample ngắn</h4>
+<p>Các ví dụ sau minh họa cách dùng warping để đồng bộ nhiều loại sample ngắn với tempo Set. Giả định tùy chọn <em>Loop/Warp Short Samples</em> đang bật (mặc định) nên sample mới thêm vào Set được <a href="#warp-warping">tự warp</a>.</p>
+
+<h5>12.2.4.1 Loop dài chẵn bar</h5>
+<p>Khi nhập sample, Live giả định đó là loop nhạc cắt gọn gàng dài 1, 2, 4, 8 hoặc 16 bar và đặt tempo tương ứng; đồng thời tạo hai Warp Marker — một ở đầu, một ở cuối sample.</p>
+<figure><img src="images/FourBarLoopInClipViewL12.png" alt="4-bar loop" loading="lazy"><figcaption>Loop 4 bar trong Sample Editor.</figcaption></figure>
+<p>Tempo ước lượng hiển thị trong ô BPM của bảng Audio Utilities. Biết chính xác BPM thì gõ thẳng vào; không chắc thì giữ <kbd>Shift</kbd> kéo thanh trượt để chỉnh BPM theo bước tinh. Cũng có thể giữ <kbd>Shift</kbd> kéo từ mép clip trong Arrangement View để kéo giãn/nén tempo clip.</p>
+<figure><img src="images/BPMField.png" alt="BPM field" loading="lazy"><figcaption>Ô BPM trong bảng Audio Utilities.</figcaption></figure>
+<p>Đôi khi ước lượng sai: ô BPM hiện nhanh gấp đôi hoặc chậm một nửa. Sửa bằng nút <b>×2</b> và <b>÷2</b>.</p>
+
+<h5>12.2.4.2 Loop dài lẻ bar</h5>
+<p>Sample có số bar lẻ sẽ phát lệch nhịp vì Live ban đầu giả định loop có số bar chẵn (do mặc định nhịp 4/4).</p>
+<p>Để đồng bộ, Warp Marker ở cuối sample cần nằm đúng đầu một bar chẵn — ví dụ bar 8 trong loop 9 bar. Chỉ cần thêm marker vào đúng bar đó.</p>
+<p>Ngoài ra Live có thể đoán loop lẻ bar ngắn/dài hơn thực tế (loop 9 bar bị coi là 8 bar) — bar cuối không hiện ngay. Cứ kéo Warp Marker cuối sample sang phải tới khi bar thứ tám xuất hiện.</p>
+
+<h5>12.2.4.3 Loop dài "lệch" (không đều)</h5>
+<p>Sample không cắt cho loop liền mạch hoặc không có nhịp rõ cũng sẽ phát lệch.</p>
+<p>Cách sửa: đưa insert marker về downbeat (phách mạnh đầu) đầu tiên trong sample rồi dùng lệnh menu ngữ cảnh <em>Set 1.1.1 Here</em> để đặt Warp Marker tại đó.</p>
+<figure><img src="images/Set111.png" alt="Set 1.1.1" loading="lazy"><figcaption>Dùng Set 1.1.1 Here để đặt Warp Marker đầu tiên.</figcaption></figure>
+<p>Có marker đầu rồi, dùng tiếp <em>Warp From Here</em>. Muốn bỏ đoạn im lặng thừa cuối loop, đặt một Warp Marker ngay trước đoạn im.</p>
+
+<h5>12.2.4.4 Warp nhiều clip cùng lúc</h5>
+<p>Chọn nhiều clip cùng độ dài rồi thêm/chỉnh Warp Marker trên một clip — thay đổi tự áp cho mọi clip được chọn. Rất hữu ích khi nhiều clip chung nhịp và bạn muốn chỉnh thời gian đồng loạt, ví dụ sửa timing cho bản thu multitrack trên mọi track.</p>
+
+<h4 id="warp-auto-warp">12.2.5 Auto-Warp sample dài</h4>
+<p>Phần này minh họa dùng auto-warp để đồng bộ sample dài hoặc nguyên bài hát với tempo Set. Giả định <em>Auto-Warp Long Samples</em> đang bật (mặc định) để sample mới tự warp khi thêm vào Set.</p>
+<figure><img src="images/AutoWarpedClipL12.png" alt="Auto-warp" loading="lazy"><figcaption>Kết quả Auto-Warp trong Sample Editor.</figcaption></figure>
+
+<h5>12.2.5.1 Chỉnh kết quả Auto-Warp</h5>
+<p><a href="https://help.ableton.com/hc/en-us/articles/9230108251164" target="_blank" rel="noopener">Thuật toán Auto-Warp ↗</a> thường ước lượng đúng tempo để clip khớp hoàn hảo với Set. Kết quả chưa như ý thì chỉnh tay được.</p>
+<p>Khi chỉnh Warp Marker cho sample dài, nên bật metronome trên Control Bar làm mốc nhịp ổn định.</p>
+<figure><img src="images/MetronomeL12.png" alt="Metronome" loading="lazy"><figcaption>Công tắc Metronome.</figcaption></figure>
+<p>Đôi khi Auto-Warp đúng tempo nhưng sai downbeat. Sửa bằng một trong các cách:</p>
+<ul>
+<li>Giữ <kbd>Shift</kbd> kéo từ một Warp Marker để dịch waveform bên dưới marker.</li>
+<li>Đưa insert marker tới downbeat rồi dùng <em>Set 1.1.1 Here</em> (menu ngữ cảnh) để dời start marker đến đó.</li>
+<li>Phóng to, tạo Warp Marker trên downbeat, rồi kéo marker về đầu bar đầu tiên của timeline.</li>
+</ul>
+<figure><img src="images/DraggingWarpMarker.png" alt="Drag marker" loading="lazy"><figcaption>Kéo Warp Marker để đặt điểm bắt đầu.</figcaption></figure>
+<p>Sample đã cắt loop liền mạch thì chỉnh kết quả Auto-Warp dễ dàng bằng lệnh <em>Warp Sample as…</em> trong menu ngữ cảnh Sample Editor — lệnh gợi ý độ dài loop khớp tempo Set.</p>
+<figure><img src="images/WarpSampleAs.png" alt="Warp sample as" loading="lazy"><figcaption>Lệnh Warp Sample As… trong menu ngữ cảnh.</figcaption></figure>
+<p>Có thể Auto-Warp cho riêng một đoạn của sample — ví dụ tách và warp một breakbeat từ bài dài: bôi đen đoạn muốn tách trong Sample Editor rồi dùng <em>Warp Selection as…</em>. Auto-Warp tự chọn độ dài loop phù hợp nhất, thêm marker đầu/cuối loop tương ứng và warp vùng chọn cho vừa khít loop.</p>
+<figure><img src="images/WarpSelectionAsL12.png" alt="Warp selection" loading="lazy"><figcaption>Warp một đoạn được chọn của sample.</figcaption></figure>
+<p>Muốn kiểm soát chính xác hơn, warp theo từng đoạn từ trái sang phải: đặt Warp Marker ở đầu và cuối mỗi đoạn đã warp đúng để "ghim" chúng. <a href="../manual-en/live-keyboard-shortcuts/index.html#clip-view-sample-editor">Các phím tắt</a> (EN) của Sample Editor giúp nhanh hơn — ví dụ giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) chọn nhiều Warp Marker rồi dời cùng lúc.</p>
+<p>Menu ngữ cảnh Sample Editor có nhóm lệnh <em>Warp From Here…</em> — đặt lại Warp Marker bên phải một vạch lưới/marker, giữ nguyên bên trái; dùng được ở mọi thời điểm, kể cả tại start marker:</p>
+<ul>
+<li><em>Warp From Here</em> — chạy Auto-Warp cho phần audio bên phải marker đã chọn (chưa có thì thêm marker tại điểm lưới chỉ định).</li>
+<li><em>Warp From Here (Start At …)</em> — lấy tempo Set làm chuẩn khi auto-warp. Muốn trước hết cập nhật tempo Set theo BPM clip: tắt warp clip cho phát tốc độ gốc, bấm <a href="#warp-tempo">Tap Tempo</a> trên Control Bar cho tempo Set bám theo clip, rồi bật lại warp và dùng lệnh này lấy tempo vừa tap làm tham chiếu.</li>
+<li><em>Warp From Here (Straight)</em> — đẹp nhất với sample không biến hóa tempo: đặt một Warp Marker duy nhất tại điểm bắt đầu theo BPM gốc ước lượng.</li>
+<li><em>Warp … BPM From Here</em> — cũng đặt một marker duy nhất, nhưng coi clip có cùng tempo Set. Hữu ích khi biết chính xác BPM của sample: gõ vào ô tempo Control Bar trước khi warp.</li>
+</ul>
+
+<h4>12.2.6 Thay đổi groove bằng Warp Marker</h4>
+<p>Warp Marker không chỉ dùng để đồng bộ chính xác — còn dùng chủ ý thay đổi nhịp điệu cho hiệu ứng sáng tạo.</p>
+<p>Ví dụ một transient gõ trống đến muộn: ghim Warp Marker vào nó rồi kéo marker về đúng phách. Nên ghim luôn các transient liền kề để không ảnh hưởng vùng lân cận.</p>
+<figure><img src="images/LoopWithOffBeatCorrectedL12.png" alt="Groove" loading="lazy"><figcaption>Dùng Warp Marker chỉnh groove.</figcaption></figure>
+<p>Thay đổi nhịp tự nhiên của sample bằng Warp Marker là kỹ thuật sáng tạo thú vị, nhất là kết hợp với <a href="#ch-grooves">groove</a>.</p>
+
+<h4>12.2.7 Quantize audio (Căn audio vào lưới)</h4>
+<p>Ngoài kéo giãn bằng Warp Marker, có thể tự động "hút" waveform vào lưới bằng <a href="#ch-editing-midi">quantize</a>: di chuyển transient gần nhất về vạch lưới gần nhất.</p>
+<p>Nhấp vào Sample Editor để lấy tiêu điểm, rồi dùng lệnh Quantize (menu Edit) hoặc <kbd>Ctrl</kbd> <kbd>U</kbd> (Win) / <kbd>Cmd</kbd> <kbd>U</kbd> (Mac). Audio được căn theo thiết lập quantize hiện hành, chỉnh qua bảng Quantize.</p>
+<figure><img src="images/QuantizeAudioL12.png" alt="Quantize" loading="lazy"><figcaption>Bảng Quantize.</figcaption></figure>
+<p>Audio quantize theo cỡ lưới hiện tại hoặc một phân chia lưới cụ thể (kể cả triplet). Muốn tinh tế hơn, dùng núm <em>Amount</em>: dịch Warp Marker theo phần trăm của giá trị quantize đã chọn.</p>
+
+<h3 id="warp-warp-modes">12.3 Warp Modes (Các chế độ warp)</h3>
+<p>Các Warp Mode của Live dùng kỹ thuật granular synthesis — thao tác thời gian bằng cách lặp lại hoặc bỏ đoạn audio gọi là <em>grain</em> (hạt). Mỗi Warp Mode có cách chọn, chồng và crossfade grain riêng, quyết định audio bị kéo/nén ra sao. Vì thế mỗi mode hợp với từng loại vật liệu âm thanh khác nhau.</p>
+<p>Ngoài kéo giãn chính xác, warping còn là đất chơi thử nghiệm để biến hóa nhịp sample.</p>
+
+<h4>12.3.1 Beats Mode</h4>
+<p>Hợp nhất với audio có nhịp trội: drum loop, phần lớn nhạc dance điện tử. Ở mode này, quá trình granulate được tối ưu để giữ transient.</p>
+<p>Núm <em>Preserve</em> giữ các phân đoạn trong sample (ranh giới giữa các phần audio). Warp sample gõ: chọn <em>Transients</em> để chính xác nhất — hành vi warp dựa trên vị trí transient thật. Muốn giữ phân đoạn theo phách bất kể transient ở đâu, chọn một phân chia lưới. Muốn artefact nhịp thú vị, thử phân chia lưới lớn kết hợp transpose pitch.</p>
+<p>Trình chọn <em>Transient Loop Mode</em> đặt thuộc tính loop cho transient:</p>
+<p><img src="images/SamplerLoopNo.png" alt="Loop off" style="height:22px;display:inline;vertical-align:middle"> <em>Loop Off</em> — mỗi đoạn audio giữa hai transient phát hết rồi dừng; khoảng thừa trước transient kế tiếp là im lặng.</p>
+<p><img src="images/SamplerLoopEnabled.png" alt="Loop fwd" style="height:22px;display:inline;vertical-align:middle"> <em>Loop Forward</em> — đoạn audio phát hết rồi nhảy về điểm zero-crossing gần giữa đoạn và lặp tiếp cho tới transient kế tiếp.</p>
+<p><img src="images/SamplerLoopBack.png" alt="Loop back" style="height:22px;display:inline;vertical-align:middle"> <em>Loop Back-and-Forth</em> — phát hết đoạn rồi chạy ngược về zero-crossing gần giữa, lại tiến về cuối đoạn; lặp mô-típ này tới transient kế tiếp. Kết hợp với Preserve Transients thường cho âm thanh chất lượng cao, nhất là tempo chậm.</p>
+<p>Núm <em>Transient Envelope</em> quyết định fade âm lượng giữa các đoạn: 100 = không fade; 0 = fade dài, mỗi đoạn tắt rất nhanh. Envelope cao giúp làm mượt click giữa các đoạn; thấp để tạo hiệu ứng gate nhịp.</p>
+
+<h4>12.3.2 Tones Mode</h4>
+<p>Hợp với audio có cao độ rõ: vocal, nhạc cụ đơn âm, bassline.</p>
+<p><em>Grain Size</em> chỉnh gần đúng cỡ grain trung bình; cỡ thật do độ rõ của biến hóa cao độ trong audio quyết định. Grain nhỏ hợp với audio biến đổi cao độ rõ ràng; grain lớn giảm nhiễu không mong muốn nhưng có thể gây artefact nghe được.</p>
+
+<h4>12.3.3 Texture Mode</h4>
+<p>Hợp với âm không có giai điệu/cao độ rõ: nhạc dàn nhạc đa âm, pad không khí, noise, drone. Cũng tuyệt cho sound design và biến đổi audio thử nghiệm.</p>
+<p><em>Grain Size</em> đặt cỡ grain nhưng, khác Tones, không xét đặc tính cao độ của audio.</p>
+<p><em>Fluctuation</em> thêm ngẫu nhiên vào cách xử lý sample — giá trị càng cao biến thiên càng nhiều.</p>
+
+<h4>12.3.4 Re-Pitch Mode</h4>
+<p>Re-Pitch chỉnh tốc độ phát của sample — đổi cao độ cùng tempo, giống DJ chỉnh tốc đĩa trên turntable hay sampler cũ nhanh chậm là đổi pitch. Nhân đôi tốc độ thì cao độ lên một quãng tám.</p>
+<p>Ở mode này, các điều khiển transpose của sample bị vô hiệu vì tốc độ phát tác động trực tiếp cao độ.</p>
+
+<h4>12.3.5 Complex &amp; Complex Pro Mode</h4>
+<p>Complex hợp để warp audio trộn lẫn beat, giai điệu và texture — như nguyên bài hát hoàn chỉnh.</p>
+<p>Complex Pro dùng biến thể của thuật toán Complex, chất lượng thường cao hơn; cũng đặc biệt tốt với texture đa âm hoặc bài hát đầy đủ.</p>
+<p>Núm <em>Formants</em> quyết định formant của sample (tần số cộng hưởng của âm) chịu tác động ra sao khi transpose cao độ: 100% giữ formant gốc dù pitch đổi nhiều, giữ được âm sắc gốc. Không có tác dụng nếu transpose không đổi.</p>
+<p>Núm <em>Envelope</em> cũng ảnh hưởng âm sắc chung. Mặc định 128 — hợp với đa số sample. Sample cao độ lớn: giảm Envelope có thể đẹp hơn; cao độ thấp: tăng lên thử.</p>
+<p>Tùy cấu hình máy, Complex/Complex Pro có thể ngốn CPU hơn các mode khác. Để tiết kiệm, <a href="../manual-en/computer-audio-resources-and-strategies/index.html#track-freeze">freeze</a> (EN) hoặc <a href="../manual-en/routing-and-i-o/index.html#resampling">resample</a> (EN) các track dùng hai mode này.</p>
+
+<!-- ============ CH 14: EDITING MPE (EN ch.12) ============ -->
+<h2 class="sec" id="ch-editing-mpe">Chương 14 · Editing MPE (Chỉnh sửa MIDI đa âm biểu cảm)</h2>
+<p class="lead"><span class="term">MPE — MIDI Polyphonic Expression</span> <span class="gloss">— phần mở rộng của MIDI cho phép điều khiển riêng từng nốt thay vì từng kênh</span> gắn thông tin điều khiển tham số vào <em>từng nốt</em>, thay vì toàn cục theo kênh MIDI. Nhờ vậy thiết bị hỗ trợ MPE điều khiển nhiều tham số của mọi nốt theo thời gian thực — màn biểu diễn nhạc cụ biểu cảm hơn nhiều.</p>
+<p>Để Live nhận per-note expression từ MIDI controller hỗ trợ MPE, trước tiên bật <b>MPE Mode</b> cho controller đó trong Link, Tempo &amp; MIDI Settings.</p>
+<figure><img src="images/MPEPreferences.png" alt="MPE prefs" loading="lazy"><figcaption>Bật MPE Mode cho một MIDI controller.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> khi chọn một MIDI controller đã bật MPE làm input cho track, routing kênh vào bị cố định "All Channels" — không chọn được kênh riêng.</p>
+<p>Chi tiết về MIDI controller xem chương <a href="../manual-en/midi-and-key-remote-control/index.html#midi-and-key-remote-control">MIDI and Key Remote Control</a> (EN). Thiết lập xong, dùng controller <a href="../manual-en/recording-new-clips/index.html#recording-new-clips">thu MIDI clip mới</a> (EN) chứa dữ liệu MPE.</p>
+<p>Tab <b>Note Expression</b> trong Clip View cho xem và sửa 5 chiều MPE của từng nốt trong clip: <b>Pitch</b> (pitch bend từng nốt), <b>Slide</b> (trục Y từng nốt), <b>Pressure</b> (Poly Aftertouch/áp lực MPE), <b>Velocity</b> và <b>Release Velocity</b> (tốc độ nhả nốt). Nhờ đó tinh chỉnh biểu cảm của vật liệu đã thu, hoặc automate biến đổi âm đa âm cho instrument hỗ trợ MPE.</p>
+<p>Có thể xem/sửa dữ liệu MPE của nốt trong <em>mọi</em> MIDI clip — dù clip tạo từ thiết bị MPE hay <a href="#ch-editing-midi">cách khác</a>.</p>
+
+<h3>14.1 Xem dữ liệu MPE</h3>
+<figure><img src="images/MPEClipView.png" alt="MPE clip view" loading="lazy"><figcaption>MIDI clip có dữ liệu MPE trong Clip View.</figcaption></figure>
+<p>Nhấp đúp clip vào Clip View, bấm tab <b>Note Expression</b> hoặc <kbd>Alt</kbd> <kbd>3</kbd> (Win) / <kbd>Option</kbd> <kbd>3</kbd> (Mac) để mở các Expression Editor ở đáy Clip View. Bốn trong năm tham số có lane riêng: Slide, Pressure, Velocity, Release Velocity (mặc định chỉ hiện Slide và Pressure). Tham số thứ năm — Pitch — hiển thị envelope ngay trên nốt tương ứng trong MIDI Note Editor.</p>
+<p>Từng lane hiện/ẩn qua nút công tắc chọn lane bên trái; dưới các nút đó có nút tam giác để ẩn/hiện tất cả các lane đang bật cùng lúc.</p>
+<figure><img src="images/MPELaneToggles.png" alt="Lane toggles" loading="lazy"><figcaption>Các nút bật/tắt hiển thị expression lane.</figcaption></figure>
+<p>Khi mọi nút chọn lane đều tắt, bấm nút tam giác sẽ hiện tất cả. Mỗi lane đổi được kích thước qua vạch phân chia riêng; kéo vạch giữa các lane và MIDI Note Editor để đổi kích thước tất cả cùng lúc.</p>
+<p>Nhấn <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) + bấm nút tam giác hiển thị mọi lane. Khi ẩn lane bằng nút tam giác hoặc kéo vạch chia Expression Editor View, các nút bật/tắt lane cũng ẩn theo.</p>
+<p>Meter của MIDI track hiển thị thay đổi per-note controller: chấm dưới cùng của meter sáng màu xanh nếu có thay đổi per-note đi qua meter đó.</p>
+
+<h3>14.2 Sửa dữ liệu MPE</h3>
+<p>Khi tab Note Expression mở, nhấp một nốt (hoặc chiều expression của nó) trong MIDI Note Editor — nốt xuất hiện trong lớp phủ trong suốt, kèm envelope và các breakpoint sẵn có để sửa envelope Pitch/Slide/Pressure; các marker dùng để sửa Velocity và Release Velocity của nốt. Nốt không chọn bị xám, envelope biểu cảm của nó mờ đi.</p>
+<figure><img src="images/MPESelectedNote.png" alt="Selected note" loading="lazy"><figcaption>Chọn nốt để xem envelope biểu cảm của nó.</figcaption></figure>
+<p>Sau khi nhấp nốt/envelope cần sửa, mọi breakpoint của envelope đã chọn và các đoạn nối giữa chúng thành đối tượng kéo-thả được; nhấp-kéo trên nền envelope để bôi chọn. Cách thao tác:</p>
+<ul>
+<li>Nhấp vào một đoạn thẳng để tạo breakpoint mới tại đó.</li>
+<li>Nhấp lên breakpoint để xóa.</li>
+<li>Để chỉnh nhanh, giá trị expression hiện ra khi tạo, rê chuột hoặc kéo breakpoint. Rê/kéo đoạn thẳng đang chọn thì giá trị hiển thị tương ứng breakpoint tại vị trí con trỏ.</li>
+</ul>
+<figure><img src="images/MPEBreakpointValue.png" alt="Breakpoint value" loading="lazy"><figcaption>Giá trị expression của một breakpoint.</figcaption></figure>
+<ul>
+<li>Nhấp-kéo breakpoint để dời. Breakpoint đang kéo nằm trong vùng chọn thì mọi breakpoint được chọn dời theo.</li>
+<li>Nhấp chuột phải breakpoint → <em>Edit Value</em> để gõ giá trị chính xác. Chọn nhiều breakpoint thì tất cả dời tương đối. Tương tự, tạo breakpoint tại giá trị chính xác bằng <em>Add Value</em> trên breakpoint xem trước.</li>
+<li>Nhấp gần (không trúng) đoạn thẳng, hoặc giữ <kbd>Shift</kbd> nhấp trực tiếp, để chọn đoạn. Giữ chuột trái kéo đoạn tới vị trí mới; đoạn đang nằm trong vùng chọn thời gian thì Live chèn breakpoint tại mép vùng chọn và cả đoạn dời cùng nhau.</li>
+</ul>
+<figure><img src="images/MPEDraggingMultipleBreakpoints.png" alt="Drag multiple" loading="lazy"><figcaption>Kéo một breakpoint bất kỳ trong vùng chọn để dời tất cả.</figcaption></figure>
+<ul>
+<li>Trong tab Note Expression, lưới mặc định tắt để chỉnh ở độ phân giải mịn. Thiết lập lưới ở tab này độc lập với các tab khác và được lưu cùng clip.</li>
+<li>Cần bật lưới: mục <em>Snap to Grid</em> trong menu Options hoặc <kbd>Ctrl</kbd> <kbd>4</kbd> (Win) / <kbd>Cmd</kbd> <kbd>4</kbd> (Mac). Lưới bật thì breakpoint và đoạn thẳng hút vào vị trí thời gian có breakpoint lân cận; breakpoint tạo gần vạch lưới tự hút vào vạch.</li>
+<li>Khi dời đoạn/breakpoint, giữ <kbd>Shift</kbd> khi kéo để khóa theo trục ngang hoặc dọc.</li>
+<li>Giữ <kbd>Shift</kbd> khi kéo dọc để chỉnh giá trị với độ phân giải mịn hơn.</li>
+<li>Kéo breakpoint/đoạn "đè qua" breakpoint lân cận theo phương ngang để xóa nó.</li>
+<li>Giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) kéo đoạn thẳng để uốn cong đoạn; nhấp đúp khi giữ Alt/Option để trả về đoạn thẳng.</li>
+</ul>
+<figure><img src="images/MPECurvedSegment.png" alt="Curved" loading="lazy"><figcaption>Đoạn envelope bị uốn cong.</figcaption></figure>
+<ul>
+<li>Trừ Pitch, các envelope Slide/Pressure/Velocity/Release Velocity scale được theo tỉ lệ trên toàn bộ độ dài nốt (giống scale velocity của nhiều nốt chọn cùng lúc): nhấp ra ngoài vùng nốt, rê chuột lên envelope muốn sửa; envelope chuyển xanh thì nhấp-kéo lên/xuống để scale. Chỉnh nhiều nốt cùng lúc cũng theo cách này.</li>
+<li>Muốn dịch đều mọi breakpoint thay vì scale: nhấp envelope cần sửa, <kbd>Ctrl</kbd> <kbd>A</kbd> / <kbd>Cmd</kbd> <kbd>A</kbd> chọn hết breakpoint, kéo lên/xuống tăng/giảm giá trị; kéo trái/phải dời cả nhóm theo phương ngang.</li>
+<li>Dời nốt thì envelope biểu cảm đi theo nốt.</li>
+<li>Kéo giãn MIDI nốt bằng MIDI stretch marker trong MIDI Editor hoặc nút ÷2/x2 trong tab Notes thì expression của nốt đó cũng giãn theo.</li>
+<li>Khi lưới tắt, giữ <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac) để breakpoint Pitch hút nửa cung gần nhất — dùng được cả trong Draw Mode. Lưới bật thì tổ hợp phím này bỏ hành vi hút.</li>
+<li>Envelope Pitch ẩn khi bật Fold Mode trong tab Note Expression.</li>
+<li>Tab Note Expression mở: lệnh Zoom to Clip Selection hoặc phím <kbd>Z</kbd> chỉnh mức zoom theo giá trị pitch bend trong vùng chọn thời gian.</li>
+<li>Tab Note Expression mở: mục <em>Clear All Envelopes</em> trong menu ngữ cảnh của MIDI Note Editor và các lane expression xóa toàn bộ envelope của một/nhiều nốt đang chọn.</li>
+</ul>
+
+<h3>14.3 Vẽ envelope (Draw Mode)</h3>
+<p>Bật Draw Mode để nhấp-kéo "vẽ" tự do envelope trong các lane Pitch, Slide và Pressure.</p>
+<p>Bật/tắt Draw Mode cho dữ liệu MPE: mục Draw Mode trong menu Options, công tắc Draw Mode trên Control Bar, hoặc nhấn <kbd>B</kbd> rồi nhấp envelope cần sửa. Giữ <kbd>B</kbd> khi chỉnh bằng chuột để bật/tắt tạm thời.</p>
+<figure><img src="images/MPEDrawingAnEnvelope.png" alt="Drawing" loading="lazy"><figcaption>Đang vẽ một envelope.</figcaption></figure>
+<p>Giữ <kbd>Shift</kbd> khi kéo dọc để chỉnh giá trị expression của mỗi bước với độ phân giải mịn.</p>
+<p>Bật lưới (Snap to Grid hoặc <kbd>Ctrl</kbd> <kbd>4</kbd> / <kbd>Cmd</kbd> <kbd>4</kbd>) thì vẽ ra các bước rộng bằng lưới hiển thị — chỉnh lưới bằng các <a href="../manual-en/arrangement-view/index.html#using-the-editing-grid">phím tắt tiện dụng</a> (EN). Muốn vẽ theo lưới tạm thời khi lưới đang tắt, giữ <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi vẽ.</p>
+
+<h3>14.4 MPE trong thiết bị của Live và trên Push 2</h3>
+<p>Nhiều device của Live hỗ trợ MPE kèm preset MPE, mở chiều tương tác và cách chơi mới cho âm thanh của bạn. Khả năng biểu cảm trong các device này cũng cho phép tận dụng polyphonic aftertouch trên Push 2.</p>
+
+<h3>14.5 MPE trong plug-in ngoài</h3>
+<p>Dữ liệu MPE của plug-in hỗ trợ MPE cũng truy cập và modulate được trong Live.</p>
+<p>Trạng thái bật/tắt MPE Mode của plug-in được lưu cùng cấu hình mặc định của device.</p>
+<p>Plug-in có MIDI out và bật MPE cũng xuất được MPE.</p>
+
+<h3>14.6 Thiết lập MPE/Multi-channel</h3>
+<p>Để cấu hình MPE riêng, mở hộp thoại MPE/Multi-channel Settings từ:</p>
+<ul>
+<li>Device Ext. Instrument.</li>
+<li>Phần I/O của mixer Live.</li>
+<li>Menu ngữ cảnh của plug-in đã bật MPE.</li>
+</ul>
+
+<h4>14.6.1 Mở hộp thoại MPE/Multi-channel Settings</h4>
+<p>Trong Ext. Instrument: chọn Routing Target trong menu thả <em>MIDI To</em>, chọn MPE ở menu thả thứ hai, mở lại menu rồi chọn <em>MPE Settings…</em></p>
+<figure><img src="images/ExtInstMPESettings.png" alt="Ext inst" loading="lazy"><figcaption>MPE Settings trong Ext. Instrument.</figcaption></figure>
+<p>Trong phần I/O của mixer: chọn đúng thiết bị cần điều khiển ở mục MIDI To của output track MIDI, chọn MPE trong menu thả MIDI To của mixer Session/Arrangement, mở lại menu và chọn <em>MPE Settings…</em></p>
+<figure><img src="images/MPESettingsSessionMixer.png" alt="I/O" loading="lazy"><figcaption>MPE Settings trong phần I/O.</figcaption></figure>
+<p>Với plug-in đã bật MPE: thiết lập nằm trong menu ngữ cảnh thanh tiêu đề device.</p>
+<figure><img src="images/PluginMPESettings.png" alt="Plugin menu" loading="lazy"><figcaption>MPE Settings trong menu ngữ cảnh plug-in.</figcaption></figure>
+
+<h4>14.6.2 Hộp thoại MPE/Multi-Channel Settings</h4>
+<figure><img src="images/MPEDialogBox.png" alt="MPE dialog" loading="lazy"><figcaption>MPE/Multi-channel Settings.</figcaption></figure>
+<p>Dùng các thiết lập này để:</p>
+<ul>
+<li>Cấu hình vùng (zone) MPE và dải kênh nốt Live dùng khi gửi MPE ra thiết bị MIDI ngoài hoặc plug-in.</li>
+<li>Chọn vùng trên (upper) hoặc dưới (lower) và số kênh nốt.</li>
+<li>Chọn chế độ multi-channel — dải kênh nốt tùy ý.</li>
+</ul>
+<p>Có thiết lập riêng cho lower zone và upper zone. Mỗi track chỉ xuất được một zone; muốn dùng cả hai, lập hai track.</p>
+<p>Mỗi zone cần một kênh toàn cục (cho điều khiển không đa âm): lower zone là kênh 1, upper zone là kênh 16. Các kênh MIDI còn lại chia cho từng zone (nói chung số kênh gán cho zone liên hệ mức đa âm bạn muốn). Ví dụ: lower zone dùng kênh 1–11, upper zone dùng kênh 12–16.</p>
+<p class="note"><strong>Lưu ý:</strong> Live chỉ hỗ trợ zone cho <em>output</em> MPE — đặc biệt hữu ích với synth phần cứng đòi cấu hình zone riêng.</p>
+<p>Các thiết lập này còn dùng để nối hai synth MPE vào cùng một MIDI interface (một cái nối qua MIDI thru của cái kia), hoặc thiết lập synth điều khiển hai âm thanh khác nhau bằng cách gán vào hai zone: lập hai MIDI track trong Live trỏ cùng thiết bị MIDI out, một track cấu hình lower zone, một track upper zone.</p>
+
+<!-- ============ CH 15: CONVERTING AUDIO TO MIDI (EN ch.13) ============ -->
+<h2 class="sec" id="ch-audio-to-midi">Chương 15 · Converting Audio to MIDI (Chuyển audio thành MIDI)</h2>
+<p class="lead">Warping đã cho phép dùng tệp audio linh hoạt hơn nhiều phần mềm truyền thống, nhưng Live còn có thể <em>trích xuất thông tin nhạc</em> từ audio clip đưa vào MIDI clip — mở thêm nhiều khả năng sáng tạo.</p>
+<p>Khi chọn một audio clip, bốn lệnh chuyển đổi có sẵn trong menu Create hoặc menu ngữ cảnh của clip.</p>
+<figure><img src="images/AudioToMIDICommands.png" alt="Audio to MIDI menu" loading="lazy"><figcaption>Lệnh menu ngữ cảnh chuyển audio thành MIDI.</figcaption></figure>
+
+<h3>15.1 Slice to New MIDI Track (Cắt slice ra track MIDI mới)</h3>
+<p>Lệnh này chia audio thành các mảnh gán vào từng nốt MIDI. Slice khác các lệnh Convert ở chỗ nó không phân tích <em>ngữ cảnh nhạc</em> của audio gốc — chỉ chia theo thời gian, bất kể nội dung. <a href="../manual-en/instrument-drum-and-effect-racks/index.html#drum-racks">Drum Rack</a> (EN) là môi trường lý tưởng để làm việc với file đã slice; phần lớn thiết lập diễn ra tự động sau vài lựa chọn của bạn:</p>
+<figure><img src="images/SlicingDialog.png" alt="Slicing dialog" loading="lazy"><figcaption>Hộp thoại Slicing.</figcaption></figure>
+<p>Chọn Slice to New MIDI Track hiện hộp thoại: danh sách mức chia slice và trình chọn Slicing Preset. Trình chọn phía trên cho phép slice theo nhiều độ phân giải phách, theo transient hoặc theo Warp Marker của clip. Rack chứa tối đa 128 chain nên Live không cho tiếp nếu lựa chọn tạo quá 128 slice — giảm độ phân giải hoặc chọn vùng clip nhỏ hơn.</p>
+<p>Trình chọn Slicing Preset gồm vài mẫu slice của Ableton và mẫu riêng của bạn đặt trong thư mục <a href="../manual-en/working-with-instruments-and-effects/index.html#default-presets">preset mặc định</a> (EN) của User Library.</p>
+<p>Bật "Preserve warped timing": clip được slice theo cách giữ nguyên các biến đổi thời gian do warping. Tắt: các thay đổi do warp không phản ánh vào clip đã slice — bản slice nghe như audio "thô" gốc.</p>
+<p>Chọn xong bấm OK, vài việc diễn ra:</p>
+<ol>
+<li>Tạo MIDI track mới chứa một MIDI clip — mỗi slice một nốt, xếp theo thứ tự nửa cung.</li>
+<li>Một Drum Rack được thêm vào track mới, mỗi slice một chain. Mỗi chain được kích hoạt bởi một nốt trong clip và chứa một Simpler nạp audio slice tương ứng.</li>
+<li>Macro Control của Drum Rack được gán sẵn các tham số hữu ích của các Simpler theo thiết lập trong slicing preset đã chọn. Trong preset nhà máy, gồm các điều khiển envelope cơ bản và tham số chỉnh loop/crossfade của từng slice. Chỉnh một Macro Control sẽ đổi tham số tương ứng trong mọi Simpler cùng lúc.</li>
+</ol>
+<p class="note"><strong>Lưu ý:</strong> Live cần vài giây để xử lý tất cả.</p>
+<p>Phát MIDI clip sẽ kích hoạt lần lượt từng chain trong Drum Rack theo thông tin thời gian bạn chỉ định hoặc nhúng sẵn trong audio. Điều này mở ra nhiều khả năng chỉnh sửa mới:</p>
+
+<h4>15.1.1 Sắp lại thứ tự slice</h4>
+<figure><img src="images/SlicingMIDIEditing.png" alt="Resequencing" loading="lazy"><figcaption>Sắp lại dữ liệu MIDI đã slice.</figcaption></figure>
+<p>Mặc định dữ liệu MIDI tạo "bậc thang" nửa cung tăng dần để kích hoạt đúng chain theo thứ tự gốc. Nhưng chỉ cần <a href="#ch-editing-midi">sửa các nốt MIDI</a> là tạo mô-típ mới. Hiệu ứng tương tự đạt được bằng cách kéo các pad của Drum Rack đè lên nhau để hoán đổi gán nốt.</p>
+
+<h4>15.1.2 Dùng hiệu ứng lên slice</h4>
+<p>Mỗi slice nằm trong chain riêng của Drum Rack nên dễ xử lý từng slice bằng hiệu ứng audio riêng. Muốn xử lý nhiều slice bằng cùng bộ hiệu ứng: chọn nhiều chain trong danh sách chain của Drum Rack rồi bấm <kbd>Ctrl</kbd> <kbd>G</kbd> (Win) / <kbd>Cmd</kbd> <kbd>G</kbd> (Mac) gom thành Rack lồng riêng, chèn hiệu ứng sau Rack con này.</p>
+<p>Còn táo bạo hơn: chèn <a href="../manual-en/live-midi-effect-reference/index.html#live-midi-effect-reference">hiệu ứng MIDI</a> (EN) <em>trước</em> Drum Rack — Arpeggiator và Random cho kết quả đặc biệt thú vị.</p>
+<p>Slice thường dùng cho drum loop, nhưng đừng dừng ở đó: thử slice giọng hát, texture không khí… Mọi thao tác sắp lại và xử lý lại đều áp dụng được cho bất cứ thứ gì bạn slice — đôi khi ra kết quả ngoài dự đoán.</p>
+
+<h3>15.2 Convert Harmony to New MIDI Track (Chuyển hòa âm)</h3>
+<p>Lệnh nhận diện các cao độ trong bản thu audio <em>đa âm</em> và đưa vào clip trên MIDI track mới. Track nạp sẵn một <a href="../manual-en/instrument-drum-and-effect-racks/index.html#instrument-drum-and-effect-racks">Instrument Rack</a> (EN) phát âm piano (dĩ nhiên thay được bằng instrument khác).</p>
+<p class="note"><strong>Lưu ý:</strong> giống các lệnh Convert khác, lệnh này khác slice ở chỗ MIDI clip tạo ra không phát lại <em>âm thanh</em> gốc — nó trích các <em>nốt</em> và dùng nốt đó chơi một âm hoàn toàn khác.</p>
+<p>Convert Harmony chạy tốt với nhạc trong bộ sưu tập, nhưng cũng cho kết quả tuyệt với chính bản thu bạn chơi đàn hòa âm như guitar hay piano.</p>
+
+<h3>15.3 Convert Melody to New MIDI Track (Chuyển giai điệu)</h3>
+<p>Lệnh nhận diện cao độ trong audio <em>đơn âm</em> đưa vào clip trên MIDI track mới.</p>
+<p>Track nạp sẵn Instrument Rack phát âm synth. Macro Control "Synth to Piano" của Rack chỉnh âm sắc liên tục giữa synth kiểu analog và piano điện. Instrument được thiết kế đủ đa dụng để nghe thử tốt, nhưng thay được bằng instrument khác.</p>
+<figure><img src="images/MelodyToMIDIRack.png" alt="Melody rack" loading="lazy"><figcaption>Instrument Rack của Melody to MIDI.</figcaption></figure>
+<p>Convert Melody chạy tốt với nhạc sưu tầm, nhưng bạn cũng có thể thu chính mình hát, huýt sáo, chơi đàn đơn âm như guitar rồi dùng bản thu sinh nốt MIDI.</p>
+
+<h3>15.4 Convert Drums to New MIDI Track (Chuyển trống)</h3>
+<p>Lệnh trích nhịp điệu từ audio gõ <em>không cao độ</em> đưa vào clip trên MIDI track mới. Lệnh còn cố nhận diện tiếng kick, snare, hihat và đặt vào clip mới sao cho chúng phát đúng âm trong Drum Rack nạp sẵn.</p>
+<p>Giống Convert Melody, có thể chỉnh transient marker trong audio clip trước khi chuyển để quyết định nốt sẽ đặt ở đâu trong MIDI clip kết quả.</p>
+<p>Convert Drums hoạt động tốt với breakbeat thu sẵn, và cả bản thu của bạn như beatbox hay gõ nhịp lên mặt bàn.</p>
+
+<h3>15.5 Tối ưu chất lượng chuyển đổi</h3>
+<p>Các lệnh Convert cho kết quả thú vị với cả nhạc có sẵn lẫn vật liệu tự thu — thu hát, guitar, beatbox rồi chuyển thành MIDI làm điểm khởi đầu cho nhạc mới.</p>
+<p>Để chính xác nhất, khuyến nghị:</p>
+<ul>
+<li>Dùng nhạc có attack rõ. Nốt fade-in/"swell" có thể không được nhận diện.</li>
+<li>Làm với bản thu nhạc cụ đơn lẻ. Ví dụ Convert Drums tốt nhất với đoạn break trống không đệm; có nhạc cụ khác thì nốt của chúng cũng bị dò theo.</li>
+<li>Dùng tệp không nén chất lượng cao như .wav/.aiff. Định dạng lossy như mp3 có thể cho kết quả khó đoán, trừ khi bitrate cao.</li>
+</ul>
+<p>Live dùng <a href="#ch-warping">transient marker</a> trong audio clip gốc để quyết định ranh giới giữa các nốt trong MIDI clip chuyển đổi. Nghĩa là bạn có thể "tinh chỉnh" kết quả bằng cách thêm/dời/xóa transient marker trong audio clip <em>trước khi</em> chạy lệnh Convert.</p>
+<p>Mỗi lệnh thiết kế cho một loại vật liệu riêng, nhưng đôi khi dùng "sai" lệnh lại ra kết quả rất thú vị: Convert Harmony thường tạo hợp âm — chạy nó lên clip đơn âm (như bản thu giọng hát) thường sinh ra những nốt không có trong audio gốc. Đây có thể là mồi kích hoạt sáng tạo tuyệt vời.</p>
+
+<!-- ============ CH 16: USING GROOVES (EN ch.14) ============ -->
+<h2 class="sec" id="ch-grooves">Chương 16 · Using Grooves (Dùng groove — "chất groove" cho nhịp)</h2>
+<p class="lead">Thời gian và "cảm giác" (feel) của từng clip trong Set có thể thay đổi bằng <span class="term">groove</span> <span class="gloss">— bản chép độ lệch nhịp của nhạc công, áp vào clip cho nó "sống" hơn</span>. Live kèm bộ groove lớn, hiện thành tệp .agr trong Browser.</p>
+<figure><img src="images/GroovesBrowser.png" alt="Grooves browser" loading="lazy"><figcaption>Tệp groove trong Browser.</figcaption></figure>
+<p>Cách dễ nhất: kéo-thả groove từ Browser thẳng lên clip trong Set — đặc tính thời gian của tệp groove áp ngay vào clip. Muốn thử nhanh nhiều groove, bật nút Hot-Swap phía trên trình chọn <a href="#ch-clip-view">Clip Groove</a> của clip rồi duyệt từng groove trong Browser trong lúc clip phát.</p>
+<figure><img src="images/GrooveHotswap.png" alt="Hot-swap groove" loading="lazy"><figcaption>Nút Hot-Swap Groove.</figcaption></figure>
+<p>Groove áp được cho cả audio lẫn MIDI clip. Với audio clip, groove hoạt động bằng cách chỉnh <a href="#ch-warping">hành vi warping</a> của clip — nên chỉ có tác dụng với clip bật Warp.</p>
+
+<h3>16.1 Groove Pool</h3>
+<p>Sau khi áp tệp groove, chỉnh hành vi của nó qua tham số trong <b>Groove Pool</b> — mở/đóng qua menu thả ở nút điều khiển view của Browser hoặc phím tắt <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>6</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>6</kbd> (Mac).</p>
+<figure><img src="images/GroovePoolSelectorButton.png" alt="Pool button" loading="lazy"><figcaption>Nút điều khiển Groove Pool.</figcaption></figure>
+<p>Cũng có thể nhấp đúp groove trong Browser để nạp thẳng vào Groove Pool trước khi áp lên clip. Groove Pool chứa mọi groove nạp theo cách này hoặc đang được clip dùng. Groove "không hoạt động" (không clip nào dùng) hiển thị tham số xám.</p>
+<figure><img src="images/GroovePool.png" alt="Groove pool" loading="lazy"><figcaption>Groove Pool.</figcaption></figure>
+
+<h4>16.1.1 Chỉnh tham số groove</h4>
+<p>Groove trong Groove Pool liệt kê thành danh sách với nhiều tham số sửa theo thời gian thực, tác động lên mọi clip đang dùng chúng. Lưu/nạp-nóng groove qua các nút cạnh tên groove.</p>
+<p>Các điều khiển hoạt động như sau:</p>
+<ul>
+<li><em>Base</em> — quyết định độ phân giải thời gian làm mốc đo nốt trong groove. Base 1/4: vị trí nốt trong tệp groove so với nốt phách gần nhất, mọi nốt trong clip gán groove sẽ dịch tỉ lệ về vị trí nốt groove. Base 1/8: đo từ nốt 1/8 gần nhất. Nốt nằm đúng lưới không bị dịch, nên nốt tương ứng trong clip cũng giữ nguyên.</li>
+<li><em>Quantize</em> — mức quantize "thẳng" áp <em>trước</em> khi áp groove. 100%: nốt trong clip hút về giá trị nốt gần nhất theo Base. 0%: nốt giữ nguyên vị trí gốc trước khi groove tác động.</li>
+<li><em>Timing</em> — mức độ mô-típ groove ảnh hưởng lên clip đang dùng.</li>
+<li><em>Random</em> — mức lệch thời gian ngẫu nhiên thêm vào clip. Mức thấp rất hợp để "người hóa" các loop điện tử đã quantize kỹ. Random áp ngẫu nhiên <em>khác nhau</em> cho từng bè trong clip — các nốt vốn đánh đồng thời giờ lệch ngẫu nhiên cả so với lưới lẫn so với nhau.</li>
+<li><em>Velocity</em> — mức velocity của nốt trong clip chịu ảnh hưởng thông tin velocity lưu trong tệp groove. Thanh trượt chạy −100 → +100: giá trị âm đảo ngược tác động (nốt to chơi nhẹ và ngược lại).</li>
+<li><em>Global Amount</em> — scale cường độ tổng của Timing, Random, Velocity cho mọi tệp groove. 100% áp đúng giá trị đã đặt; tối đa 130% cho hiệu ứng groove cường độ quá. Có groove áp vào clip trong Set thì thanh Global Amount cũng hiện trên Control Bar.</li>
+</ul>
+<figure><img src="images/GrooveAmountInTransport.png" alt="Global amount" loading="lazy"><figcaption>Thanh Global Groove Amount trên Control Bar.</figcaption></figure>
+
+<h4>16.1.2 Commit groove (Ghi groove vào clip)</h4>
+<figure><img src="images/CommitGroove.png" alt="Commit" loading="lazy"><figcaption>Nút Commit Groove.</figcaption></figure>
+<p>Nhấn Commit phía trên trình chọn Clip Groove để "ghi" tham số groove vào clip: với MIDI clip là dịch nốt tương ứng; với audio clip là tạo Warp Marker tại các vị trí thích hợp.</p>
+<p>Sau khi Commit, trình chọn Groove của clip tự đặt về None.</p>
+
+<h3>16.2 Chỉnh sửa groove</h3>
+<p>Tác động của tệp groove lên clip là tổ hợp hai yếu tố: tham số trong Groove Pool và vị trí nốt trong chính tệp groove. Muốn sửa nội dung tệp groove trực tiếp: kéo-thả nó từ Browser/Groove Pool vào một MIDI track — tạo MIDI clip mới rồi chỉnh như mọi MIDI clip. Sau đó chuyển clip đã chỉnh ngược lại thành groove theo quy trình dưới.</p>
+
+<h4>16.2.1 Trích xuất groove</h4>
+<p>Thông tin thời gian và âm lượng của bất kỳ audio/MIDI clip nào cũng trích được thành groove mới: kéo clip vào Groove Pool, hoặc lệnh <em>Extract Groove</em> trong menu ngữ cảnh của clip.</p>
+<figure><img src="images/ExtractGroove.png" alt="Extract" loading="lazy"><figcaption>Trích groove từ audio/MIDI clip.</figcaption></figure>
+<p>Groove tạo bằng trích xuất chỉ xét vật liệu trong <em>phần đang phát</em> của clip.</p>
+
+<h3>16.3 Mẹo dùng groove</h3>
+
+<h4>16.3.1 Groove cho riêng một bè</h4>
+<p>Tay trống thường biến hóa thời gian của từng nhạc cụ để tạo beat thuyết phục — ví dụ hi-hat đúng phách nhưng snare hơi trễ tạo cảm giác "thư thả". Vì tệp groove áp cho cả clip cùng lúc, mức tinh tế này khó làm trên một clip duy nhất. Nếu clip dùng Drum/Instrument Rack: <a href="../manual-en/instrument-drum-and-effect-racks/index.html#extracting-chains">trích (extract) chain</a> (EN) chứa bè muốn groove riêng — ví dụ trích chain snare thành clip/track mới chỉ chứa nốt snare, rồi áp groove khác cho clip mới này.</p>
+
+<h4>16.3.2 Quantize không phá hủy</h4>
+<p>Groove dùng để quantize theo thời gian thực và không phá hủy: đặt Timing, Random, Velocity về 0%, chỉnh Quantize và Base theo ý. Chỉ còn Quantize tác động nên nội dung thật của groove bị bỏ qua — kỹ thuật này giống nhau với mọi tệp Groove.</p>
+
+<h4>16.3.3 Tạo texture bằng Random</h4>
+<p>Dùng tham số Random để tạo lớp nhân đôi (doubling) tự nhiên — đặc biệt hữu ích khi dựng texture đàn dây từ bè đơn. Nhân đôi track chứa clip muốn "dày" lên, áp groove cho một clip và vặn Random lên: phát hai clip cùng lúc, mỗi nốt sẽ lệch nhẹ (và ngẫu nhiên) so với nốt tương ứng ở track kia.</p>
+
+<!-- ============ CH 17: USING TUNING SYSTEMS (EN ch.15) ============ -->
+<h2 class="sec" id="ch-tuning">Chương 17 · Using Tuning Systems (Hệ thống âm luật khác 12 nốt)</h2>
+<p class="lead">Mặc định Live dùng âm luật <span class="term">12TET</span> <span class="gloss">— chia đều một quãng tám thành 12 nửa cung bằng nhau</span>. Nhưng cao độ còn có thể phân bố theo nhiều cách khác trên một quãng tám (hoặc "giả quãng tám" — nốt lặp lại ở khoảng cách khác quãng tám); các <b>tuning system</b> (hệ thống âm luật) xác định những biến thể này.</p>
+<p>Live 12 hỗ trợ <a href="https://www.huygens-fokker.org/scala/" target="_blank" rel="noopener">tệp Scala ↗</a> — nạp vào Live Set để dùng âm luật tùy chỉnh cho nốt.</p>
+<p>Core Library cũng kèm bộ âm luật sẵn, nằm trong nhãn <b>Tunings</b> của Browser. Tệp âm luật từ Core Library dùng phần mở rộng riêng của Ableton cho định dạng SCL (Scala) gọi là <a href="https://help.ableton.com/hc/en-us/articles/10998372840220" target="_blank" rel="noopener">ASCL ↗</a>.</p>
+<figure><img src="images/TuningSystemsBrowser.png" alt="Tunings label" loading="lazy"><figcaption>Nhãn Tunings trong Browser.</figcaption></figure>
+<p>Khi rê chuột/chọn âm luật trong Browser, Info View hiện mô tả ngắn gồm số nốt mỗi quãng tám. Mô tả này cũng hiện khi rê lên tên <a href="#ts-loading">âm luật đã nạp</a>.</p>
+<figure><img src="images/TuningSystemDescription.png" alt="Description" loading="lazy"><figcaption>Mô tả âm luật trong Info View.</figcaption></figure>
+<p>Thêm tệp .scl/.ascl riêng vào thư mục bất kỳ trong Places của Live để chúng xuất hiện dưới nhãn User trong nhãn Tunings của Browser.</p>
+<figure><img src="images/UserTuningSystems.png" alt="User tunings" loading="lazy"><figcaption>Âm luật tự lưu trong Browser.</figcaption></figure>
+<p>Mọi instrument built-in của Live đều dùng được với tuning system, cùng các plug-in bật MPE hoặc instrument Max for Live ngoài — với điều kiện dải pitch bend đặt 48 nửa cung.</p>
+<p class="note"><strong>Lưu ý:</strong> instrument không bật MPE hoặc dùng dải pitch bend khác nhiều khả năng sẽ chơi lệch âm.</p>
+
+<h3 id="ts-loading">17.1 Nạp một tuning system</h3>
+<p>Nhấp đúp tệp âm luật trong Browser, hoặc chọn tệp rồi bấm <kbd>Enter</kbd> — tự mở mục Tuning của Browser (mặc định ẩn).</p>
+<figure><img src="images/TuningSectionBrowser.png" alt="Tuning section" loading="lazy"><figcaption>Mục Tuning trong Browser.</figcaption></figure>
+<p>Cũng mở được mục Tuning qua menu điều khiển view của Browser.</p>
+<figure><img src="images/TuningBrowserViewControl.png" alt="View control" loading="lazy"><figcaption>Menu điều khiển view của Browser.</figcaption></figure>
+<p>Tệp ASCL/SCL ngoài trên máy kéo-thả được thẳng vào mục Tuning. Tệp đã nạp vào <a href="#ts-section">mục Tuning</a> sẽ được lưu cùng Live Set.</p>
+<p>Khi thêm tuning system vào Set, các nốt trong piano roll không còn là nốt MIDI chuẩn nữa mà hiển thị nốt tương ứng của âm luật đó.</p>
+<figure><img src="images/RetunedNotesMIDINoteEditor.png" alt="Retuned" loading="lazy"><figcaption>Nốt cập nhật trong MIDI Note Editor.</figcaption></figure>
+<p>Rê chuột lên nốt trong piano roll để xem thông tin hữu ích (cao độ, tần số) ở Status Bar. Cao độ chỉ định phát ra khi nốt được chơi từ piano roll hoặc qua keyboard.</p>
+<figure><img src="images/TuningSystemNotesStatusBar.png" alt="Status bar" loading="lazy"><figcaption>Rê nốt trong piano roll để xem cao độ.</figcaption></figure>
+<p>Mặc định, nếu bỏ hoặc đổi sang âm luật khác, vị trí nốt sẵn có trong piano roll <em>không</em> đổi — chỉ thước nốt cập nhật cao độ theo âm luật mới; nghĩa là nốt cũ có thể không còn phát đúng cao độ trước.</p>
+<p>Bật mục <em>Retune Set On Loading Tuning Systems</em> trong menu Options: khi nạp/đổi âm luật, nốt được dịch sát cao độ gốc nhất có thể, giữ giai điệu nghe gần bản gốc. Nạp âm luật sẽ hiện hộp thoại xác nhận.</p>
+<figure><img src="images/LoadingTuningDialog.png" alt="Dialog" loading="lazy"><figcaption>MIDI clip sẵn có có thể bị sửa khi nạp tuning system.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> bật retune tự động thì việc bỏ/đổi âm luật có thể làm nốt gốc bị đổi hoặc mất — xảy ra khi hai nốt chồng thời gian vốn khác cao độ cùng bị map về một cao độ mới (vì gần cả hai). Khi đó một nốt có thể bị xóa hoặc cắt ngắn.</p>
+<p>Khi có tuning system nạp: các trình chọn Scale Mode trong Clip View và Control Bar biến mất, và các device <a href="#ch-concepts">scale aware</a> bị tắt công tắc Use Current Scale.</p>
+
+<h3 id="ts-section">17.2 Mục Tuning</h3>
+<p>Nhiều thiết lập cao độ của tuning system truy cập qua mục Tuning.</p>
+<figure><img src="images/ExpandedTuningSection.png" alt="Expanded" loading="lazy"><figcaption>Mục Tuning mở rộng.</figcaption></figure>
+<p>Bấm tam giác cạnh tên tệp âm luật để bung mục này, truy cập thêm thiết lập nốt thấp nhất/cao nhất cho cao độ chuẩn:</p>
+<ul>
+<li><em>Tuning</em> — tên hệ thống âm luật.</li>
+<li><em>Octave</em> — quãng tám của nốt dùng làm cao độ chuẩn.</li>
+<li><em>Note</em> — nốt trong quãng tám dùng làm cao độ chuẩn.</li>
+<li><em>Ref. Pitch/Freq</em> — tần số của cao độ chuẩn. Đổi tần số để nâng/hạ cao độ mọi nốt trong Set.</li>
+<li><em>Lowest Note</em> — nốt thấp nhất chơi gì (gán quãng tám + pitch class). Đổi nốt thấp cũng ảnh hưởng nốt cao, giữ nguyên số nốt ở giữa.</li>
+<li><em>Highest Note</em> — nốt cao nhất chơi gì; đổi nốt cao cũng cập nhật nốt thấp.</li>
+</ul>
+<p class="note"><strong>Lưu ý:</strong> cao độ chuẩn chỉ đổi nghe được qua giá trị Ref. Pitch/Freq. Đổi Octave/Note chỉ cập nhật tần số hiển thị cho khớp nốt mới — chưa đổi âm cho tới khi chỉnh bản thân tần số, nhằm tránh cao độ nhảy đột ngột khi đặt Octave/Note.</p>
+<p>Nút hình đĩa mềm bên phải tần số cao độ chuẩn lưu âm luật đang nạp thành tệp .ascl vào nhãn Tunings của Browser.</p>
+<p>Nút mũi tên cạnh nút Save Tuning System mở <a href="https://tuning.ableton.com/" target="_blank" rel="noopener">website Tuning của Ableton ↗</a> — thông tin thêm về âm luật đang nạp kèm trình chỉnh tương tác thử biến thể cao độ, và xuất được âm luật tùy chỉnh. Không phải hệ thống nào cũng có trang riêng; không có link thì nút mũi tên xám.</p>
+<p>Chọn tệp trong mục Tuning rồi bấm <kbd>Delete</kbd> để bỏ nó và quay về âm luật 12TET.</p>
+
+<h3>17.3 Tùy chọn MIDI track cho tuning system</h3>
+<p>Khi nạp tuning system, phần I/O của MIDI track xuất hiện vài tùy chỉnh riêng để tùy biến track và controller.</p>
+
+<h4>17.3.1 Bypass Tuning (Bỏ qua âm luật)</h4>
+<p>Công tắc Bypass Tuning bỏ qua tuning system cho một MIDI track cụ thể.</p>
+<figure><img src="images/BypassTuningToggle.png" alt="Bypass" loading="lazy"><figcaption>Công tắc Bypass Tuning.</figcaption></figure>
+<p>Bật: MIDI Note Editor hiển thị nốt 12TET trong piano roll cho mọi clip của track đó.</p>
+<p class="note"><strong>Lưu ý:</strong> MIDI track chứa Drum Rack tự động bypass mọi tệp âm luật đã nạp.</p>
+
+<h4>17.3.2 Bố cục MIDI controller</h4>
+<p>Nốt trong tuning system có thể khác bố cục 12TET, nên thiết lập Track Tuning MIDI Controller Layout cho phép chỉ định nốt nào map lên controller và tự tạo bố cục riêng — hữu ích để căn lại bố cục keyboard ngoài cho khớp piano roll khi dùng một số âm luật.</p>
+<figure><img src="images/TrackTuningMIDILayout.png" alt="Layout options" loading="lazy"><figcaption>Tùy chọn Track Tuning MIDI Controller Layout.</figcaption></figure>
+<ul>
+<li><em>All Keys</em> — map nốt của âm luật lên mọi phím của controller.</li>
+<li><em>Black Keys Only</em> — chỉ map lên phím đen, bố cục trung tâm C#3.</li>
+<li><em>White Keys Only</em> — chỉ map lên phím trắng, bố cục trung tâm C3.</li>
+<li><em>Closest in Pitch to Keyboard</em> — map nốt lên phím có cao độ gần nhất.</li>
+<li><em>Custom Controller Layout</em> — tự định nghĩa bố cục riêng cho controller.</li>
+</ul>
+<p>Chọn Custom Controller Layout rồi bấm nút "…" bên phải để mở hộp thoại Configure MIDI Layout chỉnh thiết lập.</p>
+<figure><img src="images/ConfigureMIDILayoutTuning.png" alt="Configure dialog" loading="lazy"><figcaption>Hộp thoại Configure MIDI Layout.</figcaption></figure>
+<p>Bố cục controller tùy chỉnh được lưu và gọi lại cùng Live Set.</p>
+
+<h3>17.4 Tìm hiểu thêm về tuning system</h3>
+<p>Tham khảo <a href="https://tuning.ableton.com/" target="_blank" rel="noopener">website Tuning của Ableton ↗</a> để đọc thêm về các âm luật built-in của Live, cũng như tạo và xuất âm luật riêng bằng widget tương tác.</p>
+<p>Dùng định dạng ASCL, bạn cũng tự tạo và nhập tuning system cho Live theo <a href="https://help.ableton.com/hc/en-us/articles/10998372840220" target="_blank" rel="noopener">đặc tả chính thức ↗</a>.</p>
+
+<!-- ============ CH 20: BOUNCE TO AUDIO (EN ch.20) ============ -->
+<h2 class="sec" id="ch-bounce">Chương 20 · Bounce to Audio (Xuất cục bộ thành audio)</h2>
+<p class="lead"><span class="term">Bounce</span> <span class="gloss">— "đóng" track/clip/vùng chọn thành audio trên track audio mới</span> là công cụ khám phá sáng tạo: vật liệu đã bounce có thể biến đổi theo cách mới hoặc thử nghiệm biến thể âm thanh. Cũng dùng để "khóa" vật liệu — tiến bước sáng tạo hoặc chuẩn bị Set cho mixing bằng cách hoàn tất sound design và dựng chuỗi device sạch chuyên cho mix. Bounce còn giúp <a href="../manual-en/computer-audio-resources-and-strategies/index.html#computer-audio-resources-and-strategies">giảm tải CPU</a> (EN), giải phóng tài nguyên cho phần khác của dự án.</p>
+<p>Dùng được bounce trong cả <a href="#ch-arrangement">Arrangement lẫn Session View</a>. Hai view dùng chung hệ track, nên track tạo từ bounce ở view này cũng xuất hiện ở view kia.</p>
+
+<h3>20.1 Bounce từng track</h3>
+<p>Có hai cách: lệnh <em>Bounce Track in Place</em> và <em>Bounce to New Track</em>.</p>
+<p><b>Bounce Track in Place</b> "đóng" track gốc thành audio track mới <em>thay thế</em> track gốc. Lệnh này thay thế Freeze and Flatten Track (và Flatten cho track đã freeze) của các phiên bản Live trước. Gọi từ thanh tiêu đề track hoặc menu ngữ cảnh clip.</p>
+<figure><img src="images/BounceInPlaceL12.png" alt="Bounce in place" loading="lazy"><figcaption>Track trước và sau khi dùng Bounce Track in Place.</figcaption></figure>
+<p><b>Bounce to New Track</b> "đóng" từng clip hoặc vùng chọn thời gian thành audio clip trên track riêng và mute clip/vùng chọn gốc. Gọi từ menu ngữ cảnh clip/vùng chọn, hoặc phím <kbd>Ctrl</kbd> <kbd>B</kbd> (Win) / <kbd>Cmd</kbd> <kbd>B</kbd> (Mac).</p>
+<figure><img src="images/BounceToNewTrackL12.png" alt="Bounce new track" loading="lazy"><figcaption>Track gốc và track mới tạo bằng Bounce to New Track.</figcaption></figure>
+<p>Bounce thực hiện <em>post-FX, pre-mixer</em>: audio kết quả gồm toàn bộ xử lý của device (nhưng không giữ device trên track), không gồm chỉnh mixer (volume, pan, sends) — các chỉnh này được giữ trong thiết lập track mới.</p>
+<p>Bounce vùng chọn thời gian trải nhiều track Arrangement: Bounce to New Track tạo một audio track riêng cho mỗi track có clip được chọn.</p>
+<figure><img src="images/BounceMultipleTracksL12.png" alt="Multi bounce" loading="lazy"><figcaption>Kết quả Bounce to New Track cho vùng chọn đa track.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> lệnh bounce áp đồng thời cho Arrangement và Session nhưng kết quả hơi khác. Dùng Bounce Track in Place ở một view (ví dụ Arrangement): audio track mới thay thế track gốc ở cả Session, và clip ở cả hai view đều được bounce. Dùng Bounce to New Track ở một view (ví dụ Session): track mới cũng tạo trong Arrangement, nhưng chỉ các clip Session được chọn mới bounce — track mới ở Arrangement để trống.</p>
+<p>Track/clip tạo bằng lệnh bounce kế thừa tên track/clip gốc kèm "(Bounce)" ở cuối (clip gốc không tên thì clip mới tên "(Bounce)"). Track mới cũng kế thừa màu track gốc.</p>
+<p>Tệp audio đã bounce lưu trong thư mục Project hiện tại: /Samples/Processed/Bounce.</p>
+
+<h3>20.2 Bounce Group Track</h3>
+<p>Ngoài track đơn, <a href="#ch-mixing">Group Track</a> cũng bounce được, bằng hai lệnh: <em>Bounce Group in Place</em> và <em>Bounce Group to New Track</em>.</p>
+<p><b>Bounce Group in Place</b> tạo audio track mới thay thế cả Group Track. Gọi từ menu ngữ cảnh thanh tiêu đề Group Track, menu ngữ cảnh group slot trong Session View, hoặc menu ngữ cảnh lane chính của Group Track trong Arrangement View.</p>
+<figure><img src="images/GroupTrackBounceInPlaceL12.png" alt="Group in place" loading="lazy"><figcaption>Trước và sau khi dùng Bounce Group in Place.</figcaption></figure>
+<p><b>Bounce Group to New Track</b> "đóng" từng clip hoặc vùng chọn trong Group Track thành audio clip trên track riêng và mute nguồn. Gọi từ menu ngữ cảnh group slot (Session) hoặc lane chính Group Track (Arrangement); cũng dùng được <kbd>Ctrl</kbd> <kbd>B</kbd> (Win) / <kbd>Cmd</kbd> <kbd>B</kbd> (Mac).</p>
+<figure><img src="images/GroupTrackBounceToNewTrackL12.png" alt="Group new track" loading="lazy"><figcaption>Track gốc và track mới từ Bounce Group to New Track.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> bounce Group Track khác bounce track đơn. Track đơn bounce <em>pre-mixer</em> và copy thiết lập mixer sang track mới; Group Track bounce <em>post-mixer</em>: audio xử lý từ đầu ra Main track của group, gồm mọi hiệu ứng và send dùng bên trong Group, không gồm xử lý trên Master Main. Kết quả còn tùy routing: track route ra ngoài Group không được tính vào bounce (có thể gây im lặng trong audio), còn return track nằm trên đường tín hiệu của Group chỉ được tính nếu đầu ra cuối của nó tới Main track.</p>
+<figure><img src="images/GroupTrackBounceExternalRoutingL12.png" alt="External routing" loading="lazy"><figcaption>Bounce Group khi một track route ra ngoài Group.</figcaption></figure>
+
+<h3>20.3 Dán audio đã bounce (Paste Bounced Audio)</h3>
+<p>Lệnh <em>Paste Bounced Audio</em> là phương án thay cho bounce sang track mới: vật liệu nguồn được bounce theo trạng thái <em>hiện tại</em> khi dán — bạn có thể sửa nguồn rồi bounce-dán nhanh mà không phải chọn-copy lại. Tiện để tạo biến thể nhanh của cùng vật liệu với hiệu ứng khác nhau, hoặc gom nhiều vùng chọn từ nhiều track vào một track.</p>
+<figure><img src="images/PasteBouncedAudioL12.png" alt="Paste bounced" loading="lazy"><figcaption>Audio bounce từ nhiều track dán vào một track.</figcaption></figure>
+<p>Cách dùng: copy clip của một track trong Session View, vùng chọn/clip trong Arrangement, hoặc vùng chọn trong lane chính Group Track (Arrangement) — bằng lệnh Copy hoặc <kbd>Ctrl</kbd> <kbd>C</kbd> (Win) / <kbd>Cmd</kbd> <kbd>C</kbd> (Mac). Sau đó ở một audio track, MIDI track trống hoặc take lane, dùng lệnh Paste Bounced Audio trong menu ngữ cảnh lane chính, hoặc <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>V</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Opt</kbd> <kbd>V</kbd> (Mac). Vật liệu đã copy được bounce và dán lên track. Dán vào MIDI track thì track tự chuyển thành audio track.</p>
+<p class="note"><strong>Lưu ý:</strong> nếu xóa vật liệu nguồn đã copy, Paste Bounced Audio không khả dụng cho tới khi copy vật liệu mới.</p>
+
+<!-- ============ CH 21: COMPING (EN ch.21) ============ -->
+<h2 class="sec" id="ch-comping">Chương 21 · Comping (Ghép_take hay nhất thành một track)</h2>
+<p class="lead"><span class="term">Comping</span> <span class="gloss">— ghép những khoảnh khắc hay nhất của từng lần thu thành một track tổng hợp ("comp")</span>. Live tạo <b>take lane</b> trong track ngay khi bạn thu, dùng để ráp các đoạn ưng ý nhất. Take lane còn lưu các phiên bản thay thế của cách sắp clip, hoặc kéo sample từ thư viện vào để dùng comping như công cụ chop sample sáng tạo.</p>
+
+<h3>21.1 Take Lane (Lane lần thu)</h3>
+<p>Mọi audio/MIDI track trong <a href="#ch-arrangement">Arrangement View</a> gồm nhiều lane song song. Lane đầu là <b>lane chính</b> (main lane) — mặc định phát nghe được. Track còn có thể có bao nhiêu take lane tùy ý, chỉ phát khi bật <a href="#cp-audition">Audition Mode</a>.</p>
+<figure><img src="images/CompingMainLaneL12.png" alt="Main lane" loading="lazy"><figcaption>Lane chính của một track.</figcaption></figure>
+<figure><img src="images/CompingTakeLanesL12.png" alt="Take lanes" loading="lazy"><figcaption>Các take lane của track.</figcaption></figure>
+<p>Take lane tự tạo khi <a href="#cp-recording">thu clip mới</a> trong Arrangement, hoặc <a href="#cp-manage">chèn thủ công</a>.</p>
+<p>Bật/tắt hiển thị take lane: lệnh Show Take Lanes trong menu ngữ cảnh header track, hoặc công tắc Show/Hide Take Lanes ở lane chính của track.</p>
+<figure><img src="images/CompingShowHideTakeLanesToggleL12.png" alt="Toggle" loading="lazy"><figcaption>Công tắc Show/Hide Take Lanes.</figcaption></figure>
+<p>Phím tắt: <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>U</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>U</kbd> (Mac).</p>
+<p>Dùng phím mũi tên trái để đi từ take lane về lane chính — đồng thời gấp lại mọi take lane.</p>
+<p class="note"><strong>Lưu ý:</strong> take lane không hiện khi <a href="../manual-en/automation-and-editing-envelopes/index.html#drawing-and-editing-automation">Automation Mode</a> (EN) bật. Vẫn gọi được lệnh Show Take Lanes và chèn take lane trong Automation Mode, nhưng thao tác nào cũng thoát mode để hiện mọi take lane.</p>
+
+<h3 id="cp-manage">21.2 Chèn &amp; quản lý take lane</h3>
+<p>Chèn thủ công take lane vào một/nhiều track đang chọn: lệnh <em>Insert Take Lane</em> (menu Create), menu ngữ cảnh header track/take lane, hoặc <kbd>Shift</kbd> <kbd>Alt</kbd> <kbd>T</kbd> (Win) / <kbd>Shift</kbd> <kbd>Option</kbd> <kbd>T</kbd> (Mac). Chèn take lane cũng mở mọi lane sẵn có nếu đang gấp.</p>
+<p>Cũng tạo được take lane và thêm clip vào lane sẵn có qua <a href="https://docs.cycling74.com/apiref/lom/takelane/" target="_blank" rel="noopener">Live API với Max for Live ↗</a>.</p>
+<p>Nhân đôi take lane: <kbd>Ctrl</kbd> <kbd>D</kbd> (Win) / <kbd>Cmd</kbd> <kbd>D</kbd> (Mac) hoặc lệnh Duplicate trong menu ngữ cảnh header take lane.</p>
+<p>Xóa take lane: phím <kbd>Backspace</kbd>/<kbd>Delete</kbd> hoặc lệnh Delete trong menu Edit.</p>
+<p>Bỏ sạch take lane của track: lệnh <em>Delete All Take Lanes</em> trong menu ngữ cảnh header track/take lane. Lệnh <em>Delete All Unused Take Lanes</em> xóa mọi take lane không chứa <a href="#cp-comp">vật liệu thu nằm trong comp</a> ở lane chính.</p>
+<p>Đổi chiều cao take lane: <kbd>Alt</kbd> <kbd>+</kbd> / <kbd>Alt</kbd> <kbd>−</kbd> (Win) (<kbd>Option</kbd> trên Mac) hoặc giữ <kbd>Alt</kbd>/<kbd>Option</kbd> + con lăn chuột — áp cho mọi take lane đang chọn cùng lúc. Các tay cầm hiện khi rê lên mép take lane cũng chỉnh được chiều cao một/nhiều lane.</p>
+<p>Sắp lại thứ tự take lane trong track: kéo-thả, hoặc giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) + phím mũi tên lên/xuống.</p>
+<p>Đổi tên take lane: lệnh Rename (menu Edit hoặc menu ngữ cảnh) hoặc <kbd>Ctrl</kbd> <kbd>R</kbd> (Win) / <kbd>Cmd</kbd> <kbd>R</kbd> (Mac); đổi tên được nhiều lane cùng lúc; dùng <kbd>Tab</kbd> / <kbd>Shift</kbd> <kbd>Tab</kbd> nhảy giữa các lane/track khi đổi tên.</p>
+
+<h3 id="cp-recording">21.3 Thu take</h3>
+<p>Khi <a href="../manual-en/recording-new-clips/index.html#recording-into-the-arrangement">thu clip mới</a> (EN) trong Arrangement View, take lane tự thêm vào các <a href="../manual-en/recording-new-clips/index.html#arming-record-enabling-tracks">audio/MIDI track đã arm</a> (EN), clip tạo trong các take lane đó.</p>
+<p>Thu đè lên clip sẵn có — thu từng lượt hoặc thu trong <a href="#ch-arrangement">loop</a> — thêm take lane mới cho mỗi lượt. Take lane sẵn có tự dùng lại khi không có clip nào khác sau điểm punch-in.</p>
+<p>Clip thu cuối cùng của track luôn được copy sang lane chính để nghe được ngay khi phát Set.</p>
+<p class="note"><strong>Lưu ý:</strong> clip thu mặc định kế thừa màu track. Muốn Live tự gán màu khác nhau cho từng take: đặt công tắc Clip Color thành Random trong Theme &amp; Colors Settings.</p>
+
+<h3>21.4 Chèn sample</h3>
+<p>Kéo sample và tệp MIDI vào take lane từ Browser hoặc File Explorer/Finder. Chọn nhiều sample: giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) khi kéo để chèn mỗi sample vào một track tuần tự.</p>
+
+<h3 id="cp-audition">21.5 Nghe thử take lane (Audition)</h3>
+<p>Nhấn nút Audition Take Lane (icon loa) trong header take lane, hoặc phím <kbd>T</kbd>.</p>
+<figure><img src="images/CompingAuditionTakeLaneButtonL12.png" alt="Audition button" loading="lazy"><figcaption>Nút Audition Take Lane.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> nghe thử được take lane của nhiều track cùng lúc, nhưng mỗi track chỉ một lane. Vùng chọn thời gian/header gồm take lane của nhiều track thì mỗi track audition lane được chọn sau cùng.</p>
+
+<h3 id="cp-comp">21.6 Tạo comp</h3>
+<p>Vật liệu đang chọn trong take lane copy sang lane chính bằng phím <kbd>Enter</kbd> hoặc lệnh <em>Copy Selection to Main Lane</em> trong menu ngữ cảnh take lane.</p>
+<p>Thay clip ở lane chính bằng clip của take lane kế tiếp/trước: chọn header clip hoặc bôi vùng thời gian trong lane chính/take lane, giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) + mũi tên lên/xuống. Vùng chọn nằm trên take lane thì vùng chọn cũng dời sang take kế tiếp/trước (bỏ qua take lane trống).</p>
+<figure><img src="images/CompingReplaceClipsL12.png" alt="Replace" loading="lazy"><figcaption>Thay một đoạn clip bằng nội dung từ take lane khác.</figcaption></figure>
+<p>Trong Draw Mode, vật liệu take lane đang chọn copy sang lane chính chỉ bằng một cử chỉ: nhấp — kéo — nhả chuột. Cũng thay clip trong vùng chọn của lane chính bằng cách nhấp lên take lane để chèn đoạn tương ứng của take đó vào vùng chọn.</p>
+<p>Clip thêm vào lane chính là bản copy <em>độc lập</em> với clip take lane tương ứng: chỉnh clip ở lane chính không ảnh hưởng take gốc và ngược lại. Clip trong take lane chỉnh như clip Arrangement khác: di chuyển, copy/paste, kéo-thả, consolidate, crop, nhân đôi; cũng chuyển được sang clip slot Session View bằng copy-paste hoặc kéo-thả.</p>
+<p>Tránh click giữa các clip: bật <em>Create Fades on Clip Edges</em> trong Record, Warp &amp; Launch Settings — crossfade 4 mili-giây tự tạo cho clip kề nhau. Tự tạo thủ công: chọn nhiều clip rồi bấm <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>F</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>F</kbd> (Mac).</p>
+
+<h3>21.7 tô sáng nguồn (Source Highlights)</h3>
+<p>Với mỗi comp ở lane chính, vật liệu nguồn trong take lane tương ứng được tô sáng bằng màu của track; vật liệu take lane không dùng hiển thị màu nhạt hơn — dễ thấy đoạn thu nào thuộc comp. Chỉ hiện khi clip khớp vị trí và thuộc tính.</p>
+<figure><img src="images/CompingSourceHighlightsL12.png" alt="Highlights" loading="lazy"><figcaption>Vật liệu nguồn của comp được tô sáng trong take lane.</figcaption></figure>
+<p>Kéo mép vùng tô sáng để chỉnh điểm cắt (split point) giữa hai phần kề nhau của comp.</p>
+<figure><img src="images/CompingResizeHighlightsL12.png" alt="Resize" loading="lazy"><figcaption>Kéo để chỉnh điểm cắt giữa hai phần comp kề nhau.</figcaption></figure>
+
+<!-- ============ CH 22: STEM SEPARATION (EN ch.22) ============ -->
+<h2 class="sec" id="ch-stems">Chương 22 · Stem Separation (Tách stem — bóc từng phần từ audio)</h2>
+<p class="lead">Tính năng tách stem built-in của Live giúp bóc các thành phần chính từ <em>bất kỳ</em> audio đã thu — bài hát, loop, sample — thành từng phần riêng. Stem xử lý như audio clip thường: warp, chop, sắp lại, và xử lý bằng hiệu ứng.</p>
+<p>Tách bản thu nhiều lớp thành stem mở ra nhiều ứng dụng sáng tạo: cô lập vocal để remix/mashup, mổ xẻ giai điệu và nhịp, trích nhạc cụ riêng làm sample, trộn stem cho DJ mix…</p>
+
+<h3>22.1 Stem separation hoạt động thế nào trong Live</h3>
+<p>Stem separation (còn gọi <em>music source separation</em>) phân tích đặc tính phổ và thời gian của tín hiệu audio rồi trích các thành phần dò được thành từng phần — gọi là <span class="term">stem</span> <span class="gloss">— một phần tử âm tách riêng: vocal, trống, bass…</span>.</p>
+<p>Trong Live, quy trình dùng mô hình deep learning được huấn luyện riêng cho source separation và tối ưu chạy cục bộ — tách stem ngay trong Live, không cần internet hay công cụ ngoài.</p>
+<p>Mọi tệp audio mono/stereo tách được thành 4 stem: <em>Vocals</em> (giọng hát), <em>Drums</em> (trống), <em>Bass</em> và <em>Others</em> (còn lại — mọi phần không dò được là vocal/trống/bass).</p>
+<p>Chương này lấy bài hát làm ví dụ, nhưng tách stem dùng được cho mọi audio đã thu.</p>
+
+<h3>22.2 Tách tệp audio và clip</h3>
+<p>Tách tệp audio từ Browser hoặc audio clip từ Session/Arrangement View bằng lệnh <em>Separate Stems to New Audio Tracks</em> trong menu ngữ cảnh hoặc menu Create.</p>
+<figure><img src="images/StemSeparationBrowserL12.png" alt="Browser" loading="lazy"><figcaption>Tách tệp audio từ Browser.</figcaption></figure>
+<figure><img src="images/StemSeparationArrangementClipL12.png" alt="Clip" loading="lazy"><figcaption>Tách audio clip từ Arrangement/Session View.</figcaption></figure>
+<p>Chọn lệnh xong hiện hộp thoại các tùy chọn tách:</p>
+<figure><img src="images/StemSeparationDialogL12.png" alt="Dialog" loading="lazy"><figcaption>Hộp thoại Separate Stems.</figcaption></figure>
+<p>Dùng 4 công tắc Vocals/Drums/Bass/Others để chọn thành phần nào của bài được tách.</p>
+<p>Chỉ tách vài thành phần: bật <em>Merge to Single Track</em> để gộp các stem kết quả thành một stem sau khi tách (chỉ gộp được hai/ba phần; chọn một hoặc đủ bốn thì hộp kiểm không bật được).</p>
+<figure><img src="images/StemSeparationMergeSingleTrackL12.png" alt="Merge" loading="lazy"><figcaption>Dùng Merge to Single Track để gộp stem.</figcaption></figure>
+<p>Chọn ưu tiên <a href="#ss-quality">tốc độ hay chất lượng</a> qua trình chọn quality mode: <em>High Speed</em> cho bản nháp/chỉnh nhanh, <em>High Quality</em> khi cần kết quả chi tiết hơn.</p>
+<p>Bấm <em>Separate</em> để chạy. Đang phát nhạc thì phát dừng khi tách bắt đầu.</p>
+<p>Mỗi stem thêm thành clip trên track riêng trong một <a href="#ch-mixing">Group Track</a> mới. Clip/track stem dùng màu tương ứng công tắc trong hộp thoại; Group Track dùng màu track của clip nguồn.</p>
+<figure><img src="images/StemSeparationSeparatedStemsL12.png" alt="Stems" loading="lazy"><figcaption>Các stem đã tách trong Arrangement View.</figcaption></figure>
+<p>Chỉ tách một phần (ví dụ vocals): tạo một track duy nhất chứa stem clip thay vì Group Track.</p>
+<p>Dùng Merge to Single Track: stem kết quả thêm vào track mới, track và clip dùng màu track nguồn.</p>
+<figure><img src="images/StemSeparationMergedStemsL12.png" alt="Merged" loading="lazy"><figcaption>Stem đã gộp trong Arrangement View.</figcaption></figure>
+<p>Khi tách clip từ Arrangement/Session, một số thiết lập clip quyết định phần audio nào được xử lý: chỉnh <a href="#ch-clip-view">start/end marker</a> của clip trước khi tách thì chỉ vùng nghe được giữa hai marker nằm trong stem; <a href="#ch-clip-view">loop một clip đã warp</a> thì chỉ audio từ start marker hết vùng loop đang bật được xử lý.</p>
+<figure><img src="images/StemSeparationLoopedClipL12.png" alt="Loop" loading="lazy"><figcaption>Vùng clip và loop đang bật quyết định phần audio được tách.</figcaption></figure>
+<p>Cũng tách được riêng vùng chọn thời gian trong một clip Arrangement: bôi vùng trong clip, nhấp chuột phải clip → <em>Separate Stems for Time Selection</em> — mở cùng hộp thoại; bấm Separate, clip bị cắt tại mép vùng chọn và stem chỉ tạo cho đoạn đó.</p>
+<figure><img src="images/StemSeparationTimeSelectionL12.png" alt="Time selection" loading="lazy"><figcaption>Tách audio trong vùng chọn thời gian của clip (Arrangement).</figcaption></figure>
+<p>Hiệu ứng audio của track nguồn được thêm vào Group Track thay vì áp lên stem đã xử lý. Track automation copy sang Group Track mới; clip envelope automation và modulation copy sang từng stem clip.</p>
+<p>Tạo stem xong, clip nguồn bị deactivate tránh phát đôi — kích hoạt lại bằng cách chọn clip rồi bấm phím <kbd>0</kbd>.</p>
+<p>Dùng lệnh cho bài/sample trong Browser: stem thêm vào Session hay Arrangement tùy view đang tiêu điểm. Set trống thì tempo Project cập nhật theo tempo audio nguồn nếu bật <a href="#ch-warping">warp cho sample</a> trong Record, Warp &amp; Launch Settings.</p>
+<p>Tệp stem lưu trong Project hiện tại: Samples → Processed → Stems. Dùng Merge to Single Track thì tạo tệp cho từng stem riêng lẻ kèm tệp stem gộp. Stem dùng loại tệp đã chọn trong Record, Warp &amp; Launch Settings; sample rate 44.1 kHz, bit depth như nguồn.</p>
+
+<h4 id="ss-quality">22.2.1 Tốc độ hay chất lượng?</h4>
+<p>Hộp thoại Separate Stems có hai mode: <em>High Speed</em> và <em>High Quality</em> — ưu tiên nhanh hay chính xác.</p>
+<p>High Speed: nhanh hơn (máy cũ vẫn có thể mất vài phút); mọi stem tách trong <em>một lượt</em>.</p>
+<p>High Quality: độ chính xác cao hơn (thang SDR — Signal-to-Distortion Ratio — tốt hơn) đổi lấy tốc độ chậm hơn. Ở mode này, Vocals/Drums/Bass mỗi phần chạy một lượt tách riêng; stem Others tạo từ phần audio còn lại sau ba lượt.</p>
+<p>Cả hai mode đều rút ngắn thời gian bằng cách crop sample trước khi tách. Chỉ cần stem của một đoạn (ví dụ điệp khúc): <a href="#ch-clip-view">cắt ngắn clip</a> về vùng mong muốn bằng lệnh <em>Crop Clip Sample to Time Selection</em> trong Sample Editor, hoặc <em>Crop Clip</em> từ vùng chọn trong Arrangement (menu ngữ cảnh track). Phím tắt cả hai lệnh Crop: <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>J</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>J</kbd> (Mac).</p>
+<p>High Quality còn rút ngắn thời gian bằng cách chỉ tách stem cần dùng: muốn cô lập trống và vocal thì khỏi tạo đủ mọi stem. Nhưng tính cả phần Others thì thời gian <em>không</em> giảm — vẫn phải xử lý mọi phần để tách chính xác phần còn lại (tách Vocals + Others thì Drums/Bass vẫn phải tạo; chỉ Vocals và Others được thêm vào Set, Drums/Bass lưu trong thư mục Stems của Project).</p>
+<p>Nói chung, thời gian tách phụ thuộc nhiều cấu hình máy: máy Windows cũ và Mac Intel có thể chậm vì chỉ dùng CPU — không dùng GPU như Mac Apple silicon.</p>
+<p class="note"><strong>Lưu ý:</strong> bản chất quy trình tách, đôi khi thành phần lọt vào stem ngoài dự kiến — cao tần hi-hat nghe được trong Others, hoặc synth chorus nghe trong Vocals. Sự chồng lấn này tùy mode chất lượng và đặc tính âm của nguồn. Thử tách bằng High Speed rồi chạy lại High Quality để so kết quả nào hợp vật liệu hơn.</p>
 
 </article>
 
