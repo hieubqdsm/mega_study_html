@@ -153,6 +153,7 @@
     <a href="#ch-max4live">31. Max for Live</a>
     <a href="#ch-audio-effects">28. Live Audio Effect Reference</a>
     <a href="#ch-midi-effects">29. Live MIDI Effect Reference</a>
+    <a href="#ch-instruments">30. Live Instrument Reference</a>
     <a href="#ch-remote">33. MIDI and Key Remote Control</a>
     <a href="#ch-sync">36. Synchronizing with Link, Tempo Follower, and MIDI</a>
     <a href="#ch-cpu">37. Computer Audio Resources and Strategies</a>
@@ -5053,6 +5054,61 @@
 
 
 
+
+<!-- ============ CH 30: LIVE INSTRUMENT REFERENCE (EN ch.30 — dịch lô 1: 30.1 Analog) ============ -->
+<h2 class="sec" id="ch-instruments">Chương 30 · Live Instrument Reference (Từ điển nhạc cụ của Live)</h2>
+<p class="lead">Live kèm bộ instrument built-in thiết kế riêng — từ physical modeling, FM synthesis tới wavetable synthesis. <em>Chương dài ngang Ch.28 — dịch dần theo từng instrument; các instrument từ 30.2 trở đi tạm xem <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
+<p>Cơ bản về dùng instrument: chương <a href="#ch-devices">Working with Instruments and Effects</a>. <em>Lưu ý:</em> các phiên bản Live có <a href="https://www.ableton.com/en/live/compare-editions/" target="_blank" rel="noopener">tính năng khác nhau ↗</a> — một số instrument có thể không có ở mọi phiên bản.</p>
+
+<h3>30.1 Analog (Synth mô phỏng analog)</h3>
+<figure><img src="images/AnalogL12.png" alt="Analog" loading="lazy"><figcaption>Instrument Analog.</figcaption></figure>
+<p>Analog là synth analog ảo, làm cùng Applied Acoustics Systems — không mô phỏng một chiếc synth cổ điển cụ thể mà kết hợp các tính năng hay nhất của synth huyền thoại vào một instrument hiện đại. Analog tạo âm bằng cách mô phỏng từng bộ phận của synth qua physical modeling: giải realtime các phương trình toán mô tả mạch analog hoạt động. Không dùng sample hay wavetable — âm được CPU tính trực tiếp theo giá trị từng tham số: chất lượng, độ thật, độ ấm và động lực chơi không đâu sánh.</p>
+
+<h4>30.1.1 Kiến trúc &amp; giao diện</h4>
+<figure><img src="images/AnalogSignalFlow.png" alt="Signal flow" loading="lazy"><figcaption>Sơ đồ dòng tín hiệu của Analog.</figcaption></figure>
+<p>Nguồn âm chính: hai oscillator + bộ tạo nhiễu — route độc lập tới hai filter đa chế độ, mỗi filter nối một amplifier; các filter chạy nối tiếp hoặc song song. Thêm hai LFO modulate oscillator/filter/amplifier; mỗi filter và amplifier có envelope riêng.</p>
+<p>Giao diện hai phần: <em>khung hiển thị</em> (display) bao quanh bởi <em>vỏ</em> (shell) — vỏ chứa điều khiển quan trọng nhất, khung cập nhật hình ảnh + điều khiển thêm của mục đang chọn. Ngoài các module tổng hợp còn mục Global (volume, vibrato, polyphony...) và mục MPE với ba nguồn: pressure, slide, pitch bend từng nốt — đắp âm Analog bằng controller MPE.</p>
+
+<h4>30.1.2 Oscillator</h4>
+<figure><img src="images/AnalogOscillatorsL12.png" alt="Osc" loading="lazy"><figcaption>Tham số hai Oscillator.</figcaption></figure>
+<p>Hai oscillator dùng physical modeling bắt cá tính oscillator phần cứng cổ — không wavetable nên không aliasing. Mỗi oscillator bật/tắt bằng công tắc Osc 1/2; mức ra chỉnh bằng thanh trượt bên phải. Thanh <b>F1/F2</b> cân bằng output tới hai filter (giữa = đều hai filter; hết cỡ trên/dưới = chỉ Filter 1/2).</p>
+<p>Trình chọn <b>Shape</b>: sine, sawtooth, rectangular, white noise. Rectangular bật thêm <b>Pulse Width</b> trong khung — Width thấp = sóng rất hẹp, nghe "chít"; 100% = sóng vuông hoàn hảo (chỉ hài lẻ); Width modulate được bằng LFO (slider cạnh — chỉ bật khi LFO tương ứng bật).</p>
+<p><b>Octave/Semi/Detune</b> là chỉnh thô/tinh: Octave đổi quãng tám; Semi bước nửa cung; Detune bước 1 cent (tối đa ±300 cent). Pitch oscillator modulate theo Pitch Mod/Pitch Env trong khung: LFO slider đặt mức LFO modulate pitch (LFO bật mới có); <b>Key</b> đặt mức chỉnh dây theo nốt MIDI — 100% = Temperament cân bằng chuẩn; cao/thấp đổi khoảng cách giữa các nốt; 0% = không theo nốt. Thử: một oscillator 100%, oscillator kia lệch chút — chơi scale gần C3: C3 luôn cùng tần số nên càng chơi xa C3 hai oscillator càng lệch nhau. <b>Pitch Env</b> là dốc modulate pitch theo thời gian: Initial đặt pitch khởi đầu, Time đặt thời gian trượt về giá trị cuối (chỉnh slider hoặc breakpoint trong khung envelope).</p>
+<p><b>Sub/Sync</b>: Mode = Sub — Level đặt mức oscillator phụ thấp hơn chính một quãng tám (sóng vuông khi Shape chính là rectangle/saw; sine khi chính là sine; tắt khi chính là white noise). Mode = <b>Sync</b> — sóng oscillator được khởi động lại bởi oscillator nội bộ có tần số do Ratio đặt: 0% = trùng (không sync); tăng Ratio tăng tốc oscillator nội bộ, đổi nội dung hài. Muốn "ác" nhất kiểu analog: map modulation wheel lên Sync ratio.</p>
+
+<h4>30.1.3 Bộ tạo nhiễu</h4>
+<figure><img src="images/AnalogNoiseL12.png" alt="Noise" loading="lazy"><figcaption>Bộ tạo nhiễu của Analog.</figcaption></figure>
+<p>Tạo tạp âm trắng, có low-pass −6 dB/oct riêng — bật/tắt bằng Noise; mức ra bằng slider bên phải; F1/F2 như oscillator. <b>Color</b> đặt tần số low-pass nội bộ (cao = nhiều thành phần cao). <em>Lưu ý:</em> Noise chỉ có tham số shell — chỉnh không đổi gì trong khung.</p>
+
+<h4>30.1.4 Filter</h4>
+<figure><img src="images/AnalogFiltersL12.png" alt="Filters" loading="lazy"><figcaption>Tham số hai Filter.</figcaption></figure>
+<p>Hai filter đa chế độ với routing linh hoạt, nhiều loại bão hòa, nhiều modulation — mọi tham số đặt riêng từng filter. Fil 1/2 bật/tắt; trình chọn loại: low/band/high-pass bậc 2 và 4, notch, formant. <b>Freq</b> chỉnh tần số cộng hưởng, <b>Reso</b> chỉnh lượng (formant thì Reso duyệt qua nguyên âm). Filter 1 có <b>To F2</b> — lượng output Filter 1 gửi Filter 2; Filter 2 có <b>Follow</b> — cutoff bám cutoff Filter 1 (bật thì núm cutoff Filter 2 chỉnh độ lệch; nguồn modulation nào điều cutoff Filter 1 cũng kéo theo Filter 2).</p>
+<p>Khung hiển thị chứa modulation + <b>Drive</b>: cutoff và resonance modulate độc lập bằng LFO/nốt/envelope (Freq Mod/Res Mod — dương tăng, âm giảm). Drive chọn loại bão hòa cho output filter: ba Sym (đối xứng) + Asym (bất đối xứng); số cao méo nhiều; Off tắt hẳn.</p>
+
+<h4>30.1.5 Amplifier</h4>
+<figure><img src="images/AnalogAmpsL12.png" alt="Amps" loading="lazy"><figcaption>Tham số hai Amplifier.</figcaption></figure>
+<p>Sau filter, tín hiệu tới amplifier đắp tiếp bằng envelope biên độ + pan. Amp 1/2 bật/tắt; Level đặt mức; Pan đặt vị trí stereo. Khung hiển thị: Pan và Level modulate độc lập bằng LFO/nốt/envelope (Pan Mod/Level Mod). <em>Lưu ý:</em> modulate Level bằng nốt — C3 luôn nghe như nhau bất kể mức; dương = nốt cao to hơn.</p>
+
+<h4>30.1.6 Envelope</h4>
+<figure><img src="images/AnalogEnvelopesL12.png" alt="Env" loading="lazy"><figcaption>Tham số Envelope của Analog.</figcaption></figure>
+<p>Ngoài pitch envelope của oscillator, mỗi filter và amplifier có envelope riêng — bốn envelope cùng bộ điều khiển (đều trong khung): ADSR chuẩn + velocity modulation + loop. <b>Attack</b> đặt thời gian attack (Att &lt; Vel — velocity cao làm attack ngắn dần); <b>Decay</b> đặt thời gian về mức sustain; <b>Sustain</b> đặt mức giữ (sang trái hết = không sustain; phải hết = không decay); <b>Env &lt; Vel</b> — velocity modulate mức toàn envelope; <b>S.Time</b> — sustain tự giảm dù còn giữ phím (thấp giảm nhanh); <b>Release</b> đặt thời gian về 0 sau khi nhả. <b>Slope</b> đổi đoạn envelope linear/exponential (thấy trong khung).</p>
+<p><b>Legato</b> bật: nốt mới chơi khi nốt khác còn giữ sẽ dùng envelope nốt đầu tại vị trí hiện tại. <b>Free</b> bật: bỏ sustain, decay chuyển thẳng release — còn gọi chế độ "trigger" (nốt dài bằng nhau bất kể giữ phím bao lâu) — lý tưởng cho âm gõ. <b>Loop</b>: Off — chạy một lượt; <b>AD-R</b> — attack + decay lặp tới khi nhả rồi release; <b>ADR-R</b> — như AD-R nhưng gồm cả release trong vòng lặp khi còn giữ; <b>ADS-R</b> — không lặp, nhưng khi nhả phát lại attack + release một lần (attack/release ngắn mô phỏng nhạc cụ có damper nghe được). <em>Lưu ý:</em> AD-R/ADR-R + Free = nốt cứ như bị giữ vĩnh viễn.</p>
+
+<h4>30.1.7 LFO</h4>
+<figure><img src="images/AnalogLFOsL12.png" alt="LFO" loading="lazy"><figcaption>Tham số hai LFO.</figcaption></figure>
+<p>Hai LFO làm nguồn modulation cho oscillator/filter/amplifier. LFO 1/2 bật/tắt; <b>Rate</b> đặt tốc (nút cạnh đổi Hz ↔ phách đồng bộ). <b>Wave</b>: sine, triangle, rectangle và hai nhiễu (một bước giá trị ngẫu nhiên, một dốc mượt). Tri/Rect có <b>Width</b>: Tri — thấp dịch về saw lên, cao về saw xuống, 50% tam giác hoàn hảo; Rect — 50% vuông hoàn hảo, thấp/cao = pulse âm/dương (Width tắt với sine/nhiễu). <b>Delay</b> đặt trễ sau khi nốt bắt; <b>Attack</b> đặt thời gian lên biên độ đầy. <b>Retrig</b> bật: LFO chạy lại cùng pha mỗi nốt; <b>Offset</b> chỉnh pha.</p>
+
+<h4>30.1.8 Tham số toàn cục</h4>
+<figure><img src="images/AnalogGlobalL12.png" alt="Global" loading="lazy"><figcaption>Tham số Global.</figcaption></figure>
+<p><b>Volume</b> đặt tổng mức instrument. <b>Vib</b> bật vibrato (thực chất là LFO thêm, cứng vào pitch cả hai oscillator); % cạnh đặt biên độ; Rate đặt tốc. Bật vibrato mở bốn tham số trong khung: Delay/Attack (trễ và thời gian lên cường độ đầy); <b>Error</b> — độ lệch ngẫu nhiên của Rate/Amount/Delay/Attack cho từng voice đa âm; Amt &lt; MW — mức modulation wheel ảnh hưởng vibrato (tương đối với slider % trong shell). <b>Uni</b> bật unison — chồng nhiều voice mỗi nốt; Detune cạnh đặt độ lệch dây; bật unison mở thêm: Voices (2 hoặc 4) và Delay (độ trễ trước mỗi voice kích hoạt). <b>Gli</b> bật glide — pitch trượt giữa các nốt (Legato bật thì chỉ trượt khi nốt hai bấm trước khi nhả nốt một); Time đặt tốc; bật glide mở Glide Mode: Const (thời gian cố định) hoặc Prop (tỉ lệ khoảng cách — quãng lớn trượt chậm hơn).</p>
+<p>Bốn nút <b>Quick Routing</b> trái khung: trên-trái — song song, mỗi oscillator một filter + amp riêng; trên-phải — mỗi oscillator chia đều output cho hai filter; dưới-trái — cả hai oscillator vào Filter 1 + Amp 1 (bypass 2); dưới-phải — nối tiếp: hai oscillator → Filter 1 → Filter 2 + Amp 2. <em>Lưu ý:</em> Quick Routing không đụng mức/dây/waveform của oscillator — chỉ đổi routing.</p>
+<p>Mục Keyboard: Octave/Semi/Detune cho toàn instrument (Detune ±50 cent); <b>PB Range</b> — dải pitch bend; <b>Stretch</b> — mô phỏng stretch tuning của piano điện/cơ (0% = temperament cân bằng; tăng nâng nốt cao hạ nốt thấp — sáng hơn; âm = "âm tính" ngược); <b>Error</b> — sai số chỉnh dây ngẫu nhiên mỗi nốt; <b>Voice</b> đặt polyphony; <b>Priority</b> — nốt bị cắt khi vượt polyphony: High (ưu tiên nốt cao, cắt từ nốt thấp nhất), Low (ngược), Last (ưu tiên nốt mới nhất, cắt nốt cũ nhất).</p>
+
+<h4>30.1.9 Nguồn MPE</h4>
+<figure><img src="images/AnalogMPEL12.png" alt="MPE" loading="lazy"><figcaption>Tham số nguồn MPE.</figcaption></figure>
+<p>Bật công tắc MPE trong Global mở ba nguồn: Pressure, Slide, NotePB — đắp tiếp âm Analog. Pressure có hai Destination chooser + Amount slider; Slide cũng vậy; LED Pressure/Slide sáng khi Analog nhận dữ liệu tương ứng. <b>Note PB</b> đặt dải pitch bend từng nốt.</p>
+
+<p class="note"><em>⏳ Còn tiếp: instrument 30.2 Collision → 30.13 Wavetable sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
 
 </article>
 
