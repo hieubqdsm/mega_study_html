@@ -4397,7 +4397,111 @@
 <figure><img src="images/AutoPanTremoloRampsL12.png" alt="Ramps" loading="lazy"><figcaption>Dùng Shape tạo dốc cho hiệu ứng gating/ducking.</figcaption></figure>
 <p><b>Attack Time</b> đặt thời gian (ms) đạt tối đa modulation sau khi phát hiện transient — attack dài áp hiệu ứng chỉ trong phần sustain, bỏ qua đỉnh đầu (Panning: giữ transient ở giữa trường stereo; Tremolo: giữ lực đánh). <b>Dynamic Frequency Modulation</b> đặt mức tín hiệu vào ảnh hưởng tốc LFO: dương — to hơn chạy nhanh hơn; âm — chậm lại.</p>
 
-<p class="note"><em>⏳ Còn tiếp: các device 28.4 Auto Shift → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+<h3>28.4 Auto Shift (Bắt &amp; chỉnh cao độ)</h3>
+<figure><img src="images/AutoShiftL12.png" alt="Auto Shift" loading="lazy"><figcaption>Hiệu ứng Auto Shift.</figcaption></figure>
+<p>Auto Shift là device dò và chỉnh cao độ thời gian thực, kèm điều khiển vibrato, pitch shift và formant shift — thiết kế đặc biệt hợp để biến hình giọng hát, nhưng dùng được với mọi tín hiệu đơn âm. Chỉnh cao độ theo scale định nghĩa hoặc theo nốt MIDI từ track khác; có LFO built-in để modulate audio theo thời gian.</p>
+
+<h4>28.4.1 Phần Input</h4>
+<figure><img src="images/AutoShiftInputSectionL12.png" alt="Input" loading="lazy"><figcaption>Phần Input của Auto Shift.</figcaption></figure>
+<p>Nhận cả audio lẫn MIDI. Ô <b>Input Pitch</b> hiển thị cao độ audio vào theo nốt và cent. Ba công tắc <b>Pitch Range</b> đặt dải tần cho input (High/Mid/Bass) — tối ưu chất lượng dò và chỉnh cao độ; LED mỗi công tắc nháy khi audio vào nằm trong dải tương ứng.</p>
+<figure><img src="images/AutoShiftInputLEDL12.png" alt="LED" loading="lazy"><figcaption>LED Pitch Range nháy báo dải của tín hiệu vào.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> mỗi dải ảnh hưởng latency khác nhau — chuyển công tắc là đổi tổng latency. <b>Input Gain</b> chỉnh gain vào −24…+24 dB. Ô <b>Latency Readout</b> hiển thị latency (ms); bật <b>Live Mode</b> (thanh tiêu đề) giảm latency — hợp biểu diễn trực tiếp, nhưng có thể khựng nhẹ ở đầu nốt hoặc khi cao độ đổi nhanh.</p>
+<figure><img src="images/AutoShiftLiveModeL12.png" alt="Live mode" loading="lazy"><figcaption>Bật Live Mode để giảm latency.</figcaption></figure>
+
+<h5>28.4.1.1 MIDI Input</h5>
+<figure><img src="images/AutoShiftMIDIInputL12.png" alt="MIDI input" loading="lazy"><figcaption>Panel MIDI Input của Auto Shift.</figcaption></figure>
+<p>Bật MIDI input để dùng nốt từ một MIDI track khác chỉnh cao độ audio thay vì chỉnh theo scale qua Quantizer. Công tắc <b>MIDI In</b> hiện/ẩn panel chứa routing track và chế độ voice. Bật <b>MIDI On</b>: tab Quantizer được thay bằng tab MIDI để tinh chỉnh hành vi nốt vào.</p>
+<p>Trình chọn <b>External Source</b> đặt nguồn sidechain MIDI (track gửi nốt tới Auto Shift); <b>Tapping Point</b> chọn lấy MIDI trước/sau hiệu ứng trong chuỗi device của track nguồn (Pre FX bỏ qua hiệu ứng; Post FX/Post Mixer gồm chúng).</p>
+<p>Hai chế độ voice: <b>Mono</b> — một voice, mỗi lúc chỉ một nốt dùng để chỉnh cao độ; thanh <b>Glide</b> đặt thời gian nốt chồng nhau trượt sang cao độ mới. <b>Poly</b> — tối đa 8 voice cùng lúc, hợp hòa âm; <b>Voice Count</b> đặt 2/4/8. <em>Lưu ý:</em> dùng MIDI input thì Auto Shift chỉ phát tiếng khi nhận được nốt MIDI.</p>
+
+<h4>28.4.2 Tab Quantizer</h4>
+<figure><img src="images/AutoShiftQuantizerL12.png" alt="Quantizer" loading="lazy"><figcaption>Tab Quantizer của Auto Shift.</figcaption></figure>
+<p>Quantizer chỉnh audio theo nốt của scale định nghĩa. <b>Pitch Correction Meter</b> hiển thị tín hiệu bị dịch bao nhiêu cent để khớp nốt đích (nốt đích hiện dưới meter, do scale quyết định).</p>
+<p><b>Correction Strength</b> chỉnh cường độ: càng cao audio càng bị kéo về nốt đích. <b>Smooth</b> bật/tắt làm mượt — bật thì chuyển nốt mượt và giữ vibrato tự nhiên hơn; <b>Smoothing Time</b> đặt 0–200 ms. Strength + Smoothing quyết định "phong cách" chỉnh: từ tinh tế tới cứng nhắc như quantize.</p>
+<p>Khung <b>Included Notes in Scale</b> chọn nốt dùng để chỉnh — tự chọn nốt trong khung hoặc đặt tông/scale bằng Root/Scale. <b>Pitch Shift</b> transpose lên/xuống theo bậc scale (áp sau chỉnh). Auto Shift hỗ trợ scale awareness: bật Use Current Scale (thanh tiêu đề) — Quantizer theo scale hiện hành của clip; khung nốt tô tím các nốt của scale, Root/Scale vô hiệu.</p>
+
+<h4>28.4.3 Tab MIDI</h4>
+<figure><img src="images/AutoShiftMIDITabL12.png" alt="MIDI tab" loading="lazy"><figcaption>Tab MIDI của Auto Shift.</figcaption></figure>
+<p>Bật MIDI input, tab Quantizer thay bằng tab MIDI: piano trực quan hiện nốt nhận từ track nguồn — dùng các nốt đó để chỉnh audio.</p>
+<figure><img src="images/AutoShiftMIDITrackL12.png" alt="Track" loading="lazy"><figcaption>Dùng nốt MIDI chỉnh cao độ audio.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> MIDI input không có scale awareness — muốn giới hạn nốt trong scale, thêm hiệu ứng MIDI <a href="#ch-midi-effects">Scale</a> vào track nguồn và đặt Tapping Point của Auto Shift là Post FX/Post Mixer.</p>
+<p><b>Attack Time</b> đặt attack envelope nốt 0–1000 ms; <b>Release Time</b> đặt release 0–5 s. Bật <b>Note Latch</b>: nốt giữ tới Note On kế; <b>Pitch Bend Range</b> đặt dải pitch bend 0–48 nửa cung.</p>
+<p>Trong mục <b>Mod Routing</b>, bốn tham số chỉnh được bằng MIDI/MPE: Pitch, Formant, Volume, Pan — mỗi tham số chọn một trong sáu nguồn modulation (Velocity, Pressure, Mod Wheel, Pitch Bend, Note PB, Slide) qua menu Mod Source; độ sâu bằng Mod Depth.</p>
+
+<h4>28.4.4 Tab LFO</h4>
+<figure><img src="images/AutoShiftLFOTabL12.png" alt="LFO tab" loading="lazy"><figcaption>Tab LFO của Auto Shift.</figcaption></figure>
+<p>LFO built-in modulate cao độ, formant, âm lượng và pan của audio vào. Công tắc <b>LFO Reset</b>: bật thì pha LFO chạy lại tại đầu nốt (dùng Quantizer: "đầu nốt" là khi dò được cao độ sau đoạn không cao độ; LED Onset nháy mỗi lần chạy lại — với MIDI input, đầu nốt là nốt mới, LED thành Trigger).</p>
+<p><b>LFO Delay</b> đặt trễ trước attack (0–1,5 s); <b>LFO Attack</b> đặt thời gian lên đỉnh (0–2 s); dạng sóng trong khung cập nhật theo. <b>LFO Waveform</b> chọn một trong chín dạng: Sine, Triangle, Triangle 8, Triangle 16, Saw Up, Saw Down, Rectangle, Random, Random S&amp;H. <b>LFO Rate</b> đặt tốc theo ms hoặc phách đồng bộ (tùy công tắc LFO Sync). Mục Mod Routing cho modulate bốn tham số (Pitch/Formant/Volume/Pan) bằng LFO — Mod Depth đặt mức từng tham số. <em>Lưu ý:</em> LFO ảnh hưởng tín hiệu vào bất kể có đang chỉnh cao độ hay không.</p>
+
+<h4>28.4.5 Phần Pitch</h4>
+<figure><img src="images/AutoShiftPitchSectionL12.png" alt="Pitch" loading="lazy"><figcaption>Phần Pitch của Auto Shift.</figcaption></figure>
+<p><b>Pitch Shift</b> đặt transpose theo nửa cung; <b>Pitch Shift Fine</b> theo cent. <b>Formant Shift</b> dịch formant (tần số cộng hưởng định hình âm sắc) −100…+100%: cao hơn nghe cao và cộng hưởng hơn, thấp hơn nghe thấp và ít đầy hơn — dịch formant tạo cảm giác cao/thấp mà không transpose thật.</p>
+<p><b>Formant Follow</b> đặt bao nhiêu formant theo kịp pitch shift — cao hơn nghe transpose tự nhiên hơn. Dùng Pitch/Formant Shift được bất kể có chỉnh cao độ hay không.</p>
+
+<h4>28.4.6 Phần Vibrato</h4>
+<figure><img src="images/AutoShiftVibratoSectionL12.png" alt="Vibrato" loading="lazy"><figcaption>Phần Vibrato của Auto Shift.</figcaption></figure>
+<p>Ba điều khiển chính: <b>Vibrato Amount</b> (độ sâu 0–200 cent), <b>Vibrato Rate</b> (tốc 2–15 Hz), <b>Vibrato Fade In</b> (thời gian fade-in ms). Bật <b>Natural Vibrato</b>: tạo biến thiên tốc và sâu — vibrato thật hơn. Dùng vibrato được bất kể có chỉnh cao độ.</p>
+<p><b>Dry/Wet</b> cân khô/xử lý: 0% không chỉnh; 100% chỉ nghe tín hiệu đã chỉnh; 50% cân bằng gốc–chỉnh thành hiệu ứng doubler.</p>
+
+<h3>28.5 Beat Repeat (Lặp nhịp)</h3>
+<figure><img src="images/BeatRepeatL12.png" alt="Beat Repeat" loading="lazy"><figcaption>Hiệu ứng Beat Repeat.</figcaption></figure>
+<p>Tạo điệp khúc có kiểm soát hoặc ngẫu nhiên của tín hiệu vào.</p>
+<p><b>Interval</b> định Beat Repeat bao lâu thì "chụp" vật liệu mới và bắt đầu lặp — đồng bộ tempo, từ 1/32 tới 4 Bar. <b>Offset</b> dịch điểm chụp tới trước trong thời gian: Interval 1 Bar + Offset 8/16 = mỗi bar chụp một lần ở phách 3 (giữa bar).</p>
+<p><b>Chance</b> thêm ngẫu nhiên: xác suất lặp thực sự xảy ra khi Interval/Offset "yêu cầu" — 100% luôn lặp, 0% không bao giờ. <b>Gate</b> đặt tổng độ dài của chuỗi lặp theo nốt 1/16 (4/16 = lặp trong một phách).</p>
+<p>Nút <b>Repeat</b> bỏ qua mọi điều khiển trên: chụp ngay và lặp cho tới khi tắt.</p>
+<p><b>Grid</b> đặt cỡ lưới — kích thước mỗi lát lặp: 1/16 chụp lát một nốt 1/16 và lặp trong độ dài Gate (hoặc tới khi tắt Repeat); giá trị lớn tạo loop nhịp, nhỏ tạo artefact âm thanh. Nút No Triplets đặt phân chia nhị phân. <b>Variation</b> đổi cỡ lưới ngẫu nhiên: 0 cố định; cao hơn thì lưới dao động quanh Grid. Các chế độ Variation: Trigger (biến thiên khi kích hoạt lặp), 1/4–1/8–1/16 (biến thiên theo chu kỳ), Auto (biến thiên mới sau mỗi lần lặp — phức tạp nhất, nhất là khi cho triplet).</p>
+<p>Lặp có thể hạ cao độ cho hiệu ứng đặc biệt — Pitch điều qua resampling: kéo dài đoạn để hạ cao độ mà không nén lại cho đúng độ dài, nên cấu trúc nhịp có thể mơ hồ ở Pitch cao. <b>Pitch Decay</b> thon dần đường cong pitch — mỗi lát lặp thấp hơn lát trước. <em>Cảnh báo:</em> đây là tham số khó hiểu nhất của Beat Repeat.</p>
+<p>Beat Repeat có filter low/high-pass gộp đặt dải tần cho qua — bật/tắt, đặt tần số giữa và độ rộng dải. Tín hiệu gốc trộn với các lần lặp theo ba chế độ mix: <b>Mix</b> (gốc đi qua, lặp cộng lên), <b>Insert</b> (mute gốc khi lặp đang phát), <b>Gate</b> (chỉ lặp, không bao giờ cho gốc qua — đặc biệt hợp khi đặt hiệu ứng trong return track). <b>Volume</b> đặt mức ra; <b>Decay</b> tạo lặp mờ dần.</p>
+
+<h3>28.6 Cabinet (Thùng loa)</h3>
+<figure><img src="images/CabinetL12.png" alt="Cabinet" loading="lazy"><figcaption>Hiệu ứng Cabinet.</figcaption></figure>
+<p>Mô phỏng âm của 5 thùng loa guitar kinh điển — làm cùng Softube bằng physical modelling, kèm micro và vị trí micro tối ưu.</p>
+<p>Trình chọn <b>Speaker</b> chọn cỡ/số loa: "4x12" = bốn loa 12 inch; ngoài đời nhiều và to hơn thường là to hơn. Trình chọn <b>Microphone</b> đổi vị trí micro ảo so với thùng: Near On-Axis sáng và tập trung; Near Off-Axis cộng hưởng hơn, bớt sáng; Far cân bằng thêm chút cá tính "phòng" ảo.</p>
+<figure><img src="images/CabinetMicPositions.png" alt="Mics" loading="lazy"><figcaption>Vị trí micro trong Cabinet.</figcaption></figure>
+<p>Công tắc dưới trình chọn micro: <b>Dynamic</b> (gắt hơn, quen thu gần vì chịu được mức lớn) hoặc <b>Condenser</b> (chính xác hơn, quen thu xa — micro ảo sẽ không hỏng với mức lớn đâu, cứ thử). <b>Output</b> đổi mono/Dual (Dual tốn gấp đôi CPU); <b>Dry/Wet</b> cân xử lý/khô.</p>
+
+<h4>28.6.1 Mẹo Cabinet</h4>
+<p><b>Amp và Cabinet:</b> thùng loa thường được cấp từ ampli — Cabinet sinh ra để đi cặp <a href="#ch-audio-effects">Amp</a>; dùng riêng từng cái cũng ra âm lạ.</p>
+<p><b>Nhiều micro:</b> kỹ thuật phòng thu phổ biến — nhiều micro cho một thùng rồi cân trong mix; dễ làm bằng <a href="#ch-racks">Audio Effect Rack</a>: cấu hình Cabinet vừa ý → bỏ vào Rack → nhân đôi chain chứa nó → mỗi chain chọn Microphone/loại micro khác → cân volume các chain trong mixer của Rack.</p>
+
+<h3>28.7 Channel EQ</h3>
+<figure><img src="images/ChannelEQL12.png" alt="Channel EQ" loading="lazy"><figcaption>Hiệu ứng Channel EQ.</figcaption></figure>
+<p>Lấy cảm hứng từ EQ của mixer kinh điển: EQ 3 dải đơn giản mà linh hoạt, tinh chỉnh cho kết quả "nhạc" với nhiều loại vật liệu.</p>
+<p>Công tắc <b>HP 80 Hz</b> bật high-pass — bỏ ùm lows. <b>Low</b> điều khiển gain của low-shelf chỉnh 100 Hz (±15 dB) — đường cong thích ứng, đổi theo lượng gain. <b>Mid</b> là peak filter quét được (±12 dB, hẹp hơn Low/High) — thanh tần số phía trên đặt tần số giữa 120 Hz–7,5 kHz. <b>High</b>: boost là high-shelf tới 15 dB; cut thì shelf kết hợp low-pass — xoay từ 0 về −15 dB đồng thời hạ điểm cắt low-pass từ 20 kHz xuống 8 kHz.</p>
+<p>Phổ trực quan phản hồi real-time đường cong filter và tín hiệu đã xử lý. <b>Output</b> bù gain cho tín hiệu ra.</p>
+
+<h4>28.7.1 Mẹo Channel EQ</h4>
+<ul>
+<li>Đắp thêm hình dáng cho output của hiệu ứng reverb trong chuỗi device.</li>
+<li>Đắp âm một tiếng trống hoặc cả bộ trống — đặt Channel EQ lên một/nhiều pad Drum Rack.</li>
+<li>Thêm <a href="#ch-audio-effects">Saturator</a> sau Channel EQ mô phỏng độ phi tuyến analog của kênh mixer — boost mạnh phần bass sẽ tăng méo như mixer analog thật.</li>
+</ul>
+
+<h3>28.8 Chorus-Ensemble</h3>
+<figure><img src="images/ChorusEnsembleL12.png" alt="Chorus" loading="lazy"><figcaption>Hiệu ứng Chorus-Ensemble.</figcaption></figure>
+<p>Chorus hai đường delay kinh điển với chế độ đường thứ ba tùy chọn — dải hiệu ứng rộng: dày tinh tế, flanging, vibrato, tới chorus kiểu dàn dây.</p>
+<p>Khung hiển thị vẽ các đường delay đang bật phản ánh chế độ; ba nút trong khung chọn chế độ: <b>Chorus</b>, <b>Ensemble</b>, <b>Vibrato</b>.</p>
+<figure><img src="images/ChorusEnsembleDisplayAndModesL12.png" alt="Modes" loading="lazy"><figcaption>Khung hiển thị và các chế độ.</figcaption></figure>
+<p><b>Chorus</b> dày âm bằng cách cộng hai tín hiệu trễ được modulate thời gian vào input — chorus kinh điển thêm chuyển động nhẹ. <b>Ensemble</b> lấy cảm hứng từ pedal chorus ba đường dày của thập niên 70 — dùng chung điều khiển với Chorus nhưng ba tín hiệu trễ với lệch pha modulate chia đều tạo chorus giàu, mượt, đậm hơn. <b>Vibrato</b> modulate cao độ mạnh hơn hẳn, không chồng tín hiệu trễ — biến thiên cao độ rõ thay vì dày âm; dạng sóng modulate biến đổi liền từ sine sang triangle — tạo được âm "còi cảnh sát" kinh điển.</p>
+<p>Mọi chế độ có high-pass tùy chọn — giảm hiệu ứng modulate cho thành phần dưới tần số đặt bằng High-Pass Frequency (20,0 Hz–2,00 kHz).</p>
+<p>Chorus/Ensemble thêm tham số <b>Width</b> — độ rộng stereo của tín hiệu wet (cân mức chorus giữa kênh mid/side): 0% mono; 100% cân bằng; 200% chorus bên sàn gấp đôi giữa — giữ mức hiệu ứng đều khắp trường stereo, hữu ích khi mix.</p>
+<p>Chorus có thêm <b>Delay Time</b> (Auto — trễ co giãn theo lượng modulate; hoặc giá trị cố định — chorus ổn định không lệch pha/modulate pitch thừa, hợp bass/guitar) và <b>Tap Count</b> (1 hoặc 2 tap; một tap cho texture chorus đơn giản, rộng như pedal phần cứng cũ).</p>
+<p>Vibrato có <b>Offset</b> (lệch pha giữa sóng trái/phải; 180° ngược pha hoàn toàn) và <b>Shape</b> (0% sine → 100% triangle).</p>
+<p>Tham số modulation:</p>
+<figure><img src="images/ChorusEnsembleModulationParamsL12.png" alt="Mod" loading="lazy"><figcaption>Điều khiển modulation trong Chorus-Ensemble.</figcaption></figure>
+<p><b>Rate</b> đặt tốc modulate (Hz) — cao cho chorus quyết liệt, thấp cho phasing dịu. <b>Amount</b> chỉnh biên độ modulate ảnh hưởng thời gian trễ — cao lệch thời gian mạnh hơn. <b>Feedback</b> đặt lượng output mỗi kênh phản hồi về input — cao hơn cực hơn, tăng hài bậc cao, và tạo delay nghe được nếu dừng phát; <b>Feedback Invert</b> đảo tín hiệu phản hồi — kết hợp feedback cao ra âm "rỗng" (vô hiệu ở Vibrato).</p>
+<p>Tham số toàn cục:</p>
+<figure><img src="images/ChorusEnsembleGlobalParamsL12.png" alt="Global" loading="lazy"><figcaption>Tham số toàn cục trong Chorus-Ensemble.</figcaption></figure>
+<p><b>Output</b> đặt gain tín hiệu ra; <b>Warmth</b> thêm méo và lọc nhẹ cho âm ấm hơn (vặn lên cho giòn); <b>Dry/Wet</b> cân xử lý/khô — dùng trong return track thì để 100% (vô hiệu ở Vibrato).</p>
+
+<h4>28.8.1 Mẹo Chorus-Ensemble</h4>
+<ul>
+<li>Ensemble, Rate 1–1,8 Hz, Amount 100% lên guitar khô = âm surf-rock điển hình.</li>
+<li>Automate Feedback Invert ở Feedback &gt; 90% tạo những đợt dao động decay khổng lồ.</li>
+</ul>
+
+<p class="note"><em>⏳ Còn tiếp: các device 28.9 Compressor → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 </article>
 
