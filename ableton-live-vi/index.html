@@ -5108,7 +5108,54 @@
 <figure><img src="images/AnalogMPEL12.png" alt="MPE" loading="lazy"><figcaption>Tham số nguồn MPE.</figcaption></figure>
 <p>Bật công tắc MPE trong Global mở ba nguồn: Pressure, Slide, NotePB — đắp tiếp âm Analog. Pressure có hai Destination chooser + Amount slider; Slide cũng vậy; LED Pressure/Slide sáng khi Analog nhận dữ liệu tương ứng. <b>Note PB</b> đặt dải pitch bend từng nốt.</p>
 
+<h3>30.2 Collision (Gõ mallet physical modeling)</h3>
+<figure><img src="images/CollisionL12.png" alt="Collision" loading="lazy"><figcaption>Instrument Collision.</figcaption></figure>
+<p>Collision mô phỏng đặc tính nhạc cụ gõ mallet — làm cùng Applied Acoustics Systems bằng physical modeling: mô hình hóa các bộ phận phát âm và cộng hưởng của vật thật (hoặc tưởng tượng).</p>
+
+<h4>30.2.1 Kiến trúc &amp; giao diện</h4>
+<p>Âm sinh từ cặp oscillator <b>Mallet</b> và <b>Noise</b>, nuôi cặp resonator stereo độc lập (hoặc liên kết) — oscillator tạo thành phần đầu, nhưng tham số resonator quyết định nhiều nhất cá tính âm. <em>Lưu ý:</em> tắt cả Mallet lẫn Noise thì Collision im. Giao diện chia mục + tab: Mallet/Noise cho oscillator tương ứng; Resonator 1/2 cho từng resonator; LFO — hai LFO độc lập modulate nhiều tham số; MIDI/MPE — route pitch bend, modulation wheel, aftertouch (và bản MPE tương đương) tới nhiều đích; bên phải là mục global: polyphony, retrigger, cấu trúc resonator, volume. <em>Lưu ý:</em> tắt mục/tab không dùng tiết kiệm CPU.</p>
+
+<h4>30.2.2 Mục Mallet</h4>
+<figure><img src="images/CollisionMalletL12.png" alt="Mallet" loading="lazy"><figcaption>Mục Mallet của Collision.</figcaption></figure>
+<p>Mô phỏng cú va chạm của đầu gõ vào bề mặt — tham số chỉnh thuộc tính vật lý của chính đầu gõ. Nút Mallet bật/tắt. <b>Volume</b> đặt mức ra (modulate bằng pitch/velocity qua Key/Vel ở tab MIDI). <b>Stiffness</b> chỉnh độ cứng: thấp — mềm, ít cao, va chạm dài không rõ; tăng — thời gian va chạm ngắn lại, cao tăng. <b>Noise</b> đặt lượng nhiễu va chạm mỗi cú đánh — mô phỏng âm "chiff" của đầu gõ bọc nỉ. <b>Color</b> đặt tần số thành phần nhiễu (cao = ít thấp hơn; vô tác dụng khi Noise = 0).</p>
+
+<h4>30.2.3 Mục Noise</h4>
+<figure><img src="images/CollisionNoiseL12.png" alt="Noise" loading="lazy"><figcaption>Mục Noise của Collision.</figcaption></figure>
+<p>Như Mallet, tạo xung âm khởi đầu: nhiễu trắng → filter đa chế độ có envelope riêng — dùng thay hoặc cộng với Mallet. Menu loại filter: LP, HP, BP, LP+HP (Freq chỉnh cutoff; Res chỉnh cộng hưởng — LP+HP thì chỉnh băng thông). Tần số filter modulate bằng pitch/velocity (Key/Vel ở tab MIDI) hoặc envelope (Env Amt). <b>Volume</b> đặt mức ra; <b>Env Amt</b> điều khiển envelope ADSR: A (attack — tốc lên volume đầy), D (decay), S (sustain — 0 = không sustain; 100 = không decay), R (release). <b>Freq</b> đặt tần số giữa/cutoff; <b>Res</b> đặt cộng hưởng (LP/HP/BP) hoặc băng thông (LP+HP).</p>
+
+<h4>30.2.4 Các tab Resonator</h4>
+<figure><img src="images/CollisionResonatorsL12.png" alt="Resonators" loading="lazy"><figcaption>Resonator của Collision.</figcaption></figure>
+<p>Phần lớn cá tính Collision nằm ở hai tab này (tắt cả hai = không âm). Menu <b>Resonance Type</b>: <b>Beam</b> (thanh vật liệu/kích thước khác nhau), <b>Marimba</b> (biến thể Beam, tái hiện cách chỉnh overtone của thanh marimba), <b>String</b> (dây), <b>Membrane</b> (màng chữ nhật như mặt trống), <b>Plate</b> (tấm phẳng), <b>Pipe</b> (ống mở hết một đầu, đầu kia chỉnh được bằng Opening), <b>Tube</b> (ống đóng hai đầu). Chọn vật thể — khung X-Y thêm hình ảnh hóa vật đó. Menu <b>Quality</b> từ Eco tới High: đánh đổi chất lượng/CPU bằng cách giảm số overtone tính (Pipe/Tube không có). Nút copy (1 → 2 / 2 → 1) chép toàn bộ thiết lập resonator này sang kia.</p>
+<p>Bộ X-Y: kéo ngang đổi decay time, dọc đổi Material/Radius. <b>Decay</b> đặt độ ngắt nội bộ của resonator (cả slider riêng). <b>Material</b> chỉnh độ ngắt theo tần số: thấp — thấp decay chậm hơn cao (gỗ, cao su, nylon); cao — ngược (thủy tinh, kim loại). Pipe/Tube thay bằng <b>Radius</b>: bán kính ống — tăng = decay và sustain cao tăng; rất to thì đổi cả pitch nền. Decay + Material/Radius modulate được bằng pitch/velocity (Key/Vel ở tab MIDI). Membrane/Plate có thêm <b>Ratio</b> — tỉ lệ kích thước x/y. <b>Brightness</b> chỉnh biên độ các thành phần tần số (cao = tần số cao to hơn; không dùng với Pipe/Tube). <b>Inharm</b> chỉnh pitch hài: âm nén (nhiều partial thấp), dương giãn (nhiều partial cao); modulate được bằng velocity. <b>Opening</b> (chỉ Pipe) trượt giữa ống mở/đóng (0% đóng một đầu; 100% mở cả hai); modulate bằng velocity được. <b>Hit</b> đặt điểm kích hoạt trên vật thể (0% giữa; cao ra mép); <b>Rnd</b> ngẫu nhiên hóa vị trí Hit. <b>Note Off</b> đặt mức Note Off làm mute cộng hưởng: 0% bỏ qua (decay chỉ theo Decay — như marimba/glockenspiel thật); 100% mute ngay khi nhả. <b>Pos. L/R</b> đặt điểm đo rung động trên resonator trái/phải (0% giữa, cao ra mép; Pipe/Tube luôn đo giữa đầu mở).</p>
+
+<h5>30.2.4.1 Mục Tuning</h5>
+<figure><img src="images/CollisionTuningL12.png" alt="Tuning" loading="lazy"><figcaption>Tham số chỉnh tông resonator.</figcaption></figure>
+<p><b>Tune</b> (nửa cung) + <b>Fine</b> (cent, tối đa ±50) là thô/tinh. Tune modulate qua Key ở tab MIDI: 100% = temperament cân bằng chuẩn; 200% = mỗi nửa cung bàn phím đổi cả cung; âm = chơi cao lên thì resonator tụt xuống. <b>Pitch Env</b> + <b>Time</b>: dốc modulate pitch resonator theo thời gian (Pitch Env = pitch khởi đầu — modulate được bằng velocity; Time = thời gian trượt về giá trị cuối).</p>
+
+<h5>30.2.4.2 Mục Mixer</h5>
+<figure><img src="images/CollisionMixerL12.png" alt="Mixer" loading="lazy"><figcaption>Mixer resonator.</figcaption></figure>
+<p>Mỗi resonator có <b>Gain</b> và <b>Pan</b> riêng (Pan modulate bằng pitch qua Key). <b>Bleed</b> trộn một phần tín hiệu oscillator gốc vào tín hiệu cộng hưởng — khôi phục tần cao bị ngắt khi tune/quality thấp. <b>Gain</b> đặt mức ra của resonator.</p>
+
+<h4>30.2.5 Tab LFO</h4>
+<figure><img src="images/CollisionLFOL12.png" alt="LFO" loading="lazy"><figcaption>LFO của Collision.</figcaption></figure>
+<p>Hai LFO độc lập làm nguồn modulation cho nhiều tham số mallet/noise/resonator (chọn qua Destination) — còn modulate lẫn nhau. LFO 1/2 bật/tắt; dạng sóng: sine, square, triangle, saw up/down và hai nhiễu (một bước, một mượt). <b>Offs.</b> đặt lệch pha; Retrigger bật — nốt chạy lại LFO với pha theo Offset. Mỗi LFO modulate hai đích (Destination chooser) — mức qua Amount slider (tương đối với Amount của LFO). <b>Rate</b> đặt tốc (Hz/phách); <b>Amount</b> đặt cường độ tổng (Rate modulate bằng pitch, Amount bằng velocity ở tab MIDI).</p>
+
+<h4>30.2.6 Tab MIDI/MPE</h4>
+<figure><img src="images/CollisionMIDIMPEL12.png" alt="MIDI/MPE" loading="lazy"><figcaption>Tab MIDI/MPE của Collision.</figcaption></figure>
+<p>Mapping MIDI nội bộ phong phú cho controller thường và MPE: pitch bend (kể cả từng nốt), modulation wheel, pressure, slide — mỗi nguồn map tới hai đích, mức độc lập qua Amount. Tham số mallet/noise/resonator/LFO modulate bằng pitch/velocity qua Key/Vel.</p>
+
+<h5>30.2.6.1 Mục Global</h5>
+<figure><img src="images/CollisionGlobalL12.png" alt="Global" loading="lazy"><figcaption>Mục Global của Collision.</figcaption></figure>
+<p><b>Voices</b> đặt số nốt đồng thời tối đa. <b>Retrig.</b> bật: nốt đang phát được kích hoạt lại thay vì sinh voice mới (tiết kiệm CPU). <b>Structure</b> đặt dòng tín hiệu qua resonator: <b>1 &gt; 2</b> (nối tiếp — cả hai resonator xuất vào Resonator 1, Resonator 1 gộp mono route sang Resonator 2 và mixer riêng (stereo)); <b>1 + 2</b> (song song — output Mallet + Noise trộn gửi thẳng cả hai resonator). <b>Volume</b> đặt tổng.</p>
+<figure><img src="images/CollisionSerial.png" alt="Serial" loading="lazy"><figcaption>Resonator cấu hình 1 &gt; 2 (nối tiếp).</figcaption></figure>
+<figure><img src="images/CollisionParallel.png" alt="Parallel" loading="lazy"><figcaption>Resonator cấu hình 1 + 2 (song song).</figcaption></figure>
+
+<h4>30.2.7 Mẹo sound design</h4>
+<p>Mô hình của Collision linh hoạt hơn nhiều vật lý thật: mô phỏng cực chuẩn marimba/vibraphone/glockenspiel, nhưng "dùng sai" tham số cũng ra âm mà nhạc cụ acoustic không bao giờ làm được. Lập trình nhạc cụ thật: nghĩ chuỗi sự kiện tạo âm trên nhạc cụ mallet rồi hình dung thành các mục trong Collision — đầu gõ (Mallet) đánh thanh đã chỉnh tông (Resonator 1); cộng hưởng của thanh được khuếch đại bằng ống cộng hưởng (Resonator 2) — mô hình truyền thống = Mallet + hai resonator nối tiếp (1 &gt; 2). Muốn âm "không thật": Noise Exciter với envelope dài tạo texture lênh láng kiểu granular, mô phỏng vibraphone kéo vĩ hoặc ly thủy tinh; thử resonator song song (1 + 2); dùng LFO + controller (kể cả MPE) modulate.</p>
+<p class="note"><em>Cảnh báo:</em> mô hình của Collision là bản "lý tưởng hóa" — dễ lập trình resonator nhạy với input hơn bất kỳ resonator vật lý nào; một số tổ hợp tham số đổi thể tích dữ dội — giữ mức ra thấp khi thử âm mới.</p>
+
 <p class="note"><em>⏳ Còn tiếp: instrument 30.2 Collision → 30.13 Wavetable sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 </article>
 
