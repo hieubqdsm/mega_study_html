@@ -145,6 +145,7 @@
     <a href="#ch-bounce">20. Bounce to Audio</a>
     <a href="#ch-comping">21. Comping</a>
     <a href="#ch-stems">22. Stem Separation</a>
+    <a href="#ch-racks">24. Instrument, Drum and Effect Racks</a>
     <a href="#ch-automation">25. Automation and Editing Envelopes</a>
     <a href="#ch-clip-envelopes">26. Clip Envelopes</a>
     <a href="#ch-video">27. Working with Video</a>
@@ -2608,6 +2609,187 @@
 <h4>26.5.5 Warp envelope đang liên kết</h4>
 <p>Ở chế độ Linked, clip envelope phản ánh thay đổi của <a href="#ch-warping">Warp Marker</a> trong clip — dời warp marker thì envelope dài/ngắn theo. Ngoài ra chỉnh Warp Marker được ngay trong trình soạn envelope.</p>
 <figure><img src="images/ClipEnvelopesAndWarpMarkers.png" alt="Warp+env" loading="lazy"><figcaption>Clip envelope và Warp Marker chỉnh cùng nhau được.</figcaption></figure>
+
+<!-- ============ CH 24: INSTRUMENT, DRUM AND EFFECT RACKS (EN ch.24) ============ -->
+<h2 class="sec" id="ch-racks">Chương 24 · Instrument, Drum and Effect Racks (Rack — khung xếp device)</h2>
+<figure><img src="images/RackExample.png" alt="Rack" loading="lazy"><figcaption>Bên trong một Audio Effect Rack.</figcaption></figure>
+<p class="lead"><span class="term">Rack</span> <span class="gloss">— khung chứa nhiều chain song song, gom device thành một đơn vị với Macro điều khiển chung</span> là công cụ linh hoạt làm việc với hiệu ứng, plug-in và instrument trong chuỗi device của track. Rack dựng được bộ xử lý tín hiệu phức tạp, instrument biểu diễn động, synth chồng lớp… và cũng hợp nhất chuỗi device bằng cách đưa các điều khiển thiết yếu nhất về một chỗ. Rack giỏi xử lý nhiều device, nhưng còn mở rộng khả năng của riêng một device bằng cách định nghĩa quan hệ điều khiển mới giữa các tham số của nó.</p>
+
+<h3>24.1 Tổng quan về Rack</h3>
+
+<h4>24.1.1 Dòng tín hiệu &amp; các chain song song</h4>
+<figure><img src="images/RackExample.png" alt="Rack" loading="lazy"><figcaption>Bên trong một Audio Effect Rack.</figcaption></figure>
+<p>Trong mọi track của Live, device nối <em>tuyến tính</em> trong một chuỗi device, truyền tín hiệu từ device này sang device kế tiếp, trái sang phải. Mặc định Device View chỉ hiện một chain, nhưng thực tế track chứa được không giới hạn chain.</p>
+<p>Rack cho phép (trong nhiều việc khác) thêm chain vào track bất kỳ. Track có nhiều chain thì chúng chạy <em>song song</em>: trong Instrument/Effect Rack, mỗi chain nhận cùng tín hiệu vào cùng lúc rồi xử lý <em>tuyến tính</em> qua device của riêng mình; output các chain song song được trộn lại thành output của Rack.</p>
+<p>Drum Rack cũng dùng nhiều chain song song, nhưng mỗi chain nhận input từ duy nhất một nốt MIDI được gán (không phải chung tín hiệu).</p>
+<p><em>Toàn bộ nội dung một Rack có thể coi là một device duy nhất</em>: thêm Rack vào chuỗi device chẳng khác gì thêm device thường; Rack chứa được bao nhiêu Rack khác tùy ý. Device đứng sau Rack nhận output của Rack như thường lệ.</p>
+
+<h4>24.1.2 Macro Controls</h4>
+<figure><img src="images/RackMacros.png" alt="Macros" loading="lazy"><figcaption>Các Macro Control.</figcaption></figure>
+<p>Tính chất độc đáo của Rack là <b>Macro Controls</b> — dãy núm, mỗi núm điều khiển được bất kỳ bao nhiêu tham số từ bất kỳ device nào trong Rack. Dùng thế nào tùy bạn: tiện lợi (đưa tham số quan trọng lại gần); định nghĩa biến hình đa tham số kỳ lạ cho nhịp và âm sắc; hoặc xây mega-synth giấu sau một giao diện tùy chỉnh duy nhất. Xem <a href="#rk-macro">Using the Macro Controls</a>.</p>
+<p>Muốn biểu cảm tối đa: <a href="../manual-en/midi-and-key-remote-control/index.html#assigning-midi-remote-control">MIDI-map</a> (EN) Macro lên control surface ngoài.</p>
+
+<h3>24.2 Tạo Rack</h3>
+<p>Bốn loại Rack phủ hết device của Live: Instrument Rack, Drum Rack, Audio Effect Rack, MIDI Effect Rack. Mỗi loại có quy tắc về device chứa bên trong:</p>
+<ul>
+<li><em>MIDI Effect Rack</em> — chỉ chứa hiệu ứng MIDI, chỉ đặt được trong MIDI track.</li>
+<li><em>Audio Effect Rack</em> — chỉ chứa hiệu ứng audio, đặt trong audio track; cũng đặt được trong MIDI track miễn là nằm "sau" một instrument.</li>
+<li><em>Instrument Rack</em> — chứa instrument, cộng thêm cả hiệu ứng MIDI lẫn audio; khi đó mọi hiệu ứng MIDI phải đứng đầu chuỗi, kế là một instrument, rồi các hiệu ứng audio.</li>
+<li><em>Drum Rack</em> — giống Instrument Rack (chứa instrument + hiệu ứng MIDI/audio theo cùng quy tắc dòng tín hiệu), thêm tối đa 6 return chain hiệu ứng audio với mức send riêng cho từng chain trong Rack chính.</li>
+</ul>
+<p>Cách tạo: kéo một preset Rack trắng ("Audio Effect Rack" chẳng hạn) từ Browser vào track, rồi thả device thẳng vào Chain List hoặc Devices view (giới thiệu phần sau).</p>
+<p>Track đã có device muốn gom thành Rack: chọn thanh tiêu đề các device trong Device View, nhấp chuột phải một thanh → <em>Group</em> hoặc <em>Group to Drum Rack</em>. Lặp lại lệnh trên chính device đó tạo Rack trong Rack; gom nhiều chain trong Rack cũng vậy. Trong Device View, nội dung Rack luôn nằm giữa hai ngoặc kết thúc — như dấu câu hay toán học, Rack trong Rack có cặp ngoặc trong cặp ngoặc.</p>
+<p>Tách Rack: chọn thanh tiêu đề <em>của Rack</em> rồi dùng lệnh <em>Ungroup</em> (menu Edit hoặc menu ngữ cảnh).</p>
+
+<h3>24.3 Nhìn vào Rack</h3>
+<figure><img src="images/RackExampleMarkup.png" alt="Effect rack parts" loading="lazy"><figcaption>Các thành phần của Effect Rack.</figcaption></figure>
+<figure><img src="images/DrumRackExampleMarkup.png" alt="Drum rack parts" loading="lazy"><figcaption>Các thành phần của Drum Rack.</figcaption></figure>
+<ol>
+<li>Rack có các view riêng hiện/ẩn tùy cần — nên mỗi Rack có <em>cột view</em> sát bên trái chứa nút chọn view; các nút tùy loại Rack (Instrument/Drum/Effect).</li>
+<li><em>Macro Controls</em></li>
+<li><em>Chain List</em> — trong Drum Rack, view này gồm cả drum chain và return chain.</li>
+<li><em>Devices</em></li>
+<li>Rack nhận diện bằng góc bo tròn ôm lấy nội dung; hiện Devices view thì <em>ngoặc kết thúc</em> tách riêng để thứ bậc Rack rõ ràng.</li>
+<li><em>Pad View</em> — riêng của <a href="#rk-pad">Drum Rack</a>.</li>
+</ol>
+<p>Di chuyển/copy/xóa cả Rack: chọn bằng thanh tiêu đề của nó (không phải của device bên trong). Rack đang chọn đổi tên bằng lệnh Rename (menu Edit); thêm info text riêng qua Edit Info Text (menu Edit hoặc menu ngữ cảnh).</p>
+<p>Ẩn hết mọi view, thanh tiêu đề gấp vào cột view cho Rack mỏng dảnh nhất — giống lệnh Fold trong menu ngữ cảnh hoặc nhấp đúp thanh tiêu đề Rack.</p>
+<p>Muốn tìm device trong Rack mà không lần mò thủ công: nhấp chuột phải nút chọn Device View — danh sách phân cấp mọi device trong chuỗi hiện ra; chọn mục nào Live chọn device đó và cuộn vào tầm mắt.</p>
+<figure><img src="images/RackNavContextMenu.png" alt="Nav menu" loading="lazy"><figcaption>Điều hướng Rack nhanh qua menu ngữ cảnh.</figcaption></figure>
+
+<h3>24.4 Chain List (Danh sách chain)</h3>
+<figure><img src="images/RackChainList.png" alt="Chain list" loading="lazy"><figcaption>Chain List trong Audio Effect Rack.</figcaption></figure>
+<p>Tín hiệu vào Rack trước hết gặp Chain List — điểm rẽ nhánh: mỗi chain song song bắt đầu từ đây như một dòng trong danh sách. Phía dưới là vùng thả — thêm chain mới bằng kéo-thả preset, device, hoặc chain sẵn có.</p>
+<p class="note"><strong>Lưu ý:</strong> Rack, chain và device kéo ra/vào Rack khác tự do, thậm chí qua lại giữa các track. Chọn chain rồi kéo rê lên track khác trong Session/Arrangement — track đó lấy tiêu điểm, Device View mở ra cho thả chain vào chỗ.</p>
+<p>Device View chỉ hiển thị một chain mỗi lúc nên Chain List còn là công cụ điều hướng: lựa chọn trong danh sách quyết định Devices view bên cạnh hiện gì. Thử phím mũi tên lên/xuống để đổi lựa chọn — lật nhanh nội dung Rack.</p>
+<p>Chain List chọn được nhiều chain để copy, tổ chức, nhóm lại; Devices view báo số chain đang chọn.</p>
+<p>Mỗi chain có Chain Activator, nút Solo và Hot-Swap riêng. Chain trong Instrument/Drum/Audio Effect Rack có thêm thanh trượt volume và pan; chain Drum Rack có thêm send và điều khiển gán MIDI. Giống Live Clip, nguyên chain lưu/ghi lại được như preset trong Browser. Đặt tên chain: chọn rồi Rename (menu Edit); info text qua Edit Info Text; menu ngữ cảnh có bảng màu cho màu chain riêng.</p>
+
+<h4>24.4.1 Auto Select</h4>
+<figure><img src="images/RackEffectAuto.png" alt="Auto select" loading="lazy"><figcaption>Auto Select trong Audio Effect Rack.</figcaption></figure>
+<p>Bật công tắc Auto Select: mọi chain đang xử lý tín hiệu được chọn trong Chain List. Trong Drum Rack, tính năng chọn chain khi chain nhận nốt MIDI được gán. Trong Instrument/Effect Rack, Auto Select phối hợp với zone (mục sau) — rất hữu ích khi trục trặc cấu hình phức tạp.</p>
+
+<h3>24.5 Zones (Vùng lọc)</h3>
+<p>Zone là bộ lọc dữ liệu nằm ở đầu vào mỗi chain trong Instrument/Effect Rack, cùng nhau quyết định dải giá trị nào đi qua được vào chuỗi device. Mặc định zone "trong suốt" — không cần để ý; cấu hình lại thành thiết lập điều khiển tinh vi. Ba loại zone (bật/tắt bằng nút phía trên Chain List): <em>Key</em>, <em>Velocity</em>, <em>Chain Select</em>; nút Hide bên cạnh giấu chúng đi.</p>
+<p class="note"><strong>Lưu ý:</strong> Audio Effect Rack không có key/velocity zone (hai loại này chỉ lọc dữ liệu MIDI); Drum Rack không có zone nào — lọc nốt MIDI qua trình chọn trong chain list.</p>
+<p>Zone có phần chính (dưới) để đổi cỡ/di chuyển, và phần hẹp (trên) định nghĩa dải fade. Đổi cỡ: nhấp-kéo mép trái/phải; di chuyển: nhấp-kéo từ chỗ bất kỳ không phải mép.</p>
+
+<h4>24.5.1 Dòng tín hiệu qua zone</h4>
+<p>Để hiểu zone, xem dòng tín hiệu trong một MIDI Effect Rack nằm trong MIDI track — xử lý tín hiệu MIDI. Giả sử chứa 4 chain song song, mỗi chain một hiệu ứng MIDI:</p>
+<ol>
+<li>Toàn bộ dữ liệu MIDI của track truyền vào chuỗi device, tức vào input của Rack.</li>
+<li>Bốn chain cùng nhận dữ liệu MIDI một lúc.</li>
+<li>Trước khi vào chain, dữ liệu phải qua mọi zone của chain đó — mỗi chain có 3 zone: key, velocity, chain select.</li>
+<li>Nốt MIDI vào được so với key zone: nằm trong thì qua zone kế; không thì biết ngay nốt không tới device của chain.</li>
+<li>So tiếp velocity zone và chain select zone — nốt nằm trong cả hai thì qua vào device đầu của chain.</li>
+<li>Output các chain song song trộn lại thành output cuối của Rack; device sau Rack (nếu có) nhận output này xử lý tiếp.</li>
+</ol>
+
+<h4>24.5.2 Key Zones (Vùng phím)</h4>
+<figure><img src="images/RackKeyZones.png" alt="Key zones" loading="lazy"><figcaption>Trình soạn Key Zone.</figcaption></figure>
+<p>Bấm nút Key, Key Zone Editor hiện bên phải Chain List, minh họa mỗi chain map ra toàn dải nốt MIDI (gần 11 quãng tám) thế nào. Chain chỉ phản hồi nốt nằm trong key zone của nó; zone từng chain chiếm bao nhiêu phím tùy ý — dựng "keyboard split" linh hoạt.</p>
+<p>Dải fade của key zone làm giảm <em>velocity</em> nốt vào chain.</p>
+
+<h4>24.5.3 Velocity Zones (Vùng velocity)</h4>
+<figure><img src="images/RackVelZones.png" alt="Vel zones" loading="lazy"><figcaption>Trình soạn Velocity Zone.</figcaption></figure>
+<p>Mỗi chain trong Instrument Rack/MIDI Effect Rack có velocity zone — dải velocity Note On mà chain phản hồi.</p>
+<p>Velocity Zone Editor hiện thay Key Zone Editor bên phải Chain List. Velocity Note On thang 1–127 trải trên đỉnh trình soạn; ngoài ra chức năng giống hệt Key Zone Editor. Dải fade làm giảm velocity nốt vào chain.</p>
+
+<h4>24.5.4 Chain Select Zones</h4>
+<figure><img src="images/RackChainSelectZones.png" alt="Chain select" loading="lazy"><figcaption>Trình soạn Chain Select.</figcaption></figure>
+<p>Bấm nút Chain trong Instrument/Effect Rack mở Chain Select Editor: chain select zone cho phép lọc chain tức thời bằng một tham số duy nhất. Thang 0–127 như Velocity Zone Editor; phía trên thang có kim kéo được — <b>Chain selector</b>.</p>
+<p>Chain select zone là bộ lọc dữ liệu như các zone khác: mọi chain đều nhận tín hiệu vào, nhưng chỉ chain nào có zone chồng lên giá trị hiện tại của Chain selector mới được "gọi" và tạo output.</p>
+<p>Mặc định, chain select zone của Instrument/MIDI Effect Rack chỉ lọc nốt, bỏ qua MIDI CC v.v. Muốn lọc mọi sự kiện MIDI: bật Chain Selector Filters MIDI Ctrl trong menu ngữ cảnh của Chain Select Ruler.</p>
+<p>Trong MIDI Effect Rack, dải fade giảm velocity nốt vào chain. Trong Instrument/Audio Effect Rack (xuất audio), dải fade giảm âm lượng ở output mỗi chain. Vậy chuyển Chain selector ra ngoài zone đang phát tiếng thì sao? Zone có dải fade: âm lượng chain giảm về không khi selector ngoài zone; zone không fade: âm lượng <em>không</em> giảm — hiệu ứng của chain (đuôi reverb dài, delay) tự tắt theo thiết lập riêng.</p>
+<p>Xem cách ứng dụng chain select zone khi biểu diễn:</p>
+
+<h5>24.5.4.1 Làm "ngân hàng preset" bằng Chain Select</h5>
+<figure><img src="images/RackChainSelectPresets.png" alt="Presets" loading="lazy"><figcaption>Dùng Chain Select Zone tạo preset hiệu ứng.</figcaption></figure>
+<p>Khác các zone khác, chain select zone mặc định dài 1, giá trị 0. Từ nền đó dựng "preset bank" nhanh trong Chain Select Editor.</p>
+<p>Lấy Rack 4 chain làm ví dụ — mỗi chain chứa hiệu ứng khác nhau muốn chuyển đổi. Để "tay chân" hơn, MIDI-map Chain selector lên encoder của control surface ngoài.</p>
+<p>Dời chain select zone của chain 2 và 3 sao cho mỗi zone chiếm một giá trị liền kề riêng: chain 1 = 0, chain 2 = 1, chain 3 = 2, chain 4 = 3.</p>
+<p>Mỗi zone một giá trị duy nhất, không chồng nhau — mỗi thời điểm chỉ một chain khớp giá trị Chain selector (hiện trên đỉnh editor). Dời selector là chọn chain nào xử lý tín hiệu; có encoder trên tay, chuyển đổi thiết lập instrument/hiệu ứng nhẹ như không.</p>
+
+<h5>24.5.4.2 Crossfade giữa các preset bằng dải fade</h5>
+<figure><img src="images/RackChainSelectPresetsCrossfade.png" alt="Crossfade" loading="lazy"><figcaption>Crossfade giữa preset bằng Chain Select Zone.</figcaption></figure>
+<p>Tiến thêm bước nữa: chỉnh chain select zone để chuyển giữa các "preset" mượt mà — dùng <em>dải fade</em> của zone.</p>
+<p>Chừa chỗ cho fade: kéo dài zone chút xíu. Đặt như hình vẫn giữ 4 giá trị riêng cho preset — mỗi preset vẫn có một điểm không preset nào khác nghe thấy. Crossfade giữa các preset trải trên 8 bước; thô quá với vật liệu của bạn thì chỉ cần dịch zone để mở rộng dải fade.</p>
+
+<h3>24.6 Drum Racks</h3>
+<p>Phần lớn tính năng của Drum Rack giống Instrument/Effect Rack, nhưng bố cục hơi khác, có điều khiển riêng và hành xử đặc biệt tối ưu cho dựng bộ trống.</p>
+<figure><img src="images/DrumRackChainDetail.png" alt="Drum chains" loading="lazy"><figcaption>Chain List trong Drum Rack.</figcaption></figure>
+<ol>
+<li>Ngoài các nút chọn chuẩn, Drum Rack có 4 điều khiển thêm trong cột view (từ trên xuống): công tắc Input/Output, Send, Return, và nút Auto Select.</li>
+<li><em>Input/Output</em> — trình chọn <b>Receive</b> đặt nốt MIDI mà drum chain phản hồi (danh sách hiện tên nốt, số nốt MIDI và tên trống GM tương đương). Thanh <b>Play</b> đặt nốt MIDI gửi đến device trong chain. Trình chọn <b>Choke</b> gán chain vào một trong 16 nhóm choke — chain cùng nhóm sẽ cắt tiếng của nhau khi kích hoạt: hợp lý để closed hihat chokes open hihat. Receive = "All Notes" thì Play/Choke vô hiệu — chain chỉ chuyển tiếp nốt nhận được cho device. Nút Preview nhỏ bên trái trình chọn bắn một nốt vào chain — kiểm tra mapping không cần MIDI controller.</li>
+<li><em>Mixer</em> — ngoài điều khiển mixer/Hot-Swap như Rack khác, Drum Rack có thanh send: đặt lượng tín hiệu sau-fader gửi từ drum chain tới return chain bất kỳ (chỉ khả dụng khi đã có return chain).</li>
+<li><em>Return Chains</em> — return chain của Drum Rack nằm mục riêng dưới đáy chain list; thêm được tối đa 6 chain hiệu ứng audio, được cấp tín hiệu từ send của drum chain phía trên.</li>
+</ol>
+<p>Trình chọn Audio To trong mixer của return chain route output về output chính của Rack hoặc thẳng tới return track của Set.</p>
+
+<h4 id="rk-pad">24.6.1 Pad View</h4>
+<figure><img src="images/DrumRackPadView.png" alt="Pad view" loading="lazy"><figcaption>Pad View.</figcaption></figure>
+<p>Pad View riêng của Drum Rack — cách dễ map và thao tác sample/device. Mỗi pad đại diện một trong 128 nốt MIDI. Bản tổng quan pad bên trái dịch bộ pad hiển thị lên/xuống theo nhóm 16 (kéo bộ chọn hoặc phím mũi tên); giữ <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac) để dịch từng hàng.</p>
+<p>Gần như mọi thứ từ Browser — sample, hiệu ứng, instrument, preset — kéo lên pad được: tự map vào nốt của pad, tạo/cấu hình chain và device bên trong khi cần. Thả sample lên pad trống: tạo chain mới chứa Simpler với sample sẵn sàng phát từ nốt của pad. Kéo tiếp hiệu ứng audio lên cùng pad: nó nằm sau Simpler trong chain. Muốn thay Simpler: thả sample khác lên pad — hiệu ứng phía sau/việc MIDI effect phía trước giữ nguyên, chỉ Simpler và sample bị thay.</p>
+<p>Ngoài kéo từ Browser, pad lắp nhanh qua Hot-Swap: ở chế độ Hot-Swap, phím <kbd>D</kbd> chuyển đổi đích Hot-Swap giữa Drum Rack và pad chọn cuối.</p>
+<p>Thả đa chọn sample lên một pad: các Simpler/chain mới map nửa cung đi lên từ pad đó, thay sample đã gán trên các pad liên quan (hiệu ứng vẫn nguyên như trước). Kéo đa chọn với <kbd>Alt</kbd> (Win) / <kbd>Cmd</kbd> (Mac): chồng tất cả sample vào một pad bằng Instrument Rack lồng.</p>
+<p>Kéo pad này sang pad kia: hoán đổi mapping nốt giữa hai pad — MIDI clip kích hoạt nốt affected giờ chơi tiếng "sai" (dù có thể đó chính là điều bạn muốn). Alt/Cmd-kéo pad sang pad: chồng chain của cả hai pad vào Instrument Rack lồng.</p>
+<p>Đổi mapping luôn được từ chain list qua trình chọn Receive — Pad View tự cập nhật. Đặt cùng nốt Receive cho nhiều chain thì pad nốt đó kích hoạt tất cả.</p>
+<p>Làm việc với nhiều Rack lồng nhau, cấu trúc bên trong dễ rối — Pad View giúp tập trung vào tầng trên cùng: nốt và âm thanh. Nhớ: pad đại diện <em>nốt</em>, không phải chain; chính xác hơn, đại diện mọi chain (sâu bao nhiêu trong Rack cũng được) nhận được nốt của pad. Điều khiển được qua pad tùy số chain nó đại diện:</p>
+<ul>
+<li>Pad trống chỉ hiện nốt sẽ kích hoạt; rê chuột, Status Bar hiện nốt và instrument GM gợi ý.</li>
+<li>Pad kích hoạt một chain: hiện tên chain — pad trở thành mặt tiền tiện cho nhiều điều khiển vốn nằm trong chain list (mute, solo, preview, Hot-Swap); đổi tên và xóa chain cũng làm qua pad.</li>
+<li>Pad kích hoạt nhiều chain: tên "Multi", nút mute/solo/preview ảnh hưởng mọi chain; mute/solo riêng từng chain trong chain list thì icon pad phản ánh trạng thái hỗn hợp. Hot-Swap và đổi tên vô hiệu với pad Multi, nhưng xóa được mọi chain cùng lúc.</li>
+</ul>
+<p>Pad View thiết kế cho chỉnh sửa và sound design, nhưng cũng xuất sắc làm giao diện biểu diễn — nhất là khi kích hoạt bằng control surface có pad. Pad controller là <a href="../manual-en/midi-and-key-remote-control/index.html#natively-supported-control-surfaces">control surface hỗ trợ gốc</a> (EN)? Chọn nó trong tab Link, Tempo &amp; MIDI của Settings: từ đó, miễn track nhận MIDI có Drum Rack, pad controller kích hoạt đúng các pad đang hiện trên màn hình — cuộn pad overview sang bộ pad khác, controller tự cập nhật.</p>
+
+<h3 id="rk-macro">24.7 Dùng Macro Controls</h3>
+<p>Rack dùng được tối đa 16 Macro; Rack mới mặc định hiện 8 núm. Nút chọn view <img src="images/Add_Automation.png" alt="+" style="height:15px;display:inline;vertical-align:middle"> / <img src="images/Remove_Automation.png" alt="−" style="height:15px;display:inline;vertical-align:middle"> tăng/giảm số Macro hiển thị — trạng thái hiện/ẩn lưu trong Live Set.</p>
+<figure><img src="images/RackMacrosShowHide.png" alt="Show hide" loading="lazy"><figcaption>Nút chọn đặt số Macro hiển thị.</figcaption></figure>
+
+<h4>24.7.1 Map Mode</h4>
+<figure><img src="images/RackMapMode.png" alt="Map mode" loading="lazy"><figcaption>Gán Macro trong Map Mode.</figcaption></figure>
+<p>Với tiềm năng chuỗi device phức tạp, Macro giữ mọi thứ gọn gàng bằng cách tiếp quản các tham số thiết yếu nhất của Rack (tùy bạn quyết định). Thiết lập mapping lý tưởng xong, phần còn lại của Rack giấu đi.</p>
+<p>Nút Map riêng của Macro Control view mở cửa cho hành vi này. Bật Macro Map Mode, ba chuyện xảy ra:</p>
+<ul>
+<li>Mọi tham số map được của device trong Rack phủ lớp màu.</li>
+<li>Nút Map xuất hiện dưới mỗi núm Macro.</li>
+<li><a href="../manual-en/midi-and-key-remote-control/index.html#the-mapping-browser">Mapping Browser</a> (EN) mở ra.</li>
+</ul>
+<p>Các bước bắt đầu mapping:</p>
+<ol>
+<li>Bật Macro Map Mode.</li>
+<li>Nhấp một tham số device để chọn mapping.</li>
+<li>Nhấn nút Map của một Macro — chi tiết thêm vào Mapping Browser; mặc định Macro lấy tên và đơn vị từ tham số nó điều khiển.</li>
+<li>Tinh chỉnh dải giá trị qua thanh Min/Max trong Mapping Browser; đặt Min lớn hơn Max để tạo mapping đảo. Đảo giá trị hiện tại: nhấp chuột phải mục trong Mapping Browser → Invert Range.</li>
+<li>Chọn tham số khác để map tiếp, hoặc bấm Map mode lần nữa để thoát.</li>
+</ol>
+<p class="note"><strong>Lưu ý:</strong> tham số đã gán cho Macro sẽ hiển thị vô hiệu — giao toàn quyền cho Macro (vẫn modulate được từ ngoài qua <a href="#ch-clip-envelopes">clip envelope</a>).</p>
+<p>Sửa/xóa gán bất cứ lúc nào bằng Mapping Browser (chỉ hiện khi Map Mode bật).</p>
+<p>Một Macro điều khiển nhiều tham số: tên Macro trở về tên chung (Macro 3 chẳng hạn); đơn vị chuyển thang 0–127, trừ khi mọi tham số cùng loại và cùng dải đơn vị.</p>
+<p>Macro đặt được tên, màu, info text riêng qua lệnh menu Edit hoặc menu ngữ cảnh.</p>
+
+<h4>24.7.2 Ngẫu nhiên hóa Macro</h4>
+<p>Thêm yếu tố bất ngờ hoặc tìm cảm hứng trong Set: bấm nút <b>Rand</b> trên thanh tiêu đề Rack để ngẫu nhiên hóa giá trị mọi Macro đã map trong Rack.</p>
+<figure><img src="images/RackMacrosRandomize.png" alt="Randomize" loading="lazy"><figcaption>Nút này ngẫu nhiên hóa Macro Control.</figcaption></figure>
+<p>Theo vật liệu, có thể chỉ muốn ngẫu nhiên vài tham số: loại một Macro khỏi vòng bằng tùy chọn Exclude Macro from Randomization trong menu ngữ cảnh. <em>Lưu ý:</em> Macro gán cho tham số Volume trong preset Instrument Rack mặc định bị loại khỏi ngẫu nhiên hóa.</p>
+
+<h4>24.7.3 Macro Variations (Biến thể Macro)</h4>
+<figure><img src="images/RackMacrosVariations.png" alt="Variations" loading="lazy"><figcaption>Macro Control Variations.</figcaption></figure>
+<p>Lưu các trạng thái khác nhau của Macro thành preset riêng ("variation") — hữu ích khi chụp "snapshot" trạng thái Rack trong buổi sound design, hoặc nghe thử các thiết lập của Macro trong Audio Effect Rack dùng cho mixing. Cũng dùng variation tạo build/drop, hoặc nhảy tức thời giữa các thiết lập Macro khi thu/biểu diễn.</p>
+<p>Nút chọn Show/Hide Macro Variations mở view lưu, quản lý và chạy variation.</p>
+<figure><img src="images/RackMacrosVariationsSelector.png" alt="Selector" loading="lazy"><figcaption>Nút này mở view Macro Variations.</figcaption></figure>
+<p>Nút <b>New</b> lưu trạng thái Macro hiện tại thành variation mới — mặc định đặt tên tuần tự "Variation 1", "Variation 2"…; variation đang chọn đổi tên/nhân đôi/xóa qua menu Edit hoặc menu ngữ cảnh.</p>
+<p>Chạy variation về trạng thái đã lưu bằng nút Launch Macro Variation (bên phải), hoặc ghi đè bằng nút Overwrite Macro Variation (bên trái). <em>Lưu ý:</em> loại một Macro khỏi thay đổi khi variation khác chạy bằng lệnh Exclude Macro From Variations trong menu ngữ cảnh; tắt mục này để Macro nhận thay đổi trở lại.</p>
+
+<h3>24.8 Mix với Rack</h3>
+<p>Instrument/Drum Rack chứa nhiều chain xem và mix được ngay trong mixer Session View cạnh các track. Track chứa Rack có nút <img src="images/Track_unfolded.png" alt="Unfold" style="height:15px;display:inline;vertical-align:middle"> trên thanh tiêu đề để gấp/mở mixer của Rack; chain lồng bên trong cũng có nút này — dễ nắm tổng quan thứ bậc Rack, hoặc giấu đi khi chỉ muốn tập trung mix.</p>
+<figure><img src="images/InlineRackMixer.png" alt="Inline mixer" loading="lazy"><figcaption>Mix chain của Rack trong Session View.</figcaption></figure>
+<p>Chain trong mixer Session nhìn giống track nhưng không có clip slot. Điều khiển mix/route phản chiếu của chain list — sửa ở đâu thì bên kia cập nhật ngay. Nhiều thao tác chain (sắp lại, đổi tên, nhóm lại) làm được từ mixer hoặc chain list. Nhấp thanh tiêu đề mixer của chain: Devices view chỉ hiện device của chain đó.</p>
+<p>Như track: chọn nhiều chain trong mixer Session, chỉnh một tham số của chain này áp cho mọi chain đang chọn — <em>lưu ý</em> chỉ áp khi chỉnh qua Session mixer, không áp khi chỉnh cùng tham số trong chain list của Rack.</p>
+
+<h4>24.8.1 Trích xuất chain (Extract)</h4>
+<p>Mọi chain kéo ra khỏi Rack mẹ đặt vào track/Rack khác được — từ chain list hoặc mixer Session View. Return chain của Drum Rack cũng trích được — kéo vào mixer thì tạo return track mới. Drum chain có thêm tính năng: kéo từ mixer sang track mới, chain <em>mang theo nốt MIDI</em> của nó. Ví dụ đang làm drum loop MIDI trong một track, muốn chuyển riêng snare sang track riêng: chọn thanh tiêu đề chain snare trong mixer, kéo ra vùng thả — tạo track mới với toàn bộ nội dung chain snare (device lẫn dữ liệu MIDI). Chỉ muốn lấy device: kéo từ chain list thay vì mixer.</p>
+<figure><img src="images/DrumRackExtract.png" alt="Extract" loading="lazy"><figcaption>Trích drum chain trong mixer lấy cả dữ liệu MIDI.</figcaption></figure>
 
 </article>
 
