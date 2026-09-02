@@ -151,6 +151,7 @@
     <a href="#ch-clip-envelopes">26. Clip Envelopes</a>
     <a href="#ch-video">27. Working with Video</a>
     <a href="#ch-max4live">31. Max for Live</a>
+    <a href="#ch-remote">33. MIDI and Key Remote Control</a>
     <a href="#ch-sync">36. Synchronizing with Link, Tempo Follower, and MIDI</a>
     <a href="#ch-cpu">37. Computer Audio Resources and Strategies</a>
     <a href="#ch-midi-facts">39. MIDI Fact Sheet</a>
@@ -3293,6 +3294,134 @@
 
 <h3>39.6 Tổng kết</h3>
 <p>Mong chương này giúp hiểu: các vấn đề cố hữu của hệ MIDI trên máy tính; cách Live giải quyết; và các biến số ngoài khả năng của chúng tôi. Như đã nói, cách tốt nhất giải quyết MIDI timing trong phòng thu là dùng linh kiện phần cứng chất lượng cao nhất — với chúng, mọi hệ MIDI phần mềm đều chạy không vấn đề đáng kể. Với phần cứng chưa tối ưu, Live vẫn cho thêm mức chính xác bằng cách tối thiểu hóa jitter — đổi bằng chút latency phụ thêm.</p>
+
+<!-- ============ CH 33: MIDI AND KEY REMOTE CONTROL (EN ch.33) ============ -->
+<h2 class="sec" id="ch-remote">Chương 33 · MIDI and Key Remote Control (Điều khiển từ xa bằng MIDI &amp; phím)</h2>
+<p class="lead">Để giải phóng nhạc công khỏi con chuột, phần lớn điều khiển của Live <em>điều khiển từ xa</em> được bằng MIDI controller ngoài và bàn phím máy tính. Chương này mô tả chi tiết mapping cho các loại điều khiển trong giao diện Live:</p>
+<ol>
+<li><em>Clip slot Session View</em> — gán MIDI/phím gắn với <em>slot</em>, không phải clip trong đó.</li>
+<li><em>Công tắc và nút</em> — gồm Track/Device Activator, tap tempo, metronome và transport trên Control Bar.</li>
+<li><em>Nút radio</em> — chọn giữa nhiều phương án; ví dụ phần gán crossfader của mỗi track: A / không chịu ảnh hưởng / B.</li>
+<li><em>Điều khiển liên tục</em> — volume, pan, send của mixer.</li>
+<li><em>Crossfader</em> — hành vi mô tả trong chương <a href="#ch-mixing">Mixing</a>.</li>
+</ol>
+
+<h3>33.1 Điều khiển từ xa bằng MIDI</h3>
+<p>Live điều khiển từ xa bằng control surface MIDI ngoài (MIDI keyboard, hộp controller) — hoặc chuyên dụng qua Ableton <a href="../manual-en/using-push-1/index.html#using-push-1">Push 1</a>, <a href="../manual-en/using-push-2/index.html#using-push-2">Push 2</a> (EN) và <a href="https://www.ableton.com/push/manual/" target="_blank" rel="noopener">Push 3 ↗</a>.</p>
+<p>Trước khi nói về cách gán, cần phân biệt điều khiển từ xa MIDI với một công dụng khác của MIDI trong Live: input cho MIDI track. Giả sử dùng MIDI keyboard chơi instrument trong một MIDI track — nếu gán nốt C-1 cho một nút Clip Launch của Session View thì phím đó <em>ngừng</em> chơi C-1 của instrument: nó giờ "thuộc về" nút Clip Launch.</p>
+<p class="note"><strong>Lưu ý:</strong> phím MIDI trở thành một phần của remote control không dùng làm input cho MIDI track được — nguyên nhân nhầm lẫn phổ biến; nhìn <a href="#ch-routing">đèn MIDI indicator</a> trên Control Bar là rõ.</p>
+<p>Trước khi gán MIDI: cho Live nhận diện control surface — trong tab Link, Tempo &amp; MIDI của Settings (mở bằng <kbd>Ctrl</kbd> <kbd>,</kbd> (Win) / <kbd>Cmd</kbd> <kbd>,</kbd> (Mac)).</p>
+
+<h4>33.1.1 Control surface hỗ trợ gốc</h4>
+<p>Control surface định nghĩa qua menu trong tab Link, Tempo &amp; MIDI; tối đa 6 control surface dùng đồng thời.</p>
+<figure><img src="images/ControlSurfaceChoosers.png" alt="Choosers" loading="lazy"><figcaption>Thiết lập Control Surface.</figcaption></figure>
+<p>Mở trình chọn đầu tiên trong cột <em>Control Surface</em>: control surface của bạn có hỗ trợ gốc không; có tên trong danh sách thì chọn theo tên, rồi đặt cổng MIDI in/out bằng hai cột bên phải. Không có tên? Đừng lo — bật thủ công được ở mục <a href="#rm-manual">sau</a>.</p>
+<p>Tùy controller, Live có thể cần "preset dump" để hoàn tất: nút <em>Dump</em> bên phải trình chọn sẽ bật; trước khi bấm, kiểm tra control surface đã sẵn sàng nhận preset dump chưa (cách bật khác nhau mỗi hãng — xem tài liệu phần cứng). Bấm Dump: Live tự thiết lập.</p>
+
+<h5>33.1.1.1 Instant Mappings (Mapping tức thì)</h5>
+<p>Phần lớn trường hợp, Live dùng phương pháp chuẩn để map chức năng/tham số lên điều khiển vật lý — tùy cấu hình núm/thanh trượt/nút trên control surface. Các cấu hình phụ thuộc tính năng này gọi là <em>instant mappings</em>.</p>
+<p>Luôn luôn <em>ghi đè thủ công</em> được instant mapping bằng gán riêng — khi đó bật thêm công tắc Remote cho cổng MIDI của control surface (trong mục MIDI Ports của tab Link, Tempo &amp; MIDI, xem mục dưới).</p>
+<p>Ưu điểm của instant mapping: điều khiển của control surface tự gán lại để điều khiển device đang chọn trong Live.</p>
+<figure><img src="images/StatusBarControlSurfaceFocusConfirmation.png" alt="Follow" loading="lazy"><figcaption>Control surface bám theo device đang chọn.</figcaption></figure>
+<p>Ngoài bám theo lựa chọn device, control surface <em>hỗ trợ gốc</em> còn "khóa" vào device cụ thể — bảo đảm luôn thao tác trực tiếp bất kể tiêu điểm đang ở đâu trong Set. Bật/tắt khóa: nhấp chuột phải thanh tiêu đề device → "Lock to…" → chọn controller (cùng danh sách đã định nghĩa trong Settings). Mặc định, instrument trong MIDI track tự khóa vào control surface khi track được arm để thu.</p>
+<figure><img src="images/LockToControlSurfaceContextMenu.png" alt="Lock" loading="lazy"><figcaption>Control surface khóa được vào device.</figcaption></figure>
+<p>Icon bàn tay trên thanh tiêu đề device đã khóa nhắc trạng thái. <em>Lưu ý:</em> một số control surface không hỗ trợ khóa.</p>
+
+<h4 id="rm-manual">33.1.2 Thiết lập control surface thủ công</h4>
+<p>Control surface không có tên trong trình chọn vẫn bật mapping thủ công được — trong mục <em>MIDI Ports</em> của cùng tab.</p>
+<figure><img src="images/MIDIActivePorts.png" alt="Ports" loading="lazy"><figcaption>Định nghĩa control surface thủ công.</figcaption></figure>
+<p>Bảng MIDI Ports liệt kê mọi cổng MIDI in/out. Dùng cổng vào để điều khiển Live: đặt công tắc cột <em>Remote</em> = "On". Dùng bao nhiêu cổng tùy ý — Live gộp tín hiệu MIDI đến.</p>
+<p>Control surface có phản hồi vật lý/hình ảnh: bật cả công tắc Remote cho cổng ra — Live cần "nói chuyện" với chúng khi giá trị đổi để fader motor và LED cập nhật theo.</p>
+<p>Test: gửi vài dữ liệu MIDI từ control surface — đèn MIDI indicator trên Control Bar nhấp nháy khi Live nhận thông điệp.</p>
+<p>Live nhận diện xong là-setup xong (nên dành thời gian chọn Takeover Mode trước khi rời Settings). Bước kế: tạo MIDI mapping giữa control surface và Live — việc đơn giản, làm mỗi lần một tham số.</p>
+
+<h4>33.1.3 Takeover Mode</h4>
+<figure><img src="images/MIDITakeOverMode.png" alt="Takeover" loading="lazy"><figcaption>Takeover Mode của MIDI controller.</figcaption></figure>
+<p>Điều khiển MIDI gửi giá trị tuyệt đối (fader) dùng trong thiết lập bank-switching (mỗi bank trỏ sang tham số đích khác) — phải quyết định Live xử lý cú nhảy giá trị thế nào khi lần đầu vận hành sau khi đổi bank. Ba chế độ:</p>
+<p><em>None</em> — vừa chạm vào điều khiển vật lý, giá trị mới gửi ngay tới tham số đích — thường gây đổi giá trị giật cục.</p>
+<p><em>Pick-Up</em> — điều khiển không tác dụng cho tới khi chạm đúng giá trị của tham số đích; bằng nhau rồi thì đích bám điều khiển 1:1. Đổi giá trị mượt nhưng khó ước chính xác lúc nào "bắt".</p>
+<p><em>Value Scaling</em> — chuyển tiếp mượt bảo đảm: so giá trị điều khiển vật lý với giá trị đích, tính độ hội tụ mượt khi vận hành; bằng nhau thì bám 1:1.</p>
+
+<h3>33.2 Mapping Browser</h3>
+<figure><img src="images/MappingBrowserMIDI.png" alt="Browser" loading="lazy"><figcaption>Mapping Browser.</figcaption></figure>
+<p>Mọi mapping MIDI thủ công, <a href="#rm-key">bàn phím máy tính</a> và <a href="#ch-racks">Macro Control</a> đều quản lý bằng <em>Mapping Browser</em> — ẩn cho tới khi bật một trong ba chế độ mapping; khi đó hiện mọi mapping của chế độ hiện hành: phần tử điều khiển, đường dẫn tham số, tên tham số, dải <em>Min</em>/<em>Max</em>. Dải Min/Max sửa được mọi lúc, đảo nhanh bằng lệnh menu ngữ cảnh; xóa mapping bằng <kbd>Backspace</kbd> (Win) / <kbd>Delete</kbd> (Mac).</p>
+<p class="note"><strong>Lưu ý:</strong> Instant Mapping theo ngữ cảnh nên không hiện trong Mapping Browser.</p>
+
+<h4>33.2.1 Gán MIDI remote control</h4>
+<figure><img src="images/MIDIMapModeSwitch.png" alt="MIDI switch" loading="lazy"><figcaption>Công tắc MIDI Map Mode.</figcaption></figure>
+<p>Thiết lập xong trong Settings, gán MIDI rất đơn giản:</p>
+<ol>
+<li>Vào MIDI Map Mode bằng nút MIDI góc trên-phải — phần tử gán được tô xanh, Mapping Browser mở (Browser đóng thì <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>B</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>B</kbd> (Mac) mở).</li>
+<li>Nhấp tham số Live muốn điều khiển bằng MIDI.</li>
+<li>Gửi thông điệp MIDI: bấm phím keyboard, xoay núm… trên controller — mapping mới hiện trong Mapping Browser.</li>
+<li>Thoát bằng nút MIDI lần nữa — Browser biến mất; xem lại bất cứ lúc nào bằng cách vào MIDI Map Mode.</li>
+</ol>
+
+<h4>33.2.2 Map lên nốt MIDI</h4>
+<p>Nốt MIDI gửi Note On/Off đơn giản cho phần tử giao diện, tác động như sau:</p>
+<ul>
+<li><em>Clip slot Session</em> — Note On/Off ảnh hưởng clip theo <a href="#ch-launching">Launch Mode</a> của chúng.</li>
+<li><em>Công tắc</em> — Note On đảo trạng thái.</li>
+<li><em>Nút radio</em> — Note On duyệt qua các phương án.</li>
+<li><em>Tham số biến thiên</em> — gán một nốt: Note On đảo giữa Min và Max; gán dải nốt: mỗi nốt một giá trị rời rạc trải đều trên dải tham số.</li>
+</ul>
+<p>Clip slot Session gán được dải nốt MIDI để chơi nửa cung: trước tiên bấm phím <em>gốc</em> (phát clip ở độ transpose mặc định), rồi <em>giữ phím gốc</em>, giữ thêm một phím dưới và một phím trên gốc để định giới hạn dải.</p>
+
+<h4>33.2.3 Map lên MIDI controller tuyệt đối</h4>
+<p>Controller tuyệt đối gửi giá trị 0–127; kết quả tùy loại điều khiển Live nhận — giá trị 127 có thể kéo volume track lên hết hoặc chạy một clip Session. Cụ thể:</p>
+<ul>
+<li><em>Clip slot Session</em> — giá trị ≥64 coi như Note On; ≤63 như Note Off.</li>
+<li><em>Công tắc</em> — activator track và nút on/off của device: giá trị trong dải Min/Max của mapping = bật; ngoài dải = tắt (đảo lại bằng Min cao hơn Max). Công tắc khác (transport…): ≥64 bật, &lt;64 tắt.</li>
+<li><em>Nút radio</em> — dải 0…127 map lên các phương án.</li>
+<li><em>Điều khiển liên tục</em> — dải 0…127 map lên dải giá trị tham số.</li>
+</ul>
+<p>Live hỗ trợ cả pitch bend và controller "14-bit Absolute" độ phân giải cao (0–16383) — quy tắc như trên, chỉ khác tâm dải nằm ở 8191/8192.</p>
+
+<h4>33.2.4 Map lên MIDI controller tương đối</h4>
+<p>Một số controller gửi thông điệp "tăng"/"giảm" thay vì giá trị tuyệt đối — tránh nhảy tham số khi trạng thái điều khiển trong Live và trên phần cứng lệch nhau. Ví dụ: núm pan của control surface gán cho pan của track; núm cứng đang pan hết phải còn Live đang hết trái — núm loại tuyệt đối hơi xoay một cái là Live "nhảy" pan sang phải; núm loại tương đối chỉ nói "pan sang trái thêm chút so với vị trí hiện tại".</p>
+<p>Bốn loại controller tương đối: Signed Bit, Signed Bit 2, Bin Offset, Twos Complement — mỗi loại có thêm chế độ "linear". Vài encoder MIDI dùng "tăng tốc" nội bộ (xoay nhanh cho giá trị nhảy nhiều). Với control surface không hỗ trợ gốc, Live tự dò loại controller và có đang tăng tốc không.</p>
+<p>Cải thiện việc dò: khi gán, xoay chậm controller sang trái. Live gợi ý trong trình chọn "mode" trên Status Bar; biết rõ loại rồi thì chọn tay.</p>
+<p>Live xử lý thông điệp tương đối:</p>
+<ul>
+<li><em>Clip slot Session</em> — tăng = Note On; giảm = Note Off.</li>
+<li><em>Công tắc</em> — tăng = bật; giảm = tắt.</li>
+<li><em>Nút radio</em> — tăng nhảy tới phương án kế; giảm lùi lại.</li>
+<li><em>Điều khiển liên tục</em> — mỗi loại tương đối diễn giải dải 0…127 theo cách riêng để nhận diện tăng/giảm.</li>
+</ul>
+<p>Chi tiết xem tài liệu của controller.</p>
+
+<h5>33.2.4.1 Dịch chuyển Session View tương đối</h5>
+<p>Không những map <em>tuyệt đối</em> vào từng slot/scene, còn map <em>tương đối</em> để dời scene đang tô sáng và thao tác clip đang tô sáng.</p>
+<p>Trong MIDI Map Mode và <a href="#rm-key">Key Map Mode</a>, dải điều khiển gán được hiện dưới lưới Session:</p>
+<figure><img src="images/RelativeSessionMap.png" alt="Strip" loading="lazy"><figcaption>Dải Relative Session Mapping.</figcaption></figure>
+<ol>
+<li>Gán các nút này cho phím/nốt/controller để dời scene tô sáng lên/xuống.</li>
+<li>Gán hộp giá trị số scene cho MIDI controller (encoder vô tận là đẹp nhất) để cuộn scene.</li>
+<li>Gán nút này để chạy scene tô sáng — bật Select Next Scene on Launch trong Record, Warp &amp; Launch Settings để đi lần lượt qua các scene.</li>
+<li>Gán nút này để hủy chạy scene đã kích hoạt.</li>
+<li>Gán các nút này để chạy clip ở scene tô sáng, theo từng track.</li>
+</ol>
+<p>Relative Session mapping hữu ích để di chuyển trong Live Set lớn — Live luôn giữ scene tô sáng ở giữa Session View.</p>
+
+<h5>33.2.4.2 Map điều khiển Clip View</h5>
+<p><a href="#ch-clip-view">Clip View</a> hiển thị thiết lập của clip đang chọn (kể cả đa chọn). Tránh "bất ngờ âm nhạc": nhớ rằng mapping mọi điều khiển trong giao diện Clip View có thể ảnh hưởng <em>bất kỳ</em> clip nào trong Set — nên map điều khiển Clip View vào controller <em>tương đối</em> để tránh nhảy giá trị.</p>
+
+<h4 id="rm-key">33.2.5 Điều khiển từ xa bằng bàn phím máy tính</h4>
+<figure><img src="images/KeyMapModeSwitchL12.png" alt="KEY switch" loading="lazy"><figcaption>Công tắc Key Map Mode.</figcaption></figure>
+<p>Gán bàn phím rất dễ:</p>
+<ol>
+<li>Vào Key Map Mode bằng nút KEY góc trên-phải — phần tử gán được tô <b>đỏ</b>; Mapping Browser mở (Browser ẩn thì mở bằng lệnh menu View).</li>
+<li>Nhấp tham số muốn gán phím — chỉ điều khiển có lớp phủ đỏ mới gán được.</li>
+<li>Bấm phím máy tính muốn gán — chi tiết mapping hiện trong Mapping Browser.</li>
+<li>Thoát bằng nút KEY lần nữa — Browser biến mất; xem lại bằng cách vào Key Map Mode.</li>
+</ol>
+<p>Gán phím tác động trong Live:</p>
+<ul>
+<li>Clip trong slot Session chịu ảnh hưởng theo <a href="#ch-launching">Launch Mode</a>.</li>
+<li>Phím gán công tắc: đảo trạng thái.</li>
+<li>Phím gán nút radio: duyệt qua các phương án.</li>
+</ul>
+<p class="note"><strong>Lưu ý:</strong> đừng nhầm chức năng này với khả năng dùng <a href="#ch-routing">bàn phím máy tính làm MIDI keyboard "giả"</a> sinh nốt MIDI cho instrument.</p>
 
 </article>
 
