@@ -135,6 +135,7 @@
     <a href="#ch-mixing">10. Mixing</a>
     <a href="#ch-managing-files">11. Managing Files and Sets</a>
     <a href="#ch-warping">12. Audio Clips, Tempo &amp; Warping</a>
+    <a href="#ch-midi-tools">13. MIDI Tools</a>
     <a href="#ch-editing-mpe">14. Editing MPE</a>
     <a href="#ch-audio-to-midi">15. Converting Audio to MIDI</a>
     <a href="#ch-grooves">16. Using Grooves</a>
@@ -2163,6 +2164,205 @@
 <li>Transport đang chạy: "chơi kề" với clip khác được; cũng dùng Capture để "overdub" một clip đang phát bằng cách chơi đè lên trên cùng track — bấm Capture MIDI thêm vật liệu vừa chơi lên nội dung clip sẵn có, dựng pattern từng lớp.</li>
 <li>Toàn bộ vật liệu lưu trong clip; nốt trước câu được dò nằm trước start marker — chỉnh start/end hoặc loop marker để đổi loop.</li>
 </ul>
+
+<!-- ============ CH 13: MIDI TOOLS (EN ch.11) ============ -->
+<h2 class="sec" id="ch-midi-tools">Chương 13 · MIDI Tools (Công cụ biến đổi &amp; sinh MIDI)</h2>
+<p class="lead"><span class="term">MIDI Tools</span> <span class="gloss">— bộ tiện ích nhận biết scale, mở trong panel Transform/Generate của Clip View</span> mở thêm khả năng làm việc với nội dung MIDI. <b>Transformations</b> thực hiện thao tác có chủ đích trên nốt sẵn có; <b>Generators</b> mang tính khám phá hơn — tạo vật liệu mới.</p>
+<p><a href="#mt-transform">Transformation Tools</a> sửa nhiều thuộc tính nốt (kể cả dữ liệu MPE), cần vùng chọn nốt làm đầu vào.</p>
+<p>MPE MIDI Tools là tập con của Transformations: thêm expression cho nốt hoặc biến đổi dữ liệu expression sẵn có — xem kết quả trong <a href="#ch-editing-mpe">chế độ xem MPE</a> của MIDI Note Editor.</p>
+<p><a href="#mt-generate">Generative Tools</a> không cần đầu vào: thêm nốt mới vào loop clip hoặc vùng chọn thời gian. Nếu clip/vùng chọn đã có nốt, nốt sinh ra sẽ <em>thay thế</em> nốt cũ.</p>
+<p>Transformations/Generators chia làm loại native (built-in, không sửa được thuộc tính) và Max for Live (sửa được; tự <a href="#ch-max4live">xây thêm</a> hoặc cài tool của bên thứ ba). MIDI Tool Max for Live tự tạo/lưu tìm nhanh trong <a href="#ch-browser">Browser</a> qua nhóm lọc MIDI Tools riêng hoặc tag MIDI Tool trong nhóm lọc Content.</p>
+
+<h3>13.1 Dùng MIDI Tools</h3>
+<p>Mở panel Transform hoặc Generate, chọn tool trong trình chọn Transformation/Generator Selector, tinh chỉnh trong giao diện tool. Mặc định nút <b>Auto Apply</b> bật cho mọi tool: nốt được biến đổi/sinh ra ngay khi chỉnh thiết lập.</p>
+<figure><img src="images/MIDIToolAutoApplyButtonL12.png" alt="Auto apply" loading="lazy"><figcaption>Nút Auto Apply.</figcaption></figure>
+<p>Mọi thay đổi tham số thấy ngay trong MIDI Note Editor. Không muốn tác động tức thì: tắt Auto Apply (nốt trả về trạng thái gốc); chỉnh tham số vừa ý xong bấm <b>Apply</b> để áp dụng.</p>
+<figure><img src="images/MIDIToolApplyButtonL12.png" alt="Apply" loading="lazy"><figcaption>Nút Apply.</figcaption></figure>
+<p>Áp tool đang chọn mà không rời MIDI Note Editor: <kbd>Ctrl</kbd> <kbd>Enter</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Enter</kbd> (Mac).</p>
+<p>Transformations áp lên vùng chọn thời gian, vùng chọn nốt, hoặc loop clip (khi không chọn gì); nốt cũ bị thay bằng nốt đã biến đổi.</p>
+<p>Generators áp lên vùng chọn thời gian hoặc loop clip. Đã có nốt trong editor khi áp Generator: nốt sinh ra thêm <em>cạnh</em> nội dung cũ (không chồng nhau) hoặc <em>thay thế</em> nốt cũ (chồng nhau).</p>
+<p>MIDI Tools nhận biết scale: clip có scale thì tham số liên quan cao độ dùng bậc scale thay vì nửa cung.</p>
+<p>Biến đổi/sinh nốt hoàn tác/làm lại được bằng Undo/Redo (menu Edit) — chỉ ảnh hưởng nốt, không ảnh hưởng tham số tool. Trả tham số về mặc định bằng nút <b>Reset</b> (xám khi tool đã ở mặc định); Reset chỉ áp tham số của tool đang chọn, không đụng nốt.</p>
+<figure><img src="images/MIDIToolResetButtonL12.png" alt="Reset" loading="lazy"><figcaption>Nút Reset đang hoạt động.</figcaption></figure>
+
+<h4>13.1.1 Dùng Max for Live MIDI Tools</h4>
+<p>Ngoài tool native, truy cập được Max for Live MIDI Tools — tệp AMXD dùng trong tab/panel Transform/Generative Tools của Clip View; chỉnh/tạo trong Max patcher như device Max khác.</p>
+<p>Hai tool Max built-in kèm Live Standard/Suite: <a href="#mt-velocity-shaper">Velocity Shaper</a> và <a href="#mt-euclidean">Euclidean</a>. Dùng Suite (hoặc Standard + add-on Max) thì chỉnh/tự xây tool riêng hoặc dùng tool của bên thứ ba.</p>
+<p>Để tool Max của bên thứ ba xuất hiện trong tab/panel, lưu vào:</p>
+<ul>
+<li><em>Transformations</em>: ~/Music/Ableton/User Library/MIDI Tools/Max Transformations</li>
+<li><em>Generators</em>: ~/Music/Ableton/User Library/MIDI Tools/Max Generators</li>
+</ul>
+<p>Hoặc lưu tệp AMXD vào thư mục bất kỳ trong Places của Browser.</p>
+
+<h3 id="mt-transform">13.2 Transformation Tools (Công cụ biến đổi)</h3>
+<p>Danh sách mọi MIDI Transformation trong Live:</p>
+
+<h4>13.2.1 Arpeggiate (Rải hợp âm)</h4>
+<p>Chia vùng chọn nốt thành các nốt rải theo thiết lập pattern; dùng lõi chức năng của MIDI effect <a href="../manual-en/live-midi-effect-reference/index.html#arpeggiator">Arpeggiator</a> (EN).</p>
+<figure><img src="images/MIDIToolArpeggiateL12.png" alt="Arpeggiate" loading="lazy"><figcaption>MIDI Tool Arpeggiate.</figcaption></figure>
+<p>Menu thả <em>Style</em> chọn chuỗi rải áp lên nốt đã chọn — đủ 18 style như Arpeggiator.</p>
+<p><em>Distance</em>: khoảng transpose của các bước trong pattern (bậc scale hoặc nửa cung tùy clip có scale không).</p>
+<p><em>Steps</em>: số bước đã transpose trong pattern.</p>
+<p><em>Rate</em> đặt nhịp pattern (ảnh hưởng cả độ dài nốt); <em>Gate</em> ảnh hưởng độ dài nốt: dưới 100% nốt ngắn lại, trên 100% dài ra.</p>
+<figure><img src="images/MIDIToolArpeggiateBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Arpeggiate.</figcaption></figure>
+
+<h4>13.2.2 Chop (Cắt nốt)</h4>
+<p>Chia nốt đã chọn thành tối đa 64 phần; cũng dùng để thiết kế pattern chia nốt — ví dụ tạo pattern vài nốt kéo dài tương đối so với nốt khác, hoặc thêm biến thiên ngẫu nhiên vào thời điểm bắt đầu/kết thúc nốt.</p>
+<figure><img src="images/MIDIToolChopL12.png" alt="Chop" loading="lazy"><figcaption>MIDI Tool Chop.</figcaption></figure>
+<p><em>Parts</em>: số phần chia (2–64). <em>Gaps</em>: thêm khoảng trống vào pattern — số khoảng trống tối thiểu/tối đa tùy số phần. Giá trị dương: số nốt rồi mới thêm một khoảng trống (đặt 2: sau hai nốt liền nhau, một khoảng trống thay một nốt). Giá trị âm: số khoảng trống thêm sau <em>mỗi</em> nốt (đặt −2: hai khoảng trống sau mỗi nốt). Pattern tối đa 16 phần; Parts cao hơn thì pattern lặp lại.</p>
+<p>Các công tắc <em>Pattern</em> trực quan hóa pattern và cho thêm/bỏ khoảng trống thủ công — tiện tạo biến thể nhịp. Khoảng trống chỉnh tay thì Gaps hiện gạch ngang; chỉnh Gaps thì khoảng trống thủ công bị thay thế.</p>
+<p>Công tắc <em>Emphasis</em> chọn nốt/khoảng trống được nhấn mạnh — chịu tác động của <em>Stretch Chunk(s)</em> (kéo dài tương đối 2–8 lần). Phần tử được nhấn mạnh thì công tắc Pattern tương ứng xám đi.</p>
+<p><em>Variation</em>: thêm biến thiên ngẫu nhiên vào thời điểm bắt đầu/kết thúc nốt.</p>
+<figure><img src="images/MIDIToolChopBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Chop.</figcaption></figure>
+
+<h4>13.2.3 Connect (Nối nốt)</h4>
+<p>Sinh nốt mới lấp khoảng trống giữa các nốt sẵn có. Vị trí nốt nội suy ngẫu nhiên, nhưng vài đặc điểm pattern đặt được qua tham số.</p>
+<figure><img src="images/MIDIToolConnectL12.png" alt="Connect" loading="lazy"><figcaption>MIDI Tool Connect.</figcaption></figure>
+<p><em>Spread</em>: dịch cao độ ngẫu nhiên tối đa của nốt nối (so với nốt gốc), theo bậc scale hoặc nửa cung.</p>
+<p><em>Density</em>: phần trăm khoảng thời gian giữa các nốt gốc được lấp bằng nốt nội suy — 100% lấp hết.</p>
+<p><em>Rate</em> đặt độ dài nốt nội suy; <em>Tie</em> đặt xác suất nốt sinh ra kéo dài chạm nốt gốc kế tiếp.</p>
+<figure><img src="images/MIDIToolConnectBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Connect.</figcaption></figure>
+
+<h4>13.2.4 Glissando (Lướt cao độ)</h4>
+<p>MPE MIDI Tool nối cao độ nốt này với cao độ nốt kế tiếp bằng đường cong pitch bend, "buộc" hai nốt lại. Cần tối thiểu 2 nốt được chọn.</p>
+<figure><img src="images/MIDIToolGlissandoL12.png" alt="Glissando" loading="lazy"><figcaption>MIDI Tool Glissando.</figcaption></figure>
+<p><em>Start</em>: điểm bắt đầu đường cong pitch bend (% độ dài nốt). <em>Curve</em>: đổi hình dạng cong — kéo breakpoint vàng trong khung hiển thị trái/phải để chỉnh điểm bắt đầu, kéo đường lên/xuống để chỉnh độ cong.</p>
+<figure><img src="images/MIDIToolGlissandoBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Glissando.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> đường cong pitch bend chỉ xem được trong MPE Editor; MIDI Note Editor mở thì Transformation vẫn áp nhưng không thấy đường cong.</p>
+<p>Khi làm việc với <a href="#ch-editing-midi">nốt đã fold</a>: bật lane expression Pitch Bend để hiển thị đường cong dưới MIDI Note Editor.</p>
+<figure><img src="images/MIDIToolGlissandoExpressionLaneL12.png" alt="Expression lane" loading="lazy"><figcaption>Đường cong pitch bend trong lane expression riêng.</figcaption></figure>
+
+<h4>13.2.5 LFO</h4>
+<p>MPE Transformation dùng dao động tần số thấp đặt giá trị cho một trong ba tham số MPE: pitch bend, slide hoặc pressure. Hình dáng, tốc độ và biên độ toàn cục của dao động tùy chỉnh được.</p>
+<figure><img src="images/MIDIToolLFOL12.png" alt="LFO" loading="lazy"><figcaption>MIDI Tool LFO.</figcaption></figure>
+<p>Trình chọn <em>Target</em>: Pitch Bend, Slide hoặc Pressure làm đích modulation; khung hiển thị vẽ hình dáng LFO làm nguồn modulation.</p>
+<p><em>Envelope Attack/Decay</em>: attack và decay của envelope biên độ dao động (tương đối tổng độ dài dao động); hai giá trị ràng buộc nhau — Attack 100% thì Decay tự về 0%.</p>
+<p><em>Shape</em>: chỉnh hình dáng dao động theo loại chọn trong <em>Shape Type</em>: Sine, Square, Triangle hoặc Random. Chọn Random thì nút <em>Reseed</em> sinh hình dáng ngẫu nhiên mới.</p>
+<figure><img src="images/MIDIToolLFOReseedL12.png" alt="Reseed" loading="lazy"><figcaption>Nút Reseed.</figcaption></figure>
+<p><em>Rate</em>: chu kỳ dao động theo thời gian nhạc, từ 1 tới 1/128 (đặt 1 = 4 phách). <em>Time Shift</em> (dưới Rate) dịch LFO theo thời gian: dương trễ lúc bắt đầu, âm chỉnh pha.</p>
+<p><em>Amount</em>: biên độ dao động. Đích Pitch Bend: Amount trong khoảng gấp đôi dải pitch bend hiện tại của clip (dải ±60 st → Amount −120…120 st). Đích Slide/Pressure: −127…127. <em>Amplitude Base</em> (dưới Amount) đặt giá trị nền của biên độ: Pitch Bend trong dải pitch bend của clip (±60 st → −60…60 st); Slide/Pressure −127…127.</p>
+<figure><img src="images/MIDIToolLFOBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp LFO.</figcaption></figure>
+<p>Đường cong MPE cho đích Pitch Bend hiển thị trong MIDI Note Editor (hoặc lane Pitch Bend bên dưới — tiện khi fold nốt); đường Slide/Pressure hiển thị ở lane riêng. <em>Lưu ý:</em> modulation của LFO chỉ xem được trong MPE Editor — MIDI Note Editor mở thì vẫn áp nhưng không thấy curve.</p>
+
+<h4>13.2.6 Ornament (Nốt trang trí)</h4>
+<p>Chứa tùy chọn <b>Flam</b> và <b>Grace Notes</b> — thêm nốt trang trí vào đầu nốt được chọn. Áp lại tool lên cùng vùng chọn sẽ chèn thêm flam/grace note nữa.</p>
+<figure><img src="images/MIDIToolOrnamentL12.png" alt="Ornament" loading="lazy"><figcaption>MIDI Tool Ornament.</figcaption></figure>
+<p>Chọn loại nốt trang trí bằng công tắc Flam hoặc Grace Notes.</p>
+<figure><img src="images/MIDIToolOrnamentTogglesL12.png" alt="Toggles" loading="lazy"><figcaption>Công tắc Flam và Grace Notes.</figcaption></figure>
+<p><b>Flam</b> — thêm một nốt vào đầu mỗi nốt được chọn:</p>
+<p><em>Flam Position</em>: vị trí nốt flam — dương: thay thế phần đầu nốt gốc; âm: chèn <em>trước</em> nốt gốc. Giá trị tính % theo lưới hiện tại, độ dài nốt flam do cỡ lưới quyết định (100%/−100% = nốt flam dài một ô lưới đặt tại/hoặc trước đầu nốt gốc; về 0% thì ngắn dần).</p>
+<p><em>Flam Velocity</em>: velocity nốt flam so với nốt gốc.</p>
+<figure><img src="images/MIDIToolOrnamentFlamBeforeAfterL12.png" alt="Flam" loading="lazy"><figcaption>Nốt trước và sau khi thêm Flam.</figcaption></figure>
+<p><b>Grace Notes</b> — thêm nhiều nốt bằng nhau vào đầu mỗi nốt gốc:</p>
+<p><em>Grace Notes Pitch</em>: cao độ so với nốt gốc — <b>High</b>: mỗi nốt trang trí cách một nốt cao hơn nửa cung (hoặc bậc scale); <b>Low</b>: thấp hơn; <b>Same</b>: cùng cao độ.</p>
+<p><em>Grace Notes Position</em>: thay phần đầu nốt gốc (dương) hoặc chèn trước (âm) — % theo cỡ lưới; 100%/−100% = lấp một ô lưới tại/hoặc trước đầu nốt gốc.</p>
+<p><em>Grace Notes Velocity</em>: velocity so với nốt gốc. <em>Grace Notes Chance</em>: xác suất mỗi grace note được chơi, theo giá trị Chance của nốt gốc. <em>Grace Notes Amount</em>: số grace notes cho mỗi nốt (luôn bằng nhau về kích thước).</p>
+<figure><img src="images/MIDIToolOrnamentGraceNotesBeforeAfterL12.png" alt="Grace" loading="lazy"><figcaption>Trước và sau khi thêm Grace Notes.</figcaption></figure>
+
+<h4>13.2.7 Quantize (Căn lưới)</h4>
+<p>Chỉnh timing nốt đã chọn bằng cách dời hoặc kéo giãn theo thiết lập quantize. Có tool Quantize tương đương cho <a href="#ch-warping">audio clip</a>.</p>
+<figure><img src="images/MIDIToolQuantizeL12.png" alt="Quantize" loading="lazy"><figcaption>Transformation Quantize.</figcaption></figure>
+<p>Biến đổi theo lưới hiện tại hoặc giá trị nhịp cụ thể (kể cả triplet); quantize thời điểm bắt đầu, kết thúc, hoặc cả hai — quantize kết thúc sẽ kéo giãn nốt tới phân chia nhịp đã chọn. Núm <em>Amount</em> dời nốt theo phần trăm giá trị quantize để khỏi "khô" như quantize toàn phần.</p>
+<figure><img src="images/MIDIToolQuantizeBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi quantize.</figcaption></figure>
+<p>Ngoài đường vào qua tab/panel trong Clip View, mở tool bằng lệnh Quantize Settings… (menu Edit) để đổi tham số, hoặc <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>U</kbd> (Win) / <kbd>Cmd</kbd> <kbd>Shift</kbd> <kbd>U</kbd> (Mac) để quantize ngay không cần mở panel.</p>
+
+<h4>13.2.8 Recombine (Trộn lại)</h4>
+<p>Sắp xếp lại vị trí, cao độ, độ dài hoặc velocity của vùng chọn nốt — giá trị tham số của nốt này được gán sang nốt khác.</p>
+<figure><img src="images/MIDIToolRecombineL12.png" alt="Recombine" loading="lazy"><figcaption>Transformation Recombine.</figcaption></figure>
+<p>Trình chọn <em>Dimension</em> chọn một trong 4 tham số để hoán vị: Position, Pitch, Duration, Velocity.</p>
+<figure><img src="images/MIDIToolRecombineDimensionChooserL12.png" alt="Dimension" loading="lazy"><figcaption>Trình chọn Dimension.</figcaption></figure>
+<p>Ba cách sắp xếp: <b>1. Shuffle</b> — hoán vị ngẫu nhiên; <b>2. Mirror</b> — đảo ngược thứ tự so với vùng chọn; <b>3. Rotate</b> — hoán vị kiểu vòng tròn.</p>
+<p>Shuffle/Mirror bật bằng công tắc riêng; Rotate chỉ chạy khi <em>Rotation Steps</em> khác 0. Đặt số bước bằng cách kéo chuột ngang qua các cột trong khung hiển thị, hoặc nút Rotate Step Down/Up bên dưới. Số bước khả dụng luôn ít hơn số nốt đang chọn một bước. Số dương xoay theo chiều kim đồng hồ, số âm ngược lại.</p>
+<p>Dimension = Position: bật được công tắc <em>Rotate on Grid</em> — dùng số ô lưới trong vùng chọn (thay vì số nốt) làm cơ sở số bước xoay, tùy lưới hiện tại.</p>
+<p>Mỗi loại hoán vị dùng riêng lẻ hoặc kết hợp; áp theo thứ tự Shuffle → Mirror → Rotate. Shuffle đang bật: mỗi lần bấm Apply tạo hoán vị tham số mới.</p>
+<figure><img src="images/MIDIToolRecombineBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Velocity nốt trước và sau khi áp Shuffle.</figcaption></figure>
+
+<h4>13.2.9 Span (Kéo dài/ngắn nốt)</h4>
+<p>Biến đổi độ dài nốt đã chọn bằng ba kiểu diễn tấu: legato, tenuto, staccato.</p>
+<figure><img src="images/MIDIToolSpanL12.png" alt="Span" loading="lazy"><figcaption>Transformation Span.</figcaption></figure>
+<p>Thêm biến thể bằng hai tham số phụ:</p>
+<ul>
+<li><em>Offset</em> — dời thời điểm kết thúc nốt tối đa một bước lưới: dương kéo dài, âm rút ngắn.</li>
+<li><em>Variation</em> — biến thiên ngẫu nhiên độ dài: dương rút ngắn, âm kéo dài; khác 0% thì mỗi lần áp lại sinh biến thể mới.</li>
+</ul>
+<p><b>Legato</b> kéo dài nốt đã chọn tới thời điểm bắt đầu nốt kế tiếp; nốt cuối kéo tới hết vùng chọn thời gian (hoặc hết loop nếu không có vùng chọn).</p>
+<figure><img src="images/MIDIToolSpanBeforeAfterL12.png" alt="Legato" loading="lazy"><figcaption>Nốt trước và sau khi áp Legato.</figcaption></figure>
+<p><b>Tenuto</b> giữ nguyên độ dài gốc (trừ khi chỉnh Offset/Variation).</p>
+<p><b>Staccato</b>: độ dài nốt theo khoảng cách giữa thời điểm bắt đầu các nốt — khoảng nhỏ nhất chia đôi làm độ dài nốt mới; chỉnh tiếp bằng Offset/Variation.</p>
+
+<h4>13.2.10 Strum (Quét hợp âm)</h4>
+<p>Chỉnh thời điểm bắt đầu nốt trong hợp âm theo hình dáng do ba tham số Strum Low, Strum High, Tension đặt ra.</p>
+<figure><img src="images/MIDIToolStrumL12.png" alt="Strum" loading="lazy"><figcaption>Transformation Strum.</figcaption></figure>
+<p><em>Strum Low</em>: độ lệch các nốt kế tiếp tính từ nốt <em>thấp nhất</em> — dương đẩy bắt đầu nốt tới sau, âm lùi về trước; nốt thấp nhất lệch tối đa một bước lưới ở 100%/−100%, các nốt khác lệch tỉ lệ theo hình trong khung Strum Position. Tension 0.0%: các nốt cách đều nhau.</p>
+<p><em>Strum High</em>: như vậy nhưng tính từ nốt <em>cao nhất</em>.</p>
+<p>Tool có tác dụng khi Strum Low và/hoặc Strum High khác 0.0% — chỉnh breakpoint tương ứng trong khung Strum Position hoặc gõ giá trị từ bàn phím.</p>
+<p><em>Tension</em> đổi độ lệch để nốt không còn cách đều mà nằm theo đường cong: dương — khoảng cách giữa nốt lớn ở đầu chuỗi rồi giảm hàm mũ; âm — ngược lại.</p>
+<figure><img src="images/MIDIToolStrumBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Strum.</figcaption></figure>
+
+<h4>13.2.11 Time Warp (Kéo giãn thời gian MIDI)</h4>
+<p>Tool kéo giãn thời gian: biến đổi nốt đã chọn theo <em>đường cong tốc độ</em> — tạo biến hóa tempo như accelerando/ritardando.</p>
+<figure><img src="images/MIDIToolTimeWarpL12.png" alt="Time warp" loading="lazy"><figcaption>Transformation Time Warp.</figcaption></figure>
+<p>Vẽ đường cong trong khung Breakpoints — dải thời gian của cong map vào vùng chọn. Bật được 1–3 breakpoint bằng công tắc tương ứng; kéo breakpoint trong khung, hoặc chọn nó rồi dùng thanh trượt <em>Breakpoint Time</em>/<em>Breakpoint Speed</em> đặt vị trí và tốc độ (giá trị thanh trượt luôn theo breakpoint đang chọn).</p>
+<p>Các công tắc dưới khung chỉnh thêm: <em>Quantize</em> — nốt đã warp căn theo lưới; <em>Preserve Time Range</em> — kết quả nằm gọn trong dải của vùng chọn gốc; <em>Include Note End</em> — tính cả vị trí kết thúc nốt gốc khi áp đường cong (ảnh hưởng độ dài nốt).</p>
+<figure><img src="images/MIDIToolTimeWarpBeforeAfterL12.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Time Warp.</figcaption></figure>
+
+<h4 id="mt-velocity-shaper">13.2.12 Velocity Shaper</h4>
+<p>Max for Live Transformation: định hình velocity của nốt đã chọn bằng envelope chỉnh được.</p>
+<figure><img src="images/MaxVelocityShaper.png" alt="Velocity shaper" loading="lazy"><figcaption>MIDI Tool Velocity Shaper.</figcaption></figure>
+<p>Hình envelope trong khung hiển thị quyết định velocity nốt biến đổi ra sao — nhấp để thêm breakpoint, kéo để chỉnh hình.</p>
+<p><em>Minimum/Maximum Velocity</em> (bên phải): dải velocity cho nốt kết quả. <em>Loop</em> (dưới khung): số lần hình envelope áp lên vùng chọn. <em>Rotate</em>: số bước dịch hình envelope so với điểm đầu vùng chọn; cỡ bước do <em>Division</em> quyết định (Rotate 1 + Division "Grid" = dịch hình sang phải một bước lưới).</p>
+<figure><img src="images/MaxVelocityShaperBeforeAfter.png" alt="Before after" loading="lazy"><figcaption>Nốt trước và sau khi áp Velocity Shaper.</figcaption></figure>
+
+<h3 id="mt-generate">13.3 Generative Tools (Công cụ sinh nốt)</h3>
+<p>Danh sách mọi MIDI Generator trong Live:</p>
+
+<h4>13.3.1 Rhythm (Sinh nhịp)</h4>
+<p>Sinh pattern nốt theo tham số, lặp lại lấp đầy vùng chọn thời gian.</p>
+<figure><img src="images/MIDIToolRhythmL12.png" alt="Rhythm" loading="lazy"><figcaption>Generator Rhythm.</figcaption></figure>
+<p>Nốt sinh ra ở một cao độ cố định, hoặc ở một pad trống riêng khi làm với Drum Rack — chọn bằng núm <em>Pitch</em>, hoặc giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) + nhấp lên thước piano.</p>
+<p><em>Steps</em>: số bước của pattern (tối đa 16). <em>Pattern</em>: hình dáng đặt nốt — số pattern khả dụng tùy Steps và Density. <em>Density</em>: số nốt trong pattern (tối đa theo Steps).</p>
+<p><em>Step Duration</em>: số lần pattern lặp trong vùng chọn — vùng chọn 1 bar, Step Duration 1/8 + Steps 8: lặp một lần; đổi 1/16: lặp hai lần. Step Duration ảnh hưởng số bước tối đa đặt bằng Steps.</p>
+<p><em>Split</em>: xác suất một bước bị chia đôi. <em>Shift</em>: dịch nốt sinh ra sang phải (dương) hoặc trái (âm) theo số bước.</p>
+<p><em>Velocity</em>: velocity nốt sinh; <em>Accent</em>: velocity riêng cho nốt nhấn. Số nốt nhấn do <em>Accent Frequency</em> quyết định — số nốt giữa hai nốt nhấn (0 tới số nốt của Density; nốt nhấn cũng tính là một nốt — đặt 1 là mọi nốt đều nhấn). <em>Accent Offset</em>: dịch vị trí nốt nhấn trong pattern.</p>
+<p>Muốn chồng pattern: bỏ chọn nốt vừa sinh rồi chỉnh lại tham số cho cao độ/pad khác.</p>
+<figure><img src="images/MIDIToolRhythmAfterL12.png" alt="After" loading="lazy"><figcaption>Pattern nhịp sinh trong track trống.</figcaption></figure>
+
+<h4>13.3.2 Seed (Sinh ngẫu nhiên)</h4>
+<p>Sinh nốt ngẫu nhiên trong dải cao độ, độ dài và velocity chỉ định; thêm tham số cho số nốt đồng thời và tổng số nốt.</p>
+<figure><img src="images/MIDIToolSeedL12.png" alt="Seed" loading="lazy"><figcaption>Generator Seed.</figcaption></figure>
+<p>Dải cao độ: kéo thanh <em>Minimum/Maximum Pitch</em> (hoặc Key Track), hoặc hai tay cầm tam giác trong thanh <em>Pitch Range</em>. Kéo một tay cầm đè lên tay cầm kia thì hai tay nhập một — nốt chỉ sinh ở một cao độ; nhấp vào thanh Pitch Range hoặc đặt lại giá trị khác để tách hai. Cũng giữ <kbd>Alt</kbd>/<kbd>Option</kbd> + nhấp thước piano chọn một cao độ, hoặc nhấp-kéo chọn dải. Clip có scale thì thanh hiển thị màu tím.</p>
+<p><em>Duration</em> và <em>Velocity Range</em> hoạt động giống Pitch Range: độ dài nốt (tối thiểu 1/128, tối đa 1 nốt) và velocity (1–127).</p>
+<p><em>Voices</em>: số nốt đồng thời tối đa; <em>Density</em>: tổng số nốt sinh ra (% dải cao độ được lấp).</p>
+<figure><img src="images/MIDIToolSeedAfterL12.png" alt="After" loading="lazy"><figcaption>Nốt thêm bằng Seed.</figcaption></figure>
+
+<h4>13.3.3 Shape (Sinh theo hình)</h4>
+<p>Sinh chuỗi nốt trong dải cao độ, phân bố theo hình dáng vẽ trong khung hiển thị.</p>
+<figure><img src="images/MIDIToolShapeL12.png" alt="Shape" loading="lazy"><figcaption>Generator Shape.</figcaption></figure>
+<p>Chọn hình qua menu <em>Shape Presets</em> hoặc tự vẽ trong khung. <em>Minimum/Maximum Pitch</em>: dải cao độ (hoặc giữ Alt/Option + nhấp-kéo). Clip có scale thì hình hiển thị tím.</p>
+<p><em>Rate</em>: độ dài tối thiểu của nốt; <em>Tie</em>: xác suất nốt kéo dài chạm nốt kế. <em>Density</em>: số nốt thêm vào (% hình được lấp).</p>
+<p><em>Jitter</em>: ngẫu nhiên hóa cao độ — 0% nốt bám sát hình trong khung Shape Levels, tăng dần thì lệch dần (luôn trong dải Min/Max Pitch).</p>
+<figure><img src="images/MIDIToolShapeAfterL12.png" alt="After" loading="lazy"><figcaption>Nốt sinh bằng Shape.</figcaption></figure>
+
+<h4>13.3.4 Stacks (Sinh hợp âm)</h4>
+<p>Thêm hợp âm đơn hoặc tạo tiến trình hợp âm trong scale đã chọn; hợp âm lấp vùng chọn thời gian (hoặc độ dài loop).</p>
+<figure><img src="images/MIDIToolStacksL12.png" alt="Stacks" loading="lazy"><figcaption>Generator Stacks.</figcaption></figure>
+<p>Chọn pattern hợp âm: kéo <em>Chord Selector Pad</em>, hoặc <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac) + mũi tên lên/xuống. Sơ đồ pattern minh họa quan hệ khoảng âm trong hợp âm, dựa trên hệ Tonnetz. Rê pad: Info thêm về hợp âm hiện ở Status Bar.</p>
+<p>Dùng hợp âm tùy chỉnh bằng cách tạo <em>chord bank</em> riêng — tệp văn bản JSON khai báo quy tắc hợp âm, lưu phần mở rộng .stacks; hướng dẫn chi tiết trong <a href="https://help.ableton.com/hc/en-us/articles/14789643520668" target="_blank" rel="noopener">bài Knowledge Base ↗</a>. Nạp bank: đặt tệp .stacks vào thư mục thuộc <a href="#ch-browser">Places</a> của Browser rồi nhấp đút tên tệp. Tìm mọi tệp hợp âm qua tag Stacks (nhóm lọc MIDI Tool) hoặc tag MIDI Tool (nhóm lọc Content).</p>
+<p>Tạo tiến trình: nút <b>+</b> Add Chord bên phải Chord Selector Pad để thêm hợp âm, chọn pattern cho từng hợp âm; nút <b>−</b> Delete Chord để bớt.</p>
+<p><em>Chord Root</em>: nốt gốc của hợp âm — giữ Alt/Option + nhấp thước piano, hoặc mũi tên lên/xuống. Clip có scale: Chord Root tự căn theo nốt gốc của scale; chọn nốt khác được nhưng giới hạn trong nốt của scale.</p>
+<p><em>Chord Inversion</em>: đảo hợp âm — giá trị dương duyệt các vị trí đảo, âm duyệt các vị trí đó thấp hơn một quãng tám. <em>Chord Duration</em>/<em>Offset</em>: độ dài và vị trí hợp âm (theo 1/8 độ dài hợp âm gốc).</p>
+<p class="note"><strong>Lưu ý:</strong> mọi tham số trong khung hiển thị tại một thời điểm thuộc về hợp âm đang chọn — chọn hợp âm khác là khung cập nhật theo.</p>
+<figure><img src="images/MIDIToolStacksAfterL12.png" alt="After" loading="lazy"><figcaption>Tiến trình hợp âm sinh bằng Stacks.</figcaption></figure>
+
+<h4 id="mt-euclidean">13.3.5 Euclidean</h4>
+<p>Max for Live Generator: sinh nốt theo nhịp Euclidean cho tối đa 4 bè cùng lúc; nốt mới sinh trong vùng chọn (hoặc loop).</p>
+<figure><img src="images/MaxEuclidean.png" alt="Euclidean" loading="lazy"><figcaption>MIDI Tool Euclidean.</figcaption></figure>
+<p>Tab <em>Pattern</em>: hình ảnh minh họa nốt sẽ thêm vào clip; bên phải là công tắc bật/tắt từng bè và thanh <em>Rotation</em> riêng đặt độ lệch nốt của từng bè so với đầu vùng chọn; giữa hình có nút ngẫu nhiên — đặt Rotation mỗi bè ngẫu nhiên.</p>
+<p>Tab <em>Voices</em>: công tắc từng bè, gán mỗi bè vào cao độ cụ thể (device instrument) hoặc pad trống (Drum Rack); mũi tên trái của công tắc đổi đồng loạt cao độ/pad; thanh <em>Velocity</em> bên phải đặt velocity riêng từng bè.</p>
+<p>Dưới hai tab là tham số định hình pattern:</p>
+<p><em>Steps</em> — độ dài pattern (ngắn hơn vùng chọn thì lặp và cuộn vòng). <em>Density</em> — số lần pattern lặp trong vùng chọn (không vừa thì nốt cuộn vòng). <em>Division</em> — độ dài một bước trong pattern.</p>
+<figure><img src="images/MaxEuclideanAfter.png" alt="After" loading="lazy"><figcaption>Nốt sinh bằng Euclidean.</figcaption></figure>
 
 </article>
 
