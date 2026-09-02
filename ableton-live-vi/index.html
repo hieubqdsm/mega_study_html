@@ -142,6 +142,7 @@
     <a href="#ch-bounce">20. Bounce to Audio</a>
     <a href="#ch-comping">21. Comping</a>
     <a href="#ch-stems">22. Stem Separation</a>
+    <a href="#ch-video">27. Working with Video</a>
   </nav>
 
   <main class="content">
@@ -1678,6 +1679,73 @@
 <p>High Quality còn rút ngắn thời gian bằng cách chỉ tách stem cần dùng: muốn cô lập trống và vocal thì khỏi tạo đủ mọi stem. Nhưng tính cả phần Others thì thời gian <em>không</em> giảm — vẫn phải xử lý mọi phần để tách chính xác phần còn lại (tách Vocals + Others thì Drums/Bass vẫn phải tạo; chỉ Vocals và Others được thêm vào Set, Drums/Bass lưu trong thư mục Stems của Project).</p>
 <p>Nói chung, thời gian tách phụ thuộc nhiều cấu hình máy: máy Windows cũ và Mac Intel có thể chậm vì chỉ dùng CPU — không dùng GPU như Mac Apple silicon.</p>
 <p class="note"><strong>Lưu ý:</strong> bản chất quy trình tách, đôi khi thành phần lọt vào stem ngoài dự kiến — cao tần hi-hat nghe được trong Others, hoặc synth chorus nghe trong Vocals. Sự chồng lấn này tùy mode chất lượng và đặc tính âm của nguồn. Thử tách bằng High Speed rồi chạy lại High Quality để so kết quả nào hợp vật liệu hơn.</p>
+
+<!-- ============ CH 27: WORKING WITH VIDEO (EN ch.27) ============ -->
+<h2 class="sec" id="ch-video">Chương 27 · Working with Video (Làm việc với video — viết nhạc phim)</h2>
+<p class="lead">Kiến trúc linh hoạt khiến Live là lựa chọn hoàn hảo để viết nhạc phim (scoring). Bạn cắt video clip lấy đúng đoạn cần, dùng <a href="#ch-warping">Warp Marker</a> để canh nhạc trong Arrangement View khớp thị giác với video, rồi <a href="#ch-managing-files">render</a> tệp video đã chỉnh cùng audio.</p>
+<p>Trước khi bắt đầu, nên nắm các khái niệm trong chương <a href="#ch-warping">Audio Clips, Tempo &amp; Warping</a>.</p>
+<p>Quan tâm đồng bộ Live với thiết bị video ngoài? Đọc thêm chương <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#synchronizing-with-link-tempo-follower-and-midi">Synchronizing with Link, Tempo Follower, and MIDI</a> (EN).</p>
+
+<h3>27.1 Nhập video</h3>
+<p>Live nhập phim định dạng Apple QuickTime (.mov) làm video clip. Tệp phim hiện trong Browser, kéo vào Live Set để nhập.</p>
+<p class="note"><strong>Lưu ý:</strong> Live chỉ hiển thị video cho clip nằm trong <em>Arrangement View</em>. Tệp phim nạp vào Session View bị coi như audio clip.</p>
+
+<h3>27.2 Video hiển thị thế nào trong Live</h3>
+
+<h4>27.2.1 Video clip trong Arrangement View</h4>
+<p>Video clip trong Arrangement trông như audio clip, chỉ khác có "lỗ răng sprocket" trên thanh tiêu đề.</p>
+<figure><img src="images/VideoClipInArranger.png" alt="Video clip" loading="lazy"><figcaption>Video clip trong Arrangement View.</figcaption></figure>
+<p>Phần lớn thao tác giống audio clip — ví dụ cắt ngắn bằng kéo mép trái/phải. <em>Nhưng</em> một số lệnh chỉnh sửa áp lên video clip sẽ làm nó bị thay bằng audio clip (dĩ nhiên mất phần video): <em>Consolidate</em>, <em>Reverse</em> và <em>Crop</em>. Sự thay thế chỉ diễn ra bên trong — tệp phim gốc không bao giờ bị sửa.</p>
+
+<h4>27.2.2 Cửa sổ Video</h4>
+<figure><img src="images/VideoWindow.png" alt="Video window" loading="lazy"><figcaption>Cửa sổ Video khi ở Arrangement View.</figcaption></figure>
+<p>Video Window là cửa sổ nổi riêng, luôn nằm trên cửa sổ chính của Live — kéo đi đâu tùy thích, không bao giờ bị Live che. Bật/tắt hiển thị qua lệnh trong menu View. Kéo góc dưới-phải để đổi kích thước. Kích thước/vị trí không gắn với Set, được khôi phục khi mở video lần sau. Nhấp đúp trong cửa sổ để toàn màn hình (tùy chọn qua màn hình thứ hai); giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) + nhấp đúp để trả về kích thước gốc của video.</p>
+
+<h5>27.2.2.1 Phim có track "đứt đoạn"</h5>
+<p>Trong định dạng QuickTime, phần audio và video không nhất thiết phủ suốt bộ phim — được phép có khe hở khi phát. Khe hở video: Video Window hiện màn đen; khe hở audio: phát im lặng.</p>
+
+<h4>27.2.3 Clip View</h4>
+<p>Người viết nhạc phim cần để ý tùy chọn <b>Tempo Leader</b> trong Clip View. Khi scoring, video clip thường đặt làm <em>tempo leader</em>, còn audio clip là <em>follower</em> — đây cũng là thuộc tính warp mặc định của clip trong Arrangement View. Khi đó, thêm Warp Marker vào video clip xác định các "hit point" (điểm nhấn) mà nhạc sẽ khớp theo. <em>Lưu ý: công tắc Warp của video clip phải bật thì mới đặt làm tempo leader được.</em></p>
+<figure><img src="images/VideoClipViewWarpMaster.png" alt="Tempo leader" loading="lazy"><figcaption>Đặt video clip làm Tempo Leader.</figcaption></figure>
+<p>Như đã nói trong chương <a href="#ch-warping">Audio Clips, Tempo &amp; Warping</a>: dù nhiều clip Arrangement bật tùy chọn Tempo Leader, chỉ clip đang phát ở <em>track dưới cùng</em> mới thực sự dẫn tempo.</p>
+<p>Điều này cũng có nghĩa video clip không phải tempo leader hiện hành vẫn có thể bị warp — cho ra video đã warp trong Video Window.</p>
+
+<h5>27.2.3.1 Warp Marker với video</h5>
+<p>Khi kéo Warp Marker của video clip, Video Window cập nhật khung hình tương ứng — mọi điểm trong nhạc dễ dàng canh với mọi điểm trong video.</p>
+<p>Live hiển thị cả QuickTime marker nhúng trong tệp phim — dùng làm mốc thị giác tiện khi đặt Warp Marker.</p>
+
+<h3>27.3 Canh nhạc theo video</h3>
+<p>Chỉ vài bước là bắt đầu với video trong Live. Kịch bản phổ biến — canh một bản nhạc với các điểm cắt/hit point trong video:</p>
+<ol>
+<li>Đảm bảo Arrangement View đang mở. Dùng một màn hình: phím <kbd>Tab</kbd> chuyển giữa Session và Arrangement View.</li>
+<li>Kéo phim QuickTime từ Browser thả vào một audio track trong Arrangement View. Video Window hiện phần video của tệp phim — di chuyển cửa sổ tới vị trí thuận tiện.</li>
+<li>Có video clip rồi, kéo một audio clip vào vùng thả của Arrangement View — track mới tự tạo. Bung cả hai track bằng nút <img src="images/Track_folded.png" alt="Fold" style="height:18px;display:inline;vertical-align:middle"> bên trái tên track để thấy nội dung.</li>
+<li>Nhấp đúp thanh tiêu đề video clip để mở Clip View. Trong tab/panel Audio, đảm bảo nút <b>Warp</b> bật. Clip đã warp trong Arrangement đặt được leader/follower — đặt công tắc sang <b>Leader</b> để mọi clip còn lại trong Set bám theo tempo của video clip (tức tốc độ phát bình thường của nó).</li>
+<li>Giờ thêm Warp Marker vào video clip và chỉnh theo ý — vị trí marker chính là điểm đồng bộ giữa nhạc và video. Chú ý waveform của video clip trong Arrangement cập nhật theo từng thay đổi.</li>
+<li>Cần thì bật <a href="#ch-arrangement">Arrangement Loop</a> để tập trung vào một đoạn của bản nhạc.</li>
+<li>Xong: lệnh Export Audio/Video (menu File). Toàn bộ audio được mix xuống thành một tệp; cũng xuất được cả tệp video bằng lệnh này.</li>
+</ol>
+
+<h3>27.4 Mẹo cắt video (xử lý pre-roll)</h3>
+<p>Thường nhà soạn nhạc nhận tệp phim có vài giây trống trước khi nội dung "thật" bắt đầu. Phần pre-roll ("two-beep") này là mốc sync cho kỹ sư mix — họ mong tệp nhạc của bạn cũng kèm pre-roll y hệt. Nhưng khi viết nhạc, pre-roll lại vướng: tự nhiên hơn nếu phim bắt đầu ở thời điểm bài 1.1.1 / SMPTE 00:00:00:00. Giải quyết bằng cách cắt video clip như sau:</p>
+<ol>
+<li>Thả tệp phim vào đầu Arrangement (1.1.1).</li>
+</ol>
+<figure><img src="images/VideoInArrangement.png" alt="Start" loading="lazy"><figcaption>Video clip ở đầu Arrangement.</figcaption></figure>
+<ol start="2">
+<li>Nhấp đúp thanh tiêu đề video clip mở Clip View; kéo <b>Start Marker</b> sang phải để video clip bắt đầu đúng chỗ nội dung bắt đầu.</li>
+</ol>
+<figure><img src="images/VideoStartMarkerAtTwoSecs.png" alt="Start marker" loading="lazy"><figcaption>Kéo Start Marker vượt qua pre-roll.</figcaption></figure>
+<ol start="3">
+<li>Giờ nội dung phim và nhạc sắp viết cùng bắt đầu ở 1.1.1 / 00:00:00:00. Nhạc xong, sẵn sàng render, cần trả lại pre-roll:</li>
+<li>Trong Arrangement View chọn toàn bộ (Edit → Select All), kéo cả bản nhạc sang phải vài giây:</li>
+</ol>
+<figure><img src="images/VideoClipAndMusicShiftedRight.png" alt="Shifted" loading="lazy"><figcaption>Video clip và clip nhạc cuối.</figcaption></figure>
+<ol start="5">
+<li>Nhấp thanh tiêu đề video clip (bỏ chọn phần còn lại), kéo mép trái video clip sang trái hết cỡ để lộ lại pre-roll.</li>
+</ol>
+<figure><img src="images/VideoClipWithTwoBeepBack.png" alt="Pre-roll back" loading="lazy"><figcaption>Video clip với pre-roll đã trả lại.</figcaption></figure>
+<p>Lệnh Export Audio/Video mặc định tạo tệp sample dài bằng vùng chọn trong Arrangement; video clip vẫn đang được chọn nên tệp xuất ra có thời lượng đúng như tệp phim gốc — gồm cả pre-roll.</p>
 
 </article>
 
