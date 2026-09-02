@@ -139,6 +139,8 @@
     <a href="#ch-audio-to-midi">15. Converting Audio to MIDI</a>
     <a href="#ch-grooves">16. Using Grooves</a>
     <a href="#ch-tuning">17. Using Tuning Systems</a>
+    <a href="#ch-routing">18. Routing and I/O</a>
+    <a href="#ch-recording">19. Recording New Clips</a>
     <a href="#ch-bounce">20. Bounce to Audio</a>
     <a href="#ch-comping">21. Comping</a>
     <a href="#ch-stems">22. Stem Separation</a>
@@ -1827,6 +1829,340 @@
 <p>Đọc thêm <a href="https://github.com/Ableton/maxdevtools/blob/main/m4l-production-guidelines/m4l-production-guidelines.md" target="_blank" rel="noopener">Max for Live Production Guidelines ↗</a> trên GitHub.</p>
 <p>Học thực hành: tải <a href="https://www.ableton.com/en/packs/building-max-devices/" target="_blank" rel="noopener">Building Max Devices Pack ↗</a> — bài học chuyên sâu phủ mọi bước tự xây công cụ Max.</p>
 <p>Ngoài ra xem trang <a href="https://cycling74.com/learn" target="_blank" rel="noopener">Learn Max ↗</a> của Cycling '74 — kho tài nguyên học tập đầy đủ.</p>
+
+<!-- ============ CH 18: ROUTING AND I/O (EN ch.17) ============ -->
+<h2 class="sec" id="ch-routing">Chương 18 · Routing and I/O (Định tuyến tín hiệu &amp; vào/ra)</h2>
+<p class="lead">Trong Live, <span class="term">routing</span> <span class="gloss">— thiết lập nguồn và đích tín hiệu của track, tức input và output</span>. Phần lớn routing diễn ra ở <em>phần In/Out</em> của mixer — mỗi track có trình chọn nguồn/đích tín hiệu. Phần In/Out của mixer chính là "bàn patch" (patchbay) của Live.</p>
+<figure><img src="images/SessionMixerInOutSectionAndSectionSelector.png" alt="In/Out section" loading="lazy"><figcaption>Phần In/Out của mixer.</figcaption></figure>
+<p>Hiện/ẩn phần I/O của mixer (cả hai view): mục In/Out trong menu điều khiển view của mixer (góc dưới-phải cửa sổ Live), hoặc View → Mixer Controls → In/Out, hoặc <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>I</kbd> (Win) / <kbd>Ctrl</kbd> <kbd>Option</kbd> <kbd>I</kbd> (Mac).</p>
+<figure><img src="images/MixerViewControlOptionsIO.png" alt="View control" loading="lazy"><figcaption>Menu tùy chọn của Mixer View Control.</figcaption></figure>
+<p>Với mọi track phát được clip, phần In/Out có cùng bố cục:</p>
+<ul>
+<li>Cặp trình chọn trên ("Audio/MIDI From") chọn input của track: audio track có input audio, MIDI track có input MIDI; return track nhận input từ <a href="#ch-mixing">các send tương ứng</a>.</li>
+<li>Nút Monitor chọn chế độ monitor — điều kiện để input của track được nghe qua track đó.</li>
+<li>Cặp trình chọn dưới ("Audio/MIDI To") chọn output của track. Mọi track đều có output audio, trừ MIDI track không instrument (nhớ: <a href="#ch-concepts">instrument biến MIDI thành audio</a>).</li>
+</ul>
+<p>Trong mỗi cặp trình chọn: trình chọn trên chọn loại tín hiệu ("Ext." ví dụ — kết nối ngoài qua interface audio/MIDI), gọi là trình chọn Input/Output Type; trình chọn dưới (Input/Output Channel) chọn kênh con — với "Ext." là từng kênh audio/MIDI vào/ra riêng.</p>
+
+<h3>18.1 Monitoring (Nghe giám sát)</h3>
+<p>"Monitoring" trong Live nghĩa là đưa tín hiệu input của track tới output của track. Giả sử audio track nhận input từ guitar: monitoring nghĩa là tín hiệu guitar bạn đang chơi thực sự đến output track (qua chuỗi device của track). Output đặt "Main" thì bạn nghe guitar — đã qua hiệu ứng (và trễ đúng bằng latency của interface) — trên loa.</p>
+<p>Phần In/Out có nút <em>Monitor</em> cho mỗi audio/MIDI track với 3 tùy chọn:</p>
+<ul>
+<li><em>Auto</em> (mặc định) — đúng ý cho hầu hết tình huống thu thông thường: monitoring bật khi track đang <a href="#ch-recording">arm</a>, nhưng tắt khi track đang phát clip.</li>
+<li><em>In</em> — nghe vĩnh viễn input của track bất kể arm hay đang phát clip. Track khi đó như một "Aux" trên một số hệ thống: không dùng để thu mà để đưa tín hiệu từ nơi khác vào; output của clip bị chặn. Nhận biết dễ ngay khi ẩn phần In/Out: công tắc Activator của track màu xanh.</li>
+<li><em>Off</em> — tắt hẳn monitoring. Hữu ích khi thu nhạc cụ acoustic nghe "qua không khí", dùng mixer ngoài để nghe, hoặc interface có "direct monitoring" né qua máy để tránh latency. Nhìn chung nên dùng interface cho latency không đáng kể (vài mili-giây). Thu với monitoring "Off" thì chỉnh Overall Latency trong Audio Settings (xem tutorial built-in về thiết lập Audio Settings).</li>
+</ul>
+<p>Monitoring đặt "In" hoặc "Auto" thì tùy chọn <em>Keep Monitoring Latency in Recorded Audio</em> bật mặc định — căn thời điểm thu khớp với những gì nghe qua monitoring của Live. Khuyến nghị: bật khi thu instrument/hiệu ứng phần mềm; tắt khi thu nhạc cụ acoustic hoặc nghe qua hệ thống ngoài. Nhấp chuột phải nút "In"/"Auto" để bật/tắt thủ công.</p>
+<p>Chọn nhiều track: bấm một nút Monitor áp cho mọi track đang chọn.</p>
+<p>Trả nút Monitor về mặc định: khi phần In/Out mở, bấm phím Delete (mặc định "Off" cho audio track, "Auto" cho MIDI track) hoặc Edit → Return to Default.</p>
+
+<h3>18.2 Audio In/Out ngoài</h3>
+<p>Input của interface audio chọn bằng "Ext. In" trong trình chọn Input Type của audio track; trình chọn Input Channel liệt kê từng kênh vào — mỗi mục có meter cạnh tên giúp nhận diện tín hiệu và quá tải (meter nhấp nháy đỏ). Output của interface thiết lập tương tự qua cặp trình chọn output. Chọn nhiều track: thay đổi áp cho tất cả.</p>
+<p>Danh sách input/output phụ thuộc Audio Settings — vào được qua mục "Configure…" của trình chọn kênh. Audio Settings còn mở hộp thoại Channel Configuration: quyết định input/output nào được dùng và có sẵn cho Live dạng mono hay cặp stereo. Về bản chất, hộp thoại này cho Live biết máy tính nối với các thiết bị audio trong phòng thu của bạn ra sao.</p>
+<p>Đổi tên được mọi kênh vào/ra trong Channel Configuration; tên mới hiện trong menu thả tương ứng, dùng <kbd>Tab</kbd> nhảy giữa các kênh cho nhanh. Tên đổi luôn gắn với thiết bị audio tương ứng.</p>
+
+<h4>18.2.1 Chuyển đổi Mono/Stereo</h4>
+<p>Chọn tín hiệu mono làm input của audio track thì track thu sample mono; không thì thu stereo. Tín hiệu trong chuỗi device của track luôn là stereo — kể cả input mono hay phát sample mono.</p>
+<p>Mono thành stereo bằng cách dùng chung một tín hiệu cho kênh trái/phải. Track route vào output mono: trái và phải cộng lại và giảm 6 dB tránh clip.</p>
+
+<h3>18.3 MIDI In/Out ngoài</h3>
+<p>MIDI từ thế giới ngoài vào Live giống audio. Trình chọn Input Type của MIDI track: chọn cổng MIDI cụ thể hoặc "All Ins" — input gộp của mọi cổng MIDI ngoài. Trình chọn Input Channel: từng kênh vào của cổng đã chọn hoặc "All Channels" — tín hiệu gộp mọi kênh. Giống audio, mỗi mục có meter hiển thị hoạt động kênh tương ứng. Chọn nhiều MIDI track: thay đổi áp cho tất cả.</p>
+
+<h4>18.3.1 Cổng MIDI input/output</h4>
+<p>Chọn cổng MIDI nào có sẵn cho Live qua tùy chọn <em>Inputs</em>/<em>Outputs</em> trong phần MIDI của Link, Tempo &amp; MIDI Settings. Dùng được bao nhiêu cổng tùy ý cho input/output track; trình chọn In/Out của mixer gọi được từng cổng.</p>
+<figure><img src="images/MidiPreferencesDeviceList.png" alt="MIDI ports" loading="lazy"><figcaption>Danh sách input/output cổng MIDI trong Settings.</figcaption></figure>
+
+<h5>18.3.1.1 Track</h5>
+<p>Bật <em>Track</em> cho phép Live gửi/nhận thông điệp nốt và CC (Control Change) — ví dụ dùng MIDI keyboard để chơi hoặc nhập cao độ.</p>
+<p>Bật Track cho <em>input</em> của cổng khi: chơi instrument trong Live bằng MIDI keyboard; thu nốt vào MIDI clip; thu MIDI CC vào MIDI clip (ví dụ ghi lại thay đổi tham số từ synth phần cứng ngoài).</p>
+<p>Bật Track cho <em>output</em> của cổng khi: kích hoạt thiết bị phần cứng ngoài (synth, drum machine…); gửi nốt MIDI sang ứng dụng khác (qua bus MIDI ảo); gửi MIDI CC automation ra thiết bị/ứng dụng ngoài.</p>
+<p class="note"><strong>Lưu ý:</strong> chỉ cần bật Track trên cổng <em>output</em> của MIDI controller nếu controller có bộ tạo âm built-in.</p>
+
+<h5>18.3.1.2 Sync</h5>
+<p><em>Sync</em> cho phép Live gửi/nhận MIDI Clock hoặc nhận MIDI Timecode. <em>Lưu ý:</em> trừ khi có sequencer/arpeggiator built-in, bạn không bao giờ cần bật Sync trên cổng vào/ra của MIDI controller.</p>
+<p>Bật Sync cho <em>input</em> khi: đồng bộ Live với sequencer/drum machine/groove box ngoài; đồng bộ Live với DAW khác qua MIDI.</p>
+<p>Bật Sync cho <em>output</em> khi: đồng bộ sequencer/drum machine/groove box với Live bằng MIDI Clock; đồng bộ DAW khác với Live bằng MIDI Clock; đồng bộ LFO và arpeggiator của synth/MIDI controller ngoài với Live.</p>
+<p>Bật Sync cho output của cổng: bấm tam giác cạnh tên cổng mở thêm tùy chọn.</p>
+<figure><img src="images/MIDIOutputPortSyncOptions.png" alt="Sync options" loading="lazy"><figcaption>Tùy chọn Sync Output.</figcaption></figure>
+<p><em>MIDI Clock Sync Delay</em>: thêm độ trễ (mili-giây) cho tín hiệu sync đi ra — giúp sửa lệch thời gian giữa Live và phần cứng ngoài.</p>
+<p><em>MIDI Clock Type</em>: Song hoặc Pattern. Song Mode: Live gửi MIDI Song Position Pointer (SPP) và Continue mỗi khi vị trí phát đổi. Pattern Mode: chỉ dùng thông điệp Start, gửi ở đầu bar kế tiếp — dùng khi thiết bị MIDI không nhận SPP.</p>
+<p>Menu thả <em>Hardware Resync</em> chọn cách gửi thông điệp resync khi bật tùy chọn <em>Resync External Hardware</em>.</p>
+<figure><img src="images/ResyncExternalHardwarePreference.png" alt="Resync pref" loading="lazy"><figcaption>Tùy chọn Resync External Hardware.</figcaption></figure>
+<p>Bật xong, nút Resync External Hardware xuất hiện trên Control Bar — gửi thông điệp resync ra thiết bị ngoài; hữu ích khi phần cứng đang sync bị trôi nhịp so với Live Set khi phát.</p>
+<figure><img src="images/ResyncExternalHardwareIndicator.png" alt="Resync button" loading="lazy"><figcaption>Nút Resync External Hardware trên Control Bar.</figcaption></figure>
+<p>Mặc định <em>Stop and Start</em>: gửi Stop rồi Start của MIDI Clock — chạy tốt với đa số thiết bị. <em>Start Only</em>: chỉ gửi Start — có thể tốt hơn với một số thiết bị. <em>Don't Resync</em>: không gửi gì.</p>
+
+<h5>18.3.1.3 Remote</h5>
+<p>Công tắc <em>Remote</em> cho phép tạo mapping từ MIDI controller tới tham số trong Live, hoặc gửi feedback về controller.</p>
+<p>Bật Remote cho <em>input</em> khi: tạo MIDI mapping tùy chỉnh để điều khiển tham số trong Live; dùng MIDI keyboard để kích hoạt MIDI Clip.</p>
+<p>Bật Remote cho <em>output</em> khi: dùng controller có LED phản ánh trạng thái tham số Live đã map; dùng controller có fader motor phản ánh trạng thái tham số đã map.</p>
+
+<h4>18.3.2 Chơi MIDI bằng bàn phím máy tính</h4>
+<p>Bàn phím máy tính sinh được nốt MIDI. Bật Computer MIDI Keyboard: nút trên Control Bar, mục "Computer MIDI Keyboard" trong menu Options, hoặc phím <kbd>M</kbd>.</p>
+<figure><img src="images/ComputerMidiKeyboard.png" alt="Computer MIDI keyboard" loading="lazy"><figcaption>Kích hoạt Computer MIDI Keyboard.</figcaption></figure>
+<p>Hàng phím chữ giữa tương ứng phím trắng piano, bắt đầu từ C3 bên trái; phím đen tương ứng hàng phím trên. Bốn phím trái nhất của hàng dưới (Z, X, C, V trên bàn phím Mỹ) dùng transpose và chỉnh velocity:</p>
+<ul>
+<li>Z và X: chỉnh dải quãng tám của keyboard.</li>
+<li>C và V: chỉnh velocity nốt vào theo bước 20 (20, 40, 60…).</li>
+</ul>
+<p>Khi keyboard máy tính đặt trong khoảng C3–C4, phím map sao cho hàng giữa (ASDF…) trùng các ô sample của <a href="../manual-en/live-instrument-reference/index.html#impulse">trống sampler Impulse</a> (EN) — chơi và thu trống pattern trực tiếp từ bàn phím máy tính được luôn.</p>
+<p class="note"><strong>Lưu ý:</strong> bật Computer MIDI Keyboard, nó sẽ "chiếm" phím vốn đã gán cho <a href="../manual-en/midi-and-key-remote-control/index.html#computer-keyboard-remote-control">điều khiển từ xa</a> (EN) giao diện Live — không dùng thì tắt đi. Phím tắt một chữ như <kbd>S</kbd> (solo) vẫn dùng được bằng cách thêm <kbd>Shift</kbd>: <kbd>Shift</kbd> <kbd>S</kbd>.</p>
+
+<h4>18.3.3 Nối synthesizer ngoài</h4>
+<p>Route MIDI ra synth ngoài rất dễ: Output Type chọn cổng MIDI nối synth; Output Channel chọn kênh MIDI để gửi.</p>
+<p>Ngoài route qua phần In/Out của track, còn route được từ trong chuỗi device bằng device <a href="../manual-en/live-instrument-reference/index.html#external-instrument">External Instrument</a> (EN): gửi MIDI ra synth ngoài và nhận lại audio của nó — tất cả trong một track duy nhất.</p>
+<p><em>Quan trọng</em>: dùng keyboard synth vừa làm đàn chơi vào Live vừa làm bộ tạo âm? Hãy bật chức năng "Local Off" của synth. Mọi synth đều có — tách bàn phím khỏi bộ tạo âm, cho phép coi hai phần như thiết bị riêng. Khi đó Live trở thành trung tâm của phòng MIDI: nhận MIDI từ đàn và phân phối MIDI đến (cả MIDI từ clip) đúng chỗ.</p>
+
+<h4>18.3.4 Đèn báo MIDI In/Out</h4>
+<p>Control Bar có ba cặp đèn LED báo MIDI vào/ra — không chỉ cho biết có tín hiệu mà cả tín hiệu dùng làm gì. Mỗi cặp: đèn trên nháy khi nhận thông điệp, đèn dưới nháy khi gửi.</p>
+<figure><img src="images/ControlBarMidiIndicators.png" alt="MIDI indicators" loading="lazy"><figcaption>Đèn báo MIDI trên Control Bar.</figcaption></figure>
+<p>Ba cặp đèn, từ trái sang:</p>
+<ol>
+<li>Tín hiệu MIDI Clock/Timecode dùng <a href="../manual-en/synchronizing-with-link-tempo-follower-and-midi/index.html#synchronizing-with-link-tempo-follower-and-midi">đồng bộ Live với sequencer khác</a> (EN) — chỉ hiện khi nguồn sync ngoài được bật cho một cổng MIDI trong Settings.</li>
+<li>Thông điệp MIDI dùng <a href="../manual-en/midi-and-key-remote-control/index.html#midi-and-key-remote-control">điều khiển từ xa</a> (EN) các phần tử giao diện Live.</li>
+<li>Thông điệp MIDI đi/đến từ các MIDI track của Live.</li>
+</ol>
+<p>Thông điệp MIDI map cho remote control bị remote "ăn mất" và không truyền tới MIDI track — nguyên nhân nhầm lẫn phổ biến, nhìn đèn báo là rõ ngay.</p>
+
+<h3 id="rt-resampling">18.4 Resampling (Thu lại đầu ra Main)</h3>
+<p>Đầu ra Main của Live route được vào một audio track riêng để thu — gọi là <span class="term">resampling</span> <span class="gloss">— thu lại những gì đang phát trong Set thành sample</span>. Vừa vui vừa hữu ích: tạo sample từ hiện tại của Live Set rồi dùng ngay lập tức; thu lại track chứa device ngốn CPU để rồi xóa device; hoặc nghe thử nhanh trước khi <a href="#ch-managing-files">render ra đĩa</a>.</p>
+<p>Chọn "Resampling" trong trình chọn Input Type của audio track bất kỳ để đưa Main vào track đó. Sau đó quyết định thu gì: mute/solo/chỉnh các track cấp tín hiệu cho Main; dùng meter Main Volume đảm bảo mức cao nhất mà không clip (đỏ trên meter). Rồi arm track và thu vào <a href="#ch-recording">clip slot trống</a> bất kỳ. Lưu ý: output của chính track thu bị chặn trong lúc resampling và không nằm trong bản thu.</p>
+<p>Sample tạo bằng resampling lưu trong thư mục <a href="#ch-managing-files">Project</a> của Set, dưới Samples/Recorded. Chưa lưu Set thì chúng nằm ở vị trí của thư mục Temporary.</p>
+
+<h3>18.5 Routing nội bộ</h3>
+<p>Mixer và các device route ngoài của Live cho phép route giữa các track. Dù có thể gây rối, các route này mở ra nhiều lựa chọn sáng tạo và kỹ thuật giá trị. Qua mixer, route giữa track chạy theo hai hướng:</p>
+<ol>
+<li>Track A gửi output sang Track B — mọi track nhận được loại output phù hợp từ A đều hiện trong trình chọn Output Type của A.</li>
+<li>Track B nhận input từ Track A — mọi track phát loại tín hiệu phù hợp đều hiện trong trình chọn Input Type của B.</li>
+</ol>
+<figure><img src="images/TwoWaysToRouteTrackAIntoTrackB.png" alt="Two ways" loading="lazy"><figcaption>Hai cách route Track A vào Track B.</figcaption></figure>
+<p>Cả hai đều đưa output A vào B. Cách 1 để yên thiết lập vào/ra của B, và lúc nào cũng thêm được track khác đổ output vào B — phương án chọn cho route "nhiều-một" như submix hoặc nhiều MIDI track chơi cùng instrument. Ở kịch bản này, solo Track B vẫn nghe các track cấp tín hiệu cho nó; solo Track A vẫn nghe được tín hiệu A (mọi track khác muted, kể cả track khác cũng đổ vào B — về kỹ thuật, bạn nghe output của B sau khi bỏ mọi thứ trừ tín hiệu A).</p>
+<p>Cách 2 ngược lại: A không bị ảnh hưởng, chỉ bị B "gom" output; dễ thêm track khác như B cùng gom output của A — ví dụ điển hình của route "một-nhiều" là chồng lớp (layer) instrument.</p>
+
+<h4>18.5.1 Các điểm routing nội bộ</h4>
+<p>Tín hiệu đi từ track vào chuỗi device rồi tới mixer track — nơi bị pan hoặc đổi mức bởi fader.</p>
+<p>Khi trình chọn Audio From của một track trỏ sang track khác (cách 2 ở trên), tín hiệu nhận được gom từ một trong ba điểm — chọn trong Input Channel: <em>Pre FX</em>, <em>Post FX</em> hoặc <em>Post Mixer</em>.</p>
+<figure><img src="images/TrackRoutingTapPoints.png" alt="Tap points" loading="lazy"><figcaption>Các điểm gom (tap) cho routing track.</figcaption></figure>
+<ul>
+<li><em>Pre FX</em> — gom tín hiệu trực tiếp từ track, trước chuỗi device (FX) và mixer: chỉnh device/mixer của track bị gom không ảnh hưởng tín hiệu. Solo một track gom Pre FX vẫn nghe được track bị gom.</li>
+<li><em>Post FX</em> — gom ở đầu ra chuỗi device (FX), trước khi quay lại mixer track: chỉnh device của track bị gom <em>có</em> đổi tín hiệu, chỉnh mixer thì không. Solo track gom Post FX vẫn nghe được track bị gom.</li>
+<li><em>Post Mixer</em> — gom output cuối cùng của track, sau chuỗi device lẫn mixer. Solo một track gom Post Mixer sẽ <em>không</em> nghe được track bị gom.</li>
+</ul>
+
+<h5>18.5.1.1 Điểm routing trong Rack</h5>
+<figure><img src="images/TrackRoutingChainTapPoints.png" alt="Chain taps" loading="lazy"><figcaption>Điểm gom cho mọi chain trong track.</figcaption></figure>
+<p>Track có một/nhiều <a href="../manual-en/instrument-drum-and-effect-racks/index.html#instrument-drum-and-effect-racks">Instrument/Effect Rack</a> (EN) trong chuỗi device: các điểm routing nội bộ (Pre FX/Post FX/Post Mixer) có sẵn cho <em>từng chain</em> trong Rack. Track chứa <a href="../manual-en/instrument-drum-and-effect-racks/index.html#drum-racks">Drum Rack</a> (EN): điểm routing có cho mọi return chain của Rack. Mỗi Rack cũng liệt kê trong trình chọn Input Channel:</p>
+<ul>
+<li><em>(Tên Rack) | (Tên Chain)</em> | Pre FX — gom tại điểm tín hiệu vào Rack, trước device của chain.</li>
+<li><em>(Tên Rack) | (Tên Chain)</em> | Post FX — gom cuối chain, trước mixer của chain.</li>
+<li><em>(Tên Rack) | (Tên Chain)</em> | Post Mixer — gom ở đầu ra mixer của chain, ngay trước điểm mọi chain trong Rack cộng lại thành output của Rack.</li>
+</ul>
+<p>Solo một track gom Chain ở bất kỳ điểm nào vẫn nghe được output tại điểm đó.</p>
+
+<h4>18.5.2 Ứng dụng routing nội bộ</h4>
+<p>Mấy ví dụ routing nội bộ điển hình:</p>
+
+<h5>18.5.2.1 Thu sau hiệu ứng (Post-FX Recording)</h5>
+<p>Giả sử đưa guitar vào Live, dựng bài track bởi track, lớp thu chồng lớp thu. Có chuỗi hiệu ứng riêng cho từng track để áp hiệu ứng khác nhau cho từng lớp thu (sau khi thu) là rất mạnh. Nhưng nhiều lúc muốn cho guitar qua hiệu ứng (noise gate, amp model…) <em>trước</em> khâu thu và thu tín hiệu đã qua hiệu ứng.</p>
+<figure><img src="images/PostFxRecordingRoutingExample.png" alt="Post FX" loading="lazy"><figcaption>Một thiết lập thu sau hiệu ứng.</figcaption></figure>
+<p>Dễ thực hiện: dành một audio track riêng để xử lý và nghe guitar vào — gọi là "Guitar", kéo hiệu ứng mong muốn vào chuỗi device. Không thu trực tiếp vào track Guitar; tạo thêm vài track để thu, tất cả đặt input là Post FX từ track Guitar (muốn thu cả mức/pan của Guitar thì gom Post Mixer).</p>
+<p>Về nghe: đặt Monitor của track Guitar là In — luôn nghe guitar qua track này bất kể Live đang làm gì; các track kia đặt Monitor Off.</p>
+
+<h5>18.5.2.2 Thu MIDI thành audio</h5>
+<p>Khi làm việc với MIDI và instrument phần mềm phức tạp, đôi khi thu <em>audio kết quả</em> còn hữu ích hơn thu MIDI vào. Một nốt MIDI có thể khiến <em>Absynth</em> (Native Instruments) cho ra cả một đoạn nhạc chứ không phải một âm đơn — dạng biểu diễn bằng waveform audio hợp hơn nốt đơn trong MIDI clip, nhất là khi so các tùy chọn chỉnh sửa.</p>
+<figure><img src="images/RecordingAbsynthAsAudioRoutingExample.png" alt="Absynth" loading="lazy"><figcaption>Thu output của instrument phức tạp vào audio track.</figcaption></figure>
+<p>Thiết lập giống <a href="#rt-resampling">ví dụ trên</a>: một MIDI track chứa instrument ảo, thêm audio track để thu audio khi instrument chơi.</p>
+
+<h5>18.5.2.3 Tạo submix</h5>
+<figure><img src="images/DrumSubMixRoutingExample.png" alt="Drum submix" loading="lazy"><figcaption>Submix từng trống của một bộ trống.</figcaption></figure>
+<p>Giả sử từng trống của bộ trống vào từng track riêng để thu multitrack. Trong mix, đổi volume từng trống dễ; chỉnh volume cả bộ trống so với phần còn lại của nhạc lại bất tiện. Giải pháp: thêm audio track để submix trống — các track trống đặt output đổ vào track submix, submix xuất ra Main. Track submix cho ta núm volume tiện cho cả bộ trống.</p>
+<p>Cách khác linh hoạt hơn: gom các track trống thành <a href="#ch-mixing">Group Track</a> — tự tạo route output cần thiết và ẩn/hiện được các track thành phần.</p>
+<figure><img src="images/SendsOnlySubmix.png" alt="Sends only" loading="lazy"><figcaption>Submix bằng cách đặt Output Type là Sends Only.</figcaption></figure>
+<p>Cách thứ ba: dùng return track để submix — chọn Sends Only trong Output Type của track, vặn Send lên tùy ý; return track tương ứng đóng vai trò kênh submixer.</p>
+
+<h5>18.5.2.4 Nhiều MIDI track chơi cùng một instrument</h5>
+<p>Giả sử một MIDI track chứa instrument ảo — Simpler chơi pad. Đã thu MIDI clip vào track này rồi mới muốn thêm một lớp thu song song độc lập cho cùng instrument. Thêm MIDI track mới; có thể kéo Simpler khác vào, nhưng ta muốn <em>dùng lại</em> Simpler của track pad để đổi âm pad thì nốt của cả hai track cùng đổi.</p>
+<figure><img src="images/SeveralMidiTracksPlayingSameInstrumentRoutingExample.png" alt="Same instrument" loading="lazy"><figcaption>Đổ MIDI track thêm vào MIDI track sẵn có để dùng lại instrument.</figcaption></figure>
+<p>Thực hiện: đặt Output Type của MIDI track mới trỏ sang track pad. Trình chọn Output Channel khi đó cho nhiều đích: đổ output track mới vào input track pad, hoặc trỏ thẳng vào Simpler. "Track In" là tín hiệu input của track pad (tín hiệu để thu) — không phải thứ ta cần; chọn "Warm Bubbly Pad" để gửi MIDI thẳng tới Simpler, bypass khâu thu và nghe. Thiết lập này cho phép thu lớp mới ở track nào tùy thích — tất cả cùng chơi một âm pad.</p>
+<figure><img src="images/SeveralMidiTracksPlayingSameInstrumentRoutingExample2.png" alt="Isolated" loading="lazy"><figcaption>Instrument đã được tách riêng vào một track chuyên dụng.</figcaption></figure>
+<p>Có thể phiền vì mute track pad (tắt Activator) cũng mute MIDI track kia — chính xác là track kia vẫn phát nhưng MIDI của nó do một instrument ngoài mix chơi. Khắc phục dễ: cắt clip khỏi track pad dán sang track thứ ba mute độc lập được (và tự thêm MIDI effect riêng). Track pad gốc giờ chỉ là "hộp đựng" instrument; không thu clip mới vào nó nữa nên đặt Input Type là "No Input" — nút Arm biến mất, đỡ nhầm khi ẩn phần In/Out.</p>
+
+<h5>18.5.2.5 Gom output riêng từ instrument</h5>
+<p>Một số instrument phần mềm như Impulse của Live cho nhiều output audio. Mặc định Impulse trộn nội bộ 8 ô sample và đưa mix ra audio out của instrument; hiệu ứng đứng sau Impulse trên cùng track xử lý tín hiệu tổng. Đôi khi muốn tách một tiếng trống ra khỏi mix để xử lý hiệu ứng và mix riêng — làm được vì Impulse cung cấp các ô sample làm nguồn audio cho track khác.</p>
+<figure><img src="images/ImpulseIndividualOutRoutingExample.png" alt="Impulse outs" loading="lazy"><figcaption>Dùng output riêng của Impulse để xử lý từng ô sample.</figcaption></figure>
+<p>Tạo một audio track, chọn trong Input Type track chứa Impulse. Input Channel khi đó, ngoài Pre FX/Post FX/Post Mixer, còn có 8 output riêng của Impulse — tên theo sample từng ô. Route output riêng từ Impulse sang track khác tự động đưa tín hiệu đó ra khỏi mix nội bộ của Impulse (đây là tiện lợi riêng, không phải chuẩn của phần lớn plug-in instrument). Solo track gom một ô sample của Impulse vẫn nghe được output ô đó.</p>
+
+<h5>18.5.2.6 Dùng plug-in multi-timbral</h5>
+<p>Nhiều plug-in instrument hỗ trợ multi-timbral: như nhiều instrument trong một, mỗi "part" nhận MIDI trên một kênh MIDI riêng. Thường instrument multi-timbral có output riêng để route từng part vào mixer, hoặc có submixer riêng.</p>
+<figure><img src="images/MultiTimbralInstrumentRoutingExample.png" alt="Multi-timbral" loading="lazy"><figcaption>Các track đổ MIDI vào và gom audio từ các part của instrument multi-timbral.</figcaption></figure>
+<p>Gửi MIDI từ mixer đến instrument multi-timbral là biến thể của <a href="#rt-resampling">trường hợp trên</a>: một MIDI track chứa instrument; các MIDI track thêm nuôi từng part — mỗi track đặt Output Type trỏ sang track chứa instrument, Output Channel chọn kênh MIDI đích. Audio track thêm gom output riêng của instrument như đã mô tả.</p>
+<p>Cũng dùng được device External Instrument để route MIDI (và nhận audio) từ các output phụ của plug-in multi-timbral — khỏi cần tạo audio track riêng cho từng output:</p>
+<ol>
+<li>Chèn instrument multi-timbral vào một MIDI track.</li>
+<li>Chèn device External Instrument vào MIDI track khác.</li>
+<li>Trong trình chọn MIDI To thứ nhất của External Instrument, chọn track chứa instrument.</li>
+<li>Trình chọn thứ hai: chọn kênh MIDI cần route tới.</li>
+<li>Trình chọn Audio From của External Instrument: chọn một output phụ trên instrument đang gửi MIDI tới.</li>
+</ol>
+<p>Lặp lại bước 2–5 cho từng part. Có thể gom cả hệ thống External Instrument vào một track bằng cách đặt mỗi cái vào một chain của Rack.</p>
+<p class="note"><strong>Lưu ý:</strong> output chính của instrument multi-timbral vẫn xuất ra track chứa nó — chỉ output phụ mới tới được device External Instrument.</p>
+
+<h5>18.5.2.7 Cấp tín hiệu sidechain</h5>
+<p>Một số hiệu ứng có "sidechain input". Ví dụ vocoder áp đặc tính phổ của tín hiệu này (lời nói) lên tín hiệu khác (pad dây): vocoder chèn như hiệu ứng audio vào track dây, có sidechain input cho tín hiệu lời nói — phải đưa từ track khác sang. Tạo thêm audio track "Speech", đặt Output Type trỏ sang track "Strings", trong Output Channel chọn sidechain input của vocoder.</p>
+<p>Một số vocoder plug-in có synth built-in tạo tín hiệu "carrier": khi đó chỉ khác một chỗ — kéo vocoder instrument vào MIDI track; cấp sidechain audio như trên.</p>
+<p>Một số device built-in của Live có điều khiển sidechain riêng kèm trình chọn routing tích hợp y như của track — với các device này khỏi cần quy trình trên, chọn nguồn sidechain ngay trong device.</p>
+
+<h5>18.5.2.8 Chồng lớp instrument (Layering)</h5>
+<p>Giả sử MIDI track chứa instrument chơi âm dây, muốn tăng cường bằng âm kèn đồng chơi cùng nốt. Dễ: thêm MIDI track chứa instrument kèn, đặt Input Type gom tín hiệu Post FX của track dây.</p>
+<figure><img src="images/InstrumentLayeringRoutingExample.png" alt="Layering" loading="lazy"><figcaption>Dùng MIDI track phụ để chồng lớp instrument.</figcaption></figure>
+<p>Bạn có thể thắc mắc sao được vậy khi output của track dây là audio chứ không phải MIDI. Khi route MIDI vào từ track khác, ta gom MIDI ở giai đoạn muộn nhất có thể — sau mọi MIDI Effect, ngay trước instrument.</p>
+
+<!-- ============ CH 19: RECORDING NEW CLIPS (EN ch.19) ============ -->
+<h2 class="sec" id="ch-recording">Chương 19 · Recording New Clips (Thu clip mới)</h2>
+<p class="lead">Chương này về thu clip mới từ tín hiệu audio và MIDI vào — <em>khác</em> với việc <a href="#ch-session">ghi clip Session vào Arrangement</a>.</p>
+<p>Để thu audio thành công, đảm bảo audio settings thiết lập đúng. Nhớ rằng micro, guitar, turntable không cho tín hiệu mức line — cần khuếch mức trước khi thu: dùng interface có preamp hoặc preamp ngoài.</p>
+<p>Trên MIDI track có thể "capture" vật liệu <em>sau khi</em> đã chơi, không cần bấm Record trước — tự do ứng tấu và thử nghiệm hơn. Xem mục <a href="#rec-capture">Capturing MIDI</a>.</p>
+
+<h3>19.1 Chọn input</h3>
+<p>Track thu từ nguồn input hiển thị trong phần In/Out của nó (mở bằng mục In/Out trong menu View). Trong Arrangement View, bung track và chỉnh chiều cao để thấy trọn phần In/Out.</p>
+<figure><img src="images/TrackInOutSectionL12.png" alt="In/Out" loading="lazy"><figcaption>Phần In/Out của track trong Arrangement (trái) và Session View (phải).</figcaption></figure>
+<p>Audio track mặc định thu tín hiệu mono từ input ngoài 1 hoặc 2. MIDI track mặc định thu mọi MIDI đến qua các <a href="#ch-routing">thiết bị input ngoài</a> đang bật. Bàn phím máy tính bật được làm <a href="#ch-routing">thiết bị MIDI "giả"</a> — thu MIDI được ngay cả khi không có controller.</p>
+<p>Mỗi track chọn được nguồn khác mặc định: input ngoài mono/stereo bất kỳ, kênh MIDI cụ thể từ thiết bị MIDI-in cụ thể, hoặc tín hiệu từ track khác. Chương <a href="#ch-routing">Routing and I/O</a> mô tả chi tiết.</p>
+
+<h3 id="rec-arm">19.2 Arm track (bật ghi cho track)</h3>
+<figure><img src="images/ArmButtonsSessionAndArrangement.png" alt="Arm buttons" loading="lazy"><figcaption>Nút Arm trong mixer Arrangement (trái) và Session (phải).</figcaption></figure>
+<p>Chọn track để thu: bấm nút Arm của nó — bấm ở view nào cũng như nhau vì hai view dùng chung track.</p>
+<p>Mặc định, track đã arm được monitor: input đi qua chuỗi device ra output để nghe thứ đang thu — gọi là <a href="#ch-routing">"auto-monitoring"</a>, đổi được theo nhu cầu.</p>
+<p>Dùng <a href="../manual-en/midi-and-key-remote-control/index.html#natively-supported-control-surfaces">control surface hỗ trợ gốc</a> (EN): arm một MIDI track tự khóa control surface vào instrument của track đó.</p>
+<p>Bấm Arm một track sẽ bỏ arm mọi track khác — trừ khi giữ <kbd>Ctrl</kbd> (Win) / <kbd>Cmd</kbd> (Mac). Chọn nhiều track: bấm Arm một track arm luôn các track còn lại. Arm track đồng thời chọn track để vào device của nó trong Device View ngay.</p>
+
+<h3>19.3 Thu</h3>
+<p>Thu được ở cả Session lẫn Arrangement View. Muốn thu nhiều track cùng lúc và/hoặc muốn xem bản thu tuyến tính theo tiến trình — Arrangement View hợp hơn. Muốn cắt bản thu liền mạch thành nhiều clip, hoặc vừa thu vừa chạy clip trong Live — dùng Session View.</p>
+
+<h4>19.3.1 Thu vào Arrangement</h4>
+<figure><img src="images/ArrangementWithRecordingControlsBreakouts.png" alt="Arrangement record" loading="lazy"><figcaption>Thu vào Arrangement.</figcaption></figure>
+<ol>
+<li>Bấm nút Arrangement Record trên Control Bar để bắt đầu. Hành vi cụ thể tùy trạng thái nút "Start Playback with Record" trong Record, Warp &amp; Launch Settings: bật — thu bắt đầu ngay khi bấm; tắt — thu chờ tới khi bấm Play hoặc chạy clip Session. Giữ <kbd>Shift</kbd> khi bấm Arrangement Record luôn cho hành vi ngược lại, bất kể thiết lập.</li>
+<li>Thu tạo clip mới trong mọi track đang bật Arm.</li>
+<li>Bật MIDI Arrangement Overdub: MIDI clip mới chứa trộn tín hiệu sẵn có trong track với tín hiệu vào mới (overdub chỉ áp cho MIDI track).</li>
+<li>Chặn thu trước điểm punch-in: bật công tắc Punch-In — bảo vệ phần track không muốn ghi đè và cho đặt thời gian pre-roll/"warm-up". Điểm punch-in trùng vị trí bắt đầu Arrangement Loop.</li>
+<li>Tương tự chặn thu sau điểm punch-out: bật Punch-Out; điểm punch-out trùng vị trí kết thúc Arrangement Loop.</li>
+<li>Thu vào <a href="#ch-arrangement">Arrangement Loop</a>: Live giữ lại audio thu của mỗi vòng lượt.</li>
+</ol>
+<p>Sau này "mở" bản thu loop ra bằng cách Undo (menu Edit) nhiều lần, hoặc bằng đồ họa trong Clip View: sau khi thu loop, nhấp đút clip mới — trong Sample Editor thấy sample dài chứa toàn bộ audio của cả quá trình. Loop brace của Clip View giới hạn audio lấy ở lượt cuối; kéo marker sang trái để nghe audio các lượt trước.</p>
+
+<h4>19.3.2 Thu vào clip slot Session</h4>
+<p>Thu clip mới "trực tiếp" vào bất kỳ slot nào của Session.</p>
+<figure><img src="images/RecordingNewClipsIntoSessionViewSlots.png" alt="Session record" loading="lazy"><figcaption>Thu vào Session View.</figcaption></figure>
+<ol>
+<li>Đặt trình chọn Global Quantization khác "None" để clip được cắt đúng.</li>
+<li>Bật Arm cho track cần thu — nút Clip Record xuất hiện trong các slot trống của track đã arm.</li>
+<li>Bấm Session Record để thu vào scene đang chọn trên mọi track đã arm: mỗi slot một clip mới với nút Launch đỏ báo đang thu. Muốn chuyển thẳng từ thu sang phát loop: bấm Session Record lần nữa.</li>
+<li>Hoặc bấm nút Clip Record của slot bất kỳ để thu vào slot đó; từ thu chuyển thẳng sang phát loop bằng nút Launch của clip.</li>
+<li>Dừng hẳn clip: bấm Clip Stop của nó hoặc nút Stop trên Control Bar.</li>
+</ol>
+<p>Dừng phát và chuẩn bị "take" mới bằng nút New: dừng clip ở mọi track đã arm và chọn một scene để thu clip mới (tạo scene mới nếu cần). <em>Lưu ý:</em> nút New chỉ có trong Key Map Mode và MIDI Map Mode — xem phần <a href="../manual-en/midi-and-key-remote-control/index.html#computer-keyboard-remote-control">Computer Keyboard Remote Control</a> (EN) để gán phím.</p>
+<figure><img src="images/ControlBarNewButton.png" alt="New button" loading="lazy"><figcaption>Nút New hiện trên Control Bar khi Key Map Mode bật.</figcaption></figure>
+<p class="note"><strong>Lưu ý:</strong> mặc định chạy scene không kích hoạt thu trong slot trống đã bật ghi của scene đó. Muốn vậy: bật tùy chọn Start Recording on Scene Launch trong Record, Warp &amp; Launch Settings.</p>
+
+<h4>19.3.3 Overdub thu MIDI pattern</h4>
+<p>Live khiến thu theo pattern cho trống v.v. rất dễ. Dùng Impulse cùng kỹ thuật sau, dựng trống pattern từng lớp một trong khi nghe kết quả; hoặc dùng instrument chơi nửa cung như Simpler để dựng giai điệu/hòa âm từng nốt.</p>
+<ol>
+<li>Global Quantization đặt 1 bar.</li>
+<li>Muốn tự quantize nốt sắp thu: chọn giá trị <a href="#rec-quantize">Record Quantization</a> phù hợp.</li>
+<li>Nhấp đút một slot trống trong MIDI track chứa Impulse (hoặc instrument khác): clip trống mới xuất hiện với loop mặc định 1 bar — đổi được bằng nhấp đúp clip và sửa <a href="#ch-clip-view">thuộc tính loop</a>.</li>
+<li>Arm track.</li>
+<li>Bấm Session Record.</li>
+<li>Nốt bạn chơi được thêm vào clip đang loop — theo dõi bản thu trong Clip View.</li>
+<li>Clip overdub theo vòng lặp, dựng pattern từng lớp. Muốn tạm dừng thu để tập: bấm Session Record lần nữa để tắt overdub — clip vẫn phát nhưng bạn chơi theo không bị thu; sẵn sàng thì bấm tiếp. Mỗi lần bấm Session Record chuyển đổi giữa phát và overdub.</li>
+</ol>
+<p class="note"><strong>Lưu ý:</strong> giữ <kbd>Alt</kbd> (Win) / <kbd>Option</kbd> (Mac) khi nhấp đút slot trống để tạo clip mới sẽ arm track và chạy clip luôn.</p>
+<p>Suốt quá trình overdub, dùng Undo để bỏ take cuối, hoặc vẽ/dời/xóa nốt trực tiếp trong MIDI Note Editor của Clip View.</p>
+
+<h4 id="rec-step">19.3.4 MIDI Step Recording (Thu từng bước)</h4>
+<p>MIDI Editor cho phép thu nốt khi transport đang dừng: giữ phím trên controller/Computer MIDI Keyboard rồi đẩy insert marker theo lưới. Gọi là step recording — nhập nốt theo tốc độ riêng, không cần nghe metronome hay track dẫn.</p>
+<figure><img src="images/StepRecording.png" alt="Step recording" loading="lazy"><figcaption>Step Recording trong MIDI Editor.</figcaption></figure>
+<ol>
+<li>Arm MIDI track chứa clip cần thu.</li>
+<li>Bật công tắc Preview trong MIDI Editor của clip.</li>
+<li>Nhấp trong MIDI Editor để đặt insert marker tại điểm bắt đầu thu.</li>
+</ol>
+<p>Phím mũi tên phải đẩy insert marker sang phải theo lưới; nốt đang giữ khi bấm sẽ thêm vào clip. Tiếp tục giữ nốt và bấm mũi tên phải lần nữa để kéo dài chúng. Xóa nốt vừa thu: giữ nốt đó và bấm mũi tên trái.</p>
+<p>Bộ điều hướng step recording cũng <a href="#rec-remote">map được MIDI</a>.</p>
+
+<h3>19.4 Thu đúng nhịp (Recording in Sync)</h3>
+<p>Live giữ audio và MIDI đã thu luôn đồng bộ, kể cả khi sau này đổi tempo bài. Thực tế Live cho đổi tempo bất cứ lúc nào — trước, sau và ngay cả trong lúc thu. Ví dụ "gian lận" nhẹ: hạ tempo xuống để thu đoạn khó, xong kéo lên lại.</p>
+<p>Quan trọng: <em>thu đúng nhịp</em> để mọi thứ sau này <em>phát đúng nhịp</em>.</p>
+<figure><img src="images/MetronomeL12.png" alt="Metronome" loading="lazy"><figcaption>Công tắc Metronome.</figcaption></figure>
+<p>Cách dễ nhất là chơi theo metronome built-in — bật qua công tắc trên Control Bar, kêu khi bấm Play hoặc chạy clip.</p>
+<figure><img src="images/PreviewVolumeKnobL12.png" alt="Preview volume" loading="lazy"><figcaption>Núm Preview Volume.</figcaption></figure>
+<p>Chỉnh âm lượng metronome bằng núm Preview Volume của mixer; thiết lập khác qua menu thả cạnh công tắc metronome.</p>
+<p>Lưu ý: cách Live "đọc nhịp" vật liệu trong clip chỉnh được bất cứ lúc nào bằng <a href="#ch-warping">Warp Marker</a> — sửa lỗi timing, đổi groove/feel của bản thu audio lẫn MIDI; sửa được những thứ lẽ ra phải chỉnh phức tạp hoặc không làm được.</p>
+
+<h4>19.4.1 Thiết lập Metronome</h4>
+<p>Menu Metronome Settings mở qua công tắc thả cạnh metronome hoặc menu ngữ cảnh của chính metronome.</p>
+<p>Đặt được <a href="#rec-countin">độ dài count-in</a> khi thu, và đổi âm tick của metronome.</p>
+<p>Thiết lập <em>Rhythm</em> đặt phân chia phách cho nhịp tick: mặc định "Auto" — khoảng tick theo mẫu số của số nhịp. Phân chia không vừa một bar của số nhịp hiện tại sẽ bị vô hiệu.</p>
+<p>Nếu phân chia đang chọn không còn vừa bar do đổi số nhịp, tick quay về "Auto"; số nhịp đổi lại cho vừa thì tick quay về theo phân chia đã chọn.</p>
+<p>Bật Enable Only While Recording (và metronome đang bật): metronome được tô sáng khi transport chạy nhưng chỉ kêu lúc thu. Thu vào Arrangement với Punch-In đang bật thì metronome chỉ kêu sau điểm punch-in.</p>
+
+<h3 id="rec-quantize">19.5 Thu nốt MIDI đã quantize</h3>
+<p>Thu MIDI có thể tự quantize ngay khi thu: trình chọn Record Quantization (menu Edit) chọn phân chia nhịp để nốt thu căn theo. Thu vào Arrangement, record quantization là một bước riêng trong lịch sử Undo — thu với "Eighth Note Triplet Quantization" rồi đổi ý thì Undo chỉ hoàn tác đúng bước quantize, bản thu giữ nguyên.</p>
+<p>Thu Session và Arrangement: Record Quantization không đổi được giữa chừng thu.</p>
+<p>Overdub với Loop bật trong Clip View: thay đổi Record Quantization có hiệu lực ngay và không hoàn tác riêng bằng lệnh menu Edit được.</p>
+<p>Nốt MIDI đã thu cũng quantize sau bằng lệnh <a href="#ch-editing-midi">Quantize</a> (menu Edit), như mô tả trong chương chỉnh MIDI.</p>
+
+<h3 id="rec-countin">19.6 Thu với count-in (đếm vào)</h3>
+<p>Count-in đặt qua menu thả cạnh công tắc Metronome. Khác "None": Live chưa thu cho tới khi hết đếm vào. Trường Arrangement Position trên Control Bar hiển thị count-in màu xanh theo bar-beat-sixteenth.</p>
+<figure><img src="images/CountIn.png" alt="Count-in" loading="lazy"><figcaption>Count-in hiển thị trên Control Bar.</figcaption></figure>
+<p>Count-in chạy từ bar-beat-sixteenth âm (ví dụ bắt đầu -2.1.1 với Count-In 2 bar) tới 1.1.1 — điểm thu bắt đầu.</p>
+
+<h3>19.7 Thiết lập loại tệp</h3>
+<p>Các thiết lập trong tab Record, Warp &amp; Launch liên quan tệp sample tạo ra khi thu:</p>
+<ul>
+<li>Loại tệp sample Live tạo: chọn trong trình chọn File Type.</li>
+<li>Bit depth của tệp thu: chọn trong trình chọn Bit Depth.</li>
+</ul>
+<p>Tiết kiệm thời gian bằng cách đặt mặc định hợp lý cho clip thu trong tab này. Đặc biệt nên chọn <a href="#ch-warping">Warp Mode</a> mặc định đúng nhóm âm thanh chuẩn bị thu — nếu sau này đổi tempo bài, chương trình tự giữ chất lượng âm tốt, thường không cần chỉnh thêm.</p>
+
+<h3>19.8 Sample thu nằm ở đâu?</h3>
+<p>Sample thu lưu trong thư mục Project của Set, dưới Samples/Recorded. Chưa lưu Set thì nằm ở vị trí của thư mục Temporary (trong tab File/Folder của Settings). Để không hết chỗ đĩa khi thu Set mới, đảm bảo Temporary Folder nằm trên ổ/phân vùng còn nhiều chỗ trống.</p>
+
+<h3 id="rec-remote">19.9 Dùng remote control để thu</h3>
+<p>Dùng <a href="../manual-en/midi-and-key-remote-control/index.html#midi-and-key-remote-control">Key Map Mode và MIDI Map Mode</a> (EN) điều khiển chức năng thu không cần chuột.</p>
+<p>Map được: Arrangement Record và transport trên Control Bar, các nút Arm. Thu vào slot Session: map nút Session Record và New, từng slot, và bộ điều hướng tương đối để kích hoạt thu từ xa; ví dụ:</p>
+<figure><img src="images/RelativeSessionMapUpDownButtons.png" alt="Scene up/down" loading="lazy"><figcaption>Nút Scene Up/Down.</figcaption></figure>
+<p>Một phím nhảy sang scene kế tiếp…</p>
+<figure><img src="images/RelativeSessionMapTrackLaunch.png" alt="Track launch" loading="lazy"><figcaption>Nút Track Launch.</figcaption></figure>
+<p>…và một phím bắt đầu/kết thúc thu ở track tương ứng.</p>
+<p>Cũng map được <a href="#rec-step">bộ điều hướng step recording</a>.</p>
+<figure><img src="images/MapStepRecording.png" alt="Step arrows" loading="lazy"><figcaption>Mũi tên step recording.</figcaption></figure>
+<p>Nhờ đó dùng được pedal chân MIDI để đẩy insert marker — hai tay thoải mái chơi keyboard.</p>
+
+<h3 id="rec-capture">19.10 Capturing MIDI (Bắt MIDI đã chơi)</h3>
+<p>Live luôn lắng nghe MIDI input trên các track đã <a href="#rec-arm">arm</a> hoặc đang <a href="#ch-routing">monitor input</a>; Capture MIDI lấy lại vật liệu bạn vừa chơi trên các track đó — cực hữu ích khi quên bấm Record trước khi chơi, hoặc muốn ứng tấu/thử nghiệm tự do không áp lực thu.</p>
+<figure><img src="images/CaptureButton.png" alt="Capture button" loading="lazy"><figcaption>Nút Capture MIDI trên Control Bar.</figcaption></figure>
+<p>Để bắt nốt vừa chơi: bấm nút Capture MIDI.</p>
+<p>Trên <a href="../manual-en/using-push-1/index.html#using-push-1">Push 1</a>/<a href="../manual-en/using-push-2/index.html#using-push-2">Push 2</a> (EN): giữ Record và bấm New. Trên <a href="https://www.ableton.com/push/manual/" target="_blank" rel="noopener">Push 3 ↗</a>: dùng nút Capture riêng.</p>
+<p>Capture MIDI hành xử khác nhau theo trạng thái Set:</p>
+
+<h4>19.10.1 Bắt đầu một Live Set mới</h4>
+<p>Nếu Set chưa có clip nào và transport đang dừng:</p>
+<ul>
+<li>Một clip chứa câu nhạc bạn vừa chơi được tạo trên mọi MIDI track đang monitor. Capture MIDI chỉ thêm clip vào view đang tiêu điểm (Session hoặc Arrangement).</li>
+<li>Capture MIDI dò và chỉnh tempo bài, đặt biên loop phù hợp và đặt nốt lên lưới. Dò tempo của Capture MIDI đặt trong khoảng 80–160 BPM; cho rằng vật liệu ngoài khoảng này thì chỉnh tempo theo ý. Để Capture dò câu nhạc đúng, nên kết thúc bằng phách mạnh (downbeat) đầu của bar kế tiếp.</li>
+<li>Transport chạy ngay và phát lại loop đã bắt — muốn thì overdub tiếp (xem mục dưới).</li>
+<li>Toàn bộ vật liệu đã chơi được lưu trong clip; nốt chơi trước câu được dò sẽ nằm trước start marker — chỉnh start/end hoặc loop marker để đặt loop khác. Muốn bỏ phần thừa ngoài loop: nhấp chuột phải clip → Crop Clip.</li>
+</ul>
+<p class="note"><strong>Lưu ý:</strong> nếu clip MIDI bắt đầu chỉ có một nốt, biên loop đặt theo đầu/cuối nốt và tempo tính tương ứng — ra loop 1, 2, 4 hoặc 8 bar; đặc biệt tiện khi chơi một sample nhịp bằng một nốt MIDI duy nhất.</p>
+
+<h4>19.10.2 Thêm vật liệu vào Set sẵn có</h4>
+<p>Nếu transport đang chạy, Set đã có clip khác, hoặc tempo đang <a href="../manual-en/automation-and-editing-envelopes/index.html#editing-the-tempo-automation">automate</a> (EN):</p>
+<ul>
+<li>Capture MIDI không dò/chỉnh tempo — dùng tempo hiện có để dò câu nhạc có nghĩa từ vật liệu đã chơi và tạo loop.</li>
+<li>Transport đang chạy: "chơi kề" với clip khác được; cũng dùng Capture để "overdub" một clip đang phát bằng cách chơi đè lên trên cùng track — bấm Capture MIDI thêm vật liệu vừa chơi lên nội dung clip sẵn có, dựng pattern từng lớp.</li>
+<li>Toàn bộ vật liệu lưu trong clip; nốt trước câu được dò nằm trước start marker — chỉnh start/end hoặc loop marker để đổi loop.</li>
+</ul>
 
 </article>
 
