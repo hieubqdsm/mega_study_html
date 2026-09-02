@@ -4500,7 +4500,114 @@
 <li>Automate Feedback Invert ở Feedback &gt; 90% tạo những đợt dao động decay khổng lồ.</li>
 </ul>
 
-<p class="note"><em>⏳ Còn tiếp: các device 28.9 Compressor → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+<h3>28.9 Compressor (Nén)</h3>
+<figure><img src="images/CompressorL12.png" alt="Compressor" loading="lazy"><figcaption>Hiệu ứng Compressor.</figcaption></figure>
+<p>Compressor giảm gain cho tín hiệu vượt ngưỡng do người dùng đặt. Nén hạ mức đỉnh, mở headroom cho phép nâng tổng mức — tín hiệu có mức trung bình cao hơn, nghe to và "đấm" hơn.</p>
+<p>Hai tham số quan trọng nhất: <b>Threshold</b> (ngưỡng bắt đầu nén) và <b>Ratio</b> (tỉ lệ vào/ra): ratio 3 — tín hiệu trên ngưỡng tăng 3 dB thì output chỉ tăng 1 dB; tăng 6 dB ra 2 dB; ratio 1 = không nén. Meter <b>Gain Reduction</b> (cam) cho biết gain đang bị giảm bao nhiêu — giảm trên ~6 dB thì đạt độ to muốn nhưng đổi âm rõ, dễ phá cấu trúc động lực và không hoàn tác được về sau (nhất là khi dùng compressor/limiter ở Main track — ít thường là nhiều).</p>
+<p>Vì nén hạ tín hiệu to, dùng <b>Out</b> để đỉnh chạm lại trần headroom; meter Output hiện mức ra. Nút <b>Makeup</b> tự bù mức ra khi threshold/ratio đổi. <b>Dry/Wet</b> cân nén/khô (0% ≈ bypass). <b>Knee</b> chỉnh độ dần dần khi tới ngưỡng: 0 dB = "hard knee" (dưới ngưỡng không nén, từ ngưỡng nén hết — ratio cao nghe gắt); knee cao ("soft") nén dần khi tiến gần ngưỡng — knee 10 dB + ngưỡng −20 dB: nén nhẹ từ −30 dB, tăng dần tới −10 dB nén hết.</p>
+<p>Khung hiển thị đổi qua các chế độ bằng công tắc góc dưới: <b>Collapsed</b> (chỉ điều khiển chính), <b>Transfer Curve</b> (vào trục ngang, ra trục dọc — đặt Knee dễ, thấy là cặp đường chấm quanh ngưỡng), <b>Activity</b> (mức vào xám nhạt; công tắc GR/Output đổi giữa gain reduction cam hoặc mức ra xám đậm — hình dung tín hiệu theo thời gian).</p>
+<figure><img src="images/CompressorCollapsedL12.png" alt="Collapsed" loading="lazy"><figcaption>Chế độ Collapsed.</figcaption></figure>
+<figure><img src="images/CompressorTransferCurveL12.png" alt="Curve" loading="lazy"><figcaption>Transfer Curve.</figcaption></figure>
+<figure><img src="images/CompressorOutputL12.png" alt="Activity" loading="lazy"><figcaption>Activity — vào và ra.</figcaption></figure>
+<p><b>Attack</b> đặt thời gian đạt nén tối đa sau khi vượt ngưỡng; <b>Release</b> đặt thời gian trở về bình thường sau khi xuống dưới ngưỡng; <b>Auto Release</b> tự chỉnh release theo audio vào. Attack hơi dài (10–50 ms) cho đỉnh qua nguyên — giữ động lực, nhấn phần đầu tín hiệu; đỉnh gây quá tải thì ngắn attack lại, nhưng quá ngắn "rút sinh lực" và có thể khê khê vì méo. Release ngắn gây "pumping" (thường coi là lỗi, nhưng một số kỹ sư dùng cho cả bộ trống tạo hiệu ứng "hút" lạ). Chỉnh attack/release cẩn thận là then chốt khi nén nguồn nhịp — chưa quen thì chạy drum loop mà nghịch Attack/Release/Threshold/Gain, rất vui!</p>
+<p>Compressor chỉ phản ứng sau khi tín hiệu xuất hiện, cộng envelope attack/release nên nén luôn hơi trễ — compressor số giải bằng cách trễ input chút xíu: ba mức <b>Lookahead</b> 0/1/10 ms, âm khác nhau rõ tùy chọn.</p>
+<p>Ba chế độ cơ bản: <b>Peak</b> — phản ứng đỉnh ngắn, quyết liệt và chính xác, hợp giới hạn tuyệt đối; <b>RMS</b> — bớt nhạy với đỉnh rất ngắn, chỉ nén khi mức vượt ngưỡng lâu hơn một chút, gần cảm nhận độ to của người, nghe "nhạc" hơn; <b>Expand</b> — đặt tỉ lệ giãn vào/ra (1:2 = vào trên ngưỡng 1 dB ra 2 dB; 1:1 không giãn). Thêm hai dạng envelope follower: <b>Lin</b> — tốc phản ứng hoàn toàn theo Attack/Release; <b>Log</b> — đỉnh bị nén gắt có release nhanh hơn vật liệu nén ít — nén mượt, khó thấy hơn (Lin/Log không hiện ở Collapsed).</p>
+
+<h4>28.9.1 Tham số sidechain</h4>
+<figure><img src="images/CompressorSidechainL12.png" alt="Sidechain" loading="lazy"><figcaption>Compressor với phần Sidechain.</figcaption></figure>
+<p>Bình thường tín hiệu bị nén và tín hiệu kích là một; dùng <em>sidechain</em> để nén tín hiệu dựa trên mức (hoặc dải tần) của tín hiệu khác — mở bằng nút gấp trên thanh tiêu đề. Phần trái là điều khiển ngoài: bật <b>Sidechain</b> và chọn bất kỳ <a href="#ch-routing">điểm routing nội bộ</a> nào làm trigger thay cho tín hiệu đang nén. <b>Gain</b> chỉnh mức sidechain vào; <b>Dry/Wet</b> trộn sidechain + tín hiệu gốc làm trigger (100% chỉ theo sidechain, 0% bypass). Tăng gain không tăng âm nguồn — sidechain chỉ là trigger. <em>Lưu ý:</em> Makeup tự động không khả dụng với sidechain ngoài.</p>
+<p>Bên phải là EQ sidechain: bật để compressor kích hoạt bởi một dải tần cụ thể thay vì toàn tín hiệu — dải trong tín hiệu đang nén, hoặc (kết hợp sidechain ngoài) trong audio track khác. Nút tai nghe giữa hai phần: chỉ nghe sidechain (bypass output) — thiết lập sidechain dễ hơn nhiều.</p>
+
+<h4>28.9.2 Mẹo Compressor</h4>
+<p><b>Mix lời bình (voiceover ducking):</b> track lời + track nhạc nền — muốn lời luôn to nhất: chèn Compressor vào track nhạc, chọn output track lời làm sidechain ngoài — nhạc tự "tránh" mỗi khi người đọc nói.</p>
+<p><b>Sidechain trong nhạc dance:</b> vũ khí bí mật — bassline (hoặc cả mix) luôn nhường chỗ cho kick: chèn compressor vào track bass (hoặc Main), dùng track kick làm sidechain, kiểm soát tần số thấp canh attack của kick. Chỉ có track trống mix sẵn (không tách riêng kick)? Dùng sidechain EQ: chèn Compressor vào track muốn duck, chọn track trống làm sidechain ngoài, bật EQ sidechain và chọn low-pass — chỉnh Frequency/Q tinh tế để tách kick khỏi phần trống còn lại; chế độ Listen giúp chỉnh EQ tới khi ưng.</p>
+<p class="note"><em>Lưu ý:</em> thuật toán Compressor cập nhật từ Live 9, hợp tác cùng TS Joshua D. Reiss, Centre for Digital Music, Queen Mary University of London.</p>
+
+<h3>28.10 Corpus (Cộng hưởng vật thể)</h3>
+<figure><img src="images/CorpusL12.png" alt="Corpus" loading="lazy"><figcaption>Hiệu ứng Corpus.</figcaption></figure>
+<p>Mô phỏng đặc tính âm học của 7 loại vật thể cộng hưởng — làm cùng Applied Acoustics Systems bằng physical modelling, nhiều tham số và tùy chọn modulation.</p>
+
+<h4>28.10.1 Tham số resonator</h4>
+<figure><img src="images/CorpusResonatorsL12.png" alt="Resonators" loading="lazy"><figcaption>Tham số resonator của Corpus.</figcaption></figure>
+<p>Trình chọn <b>Resonance Type</b> — bảy vật thể mô phỏng:</p>
+<ul>
+<li><b>Beam</b> — cộng hưởng của thanh vật liệu/kích thước khác nhau.</li>
+<li><b>Marimba</b> — biến thể Beam chuyên biệt, tái hiện cách chỉnh overtone đặc trưng của thanh marimba (do khoét vòm sâu).</li>
+<li><b>String</b> — âm dây vật liệu/kích thước khác nhau.</li>
+<li><b>Membrane</b> — màng chữ nhật (như mặt trống) đổi được kích thước/kết cấu.</li>
+<li><b>Plate</b> — tấm phẳng chữ nhật vật liệu/kích thước khác nhau.</li>
+<li><b>Pipe</b> — ống tròn mở hết một đầu, đầu kia mở được (tham số Opening).</li>
+<li><b>Tube</b> — ống tròn mở cả hai đầu.</li>
+</ul>
+<p><b>Resonator Quality</b> đánh đổi chất lượng/hiệu năng bằng cách giảm số overtone tính: Eco tốn CPU tối thiểu, High cộng hưởng tinh vi (không dùng với Pipe/Tube). <b>Decay</b> chỉnh độ ngắt nội bộ → thời gian decay. <b>Material</b> chỉnh độ ngắt theo tần số: thấp — thành phần thấp decay chậm hơn cao (gỗ, nylon, cao su); cao — ngược lại (thủy tinh, kim loại). <b>Radius</b> (chỉ Pipe/Tube, thay Material) chỉnh bán kính ống — tăng bán kính tăng decay và sustain cao; rất to thì cả cao độ nền đổi. Decay + Material/Radius điều khiển được bằng bộ X-Y. <b>Bright</b> chỉnh biên độ các thành phần tần số (cao = tần số cao to hơn). <b>Inharm</b> chỉnh cao độ hài: âm nén tần (nhiều partial thấp), dương kéo giãn (nhiều partial cao). <b>Opening</b> (Pipe) trượt giữa ống mở/đóng (0% đóng hẳn một đầu, 100% mở cả hai). <b>Ratio</b> (Membrane/Plate) chỉnh tỉ lệ x/y. <b>Hit</b> đặt điểm gõ lên vật thể: 0% giữa, cao tiến ra mép. <b>Width</b> cân stereo hai resonator (0% mono, 100% mỗi resonator một kênh). <b>Pos. L/R</b> đặt điểm "nghe" rung động trên resonator trái/phải. <b>Tune</b> chỉnh tần số cộng hưởng (Hz); bật MIDI Frequency ở Sidechain thì Tune chỉnh thô cho modulation MIDI. <b>Fine</b> chỉnh tinh (cent). <b>Spread</b> detune hai resonator (dương: trái lên phải xuống; âm ngược lại; 0% đồng nhất).</p>
+
+<h4>28.10.2 Phần LFO</h4>
+<figure><img src="images/CorpusLFOL12.png" alt="LFO" loading="lazy"><figcaption>Phần LFO của Corpus.</figcaption></figure>
+<p>LFO modulate tần số cộng hưởng: <b>Amount</b> đặt mức ảnh hưởng; <b>Rate</b> đặt tốc (Hz hoặc đồng bộ tempo); dạng sóng: sine, square, triangle, sawtooth up/down và hai loại nhiễu (bước và mượt). Thực ra có hai LFO (mỗi kênh stereo một cái) — <b>Phase</b> giữ cùng tần số nhưng lệch pha nhau (180° = một đỉnh thì kia đáy; 360/0 = đồng bộ); đồng bộ tempo thì có thêm <b>Offset</b> dịch điểm bắt đầu; <b>Spin</b> (chế độ Hz) detune tốc hai LFO — mỗi kênh modulate tần số khác. Chọn Phase/Spin bằng icon LFO Stereo mode (chỉ Hz); hai sóng nhiễu thì Phase/Spin không tác dụng.</p>
+<figure><img src="images/CorpusLFOStereoModeL12.png" alt="Stereo mode" loading="lazy"><figcaption>Icon LFO Stereo Mode.</figcaption></figure>
+
+<h4>28.10.3 Phần Filter</h4>
+<figure><img src="images/CorpusFilterL12.png" alt="Filter" loading="lazy"><figcaption>Phần Filter của Corpus.</figcaption></figure>
+<p>Tín hiệu đã xử lý đi qua band-pass bật/tắt được: <b>Freq</b> chỉnh tần số giữa, <b>Bdwidth</b> chỉnh băng thông.</p>
+
+<h4>28.10.4 Tham số toàn cục</h4>
+<figure><img src="images/CorpusGlobalL12.png" alt="Global" loading="lazy"><figcaption>Tham số toàn cục của Corpus.</figcaption></figure>
+<p><b>Bleed</b> trộn một phần tín hiệu chưa xử lý vào tín hiệu cộng hưởng — khôi phục tần số cao bị ngắt khi tune/quality thấp (vô hiệu với Pipe/Tube). <b>Gain</b> tăng/giảm mức ra (limiter built-in tự bật khi quá — LED cạnh Gain báo). <b>Dry/Wet</b> cân khô/xử lý — hạ Dry/Wet không cắt cộng hưởng đang vang, chỉ ngừng xử lý tín hiệu vào mới.</p>
+
+<h4>28.10.5 Tham số sidechain</h4>
+<figure><img src="images/CorpusSidechainL12.png" alt="Sidechain" loading="lazy"><figcaption>Sidechain của Corpus.</figcaption></figure>
+<p>Tần số/độ decay của cộng hưởng modulate bằng MIDI: bật công tắc <b>Frequency</b> và/hoặc <b>Off Decay</b> trong Sidechain (mở bằng nút gấp thanh tiêu đề). <b>MIDI From</b> chọn track và điểm gom MIDI.</p>
+<p>Frequency bật: chỉnh tông theo nốt MIDI vào — nhiều nốt cùng giữ thì công tắc Last/Low chọn nốt sau cùng/thấp nhất ưu tiên; Transpose/Fine lệch thô/tinh; <b>PB Range</b> đặt dải pitch bend. Frequency tắt: Tune chỉnh tần số nền (Hz), số nốt MIDI tương ứng + offset cent hiện bên dưới.</p>
+<p><b>Off Decay</b> bật: Note Off làm mute cộng hưởng — thanh trượt đặt mức (0% bỏ qua Note Off, decay chỉ theo Decay, như marimba/glockenspiel thật; 100% mute ngay khi Note Off bất kể Decay).</p>
+
+<h3>28.11 Delay</h3>
+<figure><img src="images/DelayEffectL12.png" alt="Delay" loading="lazy"><figcaption>Hiệu ứng Delay.</figcaption></figure>
+<p>Delay có đường trễ độc lập mỗi kênh stereo, kèm band-pass và LFO modulation. Thời gian trễ đặt theo phân phách đồng bộ (Sync) hoặc mili-giây (Time) qua công tắc Delay Time Mode.</p>
+<p>Sync: các nút số đặt trễ theo nốt 1/16 (4 = bốn 1/16 = một phách); thanh <b>Offset</b> chỉnh lệch phân số — âm sớm hơn chút, dương muộn hơn chút (thêm swing nhẹ cho delay). Time: trễ 1,00 ms – 5,00 s. <b>Stereo Link</b> nối thiết lập trễ hai kênh (Offset vẫn chỉnh riêng mỗi kênh).</p>
+<p><b>Feedback</b> đặt lượng output mỗi kênh phản hồi vào đường trễ của nó (độc lập mỗi kênh). <b>Freeze</b> bật: lặp vô hạn audio trong bộ đệm tại lúc bấm, bỏ qua input mới cho tới khi tắt.</p>
+<p>Tín hiệu trễ đi qua band-pass bật/tắt được: kéo trục X trong khung chỉnh tần số giữa, trục Y chỉnh băng thông (hoặc thanh Freq/Width).</p>
+<p>LFO modulate thời gian trễ và tần số filter — từ hiệu ứng kiểu chorus tới glitch cắt hạt. LFO mặc định gấp; công tắc LFO Controls mở thêm tùy chọn.</p>
+<figure><img src="images/DelayEffectLFOToggleL12.png" alt="Toggle" loading="lazy"><figcaption>Công tắc mở phần LFO.</figcaption></figure>
+<figure><img src="images/DelayEffectLFOL12.png" alt="LFO" loading="lazy"><figcaption>Tùy chọn LFO modulation trong Delay.</figcaption></figure>
+<p>Thanh <b>Delay</b> đặt mức LFO cho thời gian trễ, <b>Filter</b> cho tần số filter. <b>Rate</b> chọn chế độ: Rate, Time, Synced, Triplet, Dotted, Sixteenth (LED cạnh LFO Controls nháy theo tốc LFO khi phát). <b>Wave</b>: Sine, Triangle, Ramp Up/Down, Square, S&amp;H, Wander — <b>Morph</b> chỉnh tiếp hình dáng.</p>
+<p>Đổi thời gian trễ khi đang phát gây đứt âm — ba chế độ làm mượt chuyển tiếp thời gian:</p>
+<ul>
+<li><b>Repitch</b> — đổi trễ kèm biến thiên cao độ như delay băng cũ (mặc định).</li>
+<li><b>Fade</b> — crossfade giữa trễ cũ/mới, nghe như granular nếu đổi dần.</li>
+<li><b>Jump</b> — nhảy ngay sang trễ mới; có thể lách cách nếu trễ cũ còn vang.</li>
+</ul>
+<p>LFO cũng âm khác tùy chế độ làm mượt — thử từng chế độ. <b>Ping Pong</b> bật: tín hiệu trễ chạy qua lại trái/phải. <b>Dry/Wet</b> cân khô/xử lý — trong return track để 100%.</p>
+
+<h4>28.11.1 Tùy chọn menu ngữ cảnh của Delay</h4>
+<p>Hai chế độ thêm trong menu ngữ cảnh/Show Options: <b>Hi-Quality</b> — nội suy đường trễ chất lượng cao hơn với Repitch/Fade, cộng làm mượt kiểu băng analog cho Repitch; <b>Dry/Wet - Equal-Loudness</b> — đổi sang hành vi cân bằng độ to: độ to cảm nhận của khô/wet giữ nguyên khi chỉnh Dry/Wet (mix 50/50 nghe cùng độ to với đa số tín hiệu).</p>
+
+<h4>28.11.2 Mẹo Delay</h4>
+<p><b>Hiệu ứng glitch:</b> Stereo Link bật, Sync 6, Feedback 50%, filter bật 2,86 kHz + Width 2,50; LFO S&amp;H Rate 0,93 Hz, Delay 66%, Filter 19%; làm mượt Fade, tắt Ping Pong; Dry/Wet 50–80%.</p>
+<p><b>Hiệu ứng chorus:</b> tắt Stereo Link, trái 12,0 ms, phải 30,0 ms; Feedback 0; filter 2,56 kHz + Width 8,50; LFO Triangle 0,65 Hz, Delay 58%, Filter 0%; làm mượt Repitch + Ping Pong; Dry/Wet 45–65%.</p>
+
+<h3>28.12 Drum Buss</h3>
+<figure><img src="images/DrumBussL12.png" alt="Drum Buss" loading="lazy"><figcaption>Hiệu ứng Drum Buss.</figcaption></figure>
+<p>Bộ xử lý trống kiểu analog — thêm thân thịt và cá tính cho cả nhóm trống, "dán" chúng thành mix chặt.</p>
+<p><b>Trim</b> hạ mức vào trước mọi xử lý. Công tắc <b>Comp</b> áp compressor cố định trước méo — tối ưu cho cân nhóm trống (attack nhanh, release trung, ratio vừa, makeup dồi dào).</p>
+<p>Ba loại méo, mỗi loại đậm hơn và cá tính riêng: <b>Soft</b> (waveshaping), <b>Medium</b> (limiting), <b>Hard</b> (clipping kèm boost bass). <b>Drive</b> đặt mức drive trước khi méo.</p>
+
+<h4>Đắp trung-cao</h4>
+<p>Công cụ trung-cao thêm độ rõ và hiện diện cho snare/hi-hat: <b>Crunch</b> — méo hình sine cho trung-cao; <b>Damp</b> — low-pass bỏ cao thừa sau méo; <b>Transients</b> — nhấn/ìm transient trên 100 Hz: dương thêm attack + tăng sustain (đầy, "đấm"); âm thêm attack nhưng giảm sustain — trống gọn, sắc, ít vang lăn.</p>
+
+<h4>Làm dày đầu thấp</h4>
+<p>Hai công cụ: filter cộng hưởng boost mạnh tần số bass + Decay chỉnh tốc tắt của cả audio vào lẫn tín hiệu đã qua filter. <b>Boom</b> đặt lượng boost — meter Bass cho thấy tác động (hữu ích khi nghe không ra). <b>Freq</b> chỉnh tần số; <b>Force To Note</b> căn về nốt MIDI gần nhất. <b>Decay</b> chỉnh tốc tắt tần số thấp: Boom 0% chỉ ảnh hưởng tín hiệu vào (sau drive/méo); Boom &gt; 0% ảnh hưởng cả tín hiệu đã xử lý. Nghe riêng phần thấp: bật Boom Audition (icon tai nghe).</p>
+
+<h4>Output</h4>
+<p><b>Dry/Wet</b> cân xử lý/khô; <b>Output Gain</b> đặt gain tín hiệu ra.</p>
+
+<h3>28.13 Dynamic Tube</h3>
+<figure><img src="images/DynamicTubeL12.png" alt="Dynamic Tube" loading="lazy"><figcaption>Hiệu ứng Dynamic Tube.</figcaption></figure>
+<p>Truyền vào âm những đặc trưng của bão hòa đèn — envelope follower tích hợp tạo biến thiên âm sắc động theo mức tín hiệu vào.</p>
+<p>Ba model đèn A/B/C cho các cá tính méo của đèn ampli thật: <b>A</b> — Bias thấp thì không méo, bật khi input vượt ngưỡng, sinh hài sáng; <b>C</b> — "đèn tồi" méo mọi lúc; <b>B</b> ở giữa. <b>Tone</b> đặt phân bố phổ của méo (đẩy lên vùng cao hay qua trung xuống thấp). <b>Drive</b> đặt bao nhiêu tín hiệu vào đèn — nhiều hơn bẩn hơn. <b>Bias</b> điều khiển cường độ đèn, đẩy tín hiệu vào cõi phi tuyến danh tiếng — Bias rất cao thì tín hiệu bắt đầu vỡ hẳn.</p>
+<p>Bias modulate được (dương/âm) bởi envelope follower qua núm <b>Envelope</b> — càng sâu, điểm Bias càng phụ thuộc mức vào: Envelope âm tạo hiệu ứng giãn (giảm méo trên tín hiệu to), dương làm âm to bẩn hơn. <b>Attack/Release</b> đặt tốc envelope phản ứng đổi âm lượng — định hình tính động của méo (Envelope = 0 thì vô hiệu). <b>Output</b> cắt/boost mức ra. Bật <b>Hi-Quality</b> (menu ngữ cảnh) giảm aliasing — chất lượng tốt hơn với tín hiệu cao tần, tốn CPU chút.</p>
+
+<p class="note"><em>⏳ Còn tiếp: các device 28.14 Echo → 28.42 Vocoder sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-audio-effect-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 
 </article>
