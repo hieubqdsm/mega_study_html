@@ -5252,7 +5252,108 @@
 <figure><img src="images/ElectricGlobalSectionL12.png" alt="Global" loading="lazy"><figcaption>Mục Global của Electric.</figcaption></figure>
 <p><b>Volume</b>; <b>Voices</b> (mỗi voice tốn CPU — cân bằng giữa chơi được và hiệu năng); <b>Semi/Detune</b> (thô ±nửa cung / tinh ±50 cent); <b>Stretch</b> — stretch tuning như piano thật (0% = temperament cân bằng; nĩa/dây rung thực tế lệch mô hình lý thuyết nên cân bằng nghe "sai" trên piano — stretch nâng nốt cao hạ nốt thấp cho sáng; âm = đảo); <b>Pitch Bend</b> (dải toàn cục) + <b>Note PB</b> (dải pitch bend từng nốt MPE).</p>
 
-<p class="note"><em>⏳ Còn tiếp: instrument 30.6 External Instrument → 30.13 Wavetable sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
+<h3>30.6 External Instrument</h3>
+<figure><img src="images/ExternalInstrumentL12.png" alt="External" loading="lazy"><figcaption>Device External Instrument.</figcaption></figure>
+<p>Không phải instrument mà là tiện ích routing: tích hợp synth ngoài (phần cứng) và plug-in multitimbral vào dự án — gửi MIDI ra, nhận audio về. Hai trình chọn <b>MIDI To</b>: trên chọn <a href="#ch-routing">cổng MIDI</a> vật lý hoặc plug-in multitimbral (chọn cổng cho synth ngoài thì trình chọn dưới là số kênh MIDI; chọn track chứa plug-in multitimbral thì dưới chọn kênh trong plug-in). <b>Audio From</b> chọn cổng trả audio về (interface nối synth — tùy Audio Settings; với plug-in multitimbral ở track khác thì liệt kê output phụ — output chính nghe ở track chứa instrument). <b>Gain</b> chỉnh mức về — đặt cẩn thận tránh clip.</p>
+<p>Phần cứng gây latency Live không tự dò — bù thủ công bằng <b>Hardware Latency</b> (nút cạnh chọn ms/sample: nối số → sample; nối analog → ms; sample mịn hơn — chỉnh analog tinh bằng sample được nhưng nhớ chuyển về ms trước khi đổi sample rate). Trễ do device trong Live tự bù — route nội bộ thì thanh trượt vô hiệu. <em>Lưu ý:</em> tắt Delay Compensation thì thanh bị vô hiệu. Kịch bản routing chi tiết: chương <a href="#ch-routing">Routing and I/O</a>.</p>
+
+<h3>30.7 Impulse (Trống sampler 8 ô)</h3>
+<figure><img src="images/ImpulseL12.png" alt="Impulse" loading="lazy"><figcaption>Instrument Impulse.</figcaption></figure>
+<p>Drum sampler với modulation phức tạp: 8 sample trống kéo vào ô, kéo giãn thời gian, lọc, xử lý qua envelope/saturation/pan/volume — gần như tất cả đều modulate được bằng ngẫu nhiên và velocity.</p>
+
+<h4>30.7.1 Ô sample</h4>
+<p>Kéo-thả sample từ Browser/Session/Arrangement vào ô bất kỳ; mỗi ô có nút Hot-Swap; xóa bằng <kbd>Backspace</kbd>/<kbd>Delete</kbd>. Sample nhập tự map lên keyboard MIDI: C3 kích ô trái nhất, các ô khác theo trong quãng C3–C4; bật Fold trong <a href="#ch-editing-midi">MIDI Editor</a> thì 8 ô hiện tên key track (kể cả trống nốt). Map đổi được bằng hiệu ứng <a href="#ch-midi-effects">Pitch</a>, sắp lại bằng <a href="#ch-midi-effects">Scale</a>.</p>
+<p>Tham số từng sample hiện dưới dải ô khi nhấp vào. <em>Lưu ý:</em> chỉnh chỉ có hiệu lực từ nốt mới — không ảnh hưởng nốt đang phát (clip envelope/automation cũng áp khi nốt mới bắt). Muốn đổi liên tục trong khi nốt đang phát: dùng <a href="#ch-instruments">Simpler</a>. Ô 8 có nút <b>Link</b> (góc dưới-trái) nối với ô 7: kích ô này dừng ô kia — thiết kế cho closed hi-hat tắt open hi-hat (dùng mục đích khác tùy bạn). Mỗi ô phát/solo/mute/hot-swap bằng điều khiển hiện khi rê chuột.</p>
+
+<h4>30.7.2 Start, Transpose &amp; Stretch</h4>
+<p><b>Start</b> đặt điểm bắt đầu phát (tới 100 ms sau đầu sample); <b>Transp</b> ±48 nửa cung (modulate bằng velocity hoặc random). <b>Stretch</b> −100…+100%: âm rút ngắn, dương kéo giãn — hai thuật toán: Mode A hợp âm thấp (tom, bass), Mode B hợp âm cao (cymbal); modulate bằng velocity.</p>
+
+<h4>30.7.3 Filter</h4>
+<p>Nhiều loại filter đắp cá tính bằng cách bỏ tần số: Frequency đặt vị trí trong phổ hài; Resonance boost quanh điểm đó; tần số modulate bằng random hoặc velocity.</p>
+
+<h4>30.7.4 Saturator &amp; Envelope</h4>
+<p><b>Saturator</b> làm sample béo, tròn, analog hơn (bật/tắt tùy ý); <b>Drive</b> boost + méo (làm to nhiều — nên hạ volume sample bù; Drive cực đoan trên âm thấp ra tiếng synth-drum analog overdrive kinh điển). <b>Decay</b> tối đa 10,0 s; hai chế độ: Trigger (decay theo nốt), Gate (envelope chờ Note Off mới decay — hợp hi-hat cần độ decay biến thiên).</p>
+
+<h4>30.7.5 Pan &amp; Volume</h4>
+<p>Mỗi sample có Volume (biên độ) và Pan (vị trí stereo) — Pan modulate bằng velocity + random; Volume chỉ velocity.</p>
+
+<h4>30.7.6 Điều khiển toàn cục</h4>
+<p>Bên phải dải ô: Volume (mức chung), Transp (transpose mọi sample), Time (kéo giãn + decay mọi sample — morph giữa trống ngắn và trống kéo giãn).</p>
+
+<h4>30.7.7 Output riêng</h4>
+<p>Mặc định tín hiệu Impulse trộn vào chuỗi audio của track — nhiều khi nên tách riêng instrument hoặc từng sample trống sang track riêng: xem chương <a href="#ch-routing">Routing and I/O</a> (gom output tổng hoặc từng ô sample của Impulse).</p>
+
+<h3>30.8 Meld (Synth macro-oscillator kép)</h3>
+<figure><img src="images/MeldL12.png" alt="Meld" loading="lazy"><figcaption>Instrument Meld.</figcaption></figure>
+<p>Meld là synth đa dụng kết hợp hai động cơ macro oscillator độc lập trong một device — quay nhanh được patch analog kinh điển, nhưng cá tính tỏa sáng ở mảng kỹ thuật tổng hợp + lọc cho phép chồng lớp và thử nghiệm. Mỗi động cơ có filter riêng, envelope, LFO, Modulation Matrix hỗ trợ MIDI/MPE, cùng hai núm macro phụ thuộc oscillator — điều khiển từ modulate overtone đơn giản tới những thứ lạ: phân mảnh noise loop, pulsewidth chiptone, mật độ sinh hạt mưa. Meld sinh âm biểu cảm, lạ lẫm, dẫn dắt bằng ý tưởng âm nhạc thay vì chi tiết kỹ thuật.</p>
+
+<h4>30.8.1 Tổng quan</h4>
+<p>Kiến trúc hai lớp dùng đồng thời tới hai động cơ synth đa âm. Bốn mục chính: engines, modulation, filter, mix toàn cục — cấu hình cảm hứng modular: dễ thêm texture và chuyển động, cũng dễ tạo và bắt lấy bất ngờ âm nhạc. Làm quen: kết hợp các loại waveform và nghịch macro modulation từng động cơ; kiểm soát hơn: map tham số vào Modulation Matrix hoặc automate macro bằng LFO device — càng thử nghiệm tương tác hai lớp, Meld càng thành "của riêng".</p>
+<p>Nút Toggle Expanded View mở view rộng: hiện mọi nguồn/đích modulation; nút A/B đổi động cơ; Copy to A/B chép giá trị modulation; nút X xóa sạch.</p>
+<figure><img src="images/MeldExpandedViewL12.png" alt="Expanded" loading="lazy"><figcaption>Meld ở view mở rộng.</figcaption></figure>
+
+<h4>30.8.2 Oscillator</h4>
+<figure><img src="images/MeldOscillatorsL12.png" alt="Osc" loading="lazy"><figcaption>Oscillator của Meld.</figcaption></figure>
+<p>Hai động cơ bật/tắt độc lập (tắt động cơ tắt luôn filter liên kết; filter bật/tắt không ảnh hưởng động cơ). Mỗi động cơ ba điều khiển pitch: Octaves/Semitones/Cents (bật Use Current Scale thì "st" thành bậc "sd") — thêm chiều sâu hài: transpose lên quãng tám/quãng năm, hoặc detune cent tinh tế. Mỗi động cơ 24 loại oscillator (6 loại <a href="#ch-instruments">nhận biết scale</a> đánh dấu ♭♯) — từ sine đơn giản tới cụm sóng xếp lớp, FM phức tạp, noise loop, thuật toán sinh âm không khí; chọn menu hoặc mũi tên trong khung.</p>
+
+<h4>30.8.3 Macro oscillator</h4>
+<figure><img src="images/MeldOscillatorMacrosL12.png" alt="Macros" loading="lazy"><figcaption>Macro oscillator của Meld.</figcaption></figure>
+<p>Mỗi động cơ hai macro riêng, đổi theo loại oscillator; cả bốn macro gán được MIDI controller (biểu diễn) hoặc LFO device (tự động), và modulate nội bộ qua Matrix. Tóm tắt 24 loại:</p>
+<ul>
+<li><b>Basic Shapes</b> — Shape (morph sine↔tri↔saw↔square) + Tone (pulse width).</li>
+<li><b>Dual Basic Shapes</b> — Shape + Detune (thêm bản sao detune).</li>
+<li><b>Noisy Shapes</b> — Shape + Rough (nhiễu méo).</li>
+<li><b>Square Sync</b> — Freq 1/Freq 2 (hai sóng vuông sync).</li>
+<li><b>Square 5th</b> — 5th Amt (morph sang sóng vuông cao hơn quãng 5 đúng) + P Width.</li>
+<li><b>Sub</b> — Tone (sine → vuông) + Aux (sóng sine bậc phụ thấp hơn).</li>
+<li><b>Swarm Sine/Triangle/Saw/Square</b> (♭♯) — Motion (modulate cụm sóng) + Spacing (fade qua hợp âm phức tạp dần).</li>
+<li><b>Harmonic Fm</b> — Amount + Ratio. <b>Fold Fm</b> — Amount + Shape (hình sóng mang). <b>Squelch</b> — Amount + Feedback. <b>Simple Fm</b> — Amount + Ratio.</li>
+<li><b>Chip</b> (♭♯) — Tone (pitch + pulse width) + Rate (tốc khoảng chip).</li>
+<li><b>Shepard's Pi</b> — Rate (0–49,9 rơi; 50,1–100 leo; 50 đứng) + Width (số quãng tám).</li>
+<li><b>Tarp</b> — Decay + Tone. <b>Extratone</b> — Pitch + Env Amount.</li>
+<li><b>Noise Loop</b> — Rate (tốc mảnh noise loop; cao = nhiễu) + Fade (độ grain/thô).</li>
+<li><b>Filtered Noise</b> — Freq + Width. <b>Bitgrunge</b> — Freq + Mult (số bậc phụ: max không sinh; min sinh rất nhiều).</li>
+<li><b>Crackle</b> — Density (tốc crackle) + Intensity (phân bố to/sáng). <b>Rain</b> — Tone (cộng hưởng hạt mưa + gió — có tông, theo nốt) + Rate (mật độ). <b>Bubble</b> — Density + Spread (độ ngẫu nhiên kích thước bọt).</li>
+<li><b>Chord</b> (♭♯) — chồng 4 sawtooth tạo hợp âm: Shape (khoảng giữa các nốt) + Inversion (sắp lại thứ tự); Use Current Scale bật thì dùng nốt của scale (không có scale: trưởng, nốt MIDI vào làm root).</li>
+</ul>
+
+<h4>30.8.4 Tab Envelope</h4>
+<figure><img src="images/MeldADSREnvelopeL12.png" alt="ADSR" loading="lazy"><figcaption>Envelope biên độ động cơ A.</figcaption></figure>
+<p>Mỗi envelope có ADSR — chỉnh số, gõ, hoặc kéo breakpoint trong khung; Slope của Attack/Decay/Release (đánh dấu đỏ) chỉnh bằng số hoặc kéo kim cương giữa breakpoint. Ba Envelope Loop Mode: <b>Trigger</b> (mọi đoạn phát một lần khi có nốt, bỏ sustain), <b>Loop</b> (lặp toàn envelope, không giữ sustain), <b>AD Loop</b> (chỉ lặp Attack+Decay). Envelope Modulation có thêm bộ <b>Initial/Peak/Final</b> — vị trí envelope khi kích và khi nhả: linh hoạt hơn cho modulation.</p>
+<figure><img src="images/MeldModulationEnvelopeL12.png" alt="Mod env" loading="lazy"><figcaption>Tham số Initial/Final trong envelope Modulation động cơ B.</figcaption></figure>
+<p>Nút Link Envelopes nối envelope Biên độ + Modulation của từng động cơ — hai động cơ hoạt động như một instrument duy nhất.</p>
+
+<h4>30.8.5 Tab LFO</h4>
+<figure><img src="images/MeldLFOsL12.png" alt="LFO" loading="lazy"><figcaption>LFO động cơ A.</figcaption></figure>
+<p>Mỗi động cơ hai LFO: LFO 1/2 đặt tốc Hz/phách; Phase Offset lệch pha; Retrigger — LFO chạy lại tại vị trí Offset. LFO 1 chọn 6 dạng: Basic Shapes, Ramp, Wander, Alternate, Euclid, Pulsate — đắp tiếp bằng Rate + hai macro kề (đổi theo dạng sóng). Panel <b>LFO 1 FX</b>: hai menu FX1/FX2 × 18 loại hiệu ứng áp nối tiếp lên LFO 1; mức bằng macro tương ứng — LFO 1 và LFO1 FX là hai nguồn modulation độc lập trong Matrix. LFO 2: 6 dạng kinh điển (Sine, Tri, Saw Up/Down, Rectangle, Random S&amp;H) — nguồn thứ ba độc lập.</p>
+
+<h4>30.8.6 Tab Matrix</h4>
+<figure><img src="images/MeldModMatrixL12.png" alt="Matrix" loading="lazy"><figcaption>Modulation Matrix động cơ B.</figcaption></figure>
+<p>Gán nguồn → đích trong device (LFO 1 của A modulate Volume của A; envelope Modulation của B modulate Filter Frequency của B...). Nguồn ngang, đích dọc; kéo ô lên/xuống áp modulation (âm = envelope/LFO nhanh hơn; dương = chậm hơn; một số tham số modulation cộng, số khác nhân). Nhấp tham số để thêm vào Matrix (của động cơ đang chọn bằng Display Selector Tab); tham số không được modulate sẽ rời Matrix khi tham số khác được nhấp.</p>
+
+<h4>30.8.7 Tab MIDI &amp; MPE</h4>
+<figure><img src="images/MeldMIDITabL12.png" alt="MIDI" loading="lazy"><figcaption>Tab MIDI động cơ A.</figcaption></figure>
+<p>Dùng MIDI/MPE làm nguồn modulation — Meld thành công cụ biểu diễn động: <b>Velocity</b> (velocity nốt modulate đích suốt nốt); <b>Pitch</b> (pitch nốt); <b>Random</b> (giá trị ngẫu nhiên mỗi nốt); Pitch Bend/Press/Modulation Wheel (controller MIDI); Note Pitch Bend/Slide/Press (controller MPE). Không có controller: vẫn modulate được bằng <a href="#ch-clip-envelopes">clip envelope</a>.</p>
+
+<h4>30.8.8 Tab Settings</h4>
+<figure><img src="images/MeldSettingsL12.png" alt="Settings" loading="lazy"><figcaption>Thiết lập động cơ của Meld.</figcaption></figure>
+<p>Ba thiết lập toàn cục theo từng động cơ: <b>Osc Key Tracking</b> bật — oscillator chơi pitch nốt vào; tắt — mọi nốt phát pitch cố định C3 (hoặc root của scale quãng C3 nếu Scale Mode bật) — hợp drone/percussive. <b>Phase Reset</b> — pha oscillator reset về giá trị nhất quán mỗi nốt; mở kèm <b>Phase Spread</b> — pha khởi đầu dàn trải theo nguồn Spread trong Matrix (tắt = 0).</p>
+<p><b>Scale Awareness</b> hai công tắc: Oscillator — các loại oscillator ♭♯ (Dual Basic Shapes, Swarm Sine/Triangle/Saw/Square, Chip) chơi đúng scale; Filter — các loại filter ♭♯ (Plate Resonator, Membrane Resonator) cộng hưởng đúng scale. <b>Glide</b>: Porta (trượt liên tục) / Gliss (bước rời rạc — theo bậc scale nếu scale awareness bật); Glide Time đặt thời gian trượt (chỉ nghe khi &gt; 0); hoạt động cả Mono lẫn Poly.</p>
+
+<h4>30.8.9 Filter</h4>
+<figure><img src="images/MeldFiltersL12.png" alt="Filters" loading="lazy"><figcaption>Mục Filter của Meld.</figcaption></figure>
+<p>Mỗi động cơ một filter (A/B) bật/tắt độc lập. <b>Filter Frequency</b> đặt tâm cutoff; 17 loại filter, mỗi loại hai macro riêng. Macro phổ biến nhất: <b>Q</b> (nhấn quanh cutoff) + <b>Drive</b> (bão hòa input trước filter). Tóm tắt: <b>SVF 12/24 dB</b> — state variable, macro L-B-H-N morph low/band/high-pass ↔ notch; <b>MS2</b> — Sallen-Key + soft clip (monosynth Nhật bán module nổi tiếng), LP/HP; <b>OSR</b> — state variable của monosynth Anh hiếm, cộng hưởng hạn bằng diode hard-clip, band-pass; <b>LP Crunch 12dB</b> — LP hai chế độ phản hồi méo vào chính nó; <b>LP Switched Res</b> — LP điện trở thay bằng công tắc nhanh sinh artefact downsampling (Lofi cao = crushed, thấp = mượt); <b>Filther</b> — LP méo cả input (diode cứng) lẫn output (bão hòa mềm); <b>Eq Peak/Eq Notch</b> — boost/cut quanh cutoff; <b>Phaser</b> — phaser 6 tầng feedback đảo không delay (Feedback + Spread); <b>Redux</b> — resampler + bitcrusher (Crush: bit depth; Lofi: trộn tín hiệu lọc-giảm tốc và artefact); <b>Vowel</b> — formant nguyên âm, morph giữa các cấu hình; <b>Comb +/−</b> — feedforward/feedback (Feedback + Damp); <b>Plate Resonator</b> (♭♯) — bộ modal resonator chỉnh 32 mode đầu của tấm chữ nhật (size/resonance/tỉ lệ); <b>Membrane Resonator</b> (♭♯) — 32 mode đầu của màng tròn (size/resonance/damping cao).</p>
+
+<h4>30.8.10 Mục Mix</h4>
+<figure><img src="images/MeldMixSectionL12.png" alt="Mix" loading="lazy"><figcaption>Điều khiển mix từng động cơ.</figcaption></figure>
+<p>Mỗi động cơ: Volume + Pan + Tone Filter riêng (như high/low-pass gộp: dương giảm thấp, âm giảm cao). Nút <b>Limit</b> bật limiter built-in — áp mỗi voice, sau khi trộn hai động cơ và áp Drive toàn cục; kiểm soát tổng mức output khi cả hai động cơ chạy.</p>
+
+<h4>30.8.11 Điều khiển toàn cục</h4>
+<figure><img src="images/MeldGlobalParamsL12.png" alt="Global" loading="lazy"><figcaption>Tham số toàn cục của Meld.</figcaption></figure>
+<p><b>Mono/Poly</b>: Mono có <b>Legato</b> (nốt mới dùng envelope nốt cũ tại vị trí hiện tại; tắt = nốt mới tự envelope riêng); Poly đặt 2–12 voice qua menu. <b>Spread</b> chỉnh dải nguồn Spread trong Matrix: có Stacked Voices → tạo offset giữa các voice chồng; Off → mỗi nốt trong hợp âm giữ được một dải giá trị khác nhau (không map vào đích trong Matrix thì vô tác dụng). <b>Stacked Voices</b> — số voice chồng mỗi nốt: nhân đôi cả hai động cơ (filter, modulation, mixer) — ngốn CPU nặng. <b>Mixer Drive</b> — bão hòa output (mỗi voice, sau mixer, trước limiter). <b>Volume</b>. <b>Use Current Scale</b> — Meld bám Scale Mode của Live: mọi transpose (kể cả đích Pitch Quant trong Matrix) theo bậc scale thay vì nửa cung.</p>
+
+<p class="note"><em>⏳ Còn tiếp: instrument 30.9 Operator → 30.13 Wavetable sẽ được dịch bổ sung trong các lượt sau — xem tạm <a href="../manual-en/live-instrument-reference/index.html">bản EN ở mirror</a>.</em></p>
+
 
 
 
