@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniLab 3 × Ableton Live — Hướng dẫn tích hợp (Tiếng Việt)</title>
-<meta name="description" content="Hướng dẫn dùng Arturia MiniLab 3 với Ableton Live / Live Lite — bản dịch tiếng Việt từ Live Script User Guide chính thức của Arturia (v1.0).">
+<meta name="description" content="Hướng dẫn dùng Arturia MiniLab 3 với Ableton Live / Live Lite — bản dịch tiếng Việt từ Live Script User Guide chính thức của Arturia (v1.0), tổ chức theo từng khu vực chức năng của Ableton.">
 <style>
   :root{
     --bg:#f6f4ee;            /* nền kem giấy */
@@ -196,6 +196,7 @@
     </div>
     <div class="topbar-actions">
       <a class="btn" href="index.html">🎹 Cẩm nang MiniLab 3</a>
+      <a class="btn" href="../ableton-live-vi/index.html">📗 Live Manual VI</a>
       <a class="btn" href="../index.html">← Về thư viện</a>
       <button class="btn primary" onclick="window.print()">🖨 In / Lưu PDF</button>
     </div>
@@ -211,14 +212,20 @@
     <ol>
       <li><a href="#overview">Tổng quan</a></li>
       <li><a href="#setup">Cài đặt trong Live</a></li>
-      <li><a href="#features">Chức năng của script</a>
+      <li><a href="#quickmap">Bản đồ điều khiển nhanh</a></li>
+      <li><a href="#live-areas">Chức năng theo khu vực Live</a>
         <div class="sub">
-          <a href="#knobs">Núm xoay &amp; Fader</a>
-          <a href="#pads">Pad</a>
-          <a href="#al-mode">Chế độ Analog Lab</a>
+          <a href="#session">Session View — chạy clip &amp; scene</a>
+          <a href="#arrangement">Arrangement — thu &amp; dựng</a>
+          <a href="#mixer">Track &amp; Mixer</a>
+          <a href="#device">Device (nhạc cụ &amp; FX)</a>
+          <a href="#drums">Drum Rack — chơi trống</a>
+          <a href="#transport">Transport &amp; tempo</a>
         </div>
       </li>
-      <li><a href="#lite-tips">Live Lite &amp; khắc phục lỗi</a></li>
+      <li><a href="#al-mode">Chế độ Analog Lab</a></li>
+      <li><a href="#beyond">Ngoài script: MIDI Map tay</a></li>
+      <li><a href="#trouble">Live Lite &amp; khắc phục lỗi</a></li>
     </ol>
   </nav>
 
@@ -228,7 +235,7 @@
     <header class="hero">
       <div class="piano">🎛️</div>
       <h1>MiniLab 3 × Ableton Live</h1>
-      <p>Hướng dẫn tích hợp Arturia MiniLab 3 vào Ableton Live — bản dịch tiếng Việt từ <em>Live Script User Guide</em> chính thức của Arturia (v1.0), bổ sung mẹo riêng cho Live Lite.</p>
+      <p>Hướng dẫn tích hợp Arturia MiniLab 3 vào Ableton Live — bản dịch tiếng Việt từ <em>Live Script User Guide</em> chính thức của Arturia (v1.0), tổ chức lại theo từng khu vực chức năng của Ableton.</p>
       <div class="badges">
         <span class="badge">Live 11.2.5+</span>
         <span class="badge">Live Lite</span>
@@ -244,13 +251,13 @@
 
 <p>Tài liệu này giới thiệu <strong>script tích hợp</strong> (integration script) đưa MiniLab 3 vào làm việc sâu bên trong Ableton Live: encoder chính điều hướng scene/timeline, pad kích hoạt clip theo đúng màu, núm và fader tự ánh xạ vào device đang arm — thay vì chỉ là một bàn phím MIDI thông thường.</p>
 
-<figure class="med"><img src="images/live/p01_01.jpeg" alt="MiniLab 3 với Ableton Live" loading="lazy"><figcaption><span class="pg">Trang 1</span> · MiniLab 3 — chế độ điều khiển Ableton Live</figcaption></figure>
+<figure class="med"><img src="images/live/p01_01.png" alt="MiniLab 3 với Ableton Live" loading="lazy"><figcaption><span class="pg">Trang 1</span> · MiniLab 3 — chế độ điều khiển Ableton Live</figcaption></figure>
 
 <p>Script hoạt động với <strong>Ableton Live 11.2.5 trở lên</strong> — kể cả bản <strong>Live Lite</strong> đi kèm MiniLab 3, vì Ableton đã đưa script trực tiếp vào chương trình (không cần cài file zip tay như các DAW khác).</p>
 
 <div class="grid-img">
-  <figure><img src="images/live/p02_04.jpeg" alt="MiniLab 3 đặt cạnh laptop chạy Live" loading="lazy"><figcaption><span class="pg">Trang 2</span> · MiniLab 3 · tổng quan thiết bị</figcaption></figure>
-  <figure><img src="images/live/p02_05.jpeg" alt="Mặt trên MiniLab 3" loading="lazy"><figcaption><span class="pg">Trang 2</span> · Bố cục điều khiển</figcaption></figure>
+  <figure><img src="images/live/p02_01.png" alt="MiniLab 3 đặt cạnh laptop chạy Live" loading="lazy"><figcaption><span class="pg">Trang 2</span> · MiniLab 3 · tổng quan thiết bị</figcaption></figure>
+  <figure><img src="images/live/p02_02.png" alt="Mặt trên MiniLab 3" loading="lazy"><figcaption><span class="pg">Trang 2</span> · Bố cục điều khiển</figcaption></figure>
 </div>
 
 <!-- ============ CÀI ĐẶT ============ -->
@@ -272,115 +279,164 @@
   <li>Đặt đúng cổng Input và Output: <code>MiniLab 3 MIDI</code> / <code>MiniLab 3 MIDI</code>.</li>
 </ul>
 
-<figure class="med"><img src="images/live/p03_06.jpeg" alt="Preferences Live - tab Link Tempo MIDI" loading="lazy"><figcaption><span class="pg">Trang 3</span> · Chọn Control Surface <code>MiniLab 3</code> và 2 cổng <code>MiniLab 3 MIDI</code></figcaption></figure>
+<figure class="med"><img src="images/live/p03_01.png" alt="Preferences Live - tab Link Tempo MIDI" loading="lazy"><figcaption><span class="pg">Trang 3</span> · Chọn Control Surface <code>MiniLab 3</code> và 2 cổng <code>MiniLab 3 MIDI</code></figcaption></figure>
 
 <ul>
   <li>Chắc chắn rằng bạn đã <strong>tắt</strong> ba cổng <code>MiniLab 3 DIN THRU</code>, <code>MiniLab 3 MCU</code> và <code>MiniLab 3 ALV</code> (cả phần Input lẫn Output).</li>
   <li>Sau đó MiniLab 3 sẽ được nhận diện và sẵn sàng cho Live.</li>
 </ul>
 
-<figure class="med"><img src="images/live/p03_07.jpeg" alt="Tắt các cổng DIN THRU, MCU, ALV trong Preferences" loading="lazy"><figcaption><span class="pg">Trang 3</span> · Tắt DIN THRU / MCU / ALV — chỉ để <code>MiniLab 3 MIDI</code> bật</figcaption></figure>
+<figure class="med"><img src="images/live/p03_02.png" alt="Tắt các cổng DIN THRU, MCU, ALV trong Preferences" loading="lazy"><figcaption><span class="pg">Trang 3</span> · Tắt DIN THRU / MCU / ALV — chỉ để <code>MiniLab 3 MIDI</code> bật</figcaption></figure>
 
 <p class="note"><strong>Vì sao phải tắt 3 cổng kia?</strong> Chế độ DAW tùy chỉnh của MiniLab 3 (script Live) và giao thức Mackie Control Universal chạy trên cổng MCU sẽ xung đột nếu bật cùng lúc. Cổng DIN THRU và ALV dành cho mục đích khác (MIDI thru phần cứng và liên lạc với Analog Lab).<br>Xem thêm chương 6 — <a href="index.html#daw">Điều khiển DAW</a> trong cẩm nang chính.</p>
 
-<!-- ============ CHỨC NĂNG SCRIPT ============ -->
-<h2 class="sec" id="features">2. Chức năng của script</h2>
+<!-- ============ BẢN ĐỒ NHANH ============ -->
+<h2 class="sec" id="quickmap">2. Bản đồ điều khiển nhanh</h2>
 
-<h3 class="sub" id="knobs">a. Núm xoay và Fader</h3>
+<p>Toàn bộ những gì script làm được với Live, gói gọn trong một bảng — chi tiết từng khu vực ở các mục sau:</p>
 
 <table class="tbl">
-  <tr><th style="width:200px">Điều khiển</th><th>Thao tác (Action)</th><th>Phản hồi (Feedback)</th></tr>
-  <tr>
-    <td>Encoder chính (xoay)</td>
-    <td>Di chuyển giữa các scene (Session/Clip view); di chuyển trong timeline (Arrangement view)</td>
-    <td>Nội dung hiển thị trên màn hình MiniLab 3</td>
-  </tr>
-  <tr>
-    <td>Encoder chính (nhấn)</td>
-    <td>Kích hoạt cả scene (Session view); chạy arrangement (Arrangement view)</td>
-    <td>—</td>
-  </tr>
-  <tr>
-    <td>Núm 1 → 8</td>
-    <td>Điều khiển một số tham số của plug-in đang arm trên track hiện tại</td>
-    <td>Tên tham số + giá trị hiển thị trên màn hình MiniLab 3</td>
-  </tr>
-  <tr>
-    <td>Fader 1 → 4</td>
-    <td>Điều khiển âm lượng track, Send A/B và Pan</td>
-    <td>Tên tham số + giá trị hiển thị trên màn hình MiniLab 3</td>
-  </tr>
-  <tr>
-    <td>Shift + Encoder chính (xoay)</td>
-    <td>Di chuyển giữa các track</td>
-    <td>Nội dung hiển thị trên màn hình MiniLab 3</td>
-  </tr>
-  <tr>
-    <td>Shift + Encoder chính (nhấn)</td>
-    <td>Arm track đang chọn</td>
-    <td>Biểu tượng arm hiển thị trên màn hình MiniLab 3</td>
-  </tr>
+  <tr><th style="width:210px">Trên MiniLab 3</th><th>Khu vực Live</th><th>Chức năng</th></tr>
+  <tr><td>Encoder chính — xoay</td><td>Session View</td><td>Chọn scene (di chuyển lựa chọn lên/xuống)</td></tr>
+  <tr><td>Encoder chính — nhấn</td><td>Session View</td><td>Kích hoạt (launch) cả scene đang chọn</td></tr>
+  <tr><td>Pad 1–8 · Bank A</td><td>Session View</td><td>Kích hoạt clip — LED khớp màu clip/scene</td></tr>
+  <tr><td>Encoder chính — xoay</td><td>Arrangement View</td><td>Di chuyển vị trí phát (playhead) trên timeline</td></tr>
+  <tr><td>Encoder chính — nhấn</td><td>Arrangement View</td><td>Phát từ vị trí đang chọn</td></tr>
+  <tr><td>Shift + Encoder chính — xoay</td><td>Track</td><td>Chuyển track (lựa chọn track trước/sau)</td></tr>
+  <tr><td>Shift + Encoder chính — nhấn</td><td>Track</td><td>Arm (bật thu) track đang chọn — OLED hiện biểu tượng arm</td></tr>
+  <tr><td>Núm 1–8</td><td>Device</td><td>Điều khiển tham số của device trên track đang arm — OLED hiện tên + giá trị</td></tr>
+  <tr><td>Fader 1–4</td><td>Mixer</td><td>Âm lượng track, Send A/B, Pan</td></tr>
+  <tr><td>Pad 1–8 · Bank B</td><td>Drum Rack</td><td>Chơi trống/âm thanh — duyệt bộ sound bằng encoder chính</td></tr>
+  <tr><td>Shift + Pad 4–8</td><td>Transport</td><td>Loop · Play/Pause · Stop · Record · Tap Tempo</td></tr>
+  <tr><td>Shift + Pad 3 → <em>Arturia</em></td><td>Analog Lab</td><td>Chuyển sang điều khiển plug-in Analog Lab như đang standalone</td></tr>
 </table>
 
-<h3 class="sub" id="pads">b. Pad</h3>
+<!-- ============ CHỨC NĂNG THEO KHU VỰC ============ -->
+<h2 class="sec" id="live-areas">3. Chức năng theo từng khu vực của Live</h2>
 
-<p>MiniLab 3 có 8 pad vật lý, mỗi pad một chức năng, làm việc với <strong>2 bank (A/B)</strong>:</p>
+<h3 class="sub" id="session">3.1. Session View — chạy clip &amp; scene</h3>
 
-<figure class="med"><img src="images/live/p05_08.jpeg" alt="Sơ đồ chức năng 8 pad" loading="lazy"><figcaption><span class="pg">Trang 5</span> · Chức năng các pad trong chế độ Live</figcaption></figure>
+<p>Session View là nơi Live trở nên &ldquo;phòng thu trực tiếp&rdquo;, và script được thiết kế xoay quanh nó đầu tiên:</p>
 
-<p>Chuyển giữa 2 bank bằng cách vào <strong>Pad Mode</strong>: giữ <kbd>Shift</kbd> + bấm <kbd>Pad 2</kbd>.</p>
-
-<h4>Bank A — chạy clip</h4>
 <ul>
-  <li><strong>Thao tác:</strong> các pad kích hoạt clip trong Session view (clip launching).</li>
-  <li><strong>Phản hồi:</strong> màu LED của pad trùng với màu clip/scene đã chọn trong Live — nhìn xuống tay là biết clip nào sắp phát.</li>
+  <li><strong>Chọn scene:</strong> xoay encoder chính — lựa chọn scene di chuyển lên/xuống; nội dung hiển thị trên màn hình OLED của MiniLab 3.</li>
+  <li><strong>Chạy cả scene:</strong> nhấn encoder chính — toàn bộ clip trong scene đang chọn phát cùng lúc.</li>
+  <li><strong>Chạy từng clip:</strong> 8 pad (bank A) kích hoạt clip trực tiếp trong Session view.</li>
 </ul>
 
-<figure class="med"><img src="images/live/p05_09.jpeg" alt="Pad LED khớp màu clip trong Session view" loading="lazy"><figcaption><span class="pg">Trang 5</span> · LED pad Bank A khớp màu clip trong Session view</figcaption></figure>
+<figure class="med"><img src="images/live/p05_02.png" alt="Pad LED khớp màu clip trong Session view" loading="lazy"><figcaption><span class="pg">Trang 5</span> · LED pad Bank A khớp màu clip trong Session view</figcaption></figure>
 
-<h4>Bank B — trống &amp; âm thanh</h4>
+<p><strong>Phản hồi bằng màu:</strong> LED của pad Bank A sẽ <strong>trùng màu với clip/scene đang chọn</strong> trong Live — bạn nhìn xuống tay là biết ngay clip nào sắp phát, không cần nhìn màn hình máy tính.</p>
+
+<p>Chuyển giữa 2 bank pad bằng cách vào <strong>Pad Mode</strong>: giữ <kbd>Shift</kbd> + bấm <kbd>Pad 2</kbd>.</p>
+
+<h3 class="sub" id="arrangement">3.2. Arrangement View — thu &amp; dựng bài</h3>
+
+<p>Khi bạn làm việc ở Arrangement view (dạng timeline nhiều track), encoder chính tự đổi vai trò:</p>
+
 <ul>
-  <li><strong>Thao tác:</strong> bấm pad phát âm thanh; plug-in <strong>Drum Machine (Drum Rack)</strong> đã được ánh xạ sẵn — bạn duyệt bộ âm bằng núm encoder chính.</li>
-  <li><strong>Phản hồi:</strong> LED của pad khớp với màu bạn đã chọn cho từng sound trong plug-in.</li>
+  <li><strong>Xoay encoder chính:</strong> di chuyển vị trí phát (playhead) dọc theo timeline — như cuộn/bină kéo tay.</li>
+  <li><strong>Nhấn encoder chính:</strong> phát từ vị trí đang chọn.</li>
+  <li><strong>Thu bài:</strong> bật Record qua transport (Shift + Pad đỏ, xem mục <a href="#transport">3.6</a>) rồi chơi trên bàn phím — track đang arm sẽ nhận MIDI.</li>
 </ul>
 
-<figure class="med"><img src="images/live/p05_10.jpeg" alt="Bank B ánh xạ Drum Rack" loading="lazy"><figcaption><span class="pg">Trang 5–6</span> · Bank B — Drum Machine ánh xạ sẵn, duyệt âm bằng encoder chính</figcaption></figure>
+<h3 class="sub" id="mixer">3.3. Track &amp; Mixer</h3>
 
-<h4>Shift + Pad 4–8 — Transport</h4>
+<ul>
+  <li><strong>Chuyển track:</strong> giữ <kbd>Shift</kbd> + xoay encoder chính — lựa chọn track di chuyển; OLED hiển thị tên track.</li>
+  <li><strong>Arm track:</strong> giữ <kbd>Shift</kbd> + nhấn encoder chính — track đang chọn được arm (bật thu); biểu tượng arm hiện trên OLED để xác nhận.</li>
+</ul>
+
+<p>Bốn fader điều khiển trực tiếp bộ trộn (mixer) của track đang chọn:</p>
+
 <table class="tbl">
-  <tr><th style="width:150px">Pad</th><th>Chức năng</th></tr>
-  <tr><td>Pad cam</td><td>Loop (bật/tắt loop)</td></tr>
-  <tr><td>Pad xanh lá</td><td>Play/Pause — <em>nhấp nháy khi đang phát</em></td></tr>
-  <tr><td>Pad trắng</td><td>Stop</td></tr>
-  <tr><td>Pad đỏ</td><td>Record — <em>nhấp nháy khi đang ghi</em></td></tr>
-  <tr><td>Pad trắng 2</td><td>Tap Tempo (gõ phách đặt tốc độ)</td></tr>
+  <tr><th style="width:90px">Fader</th><th>Tham số mixer của Live</th></tr>
+  <tr><td>1</td><td>Volume (âm lượng track)</td></tr>
+  <tr><td>2</td><td>Send A (gửi sang return track A)</td></tr>
+  <tr><td>3</td><td>Send B (gửi sang return track B)</td></tr>
+  <tr><td>4</td><td>Pan (cân trái/phải)</td></tr>
 </table>
 
-<h3 class="sub" id="al-mode">c. Chế độ Analog Lab</h3>
+<p class="note">Cả fader lẫn núm đều có <strong>phản hồi trên OLED</strong>: tên tham số và giá trị hiển thị ngay khi bạn chạm vào — chỉnh mù cũng không lo lệch.</p>
+
+<h3 class="sub" id="device">3.4. Device — nhạc cụ &amp; hiệu ứng</h3>
+
+<p>Tám núm encoder 1–8 điều khiển <strong>tham số của device nằm trên track đang arm</strong> (nhạc cụ hay hiệu ứng đều được):</p>
+
+<ul>
+  <li>Chọn track bằng Shift + encoder (mục trên) → núm 1–8 tự ánh xạ vào 8 tham số đầu của device đó.</li>
+  <li>Xoay núm là nghe thấy ngay; OLED hiển thị tên tham số và giá trị đang đặt.</li>
+</ul>
+
+<p class="note">Cặp bài trúng phổ biến: arm track chứa <strong>Drum Rack</strong> hoặc một nhạc cụ của V Collection trong Live, rồi dùng núm 1–8 như các núm macro của device đó.</p>
+
+<h3 class="sub" id="drums">3.5. Drum Rack — chơi trống (Bank B)</h3>
+
+<p>Chuyển sang <strong>Bank B</strong> (Shift + Pad 2), 8 pad biến thành bộ trống:</p>
+
+<ul>
+  <li><strong>Bấm pad phát âm thanh</strong> — plug-in <strong>Drum Machine (Drum Rack)</strong> của Live đã được ánh xạ sẵn.</li>
+  <li><strong>Duyệt bộ sound:</strong> xoay encoder chính để chọn sound trong Drum Rack.</li>
+  <li><strong>Phản hồi:</strong> LED của pad khớp với màu bạn đã gán cho từng sound trong plug-in.</li>
+</ul>
+
+<figure class="med"><img src="images/live/p05_03.png" alt="Bank B ánh xạ Drum Rack" loading="lazy"><figcaption><span class="pg">Trang 5–6</span> · Bank B — Drum Machine ánh xạ sẵn, duyệt âm bằng encoder chính</figcaption></figure>
+
+<h3 class="sub" id="transport">3.6. Transport &amp; tempo</h3>
+
+<figure class="med"><img src="images/live/p05_01.png" alt="Sơ đồ chức năng 8 pad" loading="lazy"><figcaption><span class="pg">Trang 5</span> · Chức năng các pad trong chế độ Live</figcaption></figure>
+
+<p>Giữ <kbd>Shift</kbd>, Pad 4–8 điều khiển transport của Live:</p>
+
+<table class="tbl">
+  <tr><th style="width:150px">Pad</th><th>Chức năng Live</th><th>Phản hồi</th></tr>
+  <tr><td>Pad cam (4)</td><td>Loop — bật/tắt vòng lặp</td><td>—</td></tr>
+  <tr><td>Pad xanh lá (5)</td><td>Play/Pause</td><td><em>Nhấp nháy khi đang phát</em></td></tr>
+  <tr><td>Pad trắng (6)</td><td>Stop</td><td>—</td></tr>
+  <tr><td>Pad đỏ (7)</td><td>Record</td><td><em>Nhấp nháy khi đang ghi</em></td></tr>
+  <tr><td>Pad trắng (8)</td><td>Tap Tempo — gõ phách đặt tốc độ</td><td>—</td></tr>
+</table>
+
+<!-- ============ ANALOG LAB ============ -->
+<h2 class="sec" id="al-mode">4. Chế độ Analog Lab</h2>
 
 <p>Nếu bạn đang dùng Analog Lab, hãy chắc chắn <strong>link đúng thiết bị</strong> khi mở plug-in lần đầu:</p>
 
-<figure class="med"><img src="images/live/p06_11.jpeg" alt="Hộp thoại chọn thiết bị trong Analog Lab" loading="lazy"><figcaption><span class="pg">Trang 6</span> · Link Analog Lab với đúng thiết bị MiniLab 3</figcaption></figure>
+<figure class="med"><img src="images/live/p06_01.png" alt="Hộp thoại chọn thiết bị trong Analog Lab" loading="lazy"><figcaption><span class="pg">Trang 6</span> · Link Analog Lab với đúng thiết bị MiniLab 3</figcaption></figure>
 
 <p>Tiếp theo, vào <strong>chế độ Analog Lab</strong> trên MiniLab 3 (giữ <kbd>Shift</kbd> + <kbd>Pad 3</kbd> để quay về chương trình <em>Arturia</em>) để có quyền kiểm soát hoàn hảo Analog Lab. Khi Analog Lab được chọn, bạn thao tác với plug-in y như khi chạy standalone: điều hướng, chọn preset và chỉnh FX trực tiếp từ MiniLab 3.</p>
 
+<!-- ============ MIDI MAP ============ -->
+<h2 class="sec" id="beyond">5. Ngoài script: MIDI Map tay</h2>
+
+<p>Script bao phủ các chức năng chính nêu trên — nhưng Live có hàng trăm tham số khác (solo track, bật/tắt device, quantization,自动化 v.v.) mà script <em>không</em> có ánh xạ sẵn. Tin tốt: MiniLab 3 vẫn đồng thời hiện như một <strong>MIDI controller thông thường</strong> (cổng <code>MiniLab 3 MIDI</code>), nên bạn có thể gán tay bất kỳ tham số nào:</p>
+
+<ol>
+  <li>Trong <em>Preferences → Link/Tempo/MIDI</em>, bật <strong>Remote</strong> cho cổng vào <code>MiniLab 3 MIDI</code>.</li>
+  <li>Bấm <strong>MIDI</strong> ở góc trên phải Live (chế độ MIDI Map, phím tắt <kbd>Ctrl/Cmd + M</kbd>) — mọi tham số gán được sẽ sáng lên.</li>
+  <li>Nhấp vào tham số muốn điều khiển (ví dụ nút Solo của một track), rồi xoay/chạm điều khiển tương ứng trên MiniLab 3.</li>
+  <li>Bấm MIDI lần nữa để thoát. Bản map được lưu cùng project.</li>
+</ol>
+
+<p class="note">Cách này dùng được trên cả <strong>Live Lite</strong>, và là cầu nối hoàn hảo khi bạn muốn những thứ script chưa có: solo, mute, mở/đóng device, bật metronome, đổi scene bằng phím&hellip;</p>
+
 <!-- ============ LIVE LITE & LỖI ============ -->
-<h2 class="sec" id="lite-tips">3. Live Lite &amp; khắc phục lỗi</h2>
+<h2 class="sec" id="trouble">6. Live Lite &amp; khắc phục lỗi</h2>
 
 <p class="note"><strong>Dùng Live Lite (bản đi kèm MiniLab 3):</strong> cập nhật Live Lite lên bản mới nhất trong Ableton Account — từ Live 11.2.5, script MiniLab 3 đã nằm sẵn trong chương trình, không cần tải file zip như Bitwig/Cubase. Các bước cài đặt ở mục 1 áp dụng nguyên xi.</p>
 
-<p class="note"><strong>Firmware 1.1 trở lên:</strong> MiniLab 3 có thêm <strong>bank Transport riêng cho Live</strong> — bấm transport không cần giữ Shift nữa. Cập nhật firmware qua MIDI Control Center (xem chương 2 — Cài đặt trong cẩm nang chính).</p>
+<p class="note"><strong>Firmware 1.1 trở lên:</strong> MiniLab 3 có thêm <strong>bank Transport riêng cho Live</strong> — bấm transport không cần giữ Shift nữa. Cập nhật firmware qua MIDI Control Center (xem chương 2 — Cài đặt trong <a href="index.html">cẩm nang chính</a>).</p>
 
 <p class="note"><strong>Script không nhận, thử theo thứ tự:</strong> ① Kiểm tra MiniLab 3 đang ở chế độ <em>DAW</em> (Shift + Pad 3). ② Cập nhật Live/Live Lite lên mới nhất. ③ Trong <em>Preferences → Link/Tempo/MIDI</em>: Control Surface = <code>MiniLab 3</code>, In/Out = <code>MiniLab 3 MIDI</code>, và tắt 3 cổng <code>DIN THRU</code> / <code>MCU</code> / <code>ALV</code>. ④ Vẫn lỗi? Xem <a href="https://support.arturia.com/hc/en-us/articles/6283884020508-MiniLab-3-DAW-Integration" target="_blank" rel="noopener">bài hỗ trợ chính thức của Arturia</a> hoặc <a href="https://forum.arturia.com/t/minilab-3-ableton-live/3891" target="_blank" rel="noopener">thread MiniLab 3 &amp; Ableton Live trên forum Arturia</a>.</p>
 
-<p class="note">🎵 <strong>Video gợi ý:</strong> <a href="https://www.youtube.com/watch?v=ifLiBUAAQ5Q" target="_blank" rel="noopener">MiniLab 3 — How To Control Ableton Live</a> (Arturia), <a href="https://www.youtube.com/watch?v=AqzOwBxb89g" target="_blank" rel="noopener">live looping trong Ableton với MiniLab 3</a>, và bài review + tutorial của <a href="https://www.youtube.com/watch?v=XVf_DNwockQ" target="_blank" rel="noopener">loopop</a>.</p>
+<p class="note">🎵 <strong>Video gợi ý:</strong> <a href="https://www.youtube.com/watch?v=ifLiBUAAQ5Q" target="_blank" rel="noopener">MiniLab 3 — How To Control Ableton Live</a> (Arturia), <a href="https://www.youtube.com/watch?v=AqzOwBxb89g" target="_blank" rel="noopener">live looping trong Ableton với MiniLab 3</a>, và bài review + tutorial của <a href="https://www.youtube.com/watch?v=XVf_DNwockQ" target="_blank" rel="noopener">loopop</a>. Muốn đọc thêm về chính Live? Xem <a href="../ableton-live-vi/index.html">Ableton Live Manual tiếng Việt</a> trong thư viện.</p>
 
     </article>
 
     <footer class="foot">
       <div class="legal">
         <strong>© ARTURIA SA.</strong> Nội dung dịch từ <em>MiniLab 3 — Live Script User Guide v1.0 (EN)</em>, tài liệu chính thức tải từ <a href="https://www.arturia.com/support/downloads-manuals/product/minilab-3">trang Downloads &amp; Manuals của Arturia</a>. <em>Ableton</em> và <em>Live</em> là thương hiệu của Ableton AG.<br><br>
-        Bản dịch tiếng Việt phục vụ mục đích tham khảo/học tập cá nhân, giữ nguyên attribution cho tài liệu gốc. Phần &ldquo;Live Lite &amp; khắc phục lỗi&rdquo; là bổ sung biên tập (từ bài hỗ trợ chính thức của Arturia), không thuộc văn bản gốc. Tra cứu thêm: <a href="index.html">Cẩm nang MiniLab 3 tiếng Việt</a> và <a href="../ableton-live-vi/index.html">Ableton Live Manual tiếng Việt</a>.
+        Bản dịch tiếng Việt phục vụ mục đích tham khảo/học tập cá nhân, giữ nguyên attribution cho tài liệu gốc. Phần tổ chức theo khu vực Live, mục &ldquo;MIDI Map tay&rdquo; và &ldquo;Live Lite &amp; khắc phục lỗi&rdquo; là bổ sung biên tập (từ tài liệu hỗ trợ chính thức của Arturia/Ableton), không thuộc văn bản gốc. Tra cứu thêm: <a href="index.html">Cẩm nang MiniLab 3 tiếng Việt</a> và <a href="../ableton-live-vi/index.html">Ableton Live Manual tiếng Việt</a>.
       </div>
     </footer>
 
