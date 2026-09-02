@@ -151,6 +151,9 @@
     <a href="#ch-clip-envelopes">26. Clip Envelopes</a>
     <a href="#ch-video">27. Working with Video</a>
     <a href="#ch-max4live">31. Max for Live</a>
+    <a href="#ch-sync">36. Synchronizing with Link, Tempo Follower, and MIDI</a>
+    <a href="#ch-cpu">37. Computer Audio Resources and Strategies</a>
+    <a href="#ch-midi-facts">39. MIDI Fact Sheet</a>
     <a href="#ch-credits">42. Credits</a>
   </nav>
 
@@ -3077,6 +3080,219 @@
 <p class="note"><strong>Lưu ý:</strong> hiệu ứng đồng bộ tempo và device lấy thông tin thời gian từ đồng hồ trong của Live có thể nghe lệch nếu đặt <em>sau</em> device gây trễ trong chuỗi.</p>
 <p>Track delay đơn lẻ cao bất thường hoặc plug-in báo latency lớn khiến phần mềm ì ạch. Khó chịu về latency khi thu/phát instrument: thử tắt bù trễ — nhưng thường không khuyến nghị; chỉnh track delay riêng cũng giúp, lưu ý điều khiển Track Delay không khả dụng khi bù trễ đang tắt.</p>
 <p class="note"><strong>Lưu ý:</strong> bù trễ có thể tăng tải CPU tùy số track và device đang dùng.</p>
+
+<!-- ============ CH 36: SYNCHRONIZING WITH LINK, TEMPO FOLLOWER, AND MIDI (EN ch.36) ============ -->
+<h2 class="sec" id="ch-sync">Chương 36 · Synchronizing with Link, Tempo Follower, and MIDI (Đồng bộ)</h2>
+<p class="lead">Làm việc với sản phẩm Ableton khác hoặc nhiều instance Live, hợp tác qua nhiều thiết bị, hoặc tích hợp phần cứng ngoài — Live đồng bộ được các phần của dàn máy: <a href="#sy-link">Ableton Link</a> đồng bộ tempo/thời điểm giữa các app/thiết bị tương thích, <a href="#sy-link-audio">Link Audio</a> stream audio giữa chúng theo thời gian thực; <a href="#sy-follower">Tempo Follower</a> cho tempo của Live bám theo nguồn audio vào; <a href="#sy-midi">MIDI Sync</a> gửi/nhận thông tin thời gian với phần cứng/phần mềm ngoài qua MIDI.</p>
+
+<h3 id="sy-link">36.1 Đồng bộ qua Link</h3>
+<p><b>Ableton Link</b> đồng bộ phách, tempo và pha qua nhiều ứng dụng/thiết bị trên mạng dây hoặc không dây. <b>Link Audio</b> mở rộng Link: stream audio thời gian thực giữa các thành viên phiên Link (<em>peer</em>) không cần phần cứng thêm hay routing phức tạp.</p>
+<p>Link/Link Audio built-in trong mọi sản phẩm Ableton và ngày càng nhiều <a href="https://www.ableton.com/en/link/products/" target="_blank" rel="noopener">app/thiết bị bên thứ ba ↗</a>. Mỗi thành viên phiên Link chạy/dừng phát độc lập mà vẫn đúng nhịp và pha với các peer (phát theo launch quantization toàn cục); ai cũng chỉnh được tempo — thay đổi phản ánh lên mọi thiết bị; tham gia/rời bất cứ lúc nào không làm đứt đồng bộ giữa các peer còn lại.</p>
+<p>Dùng Link song song được với <a href="#sy-follower">Tempo Follower</a> hoặc đồng bộ <a href="#sy-midi">MIDI</a>: tempo nhận từ input ngoài được Live dùng cho phiên Link.</p>
+
+<h4>36.1.1 Thiết lập Link &amp; Link Audio</h4>
+<p>Cấu hình trong tab riêng của Settings.</p>
+<figure><img src="images/LinkSettingsL12.png" alt="Link settings" loading="lazy"><figcaption>Tab Link trong Settings.</figcaption></figure>
+<p>Công tắc Link mặc định hiện trên Control Bar; không dùng Link thì ẩn đi qua tùy chọn <em>Show Link Toggle</em> = Hide.</p>
+<figure><img src="images/LinkToggleL12.png" alt="Toggle" loading="lazy"><figcaption>Công tắc Link trên Control Bar.</figcaption></figure>
+<figure><img src="images/LinkHideL12.png" alt="Hide" loading="lazy"><figcaption>Ẩn công tắc Link qua Settings.</figcaption></figure>
+<p>Menu thả cạnh công tắc Link bật/tắt nhanh chức năng Link/Link Audio, liệt kê các peer đang bật Link Audio, và có mục <em>Configure Link…</em> mở tab Link trong Settings.</p>
+<p>Bật <em>Start Stop Sync</em> để đồng bộ lệnh start/stop giữa các peer — chỉ đồng bộ với peer cũng bật tùy chọn này.</p>
+<figure><img src="images/LinkStartStopSyncL12.png" alt="Start stop" loading="lazy"><figcaption>Bật tùy chọn Start Stop Sync.</figcaption></figure>
+<p>Các thiết lập còn lại thuộc về <a href="#sy-link-audio">Link Audio</a>:</p>
+<figure><img src="images/LinkAudioSettingsL12.png" alt="Audio settings" loading="lazy"><figcaption>Link Audio Settings.</figcaption></figure>
+<ul>
+<li><em>Audio</em> — bật/tắt Link Audio (chỉ chạy khi công tắc Link trên Control Bar cũng bật).</li>
+<li><em>Name</em> — tên hiển thị với các peer khác.</li>
+<li><em>Latency</em> — chỉnh latency áp cho audio vào; đổi latency thì lượng audio đệm của từng peer trong danh sách cập nhật theo.</li>
+<li><em>Sync to Incoming Audio</em> — audio nhận qua Link Audio và nghe qua Live giữ đồng bộ với audio/clip của Live (bằng cách hoãn phát của Live đúng lượng latency). <em>Lưu ý:</em> chỉ MỘT thành viên phiên được bật tùy chọn này để Link Audio hoạt động.</li>
+<li>Danh sách <em>peers</em> — mọi peer Link Audio đang kết nối, trạng thái và lượng audio đệm.</li>
+</ul>
+
+<h4>36.1.2 Dùng Link</h4>
+<p>Máy cùng mạng với thiết bị muốn đồng bộ (Wi-Fi ổn hoặc dây), bấm công tắc Link trên Control Bar — Live tự bắt đầu hoặc tham gia phiên Link. Bật xong, công tắc hiển thị số peer trong phiên.</p>
+<figure><img src="images/LinkPeersL12.png" alt="Peers" loading="lazy"><figcaption>Công tắc Link hiển thị số peer của phiên.</figcaption></figure>
+<p>Có ít nhất một peer khác kết nối: điều khiển Arrangement Position hiện animation thanh tiến trình khi transport Live đang dừng — thể hiện launch quantization toàn cục của Set so với các thành viên khác; kích hoạt phát xong, Live chờ thanh chạy hết mới bắt đầu.</p>
+<figure><img src="images/LinkArrangementPositionL12.png" alt="Position" loading="lazy"><figcaption>Arrangement Position cho biết quan hệ với timeline Link.</figcaption></figure>
+<p>Thành viên đầu tiên đặt tempo ban đầu cho phiên; peer nào cũng đổi tempo được, người khác theo; nhiều người đổi cùng lúc thì tempo theo người đổi sau cùng. Đổi tempo từ peer sẽ <em>ghi đè</em> tempo automation trong Set của bạn.</p>
+<p class="note"><strong>Lưu ý:</strong> <a href="#ch-recording">count-in khi thu</a> của metronome không dùng được khi Link bật.</p>
+<p>Link thường chạy ngon ngay khi bật, đồng bộ tin cậy trong đa số tình huống. Vướng vấn đề: xem <a href="https://help.ableton.com/hc/en-us/articles/209776125" target="_blank" rel="noopener">Link FAQ ↗</a>.</p>
+
+<h4 id="sy-link-audio">36.1.3 Dùng Link Audio</h4>
+<p>Bật Link Audio để stream audio thời gian thực giữa các thiết bị cùng mạng — nghe và thu audio từ thiết bị/app khác ngay trong Live. Điều kiện: cả Link lẫn Link Audio bật ở mọi peer.</p>
+<p>Bật xong, audio của các thành viên phiên thành nguồn input trong Live. <a href="#ch-routing">Nghe</a>: chọn peer qua Input Type của audio track (monitor = In, hoặc track đã arm với monitor In/Auto), rồi chọn track nguồn bằng Input Channel. <a href="#ch-recording">Thu</a>: arm audio track rồi chọn peer + track nguồn qua hai trình chọn.</p>
+<figure><img src="images/LinkAudioInputTypeL12.png" alt="Input type" loading="lazy"><figcaption>Chọn peer Link làm Input Type.</figcaption></figure>
+<p>Mọi track có audio output đều stream được cho peer. <em>Lưu ý:</em> Live và Push vừa gửi vừa nhận qua Link Audio; app/thiết bị khác có thể chỉ hỗ trợ gửi. Lỗi gì thì xem <a href="https://help.ableton.com/hc/en-us/articles/25425913328924-Link-Audio-FAQ" target="_blank" rel="noopener">Link Audio FAQ ↗</a>.</p>
+
+<h3 id="sy-follower">36.2 Đồng bộ qua Tempo Follower</h3>
+<p>Đôi khi không có Link hay MIDI Clock, hoặc không muốn dùng đồng hồ cứng nhắc từ máy tính: muốn tempo của Live bám theo nhịp "thở" tự nhiên của tay trống trong band, hoặc đồng bộ với cặp turntable khi DJ — đó là đất của <b>Tempo Follower</b>: phân tích tín hiệu audio vào theo thời gian thực, diễn giải tempo cho Live chạy theo và giữ nhịp.</p>
+
+<h4>36.2.1 Thiết lập Tempo Follower</h4>
+<p>Mở Tempo &amp; MIDI Settings: trong mục Tempo Follower, đặt Input Channel (Ext. In) vào input trên interface nối với nguồn muốn bám theo — bộ trống thì micro overhead riêng; turntable thì output đĩa hoặc effects loop của mixer DJ. Thuật toán tối ưu cho tín hiệu rõ nhịp, nhưng cứ thử nghiệm sáng tạo với nguồn khác.</p>
+<figure><img src="images/TempoFollowerSettingsL12.png" alt="Follower settings" loading="lazy"><figcaption>Tempo Follower Settings.</figcaption></figure>
+<p>Bật <em>Show Tempo Follower Toggle</em>: công tắc Tempo Follower hiện trên Control Bar cạnh các tham số tempo, bên trái.</p>
+<figure><img src="images/TempoFollowerToggleL12.png" alt="Toggle" loading="lazy"><figcaption>Công tắc Tempo Follower trên Control Bar.</figcaption></figure>
+<p>Bấm <b>Follow</b> để bật — Live lắng nghe nguồn audio đã cấu hình và diễn giải tempo. <em>Lưu ý:</em> Tempo Follower không chạy khi nút Follow bị ẩn.</p>
+<p>Không kết nối được kênh input đã chỉ định thì tính năng tự tắt, nút Follow xám.</p>
+<p class="note"><strong>Lưu ý:</strong> Tempo Follower và External Sync loại trừ nhau — Tempo Follower bật thì External Sync tắt. Live vẫn <em>gửi</em> MIDI clock ra ngoài khi Tempo Follower chạy, nhưng không nhận được.</p>
+
+<h3 id="sy-midi">36.3 Đồng bộ qua MIDI</h3>
+<p>Thiết bị không hỗ trợ Link thì đồng bộ qua MIDI — giao thức MIDI định nghĩa hai cách, Live hỗ trợ cả hai. Cả hai đều có khái niệm <em>host</em> đồng bộ (phát tín hiệu sync) và <em>device</em> đồng bộ (bám tín hiệu).</p>
+<p><b>MIDI Clock</b> — như metronome đánh nhanh: tốc độ tick phụ thuộc tempo, host đổi tempo (drum machine chẳng hạn) thì device theo; protocol còn có thông điệp vị trí bài. Với MIDI Clock, Live làm được cả host lẫn device.</p>
+<p><b>MIDI Timecode</b> — phiên bản MIDI của SMPTE, chuẩn đồng bộ máy băng và máy tính trong ngành audio/phim. Thông điệp chỉ định thời gian theo giây và khung hình (phân chia giây); Live diễn giải thành vị trí trong Arrangement. Timecode không mang thông tin nhịp — chạy Live theo sequencer khác bằng Timecode thì chỉnh tempo thủ công; biến hóa tempo không bám được (chi tiết thiết lập ở <a href="#sy-timecode">phần dưới</a>). Với Timecode, Live chỉ làm device, không làm host.</p>
+
+<h4>36.3.1 Đồng bộ thiết bị MIDI ngoài vào nhịp Live</h4>
+<p>Live gửi MIDI Clock ra sequencer/drum machine ngoài: nối sequencer với Live, đặt nó nhận MIDI sync, rồi bật thiết bị làm đích sync trong Tempo &amp; MIDI Settings.</p>
+<figure><img src="images/MIDISyncOutput.png" alt="Output" loading="lazy"><figcaption>Chọn thiết bị MIDI cho Live.</figcaption></figure>
+<p>Live đang gửi sync ra ngoài thì đèn LED dưới cạnh nút EXT trên Control Bar nhấp nháy.</p>
+
+<h4>36.3.2 Đồng bộ Live vào thiết bị MIDI ngoài</h4>
+<p>Live theo sequencer ngoài qua MIDI: nối sequencer, đặt nó gửi sync, rồi khai báo trong Tempo &amp; MIDI Settings.</p>
+<figure><img src="images/MIDISyncInput.png" alt="Input" loading="lazy"><figcaption>Đặt Live làm MIDI device.</figcaption></figure>
+<p>Bật nguồn sync ngoài, nút EXT hiện trên Control Bar — kích hoạt bằng nút này hoặc lệnh External Sync trong menu Options. Live nhận được sync dùng được thì đèn LED trên cạnh EXT nhấp nháy.</p>
+<figure><img src="images/ExtSwitch.png" alt="EXT" loading="lazy"><figcaption>Công tắc External Sync.</figcaption></figure>
+<p>Live đồng bộ với MIDI ngoài nhận được song position pointer — đồng bộ cả tempo lẫn vị trí trong bài; host nhảy tới vị trí mới, Live nhảy theo. Công tắc Loop trên Control Bar đang bật thì phát lặp vòng và con trỏ vị trí "cuộn" vào độ dài loop.</p>
+
+<h5 id="sy-timecode">36.3.2.1 Tùy chọn MIDI Timecode</h5>
+<p>Thiết lập timecode theo từng thiết bị MIDI: chọn thiết bị trong danh sách MIDI Ports của Tempo &amp; MIDI Settings.</p>
+<p><em>MIDI Timecode Frame Rate</em> — chỉ liên quan khi Sync Type = MIDI Timecode: chọn loại Timecode Live sẽ bám; đủ các frame rate SMPTE thường thấy; đặt "SMPTE All" thì Live tự dò định dạng của thông điệp đến. Định dạng hiển thị trên Arrangement View đổi được: Options → Time Ruler Format.</p>
+<p><em>MIDI Timecode Offset</em> — cũng chỉ dùng khi Sync Type = MIDI Timecode: chỉ định độ lệch thời gian SMPTE; Live coi giá trị này là thời điểm bắt đầu Arrangement.</p>
+
+<h4>36.3.3 Sync Delay</h4>
+<p>Điều khiển <em>Sync Delay</em> (riêng cho từng thiết bị MIDI) hoãn mốc thời gian nội bộ của Live so với tín hiệu sync — bù trễ phát sinh khi truyền tín hiệu. Chọn thiết bị trong MIDI Ports là Sync Delay hiện ra. Chỉnh: cho Live và sequencer kia cùng phát pattern nhịp với âm gõ rõ; nghe cả hai output rồi chỉnh Sync Delay tới khi hai âm khớp hoàn toàn.</p>
+<figure><img src="images/MIDISyncDelay.png" alt="Delay" loading="lazy"><figcaption>Chỉnh Sync Delay.</figcaption></figure>
+
+<!-- ============ CH 37: COMPUTER AUDIO RESOURCES AND STRATEGIES (EN ch.37) ============ -->
+<h2 class="sec" id="ch-cpu">Chương 37 · Computer Audio Resources and Strategies (Tài nguyên máy &amp; chiến lược)</h2>
+<p class="lead">Xử lý audio thời gian thực là việc nặng với máy tính đa dụng vốn thiết kế để chạy bảng tính và lướt web. Live đòi CPU mạnh và SSD nhanh. Chương này gợi ý cách tránh và xử lý vấn đề tài nguyên máy khi dùng Live.</p>
+
+<h3>37.1 Quản lý tải CPU</h3>
+<p>Để xuất dòng âm thanh liên tục qua phần cứng audio, Live phải tính toán cực nhiều mỗi giây. CPU không theo kịp thì audio bị đứt đoạn hoặc lách cách.</p>
+<p>Các yếu tố ảnh hưởng tốc độ tính: xung nhịp xử lý (MHz/GHz), kiến trúc, nhiệt độ (môi trường nóng — CPU hiện đại "thermal throttle" tự giảm tốc), hiệu năng cache bộ nhớ (CPU lấy dữ liệu từ RAM nhanh cỡ nào), và băng thông bus hệ thống — "đường ống" mọi dữ liệu phải đi qua.</p>
+<p>May là Live hỗ trợ đa lõi/đa xử lý: tải xử lý từ instrument, hiệu ứng, I/O phân bổ cho các tài nguyên sẵn có — công suất có khi gấp mấy lần hệ cũ, tùy máy và Set.</p>
+
+<h4>37.1.1 Đồng hồ tải CPU</h4>
+<p>Meter CPU trên Control Bar hiển thị bao nhiêu phần trăm tiềm năng tính toán đang dùng: 10% — máy thong thả; 100% — xử lý căng cứng, nhiều khả năng nghe khe hở/click/lỗi audio.</p>
+<p class="note"><strong>Lưu ý:</strong> meter CPU chỉ tính tải xử lý audio, không tính việc khác của máy (quản lý giao diện Live chẳng hạn).</p>
+<figure><img src="images/CpuMeter.png" alt="CPU meter" loading="lazy"><figcaption>Đồng hồ tải CPU.</figcaption></figure>
+<p>Meter hiển thị Average hoặc Current, hoặc tắt hẳn: Average — phần trăm trung bình của CPU đang xử lý audio (không phải tổng tải); Current — tổng mức CPU hiện tại. Nhấp meter để mở tùy chọn.</p>
+<figure><img src="images/CPUMeter11.1.png" alt="Options" loading="lazy"><figcaption>Tùy chọn đồng hồ CPU.</figcaption></figure>
+<p>Mặc định Live không hiện mức Current — bật từ menu thả. Cài mới Live 11+ cũng tắt CPU Overload Indicator mặc định — bật lại qua mục Warn on Current CPU Overload khi cần.</p>
+<p>Đo tải CPU, Live tính thời gian xử lý một audio buffer rồi so với thời gian phát thật một buffer: 50% nghĩa là Live xử lý một buffer nhanh gấp đôi tốc phát; quá 100% khi tính toán lâu hơn thời gian phát.</p>
+<p>Live kỳ vọng thread audio có ưu tiên cao nhất, nhưng việc ưu tiên cuối cùng do hệ điều hành quyết định — xử lý của Live có thể bị gián đoạn; đó là lý do ứng dụng khác gây xuyên tải (spike) trên meter CPU của Live.</p>
+
+<h4>37.1.2 Tải CPU từ audio đa kênh</h4>
+<p>Một nguồn rút CPU thường trực là di chuyển dữ liệu vào/ra phần cứng audio — giảm thiểu bằng cách tắt input/output không dùng trong dự án. Hai nút trong Audio Settings mở hộp thoại Input/Output Configuration để bật/tắt từng kênh vào/ra.</p>
+<p>Live không tự tắt kênh không dùng vì driver audio thường phát tiếng "nấc" nghe được mỗi khi có yêu cầu đổi cấu hình audio.</p>
+
+<h4>37.1.3 Tải CPU từ track và device</h4>
+<p>Mỗi track/device đang dùng đều tốn chút CPU, nhưng Live "thông minh" — không lãng phí chu kỳ CPU cho track/device không đóng góp gì.</p>
+<p>Ví dụ: kéo device vào Set đang không chạy chẳng tăng tải đáng kể; tải chỉ tăng khi bắt đầu phát clip hoặc đưa audio vào hiệu ứng. Không có audio vào, hiệu ứng tự deaktive cho tới khi cần lại; hiệu ứng có "đuôi" (reverb, delay) chỉ deaktive sau khi tính xong hết.</p>
+<p class="note"><strong>Lưu ý:</strong> cơ chế này giảm <em>trung bình</em> tải rất hiệu quả nhưng không giảm <em>đỉnh</em> tải. Muốn chắc Set phát liên tục cả trong điều kiện căng nhất: phát đồng thời một clip ở mọi track với toàn bộ device bật.</p>
+<p>Trong Session View, xem tác động của từng track lên CPU qua nút chọn Show/Hide Performance Impact trong Mixer Section.</p>
+<figure><img src="images/SessionMixerPerTrackCPUMeterSelector.png" alt="Selector" loading="lazy"><figcaption>Nút chọn Show/Hide Performance Impact.</figcaption></figure>
+<p>Trong mục Performance Impact, mỗi track có meter riêng với 6 ô vuông sáng lên theo tác động tương đối lên CPU của Set. <a href="#ca-freeze">Freeze</a> track nặng nhất hoặc bớt device thường giảm tải.</p>
+<figure><img src="images/SessionViewPerTrackCPUMeterSection.png" alt="Impact" loading="lazy"><figcaption>Mục Performance Impact trong Session View.</figcaption></figure>
+
+<h4 id="ca-freeze">37.1.4 Track Freeze (Đóng băng track)</h4>
+<p>Lệnh <b>Freeze Track</b> giúp quản lý tải CPU từ device và thiết lập clip rất hiệu quả: chọn track rồi Freeze, Live tạo tệp sample cho từng clip Session của track cộng một cho Arrangement; sau đó clip chỉ phát lại "tệp freeze" thay vì tính lại thiết lập device/clip ngốn CPU theo thời gian thực. Lệnh có trong menu Edit và menu ngữ cảnh của track/clip. <em>Lưu ý:</em> không freeze được <a href="#ch-mixing">Group Track</a> — chỉ freeze track có clip.</p>
+<p>Freeze thường rất nhanh. Nhưng track chứa <a href="../manual-en/live-audio-effect-reference/index.html#external-audio-effect">External Audio Effect</a> (EN) hoặc <a href="../manual-en/live-instrument-reference/index.html#external-instrument">External Instrument</a> (EN) nối thiết bị/synth ngoài sẽ freeze theo thời gian thực — Live tự dò và đưa các tùy chọn quản lý (xem phần <a href="#ch-managing-files">real-time rendering</a>).</p>
+<p>Xong việc (hoặc nâng máy!) — chọn track đã freeze → Unfreeze Track (menu Edit) để đổi device/thiết lập clip. Máy chậm: unfreeze từng track nặng một để sửa, xong freeze lại.</p>
+<p>Track đang freeze vẫn dùng được nhiều chức năng: thoải mái chạy clip; điều khiển mixer (volume, pan, send) vẫn hoạt động; thêm:</p>
+<ul>
+<li>Chỉnh/cắt/copy/dán/nhân đôi/trim clip.</li>
+<li>Vẽ và chỉnh mixer automation + clip envelope của mixer.</li>
+<li>Consolidate clip.</li>
+<li>Thu việc chạy clip Session View vào Arrangement View.</li>
+<li>Tạo/dời/nhân đôi scene.</li>
+<li>Kéo MIDI clip đã freeze sang audio track.</li>
+</ul>
+<p class="note"><strong>Lưu ý:</strong> chỉnh track freeze chứa hiệu ứng theo thời gian (reverb…) thì kết quả nghe được có thể khác sau khi unfreeze — lúc freeze hiệu ứng không hề được tính nên không thể đổi phản ứng theo vật liệu vào đã chỉnh; unfreeze xong mọi hiệu ứng tính lại theo thời gian thực.</p>
+<figure><img src="images/FrozenClipReverbTail.png" alt="Tail" loading="lazy"><figcaption>Track Arrangement đã freeze với đuôi reverb.</figcaption></figure>
+<p>Track Arrangement đã freeze phát cả vật liệu nằm dài hơn clip (như "đuôi" reverb) — đuôi freeze hiện trong Arrangement thành vùng gạch chéo cạnh clip tương ứng; Live coi chúng là clip "tạm" riêng, biến mất khi unfreeze (hiệu ứng tính lại real-time). Vì vậy khi dời clip freeze trong Arrangement, thường nên chọn cả clip đuôi freeze thứ hai để hai thứ đi cùng nhau.</p>
+<p>Clip Session freeze chỉ chứa hai chu kỳ loop — clip có <a href="#ch-clip-envelopes">clip envelope tách liên kết</a> có thể phát khác sau hai vòng loop khi bị freeze.</p>
+<p>Kéo clip freeze vào vùng thả của Session/Arrangement tạo track freeze mới chứa clip đó; chọn một phần clip trong Arrangement thì track mới chỉ chứa phần được chọn.</p>
+<p>Sample tạo bởi Freeze Track lưu trong Project hiện tại: /Samples/Processed/Freeze (chưa lưu Set thì theo thư mục <a href="#ch-recording">Temporary</a>). <em>Lưu ý:</em> tệp freeze của track chứa External Instrument/External Audio Effect bị bỏ ngay khi unfreeze.</p>
+<p>Ngoài tiết kiệm CPU, Track Freeze còn đơn giản hóa việc chia sẻ dự án giữa các máy: máy yếu vẫn chạy được Live Set lớn miễn các track nặng đã freeze — kể cả máy thiếu device dùng trong Set vẫn phát được khi track chứa device đó đã freeze.</p>
+
+<h3>37.2 Quản lý tải đĩa</h3>
+<p>Tốc độ đọc/ghi SSD ảnh hưởng hiệu năng Live. Lưu lượng đĩa Live tạo ra tỉ lệ thuận với số kênh audio đọc/ghi đồng thời — track phát sample stereo gây tải đĩa nhiều hơn track phát mono.</p>
+<figure><img src="images/DiskOverloadLed.png" alt="Disk LED" loading="lazy"><figcaption>Đèn báo Disk Overload.</figcaption></figure>
+<p>Đèn Disk Overload nhấp nháy khi đĩa không đọc/ghi audio đủ nhanh — đang thu thì bản ghi bị khuyết đoạn; đang phát thì nghe drop-out. Tránh bằng cách:</p>
+<ul>
+<li>Giảm kênh audio ghi: chọn input mono thay vì stereo trong hộp thoại Channel Configuration của Audio Settings.</li>
+<li>Dùng <a href="#ch-clip-view">RAM Mode</a> cho clip chọn.</li>
+<li>Giảm kênh audio phát: dùng sample mono thay vì stereo khi có thể — chuyển stereo sang mono bằng chương trình chỉnh audio số bất kỳ, gọi được <a href="#ch-managing-files">ngay trong Live</a>.</li>
+</ul>
+
+<!-- ============ CH 39: MIDI FACT SHEET (EN ch.39) ============ -->
+<h2 class="sec" id="ch-midi-facts">Chương 39 · MIDI Fact Sheet (Sự thật kỹ thuật về MIDI trong Live)</h2>
+<p class="lead">Song song với việc tối ưu động cơ audio, Ableton đã phân tích riêng thời gian MIDI (MIDI timing) của Live và cải tiến khi cần. Chương này giúp người dùng hiểu các vấn đề khi dựng môi trường MIDI trên máy tính tin cậy và chính xác, và cách Live giải quyết chúng.</p>
+<p>Các vấn đề MIDI timing nói ở đây nhìn chung <em>không</em> áp cho người dùng có phần cứng audio/MIDI chất lượng cao — đã đầu tư thời gian và tiền tối ưu các yếu tố này mà không gặp lỗi timing thì bạn đâu cần thông tin này.</p>
+
+<h3>39.1 Hành vi MIDI lý tưởng</h3>
+<p>Để hiểu MIDI hoạt động ra sao trong DAW, cần vài thuật ngữ. Một DAW phải đáp ứng ba tình huống MIDI riêng biệt:</p>
+<ol>
+<li><b>Recording</b> — gửi nốt MIDI và dữ liệu controller từ thiết bị phần cứng (MIDI keyboard) vào DAW để lưu. Môi trường thu lý tưởng ghi lại thông tin đến với độ chính xác thời gian hoàn hảo so với timeline bài — chính xác như thu audio.</li>
+<li><b>Playback</b> — hai việc: (1) gửi nốt/controller từ DAW ra thiết bị phần cứng như synthesizer; (2) chuyển MIDI đã lưu thành audio trong máy, phát bởi plug-in như synth Operator. Cả hai đều lý tưởng nếu tái hiện hoàn hảo thông tin đã lưu.</li>
+<li><b>Playthrough</b> — gửi nốt/controller từ phần cứng (MIDI keyboard) vào DAW rồi tức thời quay ra synth phần cứng hoặc plug-in trong DAW. Môi trường playthrough lý tưởng "cảm giác" chính xác và nhạy như nhạc cụ cơ như piano.</li>
+</ol>
+
+<h3>39.2 Các vấn đề MIDI timing</h3>
+<p>Thực tế MIDI trên máy tính phức tạp, biến số nhiều đến mức hệ thống lý tưởng trên là bất khả thi. Hai vấn đề căn bản:</p>
+<ol>
+<li><b>Latency</b> — độ trễ cố hữu và <em>ổn định</em> trong hệ thống. Đặc biệt khó trong DAW vì audio số không truyền vào/ra interface theo thời gian thực mà phải đệm (buffer). Nhưng nhạc cụ acoustic cũng có latency nhất định — piano có độ trễ giữa lúc ấn phím và lúc búa gảy dây. Về mặt chơi nhạc, latency nhỏ thường không vấn đề: người chơi tự chỉnh nhịp để bù — miễn là độ trễ ổn định.</li>
+<li><b>Jitter</b> — độ trễ <em>không ổn định</em>/ngẫu nhiên. Trong DAW dễ thành vấn đề vì các chức năng (MIDI, audio, giao diện) xử lý riêng; thông tin thường phải di chuyển giữa các tiến trình — ví dụ chuyển MIDI sang phát của plug-in. MIDI không jitter đòi hỏi chuyển đổi chính xác giữa các đồng hồ của MIDI interface, audio interface và DAW — độ chính xác phụ thuộc hệ điều hành, kiến trúc driver… Jitter, nhiều hơn latency, tạo cảm giác MIDI timing "lỏng chỏng".</li>
+</ol>
+
+<h3>39.3 Giải pháp MIDI của Live</h3>
+<p>Cách Ableton tiếp cận MIDI timing dựa trên hai tiền đề:</p>
+<ol>
+<li>Luôn luôn, latency preferable hơn jitter: latency ổn định và dự đoán được — máy tính và con người dễ ứng phó hơn nhiều.</li>
+<li>Đang thu mà nghe playthrough: bạn muốn ghi lại cái bạn <em>nghe</em> — dù vì latency nó trễ hơn chút so với cái bạn <em>chơi</em>.</li>
+</ol>
+<p>Live xử lý các vấn đề của thu, phát và playthrough để MIDI timing nhạy, chính xác và ổn định tin cậy. Để ghi sự kiện đến đúng vị trí trên timeline của Set, Live cần biết chính xác lúc sự kiện nhận từ MIDI keyboard. Nhưng Live không nhận trực tiếp — chúng phải qua driver MIDI interface và hệ điều hành. Giải pháp: driver gắn cho mỗi sự kiện MIDI một <b>timestamp</b> (dấu thời gian) ngay khi nhận, truyền cùng sự kiện cho Live — Live biết chính xác khi nào sự kiện được thêm vào clip.</p>
+<p>Playthrough: DAW liên tục đối mặt sự kiện cần nghe sớm nhất có thể nhưng tất yếu đã xảy ra trong quá khứ do latency và trễ hệ thống. Phải chọn: phát ngay khi nhận (rủi ro jitter nếu đúng lúc hệ thống bận) hay trì hoãn (thêm latency)? Ableton chọn thêm latency — người dùng dễ thích nghi với latency ổn định hơn là jitter ngẫu nhiên.</p>
+<p>Khi bật monitoring trong lúc thu, Live cộng thêm độ trễ vào timestamp của sự kiện theo buffer size của phần cứng audio — nhờ đó sự kiện ghi vào clip đúng lúc bạn <em>nghe</em> nó, chứ không phải lúc bạn <em>chơi</em> nó.</p>
+<p>Với phát ra thiết bị phần cứng, Live cũng tạo timestamp truyền cho driver MIDI interface để lên lịch sự kiện đi ra. Driver Windows MME không xử lý được timestamp — với thiết bị dùng loại driver này, Live tự lên lịch sự kiện trong nội bộ.</p>
+<p class="note"><strong>Lưu ý:</strong> ngay cả khi tải hệ thống cao gây drop-out audio, Live vẫn tiếp nhận sự kiện MIDI đến. Có drop-out thì playthrough có thể lệch và méo audio, nhưng Live vẫn ghi đúng sự kiện MIDI vào clip — sau này hệ thống hồi phục, phát lại các sự kiện đã ghi vẫn chính xác.</p>
+
+<h3>39.4 Các biến số ngoài tầm kiểm soát của Live</h3>
+<p>Nhìn chung timestamp là cơ chế cực tin cậy cho thời gian sự kiện MIDI — nhưng chỉ áp cho dữ liệu <em>trong</em> máy. Dữ liệu MIDI ngoài máy không dùng được thông tin này: thông tin thời gian từ/ra phần cứng ngoài được xử lý ngay khi tới, không theo lịch. Hơn nữa, cáp MIDI là <em>tuyến tính</em> (serial) — mỗi lần chỉ gửi được một mẩu tin: nhiều nốt đánh đồng thời không thể truyền đồng thời qua cáp MIDI mà phải gửi nối tiếp — tùy mật độ sự kiện, gây lệch MIDI timing.</p>
+<p>Vấn đề nữa, đặc biệt với synth phần cứng thời đầu MIDI: <em>scan time</em> của thiết bị chậm — scan time là tần số synth tự kiểm tra bàn phím xem có phím nào không; chậm quá thì sinh jitter.</p>
+<p>Mọi lỗi timing ở tầng phần cứng còn nhân lên khi thêm thiết bị vào chuỗi.</p>
+<p>Ngay trong máy, độ chính xác của timestamp cũng chênh lệch lớn tùy chất lượng phần cứng MIDI, lỗi lập trình driver… Live phải <em>giả định</em> timestamp của MIDI đến là chính xác và thiết bị ngoài xử lý MIDI đi ra đúng cách — cả hai đều Live không thể kiểm chứng.</p>
+
+<h4>Kiểm định &amp; kết quả</h4>
+<p>Quy trình đo thời gian MIDI đến mô tả như sơ đồ:</p>
+<figure><img src="images/MIDIInTestSetup.png" alt="Input test" loading="lazy"><figcaption>Cấu hình kiểm định MIDI input.</figcaption></figure>
+<p>Output của <em>MIDI Source</em> (keyboard hoặc DAW khác phát chuỗi MIDI sự kiện ngẫu nhiên dài) đưa vào <em>MIDI Splitter</em> phần cứng zero-latency: một nhánh ghi vào MIDI clip mới trong Live; nhánh kia vào <em>MIDI-to-Audio Converter</em> — thiết bị đổi tín hiệu điện từ MIDI source thành tạp âm audio đơn giản; vì không diễn giải dữ liệu MIDI nên đổi với độ trễ bằng không. Output converter ghi vào audio clip mới trong Live. Trong hệ lý tưởng, mỗi sự kiện trong MIDI clip xảy ra đồng thời với sự kiện tương ứng trong audio clip — đo chênh lệch giữa hai clip là biết độ chính xác của Live.</p>
+<p>Đánh giá MIDI trong nhiều điều kiện: chạy test với 3 interface audio/MIDI combo khác mức giá (gọi là A, B, C) của các hãng lớn; tải CPU ~50% trên macOS và Windows, ở 44.1 và 96 kHz, 3 cỡ buffer — tổng 36 cấu hình.</p>
+<p><b>Windows:</b></p>
+<ul>
+<li>Interface A: jitter tối đa ±4 mili-giây, phần lớn ở ±1 ms.</li>
+<li>Interface B: phần lớn test jitter tối đa ±3–4 ms; 96 kHz + buffer 1024: một ít sự kiện ±5 ms; 44.1 kHz + buffer 512: thi thoảng ±6 ms. Mọi trường hợp phần lớn ở ±1 ms.</li>
+<li>Interface C: phần lớn test jitter tối đa ±5 ms; 96 kHz + 512: ít sự kiện ±6–8 ms; 44.1 kHz + 1024: ít sự kiện tới ±10 ms. Mọi trường hợp phần lớn ở ±1 ms.</li>
+</ul>
+<p><b>macOS:</b></p>
+<ul>
+<li>Interface A: 44.1 kHz + buffer 1152: jitter phân bố khá đều trong ±4–11 ms; các test khác tối đa ±5 ms. Phần lớn ở ±1 ms.</li>
+<li>Interface B: phần lớn test tối đa ±4–5 ms; 44.1 kHz + 1152: phân bố khá đều ±2–11 ms. Phần lớn ở ±1 ms.</li>
+<li>Interface C: mọi test jitter tối đa ±1 ms, phần lớn sự kiện không jitter.</li>
+</ul>
+<p>Thủ tục tương tự đo thời gian MIDI <em>đi ra</em>:</p>
+<figure><img src="images/MIDIOutTestSetup.png" alt="Output test" loading="lazy"><figcaption>Cấu hình kiểm định MIDI output.</figcaption></figure>
+<p>Mọi trường hợp, kết quả test output tương đương test input.</p>
+
+<h3>39.5 Mẹo đạt hiệu năng MIDI tối ưu</h3>
+<ul>
+<li>Dùng buffer nhỏ nhất mà phần cứng cho phép để latency tối thiểu — điều khiển buffer trong tab Audio của Settings, tùy loại phần cứng.</li>
+<li>Dùng MIDI interface chất lượng cao với driver mới nhất — timestamp MIDI sinh và xử lý chính xác nhất có thể.</li>
+<li><em>Không</em> bật track monitoring khi thu MIDI mà đang nghe trực tiếp thiết bị phần cứng (synth ngoài) — trái với nghe audio của nó qua Live bằng device External Instrument. Tương tự, tắt monitoring khi thu dữ liệu MIDI do thiết bị MIDI khác sinh ra (drum machine). Monitoring bật thì Live cộng latency để bù jitter playthrough — vì vậy chỉ bật monitoring khi thực sự playthrough.</li>
+</ul>
+
+<h3>39.6 Tổng kết</h3>
+<p>Mong chương này giúp hiểu: các vấn đề cố hữu của hệ MIDI trên máy tính; cách Live giải quyết; và các biến số ngoài khả năng của chúng tôi. Như đã nói, cách tốt nhất giải quyết MIDI timing trong phòng thu là dùng linh kiện phần cứng chất lượng cao nhất — với chúng, mọi hệ MIDI phần mềm đều chạy không vấn đề đáng kể. Với phần cứng chưa tối ưu, Live vẫn cho thêm mức chính xác bằng cách tối thiểu hóa jitter — đổi bằng chút latency phụ thêm.</p>
 
 </article>
 
