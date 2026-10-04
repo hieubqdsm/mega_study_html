@@ -1,0 +1,821 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html"><link rel="copyright" title="Bản quyền" href="../../../../copyright.html"><link rel="next" title="Bridge Edge Loops" href="bridge_edge_loops.html"><link rel="prev" title="Extrude Edges" href="extrude_edges.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/modeling/meshes/editing/edge/bevel.html">
+        <link rel="prefetch" href="../../../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Bevel - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../../../"></div>
+<script src="../../../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/modeling/meshes/editing/edge/bevel.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <span class="target" id="tool-mesh-bevel"><span id="bpy-ops-mesh-bevel"></span></span><section id="bevel">
+<h1>Bevel<a class="headerlink" href="#bevel" title="Link to this heading">¶</a></h1>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Edit Mode</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Vertex ‣ Bevel Vertices</span>, <span class="menuselection">Edge ‣ Bevel Edges</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">B</kbd> (Bevel Vertices), <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">B</kbd> (Bevel Edges)</p>
+</dd>
+</dl>
+</div>
+<p>Công cụ <em>Bevel</em> làm mượt các góc và cạnh. Điều này giúp object trông chân thực hơn -- rốt cuộc thì không có gì ngoài đời là sắc vô hạn.</p>
+<figure class="align-default" id="id2">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_cubes.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_cubes.png" />
+<figcaption>
+<p><span class="caption-text">Các cube không có và có bevel.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><a class="reference internal" href="../../../modifiers/generate/bevel.html"><span class="doc">Bevel Modifier</span></a> thực hiện việc này một cách không phá hủy.</p>
+</div>
+<section id="usage">
+<h2>Cách dùng<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>Chọn một hoặc nhiều vertex, edge hoặc face, rồi nhấn <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">B</kbd> để làm mượt cả cạnh lẫn góc, hoặc <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">B</kbd> để chỉ làm mượt góc. Di chuyển chuột để tăng bán kính bevel và lăn <kbd class="kbd docutils literal notranslate">Wheel</kbd> để đặt mật độ của geometry mới. Cuối cùng, nhấn <kbd class="kbd docutils literal notranslate">LMB</kbd>/<kbd class="kbd docutils literal notranslate">Return</kbd> để xác nhận hoặc <kbd class="kbd docutils literal notranslate">RMB</kbd>/<kbd class="kbd docutils literal notranslate">Esc</kbd> để hủy.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id3">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_example-1.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_example-1.png" />
+<figcaption>
+<p><span class="caption-text">Trước khi bevel.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id4">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_example-2.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_example-2.png" />
+<figcaption>
+<p><span class="caption-text">Tăng độ rộng bevel.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id5">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_example-3.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_example-3.png" />
+<figcaption>
+<p><span class="caption-text">Tăng số segment bevel.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="options">
+<h2>Tùy chọn<a class="headerlink" href="#options" title="Link to this heading">¶</a></h2>
+<p>Khi công cụ đang hoạt động, các cài đặt hiện tại được hiển thị ở đầu 3D Viewport. Dùng phím tắt (cũng hiển thị trong <a class="reference internal" href="../../../../interface/window_system/status_bar.html"><span class="doc">thanh trạng thái</span></a>) để chọn một cài đặt, rồi di chuyển chuột hoặc gõ một số để thay đổi nó. Khi di chuyển chuột, giữ <kbd class="kbd docutils literal notranslate">Shift</kbd> để thay đổi giá trị chậm hơn cho độ chính xác cao hơn, hoặc <kbd class="kbd docutils literal notranslate">Ctrl</kbd> để snap theo bước tăng thô.</p>
+<p>Sau khi xác nhận bằng <kbd class="kbd docutils literal notranslate">LMB</kbd>, các cài đặt vẫn có thể được thay đổi trong panel <a class="reference internal" href="../../../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a>.</p>
+<dl>
+<dt>Affect <kbd class="kbd docutils literal notranslate">V</kbd></dt><dd><dl class="simple">
+<dt>Vertices</dt><dd><p>Bevel các vertex đã chọn, giữ nguyên các edge.</p>
+</dd>
+<dt>Edges</dt><dd><p>Bevel các edge đã chọn, cùng các vertex nơi ba hay nhiều edge gặp nhau.</p>
+</dd>
+</dl>
+</dd>
+<dt>Width Type <kbd class="kbd docutils literal notranslate">M</kbd></dt><dd><p>Ý nghĩa của cài đặt <em>Width</em>. Trong các ví dụ dưới đây, <em>Width</em> được đặt thành 50% cho <em>Width Type</em> &quot;Percent&quot; và thành 1.0 cho các kiểu khác.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id6">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-original.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-original.png" />
+<figcaption>
+<p><span class="caption-text">Trước khi bevel</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id7">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-offset.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-offset.png" />
+<figcaption>
+<p><span class="caption-text">Offset</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id8">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-width.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-width.png" />
+<figcaption>
+<p><span class="caption-text">Width</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+<tr class="row-even"><td><figure class="align-default" id="id9">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-depth.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-depth.png" />
+<figcaption>
+<p><span class="caption-text">Depth</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id10">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-percent.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-percent.png" />
+<figcaption>
+<p><span class="caption-text">Percent</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id11">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-absolute.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_width-type-absolute.png" />
+<figcaption>
+<p><span class="caption-text">Absolute</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>Width <kbd class="kbd docutils literal notranslate">A</kbd></dt><dd><p>Kích thước/bán kính của bevel. Ý nghĩa chính xác tùy thuộc vào <em>Width Type</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi nhiều edge được bevel cùng lúc, đôi khi không thể làm độ rộng khớp với định nghĩa trên ở tất cả các edge cùng một lúc. Bevel sẽ cố dung hòa trong những trường hợp này. Đôi khi tắt <em>Loop Slide</em> (xem dưới đây) có thể giúp Bevel dễ tạo các độ rộng đúng như chỉ định hơn.</p>
+</div>
+</dd>
+<dt>Segments <kbd class="kbd docutils literal notranslate">S</kbd></dt><dd><p>Mật độ của geometry mới. Giá trị cao hơn sẽ cho kết quả mượt hơn.</p>
+<p>Khi công cụ đang hoạt động, cài đặt này có thể được thay đổi bằng <kbd class="kbd docutils literal notranslate">Wheel</kbd> ngay cả khi nó không được chọn.</p>
+</dd>
+<dt>Profile Shape <kbd class="kbd docutils literal notranslate">P</kbd></dt><dd><p>Một số trong khoảng từ 0 đến 1 điều khiển hình dạng của profile (hình chiếu cạnh của mỗi edge được bevel).</p>
+<figure class="align-default">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_profile-shape.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_profile-shape.png" />
+</figure>
+<p>Nếu <em>Miter Outer</em> hoặc <em>Miter Inner</em> được đặt thành <em>Arc</em>, giá trị này cũng điều khiển hình dạng của các miter.</p>
+</dd>
+<dt>Material Index</dt><dd><p>Chỉ số (tính từ 0) của <a class="reference internal" href="../../../../render/materials/assignment.html#bpy-types-materialslot"><span class="std std-ref">material slot</span></a> để gán cho các face mới được tạo. Nếu đặt thành -1, các face mới sẽ kế thừa material của các face lân cận.</p>
+</dd>
+<dt>Harden Normals <kbd class="kbd docutils literal notranslate">H</kbd></dt><dd><p>Khi bật, gán <a class="reference internal" href="../../structure.html#modeling-meshes-normals-custom"><span class="std std-ref">custom split normal</span></a> cho các face mới được tạo để chúng trông được <a class="reference internal" href="../../../../scene_layout/object/editing/shading.html#bpy-ops-object-shade-smooth"><span class="std std-ref">shade mượt</span></a> mà không ảnh hưởng đến phần còn lại của mesh.</p>
+</dd>
+<dt>Clamp Overlap <kbd class="kbd docutils literal notranslate">C</kbd></dt><dd><p>Ngăn các edge được bevel vượt quá điểm cuối của các face lân cận.</p>
+</dd>
+<dt>Loop Slide</dt><dd><p>Quyết định các edge trong mới nên vuông góc với edge được bevel hay khớp với hướng của các edge trong hiện có.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id12">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_loop-slide-before.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_loop-slide-before.png" />
+<figcaption>
+<p><span class="caption-text">Trước khi bevel.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id13">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_loop-slide-off.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_loop-slide-off.png" />
+<figcaption>
+<p><span class="caption-text">Loop Slide tắt.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id14">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_loop-slide-on.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_loop-slide-on.png" />
+<figcaption>
+<p><span class="caption-text">Loop Slide bật.</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>Mark</dt><dd><dl class="simple">
+<dt>Seams <kbd class="kbd docutils literal notranslate">U</kbd></dt><dd><p>Khi bevel ba hay nhiều edge cùng chung một vertex, và hai trong số các edge đó được đánh dấu là <a class="reference internal" href="../../uv/unwrapping/seams.html"><span class="doc">UV Seam</span></a>, các edge mới giữa chúng cũng sẽ được đánh dấu là Seam.</p>
+</dd>
+<dt>Sharp <kbd class="kbd docutils literal notranslate">K</kbd></dt><dd><p>Giống <em>Mark Seams</em>, nhưng dành cho các edge <a class="reference internal" href="edge_data.html#bpy-ops-mesh-mark-sharp"><span class="std std-ref">Sharp</span></a>.</p>
+</dd>
+</dl>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id15">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_mark-seams-before.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_mark-seams-before.png" />
+<figcaption>
+<p><span class="caption-text">Trước khi bevel.</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id16">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_mark-seams-off.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_mark-seams-off.png" />
+<figcaption>
+<p><span class="caption-text">Mark Seams tắt.</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id17">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_mark-seams-on.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_mark-seams-on.png" />
+<figcaption>
+<p><span class="caption-text">Mark Seams bật.</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>Miter Outer <kbd class="kbd docutils literal notranslate">O</kbd></dt><dd><p>Khi bevel ba hay nhiều edge nối vào cùng một vertex, và hai trong số các edge đó tạo thành một góc lớn hơn 180° ở phía có các face, <em>Outer Miter</em> quyết định liệu có geometry bổ sung nào được tạo ở góc đó để tránh bị bóp nhọn hay không.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id18">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_miter-2.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_miter-2.png" />
+<figcaption>
+<p><span class="caption-text">Outer miter kiểu Sharp (không có geometry bổ sung).</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id19">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_miter-3.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_miter-3.png" />
+<figcaption>
+<p><span class="caption-text">Outer miter kiểu Patch.</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id20">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_miter-4.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_miter-4.png" />
+<figcaption>
+<p><span class="caption-text">Outer miter kiểu Arc.</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>(Miter) Inner <kbd class="kbd docutils literal notranslate">I</kbd></dt><dd><p>Khi bevel hai hay nhiều edge nối vào cùng một vertex, và có các edge tạo thành góc nhỏ hơn 180° ở phía có các face, <em>Inner Miter</em> quyết định liệu có geometry bổ sung nào được tạo ở những góc đó hay không.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id21">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_miter-5.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_miter-5.png" />
+<figcaption>
+<p><span class="caption-text">Inner miter kiểu Sharp (không có geometry bổ sung).</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id22">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_miter-6.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_miter-6.png" />
+<figcaption>
+<p><span class="caption-text">Inner miter kiểu Arc.</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>Spread</dt><dd><p>Kích thước của <em>Inner Miter</em> khi đặt thành <em>Arc</em>. Giá trị này cũng ảnh hưởng đến <em>Outer Miter</em>.</p>
+</dd>
+<dt>Intersection Type <kbd class="kbd docutils literal notranslate">N</kbd></dt><dd><p>Loại geometry sẽ tạo tại những điểm nơi ba hay nhiều edge được bevel gặp nhau.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Grid Fill<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lấp khoảng trống giữa các edge bằng geometry nối chúng một cách mượt mà.</p>
+</dd>
+<dt class="field-even">Cutoff<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đóng nắp mỗi edge bằng một face phẳng.</p>
+</dd>
+</dl>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+<col style="width: 33.3%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id23">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_vmesh-1.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_vmesh-1.png" />
+<figcaption>
+<p><span class="caption-text">Grid fill.</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id24">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_vmesh-2.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_vmesh-2.png" />
+<figcaption>
+<p><span class="caption-text">Cutoff.</span><a class="headerlink" href="#id24" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id25">
+<img alt="../../../../_images/modeling_meshes_editing_edge_bevel_vmesh-3.png" src="../../../../_images/modeling_meshes_editing_edge_bevel_vmesh-3.png" />
+<figcaption>
+<p><span class="caption-text">Cutoff với một face trung tâm.</span><a class="headerlink" href="#id25" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>Face Strength</dt><dd><p>Có áp dụng <em>Face Strength</em> cho các face liên quan đến bevel hay không. Có thể dùng kết hợp với <a class="reference internal" href="../../../modifiers/normals/weighted_normal.html"><span class="doc">Modifier Weight Normals</span></a> (với tùy chọn <em>Face Influence</em> được bật).</p>
+<dl class="field-list simple">
+<dt class="field-odd">None<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Không đặt face strength.</p>
+</dd>
+<dt class="field-even">New<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đặt face strength của các face mới dọc theo edge thành <em>Medium</em>, và face strength của các face mới tại vertex thành <em>Weak</em>.</p>
+</dd>
+<dt class="field-odd">Affected<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ngoài những gì được đặt cho trường hợp <em>New</em>, còn đặt các face kề với face mới có strength <em>Strong</em>.</p>
+</dd>
+<dt class="field-even">All<span class="colon">:</span></dt>
+<dd class="field-even"><p>Ngoài những gì được đặt cho tùy chọn <em>Affected</em>, còn đặt tất cả các face còn lại của model có strength <em>Strong</em>.</p>
+</dd>
+</dl>
+</dd>
+<dt>Profile Type <kbd class="kbd docutils literal notranslate">Z</kbd></dt><dd><p>Quyết định dòng chảy của các edge được tạo dọc theo mỗi edge được bevel.</p>
+<dl>
+<dt>Superellipse</dt><dd><p>Dùng một profile tự động tạo dựa trên cài đặt <em>Profile Shape</em>.</p>
+</dd>
+<dt>Custom</dt><dd><figure class="align-right" id="id26">
+<a class="reference internal image-reference" href="../../../../_images/modeling_modifiers_generate_bevel_profile-widget.png"><img alt="../../../../_images/modeling_modifiers_generate_bevel_profile-widget.png" src="../../../../_images/modeling_modifiers_generate_bevel_profile-widget.png" style="width: 300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Widget profile tùy chỉnh.</span><a class="headerlink" href="#id26" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Dùng một profile tùy chỉnh như được định nghĩa trong <a class="reference internal" href="../../../../interface/controls/templates/curve.html#ui-curve-widget"><span class="std std-ref">Widget Curve</span></a> ở panel Adjust Last Operation. Đường cong là hình chiếu cạnh của một bevel giữa hai face gặp nhau vuông góc; vùng tô đậm đại diện cho phần bên trong của mesh.</p>
+<dl class="simple">
+<dt>Presets</dt><dd><p>Các preset <em>Support Loops</em> và <em>Steps</em> được dựng động tùy vào số <em>Segments</em> của bevel. Nếu số segment thay đổi, preset sẽ phải được áp dụng lại.</p>
+</dd>
+<dt>Sample Straight Edges</dt><dd><p>Có lấy mẫu profile ở giữa các đoạn cong thẳng tuyệt đối (đường thẳng giữa hai điểm điều khiển có <a class="reference internal" href="../../../../interface/controls/templates/curve.html#ui-curve-widget-handle-type"><span class="std std-ref">kiểu handle</span></a> <em>Vector</em>) hay không. Tùy chọn này tắt theo mặc định, vì thông thường chỉ cần lấy mẫu profile tại chính các điểm điều khiển là đủ.</p>
+</dd>
+<dt>Sample Even Lengths</dt><dd><p>Theo mặc định, mỗi đoạn profile (phần giữa hai điểm điều khiển) nhận cùng một số điểm lấy mẫu. Khi bật tùy chọn này, các điểm lấy mẫu thay vào đó được phân bố đều dọc theo toàn bộ chiều dài của profile.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="bridge_edge_loops.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Bridge Edge Loops</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="extrude_edges.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Extrude Edges</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/modeling/meshes/editing/edge/bevel.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Fmodeling/meshes/editing/edge/bevel"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fmodeling/meshes/editing/edge/bevel.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Fmodeling/meshes/editing/edge/bevel.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Bevel</a><ul>
+<li><a class="reference internal" href="#usage">Cách dùng</a></li>
+<li><a class="reference internal" href="#options">Tùy chọn</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

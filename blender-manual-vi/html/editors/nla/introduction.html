@@ -1,0 +1,661 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="copyright" title="Bản quyền" href="../../copyright.html"><link rel="next" title="Track" href="tracks.html"><link rel="prev" title="Nonlinear Animation" href="index.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/editors/nla/introduction.html">
+        <link rel="prefetch" href="../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Giới thiệu - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../"></div>
+<script src="../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/editors/nla/introduction.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="introduction">
+<span id="index-0"></span><h1>Giới thiệu<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h1>
+<p>NonLinear Animation editor, hay gọi tắt là NLA editor, cho phép bạn tạo animation ở một cấp cao hơn. Thay vì làm việc với từng keyframe riêng lẻ, nó làm việc với các <a class="reference internal" href="../../animation/actions.html"><span class="doc">action</span></a>, là những đoạn animation có tên và tái sử dụng được.</p>
+<figure class="align-default" id="id1">
+<img alt="../../_images/editors_nla_introduction_example.png" src="../../_images/editors_nla_introduction_example.png" />
+<figcaption>
+<p><span class="caption-text">NLA editor.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="main-region">
+<h2>Main Region<a class="headerlink" href="#main-region" title="Link to this heading">¶</a></h2>
+<p>Editor hiển thị một chồng các <a class="reference internal" href="tracks.html"><span class="doc">track</span></a> hoạt động giống như các layer trong chương trình chỉnh sửa hình ảnh. Track cao hơn được ưu tiên hơn track thấp hơn, tuy nhiên bạn cũng có thể chọn blend chúng.</p>
+<p>Mỗi track có thể chứa bất kỳ số lượng <a class="reference internal" href="strips.html"><span class="doc">strip</span></a> nào -- điển hình là Action Strip, vốn là các instance của action.</p>
+<p>Track trên cùng được tô sáng màu cam là đặc biệt: đây là Action Track. Khác với các track khác, nó không chứa strip -- thay vào đó, nó chứa <em>active action</em> của object, là nơi các keyframe mới được thêm vào theo mặc định.</p>
+<p>Các editor như <a class="reference internal" href="../dope_sheet/introduction.html"><span class="doc">Dope Sheet Editor</span></a> thường chỉ hiển thị keyframe của active action này. Nếu bạn muốn chỉnh sửa một action khác, bạn có thể chọn nó trong NLA editor rồi nhấn <kbd class="kbd docutils literal notranslate">Tab</kbd> để vào Tweak Mode.</p>
+<figure class="align-default" id="id2">
+<img alt="../../_images/editors_nla_introduction_tweak-mode.png" src="../../_images/editors_nla_introduction_tweak-mode.png" />
+<figcaption>
+<p><span class="caption-text">Tinh chỉnh (tweak) một action. Lưu ý rằng nó được hiển thị cả trong track gốc lẫn Action Track. Active action tạm thời bị ẩn.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="header">
+<h2>Header<a class="headerlink" href="#header" title="Link to this heading">¶</a></h2>
+<section id="view-menu">
+<h3>View Menu<a class="headerlink" href="#view-menu" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Sidebar <kbd class="kbd docutils literal notranslate">N</kbd></dt><dd><p>Hiện hoặc ẩn <a class="reference internal" href="../../interface/window_system/regions.html#ui-region-sidebar"><span class="std std-ref">Sidebar Region</span></a>.</p>
+</dd>
+<dt>Adjust Last Operation</dt><dd><p>Hiển thị một panel pop-up để thay đổi thuộc tính của thao tác vừa hoàn thành. Xem <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a>.</p>
+</dd>
+<dt>Channels</dt><dd><p>Hiện hoặc ẩn Track Region.</p>
+</dd>
+<dt>Playback Controls</dt><dd><p>Hiện hoặc ẩn <a class="reference internal" href="../../animation/animation_editors.html#animation-editors-footer"><span class="std std-ref">Playback Controls</span></a>.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Frame Selected <kbd class="kbd docutils literal notranslate">NumpadPeriod</kbd></dt><dd><p>Pan và zoom khung nhìn để tập trung vào các strip đang chọn.</p>
+</dd>
+<dt>Frame All <kbd class="kbd docutils literal notranslate">Home</kbd></dt><dd><p>Pan và zoom khung nhìn để hiển thị tất cả strip.</p>
+</dd>
+<dt>Frame Scene/Preview Range</dt><dd><p>Đặt lại vùng nhìn ngang về khoảng frame hiện tại của scene, có tính đến khoảng xem trước nếu nó đang hoạt động.</p>
+</dd>
+<dt>Go to Current Frame <kbd class="kbd docutils literal notranslate">Numpad0</kbd></dt><dd><p>Đặt Playhead vào giữa khung nhìn.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Realtime Updates</dt><dd><p>Có cập nhật các view khác (như 3D Viewport) trong khi bạn di chuyển strip hay không. Nếu tắt, các view khác chỉ được cập nhật một lần khi bạn kết thúc thao tác di chuyển.</p>
+</dd>
+<dt>Show Control F-Curves</dt><dd><p>Hiển thị một đồ thị phía trên mỗi strip có dùng <a class="reference internal" href="sidebar.html#bpy-types-nlastrip-influence"><span class="std std-ref">Animated Influence</span></a>.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl>
+<dt>Show Markers</dt><dd><p>Hiển thị vùng marker (miễn là đã có marker được định nghĩa). Khi tắt, <a class="reference internal" href="#marker-menu">Marker Menu</a> cũng bị ẩn và các toán tử marker không khả dụng trong editor này.</p>
+</dd>
+<dt>Show Local Markers</dt><dd><p>Hiển thị các marker cục bộ của action (mà bạn có thể tạo trong <a class="reference internal" href="../dope_sheet/editing.html#dopesheet-marker-menu"><span class="std std-ref">Action Editor</span></a>). Điều này có thể hữu ích để căn chỉnh các strip với nhau.</p>
+<figure class="align-default" id="id3">
+<img alt="../../_images/editors_nla_tracks_local_markers.png" src="../../_images/editors_nla_tracks_local_markers.png" />
+<figcaption>
+<p><span class="caption-text">Marker cục bộ hiển thị trong NLA Editor (trên) và Action Editor (dưới).</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Use Timecode <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">T</kbd></dt><dd><p>Hiển thị thời gian theo giây thay vì theo frame.</p>
+</dd>
+<dt>Sync Visible Range</dt><dd><p>Đồng bộ việc pan ngang và scale của editor với các editor dựa trên thời gian khác cũng bật tùy chọn này. Nhờ đó chúng luôn hiển thị cùng một khoảng thời gian.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl>
+<dt>Set Preview Range <kbd class="kbd docutils literal notranslate">P</kbd></dt><dd><p>Cho phép bạn kéo một hộp để xác định khoảng thời gian xem trước. Miễn là khoảng này còn hiệu lực, việc phát lại sẽ bị giới hạn trong đó, cho phép bạn xem đi xem lại một đoạn animation mà không phải tự tua lại mỗi lần.</p>
+<p>Bạn có thể đổi frame bắt đầu hoặc kết thúc bằng nút tương ứng trong pop-over <a class="reference internal" href="../../animation/animation_editors.html#animation-editors-playback"><span class="std std-ref">Playback</span></a> của Timeline editor. Ngoài ra, bạn cũng có thể đơn giản chạy lại <em>Set Preview Range</em>.</p>
+</dd>
+<dt>Clear Preview Range <kbd class="kbd docutils literal notranslate">Alt</kbd>-<kbd class="kbd docutils literal notranslate">P</kbd></dt><dd><p>Xóa khoảng xem trước.</p>
+</dd>
+<dt>Set Preview Range to Selected <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">Alt</kbd>-<kbd class="kbd docutils literal notranslate">P</kbd></dt><dd><p>Áp dụng một khoảng xem trước bao trùm các strip đang chọn.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Area</dt><dd><p>Các điều khiển của area. Xem tài liệu <a class="reference internal" href="../../interface/window_system/areas.html"><span class="doc">user interface</span></a> để biết thêm thông tin.</p>
+</dd>
+</dl>
+</section>
+<section id="select-menu">
+<h3>Select Menu<a class="headerlink" href="#select-menu" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>All <kbd class="kbd docutils literal notranslate">A</kbd></dt><dd><p>Chọn tất cả strip.</p>
+</dd>
+<dt>None <kbd class="kbd docutils literal notranslate">Alt</kbd>-<kbd class="kbd docutils literal notranslate">A</kbd></dt><dd><p>Bỏ chọn tất cả strip.</p>
+</dd>
+<dt>Invert <kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">I</kbd></dt><dd><p>Đảo ngược vùng chọn hiện tại.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt><a class="reference internal" href="../../interface/selecting.html#bpy-ops-select-box"><span class="std std-ref">Box Select</span></a> <kbd class="kbd docutils literal notranslate">B</kbd></dt><dd><p>Cho phép bạn kéo một hộp và chọn các strip nằm một phần hoặc hoàn toàn bên trong nó.</p>
+</dd>
+<dt>Box Select (Axis Range) <kbd class="kbd docutils literal notranslate">Alt</kbd>-<kbd class="kbd docutils literal notranslate">B</kbd></dt><dd><p>Cho phép bạn kéo một hộp và chọn các strip chồng lấn với khoảng thời gian tương ứng, kể cả khi chúng nằm trên hoặc dưới hộp.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple">
+<dt>Before Current Frame <kbd class="kbd docutils literal notranslate">[</kbd></dt><dd><p>Chọn tất cả strip bắt đầu trước (hoặc đúng vào) frame hiện tại.</p>
+</dd>
+<dt>After Current Frame <kbd class="kbd docutils literal notranslate">]</kbd></dt><dd><p>Chọn tất cả strip kết thúc sau (hoặc đúng vào) frame hiện tại.</p>
+</dd>
+</dl>
+</section>
+<section id="marker-menu">
+<h3>Marker Menu<a class="headerlink" href="#marker-menu" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../../animation/markers.html"><span class="doc">Marker</span></a> được dùng để đánh dấu các frame chứa điểm chủ chốt hay sự kiện quan trọng trong một animation. Giống như hầu hết các animation editor, chúng được hiển thị ở phần dưới.</p>
+<figure class="align-default" id="id4">
+<img alt="../../_images/editors_graph-editor_introduction_markers.png" src="../../_images/editors_graph-editor_introduction_markers.png" />
+<figcaption>
+<p><span class="caption-text">Marker trong editor animation.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Để biết mô tả về các công cụ marker khác nhau, xem <a class="reference internal" href="../../animation/markers.html#animation-markers-editing"><span class="std std-ref">Editing Markers</span></a>.</p>
+</section>
+<section id="add-menu">
+<h3>Add Menu<a class="headerlink" href="#add-menu" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Action <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">A</kbd></dt><dd><p>Thêm một strip tham chiếu đến một action vào track đang hoạt động.</p>
+</dd>
+<dt>Transition <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">T</kbd></dt><dd><p>Thêm một strip transition nằm giữa hai action strip đang chọn.</p>
+</dd>
+<dt>Sound <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">K</kbd></dt><dd><p>Thêm một strip kiểm soát thời điểm object <a class="reference internal" href="../../render/output/audio/speaker.html"><span class="doc">Object Speaker</span></a> phát đoạn âm thanh của nó.</p>
+</dd>
+</dl>
+<hr class="docutils" />
+<dl class="simple" id="bpy-ops-nla-selected-objects-add">
+<dt>Selected Objects</dt><dd><p>Khiến các object đang chọn xuất hiện trong NLA Editor mà không cần thêm action hay track cho chúng.</p>
+</dd>
+</dl>
+<p>Xem <a class="reference internal" href="strips.html"><span class="doc">Strips</span></a> để biết chi tiết về các loại strip khác nhau.</p>
+</section>
+<section id="track-menu">
+<h3>Track Menu<a class="headerlink" href="#track-menu" title="Link to this heading">¶</a></h3>
+<p>Chứa các công cụ làm việc với NLA track. Xem <a class="reference internal" href="editing/track.html"><span class="doc">Editing Tracks</span></a> để biết chi tiết.</p>
+</section>
+<section id="strip-menu">
+<h3>Strip Menu<a class="headerlink" href="#strip-menu" title="Link to this heading">¶</a></h3>
+<p>Chứa các công cụ làm việc với NLA strip. Xem <a class="reference internal" href="editing/strip.html"><span class="doc">Editing Strips</span></a> để biết chi tiết.</p>
+</section>
+<section id="filters">
+<h3>Filters<a class="headerlink" href="#filters" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>Only Show Selected</dt><dd><p>Chỉ hiển thị các track thuộc về những object đang được chọn.</p>
+</dd>
+<dt>Show Hidden</dt><dd><p>Hiển thị track của những object đang bị ẩn.</p>
+</dd>
+<dt>Include Missing NLA</dt><dd><p>Hiển thị Action Track ngay cả khi không có action nào trong đó.</p>
+</dd>
+<dt>Search</dt><dd><p>Lọc danh sách track theo từ khóa tìm kiếm.</p>
+</dd>
+<dt>Filtering Collection</dt><dd><p>Chọn một collection để chỉ hiển thị track của các object trong collection đó.</p>
+</dd>
+<dt>Filter by Type</dt><dd><p>Lọc track theo loại đích.</p>
+</dd>
+<dt>Sort Data-Blocks</dt><dd><p>Sắp xếp data-block theo thứ tự alphabet để dễ tìm hơn.</p>
+<p>Nếu tốc độ phát lại bị ảnh hưởng vì điều này (thực tế chỉ là vấn đề khi làm việc với nhiều object), bạn có thể tắt nó đi.</p>
+</dd>
+</dl>
+</section>
+<section id="snap">
+<h3>Snap<a class="headerlink" href="#snap" title="Link to this heading">¶</a></h3>
+<p>Nút bật/tắt cho phép bật/tắt snapping tự động của strip. Nút thả xuống hiển thị một popover với các tùy chọn sau:</p>
+<dl>
+<dt>Snap To</dt><dd><p>Loại phần tử sẽ snap vào.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Frame<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Snap theo frame tròn.</p>
+</dd>
+<dt class="field-even">Second<span class="colon">:</span></dt>
+<dd class="field-even"><p>Snap theo giây.</p>
+</dd>
+<dt class="field-odd">Nearest Marker<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Snap vào <a class="reference internal" href="../../animation/markers.html"><span class="doc">Marker</span></a> gần nhất.</p>
+</dd>
+</dl>
+</dd>
+<dt>Absolute Time Snap</dt><dd><p>Khi tắt, các strip sẽ di chuyển theo từng bước bằng <em>Snap To</em>. Ví dụ, nếu bạn chọn <em>Second</em> và có một strip hiện bắt đầu ở 0:06+5, kéo nó sang phải sẽ snap nó đến 0:07+5. Thời điểm của nó tăng thêm một giây, còn độ lệch dưới giây là 5 frame vẫn giữ nguyên.</p>
+<p>Khi bật, các strip sẽ snap thành bội số của <em>Snap To</em>. Lấy ví dụ trên, strip sẽ snap đến 0:07+0, loại bỏ phần lệch dưới giây.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="playback-controls">
+<h2>Playback Controls<a class="headerlink" href="#playback-controls" title="Link to this heading">¶</a></h2>
+<p>Vùng Playback Controls chứa các điều khiển và tùy chọn liên quan đến phát lại, keying, auto keyframing và transport.</p>
+<p>Những cài đặt này cho phép bạn:</p>
+<ul class="simple">
+<li><p>Điều khiển cách xem trước animation và đồng bộ với âm thanh.</p></li>
+<li><p>Chèn và quản lý keyframe thông qua keying set và auto keying.</p></li>
+<li><p>Di chuyển trong timeline bằng các điều khiển phát lại và transport.</p></li>
+<li><p>Điều chỉnh khoảng frame và xem trước những đoạn animation cụ thể.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Để có mô tả chi tiết về mọi thuộc tính và điều khiển thường thấy ở footer, xem tài liệu <a class="reference internal" href="../../animation/animation_editors.html#animation-editors-footer"><span class="std std-ref">Playback Controls</span></a>.</p>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="tracks.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Track</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Nonlinear Animation</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/editors/nla/introduction.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Feditors/nla/introduction"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Feditors/nla/introduction.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Feditors/nla/introduction.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Giới thiệu</a><ul>
+<li><a class="reference internal" href="#main-region">Main Region</a></li>
+<li><a class="reference internal" href="#header">Header</a><ul>
+<li><a class="reference internal" href="#view-menu">View Menu</a></li>
+<li><a class="reference internal" href="#select-menu">Select Menu</a></li>
+<li><a class="reference internal" href="#marker-menu">Marker Menu</a></li>
+<li><a class="reference internal" href="#add-menu">Add Menu</a></li>
+<li><a class="reference internal" href="#track-menu">Track Menu</a></li>
+<li><a class="reference internal" href="#strip-menu">Strip Menu</a></li>
+<li><a class="reference internal" href="#filters">Filters</a></li>
+<li><a class="reference internal" href="#snap">Snap</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#playback-controls">Playback Controls</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

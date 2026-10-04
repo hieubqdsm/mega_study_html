@@ -1,0 +1,854 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html"><link rel="copyright" title="Bản quyền" href="../../../copyright.html"><link rel="next" title="Principled Hair BSDF" href="hair_principled.html"><link rel="prev" title="Metallic BSDF" href="metallic.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/render/shader_nodes/shader/principled.html">
+        <link rel="prefetch" href="../../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Principled BSDF - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../../"></div>
+<script src="../../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/render/shader_nodes/shader/principled.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="principled-bsdf">
+<span id="bpy-types-shadernodebsdfprincipled"></span><h1>Principled BSDF<a class="headerlink" href="#principled-bsdf" title="Link to this heading">¶</a></h1>
+<figure class="align-right">
+<img alt="Principled BSDF node." src="../../../_images/node-types_ShaderNodeBsdfPrincipled.webp" />
+</figure>
+<p><abbr title="Bidirectional Scattering Distribution Function">BSDF</abbr> <em>Principled</em> kết hợp nhiều lớp thành một node duy nhất dễ sử dụng. Nó có thể mô hình hóa đa dạng các loại material.</p>
+<p>Shader này dựa trên mô hình shading OpenPBR Surface và cung cấp các tham số tương thích với các PBR shader tương tự trong phần mềm khác, chẳng hạn các mô hình Disney và Standard Surface. Các image texture được vẽ hoặc bake từ phần mềm như Substance Painter có thể được nối trực tiếp vào đầu vào tương ứng trong shader này.</p>
+<section id="layers">
+<h2>Layers<a class="headerlink" href="#layers" title="Link to this heading">¶</a></h2>
+<p>Lớp nền là sự pha trộn giữa các thành phần metal, diffuse, subsurface và transmission. Hầu hết material sẽ dùng một trong các thành phần này, mặc dù vẫn có thể pha trộn mượt mà giữa chúng.</p>
+<figure class="align-default">
+<img alt="../../../_images/render_shader-nodes_principled_layers.svg" src="../../../_images/render_shader-nodes_principled_layers.svg" />
+</figure>
+<p>Thành phần metal là không xuyên thấu và chỉ phản xạ ánh sáng. Diffuse hoàn toàn không xuyên thấu, trong khi subsurface còn liên quan đến sự tán xạ ánh sáng ngay dưới bề mặt. Cả diffuse và subsurface đều nằm dưới một lớp specular. Thành phần transmission bao gồm cả phản xạ specular lẫn khúc xạ.</p>
+<p>Một lớp thin film tùy chọn nằm trên các thành phần metal, transmission và specular để tạo hiệu ứng ánh màu (iridescent).</p>
+<p>Bên trên tất cả các lớp nền là một lớp glossy coat tùy chọn. Và cuối cùng, lớp sheen nằm trên cùng của mọi lớp khác để thêm hiệu ứng lông tơ hoặc bụi.</p>
+<p>Cũng có thể thêm sự phát sáng. Ánh sáng phát ra từ bên dưới các lớp coat và sheen, để mô hình hóa chẳng hạn các màn hình phát sáng có lớp coat hoặc bụi.</p>
+<section id="thin-wall-mode">
+<h3>Thin Wall Mode<a class="headerlink" href="#thin-wall-mode" title="Link to this heading">¶</a></h3>
+<p>Khi Boolean <a class="reference internal" href="#bpy-types-shadernodeprincipled-thinwall"><span class="std std-ref">Thin Wall</span></a> được bật, bề mặt được chuyển sang chế độ thin-walled. Ở chế độ này, bề mặt là một tấm (slab) với các lớp đối xứng quanh lớp nền, và độ dày được coi bằng 0.</p>
+<figure class="align-default">
+<img alt="../../../_images/render_shader-nodes_principled_thin_layers.svg" src="../../../_images/render_shader-nodes_principled_thin_layers.svg" />
+</figure>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<ul class="simple">
+<li><p>Các đầu vào <a class="reference internal" href="#bpy-types-shadernodeprincipled-subsurface-radius"><span class="std std-ref">Subsurface Radius</span></a>, <a class="reference internal" href="#bpy-types-shadernodeprincipled-subsurface-scale"><span class="std std-ref">Subsurface Scale</span></a> và <a class="reference internal" href="#bpy-types-shadernodeprincipled-subsurface-method"><span class="std std-ref">Subsurface Method</span></a> không liên quan trong chế độ thin-walled.</p></li>
+<li><p>Khi dùng chế độ thin-walled trong EEVEE, <a class="reference internal" href="../../eevee/material_settings.html#eevee-materials-thickness"><span class="std std-ref">Thickness</span></a> nên được đặt thành 0 và <a class="reference internal" href="../../eevee/material_settings.html#bpy-types-material-thickness-mode"><span class="std std-ref">Thickness Mode</span></a> nên được đặt thành Slab.</p></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="inputs">
+<h2>Inputs<a class="headerlink" href="#inputs" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>Base Color</dt><dd><p>Màu tổng thể của material, dùng cho diffuse, subsurface, metal và transmission.</p>
+<figure class="align-center" id="id1">
+<img alt="../../../_images/render_shader-nodes_shader_principled-base-color.webp" src="../../../_images/render_shader-nodes_shader_principled-base-color.webp" />
+<figcaption>
+<p><span class="caption-text">Cùng một màu nền cho nhiều loại material</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Roughness</dt><dd><p>Chỉ định độ nhám microfacet của bề mặt cho phản xạ và truyền qua kiểu specular. Giá trị 0.0 cho phản xạ hoàn toàn sắc nét, còn 1.0 cho phản xạ khuếch tán.</p>
+<figure class="align-center" id="id2">
+<img alt="../../../_images/render_shader-nodes_shader_principled-roughness.webp" src="../../../_images/render_shader-nodes_shader_principled-roughness.webp" />
+<figcaption>
+<p><span class="caption-text">Roughness từ 0.0 đến 1.0</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Metallic</dt><dd><p>Pha trộn giữa mô hình material điện môi và kim loại. Ở 0.0, material gồm lớp nền diffuse hoặc truyền sáng, với một lớp phản xạ specular bên trên. Giá trị 1.0 cho phản xạ hoàn toàn specular được nhuộm bởi màu nền, không có phản xạ khuếch tán hay truyền qua.</p>
+<figure class="align-center" id="id3">
+<img alt="../../../_images/render_shader-nodes_shader_principled-metallic.webp" src="../../../_images/render_shader-nodes_shader_principled-metallic.webp" />
+<figcaption>
+<p><span class="caption-text">Metallic từ 0.0 đến 1.0</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>IOR</dt><dd><p>Chiết suất (<a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a>) cho phản xạ và truyền qua kiểu specular. Với hầu hết material, IOR nằm giữa 1.0 (chân không và không khí) và 4.0 (germanium). Giá trị mặc định 1.5 là xấp xỉ tốt cho kính.</p>
+<figure class="align-center" id="id4">
+<img alt="../../../_images/render_shader-nodes_shader_principled-ior.webp" src="../../../_images/render_shader-nodes_shader_principled-ior.webp" />
+<figcaption>
+<p><span class="caption-text">IOR từ 1.0 đến 2.0</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Alpha</dt><dd><p>Điều khiển độ trong suốt của bề mặt, với 1.0 là hoàn toàn đục. Thường được nối với đầu ra Alpha của một node Image Texture.</p>
+<figure class="align-center" id="id5">
+<img alt="../../../_images/render_shader-nodes_shader_principled-alpha.webp" src="../../../_images/render_shader-nodes_shader_principled-alpha.webp" />
+<figcaption>
+<p><span class="caption-text">Alpha từ 0.0 đến 1.0</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+<dl id="bpy-types-shadernodeprincipled-thinwall">
+<dt>Thin Wall</dt><dd><p>Chuyển bề mặt sang chế độ thin-walled. Hữu ích để mô hình hóa các cấu trúc mỏng như giấy, lá cây và tấm kính cửa sổ.</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-center">
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id6">
+<a class="reference internal image-reference" href="../../../_images/render_shader-nodes_shader_principled_thin_subsurface.webp"><img alt="../../../_images/render_shader-nodes_shader_principled_thin_subsurface.webp" src="../../../_images/render_shader-nodes_shader_principled_thin_subsurface.webp" style="width: 768px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Subsurface Weight = 1, Anisotropy từ -0.7 đến 0.7</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id7">
+<a class="reference internal image-reference" href="../../../_images/render_shader-nodes_shader_principled_thin_glass.webp"><img alt="../../../_images/render_shader-nodes_shader_principled_thin_glass.webp" src="../../../_images/render_shader-nodes_shader_principled_thin_glass.webp" style="width: 512px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Transmission = 1, Thin Wall tắt và bật</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+<dt>Normal</dt><dd><p>Điều khiển normal của các lớp nền.</p>
+</dd>
+</dl>
+<section id="diffuse">
+<h3>Diffuse<a class="headerlink" href="#diffuse" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>Roughness <span class="guilabel">Cycles Only</span></dt><dd><p>Độ nhám bề mặt; 0.0 cho phản xạ Lambertian tiêu chuẩn, giá trị cao hơn sẽ kích hoạt Oren-Nayar BSDF.</p>
+<figure class="align-center" id="id8">
+<img alt="../../../_images/render_shader-nodes_shader_principled-diffuse-roughness.webp" src="../../../_images/render_shader-nodes_shader_principled-diffuse-roughness.webp" />
+<figcaption>
+<p><span class="caption-text">Roughness từ 0.0 đến 1.0</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+</section>
+<section id="subsurface">
+<h3>Subsurface<a class="headerlink" href="#subsurface" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="../../../glossary/index.html#term-Subsurface-Scattering"><span class="xref std std-term">Subsurface scattering</span></a> được dùng để render các material như da, sữa và sáp. Ánh sáng tán xạ dưới bề mặt để tạo diện mạo mềm mại.</p>
+<dl id="bpy-types-shadernodeprincipled-subsurface-method">
+<dt>Method</dt><dd><p>Phương pháp render để mô phỏng <a class="reference internal" href="../../../glossary/index.html#term-Subsurface-Scattering"><span class="xref std std-term">Subsurface scattering</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Christensen-Burley<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Một xấp xỉ của tán xạ thể tích dựa trên vật lý. Tuy phương pháp này kém chính xác hơn <em>Random Walk</em>, trong một số tình huống nó lại xử lý nhiễu nhanh hơn.</p>
+</dd>
+<dt class="field-even">Random Walk<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="guilabel">Cycles Only</span> Cung cấp kết quả chính xác cho các object mỏng và cong. Random Walk dùng tán xạ thể tích thực sự bên trong mesh, nghĩa là nó hoạt động tốt nhất với mesh kín. Các face chồng lên nhau và lỗ hổng trên mesh có thể gây ra vấn đề.</p>
+</dd>
+<dt class="field-odd">Random Walk (Skin)<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="guilabel">Cycles Only</span> Phương pháp random walk được tối ưu cho việc render da. Bán kính được điều chỉnh tự động dựa trên texture màu, và hướng đi vào subsurface dùng sự pha trộn giữa truyền qua kiểu diffuse và specular với <a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a> tùy chỉnh. Cách này có xu hướng giữ được nhiều chi tiết bề mặt và màu sắc hơn, cũng như khớp với da đã đo lường tốt hơn.</p>
+</dd>
+<dt class="field-even">Random Walk (Legacy)<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="guilabel">Cycles Only</span> Giống với Random Walk, nhưng dùng một phép ánh xạ khác từ albedo sang các tham số tán xạ. Sẽ bị xóa trong tương lai.</p>
+</dd>
+</dl>
+</dd>
+<dt>Weight</dt><dd><p>Pha trộn giữa bề mặt diffuse và subsurface scattering. Thường nên là 0 hoặc 1 (hoàn toàn diffuse hoặc hoàn toàn subsurface).</p>
+<figure class="align-center" id="id9">
+<img alt="../../../_images/render_shader-nodes_shader_principled-subsurface-weight.webp" src="../../../_images/render_shader-nodes_shader_principled-subsurface-weight.webp" />
+<figcaption>
+<p><span class="caption-text">Weight từ 0.0 đến 1.0</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+<dl id="bpy-types-shadernodeprincipled-subsurface-radius">
+<dt>Radius</dt><dd><p>Khoảng cách trung bình mà ánh sáng tán xạ dưới bề mặt. Bán kính lớn hơn cho diện mạo mềm hơn, do ánh sáng lan vào vùng bóng và xuyên qua object. Khoảng cách tán xạ được chỉ định riêng cho từng kênh RGB, để render những material như da, nơi ánh sáng đỏ tán xạ sâu hơn. Các giá trị X, Y và Z lần lượt tương ứng với các giá trị R, G và B.</p>
+<figure class="align-center" id="id10">
+<img alt="../../../_images/render_shader-nodes_shader_principled-subsurface-radius.webp" src="../../../_images/render_shader-nodes_shader_principled-subsurface-radius.webp" />
+<figcaption>
+<p><span class="caption-text">Radius từ trắng sang đỏ</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+<dl id="bpy-types-shadernodeprincipled-subsurface-scale">
+<dt>Scale</dt><dd><p>Tỉ lệ áp dụng lên bán kính.</p>
+<figure class="align-center" id="id11">
+<img alt="../../../_images/render_shader-nodes_shader_principled-subsurface-scale.webp" src="../../../_images/render_shader-nodes_shader_principled-subsurface-scale.webp" />
+<figcaption>
+<p><span class="caption-text">Scale từ 0 cm đến 50 cm</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>IOR <span class="guilabel">Cycles Only</span></dt><dd><p>Chiết suất (<a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a>) dùng cho các tia đi vào thành phần subsurface. Giá trị này có thể được đặt khác với IOR toàn cục để mô phỏng các lớp da khác nhau.</p>
+<figure class="align-center" id="id12">
+<img alt="../../../_images/render_shader-nodes_shader_principled-subsurface-ior.webp" src="../../../_images/render_shader-nodes_shader_principled-subsurface-ior.webp" />
+<figcaption>
+<p><span class="caption-text">IOR từ 1.0 đến 2.0</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Anisotropy <span class="guilabel">Cycles Only</span></dt><dd><p>Tính định hướng của tán xạ thể tích trong môi trường subsurface. Giá trị 0 tán xạ đồng đều theo mọi hướng, giá trị dương tán xạ nhiều hơn về phía trước, còn giá trị âm tán xạ nhiều hơn về phía sau. Ví dụ, da người được đo là có độ anisotropy 0.8.</p>
+<figure class="align-center" id="id13">
+<img alt="../../../_images/render_shader-nodes_shader_principled-subsurface-anisotropy.webp" src="../../../_images/render_shader-nodes_shader_principled-subsurface-anisotropy.webp" />
+<figcaption>
+<p><span class="caption-text">Anisotropy từ -0.9 đến 0.9</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+</section>
+<section id="specular">
+<h3>Specular<a class="headerlink" href="#specular" title="Link to this heading">¶</a></h3>
+<p>Điều khiển cả thành phần metallic lẫn lớp specular nằm trên diffuse và subsurface.</p>
+<dl>
+<dt>Distribution</dt><dd><p>Phân bố microfacet sẽ dùng.</p>
+<dl class="field-list simple">
+<dt class="field-odd">GGX<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Phương pháp nhanh hơn <em>Multiple-scattering GGX</em> nhưng kém chính xác về mặt vật lý.</p>
+</dd>
+<dt class="field-even">Multiscatter GGX<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cân nhắc nhiều sự kiện tán xạ giữa các microfacet. Điều này cho kết quả bảo toàn năng lượng hơn, nếu không sẽ biểu hiện thành việc tối đi bất thường.</p>
+</dd>
+</dl>
+</dd>
+<dt>IOR Level</dt><dd><p>Điều chỉnh <a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a> để tăng hoặc giảm cường độ của lớp specular. 0.5 nghĩa là không điều chỉnh, 0 loại bỏ mọi phản xạ, 1 nhân đôi chúng ở góc tới vuông góc.</p>
+<p>Đầu vào này được thiết kế để tiện texture hóa IOR và lượng phản xạ specular.</p>
+<figure class="align-center" id="id14">
+<img alt="../../../_images/render_shader-nodes_shader_principled-specular-ior-level.webp" src="../../../_images/render_shader-nodes_shader_principled-specular-ior-level.webp" />
+<figcaption>
+<p><span class="caption-text">IOR level từ 0.0 đến 1.0</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Tint</dt><dd><p>Màu nhuộm cho phản xạ specular và metallic.</p>
+<p>Với vật liệu phi kim loại, nó cho phép kiểm soát một cách nghệ thuật màu của phản xạ specular ở góc tới vuông góc, trong khi phản xạ ở góc sát bề mặt vẫn giữ màu trắng. Trên thực tế, phản xạ specular của vật liệu phi kim loại hoàn toàn màu trắng.</p>
+<p>Với material kim loại, nó nhuộm màu các cạnh để mô phỏng IOR phức, như thấy trong các material như vàng hoặc đồng.</p>
+<figure class="align-center" id="id15">
+<img alt="../../../_images/render_shader-nodes_shader_principled-specular-tint.webp" src="../../../_images/render_shader-nodes_shader_principled-specular-tint.webp" />
+<figcaption>
+<p><span class="caption-text">Tint từ trắng sang cam</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Anisotropy <span class="guilabel">Cycles Only</span></dt><dd><p>Mức độ anisotropy cho phản xạ và truyền qua kiểu specular. Giá trị cao hơn cho các highlight kéo dài theo hướng tangent; giá trị âm cho highlight có hình dạng vuông góc với hướng tangent.</p>
+<figure class="align-center" id="id16">
+<img alt="../../../_images/render_shader-nodes_shader_principled-specular-anisotropic.webp" src="../../../_images/render_shader-nodes_shader_principled-specular-anisotropic.webp" />
+<figcaption>
+<p><span class="caption-text">Anisotropy từ 0.0 đến 1.0 (Opaque)</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id17">
+<img alt="../../../_images/render_shader-nodes_shader_principled-transmission-anisotropic.webp" src="../../../_images/render_shader-nodes_shader_principled-transmission-anisotropic.webp" />
+<figcaption>
+<p><span class="caption-text">Anisotropy từ 0.0 đến 1.0 (Transmissive)</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Anisotropic Rotation <span class="guilabel">Cycles Only</span></dt><dd><p>Xoay hướng của anisotropy, với 1.0 là một vòng tròn đầy đủ.</p>
+<p>So với node <em>Glossy BSDF</em>, hướng kéo dài của highlight bị xoay đi 90°. Hãy cộng thêm 0.25 vào giá trị để hiệu chỉnh.</p>
+<figure class="align-center" id="id18">
+<img alt="../../../_images/render_shader-nodes_shader_principled-specular-anisotropic-rotation.webp" src="../../../_images/render_shader-nodes_shader_principled-specular-anisotropic-rotation.webp" />
+<figcaption>
+<p><span class="caption-text">Anisotropic rotation từ 0.0 đến 1.0</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Tangent</dt><dd><p>Điều khiển hướng tangent cho anisotropy.</p>
+</dd>
+</dl>
+</section>
+<section id="transmission">
+<h3>Transmission<a class="headerlink" href="#transmission" title="Link to this heading">¶</a></h3>
+<p>Transmission được dùng để render các material như kính và chất lỏng, nơi bề mặt vừa phản xạ ánh sáng vừa truyền ánh sáng vào phần bên trong của object.</p>
+<dl>
+<dt>Weight</dt><dd><p>Pha trộn giữa bề mặt hoàn toàn đục ở 0 và hoàn toàn truyền sáng ở 1.</p>
+<figure class="align-center" id="id19">
+<img alt="../../../_images/render_shader-nodes_shader_principled-transmission-weight.webp" src="../../../_images/render_shader-nodes_shader_principled-transmission-weight.webp" />
+<figcaption>
+<p><span class="caption-text">Weight từ 0.0 đến 1.0</span><a class="headerlink" href="#id19" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Dispersion Scale <span class="guilabel">Cycles Only</span></dt><dd><p>Nhân tuyến tính lượng tán sắc, khiến ánh sáng bị tách thành các màu cầu vồng.</p>
+<figure class="align-center" id="id20">
+<img alt="../../../_images/render_shader-nodes_shader_principled-transmission-dispersion.webp" src="../../../_images/render_shader-nodes_shader_principled-transmission-dispersion.webp" />
+<figcaption>
+<p><span class="caption-text">IOR = 2.4, Dispersion Abbe Number = 20, Dispersion Scale từ 0.0 đến 1.0</span><a class="headerlink" href="#id20" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Dispersion Abbe Number <span class="guilabel">Cycles Only</span></dt><dd><p><a class="reference external" href="https://web.archive.org/web/20260825151347/https://www.rp-photonics.com/abbe_number.html">Số Abbe</a> của material. Lượng tán sắc xấp xỉ tỉ lệ thuận với <span class="math notranslate nohighlight">\(\frac{\mathrm{Dispersion\ Scale}}{\mathrm{Dispersion\ Abbe\ Number}}\)</span>, vì vậy số Abbe càng thấp (cùng với chiết suất cao hơn) sẽ cho tán sắc càng mạnh.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tán sắc hoạt động bằng cách lấy mẫu ngẫu nhiên từ các bước sóng khả kiến. Để giảm nhiễu màu, cần số lượng <a class="reference internal" href="../../cycles/render_settings/sampling.html#bpy-types-cyclesrendersettings-samples"><span class="std std-ref">Samples</span></a> nhiều hơn và giá trị <a class="reference internal" href="../../cycles/render_settings/light_paths.html#bpy-types-cyclesrendersettings-sample-clamp-indirect"><span class="std std-ref">Indirect Light Clamping</span></a> cao hơn.</p>
+</div>
+</section>
+<section id="coat">
+<h3>Coat<a class="headerlink" href="#coat" title="Link to this heading">¶</a></h3>
+<p>Lớp coat nằm trên material, để mô phỏng ví dụ lớp clearcoat, sơn bóng hoặc sơn xe.</p>
+<dl>
+<dt>Weight</dt><dd><p>Điều khiển cường độ của lớp coat, bao gồm cả phản xạ lẫn màu nhuộm. Với material dựa trên vật lý, thường nên là 0 hoặc 1, nhưng có thể được texture hóa để thay đổi lượng coat trên khắp bề mặt.</p>
+<figure class="align-center" id="id21">
+<img alt="../../../_images/render_shader-nodes_shader_principled-coat-weight.webp" src="../../../_images/render_shader-nodes_shader_principled-coat-weight.webp" />
+<figcaption>
+<p><span class="caption-text">Weight từ 0.0 đến 1.0</span><a class="headerlink" href="#id21" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Roughness</dt><dd><p>Độ nhám của lớp coat.</p>
+<figure class="align-center" id="id22">
+<img alt="../../../_images/render_shader-nodes_shader_principled-coat-roughness.webp" src="../../../_images/render_shader-nodes_shader_principled-coat-roughness.webp" />
+<figcaption>
+<p><span class="caption-text">Roughness từ 0.0 đến 1.0</span><a class="headerlink" href="#id22" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>IOR</dt><dd><p>Chiết suất (<a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a>) của lớp coat. Ảnh hưởng đến độ phản xạ cũng như mức suy giảm màu của lớp coat.</p>
+<figure class="align-center" id="id23">
+<img alt="../../../_images/render_shader-nodes_shader_principled-coat-ior.webp" src="../../../_images/render_shader-nodes_shader_principled-coat-ior.webp" />
+<figcaption>
+<p><span class="caption-text">IOR từ 1.0 đến 2.0</span><a class="headerlink" href="#id23" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Tint</dt><dd><p>Thêm màu nhuộm cho lớp coat bằng cách mô hình hóa sự hấp thụ trong lớp. Độ bão hòa tăng ở các góc càng sát bề mặt, do ánh sáng phải đi xa hơn qua môi trường, tùy thuộc vào IOR.</p>
+<figure class="align-center" id="id24">
+<img alt="../../../_images/render_shader-nodes_shader_principled-coat-tint.webp" src="../../../_images/render_shader-nodes_shader_principled-coat-tint.webp" />
+<figcaption>
+<p><span class="caption-text">Tint từ trắng sang xanh dương</span><a class="headerlink" href="#id24" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Normal</dt><dd><p>Điều khiển normal của lớp <em>Coat</em>, ví dụ để thêm một lớp coat mượt lên bề mặt nhám.</p>
+</dd>
+</dl>
+</section>
+<section id="sheen">
+<h3>Sheen<a class="headerlink" href="#sheen" title="Link to this heading">¶</a></h3>
+<p>Sheen mô phỏng các sợi rất nhỏ trên bề mặt. Với vải, nó thêm phản xạ mềm giống nhung ở gần các cạnh. Nó cũng có thể được dùng để mô phỏng bụi trên mọi loại material.</p>
+<dl>
+<dt>Weight</dt><dd><p>Điều khiển cường độ của lớp sheen.</p>
+<figure class="align-center" id="id25">
+<img alt="../../../_images/render_shader-nodes_shader_principled-sheen-weight.webp" src="../../../_images/render_shader-nodes_shader_principled-sheen-weight.webp" />
+<figcaption>
+<p><span class="caption-text">Weight từ 0.0 đến 1.0</span><a class="headerlink" href="#id25" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Roughness</dt><dd><p>Độ nhám của phản xạ sheen.</p>
+<figure class="align-center" id="id26">
+<img alt="../../../_images/render_shader-nodes_shader_principled-sheen-roughness.webp" src="../../../_images/render_shader-nodes_shader_principled-sheen-roughness.webp" />
+<figcaption>
+<p><span class="caption-text">Roughness từ 0.0 đến 1.0</span><a class="headerlink" href="#id26" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Tint</dt><dd><p>Màu của phản xạ sheen.</p>
+<figure class="align-center" id="id27">
+<img alt="../../../_images/render_shader-nodes_shader_principled-sheen-tint.webp" src="../../../_images/render_shader-nodes_shader_principled-sheen-tint.webp" />
+<figcaption>
+<p><span class="caption-text">Tint từ trắng sang xanh lục.</span><a class="headerlink" href="#id27" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+</section>
+<section id="emission">
+<h3>Emission<a class="headerlink" href="#emission" title="Link to this heading">¶</a></h3>
+<p>Sự phát sáng từ bề mặt.</p>
+<dl>
+<dt>Color</dt><dd><p>Màu của ánh sáng phát ra từ bề mặt.</p>
+<figure class="align-center" id="id28">
+<img alt="../../../_images/render_shader-nodes_shader_principled-emission-color.webp" src="../../../_images/render_shader-nodes_shader_principled-emission-color.webp" />
+<figcaption>
+<p><span class="caption-text">Các biến thể màu phát sáng</span><a class="headerlink" href="#id28" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>Strength</dt><dd><p>Cường độ của ánh sáng phát ra. Giá trị 1.0 đảm bảo object trong ảnh có màu giống hệt <em>Emission Color</em>, tức là khiến nó 'không bị ảnh hưởng bởi ánh sáng' (shadeless).</p>
+<figure class="align-center" id="id29">
+<img alt="../../../_images/render_shader-nodes_shader_principled-emission-strength.webp" src="../../../_images/render_shader-nodes_shader_principled-emission-strength.webp" />
+<figcaption>
+<p><span class="caption-text">Strength từ 0.0 đến 10.0</span><a class="headerlink" href="#id29" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+</section>
+<section id="thin-film-cycles-only">
+<h3>Thin Film <span class="guilabel">Cycles Only</span><a class="headerlink" href="#thin-film-cycles-only" title="Link to this heading">¶</a></h3>
+<p>Thin Film mô phỏng hiệu ứng giao thoa trong một lớp mỏng nằm trên material. Điều này khiến phản xạ specular có màu theo cách phụ thuộc mạnh vào góc nhìn cũng như độ dày lớp mỏng và chiết suất (<a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a>) của lớp mỏng và của chính material.</p>
+<p>Hiệu ứng này thường thấy trên ví dụ màng dầu, bong bóng xà phòng hoặc lớp phủ kính. Mặc dù ảnh hưởng của nó rõ hơn trong các specular highlight, nó cũng ảnh hưởng đến việc truyền sáng.</p>
+<dl>
+<dt>Thickness</dt><dd><p>Độ dày của lớp mỏng tính bằng nanomet. Giá trị 0 sẽ tắt phần mô phỏng. Hiệu ứng giao thoa mạnh nhất trong khoảng chừng 100 đến 1000 nanomet, vì đây là vùng gần bước sóng của ánh sáng khả kiến.</p>
+<figure class="align-center" id="id30">
+<img alt="../../../_images/render_shader-nodes_shader_principled-thin-film-thickness.webp" src="../../../_images/render_shader-nodes_shader_principled-thin-film-thickness.webp" />
+<figcaption>
+<p><span class="caption-text">Độ dày từ 400 đến 800 nanomet</span><a class="headerlink" href="#id30" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+<dt>IOR</dt><dd><p>Chiết suất (<a class="reference internal" href="../../../glossary/index.html#term-IOR"><span class="xref std std-term">IOR</span></a>) của lớp mỏng. Dải giá trị thường gặp nằm giữa 1.0 (chân không và không khí) và khoảng 2.0, tuy một số material có thể đạt giá trị cao hơn. Giá trị mặc định 1.33 là xấp xỉ tốt cho nước. Lưu ý rằng khi giá trị được đặt thành 1.0 hoặc bằng IOR chính của material, hiệu ứng lớp mỏng sẽ biến mất vì lớp mỏng hòa hợp quang học vào không khí hoặc material.</p>
+<figure class="align-center" id="id31">
+<img alt="../../../_images/render_shader-nodes_shader_principled-thin-film-ior.webp" src="../../../_images/render_shader-nodes_shader_principled-thin-film-ior.webp" />
+<figcaption>
+<p><span class="caption-text">IOR từ 1.0 đến 1.5</span><a class="headerlink" href="#id31" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</dd>
+</dl>
+</section>
+</section>
+<section id="outputs">
+<h2>Outputs<a class="headerlink" href="#outputs" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt>BSDF</dt><dd><p>Đầu ra shader chuẩn.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="hair_principled.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Principled Hair BSDF</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="metallic.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Metallic BSDF</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/render/shader_nodes/shader/principled.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Frender/shader_nodes/shader/principled"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Frender/shader_nodes/shader/principled.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Frender/shader_nodes/shader/principled.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Principled BSDF</a><ul>
+<li><a class="reference internal" href="#layers">Layers</a><ul>
+<li><a class="reference internal" href="#thin-wall-mode">Thin Wall Mode</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#inputs">Inputs</a><ul>
+<li><a class="reference internal" href="#diffuse">Diffuse</a></li>
+<li><a class="reference internal" href="#subsurface">Subsurface</a></li>
+<li><a class="reference internal" href="#specular">Specular</a></li>
+<li><a class="reference internal" href="#transmission">Transmission</a></li>
+<li><a class="reference internal" href="#coat">Coat</a></li>
+<li><a class="reference internal" href="#sheen">Sheen</a></li>
+<li><a class="reference internal" href="#emission">Emission</a></li>
+<li><a class="reference internal" href="#thin-film-cycles-only">Thin Film <span class="guilabel">Cycles Only</span></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#outputs">Outputs</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

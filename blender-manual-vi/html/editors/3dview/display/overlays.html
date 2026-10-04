@@ -1,0 +1,923 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html"><link rel="copyright" title="Bản quyền" href="../../../copyright.html"><link rel="next" title="Viewport Shading" href="shading.html"><link rel="prev" title="Viewport Gizmos" href="gizmo.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/editors/3dview/display/overlays.html">
+        <link rel="prefetch" href="../../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Viewport Overlays - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../../"></div>
+<script src="../../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/editors/3dview/display/overlays.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="viewport-overlays">
+<span id="bpy-types-view3doverlay"></span><h1>Viewport Overlays<a class="headerlink" href="#viewport-overlays" title="Link to this heading">¶</a></h1>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>All Modes</p>
+</dd>
+<dt class="field-even">Location<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Header ‣ Overlays</span></p>
+</dd>
+</dl>
+</div>
+<p>Nhấp <span class="bl-icons-overlay"></span> (Show Overlays) để bật/tắt tất cả overlay trong 3D Viewport.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Viền của camera và <a class="reference internal" href="../../../render/cameras.html#bpy-types-camera-show-passepartout"><span class="std std-ref">passepartout</span></a> không được coi là overlay của viewport.</p>
+</div>
+<p>Nút thả xuống hiển thị một popover chứa các cài đặt chi tiết hơn, được mô tả bên dưới.</p>
+<p>Tùy thuộc vào <a class="reference internal" href="../modes.html"><span class="doc">mode tương tác object</span></a> hiện tại, có thể có thêm nút thứ hai với nhiều cài đặt hơn nữa, cũng được mô tả tại đây.</p>
+<section id="general">
+<h2>General<a class="headerlink" href="#general" title="Link to this heading">¶</a></h2>
+<p>Các tùy chọn sau luôn xuất hiện, không phụ thuộc vào mode hiện tại. Một số overlay có thể được tùy chỉnh trong <a class="reference internal" href="../../preferences/viewport.html"><span class="doc">Viewport Preferences</span></a>.</p>
+<section id="guides">
+<h3>Guides<a class="headerlink" href="#guides" title="Link to this heading">¶</a></h3>
+<dl class="simple" id="bpy-types-view3doverlay-show-ortho-grid">
+<dt>Grid</dt><dd><p>Hiển thị lưới trong góc nhìn bên orthographic.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-floor">
+<dt>Floor</dt><dd><p>Hiển thị mặt phẳng sàn trong góc nhìn perspective.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-axis">
+<dt>Axes</dt><dd><p>Hiển thị các đường trục X, Y và/hoặc Z.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-grid-scale">
+<dt>Scale</dt><dd><p>Khoảng cách giữa các đường trong lưới/sàn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-grid-subdivisions">
+<dt>Subdivisions</dt><dd><p>Số subdivision giữa các đường lưới.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-text">
+<dt>Thông tin văn bản</dt><dd><p>Hiển thị nhiều loại thông tin ở góc trên bên trái của viewport.</p>
+<ul class="simple">
+<li><p><strong>View Perspective</strong> -- Tên của <a class="reference internal" href="../navigate/projections.html"><span class="doc">góc nhìn</span></a>, ví dụ &quot;Top Orthographic&quot; hoặc &quot;User Perspective.&quot;</p></li>
+<li><p><strong>Playback Frame Rate (FPS)</strong> -- Hiển thị số frame mỗi giây mà animation đang phát. Mặc định, Blender đi qua từng frame một, điều này có thể khiến FPS thấp hơn dự kiến (và animation phát chậm hơn thời gian thực); trong trường hợp đó FPS chuyển sang màu đỏ. Bạn có thể thay đổi hành vi này trong <a class="reference internal" href="../../../animation/animation_editors.html#animation-editors-playback"><span class="std std-ref">popover phát lại</span></a> nằm trong các điều khiển phát lại của editor.</p></li>
+<li><p><strong>Object Info</strong> -- Hiển thị frame hiện tại trong ngoặc đơn, theo sau là tên của <a class="reference internal" href="../../../scene_layout/collections/index.html"><span class="doc">Collection</span></a> được chọn, <a class="reference internal" href="../../../scene_layout/object/selecting.html#object-active"><span class="std std-ref">object đang hoạt động</span></a>, và tên data-block đang hoạt động. Khi có thể, còn hiển thị <a class="reference internal" href="../../../animation/shape_keys/introduction.html"><span class="doc">Shape Key</span></a> được chọn và (trong ngoặc nhọn) <a class="reference internal" href="../../../animation/markers.html"><span class="doc">Marker</span></a> trên frame hiện tại. Nếu object có keyframe trên frame hiện tại, Object Info sẽ hiển thị màu vàng.</p></li>
+<li><p><strong>Grid Resolution</strong> -- Khi góc nhìn được căn theo một trục world (xem <a class="reference internal" href="../navigate/viewpoint.html"><span class="doc">Viewpoint</span></a>), Text Info còn hiển thị thêm khoảng cách nhỏ nhất giữa hai đường lưới song song.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-stats">
+<dt>Thống kê</dt><dd><p>Hiển thị thông tin về số lượng object và hình học. Lưu ý rằng bộ đếm phụ thuộc vào phần đang chọn. Ví dụ, chọn một mesh sẽ cho thông tin về số vertex, edge và face, trong khi chọn một đèn sẽ hiển thị số đèn trong scene.</p>
+<ul class="simple">
+<li><p><strong>Objects</strong> -- Số object được chọn và tổng số.</p></li>
+<li><p><strong>Geometry</strong> -- Hiển thị thông tin về scene hiện tại tùy thuộc vào mode và loại object. Có thể là số vertex, face, tam giác, hoặc bone.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-cursor">
+<dt>3D Cursor</dt><dd><p>Hiển thị <a class="reference internal" href="../3d_cursor.html"><span class="doc">3D Cursor</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-annotation">
+<dt>Annotations</dt><dd><p>Hiển thị <a class="reference internal" href="../../../interface/annotate_tool.html"><span class="doc">chú thích</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-camera-guides">
+<dt>Hướng dẫn camera</dt><dd><p>Hiển thị các đường dẫn camera (<a class="reference internal" href="../../../render/cameras.html#bpy-types-displaysafeareas"><span class="std std-ref">Vùng an toàn</span></a> và <a class="reference internal" href="../../../render/cameras.html#bpy-types-camera-show-composition"><span class="std std-ref">Đường dẫn bố cục</span></a>). Chỉ khả dụng trong <a class="reference internal" href="../navigate/camera_view.html#bpy-ops-view3d-view-camera"><span class="std std-ref">góc nhìn camera</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-look-dev">
+<dt>Hình cầu tham chiếu</dt><dd><p>Hiển thị hai hình cầu, một bóng láng và một khuếch tán, phản ứng với ánh sáng để hỗ trợ look development. Chỉ khả dụng trong <a class="reference internal" href="shading.html"><span class="doc">mode shading</span></a> <em>Material Preview</em>. Kích thước của các hình cầu có thể điều chỉnh trong <a class="reference internal" href="../../preferences/viewport.html"><span class="doc">Viewport Preferences</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="objects">
+<h3>Objects<a class="headerlink" href="#objects" title="Link to this heading">¶</a></h3>
+<dl id="bpy-types-view3doverlay-show-extras">
+<dt>Extras</dt><dd><p>Hiển thị các object không có hình học (như empty, camera và đèn).</p>
+<p>Điều này còn ảnh hưởng đến việc hiển thị của:</p>
+<ul class="simple">
+<li><p>Rigid Body <a class="reference internal" href="../../../physics/rigid_body/properties/collisions.html#bpy-types-rigidbodyobject-collision-shape"><span class="std std-ref">Collision Shape</span></a></p></li>
+<li><p>Object <a class="reference internal" href="../../../scene_layout/object/properties/display.html#bpy-types-object-show-texture-space"><span class="std std-ref">Texture Space</span></a></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-light-colors">
+<dt>Light Colors</dt><dd><p>Tô viền của object đèn theo màu mà đèn phát ra.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-relationship-lines">
+<dt>Relationship Lines</dt><dd><p>Hiển thị các đường đứt đoạn biểu thị quan hệ parent hoặc constraint.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-outline-selected">
+<dt>Outline Selected</dt><dd><p>Hiển thị viền quanh các object được chọn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-bones">
+<dt>Bones</dt><dd><p>Hiển thị bone.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-motion-paths">
+<dt>Motion Paths</dt><dd><p>Hiển thị overlay <a class="reference internal" href="../../../animation/motion_paths.html"><span class="doc">motion path</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-object-origins">
+<dt>Origin</dt><dd><p>Hiển thị <a class="reference internal" href="../../../scene_layout/object/origin.html"><span class="doc">origin</span></a> của các object được chọn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-object-origins-all">
+<dt>Origin (All)</dt><dd><p>Hiển thị origin của mọi object.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-bone-wire-alpha">
+<dt>Bone Wireframe Opacity</dt><dd><p>Độ mờ tối đa dùng cho bone được vẽ trong <a class="reference internal" href="shading.html"><span class="doc">mode shading</span></a> <em>Wireframe</em> (hoặc trong mode shading <em>Solid</em> khi X-Ray đang bật). Điều này hữu ích khi cần giảm sự rối mắt và tập trung vào mesh thay vì bone.</p>
+</dd>
+</dl>
+</section>
+<section id="geometry">
+<h3>Geometry<a class="headerlink" href="#geometry" title="Link to this heading">¶</a></h3>
+<span id="bpy-types-view3doverlay-wireframe-threshold"></span><dl id="bpy-types-view3doverlay-show-wireframes">
+<dt>Wireframe</dt><dd><p>Hiển thị các edge của mesh. Tương tự <a class="reference internal" href="shading.html#dview-shading-rendered"><span class="std std-ref">shading Wireframe</span></a>, nhưng hiển thị các edge đè lên shading hiện có. Thanh trượt giá trị quyết định edge nào được hiển thị: giá trị thấp hơn sẽ ẩn edge trên các bề mặt gần như phẳng, còn giá trị 1 hiển thị mọi edge.</p>
+<dl class="simple" id="bpy-types-view3doverlay-wireframe-opacity">
+<dt>Opacity</dt><dd><p>Độ mờ của các edge hiển thị, từ 0 (không thấy) đến 1 (đặc hoàn toàn).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<span id="bpy-types-view3doverlay-fade-inactive-alpha"></span><dl class="simple" id="bpy-types-view3doverlay-show-fade-inactive">
+<dt>Fade Inactive Geometry</dt><dd><p>Trong các mode khác Object Mode, làm mờ dần các object mà bạn không đang làm việc cùng. Thanh trượt điều khiển mức độ mờ của chúng.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-face-orientation">
+<dt>Face Orientation</dt><dd><p>Làm nổi bật mặt sau của các face bằng màu đỏ. Nhìn chung, nếu một face hiển thị màu đỏ ở mặt ngoài của mesh, rất có thể nó bị định hướng sai và cần lật normal lại. Việc này có thể thực hiện bằng các operator <a class="reference internal" href="../../../modeling/meshes/editing/mesh/normals.html#bpy-ops-mesh-flip-normals"><span class="std std-ref">Flip</span></a> hoặc <a class="reference internal" href="../../../modeling/meshes/editing/mesh/normals.html#bpy-ops-mesh-normals-make-consistent"><span class="std std-ref">Recalculate</span></a> cho mesh, và bằng operator <a class="reference internal" href="../../../modeling/surfaces/editing/segments.html#modeling-surfaces-editing-segments-switch-direction"><span class="std std-ref">Switch Direction</span></a> cho object Surface.</p>
+</dd>
+</dl>
+</section>
+<section id="viewer-node">
+<span id="dview-overlays-view-node"></span><h3>Viewer Node<a class="headerlink" href="#viewer-node" title="Link to this heading">¶</a></h3>
+<p>Trực quan hóa <a class="reference internal" href="../../../modeling/geometry_nodes/attributes_reference.html"><span class="doc">Attributes</span></a> được kết nối với <a class="reference internal" href="../../../modeling/geometry_nodes/output/viewer.html"><span class="doc">Viewer Node</span></a>.</p>
+<dl id="bpy-types-view3doverlay-show-viewer-attribute">
+<dt>Viewer Node</dt><dd><p>Trực quan hóa giá trị của attribute kết nối với <em>Viewer Node</em> dưới dạng màu thang độ xám.</p>
+<dl class="simple" id="bpy-types-view3doverlay-viewer-attribute-opacity">
+<dt>Color Opacity</dt><dd><p>Độ mờ của attribute đang được trực quan hóa.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-viewer-text">
+<dt>Attribute Text</dt><dd><p>Hiển thị giá trị của attribute dưới dạng văn bản trong viewport.</p>
+</dd>
+</dl>
+</section>
+<section id="motion-tracking">
+<span id="bpy-types-spaceview3d-show-reconstruction"></span><h3>Motion Tracking<a class="headerlink" href="#motion-tracking" title="Link to this heading">¶</a></h3>
+<p>Hiển thị overlay <a class="reference internal" href="../../../movie_clip/tracking/introduction.html"><span class="doc">motion tracking</span></a>.</p>
+<dl class="simple" id="bpy-types-spaceview3d-show-camera-path">
+<dt>Camera Path</dt><dd><p>Hiển thị đường đi của camera đã tái dựng.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-spaceview3d-show-bundle-names">
+<dt>Marker Names</dt><dd><p>Hiển thị tên của các tracking marker đã tái dựng.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-spaceview3d-tracks-display-type">
+<dt>Tracks</dt><dd><p>Thay đổi cách hiển thị của tracking marker: trục đơn giản, mũi tên, v.v.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-spaceview3d-tracks-display-size">
+<dt>Size</dt><dd><p>Thay đổi kích thước hiển thị của tracking marker.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="mesh-edit-mode-overlays">
+<span id="dview-overlay-mesh-edit-mode"></span><h2>Overlay của Mesh Edit Mode<a class="headerlink" href="#mesh-edit-mode-overlays" title="Link to this heading">¶</a></h2>
+<p>Các tùy chọn sau khả dụng khi ở Mesh Edit Mode.</p>
+<dl class="simple" id="bpy-types-view3doverlay-show-faces">
+<dt>Faces</dt><dd><p>Làm nổi bật các face được chọn. Áp dụng cho mọi mode chọn.</p>
+</dd>
+</dl>
+<dl id="bpy-types-view3doverlay-show-face-center">
+<dt>Center</dt><dd><p>Hiển thị các điểm giữa face trong các mode shading solid. (Chúng luôn được hiển thị trong mode shading wireframe.)</p>
+<p>Chỉ ảnh hưởng đến mode chọn face.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-edge-crease">
+<dt>Creases</dt><dd><p>Hiển thị các edge được đánh dấu crease cho <a class="reference internal" href="../../../modeling/modifiers/generate/subdivision_surface.html"><span class="doc">modifier Subdivision Surface</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-edge-sharp">
+<dt>Sharp</dt><dd><p>Hiển thị các sharp edge, dùng cùng <a class="reference internal" href="../../../modeling/modifiers/generate/edge_split.html"><span class="doc">modifier Edge Split</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-edge-bevel-weight">
+<dt>Bevel</dt><dd><p>Hiển thị các trọng số tạo cho <a class="reference internal" href="../../../modeling/modifiers/generate/bevel.html"><span class="doc">modifier Bevel</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-edge-seams">
+<dt>Seams</dt><dd><p>Hiển thị các <a class="reference internal" href="../../../modeling/meshes/uv/unwrapping/seams.html"><span class="doc">đường seam khi unwrap UV</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-extra-indices">
+<dt>Indices</dt><dd><p>Hiển thị chỉ số của các vertex, edge và face được chọn.</p>
+</dd>
+</dl>
+<section id="shading">
+<h3>Shading<a class="headerlink" href="#shading" title="Link to this heading">¶</a></h3>
+<dl id="bpy-types-view3doverlay-show-retopology">
+<dt>Retopology</dt><dd><p>Overlay này hữu ích khi bạn có một mesh đã sculpt đạt hình dáng mong muốn và muốn tạo lại nó với topology tốt hơn. Nó làm mesh đang chỉnh sửa trở nên trong suốt (để bạn thấy mesh đã sculpt bên dưới) và tùy chọn vẽ mesh này phía trước hình học lân cận (để bạn thấy nó bên dưới mesh đã sculpt).</p>
+<dl class="simple" id="bpy-types-view3doverlay-retopology-offset">
+<dt>Offset</dt><dd><p>Khoảng cách để &quot;đẩy mesh đang chỉnh sửa về phía camera.&quot; Dùng tùy chọn này để hiển thị mesh phía trước các object khác vốn thường xuyên che khuất nó.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl id="bpy-types-view3doverlay-show-weight">
+<dt>Vertex Groups Weights</dt><dd><p>Trực quan hóa trọng số của vertex group đang hoạt động, giống như trong mode <a class="reference internal" href="../../../sculpt_paint/weight_paint/introduction.html"><span class="doc">Weight Paint</span></a>.</p>
+<dl class="simple" id="bpy-types-toolsettings-vertex-group-user">
+<dt>Zero Weights</dt><dd><p>Hiển thị màu đen ở các vùng không được tham chiếu và có trọng số bằng không. Điều này giúp nhận diện các vùng có trọng số rất thấp đã từng được vẽ lên.</p>
+<dl class="field-list simple">
+<dt class="field-odd">None<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Vertex hiển thị theo cách thông thường.</p>
+</dd>
+<dt class="field-even">Active<span class="colon">:</span></dt>
+<dd class="field-even"><p>Vertex hiển thị màu đen nếu chúng không có trọng số trong vertex group đang hoạt động.</p>
+</dd>
+<dt class="field-odd">All<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Vertex hiển thị màu đen nếu chúng không có trọng số trong bất kỳ vertex group nào.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="mesh-analysis">
+<h3>Mesh Analysis<a class="headerlink" href="#mesh-analysis" title="Link to this heading">¶</a></h3>
+<p>Hiển thị overlay <a class="reference internal" href="../../../modeling/meshes/mesh_analysis.html#modeling-mesh-analysis"><span class="std std-ref">Mesh Analysis</span></a>.</p>
+</section>
+<section id="measurement">
+<h3>Measurement<a class="headerlink" href="#measurement" title="Link to this heading">¶</a></h3>
+<p>Hiển thị số đo của các phần tử được chọn. <a class="reference internal" href="../../../scene_layout/scene/properties.html#bpy-types-unitsettings"><span class="std std-ref">Units</span></a> có thể được thiết lập trong Properties của Scene.</p>
+<dl class="simple" id="bpy-types-view3doverlay-show-extra-edge-length">
+<dt>Edge Length</dt><dd><p>Hiển thị độ dài của các edge được chọn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-extra-edge-angle">
+<dt>Edge Angle</dt><dd><p>Hiển thị góc của các edge được chọn giữa hai face.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-extra-face-area">
+<dt>Face Area</dt><dd><p>Hiển thị diện tích của các face được chọn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-extra-face-angle">
+<dt>Face Angle</dt><dd><p>Hiển thị góc của các góc face được chọn.</p>
+</dd>
+</dl>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Hình học liên kết với phần được chọn sẽ hiển thị trong khi biến đổi, cho phép bạn di chuyển một vertex và thấy độ dài của các edge liên kết chẳng hạn.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các giá trị này tuân theo <a class="reference internal" href="../../../modeling/meshes/editing/mesh/transform/basic.html#modeling-mesh-transform-panel"><span class="std std-ref">Transform Space</span></a> trong Sidebar. Dùng <em>Global</em> nếu bạn muốn tỷ lệ của object được áp dụng vào phép đo.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Công cụ <a class="reference internal" href="../toolbar/measure.html"><span class="doc">Measure</span></a> để đo khoảng cách và góc tùy ý.</p>
+</div>
+</section>
+<section id="normals">
+<span id="mesh-display-normals"></span><h3>Normals<a class="headerlink" href="#normals" title="Link to this heading">¶</a></h3>
+<span id="bpy-types-view3doverlay-show-split-normals"></span><span id="bpy-types-view3doverlay-show-vertex-normals"></span><ul class="simple" id="bpy-types-view3doverlay-show-face-normals">
+<li><p>Display vertex normals</p></li>
+<li><p>Display face normals at vertices (split normals)</p></li>
+<li><p>Display face normals</p></li>
+</ul>
+<dl id="bpy-types-view3doverlay-normals-length">
+<dt>Size</dt><dd><p>Kích thước hiển thị của các normal được chọn.</p>
+<dl class="simple" id="bpy-types-view3doverlay-use-normals-constant-screen-size">
+<dt>Constant Screen Size Normals</dt><dd><p>Giữ kích thước của normal không đổi theo mức thu phóng.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="freestyle">
+<h3>Freestyle<a class="headerlink" href="#freestyle" title="Link to this heading">¶</a></h3>
+<p>Các cài đặt này áp dụng cho bộ render Line Art của <a class="reference internal" href="../../../render/freestyle/introduction.html"><span class="doc">Freestyle</span></a>.</p>
+<dl class="simple" id="bpy-types-view3doverlay-show-freestyle-edge-marks">
+<dt>Edge Marks</dt><dd><p>Hiển thị edge mark của Freestyle.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-freestyle-face-marks">
+<dt>Face Marks</dt><dd><p>Hiển thị face mark của Freestyle.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="sculpt-mode-overlays">
+<h2>Overlay của Sculpt Mode<a class="headerlink" href="#sculpt-mode-overlays" title="Link to this heading">¶</a></h2>
+<span id="bpy-types-view3doverlay-show-sculpt-mask"></span><dl class="simple" id="bpy-types-view3doverlay-sculpt-mode-mask-opacity">
+<dt>Mask</dt><dd><p>Hiển thị <a class="reference internal" href="../../../sculpt_paint/sculpting/editing/mask.html#sculpt-mask-menu"><span class="std std-ref">Mask</span></a> dưới dạng overlay trên object. Độ mờ của overlay có thể được điều chỉnh.</p>
+</dd>
+</dl>
+<span id="bpy-types-view3doverlay-show-sculpt-face-sets"></span><dl class="simple" id="bpy-types-view3doverlay-sculpt-mode-face-sets-opacity">
+<dt>Face Sets</dt><dd><p>Hiển thị <a class="reference internal" href="../../../sculpt_paint/sculpting/editing/face_sets.html#sculpting-editing-facesets"><span class="std std-ref">Face Set</span></a> dưới dạng overlay trên object. Độ mờ của overlay có thể được điều chỉnh.</p>
+</dd>
+</dl>
+</section>
+<section id="vertex-paint-overlays">
+<h2>Overlay của Vertex Paint<a class="headerlink" href="#vertex-paint-overlays" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="bpy-types-view3doverlay-vertex-paint-mode-opacity">
+<dt>Stencil Mask Opacity</dt><dd><p>Không có tác dụng gì. (Stencil mask chỉ khả dụng khi vẽ texture.)</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-show-paint-wire">
+<dt>Show Wire</dt><dd><p>Hiển thị các edge của mesh màu trắng (khác với overlay <em>Wireframe</em> hiển thị chúng màu đen).</p>
+</dd>
+</dl>
+</section>
+<section id="weight-paint-overlays">
+<span id="dview-overlay-weight-paint"></span><h2>Overlay của Weight Paint<a class="headerlink" href="#weight-paint-overlays" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="bpy-types-view3doverlay-weight-paint-mode-opacity">
+<dt>Opacity</dt><dd><p>Độ mờ của overlay.</p>
+</dd>
+<dt>Zero Weights</dt><dd><p>Hiển thị màu đen ở các vùng không được tham chiếu và có trọng số bằng không. Điều này giúp nhận diện các vùng có trọng số rất thấp đã từng được vẽ lên.</p>
+<dl class="field-list simple">
+<dt class="field-odd">None<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Vertex hiển thị theo cách thông thường.</p>
+</dd>
+<dt class="field-even">Active<span class="colon">:</span></dt>
+<dd class="field-even"><p>Vertex hiển thị màu đen nếu chúng không có trọng số trong vertex group đang hoạt động.</p>
+</dd>
+<dt class="field-odd">All<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Vertex hiển thị màu đen nếu chúng không có trọng số trong bất kỳ vertex group nào.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl id="bpy-types-view3doverlay-show-wpaint-contours">
+<dt>Show Weight Contours</dt><dd><p>Hiển thị các đường đồng mức tạo thành từ những điểm có cùng trọng số sau nội suy.</p>
+<p>Cách này trực quan hóa những biến thiên trọng số quá nhỏ để nhận thấy qua màu sắc, và có thể hữu ích khi đánh giá độ mượt và tính nhất quán của gradient, ví dụ khi dùng các công cụ và brush làm mượt.</p>
+</dd>
+<dt>Show Wire</dt><dd><p>Hiển thị các edge của mesh màu trắng (khác với overlay <em>Wireframe</em> hiển thị chúng màu đen).</p>
+</dd>
+</dl>
+</section>
+<section id="texture-paint-overlays">
+<h2>Overlay của Texture Paint<a class="headerlink" href="#texture-paint-overlays" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="bpy-types-view3doverlay-texture-paint-mode-opacity">
+<dt>Stencil Mask Opacity</dt><dd><p>Độ mờ của overlay <a class="reference internal" href="../../../sculpt_paint/texture_paint/tool_settings/mask.html"><span class="doc">stencil mask</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="pose-mode-overlays">
+<h2>Overlay của Pose Mode<a class="headerlink" href="#pose-mode-overlays" title="Link to this heading">¶</a></h2>
+<span id="bpy-types-view3doverlay-show-xray-bone"></span><dl class="simple" id="bpy-types-view3doverlay-xray-alpha-bone">
+<dt>Fade Geometry</dt><dd><p>Hiển thị các bone phía trên và đẩy toàn bộ hình học khác ra phía sau. Độ mờ có thể điều chỉnh bằng thanh trượt. Chỉ khả dụng trong Pose Mode.</p>
+</dd>
+</dl>
+</section>
+<section id="grease-pencil">
+<span id="dview-overlay-grease-pencil"></span><h2>Grease Pencil<a class="headerlink" href="#grease-pencil" title="Link to this heading">¶</a></h2>
+<p>Các overlay này khả dụng khi một object <a class="reference internal" href="../../../grease_pencil/index.html"><span class="doc">Grease Pencil</span></a> được chọn.</p>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-onion-skin">
+<dt>Onion Skin</dt><dd><p>Hiển thị bóng mờ của các keyframe trước và sau frame hiện tại. Nếu <a class="reference internal" href="../../../grease_pencil/multiframe.html"><span class="doc">Multiframe</span></a> được bật, bóng mờ của các keyframe được chọn sẽ hiển thị thay thế. Xem <a class="reference internal" href="../../../grease_pencil/properties/onion_skinning.html"><span class="doc">Onion Skinning</span></a>.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-onion-skin-active-object">
+<dt>Active Object Only</dt><dd><p>Chỉ hiển thị onion skin của object đang hoạt động.</p>
+</dd>
+</dl>
+<span id="bpy-types-view3doverlay-use-gpencil-fade-layers"></span><dl class="simple" id="bpy-types-view3doverlay-gpencil-fade-layer">
+<dt>Fade Inactive Layers</dt><dd><p>Giảm độ mờ của mọi layer trong object, trừ layer đang hoạt động. Hệ số độ mờ có thể điều chỉnh bằng thanh trượt.</p>
+</dd>
+</dl>
+<span id="bpy-types-view3doverlay-use-gpencil-fade-objects"></span><dl id="bpy-types-view3doverlay-gpencil-fade-objects">
+<dt>Fade Inactive Objects</dt><dd><p>Phủ toàn bộ viewport, trừ object Grease Pencil đang hoạt động, bằng một lớp màu đặc nhằm cải thiện tầm nhìn khi vẽ đè lên các scene phức tạp.</p>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-fade-gp-objects">
+<dt>Fade Grease Pencil Objects</dt><dd><p>Bao gồm hoặc loại trừ các object Grease Pencil.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-edit-lines">
+<dt>Edit Lines <span class="guilabel">Edit, Sculpt, Weight Paint, or Vertex Paint Modes</span> <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Q</kbd></dt><dd><p>Hiển thị đường nối giữa các điểm, đè lên hình học khác, khi chỉnh sửa stroke.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-multiedit-line-only">
+<dt>Only in Multiframe <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Alt</kbd>-<kbd class="kbd docutils literal notranslate">Q</kbd></dt><dd><p>Khi Multiframe được bật và các keyframe khác với frame hiện tại được chọn, stroke trên những keyframe đó chỉ hiển thị dưới dạng edit line -- bản thân các stroke bị ẩn đi. Lưu ý rằng điều này không ảnh hưởng đến Onion Skinning.</p>
+</dd>
+<dt>Handles</dt><dd><p>Điều khiển khả năng hiển thị của handle trên đường cong Bézier trong edit mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">None<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Ẩn mọi handle của đường cong Bézier, cho góc nhìn không bị cản trở về đường cong.</p>
+</dd>
+<dt class="field-even">Selected<span class="colon">:</span></dt>
+<dd class="field-even"><p>Chỉ hiển thị handle của các điểm điều khiển được chọn.</p>
+</dd>
+<dt class="field-odd">All<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Hiển thị handle của mọi điểm điều khiển trên đường cong.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-show-directions">
+<dt>Stroke Direction <span class="guilabel">Edit</span></dt><dd><p>Bật/tắt hiển thị điểm bắt đầu (xanh lục) và điểm kết thúc (đỏ) của các stroke được chọn để hình dung hướng của chúng.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-show-material-name">
+<dt>Material Name <span class="guilabel">Edit</span></dt><dd><p>Hiển thị tên material bên cạnh các stroke được chọn.</p>
+</dd>
+</dl>
+<p class="rubric">Vertex Paint</p>
+<dl class="simple" id="bpy-types-view3doverlay-gpencil-vertex-paint-opacity">
+<dt>Vertex Paint Opacity <span class="guilabel">Vertex Paint</span></dt><dd><p>Độ mờ của overlay vertex color trong Vertex Paint Mode và Draw Mode. Lưu ý rằng trong Draw Mode, vertex paint mặc định chỉ hiển thị trong các mode shading <em>Material Preview</em> và <em>Rendered</em>. Để thấy nó trong mode <em>Solid</em>, bạn cần dùng Vertex Paint Mode, hoặc đặt cài đặt shading <a class="reference internal" href="../../../render/workbench/color.html"><span class="doc">Color</span></a> thành <em>Attribute</em>.</p>
+</dd>
+</dl>
+<section id="canvas">
+<span id="bpy-types-view3doverlay-use-gpencil-grid"></span><h3>Canvas<a class="headerlink" href="#canvas" title="Link to this heading">¶</a></h3>
+<p>Hiển thị một lưới trên mặt phẳng vẽ của Grease Pencil.</p>
+<dl class="simple" id="bpy-types-view3doverlay-gpencil-grid-opacity">
+<dt>Canvas Grid Opacity</dt><dd><p>Độ mờ của lưới.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-use-gpencil-canvas-xray">
+<dt>Canvas X-Ray</dt><dd><p>Các object được vẽ phía sau lưới canvas.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-gpencil-grid-subdivisions">
+<dt>Subdivisions</dt><dd><p>Số subdivision giữa các đường lưới.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-gpencil-grid-color">
+<dt>Grid Color</dt><dd><p>Màu của các đường lưới.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-gpencil-grid-scale">
+<dt>Scale X/Y</dt><dd><p>Kích thước ngang/dọc của lưới.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-view3doverlay-gpencil-grid-offset">
+<dt>Offset X/Y</dt><dd><p>Mức dịch chuyển lưới lên/xuống và trái/phải.</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="shading.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Viewport Shading</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="gizmo.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Viewport Gizmos</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/editors/3dview/display/overlays.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Feditors/3dview/display/overlays"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Feditors/3dview/display/overlays.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Feditors/3dview/display/overlays.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Viewport Overlays</a><ul>
+<li><a class="reference internal" href="#general">General</a><ul>
+<li><a class="reference internal" href="#guides">Guides</a></li>
+<li><a class="reference internal" href="#objects">Objects</a></li>
+<li><a class="reference internal" href="#geometry">Geometry</a></li>
+<li><a class="reference internal" href="#viewer-node">Viewer Node</a></li>
+<li><a class="reference internal" href="#motion-tracking">Motion Tracking</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mesh-edit-mode-overlays">Overlay của Mesh Edit Mode</a><ul>
+<li><a class="reference internal" href="#shading">Shading</a></li>
+<li><a class="reference internal" href="#mesh-analysis">Mesh Analysis</a></li>
+<li><a class="reference internal" href="#measurement">Measurement</a></li>
+<li><a class="reference internal" href="#normals">Normals</a></li>
+<li><a class="reference internal" href="#freestyle">Freestyle</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sculpt-mode-overlays">Overlay của Sculpt Mode</a></li>
+<li><a class="reference internal" href="#vertex-paint-overlays">Overlay của Vertex Paint</a></li>
+<li><a class="reference internal" href="#weight-paint-overlays">Overlay của Weight Paint</a></li>
+<li><a class="reference internal" href="#texture-paint-overlays">Overlay của Texture Paint</a></li>
+<li><a class="reference internal" href="#pose-mode-overlays">Overlay của Pose Mode</a></li>
+<li><a class="reference internal" href="#grease-pencil">Grease Pencil</a><ul>
+<li><a class="reference internal" href="#canvas">Canvas</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

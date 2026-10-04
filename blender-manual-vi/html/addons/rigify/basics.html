@@ -1,0 +1,630 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="copyright" title="Bản quyền" href="../../copyright.html"><link rel="next" title="Hướng dẫn định vị bone" href="bone_positioning.html"><link rel="prev" title="Giới thiệu" href="introduction.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/addons/rigify/basics.html">
+        <link rel="prefetch" href="../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Sử dụng cơ bản - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../"></div>
+<script src="../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/addons/rigify/basics.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="basic-usage">
+<h1>Sử dụng cơ bản<a class="headerlink" href="#basic-usage" title="Link to this heading">¶</a></h1>
+<section id="basic-rig-generation">
+<span id="bpy-ops-pose-rigify-generate"></span><h2>Tạo rig cơ bản<a class="headerlink" href="#basic-rig-generation" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Thêm một cấu trúc meta-rig từ menu <span class="menuselection">Add ‣ Armature</span>.</p></li>
+<li><p>Chỉnh sửa vị trí các bone cho khớp với hình học của nhân vật.</p></li>
+<li><p>Trong phần cài đặt armature, nhấp vào nút <em>Generate Rig</em> để tạo rig.</p></li>
+</ol>
+<section id="add-a-predefined-meta-rig">
+<h3>Thêm Meta-Rig định nghĩa sẵn<a class="headerlink" href="#add-a-predefined-meta-rig" title="Link to this heading">¶</a></h3>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Object Mode</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Add ‣ Armature</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">A</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Rigify lưu trữ toàn bộ thông tin cần thiết để tạo các control và cơ chế rig phức tạp trong những armature đơn giản hơn gọi là &quot;meta-rig&quot;.</p>
+<p>Các meta-rig định nghĩa sẵn có thể được tìm thấy trong menu <em>Add</em>. Các loại meta-rig hiện có là:</p>
+<ul class="simple">
+<li><p>Basic Human (không bao gồm khuôn mặt và ngón tay)</p></li>
+<li><p>Basic Quadruped</p></li>
+<li><p>Human</p></li>
+<li><p>Cat</p></li>
+<li><p>Wolf</p></li>
+<li><p>Horse</p></li>
+<li><p>Shark</p></li>
+</ul>
+</section>
+<section id="edit-bone-positions">
+<h3>Chỉnh sửa vị trí bone<a class="headerlink" href="#edit-bone-positions" title="Link to this heading">¶</a></h3>
+<p>Để khớp chính xác với nhân vật, các bone meta-rig phải được di chuyển đến đúng vị trí. Việc này có thể thực hiện theo hai cách: Pose Mode hoặc Edit Mode.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Rigify coi 1 đơn vị tương ứng với 1 mét. Vì vậy một người cao khoảng 2 đơn vị. Nếu nhân vật của bạn ở tỉ lệ khác và bạn thành thạo modeling hơn là rigging, nên scale nó về kích thước của Rigify trước khi định vị các bone meta-rig. Nếu muốn scale hình học của nhân vật, chúng tôi đề nghị bạn phóng to nhân vật trong Object Mode trước, sau đó áp dụng scale hình học bằng công cụ <em>Apply Scale</em>.</p>
+</div>
+<section id="rigify-human-alignment-tips">
+<h4>Mẹo căn chỉnh Human của Rigify<a class="headerlink" href="#rigify-human-alignment-tips" title="Link to this heading">¶</a></h4>
+<ul>
+<li><p>Limbs: Giữ chân càng thẳng càng tốt ở nhìn từ phía trước (human của Rigify hoạt động tốt hơn trong những trường hợp dễ đoán). Cho gối và khuỷu tay một góc cong nhẹ (Rigify cần biết gối/khuỷu tay của bạn hướng về đâu).</p></li>
+<li><p>Torso: Giữ spine càng thẳng càng tốt khi nhìn từ phía trước (human của Rigify hoạt động tốt hơn trong những trường hợp dễ đoán). Bone cuối cùng của spine là đầu. Theo mặc định, hai bone tiếp theo (từ trên xuống) được coi là các bone cổ. Nên giữ các bone cổ càng thẳng hàng càng tốt trong lúc chỉnh sửa.</p></li>
+<li><p>Face: Định vị các bone khuôn mặt có thể khó khăn nếu bạn chưa thành thạo việc chỉnh sửa bone, và chúng gần như vô dụng nếu bạn định làm hoạt hình khuôn mặt qua shape key. Hãy cân nhắc bỏ các đặc điểm khuôn mặt khỏi nhân vật nếu thực sự không cần. Nếu không cần khuôn mặt, toàn bộ bone khuôn mặt có thể bị xóa. Mặc định tất cả bone khuôn mặt nằm trong bone collection <em>Face</em> của armature. Bạn có thể chọn chúng bằng cách chỉ hiển thị collection đó, chọn toàn bộ nội dung của nó rồi xóa các bone trong Edit Mode để gỡ khuôn mặt một cách đúng đắn.</p>
+<p>Nếu muốn scale toàn bộ bone khuôn mặt cùng lúc, hãy cân nhắc scale face master bone trong Pose Mode (xem phương pháp khớp bằng Pose Mode). Face master bone được đặt ở cùng vị trí với bone đầu. Để chọn nó dễ dàng, hãy ẩn mọi bone collection khác.</p>
+<p>Để có thêm mẹo, xem <a class="reference internal" href="bone_positioning.html"><span class="doc">Positioning Guide</span></a>.</p>
+</li>
+</ul>
+</section>
+</section>
+<section id="pose-mode-matching-basic">
+<h3>Khớp bằng Pose Mode (Cơ bản)<a class="headerlink" href="#pose-mode-matching-basic" title="Link to this heading">¶</a></h3>
+<p>Vào Pose Mode của meta-rig. Xoay, scale và di chuyển các bone đến đúng vị trí. Khi các bone đã ở đúng vị trí (luôn ở trong Pose Mode), dùng <span class="menuselection">Apply ‣ Apply Pose As Rest Pose</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các bone connected không thể bị di chuyển trong Pose Mode. Bạn có thể scale các bone parent để khớp chiều dài tổng thể, sau đó tinh chỉnh scale của các bone con. Để biết thông tin chi tiết hơn về các chế độ armature, vui lòng tham khảo <a class="reference internal" href="../../animation/armatures/bones/editing/introduction.html"><span class="doc">armatures section</span></a>.</p>
+</div>
+</section>
+<section id="edit-mode-matching-advanced">
+<h3>Khớp bằng Edit Mode (Nâng cao)<a class="headerlink" href="#edit-mode-matching-advanced" title="Link to this heading">¶</a></h3>
+<p>Nên thực hiện một số cài đặt hiển thị armature cơ bản trước khi vào Edit Mode của bone.</p>
+<p>Với meta-rig được chọn, chuyển đến Properties và nhấp vào tab Object. Cuộn xuống panel Display, bật X-ray và trong bộ chọn <em>Maximum Draw Type</em> chọn <em>Wire</em>. Nhờ vậy các bone sẽ luôn được vẽ dạng wireframe đè lên hình học của bạn.</p>
+<p>Tiếp theo, vẫn trong Properties, nhấp vào tab Armatures và trong phần Display đánh dấu ô kiểm <em>Axis</em>. Nhờ vậy các trục xoay của bone sẽ được hiển thị trong quá trình chỉnh sửa.</p>
+<p>Để biết thông tin chi tiết hơn về các chế độ hiển thị armature, vui lòng tham khảo <a class="reference internal" href="../../animation/armatures/properties/display.html"><span class="doc">Display panel page</span></a>.</p>
+</section>
+<section id="generating-the-rig">
+<h3>Tạo Rig<a class="headerlink" href="#generating-the-rig" title="Link to this heading">¶</a></h3>
+<p>Khi các bone đã ở đúng vị trí, quay lại Object Mode, chuyển đến tab Armature, cuộn xuống đáy và nhấp nút <em>Generate Rig</em> để hoàn tất việc tạo rig. Quá trình tạo sẽ mất từ vài giây đến một phút tùy vào độ phức tạp của rig và cấu hình phần cứng của máy bạn. Nếu rig đã tạo cần tinh chỉnh, bạn có thể chỉnh sửa meta-rig cho phù hợp rồi nhấp lại nút tạo. Nếu rig đã tồn tại, Rigify sẽ đơn giản là ghi đè lên nó mà vẫn giữ lại toàn bộ modifier và constraint của bạn và -- khi có thể -- tất cả các tính năng đã tạo trước đó.</p>
+<p>Để biết thông tin về các tùy chọn tạo bổ sung, xem phần <a class="reference internal" href="#advanced-rig-generation">Advanced Rig Generation</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu metarig dùng <a class="reference internal" href="rig_types/faces.html"><span class="doc">face rig</span></a> kiểu cũ, bạn có thể dùng nút <em>Upgrade Face Rig</em> xuất hiện phía trên <em>Generate Rig</em> để tự động nâng cấp lên hệ thống khuôn mặt dạng module mới.</p>
+<p>Bản nâng cấp sẽ giữ khả năng tương thích với skinning hiện có, nhưng các dáng và animation hiện có nhiều khả năng không tương thích do những thay đổi tinh vi trong hành vi của control.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để việc ghi đè rig hoạt động như mong đợi, bạn cần hiển thị <strong>cả</strong> rig lẫn meta-rig trước khi tạo lại. Rigify sẽ cố bỏ ẩn chúng trong những trường hợp đơn giản, nhưng sẽ hủy việc tạo nếu thất bại.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Giống như mọi add-on Python, giao diện Blender không thể cập nhật cho đến khi script Python chạy xong. Hãy đợi cho đến khi rig xuất hiện để xem kết quả.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Rigify được thiết kế với giả định về một quy trình làm việc trong đó meta-rig được giữ lại để có thể tạo lại rig chính bất cứ khi nào cần thay đổi nó. Việc xóa meta-rig sau khi đã tạo rig chính, hoặc chỉnh sửa đáng kể rig đã tạo, là không được khuyến nghị: điều đó khiến bạn không thể bổ sung các tính năng mới trong các phiên bản Rigify sau này, hay dễ dàng thích nghi với các thay đổi gây hỏng (breaking change) trong các phiên bản Blender sau này. Nhìn chung, các script cập nhật phiên bản tự động sẽ được cung cấp cho meta-rig khi cần, nhưng không có cho rig đã tạo.</p>
+</div>
+</section>
+<section id="binding-the-geometry-to-the-rig">
+<h3>Gắn hình học vào Rig<a class="headerlink" href="#binding-the-geometry-to-the-rig" title="Link to this heading">¶</a></h3>
+<p>Để gắn hình học vào rig, bạn có thể dùng công cụ ưa thích của mình. Chỉ có vài điều bạn cần biết:</p>
+<ul class="simple">
+<li><p>Tất cả bone biến dạng đều nằm trong bone collection <em>DEF</em>.</p></li>
+<li><p>Các bone Eyes và Teeth của khuôn mặt kiểu cũ không làm biến dạng. Bạn cần gắn hình học mắt và răng thông qua các constraint Child Of.</p></li>
+<li><p>Thông thường, armature deform với automatic weights cho kết quả rất tốt ngay từ đầu nếu bạn đặt bone đúng chỗ (và có đủ topology để làm việc!).</p></li>
+</ul>
+<p>Để biết thông tin chi tiết hơn về bone collection, modifier Armature và weight painting, hãy tham khảo tài liệu Blender.</p>
+</section>
+</section>
+<section id="advanced-rig-generation">
+<span id="bpy-types-armature-rigify"></span><h2>Tạo Rig nâng cao<a class="headerlink" href="#advanced-rig-generation" title="Link to this heading">¶</a></h2>
+<section id="advanced-options-features">
+<h3>Tính năng của các tùy chọn nâng cao<a class="headerlink" href="#advanced-options-features" title="Link to this heading">¶</a></h3>
+<p>Bằng cách dùng các tùy chọn trong panel con Advanced, có thể:</p>
+<ul class="simple">
+<li><p>Tạo nhiều hơn một rig cho mỗi scene.</p></li>
+<li><p>Cập nhật/ghi đè một rig cụ thể.</p></li>
+<li><p>Buộc ghi đè các object widget đã tạo trước đó.</p></li>
+<li><p>Chọn việc có dùng linked duplicate cho widget bên trái và bên phải hay không.</p></li>
+<li><p>Thực thi một data-block script sau khi tạo.</p></li>
+</ul>
+</section>
+<section id="advanced-options-sub-panel">
+<h3>Panel con Advanced Options<a class="headerlink" href="#advanced-options-sub-panel" title="Link to this heading">¶</a></h3>
+<figure class="align-right">
+<a class="reference internal image-reference" href="../../_images/addons_rigging_rigify_basics_advanced-panel.png"><img alt="../../_images/addons_rigging_rigify_basics_advanced-panel.png" src="../../_images/addons_rigging_rigify_basics_advanced-panel.png" style="width: 300px;" />
+</a>
+</figure>
+<p>Các tùy chọn tạo rig nâng cao mặc định bị ẩn trong một panel con. Nhấp vào dòng <em>Advanced</em> để mở nó.</p>
+<p>Một số tùy chọn sẽ được Rigify tự động đặt nếu chúng không có giá trị khi rig được tạo, trong khi những tùy chọn khác do người dùng hoàn toàn kiểm soát.</p>
+<dl>
+<dt>Rig Name</dt><dd><p>Khi một rig hoàn toàn mới được tạo (thay vì ghi đè lên rig đã có), giá trị của tùy chọn này được dùng để đặt tên cho nó.</p>
+<p>Nếu trường này trống, object mới sẽ được đặt tên dựa trên tên của metarig theo các quy tắc sau:</p>
+<ul class="simple">
+<li><p>Nếu tên chứa <code class="docutils literal notranslate"><span class="pre">META</span></code>, nó được thay bằng <code class="docutils literal notranslate"><span class="pre">RIG</span></code>.</p></li>
+<li><p>Nếu tên chứa <code class="docutils literal notranslate"><span class="pre">metarig</span></code>, nó được thay bằng <code class="docutils literal notranslate"><span class="pre">rig</span></code>.</p></li>
+<li><p>Nếu không, <code class="docutils literal notranslate"><span class="pre">RIG-</span></code> sẽ được thêm vào trước tên.</p></li>
+</ul>
+<p>Khi ghi đè lên một object rig đã tồn tại được chỉ định bởi tùy chọn <em>Target Rig</em>, tên của nó không bị thay đổi, cho phép bạn tự do đổi tên mà không phải đồng bộ hóa giá trị của tùy chọn này.</p>
+</dd>
+<dt>Target Rig <span class="guilabel">auto</span></dt><dd><p>Tùy chọn này chỉ định rig đã tạo sẽ bị ghi đè khi tạo lại từ metarig này.</p>
+<p>Nếu tùy chọn chưa được đặt, Rigify sẽ tạo một object rig mới và lưu nó vào tùy chọn này.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi tùy chọn chưa được đặt, Rigify sẽ tạo một object rig hoàn toàn mới ngay cả khi đã có object trùng tên.</p>
+</div>
+</dd>
+<dt>Rig UI Script <span class="guilabel">auto</span></dt><dd><p>Tùy chọn này chỉ định data block script đã tạo sẽ bị ghi đè khi tạo lại, và hoạt động giống như <em>Target Rig</em>.</p>
+<p>Script này điều khiển giao diện trong 3D Viewport, cho phép thuận tiện chuyển đổi các bone collection hiển thị, thay đổi custom property, chuyển đổi giữa IK và FK, v.v.</p>
+</dd>
+<dt>Widgets Collection <span class="guilabel">auto</span></dt><dd><p>Tham chiếu này chỉ định collection chứa các widget đã tạo, và hoạt động giống như <em>Target Rig</em>.</p>
+</dd>
+<dt>Overwrite Widget Meshes</dt><dd><p>Nếu được bật, Rigify sẽ tạo widget mới mỗi lần rig được tạo lại. Theo mặc định, Rigify cố tái sử dụng các object widget đã tạo có trong widget collection, cho phép chúng được chỉnh sửa thủ công để vừa với nhân vật hơn.</p>
+</dd>
+<dt>Mirror Widgets</dt><dd><p>Khi được bật, Rigify tạo widget cho các bone bên trái và bên phải dưới dạng linked duplicate, dùng scale X âm để lật phiên bản bên phải. Điều này đảm bảo tính đối xứng và giảm số mesh phải chỉnh cho vừa với nhân vật.</p>
+<p>Khi tái sử dụng một widget đã tạo, Rigify phát hiện xem nó ban đầu có được tạo ở dạng mirror hay không bằng cách kiểm tra scale của object, để tránh lật các control hiện có. Do đó, việc chuyển sang mirror widget cho một nhân vật đã có đòi hỏi phải xóa các widget bên phải, hoặc dùng <em>Force Widget Update</em>.</p>
+</dd>
+<dt>Run Script</dt><dd><p>Có thể cấu hình Rigify thực thi một script Python chứa trong text data-block sau khi tạo nhằm áp dụng các tùy chỉnh do người dùng định nghĩa. Script được thực thi khi rig đã tạo đang active và được chọn trong Object Mode.</p>
+<p>Cách dùng đơn giản nhất của tính năng này là điều chỉnh property của các constraint đã tạo khi các loại rig của Rigify không có cài đặt meta-rig liên quan. Việc đó có thể thực hiện bằng cách dùng tùy chọn menu ngữ cảnh <em>Copy Full Data Path</em> trên property, dán nó vào script và thực hiện một phép gán, ví dụ:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+
+<span class="n">bpy</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">objects</span><span class="p">[</span><span class="s2">&quot;rig&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pose</span><span class="o">.</span><span class="n">bones</span><span class="p">[</span><span class="s2">&quot;MCH-spine.003&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">influence</span> <span class="o">=</span> <span class="mf">0.6</span>
+</pre></div>
+</div>
+<p>Thực hiện những thay đổi như vậy qua script đảm bảo chúng không bị mất nếu rig được tạo lại.</p>
+<p>Người dùng quen với <a class="reference external" href="https://developer.blender.org/docs/features/animation/rigify/">Rigify scripting</a> có thể import các module tiện ích của Rigify, và truy cập instance của generator thông qua <code class="docutils literal notranslate"><span class="pre">rigify.get_generator()</span></code>. Tuy nhiên, lưu ý rằng vì việc tạo đã kết thúc nên cách dùng duy nhất là đọc dữ liệu được tạo trong quá trình tạo.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="library-linking">
+<h2>Library Linking<a class="headerlink" href="#library-linking" title="Link to this heading">¶</a></h2>
+<p>Khi link một rig vào file khác, thông thường bạn sẽ muốn tạo một collection gồm rig đã tạo và mesh nhân vật. Bạn không cần bao gồm meta-rig hay collection chứa các object widget. Sau đó bạn link collection đó vào và chạy <a class="reference internal" href="../../files/linked_libraries/library_overrides.html#bpy-ops-object-make-override-library"><span class="std std-ref">Make Library Override</span></a>.</p>
+<p>Text data-block <code class="docutils literal notranslate"><span class="pre">rig_ui_template.py</span></code> chịu trách nhiệm cho giao diện rig sẽ được tự động link cùng với rig, bạn không cần link riêng. Tuy nhiên, script sẽ không chạy cho đến khi bạn tự chạy nó từ Text Editor hoặc lưu file và khởi động lại Blender.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="bone_positioning.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Hướng dẫn định vị bone</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="introduction.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Giới thiệu</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/addons/rigify/basics.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Faddons/rigify/basics"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Faddons/rigify/basics.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Faddons/rigify/basics.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Sử dụng cơ bản</a><ul>
+<li><a class="reference internal" href="#basic-rig-generation">Tạo rig cơ bản</a><ul>
+<li><a class="reference internal" href="#add-a-predefined-meta-rig">Thêm Meta-Rig định nghĩa sẵn</a></li>
+<li><a class="reference internal" href="#edit-bone-positions">Chỉnh sửa vị trí bone</a><ul>
+<li><a class="reference internal" href="#rigify-human-alignment-tips">Mẹo căn chỉnh Human của Rigify</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pose-mode-matching-basic">Khớp bằng Pose Mode (Cơ bản)</a></li>
+<li><a class="reference internal" href="#edit-mode-matching-advanced">Khớp bằng Edit Mode (Nâng cao)</a></li>
+<li><a class="reference internal" href="#generating-the-rig">Tạo Rig</a></li>
+<li><a class="reference internal" href="#binding-the-geometry-to-the-rig">Gắn hình học vào Rig</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-rig-generation">Tạo Rig nâng cao</a><ul>
+<li><a class="reference internal" href="#advanced-options-features">Tính năng của các tùy chọn nâng cao</a></li>
+<li><a class="reference internal" href="#advanced-options-sub-panel">Panel con Advanced Options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#library-linking">Library Linking</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

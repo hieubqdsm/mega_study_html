@@ -1,0 +1,572 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html"><link rel="copyright" title="Bản quyền" href="../../../copyright.html"><link rel="next" title="Particle System Modifier" href="particle_system.html"><link rel="prev" title="Ocean Modifier" href="ocean.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/modeling/modifiers/physics/particle_instance.html">
+        <link rel="prefetch" href="../../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Particle Instance Modifier - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../../"></div>
+<script src="../../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/modeling/modifiers/physics/particle_instance.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="particle-instance-modifier">
+<span id="bpy-types-particleinstancemodifier"></span><span id="index-0"></span><h1>Particle Instance Modifier<a class="headerlink" href="#particle-instance-modifier" title="Link to this heading">¶</a></h1>
+<p>Khi một modifier Particle Instance được thêm vào một object, mesh của object này sẽ bị nhân bản tại vị trí của các particle thuộc particle system đã chọn từ một object đích khác. Điều này có nghĩa là để dùng modifier này, bạn phải có ít nhất một object khác có <a class="reference internal" href="../../../physics/particles/index.html"><span class="doc">Particle System</span></a> trên đó.</p>
+<p>Do mối liên hệ mà Particle Instance modifier chịu ảnh hưởng từ các particle system bên dưới trên các object khác, một số hiệu ứng hiển thị do modifier tạo ra có thể trông và hoạt động rất khác nhau, tùy thuộc vào các cài đặt nền tảng của particle system mà nó gắn liền với. Điều này đáng được lưu ý khi có vẻ như các cài đặt của Particle Instance modifier không mang lại kết quả như mong đợi.</p>
+<section id="options">
+<h2>Tùy chọn<a class="headerlink" href="#options" title="Link to this heading">¶</a></h2>
+<figure class="align-right" id="id1">
+<a class="reference internal image-reference" href="../../../_images/modeling_modifiers_physics_particle-instance_panel.png"><img alt="../../../_images/modeling_modifiers_physics_particle-instance_panel.png" src="../../../_images/modeling_modifiers_physics_particle-instance_panel.png" style="width: 300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Modifier Particle Instance.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl>
+<dt>Object</dt><dd><p>Object đích có một particle system gắn với nó.</p>
+</dd>
+<dt>Particle System</dt><dd><p>Particle system nào từ <em>Object</em> đích sẽ được áp dụng modifier này.</p>
+</dd>
+<dt>Create Instances</dt><dd><dl>
+<dt>Regular</dt><dd><p>Khi bật, modifier sẽ dùng các particle thường (parent) để nhân bản mesh của object bị chỉnh sửa.</p>
+</dd>
+<dt>Children</dt><dd><p>Khi bật, modifier sẽ dùng các particle <a class="reference internal" href="../../../physics/particles/emitter/children.html"><span class="doc">con (children)</span></a> để nhân bản mesh của object bị chỉnh sửa.</p>
+</dd>
+<dt>Size</dt><dd><p>Co giãn các bản sao mesh theo attribute kích thước particle. Khi tắt tùy chọn này, mọi bản sao đều hiện cùng kích thước với object gốc.</p>
+<p>Xem các panel <a class="reference internal" href="../../../physics/particles/emitter/render.html"><span class="doc">Render</span></a> và <a class="reference internal" href="../../../physics/particles/emitter/children.html"><span class="doc">Children</span></a> của particle system để biết các tùy chọn kích thước particle.</p>
+</dd>
+</dl>
+</dd>
+<dt>Show</dt><dd><dl class="simple">
+<dt>Unborn</dt><dd><p>Khi bật, modifier sẽ dùng các particle chưa sinh ra (unborn) để nhân bản mesh của object bị chỉnh sửa.</p>
+</dd>
+<dt>Alive</dt><dd><p>Khi bật, modifier sẽ dùng các particle còn sống để nhân bản mesh của object bị chỉnh sửa.</p>
+</dd>
+<dt>Dead</dt><dd><p>Khi bật, modifier sẽ dùng các particle đã chết để nhân bản mesh của object bị chỉnh sửa.</p>
+</dd>
+</dl>
+</dd>
+<dt>Amount</dt><dd><p>Tỷ lệ particle sẽ được dùng. Cho phép bạn <strong>ngẫu nhiên</strong> bỏ qua các particle để điều chỉnh số lượng instance.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Thuật toán ngẫu nhiên hiện dùng chỉ đảm bảo tỷ lệ tương đối được tôn trọng ở mức <em>thống kê</em>. Số lượng instance thực tế được tạo sẽ khác với số lượng lý thuyết, tùy thuộc vào giá trị <em>Seed</em> của particle system đích (và cả giá trị <em>Offset</em> mô tả bên dưới).</p>
+<p>Độ lệch đó không đáng kể khi số particle lớn, nhưng sẽ rất dễ thấy khi số lượng nhỏ (ví dụ: với 100 particle trong system đích và giá trị <em>Amount</em> là <code class="docutils literal notranslate"><span class="pre">0.1</span></code>, nó có thể tạo tới 15 hoặc chỉ 5 instance, thay vì 10 như mong đợi).</p>
+</div>
+</dd>
+<dt>Offset</dt><dd><p>Một offset tương đối trong dải particle được dùng để tạo instance. Cho phép bạn tránh việc các particle dùng bị chồng lấn, khi cùng một particle system được dùng trong nhiều instance của modifier.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu muốn tránh hoàn toàn chồng lấn, giá trị <em>Offset</em> của bạn phải ít nhất bằng giá trị <em>Amount</em>.</p>
+</div>
+</dd>
+<dt>Coordinate Space</dt><dd><dl class="simple">
+<dt>World, Local</dt><dd><p>Dùng <a class="reference internal" href="../../../glossary/index.html#term-World-Space"><span class="xref std std-term">World Space</span></a> hoặc <a class="reference internal" href="../../../glossary/index.html#term-Local-Space"><span class="xref std std-term">Local Space</span></a> của object đích (mà particle system được gán vào).</p>
+<ul class="simple">
+<li><p>World space nghĩa là vị trí các bản sao của mesh bị chỉnh sửa sẽ phụ thuộc vào vị trí của object bị chỉnh sửa <strong>và</strong> của object đích.</p></li>
+<li><p>Local space nghĩa là vị trí các bản sao của mesh bị chỉnh sửa sẽ chỉ phụ thuộc vào vị trí của object bị chỉnh sửa.</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+<dt>Axis</dt><dd><p>Chỉ định trục nào của object bị chỉnh sửa được dùng làm trục định hướng (pole axis) để áp dụng rotation từ các particle được tạo instance.</p>
+</dd>
+</dl>
+<section id="create-along-paths">
+<h3>Create Along Paths<a class="headerlink" href="#create-along-paths" title="Link to this heading">¶</a></h3>
+<p>Theo mặc định, các instance được đặt tùy theo vị trí của particle ở frame hiện tại. Khi bật <em>Create Along Paths</em>, instance của object bị chỉnh sửa sẽ bám theo và biến dạng hình dạng của nó dọc theo đường đi của particle (hoặc sợi hair). Điều này cho phép bạn chọn vị trí dọc theo đường đi của particle bất kể frame hiện tại là frame nào.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Bạn có thể điều chỉnh đường đi của particle (bằng kiểu hiển thị <em>Path</em>) trên panel <a class="reference internal" href="../../../physics/particles/emitter/render.html"><span class="doc">Render</span></a> của tab <em>Particle System</em>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Particle system phải được <a class="reference internal" href="../../../physics/baking.html"><span class="doc">bake</span></a>, trừ kiểu <em>Hair</em> hoặc physics <em>Keyed</em>.</p>
+</div>
+<dl class="simple">
+<dt>Position</dt><dd><p>Chỉ định phần trăm đường đi mà instance phủ lên, hoặc vị trí trên đường đi nếu tùy chọn <em>Keep Shape</em> được bật.</p>
+</dd>
+<dt>Random</dt><dd><p>Thêm tính ngẫu nhiên vào giá trị <em>Position</em> của từng instance.</p>
+</dd>
+<dt>Rotation</dt><dd><p>Chỉ định độ xoay quanh đường đi.</p>
+</dd>
+<dt>Random</dt><dd><p>Thêm tính ngẫu nhiên vào giá trị <em>Rotation</em> của từng instance.</p>
+</dd>
+<dt>Keep Shape</dt><dd><p>Bật tùy chọn này sẽ ngăn instance bị biến dạng, và đặt nó trên đường đi theo giá trị <em>Position</em>.</p>
+</dd>
+</dl>
+</section>
+<section id="layers">
+<h3>Layers<a class="headerlink" href="#layers" title="Link to this heading">¶</a></h3>
+<p>Với các trường này, bạn có thể chọn Color Attribute sẽ được điền màu dựa trên thông tin của particle. Các Color Attribute này có thể được dùng, chẳng hạn, trong một shader để thêm sự biến thiên cho material.</p>
+<dl class="simple">
+<dt>Index</dt><dd><p>Một Color Attribute cho các giá trị dựa trên chỉ số (index) của particle.</p>
+</dd>
+<dt>Value</dt><dd><p>Một Color Attribute cho các giá trị ngẫu nhiên theo từng particle.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các attribute Index và Value phải nằm trong domain face corner và dùng kiểu dữ liệu byte color.</p>
+</div>
+</section>
+</section>
+<section id="examples">
+<h2>Ví dụ<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
+<figure class="align-center" id="id2">
+<img alt="../../../_images/modeling_modifiers_physics_particle-instance_split-plane.jpg" src="../../../_images/modeling_modifiers_physics_particle-instance_split-plane.jpg" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về modifier Particle Instance.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Bản render phía trên cho thấy một mesh object plane duy nhất được gán vào hai vertex group khác nhau, mỗi vertex group được gán cho một particle system riêng biệt và độc lập, và mỗi particle system được gán cho một modifier Particle Instance khác nhau. Trong ví dụ hiển thị, các modifier Particle Instance được thêm vào một hình cầu và một hình lập phương. Xem <a class="reference external" href="https://archive.blender.org/wiki/2015/uploads/4/48/Manual_-_Modifiers_-_Particle_Instance_Modifiers_-_Split_Plane.blend">file blend ví dụ</a>.</p>
+<figure class="align-center" id="id3">
+<img alt="../../../_images/modeling_modifiers_physics_particle-instance_create-along-paths.jpg" src="../../../_images/modeling_modifiers_physics_particle-instance_create-along-paths.jpg" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về Create Along Path.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Trong ví dụ này, một particle <em>Keyed</em> duy nhất di chuyển qua bốn điểm (các plane màu xanh lá) trên một đường đi hình elip. Modifier Particle Instance được thêm vào một object hình trụ rồi được liên kết với particle system <em>Keyed</em> đó.</p>
+<p>Khi <em>Create Along Paths</em> được kích hoạt, thay vì vị trí hình trụ chỉ bám theo vị trí của particle, mesh hình trụ sẽ được khớp vào hình dạng của đường đi mà particle theo. Hình học mesh của object bị biến dạng có thể ảnh hưởng đến mức độ thực thi của phép biến dạng. Với hình trụ, nó có nhiều loop cut dọc theo chiều dài để có thể uốn cong tại những điểm đó và biến dạng theo đường đi của particle.</p>
+<p>Tùy chọn <em>Create Along Paths</em> của modifier Particle Instance hoạt động với particle kiểu hair (sợi) cũng như với particle keyed. Trong trường hợp này, mesh của modifier sẽ bám theo độ dài và biên dạng của đường đi các sợi hair.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các sợi hair, khi được tạo, sẽ chết ngay khi sinh ra, nên để ô chọn <em>Create Along Paths</em> có tác dụng, bạn cũng phải bật ô chọn <em>Dead</em>.</p>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="particle_system.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Particle System Modifier</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="ocean.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Ocean Modifier</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/modeling/modifiers/physics/particle_instance.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Fmodeling/modifiers/physics/particle_instance"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fmodeling/modifiers/physics/particle_instance.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Fmodeling/modifiers/physics/particle_instance.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Particle Instance Modifier</a><ul>
+<li><a class="reference internal" href="#options">Tùy chọn</a><ul>
+<li><a class="reference internal" href="#create-along-paths">Create Along Paths</a></li>
+<li><a class="reference internal" href="#layers">Layers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#examples">Ví dụ</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

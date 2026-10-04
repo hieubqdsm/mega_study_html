@@ -1,0 +1,867 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="copyright" title="Bản quyền" href="../../copyright.html"><link rel="next" title="Đối số dòng lệnh cho Extensions" href="extension_arguments.html"><link rel="prev" title="Windows" href="launch/windows.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/advanced/command_line/arguments.html">
+        <link rel="prefetch" href="../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Đối số dòng lệnh - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../"></div>
+<script src="../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/advanced/command_line/arguments.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="command-line-arguments">
+<span id="command-line-args"></span><h1>Đối số dòng lệnh<a class="headerlink" href="#command-line-arguments" title="Link to this heading">¶</a></h1>
+<div class="line-block">
+<div class="line">Blender 5.3</div>
+<div class="line">Cách dùng: <code class="docutils literal notranslate"><span class="pre">blender</span> <span class="pre">[args</span> <span class="pre">...]</span> <span class="pre">[file]</span> <span class="pre">[args</span> <span class="pre">...]</span></code></div>
+</div>
+<section id="render-options">
+<span id="command-line-args-render-options"></span><h2>Tùy chọn render<a class="headerlink" href="#render-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">-b</span></code>, <code class="docutils literal notranslate"><span class="pre">--background</span></code></dt><dd><p>Chạy ở chế độ nền (thường dùng để render không cần giao diện).</p>
+<p>Thiết bị âm thanh bị tắt theo mặc định ở chế độ nền và có thể được bật lại bằng cách truyền <code class="docutils literal notranslate"><span class="pre">-setaudio</span> <span class="pre">Default</span></code> sau đó.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-a</span></code>, <code class="docutils literal notranslate"><span class="pre">--render-anim</span></code></dt><dd><p>Render các frame từ đầu đến cuối (bao gồm cả hai đầu).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-S</span></code>, <code class="docutils literal notranslate"><span class="pre">--scene</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code></dt><dd><p>Đặt scene đang hoạt động <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code> để render.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-f</span></code>, <code class="docutils literal notranslate"><span class="pre">--render-frame</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code></dt><dd><p>Render frame <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code> và lưu lại.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">+&lt;frame&gt;</span></code> frame bắt đầu tương đối, <code class="docutils literal notranslate"><span class="pre">-&lt;frame&gt;</span></code> frame kết thúc tương đối.</p></li>
+<li><p>Cũng có thể dùng danh sách frame phân tách bằng dấu phẩy (không có khoảng trắng).</p></li>
+<li><p>Một dải frame có thể được biểu diễn bằng dấu phân tách <code class="docutils literal notranslate"><span class="pre">..</span></code> giữa frame đầu và frame cuối (bao gồm cả hai đầu).</p></li>
+</ul>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-s</span></code>, <code class="docutils literal notranslate"><span class="pre">--frame-start</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code></dt><dd><p>Đặt điểm bắt đầu ở frame <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>, cũng hỗ trợ +/- cho frame tương đối.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-e</span></code>, <code class="docutils literal notranslate"><span class="pre">--frame-end</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code></dt><dd><p>Đặt điểm kết thúc ở frame <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>, cũng hỗ trợ +/- cho frame tương đối.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-j</span></code>, <code class="docutils literal notranslate"><span class="pre">--frame-jump</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frames&gt;</span></code></dt><dd><p>Đặt số frame bước tới sau mỗi frame đã render.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-o</span></code>, <code class="docutils literal notranslate"><span class="pre">--render-output</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;</span></code></dt><dd><p>Đặt đường dẫn và tên file render. Dùng <code class="docutils literal notranslate"><span class="pre">//</span></code> ở đầu đường dẫn để render tương đối so với blend file.</p>
+<p>Bạn có thể dùng các tính năng mẫu đường dẫn (path templating) như <code class="docutils literal notranslate"><span class="pre">{blend_name}</span></code> trong đường dẫn. Xem tài liệu của Blender về path template để biết thêm chi tiết.</p>
+<p>Các ký tự <code class="docutils literal notranslate"><span class="pre">#</span></code> được thay thế bằng số frame, và được dùng để định nghĩa số chữ số 0 đệm.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">animation_##_test.png</span></code> trở thành <code class="docutils literal notranslate"><span class="pre">animation_01_test.png</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test-######.png</span></code> trở thành <code class="docutils literal notranslate"><span class="pre">test-000001.png</span></code></p></li>
+</ul>
+<p>Khi tên file không chứa <code class="docutils literal notranslate"><span class="pre">#</span></code>, hậu tố <code class="docutils literal notranslate"><span class="pre">####</span></code> sẽ được thêm vào tên file.</p>
+<p>Số frame sẽ được thêm vào cuối tên file, ví dụ:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>-b<span class="w"> </span>animation.blend<span class="w"> </span>-o<span class="w"> </span>//render_<span class="w"> </span>-F<span class="w"> </span>PNG<span class="w"> </span>-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>-a
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">//render_</span></code> trở thành <code class="docutils literal notranslate"><span class="pre">//render_####</span></code>, ghi các frame thành <code class="docutils literal notranslate"><span class="pre">//render_0001.png</span></code></p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-E</span></code>, <code class="docutils literal notranslate"><span class="pre">--engine</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;engine&gt;</span></code></dt><dd><p>Chỉ định render engine. Dùng <code class="docutils literal notranslate"><span class="pre">-E</span> <span class="pre">help</span></code> để liệt kê các engine khả dụng.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-t</span></code>, <code class="docutils literal notranslate"><span class="pre">--threads</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;threads&gt;</span></code></dt><dd><p>Dùng số lượng <code class="docutils literal notranslate"><span class="pre">&lt;threads&gt;</span></code> cho render và các thao tác khác [1-1024], 0 để dùng số bộ xử lý của hệ thống.</p>
+</dd>
+</dl>
+</section>
+<section id="cycles-render-options">
+<span id="command-line-args-cycles-render-options"></span><h2>Tùy chọn render của Cycles<a class="headerlink" href="#cycles-render-options" title="Link to this heading">¶</a></h2>
+<p>Các tùy chọn add-on của Cycles phải được chỉ định sau một dấu gạch ngang kép.</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--cycles-device</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;device&gt;</span></code></dt><dd><p>Đặt thiết bị dùng để render. Các tùy chọn hợp lệ là: <code class="docutils literal notranslate"><span class="pre">CPU</span></code> <code class="docutils literal notranslate"><span class="pre">CUDA</span></code> <code class="docutils literal notranslate"><span class="pre">OPTIX</span></code> <code class="docutils literal notranslate"><span class="pre">HIP</span></code> <code class="docutils literal notranslate"><span class="pre">ONEAPI</span></code> <code class="docutils literal notranslate"><span class="pre">METAL</span></code>.</p>
+<p>Nối thêm +CPU vào một thiết bị GPU để render trên cả CPU và GPU.</p>
+<p>Ví dụ:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>-b<span class="w"> </span>file.blend<span class="w"> </span>-f<span class="w"> </span><span class="m">20</span><span class="w"> </span>--<span class="w"> </span>--cycles-device<span class="w"> </span>OPTIX
+</pre></div>
+</div>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--cycles-print-stats</span></code></dt><dd><p>Ghi log thống kê về bộ nhớ render và thời gian sử dụng.</p>
+</dd>
+</dl>
+</section>
+<section id="format-options">
+<span id="command-line-args-format-options"></span><h2>Tùy chọn định dạng<a class="headerlink" href="#format-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">-F</span></code>, <code class="docutils literal notranslate"><span class="pre">--render-format</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;format&gt;</span></code></dt><dd><p>Đặt định dạng render. Các tùy chọn hợp lệ là: <code class="docutils literal notranslate"><span class="pre">TGA</span></code> <code class="docutils literal notranslate"><span class="pre">RAWTGA</span></code> <code class="docutils literal notranslate"><span class="pre">JPEG</span></code> <code class="docutils literal notranslate"><span class="pre">IRIS</span></code> <code class="docutils literal notranslate"><span class="pre">PNG</span></code> <code class="docutils literal notranslate"><span class="pre">BMP</span></code> <code class="docutils literal notranslate"><span class="pre">HDR</span></code> <code class="docutils literal notranslate"><span class="pre">TIFF</span></code>.</p>
+<p>Các định dạng có thể được biên dịch vào Blender, không khả dụng trên mọi hệ thống: <code class="docutils literal notranslate"><span class="pre">OPEN_EXR</span></code> <code class="docutils literal notranslate"><span class="pre">OPEN_EXR_MULTILAYER</span></code> <code class="docutils literal notranslate"><span class="pre">FFMPEG</span></code> <code class="docutils literal notranslate"><span class="pre">CINEON</span></code> <code class="docutils literal notranslate"><span class="pre">DPX</span></code> <code class="docutils literal notranslate"><span class="pre">JP2</span></code> <code class="docutils literal notranslate"><span class="pre">WEBP</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-x</span></code>, <code class="docutils literal notranslate"><span class="pre">--use-extension</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;bool&gt;</span></code></dt><dd><p>Đặt tùy chọn thêm phần mở rộng file vào cuối file.</p>
+</dd>
+</dl>
+</section>
+<section id="animation-playback-options">
+<span id="command-line-args-animation-playback-options"></span><h2>Tùy chọn phát lại animation<a class="headerlink" href="#animation-playback-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">-a</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;options&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;file(s)&gt;</span></code></dt><dd><p>Thay vì hiển thị giao diện người dùng của Blender, tùy chọn này chạy Blender như một trình phát animation, để xem các phim và chuỗi ảnh được render trong Blender (bỏ qua nếu <code class="docutils literal notranslate"><span class="pre">-b</span></code> được đặt).</p>
+<p>Các đối số phát lại:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">-p</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;sx&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;sy&gt;</span></code></dt><dd><p>Mở với góc dưới bên trái tại <code class="docutils literal notranslate"><span class="pre">&lt;sx&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;sy&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-m</span></code></dt><dd><p>Đọc từ đĩa (Không buffer).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-f</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;fps&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;fps_base&gt;</span></code></dt><dd><p>Chỉ định FPS để bắt đầu.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-j</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code></dt><dd><p>Đặt bước frame thành <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-s</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code></dt><dd><p>Phát từ <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-e</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code></dt><dd><p>Phát đến <code class="docutils literal notranslate"><span class="pre">&lt;frame&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-c</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;cache_memory&gt;</span></code></dt><dd><p>Lượng bộ nhớ tính bằng megabyte cho phép cache ảnh trong khi phát lại. Số 0 tắt tính năng này (thay vào đó giới hạn ở một số frame cố định).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="window-options">
+<span id="command-line-args-window-options"></span><h2>Tùy chọn cửa sổ<a class="headerlink" href="#window-options" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">-w</span></code>, <code class="docutils literal notranslate"><span class="pre">--window-border</span></code></dt><dd><p>Ép mở với viền cửa sổ, ở trạng thái bình thường (không phóng tối đa).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-M</span></code>, <code class="docutils literal notranslate"><span class="pre">--window-maximized</span></code></dt><dd><p>Ép mở ở trạng thái phóng tối đa.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-W</span></code>, <code class="docutils literal notranslate"><span class="pre">--window-fullscreen</span></code></dt><dd><p>Ép mở toàn màn hình.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-p</span></code>, <code class="docutils literal notranslate"><span class="pre">--window-geometry</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;sx&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;sy&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;w&gt;</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;h&gt;</span></code></dt><dd><p>Mở với góc dưới bên trái tại <code class="docutils literal notranslate"><span class="pre">&lt;sx&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;sy&gt;</span></code> và chiều rộng, chiều cao là <code class="docutils literal notranslate"><span class="pre">&lt;w&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;h&gt;</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-con</span></code>, <code class="docutils literal notranslate"><span class="pre">--start-console</span></code></dt><dd><p>Khởi động với cửa sổ console mở (bỏ qua nếu <code class="docutils literal notranslate"><span class="pre">-b</span></code> được đặt), (chỉ Windows).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--no-native-pixels</span></code></dt><dd><p>Không dùng kích thước pixel gốc, dành cho màn hình độ phân giải cao (MacBook <code class="docutils literal notranslate"><span class="pre">Retina</span></code>).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--no-window-frame</span></code></dt><dd><p>Tắt mọi khung trang trí của cửa sổ (chỉ Linux).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--no-window-focus</span></code></dt><dd><p>Mở phía sau các cửa sổ khác và không chiếm tiêu điểm.</p>
+</dd>
+</dl>
+</section>
+<section id="python-options">
+<span id="command-line-args-python-options"></span><h2>Tùy chọn Python<a class="headerlink" href="#python-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">-y</span></code>, <code class="docutils literal notranslate"><span class="pre">--enable-autoexec</span></code></dt><dd><p>Bật tự động thực thi script Python.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-Y</span></code>, <code class="docutils literal notranslate"><span class="pre">--disable-autoexec</span></code></dt><dd><p>Tắt tự động thực thi script Python (Python-driver và script khởi động), (mặc định).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-P</span></code>, <code class="docutils literal notranslate"><span class="pre">--python</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;filepath&gt;</span></code></dt><dd><p>Chạy file script Python đã cho.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--python-text</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;name&gt;</span></code></dt><dd><p>Chạy text block script Python đã cho.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--python-expr</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;expression&gt;</span></code></dt><dd><p>Chạy biểu thức đã cho như một script Python.</p>
+<p>Biểu thức có thể là một script đa dòng hoàn chỉnh; bạn chỉ bị giới hạn bởi độ dài đối số tối đa của nền tảng.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--python-console</span></code></dt><dd><p>Chạy Blender với một console tương tác.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--python-exit-code</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;code&gt;</span></code></dt><dd><p>Đặt exit-code trong khoảng [0..255] để thoát nếu một ngoại lệ Python được ném ra (chỉ dành cho script thực thi từ dòng lệnh), số 0 tắt tính năng này.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--python-use-system-env</span></code></dt><dd><p>Cho phép Python dùng các biến môi trường hệ thống như <code class="docutils literal notranslate"><span class="pre">PYTHONPATH</span></code> và thư mục site-packages của người dùng.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--addons</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;addon(s)&gt;</span></code></dt><dd><p>Danh sách (không có khoảng trắng) phân tách bằng dấu phẩy các add-on cần bật thêm ngoài các add-on mặc định.</p>
+</dd>
+</dl>
+</section>
+<section id="network-options">
+<span id="command-line-args-network-options"></span><h2>Tùy chọn mạng<a class="headerlink" href="#network-options" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--online-mode</span></code></dt><dd><p>Cho phép truy cập internet, ghi đè tùy chỉnh.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--offline-mode</span></code></dt><dd><p>Không cho phép truy cập internet, ghi đè tùy chỉnh.</p>
+</dd>
+</dl>
+</section>
+<section id="logging-options">
+<span id="command-line-args-logging-options"></span><h2>Tùy chọn ghi log<a class="headerlink" href="#logging-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--log</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;match&gt;</span></code></dt><dd><p>Bật các danh mục ghi log, nhận một đối số duy nhất phân tách bằng dấu phẩy.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--log</span> <span class="pre">&quot;*&quot;</span></code>: mọi thứ <code class="docutils literal notranslate"><span class="pre">--log</span> <span class="pre">&quot;event&quot;</span></code>: mọi danh mục bắt đầu bằng <code class="docutils literal notranslate"><span class="pre">event</span></code>. <code class="docutils literal notranslate"><span class="pre">--log</span> <span class="pre">&quot;render,cycles&quot;</span></code>: cả thông điệp render và cycles. <code class="docutils literal notranslate"><span class="pre">--log</span> <span class="pre">&quot;*mesh*&quot;</span></code>: mọi danh mục chứa chuỗi con <code class="docutils literal notranslate"><span class="pre">mesh</span></code>. <code class="docutils literal notranslate"><span class="pre">--log</span> <span class="pre">&quot;*,^operator&quot;</span></code>: mọi thứ trừ operator, dùng <code class="docutils literal notranslate"><span class="pre">^prefix</span></code> để loại trừ.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--log-level</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;level&gt;</span></code></dt><dd><p>Đặt mức chi tiết của việc ghi log.</p>
+<p>fatal: Chỉ lỗi nghiêm trọng error: Chỉ lỗi warning: Cảnh báo info: Thông tin về thiết bị, file, cấu hình, thao tác debug: Thông điệp chi tiết cho lập trình viên trace: Truy vết việc thực thi mã rất chi tiết</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--log-show-memory</span></code></dt><dd><p>Hiển thị mức sử dụng bộ nhớ cho mỗi thông điệp log.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--log-show-source</span></code></dt><dd><p>Hiển thị file nguồn và tên hàm trong đầu ra.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--log-show-backtrace</span></code></dt><dd><p>Hiển thị backtrace cho mỗi thông điệp log (chỉ bản build debug).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--log-file</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;filepath&gt;</span></code></dt><dd><p>Đặt một file để xuất log ra.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--log-list-categories</span></code></dt><dd><p>Liệt kê mọi danh mục ghi log khả dụng cho <code class="docutils literal notranslate"><span class="pre">--log</span></code>, rồi thoát.</p>
+</dd>
+</dl>
+</section>
+<section id="debug-options">
+<span id="command-line-args-debug-options"></span><h2>Tùy chọn debug<a class="headerlink" href="#debug-options" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">-d</span></code>, <code class="docutils literal notranslate"><span class="pre">--debug</span></code></dt><dd><p>Bật chế độ debug.</p>
+<ul class="simple">
+<li><p>Bật phát hiện lỗi bộ nhớ</p></li>
+<li><p>Tắt mouse grab (để tương tác với debugger trong một số trường hợp)</p></li>
+<li><p>Giữ nguyên <code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code> của Python thay vì đặt nó thành None</p></li>
+</ul>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-value</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;value&gt;</span></code></dt><dd><p>Đặt giá trị debug <code class="docutils literal notranslate"><span class="pre">&lt;value&gt;</span></code> lúc khởi động.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-events</span></code></dt><dd><p>Bật thông điệp debug cho hệ thống sự kiện.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-handlers</span></code></dt><dd><p>Bật thông điệp debug cho việc xử lý sự kiện.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-libmv</span></code></dt><dd><p>Bật thông điệp debug từ thư viện libmv.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-memory</span></code></dt><dd><p>Bật cấp phát bộ nhớ được bảo vệ hoàn toàn và debug.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-jobs</span></code></dt><dd><p>Bật đo hiệu năng thời gian cho các công việc chạy nền.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-python</span></code></dt><dd><p>Bật thông điệp debug cho Python.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph</span></code></dt><dd><p>Bật mọi thông điệp debug từ dependency graph.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-eval</span></code></dt><dd><p>Bật thông điệp debug từ dependency graph liên quan đến việc đánh giá (evaluation).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-build</span></code></dt><dd><p>Bật thông điệp debug từ dependency graph liên quan đến việc dựng đồ thị.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-tag</span></code></dt><dd><p>Bật thông điệp debug từ dependency graph liên quan đến việc gắn thẻ (tagging).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-no-threads</span></code></dt><dd><p>Chuyển dependency graph sang đánh giá đơn luồng.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-time</span></code></dt><dd><p>Bật thông điệp debug từ dependency graph liên quan đến thời gian.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-pretty</span></code></dt><dd><p>Bật màu cho các thông điệp debug của dependency graph.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-depsgraph-uid</span></code></dt><dd><p>Kiểm tra tính hợp lệ của các định danh toàn phiên được gán cho các ID data-block.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-ghost</span></code></dt><dd><p>Bật thông điệp debug cho Ghost (chỉ Linux).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-wintab</span></code></dt><dd><p>Bật thông điệp debug cho Wintab.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu</span></code></dt><dd><p>Bật ngữ cảnh debug GPU và thông tin cho OpenGL 4.3+.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-force-workarounds</span></code></dt><dd><p>Bật các giải pháp tạm thời cho các sự cố GPU điển hình và tắt mọi GPU extension.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-compile-shaders</span></code></dt><dd><p>Biên dịch mọi shader định nghĩa tĩnh để kiểm tra tính tương thích nền tảng.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-shader-debug-info</span></code></dt><dd><p>Bật tạo thông tin debug shader (chỉ Vulkan).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-scope-capture</span></code></dt><dd><p>Bắt các lệnh GPU được phát ra bên trong tên phạm vi đã cho.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-shader-source</span></code></dt><dd><p>Lưu mã nguồn shader GPU đã biên dịch cho tên shader đã cho. Tên đã cho có thể chứa ký tự đại diện &quot;*&quot; ở đầu hoặc cuối để khớp nhiều shader. Các file được lưu trong thư mục làm việc hiện tại, bên trong một thư mục tên &quot;Shaders&quot;.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-shader-no-preprocessor</span></code></dt><dd><p>Bỏ qua bước tiền xử lý và thay vào đó dựa vào preprocessor của driver hoặc trình biên dịch shader. Đồng thời tắt loại bỏ mã chết (dead code elimination).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-shader-no-dce</span></code></dt><dd><p>Bỏ qua bước loại bỏ mã chết.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-no-texture-pool</span></code></dt><dd><p>Tắt các tối ưu memory aliasing trong GPU texture pool.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-renderdoc</span></code></dt><dd><p>Bật tích hợp RenderDoc để chụp và debug frame GPU.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-gpu-vulkan-local-read</span></code></dt><dd><p>Ép bật local read của dynamic rendering Vulkan khi thiết bị hỗ trợ.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-wm</span></code></dt><dd><p>Bật thông điệp debug cho window manager, hiển thị mọi operator trong tìm kiếm, hiển thị lỗi keymap.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-xr</span></code></dt><dd><p>Bật thông điệp debug cho các ngữ cảnh thực tế ảo. Bật lớp kiểm tra OpenXR API, các thông điệp debug (OpenXR) và in thông tin chung.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-xr-time</span></code></dt><dd><p>Bật thông điệp debug cho thời gian render frame thực tế ảo.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-all</span></code></dt><dd><p>Bật mọi thông điệp debug.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-io</span></code></dt><dd><p>Bật thông điệp debug cho I/O.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-fpe</span></code></dt><dd><p>Bật các ngoại lệ dấu phẩy động.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-exit-on-error</span></code></dt><dd><p>Thoát ngay lập tức khi phát hiện lỗi nội bộ.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-freestyle</span></code></dt><dd><p>Bật thông điệp debug cho Freestyle.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--disable-crash-handler</span></code></dt><dd><p>Tắt crash handler.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--disable-abort-handler</span></code></dt><dd><p>Tắt abort handler.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--verbose</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;verbose&gt;</span></code></dt><dd><p>Đặt mức chi tiết ghi log cho các thông điệp debug có hỗ trợ.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-q</span></code>, <code class="docutils literal notranslate"><span class="pre">--quiet</span></code></dt><dd><p>Ẩn in trạng thái (cảnh báo và lỗi vẫn được in).</p>
+</dd>
+</dl>
+</section>
+<section id="gpu-options">
+<span id="command-line-args-gpu-options"></span><h2>Tùy chọn GPU<a class="headerlink" href="#gpu-options" title="Link to this heading">¶</a></h2>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--gpu-backend</span></code></dt><dd><p>Ép dùng một GPU backend cụ thể. Các tùy chọn hợp lệ: <code class="docutils literal notranslate"><span class="pre">vulkan</span></code>,  <code class="docutils literal notranslate"><span class="pre">metal</span></code>,  <code class="docutils literal notranslate"><span class="pre">opengl</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--gpu-vsync</span></code></dt><dd><p>Đặt VSync. Các tùy chọn hợp lệ là: <code class="docutils literal notranslate"><span class="pre">on</span></code>, <code class="docutils literal notranslate"><span class="pre">off</span></code> và <code class="docutils literal notranslate"><span class="pre">auto</span></code> cho adaptive sync.</p>
+<ul class="simple">
+<li><p>Cài đặt mặc định phụ thuộc vào driver GPU.</p></li>
+<li><p>Tắt VSync có thể hữu ích để kiểm tra hiệu năng.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto</span></code> chỉ được hỗ trợ bởi backend OpenGL.</p></li>
+</ul>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--gpu-compilation-subprocesses</span></code></dt><dd><p>Ghi đè cài đặt Max Compilation Subprocesses (chỉ OpenGL).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--profile-gpu</span></code></dt><dd><p>Bật đo hiệu năng CPU và GPU cho các nhóm debug GPU (Xuất một file profile.json theo định dạng Trace Event ra thư mục hiện tại)</p>
+</dd>
+</dl>
+</section>
+<section id="misc-options">
+<span id="command-line-args-misc-options"></span><h2>Tùy chọn linh tinh<a class="headerlink" href="#misc-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--open-last</span></code></dt><dd><p>Mở blend file được mở gần nhất, thay cho file khởi động mặc định.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--app-template</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;template&gt;</span></code></dt><dd><p>Đặt application template (khớp với tên thư mục), dùng <code class="docutils literal notranslate"><span class="pre">default</span></code> để không dùng template nào.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--factory-startup</span></code></dt><dd><p>Bỏ qua việc đọc <code class="docutils literal notranslate"><span class="pre">startup.blend</span></code> trong thư mục home của người dùng.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--enable-event-simulate</span></code></dt><dd><p>Bật tính năng kiểm thử mô phỏng sự kiện <code class="docutils literal notranslate"><span class="pre">bpy.types.Window.event_simulate</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--env-system-datafiles</span></code></dt><dd><p>Đặt biến môi trường <code class="docutils literal notranslate"><span class="pre">BLENDER_SYSTEM_DATAFILES</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--env-system-scripts</span></code></dt><dd><p>Đặt biến môi trường <code class="docutils literal notranslate"><span class="pre">BLENDER_SYSTEM_SCRIPTS</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--env-system-extensions</span></code></dt><dd><p>Đặt biến môi trường <code class="docutils literal notranslate"><span class="pre">BLENDER_SYSTEM_EXTENSIONS</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--env-system-python</span></code></dt><dd><p>Đặt biến môi trường <code class="docutils literal notranslate"><span class="pre">BLENDER_SYSTEM_PYTHON</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-noaudio</span></code></dt><dd><p>Ép hệ thống âm thanh thành None.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-setaudio</span></code></dt><dd><p>Ép hệ thống âm thanh sang một thiết bị cụ thể. <code class="docutils literal notranslate"><span class="pre">None</span></code> <code class="docutils literal notranslate"><span class="pre">Default</span></code> <code class="docutils literal notranslate"><span class="pre">SDL</span></code> <code class="docutils literal notranslate"><span class="pre">OpenAL</span></code> <code class="docutils literal notranslate"><span class="pre">CoreAudio</span></code> <code class="docutils literal notranslate"><span class="pre">JACK</span></code> <code class="docutils literal notranslate"><span class="pre">PulseAudio</span></code> <code class="docutils literal notranslate"><span class="pre">WASAPI</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-c</span></code>, <code class="docutils literal notranslate"><span class="pre">--command</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;command&gt;</span></code></dt><dd><p>Chạy một lệnh dùng hết tất cả đối số còn lại. Dùng <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">help</span></code> để liệt kê mọi lệnh khác. Truyền <code class="docutils literal notranslate"><span class="pre">--help</span></code> sau lệnh để xem văn bản trợ giúp của nó.</p>
+<p>Điều này kéo theo chế độ <code class="docutils literal notranslate"><span class="pre">--background</span></code>.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-h</span></code>, <code class="docutils literal notranslate"><span class="pre">--help</span></code></dt><dd><p>In văn bản trợ giúp này rồi thoát.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">/?</span></code></dt><dd><p>In văn bản trợ giúp này rồi thoát (chỉ Windows).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-r</span></code>, <code class="docutils literal notranslate"><span class="pre">--register</span></code></dt><dd><p>Đăng ký phần mở rộng blend file cho người dùng hiện tại, rồi thoát (chỉ Windows và Linux).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--register-allusers</span></code></dt><dd><p>Đăng ký phần mở rộng blend file cho mọi người dùng, rồi thoát (chỉ Windows và Linux).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--unregister</span></code></dt><dd><p>Hủy đăng ký phần mở rộng blend file cho người dùng hiện tại, rồi thoát (chỉ Windows và Linux).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--unregister-allusers</span></code></dt><dd><p>Hủy đăng ký phần mở rộng blend file cho mọi người dùng, rồi thoát (chỉ Windows và Linux).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--qos</span></code> <code class="docutils literal notranslate"><span class="pre">&lt;level&gt;</span></code></dt><dd><p>Đặt chế độ Quality of Service (QoS) cho kiến trúc CPU lai (chỉ Windows).</p>
+<p>default: Dùng hành vi mặc định của hệ điều hành. high: Luôn luôn dùng các lõi hiệu năng. eco: Đặt các luồng Blender độc quyền vào các lõi tiết kiệm điện.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">-v</span></code>, <code class="docutils literal notranslate"><span class="pre">--version</span></code></dt><dd><p>In phiên bản Blender rồi thoát.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--</span></code></dt><dd><p>Kết thúc việc xử lý tùy chọn, các đối số theo sau được truyền đi không thay đổi. Truy cập qua <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code> của Python.</p>
+</dd>
+</dl>
+</section>
+<section id="other-options">
+<span id="command-line-args-other-options"></span><h2>Tùy chọn khác<a class="headerlink" href="#other-options" title="Link to this heading">¶</a></h2>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">--disable-depsgraph-on-file-load</span></code></dt><dd><p>Chế độ nền: Không tự động dựng và đánh giá dependency graph của các ViewLayer khi tải blend file ở chế độ nền (tùy chọn <code class="docutils literal notranslate"><span class="pre">-b</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">-c</span></code>).</p>
+<p>Các script cần dữ liệu đã đánh giá khi đó phải tự đảm bảo rõ ràng rằng có một depsgraph đã đánh giá (ví dụ bằng cách gọi <code class="docutils literal notranslate"><span class="pre">depsgraph</span> <span class="pre">=</span> <span class="pre">context.evaluated_depsgraph_get()</span></code>).</p>
+<p>LƯU Ý: đây là tùy chọn tạm thời, trong tương lai depsgraph sẽ không bao giờ tự động được tạo khi tải file ở chế độ nền.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--disable-liboverride-auto-resync</span></code></dt><dd><p>Không thực hiện resync tự động library override khi tải blend file mới.</p>
+<p>LƯU Ý: đây là cách thay thế để có cùng hiệu ứng như khi bật tùy chọn Debug <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">Override</span> <span class="pre">Auto</span> <span class="pre">Resync</span></code> trong User Preferences.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-ffmpeg</span></code></dt><dd><p>Bật thông điệp debug từ đầu vào và đầu ra video FFmpeg.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--debug-cycles</span></code></dt><dd><p>Bật thông điệp debug từ Cycles.</p>
+</dd>
+</dl>
+</section>
+<section id="argument-parsing">
+<span id="command-line-args-argument-parsing"></span><h2>Phân tích đối số<a class="headerlink" href="#argument-parsing" title="Link to this heading">¶</a></h2>
+<p>Các đối số phải được phân tách bằng khoảng trắng, ví dụ:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>-ba<span class="w"> </span>test.blend
+</pre></div>
+</div>
+<p>...sẽ thoát vì <code class="docutils literal notranslate"><span class="pre">-ba</span></code> là một đối số không xác định.</p>
+</section>
+<section id="argument-order">
+<span id="command-line-args-argument-order"></span><h2>Thứ tự đối số<a class="headerlink" href="#argument-order" title="Link to this heading">¶</a></h2>
+<p>Các đối số được thực thi theo thứ tự được đưa ra, ví dụ:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>--background<span class="w"> </span>test.blend<span class="w"> </span>--render-frame<span class="w"> </span><span class="m">1</span><span class="w"> </span>--render-output<span class="w"> </span><span class="s2">&quot;/tmp&quot;</span>
+</pre></div>
+</div>
+<p>...sẽ không render ra <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> vì <code class="docutils literal notranslate"><span class="pre">--render-frame</span> <span class="pre">1</span></code> render trước khi đường dẫn đầu ra được đặt.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>--background<span class="w"> </span>--render-output<span class="w"> </span>/tmp<span class="w"> </span>test.blend<span class="w"> </span>--render-frame<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>...sẽ không render ra <code class="docutils literal notranslate"><span class="pre">/tmp</span></code> vì việc tải blend file ghi đè lên đầu ra render đã đặt.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>blender<span class="w"> </span>--background<span class="w"> </span>test.blend<span class="w"> </span>--render-output<span class="w"> </span>/tmp<span class="w"> </span>--render-frame<span class="w"> </span><span class="m">1</span>
+</pre></div>
+</div>
+<p>...hoạt động như mong đợi.</p>
+</section>
+<section id="environment-variables">
+<span id="command-line-args-environment-variables"></span><h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">BLENDER_USER_RESOURCES<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Thay thế thư mục mặc định của tất cả file người dùng. Các biến <code class="docutils literal notranslate"><span class="pre">BLENDER_USER_*</span></code> khác sẽ ghi đè khi được đặt.</p>
+</dd>
+<dt class="field-even">BLENDER_USER_CONFIG<span class="colon">:</span></dt>
+<dd class="field-even"><p>Thư mục cho các file cấu hình người dùng.</p>
+</dd>
+<dt class="field-odd">BLENDER_USER_SCRIPTS<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Thư mục cho script người dùng.</p>
+</dd>
+<dt class="field-even">BLENDER_USER_EXTENSIONS<span class="colon">:</span></dt>
+<dd class="field-even"><p>Thư mục cho extension người dùng.</p>
+</dd>
+<dt class="field-odd">BLENDER_USER_DATAFILES<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Thư mục cho các file dữ liệu người dùng (biểu tượng, bản dịch, ..).</p>
+</dd>
+<dt class="field-even">BLENDER_SYSTEM_RESOURCES<span class="colon">:</span></dt>
+<dd class="field-even"><p>Thay thế thư mục mặc định của tất cả file tài nguyên đóng gói kèm.</p>
+</dd>
+<dt class="field-odd">BLENDER_SYSTEM_SCRIPTS<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Các thư mục để thêm script mở rộng.</p>
+</dd>
+<dt class="field-even">BLENDER_SYSTEM_EXTENSIONS<span class="colon">:</span></dt>
+<dd class="field-even"><p>Thư mục cho repository extension hệ thống.</p>
+</dd>
+<dt class="field-odd">BLENDER_SYSTEM_DATAFILES<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Thư mục để thay thế các datafile đóng gói kèm.</p>
+</dd>
+<dt class="field-even">BLENDER_SYSTEM_PYTHON<span class="colon">:</span></dt>
+<dd class="field-even"><p>Thư mục để thay thế các thư viện Python đóng gói kèm.</p>
+</dd>
+<dt class="field-odd">BLENDER_CUSTOM_SPLASH<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Đường dẫn đầy đủ đến một ảnh thay thế màn hình splash.</p>
+</dd>
+<dt class="field-even">BLENDER_CUSTOM_SPLASH_BANNER<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đường dẫn đầy đủ đến một ảnh phủ lên trên màn hình splash.</p>
+</dd>
+<dt class="field-odd">BLENDER_OCIO<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Đường dẫn để ghi đè file cấu hình OpenColorIO. Nếu không đặt, biến môi trường <code class="docutils literal notranslate"><span class="pre">OCIO</span></code> sẽ được dùng.</p>
+</dd>
+<dt class="field-even">SPNAV_SOCKET<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đường dẫn socket để kết nối tới daemon chuột 3D (chỉ Unix).</p>
+</dd>
+<dt class="field-odd">TEMP<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Lưu các file tạm ở đây (MS-Windows).</p>
+</dd>
+<dt class="field-even">TMPDIR<span class="colon">:</span></dt>
+<dd class="field-even"><p>Lưu các file tạm ở đây (hệ UNIX). Đường dẫn phải trỏ đến một thư mục tồn tại, nếu không sẽ bị bỏ qua.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="extension_arguments.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Đối số dòng lệnh cho Extensions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="launch/windows.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Windows</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Đối số dòng lệnh</a><ul>
+<li><a class="reference internal" href="#render-options">Tùy chọn render</a></li>
+<li><a class="reference internal" href="#cycles-render-options">Tùy chọn render của Cycles</a></li>
+<li><a class="reference internal" href="#format-options">Tùy chọn định dạng</a></li>
+<li><a class="reference internal" href="#animation-playback-options">Tùy chọn phát lại animation</a></li>
+<li><a class="reference internal" href="#window-options">Tùy chọn cửa sổ</a></li>
+<li><a class="reference internal" href="#python-options">Tùy chọn Python</a></li>
+<li><a class="reference internal" href="#network-options">Tùy chọn mạng</a></li>
+<li><a class="reference internal" href="#logging-options">Tùy chọn ghi log</a></li>
+<li><a class="reference internal" href="#debug-options">Tùy chọn debug</a></li>
+<li><a class="reference internal" href="#gpu-options">Tùy chọn GPU</a></li>
+<li><a class="reference internal" href="#misc-options">Tùy chọn linh tinh</a></li>
+<li><a class="reference internal" href="#other-options">Tùy chọn khác</a></li>
+<li><a class="reference internal" href="#argument-parsing">Phân tích đối số</a></li>
+<li><a class="reference internal" href="#argument-order">Thứ tự đối số</a></li>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

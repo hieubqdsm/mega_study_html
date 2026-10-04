@@ -1,0 +1,936 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="copyright" title="Bản quyền" href="../../copyright.html"><link rel="next" title="Tạo Extension" href="../extensions/index.html"><link rel="prev" title="Scripting &amp; Bảo mật" href="security.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/advanced/scripting/addon_tutorial.html">
+        <link rel="prefetch" href="../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Hướng dẫn Add-on - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../"></div>
+<script src="../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/advanced/scripting/addon_tutorial.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="add-on-tutorial">
+<h1>Hướng dẫn Add-on<a class="headerlink" href="#add-on-tutorial" title="Link to this heading">¶</a></h1>
+<section id="intended-audience">
+<h2>Đối tượng độc giả<a class="headerlink" href="#intended-audience" title="Link to this heading">¶</a></h2>
+<p>Hướng dẫn này được thiết kế để giúp các technical artist hoặc developer học cách mở rộng Blender. Người đọc làm theo hướng dẫn này cần hiểu những kiến thức cơ bản về Python.</p>
+<section id="prerequisites">
+<h3>Kiến thức cần có trước<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<p>Trước khi đọc hướng dẫn này, bạn nên...</p>
+<ul class="simple">
+<li><p>Quen thuộc với những kiến thức cơ bản khi làm việc trong Blender.</p></li>
+<li><p>Biết cách chạy script trong Text editor của Blender.</p></li>
+<li><p>Hiểu về các kiểu dữ liệu cơ bản của Python (integer, Boolean, string, list, tuple, dictionary và set).</p></li>
+<li><p>Quen thuộc với khái niệm module của Python.</p></li>
+<li><p>Có hiểu biết cơ bản về class (lập trình hướng đối tượng) trong Python.</p></li>
+</ul>
+<p>Tài liệu nên đọc trước khi bắt đầu hướng dẫn này.</p>
+<ul class="simple">
+<li><p>Các chương (1, 2, 3, 4 và 7) của <a class="reference external" href="https://finderiko.com/python-book">Dive Into Python</a>.</p></li>
+<li><p><a class="reference external" href="https://docs.blender.org/api/current/info_quickstart.html">Blender API Quickstart</a> giúp làm quen với các kiến thức cơ bản về Blender/Python.</p></li>
+</ul>
+<p>Để xử lý tốt nhất các thông báo lỗi mà Python in ra khi viết script, hãy chạy Blender từ terminal. Xem <a class="reference external" href="https://docs.blender.org/api/current/info_tips_and_tricks.html#use-the-terminal">Use The Terminal</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Bạn có thể bật <a class="reference internal" href="../../editors/preferences/interface.html#bpy-types-preferencesview-show-developer-ui"><span class="std std-ref">Developer Extras</span></a> trong preferences để kích hoạt các tính năng giúp việc phát triển add-on dễ dàng hơn.</p>
+</div>
+</section>
+</section>
+<section id="documentation-links">
+<h2>Liên kết Tài liệu<a class="headerlink" href="#documentation-links" title="Link to this heading">¶</a></h2>
+<p>Trong khi đọc hướng dẫn, bạn có thể muốn tham khảo tài liệu tham khảo của chúng tôi.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.blender.org/api/current/info_overview.html">Blender API Overview</a>: Tài liệu này khá chi tiết nhưng hữu ích nếu bạn muốn tìm hiểu sâu hơn về một chủ đề.</p></li>
+<li><p>Tài liệu tham khảo API <code class="xref py py-mod docutils literal notranslate"><span class="pre">blender_api:bpy.context</span></code> -- Hữu ích để có danh sách các item khả dụng mà script của bạn có thể thao tác.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:bpy.types.Operator</span></code> -- Các add-on dưới đây định nghĩa operator; tài liệu này cung cấp chi tiết và thêm ví dụ về operator.</p></li>
+</ul>
+</section>
+<section id="what-is-an-add-on">
+<h2>Add-on là gì?<a class="headerlink" href="#what-is-an-add-on" title="Link to this heading">¶</a></h2>
+<p>Một add-on đơn giản chỉ là một module Python với một vài yêu cầu bổ sung để Blender có thể hiển thị nó trong một danh sách kèm thông tin hữu ích.</p>
+<p>Để lấy ví dụ, đây là add-on đơn giản nhất có thể:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">bl_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;My Test Add-on&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;blender&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Object&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello World&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Goodbye World&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">bl_info</span></code></dt><dd><p>là một dictionary chứa metadata của add-on như tiêu đề, phiên bản và tác giả, để hiển thị trong danh sách add-on của Preferences. Nó cũng chỉ định phiên bản Blender tối thiểu cần có để chạy script; các phiên bản cũ hơn sẽ không hiển thị add-on trong danh sách.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">register</span></code></dt><dd><p>là một hàm chỉ chạy khi bật add-on; điều này có nghĩa là module có thể được tải mà không cần kích hoạt add-on.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">unregister</span></code></dt><dd><p>là một hàm dùng để dỡ bỏ mọi thứ mà <code class="docutils literal notranslate"><span class="pre">register</span></code> đã thiết lập; hàm này được gọi khi add-on bị tắt.</p>
+</dd>
+</dl>
+<p>Lưu ý rằng add-on này không làm bất cứ điều gì liên quan đến Blender (ví dụ: module <code class="xref py py-mod docutils literal notranslate"><span class="pre">blender_api:bpy</span></code> không được import).</p>
+<p>Đây là một ví dụ add-on mang tính minh họa nhằm cho thấy các yêu cầu cơ bản của một add-on rất đơn giản.</p>
+<p>Một add-on điển hình sẽ đăng ký các operator, panel, mục menu, v.v., nhưng đáng chú ý là <em>bất kỳ</em> script nào cũng có thể làm điều đó khi được chạy từ Text editor hoặc thậm chí từ interactive console -- không có gì khác biệt vốn có ở add-on khiến nó có thể tích hợp với Blender; chức năng như vậy đơn giản được cung cấp bởi module <code class="xref py py-mod docutils literal notranslate"><span class="pre">blender_api:bpy</span></code> cho bất kỳ script nào truy cập.</p>
+<p>Vì vậy, add-on chỉ là một cách đóng gói module Python để người dùng có thể dễ dàng sử dụng.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chạy script này trong Text editor sẽ không in ra gì cả; để thấy kết quả, nó phải được cài đặt qua Preferences. Các thông báo sẽ được in ra khi bật và tắt add-on.</p>
+</div>
+</section>
+<section id="your-first-add-on">
+<h2>Add-on Đầu tiên của Bạn<a class="headerlink" href="#your-first-add-on" title="Link to this heading">¶</a></h2>
+<p>Add-on đơn giản nhất ở trên chỉ hữu ích như một ví dụ chứ không hơn. Add-on tiếp theo vẫn đơn giản nhưng cho thấy cách tích hợp một script vào Blender bằng một <code class="docutils literal notranslate"><span class="pre">Operator</span></code> -- cách điển hình để định nghĩa một công cụ được truy cập từ menu, nút bấm và phím tắt.</p>
+<p>Ở ví dụ đầu tiên, chúng ta sẽ tạo một script đơn giản là di chuyển tất cả object trong một scene.</p>
+<section id="write-the-script">
+<h3>Viết Script<a class="headerlink" href="#write-the-script" title="Link to this heading">¶</a></h3>
+<p>Thêm script sau vào Text editor trong Blender:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+
+<span class="n">scene</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">scene</span>
+<span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">scene</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="mf">1.0</span>
+</pre></div>
+</div>
+<p>Nhấp vào nút <a class="reference internal" href="../../editors/text_editor.html#editors-text-run-script"><span class="std std-ref">Run Script</span></a>, tất cả object trong scene đang hoạt động sẽ được di chuyển 1.0 đơn vị.</p>
+</section>
+<section id="write-the-add-on-simple">
+<span id="advanced-scripting-write-the-add-on-simple"></span><h3>Viết Add-on (Đơn giản)<a class="headerlink" href="#write-the-add-on-simple" title="Link to this heading">¶</a></h3>
+<p>Add-on này lấy phần thân của script ở trên và thêm vào hàm <code class="docutils literal notranslate"><span class="pre">execute()</span></code> của một operator.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">bl_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Move X Axis&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;blender&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Object&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ObjectMoveX</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Operator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My Object Moving Script&quot;&quot;&quot;</span>      <span class="c1"># Use this as a tooltip for menu items and buttons.</span>
+    <span class="n">bl_idname</span> <span class="o">=</span> <span class="s2">&quot;object.move_x&quot;</span>        <span class="c1"># Unique identifier for buttons and menu items to reference.</span>
+    <span class="n">bl_label</span> <span class="o">=</span> <span class="s2">&quot;Move X by One&quot;</span>         <span class="c1"># Display name in the interface.</span>
+    <span class="n">bl_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;REGISTER&#39;</span><span class="p">,</span> <span class="s1">&#39;UNDO&#39;</span><span class="p">}</span>  <span class="c1"># Enable undo for the operator.</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>        <span class="c1"># execute() is called when running the operator.</span>
+
+        <span class="c1"># The original script</span>
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">scene</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">scene</span><span class="o">.</span><span class="n">objects</span><span class="p">:</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="mf">1.0</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;FINISHED&#39;</span><span class="p">}</span>            <span class="c1"># Lets Blender know the operator finished successfully.</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">menu_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span><span class="n">ObjectMoveX</span><span class="o">.</span><span class="n">bl_idname</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">():</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">ObjectMoveX</span><span class="p">)</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">VIEW3D_MT_object</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">menu_func</span><span class="p">)</span>  <span class="c1"># Adds the new operator to an existing menu.</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">():</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">unregister_class</span><span class="p">(</span><span class="n">ObjectMoveX</span><span class="p">)</span>
+
+
+<span class="c1"># This allows you to run the script directly from Blender&#39;s Text editor</span>
+<span class="c1"># to test the add-on without having to install it.</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">register</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p><code class="docutils literal notranslate"><span class="pre">bl_info</span></code> được tách thành nhiều dòng, đây chỉ là quy ước phong cách dùng để dễ dàng thêm các mục hơn.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Thay vì dùng <code class="docutils literal notranslate"><span class="pre">bpy.context.scene</span></code>, chúng ta dùng tham số <code class="docutils literal notranslate"><span class="pre">context.scene</span></code> được truyền vào <code class="docutils literal notranslate"><span class="pre">execute()</span></code>. Trong hầu hết trường hợp, hai cách này giống nhau. Tuy nhiên trong một số trường hợp, operator sẽ được truyền một context tùy chỉnh, do đó các tác giả script nên ưu tiên tham số <code class="docutils literal notranslate"><span class="pre">context</span></code> được truyền cho operator.</p>
+</div>
+<p>Để kiểm tra script, bạn có thể sao chép và dán nó vào Text editor của Blender rồi chạy. Cách này sẽ thực thi script trực tiếp và gọi register ngay lập tức.</p>
+<p>Tuy nhiên, chạy script sẽ không di chuyển object nào. Để làm điều đó, bạn cần thực thi operator mới được đăng ký.</p>
+<figure class="align-default" id="id2">
+<img alt="../../_images/advanced_scripting_addon-tutorial_operator-search-menu.png" src="../../_images/advanced_scripting_addon-tutorial_operator-search-menu.png" />
+<figcaption>
+<p><span class="caption-text">Menu Operator Search.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Mở menu <a class="reference internal" href="../../interface/operators.html#bpy-ops-wm-search-operator"><span class="std std-ref">Operator Search</span></a> và gõ &quot;Move X by One&quot; (chính là <code class="docutils literal notranslate"><span class="pre">bl_label</span></code>), sau đó nhấn <kbd class="kbd docutils literal notranslate">Return</kbd>.</p>
+<p>Các object sẽ di chuyển như trước.</p>
+<p><em>Giữ add-on này mở trong Blender cho bước tiếp theo - Cài đặt.</em></p>
+</section>
+<section id="install-the-add-on">
+<h3>Cài đặt Add-on<a class="headerlink" href="#install-the-add-on" title="Link to this heading">¶</a></h3>
+<p>Khi đã có add-on trong Text editor của Blender, bạn sẽ muốn cài đặt nó để có thể bật trong Preferences và tự tải khi khởi động.</p>
+<p>Dù add-on ở trên chỉ để thử nghiệm, chúng ta vẫn sẽ đi qua các bước để bạn biết cách làm cho lần sau.</p>
+<p>Để cài đặt đoạn văn bản trong Blender như một add-on, trước tiên bạn phải lưu nó lên ổ đĩa. Chú ý tuân thủ các quy tắc đặt tên áp dụng cho module Python và kết thúc bằng phần mở rộng <code class="docutils literal notranslate"><span class="pre">.py</span></code>.</p>
+<p>Khi file đã nằm trên ổ đĩa, bạn có thể cài đặt nó giống như với một add-on tải xuống từ internet.</p>
+<p>Mở <span class="menuselection">Preferences ‣ Add-ons ‣ Install...</span> và chọn file.</p>
+<p>Giờ add-on sẽ xuất hiện trong danh sách và bạn có thể bật nó bằng cách nhấp vào checkbox; nếu muốn nó được bật khi khởi động lại, hãy nhấn <em>Save as Default</em>. Operator có thể được chạy theo cách giống như đã mô tả ở <a class="reference internal" href="#advanced-scripting-write-the-add-on-simple"><span class="std std-ref">phần trước</span></a>.</p>
+<p>Khi add-on được bật, Blender thực thi mã và chạy hàm <code class="docutils literal notranslate"><span class="pre">register()</span></code>. Khi add-on bị tắt, Blender chạy hàm <code class="docutils literal notranslate"><span class="pre">unregister()</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Vị trí lưu add-on phụ thuộc vào cấu hình Blender của bạn. Khi cài đặt một add-on, đường dẫn nguồn và đích sẽ được in ra console. Bạn cũng có thể tìm vị trí thư mục add-on bằng cách chạy đoạn sau trong Python Console:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">addon_utils</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">addon_utils</span><span class="o">.</span><span class="n">paths</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Bạn có thể đọc thêm về chủ đề này tại: <a class="reference internal" href="../blender_directory_layout.html#blender-directory-layout"><span class="std std-ref">Directory Layout</span></a>.</p>
+</div>
+</section>
+</section>
+<section id="your-second-add-on">
+<h2>Add-on Thứ hai của Bạn<a class="headerlink" href="#your-second-add-on" title="Link to this heading">¶</a></h2>
+<p>Với add-on thứ hai, chúng ta sẽ tập trung vào object instancing -- cụ thể là tạo các bản sao liên kết (linked copy) của một object theo cách tương tự như những gì bạn có thể đã thấy với modifier Array.</p>
+<section id="id1">
+<h3>Viết Script<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<p>Như trước, trước tiên chúng ta sẽ bắt đầu với một script, phát triển nó, rồi chuyển thành add-on.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">context</span>
+
+<span class="c1"># Get the current scene</span>
+<span class="n">scene</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">scene</span>
+
+<span class="c1"># Get the 3D cursor location</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">location</span>
+
+<span class="c1"># Get the active object (assume we have one)</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">active_object</span>
+
+<span class="c1"># Now make a copy of the object</span>
+<span class="n">obj_new</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># The new object has to be added to a collection in the scene</span>
+<span class="n">scene</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">obj_new</span><span class="p">)</span>
+
+<span class="c1"># Now we can place the object</span>
+<span class="n">obj_new</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">cursor</span>
+</pre></div>
+</div>
+<p>Giờ hãy thử sao chép script này vào Blender và chạy nó với Cube mặc định. Hãy chắc chắn rằng bạn đã nhấp để di chuyển 3D cursor trước khi chạy, vì bản sao sẽ xuất hiện tại vị trí của con trỏ.</p>
+<p>Sau khi chạy, hãy để ý rằng khi bạn vào <em>Edit Mode</em> để thay đổi Cube -- tất cả các bản sao đều thay đổi theo. Trong Blender, điều này được gọi là <em>Linked Duplicates</em>.</p>
+<p>Tiếp theo, chúng ta sẽ thực hiện việc này trong một vòng lặp, để tạo một dãy object nằm giữa object đang hoạt động và con trỏ.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">context</span>
+
+<span class="n">scene</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">scene</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">location</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">active_object</span>
+
+<span class="c1"># Use a fixed value for now, eventually make this user adjustable</span>
+<span class="n">total</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Add &#39;total&#39; objects into the scene</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
+    <span class="n">obj_new</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">scene</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">obj_new</span><span class="p">)</span>
+
+    <span class="c1"># Now place the object in between the cursor</span>
+    <span class="c1"># and the active object based on &#39;i&#39;</span>
+    <span class="n">factor</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="n">total</span>
+    <span class="n">obj_new</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">location</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">cursor</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">factor</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Hãy thử chạy script này với object đang hoạt động và con trỏ đặt cách xa nhau để xem kết quả.</p>
+<p>Với script này, bạn sẽ thấy chúng ta thực hiện một số phép tính với vị trí object và con trỏ; điều này khả thi vì cả hai đều là các instance 3D của <code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:mathutils.Vector</span></code> -- một class tiện dụng do module <code class="xref py py-mod docutils literal notranslate"><span class="pre">blender_api:mathutils</span></code> cung cấp, cho phép vector nhân với số và ma trận.</p>
+<p>Nếu bạn quan tâm đến lĩnh vực này, hãy đọc thêm về <code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:mathutils.Vector</span></code> -- có nhiều hàm tiện dụng như lấy góc giữa hai vector, tích có hướng (cross product), tích vô hướng (dot product), cũng như các hàm nâng cao hơn trong <code class="xref py py-mod docutils literal notranslate"><span class="pre">blender_api:mathutils.geometry</span></code> như nội suy spline Bézier và phép giao tia-tam giác.</p>
+<p>Hiện tại chúng ta sẽ tập trung chuyển script này thành add-on, nhưng thật tốt khi biết rằng module toán 3D này luôn sẵn có và có thể giúp bạn với các chức năng nâng cao hơn về sau.</p>
+</section>
+<section id="write-the-add-on">
+<h3>Viết Add-on<a class="headerlink" href="#write-the-add-on" title="Link to this heading">¶</a></h3>
+<p>Bước đầu tiên là chuyển nguyên vẹn script thành một add-on:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">bl_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Cursor Array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;blender&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Object&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ObjectCursorArray</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Operator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Object Cursor Array&quot;&quot;&quot;</span>
+    <span class="n">bl_idname</span> <span class="o">=</span> <span class="s2">&quot;object.cursor_array&quot;</span>
+    <span class="n">bl_label</span> <span class="o">=</span> <span class="s2">&quot;Cursor Array&quot;</span>
+    <span class="n">bl_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;REGISTER&#39;</span><span class="p">,</span> <span class="s1">&#39;UNDO&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">scene</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">active_object</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">total</span><span class="p">):</span>
+            <span class="n">obj_new</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">scene</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">obj_new</span><span class="p">)</span>
+
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="n">total</span>
+            <span class="n">obj_new</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">location</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">cursor</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">factor</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;FINISHED&#39;</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">():</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">():</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">unregister_class</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">register</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Mọi thứ ở đây đều đã được đề cập trong các bước trước; bạn vẫn có thể thử chạy add-on và suy nghĩ xem có thể làm gì để nó hữu ích hơn.</p>
+<p>Hai điểm thiếu sót rõ rệt nhất là -- tổng số bị cố định ở 10, và việc phải truy cập operator bằng <a class="reference internal" href="../../interface/operators.html#bpy-ops-wm-search-operator"><span class="std std-ref">Operator Search</span></a> thì không tiện lắm.</p>
+<p>Cả hai bổ sung này sẽ được giải thích ngay sau đây, kèm script hoàn chỉnh ở phía sau.</p>
+<section id="operator-property">
+<h4>Thuộc tính Operator<a class="headerlink" href="#operator-property" title="Link to this heading">¶</a></h4>
+<p>Có nhiều loại thuộc tính được dùng cho cài đặt công cụ; các loại phổ biến bao gồm: int, float, vector, color, Boolean và string.</p>
+<p>Các thuộc tính này được xử lý khác với thuộc tính class Python thông thường, vì Blender cần hiển thị chúng trong giao diện, lưu cài đặt của chúng trong keymap và giữ lại cài đặt để tái sử dụng.</p>
+<p>Dù việc này được xử lý theo cách khá Pythonic, hãy lưu ý rằng bạn thực sự đang định nghĩa các cài đặt công cụ được tải vào Blender và được truy cập bởi các phần khác của Blender, nằm ngoài Python.</p>
+<p>Để loại bỏ con số 10 cố định cho <code class="docutils literal notranslate"><span class="pre">total</span></code>, chúng ta sẽ dùng một thuộc tính operator. Thuộc tính operator được định nghĩa qua module bpy.props, được thêm vào thân class:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># moved assignment from execute() to the body of the class...</span>
+<span class="n">total</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">IntProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Steps&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># and this is accessed on the class</span>
+<span class="c1"># instance within the execute() function as...</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">total</span>
+</pre></div>
+</div>
+<p>Các thuộc tính từ <code class="xref py py-mod docutils literal notranslate"><span class="pre">blender_api:bpy.props</span></code> này được Blender xử lý đặc biệt khi class được đăng ký, để chúng hiển thị dưới dạng các nút bấm trong giao diện người dùng. Có nhiều tham số bạn có thể truyền cho thuộc tính để đặt giới hạn, thay đổi giá trị mặc định và hiển thị tooltip.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">blender_api:bpy.props.IntProperty()</span></code></p>
+</div>
+<p>Tài liệu này không đi vào chi tiết về cách dùng các loại thuộc tính khác. Tuy nhiên, liên kết ở trên có các ví dụ về cách dùng thuộc tính nâng cao hơn.</p>
+</section>
+<section id="menu-item">
+<h4>Mục Menu<a class="headerlink" href="#menu-item" title="Link to this heading">¶</a></h4>
+<p>Add-on có thể bổ sung vào giao diện người dùng của các panel, header và menu hiện có được định nghĩa bằng Python.</p>
+<p>Trong ví dụ này, chúng ta sẽ thêm vào một menu có sẵn.</p>
+<figure class="align-default" id="id3">
+<img alt="../../_images/advanced_scripting_addon-tutorial_menu-id.png" src="../../_images/advanced_scripting_addon-tutorial_menu-id.png" />
+<figcaption>
+<p><span class="caption-text">Định danh Menu.</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Để tìm định danh của một menu, trước tiên hãy bật <em>Python Tooltips</em> trong preferences. Sau đó bạn chỉ cần di chuột tới mục menu và định danh sẽ được hiển thị.</p>
+<p>Phương pháp dùng để thêm một mục menu là nối thêm một hàm draw vào một class có sẵn:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">menu_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="o">.</span><span class="n">bl_idname</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">():</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="p">)</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">VIEW3D_MT_object</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">menu_func</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Để xem tài liệu về việc mở rộng menu, xem: <code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:bpy.types.Menu</span></code>.</p>
+</section>
+<section id="keymap">
+<h4>Keymap<a class="headerlink" href="#keymap" title="Link to this heading">¶</a></h4>
+<p>Trong Blender, add-on có keymap riêng để không can thiệp vào các keymap có sẵn của Blender.</p>
+<p>Trong ví dụ dưới đây, một <code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:bpy.types.KeyMap</span></code> mới cho object mode được thêm vào, sau đó một <code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:bpy.types.KeyMapItem</span></code> được thêm vào keymap đó để tham chiếu tới operator mới thêm của chúng ta, dùng <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">T</kbd> làm phím tắt để kích hoạt.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># store keymaps here to access after registration</span>
+<span class="n">addon_keymaps</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">():</span>
+
+    <span class="c1"># handle the keymap</span>
+    <span class="n">wm</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">window_manager</span>
+    <span class="n">km</span> <span class="o">=</span> <span class="n">wm</span><span class="o">.</span><span class="n">keyconfigs</span><span class="o">.</span><span class="n">addon</span><span class="o">.</span><span class="n">keymaps</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Object Mode&#39;</span><span class="p">,</span> <span class="n">space_type</span><span class="o">=</span><span class="s1">&#39;EMPTY&#39;</span><span class="p">)</span>
+
+    <span class="n">kmi</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">keymap_items</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="o">.</span><span class="n">bl_idname</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;PRESS&#39;</span><span class="p">,</span> <span class="n">ctrl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">kmi</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="n">addon_keymaps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">km</span><span class="p">,</span> <span class="n">kmi</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">():</span>
+
+    <span class="c1"># handle the keymap</span>
+    <span class="k">for</span> <span class="n">km</span><span class="p">,</span> <span class="n">kmi</span> <span class="ow">in</span> <span class="n">addon_keymaps</span><span class="p">:</span>
+        <span class="n">km</span><span class="o">.</span><span class="n">keymap_items</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">kmi</span><span class="p">)</span>
+    <span class="n">addon_keymaps</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Hãy để ý rằng mục keymap có thể có cài đặt <code class="docutils literal notranslate"><span class="pre">total</span></code> khác với giá trị mặc định do operator đặt; điều này cho phép bạn dùng nhiều phím truy cập cùng một operator với các cài đặt khác nhau.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Mặc dù <kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">T</kbd> không phải phím tắt mặc định của Blender, rất khó đảm bảo các add-on sẽ không ghi đè keymap của nhau. Vì vậy, ít nhất hãy cẩn thận khi gán phím để chúng không xung đột với chức năng quan trọng của Blender (xem thêm add-on <a class="reference external" href="https://projects.blender.org/extensions/development_iskeyfree">is key free</a>).</p>
+</div>
+<p>Để xem tài liệu API về các hàm được liệt kê ở trên, xem:</p>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">blender_api:bpy.types.KeyMaps.new()</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:bpy.types.KeyMap</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">blender_api:bpy.types.KeyMapItems.new()</span></code></p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">blender_api:bpy.types.KeyMapItem</span></code></p></li>
+</ul>
+</section>
+<section id="bringing-it-all-together">
+<h4>Ghép Tất cả Lại<a class="headerlink" href="#bringing-it-all-together" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">bl_info</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Cursor Array&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;blender&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Object&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">bpy</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ObjectCursorArray</span><span class="p">(</span><span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Operator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Object Cursor Array&quot;&quot;&quot;</span>
+    <span class="n">bl_idname</span> <span class="o">=</span> <span class="s2">&quot;object.cursor_array&quot;</span>
+    <span class="n">bl_label</span> <span class="o">=</span> <span class="s2">&quot;Cursor Array&quot;</span>
+    <span class="n">bl_options</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;REGISTER&#39;</span><span class="p">,</span> <span class="s1">&#39;UNDO&#39;</span><span class="p">}</span>
+
+    <span class="n">total</span><span class="p">:</span> <span class="n">bpy</span><span class="o">.</span><span class="n">props</span><span class="o">.</span><span class="n">IntProperty</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Steps&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="n">scene</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">scene</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="n">scene</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">active_object</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">):</span>
+            <span class="n">obj_new</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">scene</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">obj_new</span><span class="p">)</span>
+
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">i</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total</span>
+            <span class="n">obj_new</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">location</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">cursor</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">factor</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;FINISHED&#39;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">menu_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="o">.</span><span class="n">bl_idname</span><span class="p">)</span>
+
+<span class="c1"># store keymaps here to access after registration</span>
+<span class="n">addon_keymaps</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">():</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">register_class</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="p">)</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">VIEW3D_MT_object</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">menu_func</span><span class="p">)</span>
+
+    <span class="c1"># handle the keymap</span>
+    <span class="n">wm</span> <span class="o">=</span> <span class="n">bpy</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">window_manager</span>
+    <span class="c1"># Note that in background mode (no GUI available), keyconfigs are not available either,</span>
+    <span class="c1"># so we have to check this to avoid nasty errors in background case.</span>
+    <span class="n">kc</span> <span class="o">=</span> <span class="n">wm</span><span class="o">.</span><span class="n">keyconfigs</span><span class="o">.</span><span class="n">addon</span>
+    <span class="k">if</span> <span class="n">kc</span><span class="p">:</span>
+        <span class="n">km</span> <span class="o">=</span> <span class="n">wm</span><span class="o">.</span><span class="n">keyconfigs</span><span class="o">.</span><span class="n">addon</span><span class="o">.</span><span class="n">keymaps</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Object Mode&#39;</span><span class="p">,</span> <span class="n">space_type</span><span class="o">=</span><span class="s1">&#39;EMPTY&#39;</span><span class="p">)</span>
+        <span class="n">kmi</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">keymap_items</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="o">.</span><span class="n">bl_idname</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;PRESS&#39;</span><span class="p">,</span> <span class="n">ctrl</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">kmi</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="n">addon_keymaps</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">km</span><span class="p">,</span> <span class="n">kmi</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unregister</span><span class="p">():</span>
+    <span class="c1"># Note: when unregistering, it&#39;s usually good practice to do it in reverse order you registered.</span>
+    <span class="c1"># Can avoid strange issues like keymap still referring to operators already unregistered...</span>
+    <span class="c1"># handle the keymap</span>
+    <span class="k">for</span> <span class="n">km</span><span class="p">,</span> <span class="n">kmi</span> <span class="ow">in</span> <span class="n">addon_keymaps</span><span class="p">:</span>
+        <span class="n">km</span><span class="o">.</span><span class="n">keymap_items</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">kmi</span><span class="p">)</span>
+    <span class="n">addon_keymaps</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="n">bpy</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">unregister_class</span><span class="p">(</span><span class="n">ObjectCursorArray</span><span class="p">)</span>
+    <span class="n">bpy</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">VIEW3D_MT_object</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">menu_func</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">register</span><span class="p">()</span>
+</pre></div>
+</div>
+<figure class="align-default" id="id4">
+<img alt="../../_images/advanced_scripting_addon-tutorial_in-menu.png" src="../../_images/advanced_scripting_addon-tutorial_in-menu.png" />
+<figcaption>
+<p><span class="caption-text">Trong menu.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Chạy script (hoặc lưu lại và thêm qua Preferences như trước) và nó sẽ xuất hiện trong menu <em>Object</em>.</p>
+<figure class="align-default" id="id5">
+<img alt="../../_images/advanced_scripting_addon-tutorial_op-prop.png" src="../../_images/advanced_scripting_addon-tutorial_op-prop.png" />
+<figcaption>
+<p><span class="caption-text">Thuộc tính Operator.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Sau khi chọn nó từ menu, bạn có thể chọn muốn tạo bao nhiêu instance của cube.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Thực thi script trực tiếp nhiều lần cũng sẽ thêm menu mỗi lần như vậy. Dù đây không phải hành vi hữu ích, bạn cũng không cần lo lắng vì add-on sẽ không tự đăng ký nhiều lần khi được bật qua Preferences.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusions">
+<h2>Kết luận<a class="headerlink" href="#conclusions" title="Link to this heading">¶</a></h2>
+<p>Add-on có thể đóng gói gọn gàng một số chức năng để viết công cụ cải thiện quy trình làm việc của bạn hoặc viết tiện ích cho người khác dùng.</p>
+<p>Dù Python có những giới hạn trong Blender, vẫn có rất nhiều việc có thể thực hiện được mà không cần đi sâu vào mã C/C++ của Blender.</p>
+<p>Ví dụ trong hướng dẫn này còn hạn chế, nhưng cho thấy cách dùng Blender API cho các tác vụ phổ biến mà bạn có thể phát triển thêm để viết công cụ riêng.</p>
+<section id="further-reading">
+<h3>Đọc Thêm<a class="headerlink" href="#further-reading" title="Link to this heading">¶</a></h3>
+<p>Blender đi kèm các template có chú thích, có thể truy cập từ header của Text editor. Nếu bạn muốn xem mã ví dụ cho những lĩnh vực cụ thể, đây là điểm khởi đầu tốt.</p>
+<p>Dưới đây là một số trang bạn có thể muốn xem qua sau khi hoàn thành hướng dẫn này.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.blender.org/api/current/info_overview.html">Blender/Python API Overview</a> -- Để biết thêm chi tiết nền tảng về tích hợp Blender/Python.</p></li>
+<li><p><a class="reference external" href="https://runestone.academy/ns/books/published/thinkcspy/index.html">How to Think Like a Computer Scientist</a> -- Thông tin rất tốt cho những ai vẫn đang học Python.</p></li>
+<li><p><a class="reference external" href="https://developer.blender.org/">Blender Development</a> -- Thông tin chung về phát triển Blender cùng các liên kết hữu ích.</p></li>
+<li><p><a class="reference external" href="https://devtalk.blender.org/tag/python">Blender Developer Forum</a> -- Diễn đàn nơi mọi người đặt câu hỏi về phát triển Python.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../extensions/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Tạo Extension</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="security.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Scripting &amp; Bảo mật</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/advanced/scripting/addon_tutorial.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Fadvanced/scripting/addon_tutorial"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fadvanced/scripting/addon_tutorial.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Fadvanced/scripting/addon_tutorial.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Hướng dẫn Add-on</a><ul>
+<li><a class="reference internal" href="#intended-audience">Đối tượng độc giả</a><ul>
+<li><a class="reference internal" href="#prerequisites">Kiến thức cần có trước</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#documentation-links">Liên kết Tài liệu</a></li>
+<li><a class="reference internal" href="#what-is-an-add-on">Add-on là gì?</a></li>
+<li><a class="reference internal" href="#your-first-add-on">Add-on Đầu tiên của Bạn</a><ul>
+<li><a class="reference internal" href="#write-the-script">Viết Script</a></li>
+<li><a class="reference internal" href="#write-the-add-on-simple">Viết Add-on (Đơn giản)</a></li>
+<li><a class="reference internal" href="#install-the-add-on">Cài đặt Add-on</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#your-second-add-on">Add-on Thứ hai của Bạn</a><ul>
+<li><a class="reference internal" href="#id1">Viết Script</a></li>
+<li><a class="reference internal" href="#write-the-add-on">Viết Add-on</a><ul>
+<li><a class="reference internal" href="#operator-property">Thuộc tính Operator</a></li>
+<li><a class="reference internal" href="#menu-item">Mục Menu</a></li>
+<li><a class="reference internal" href="#keymap">Keymap</a></li>
+<li><a class="reference internal" href="#bringing-it-all-together">Ghép Tất cả Lại</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#conclusions">Kết luận</a><ul>
+<li><a class="reference internal" href="#further-reading">Đọc Thêm</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

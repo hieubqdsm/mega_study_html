@@ -1,0 +1,726 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html"><link rel="search" title="Search" href="../../../../search.html"><link rel="copyright" title="Bản quyền" href="../../../../copyright.html"><link rel="next" title="Cài đặt Gas" href="gas/index.html"><link rel="prev" title="Domain" href="index.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/physics/fluid/type/domain/settings.html">
+        <link rel="prefetch" href="../../../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Settings - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../../../"></div>
+<script src="../../../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/physics/fluid/type/domain/settings.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Link to this heading">¶</a></h1>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Panel<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="menuselection">Physics ‣ Fluid ‣ Settings</span></p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Domain</p>
+</dd>
+</dl>
+</div>
+<p>Object domain chứa toàn bộ mô phỏng. Các mô phỏng chất lưu không thể thoát ra ngoài domain; chúng sẽ hoặc va chạm với rìa hoặc biến mất, tùy thuộc vào cài đặt của domain.</p>
+<p>Hãy nhớ rằng các domain lớn cần độ phân giải cao hơn và thời gian bake lâu hơn. Bạn nên làm domain vừa đủ lớn để mô phỏng nằm gọn bên trong, nhưng không quá lớn đến mức việc tính toán mô phỏng mất quá nhiều thời gian.</p>
+<p>Để tạo một domain, hãy thêm một cube và biến đổi nó cho đến khi bao trọn vùng bạn muốn mô phỏng diễn ra. Dịch chuyển, xoay và thu phóng đều được phép. Để biến nó thành một domain chất lưu, nhấp vào <em>Fluid</em> trong tab <span class="menuselection">Properties ‣ Physics</span>, sau đó chọn <em>Domain</em> làm <em>Type</em> của chất lưu.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn <em>có thể</em> dùng các hình dạng mesh object khác làm object domain, nhưng bộ mô phỏng chất lưu sẽ dùng <a class="reference internal" href="../../../../glossary/index.html#term-Bounding-Box"><span class="xref std std-term">Bounding Box</span></a> của hình dạng đó làm ranh giới domain. Nói cách khác, hình dạng thực tế của domain vẫn sẽ là hình chữ nhật.</p>
+</div>
+<dl class="simple" id="bpy-types-fluiddomainsettings-domain-type">
+<dt>Domain Type</dt><dd><p>Một domain chất lưu có thể điều khiển dòng chất lỏng hoặc dòng khí. Domain chất lỏng tính đến tất cả object flow chất lỏng giao cắt với domain. Domain khí tính đến tất cả object flow <em>Smoke</em>, <em>Fire</em> và <em>Smoke &amp; Fire</em> giao cắt với nó. Không thể thay đổi kiểu domain một cách động.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-resolution-max">
+<dt>Resolution Divisions</dt><dd><p>Domain chất lưu được chia nhỏ thành nhiều &quot;ô&quot; gọi là <a class="reference internal" href="../../../../glossary/index.html#term-Voxel"><span class="xref std std-term">Voxel</span></a> tạo nên các &quot;pixel&quot; của chất lưu. Cài đặt này điều khiển số lần phân chia trong domain. Số lần phân chia cao hơn là một cách để tạo chất lưu có độ phân giải cao hơn.</p>
+<p>Vì độ phân giải được xác định theo &quot;số lần phân chia&quot;, các domain lớn sẽ cần nhiều lần phân chia hơn để đạt độ phân giải tương đương một domain nhỏ. Ví dụ, một khối lập phương một mét với 64 <em>Resolution Divisions</em> sẽ cần 128 phân chia để tương đương một khối lập phương 2 mét. Chiều được dùng làm chiều phân chia cơ sở là chiều dài nhất của bounding box của object. Để giúp hình dung kích thước voxel, <em>Resolution Divisions</em> có thể được xem trước bằng một khối lập phương nhỏ hiển thị trong 3D Viewport, thể hiện kích thước của các phân chia này.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-time-scale">
+<dt>Time Scale</dt><dd><p>Điều khiển tốc độ của mô phỏng. Giá trị thấp cho mô phỏng dạng &quot;chuyển động chậm&quot;, trong khi giá trị cao hơn có thể dùng để đẩy nhanh mô phỏng (tốt cho việc tạo chất lưu dùng trong bản render tĩnh).</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-use-adaptive-timesteps">
+<dt>Adaptive Time Steps</dt><dd><p>Cho phép bộ giải tự động quyết định lúc nào thực hiện nhiều bước mô phỏng trong một frame. Nó tính đến số bước thời gian tối đa và tối thiểu, <em>Frame Rate</em> hiện tại và <em>Time Scale</em>.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-cfl-condition">
+<dt>CFL Number</dt><dd><p>Xác định vận tốc tối đa trên mỗi ô lưới và được đo bằng số ô lưới mỗi bước thời gian. Chất lưu chỉ được phép chuyển động với vận tốc tối đa này trong một bước thời gian. Nếu vượt ngưỡng này, bộ giải sẽ chia nhỏ bước mô phỏng.</p>
+<p>Nói chung, số CFL (<a class="reference external" href="https://en.wikipedia.org/wiki/Courant%E2%80%93Friedrichs%E2%80%93Lewy_condition">Courant–Friedrichs–Lewy</a>) lớn hơn sẽ giảm thiểu số bước mô phỏng và thời gian tính toán. Tuy nhiên nó sẽ cho hành vi kém chính xác về mặt vật lý hơn với các dòng chất lưu nhanh. Số CFL nhỏ hơn cho nhiều bước mô phỏng hơn mỗi frame, thời gian mô phỏng lâu hơn nhưng hành vi chính xác hơn ở vận tốc cao (ví dụ: dòng chất lưu nhanh va chạm với vật cản).</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi giảm số <em>CFL</em>, bạn nên tăng số bước thời gian tối đa. Tương tự, khi tăng số <em>CFL</em>, số bước thời gian tối thiểu cũng nên được điều chỉnh.</p>
+</div>
+<dl class="simple" id="bpy-types-fluiddomainsettings-timesteps-max">
+<dt>Timesteps Maximum</dt><dd><p>Số bước thời gian tối đa được phép mỗi frame. Nếu cần, bộ giải sẽ chia một bước mô phỏng thành tối đa chừng này bước phụ.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-timesteps-min">
+<dt>Timesteps Minimum</dt><dd><p>Số bước thời gian tối thiểu được phép mỗi frame. Bộ giải sẽ luôn thực hiện ít nhất chừng này bước mô phỏng mỗi frame.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-gravity">
+<dt>Gravity</dt><dd><p>Theo mặc định, bộ giải chất lưu sẽ dùng trọng lực toàn cục của scene. Hành vi này có thể được tắt trong cài đặt scene. Tắt trọng lực toàn cục sẽ bật các tùy chọn trọng lực của chất lưu.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-clipping">
+<dt>Empty Space <span class="guilabel">Gas Only</span></dt><dd><p>Các voxel có giá trị thấp hơn giá trị này được xem là không gian trống. Không gian trống nhiều hơn sẽ tối ưu việc render. Với cache OpenVDB, nó còn giảm kích thước cache.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-delete-in-obstacle">
+<dt>Delete in Obstacle</dt><dd><p>Loại bỏ bất kỳ thể tích chất lưu nào giao cắt với một vật cản bên trong domain.</p>
+</dd>
+</dl>
+<section id="border-collisions">
+<span id="bpy-types-fluiddomainsettings-use-collision-border-bottom"></span><span id="bpy-types-fluiddomainsettings-use-collision-border-top"></span><span id="bpy-types-fluiddomainsettings-use-collision-border-left"></span><span id="bpy-types-fluiddomainsettings-use-collision-border-right"></span><span id="bpy-types-fluiddomainsettings-use-collision-border-back"></span><span id="bpy-types-fluiddomainsettings-use-collision-border-front"></span><h2>Border Collisions<a class="headerlink" href="#border-collisions" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id2">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Panel<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="menuselection">Physics ‣ Fluid ‣ Settings ‣ Border Collisions</span></p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Domain (Gas)</p>
+</dd>
+</dl>
+</div>
+<p>Điều khiển những cạnh nào của domain sẽ cho phép chất lưu &quot;xuyên qua&quot; domain (khiến nó biến mất mà không ảnh hưởng đến phần còn lại của mô phỏng), và những cạnh nào sẽ làm lệch hướng chất lưu.</p>
+</section>
+<section id="gas">
+<h2>Gas<a class="headerlink" href="#gas" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id3">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Panel<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="menuselection">Physics ‣ Fluid ‣ Gas</span></p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Domain (Gas)</p>
+</dd>
+</dl>
+</div>
+<dl class="simple" id="bpy-types-fluiddomainsettings-alpha">
+<dt>Buoyancy Density</dt><dd><p>Lực đẩy nổi dựa trên mật độ khí.</p>
+<ul class="simple">
+<li><p>Giá trị lớn hơn 0 sẽ khiến khí bay lên (mô phỏng khí nhẹ hơn không khí xung quanh).</p></li>
+<li><p>Giá trị nhỏ hơn 0 sẽ khiến khí chìm xuống (mô phỏng khí nặng hơn không khí xung quanh).</p></li>
+</ul>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-beta">
+<dt>Buoyancy Heat</dt><dd><p>Điều khiển mức độ khí chịu ảnh hưởng của nhiệt độ. Tác động của cài đặt này lên khí phụ thuộc vào <a class="reference internal" href="../flow.html#bpy-types-fluidflowsettings-temperature"><span class="std std-ref">Initial Temperature</span></a> của từng object flow:</p>
+<ul class="simple">
+<li><p>Giá trị lớn hơn 0 sẽ khiến khí bay lên khi <em>Initial Temperature</em> của object flow được đặt thành giá trị dương, và khí chìm xuống khi <em>Initial Temperature</em> của object flow được đặt thành giá trị âm.</p></li>
+<li><p>Giá trị nhỏ hơn 0 sẽ cho kết quả ngược lại với giá trị dương, tức là khí phát từ object flow có <em>Initial Temperature</em> dương sẽ chìm xuống, còn khí từ object flow có <em>Initial Temperature</em> âm sẽ bay lên.</p></li>
+</ul>
+<p>Lưu ý rằng khí từ nhiều object flow với nhiệt độ khác nhau sẽ trộn lẫn và nóng lên hoặc nguội đi cho đến khi đạt trạng thái cân bằng.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-vorticity">
+<dt>Vorticity</dt><dd><p>Điều khiển mức độ nhiễu loạn trong khí. Giá trị cao hơn sẽ tạo nhiều xoáy nhỏ, trong khi giá trị thấp hơn cho các hình dạng mượt mà hơn.</p>
+<div class="table-wrapper docutils container" id="id6">
+<table class="docutils align-default" id="id6">
+<caption><span class="caption-text">So sánh các mức vorticity khác nhau.</span><a class="headerlink" href="#id6" title="Link to this table">¶</a></caption>
+<tbody>
+<tr class="row-odd"><td><figure class="align-default" id="id7">
+<img alt="../../../../_images/physics_fluid_type_domain_settings_vorticity-off.png" src="../../../../_images/physics_fluid_type_domain_settings_vorticity-off.png" />
+<figcaption>
+<p><span class="caption-text">Domain với vorticity bằng 0.0.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+<td><figure class="align-default" id="id8">
+<img alt="../../../../_images/physics_fluid_type_domain_settings_vorticity-on.png" src="../../../../_images/physics_fluid_type_domain_settings_vorticity-on.png" />
+<figcaption>
+<p><span class="caption-text">Domain với vorticity bằng 0.2.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd>
+</dl>
+<section id="dissolve">
+<span id="bpy-types-fluiddomainsettings-use-dissolve-smoke"></span><h3>Dissolve<a class="headerlink" href="#dissolve" title="Link to this heading">¶</a></h3>
+<p>Cho phép khí tan dần theo thời gian.</p>
+<dl class="simple" id="bpy-types-fluiddomainsettings-dissolve-speed">
+<dt>Time</dt><dd><p>Tốc độ tan của khí tính bằng frame.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-use-dissolve-smoke-log">
+<dt>Slow</dt><dd><p>Tan khí theo kiểu logarit. Ban đầu tan nhanh nhưng tồn tại lâu hơn.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="fire">
+<h2>Fire<a class="headerlink" href="#fire" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id4">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Domain</p>
+</dd>
+<dt class="field-even">Panel<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Physics ‣ Fluid ‣ Gas ‣ Fire</span></p>
+</dd>
+</dl>
+</div>
+<dl class="simple" id="bpy-types-fluiddomainsettings-burning-rate">
+<dt>Reaction Speed</dt><dd><p>Nhiên liệu cháy nhanh như thế nào. Giá trị lớn hơn cho ngọn lửa nhỏ hơn (nhiên liệu cháy hết trước khi kịp đi xa), giá trị nhỏ hơn cho ngọn lửa lớn hơn (nhiên liệu có thời gian chảy xa hơn trước khi bị đốt hết hoàn toàn).</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-flame-smoke">
+<dt>Flame Smoke</dt><dd><p>Lượng khói phụ được tạo tự động để mô phỏng nhiên liệu đã cháy. Khói này hiện rõ nhất khi dùng <a class="reference internal" href="../flow.html#bpy-types-fluidflowsettings-flow-type"><span class="std std-ref">Flow Object</span></a> kiểu &quot;Fire + Smoke&quot;.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-flame-vorticity">
+<dt>Vorticity</dt><dd><p>Vorticity cho ngọn lửa, cộng thêm vào <a class="reference internal" href="#bpy-types-fluiddomainsettings-vorticity"><span class="std std-ref">Vorticity</span></a> toàn cục của chất lưu.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-flame-max-temp">
+<dt>Temperature Maximum</dt><dd><p>Nhiệt độ tối đa của ngọn lửa. Giá trị lớn hơn khiến ngọn lửa bốc lên nhanh hơn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-flame-ignition">
+<dt>Minimum</dt><dd><p>Nhiệt độ tối thiểu của ngọn lửa. Giá trị lớn hơn khiến ngọn lửa bốc lên nhanh hơn.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-flame-smoke-color">
+<dt>Smoke Color</dt><dd><p>Màu của khói phát ra từ nhiên liệu đang cháy.</p>
+</dd>
+</dl>
+</section>
+<section id="liquid">
+<span id="bpy-types-fluiddomainsettings-use-flip-particles"></span><h2>Liquid<a class="headerlink" href="#liquid" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id5">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Domain</p>
+</dd>
+<dt class="field-even">Panel<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Physics ‣ Fluid ‣ Liquid</span></p>
+</dd>
+</dl>
+</div>
+<p>Các cài đặt chất lỏng điều khiển hành vi của các hạt cấu thành mô phỏng. Bật hộp kiểm chất lỏng sẽ tự động tạo một particle system cho mô phỏng. Particle system này trực quan hóa dòng chảy của mô phỏng. Việc trực quan hóa các hạt chất lỏng là tùy chọn. Mô phỏng chất lưu vẫn sẽ dùng tất cả các trường dữ liệu mà không cần particle system đính kèm.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Tắt hộp kiểm chất lỏng sẽ xóa particle system đính kèm cùng các cài đặt của nó.</p>
+</div>
+<dl class="simple" id="bpy-types-fluiddomainsettings-simulation-method">
+<dt>Simulation Method</dt><dd><p>Xác định phương pháp mô phỏng hạt chất lỏng.</p>
+<dl class="field-list simple">
+<dt class="field-odd">FLIP<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(FLuid Implicit Particle) Tạo mô phỏng rất bắn tung tóe với rất nhiều hạt phân tán trong không khí.</p>
+</dd>
+<dt class="field-even">APIC<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Affine Particle-In-Cell) Tạo mô phỏng rất mãnh liệt nhưng cũng ổn định hơn. Các xoáy bên trong chất lỏng sẽ được bảo toàn tốt hơn so với <em>FLIP</em>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-flip-ratio">
+<dt>FLIP Ratio <span class="guilabel">Simulation FLIP Only</span>:</dt><dd><p>Mức vận tốc FLIP được dùng khi cập nhật vận tốc hạt chất lỏng. Giá trị 1.0 sẽ cho mô phỏng hoàn toàn dựa trên FLIP. Mô phỏng hoàn toàn dựa trên FLIP tạo các vệt bắn hỗn loạn hơn và được ưu tiên khi mô phỏng lượng chất lỏng lớn. Khi dùng giá trị nhỏ hơn, hành vi sẽ bớt dữ dội hơn và các vệt bắn tinh tế hơn. Đây là tối ưu khi mô phỏng các scene mà chất lỏng chỉ ở quy mô nhỏ.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-sys-particle-maximum">
+<dt>System Maximum</dt><dd><p>Số hạt chất lưu tối đa được phép trong mô phỏng. Nếu trường này được đặt thành giá trị khác không, mô phỏng sẽ không bao giờ chứa nhiều hơn số hạt chất lưu này. Ngược lại, với giá trị bằng không, bộ giải sẽ luôn lấy mẫu hạt mới khi cần.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-particle-radius">
+<dt>Particle Radius</dt><dd><p>Bán kính của một hạt chất lỏng tính bằng đơn vị ô lưới. Giá trị này mô tả một hạt bao phủ bao nhiêu diện tích, và do đó xác định vùng bao quanh nó có thể được xem là chất lỏng. Bán kính lớn hơn sẽ cho các hạt bao phủ nhiều diện tích hơn, khiến nhiều ô lưới hơn được đánh dấu là chất lỏng thay vì chỉ là trống.</p>
+<p>Bất cứ khi nào mô phỏng có vẻ bị rò rỉ hoặc tăng thể tích theo cách không mong muốn và không chính xác về mặt vật lý, bạn nên điều chỉnh giá trị này. Cụ thể là, khi chất lỏng có vẻ biến mất thì cần tăng giá trị này. Ngược lại khi có quá nhiều chất lỏng được tạo ra.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-particle-number">
+<dt>Sampling</dt><dd><p>Hệ số được dùng khi lấy mẫu hạt. Giá trị cao hơn sẽ lấy mẫu nhiều hạt hơn. Lưu ý rằng việc lấy mẫu lại hạt diễn ra tại từng bước mô phỏng.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-particle-randomness">
+<dt>Randomness</dt><dd><p>Các hạt mới được lấy mẫu với một chút ngẫu nhiên gắn với vị trí của chúng, điều có thể được điều khiển bởi trường này. Giá trị cao hơn sẽ lấy mẫu các hạt chất lỏng ngẫu nhiên hơn trong các vùng inflow. Với giá trị 0.0, tất cả hạt mới sẽ được lấy mẫu đều đặn bên trong các ô lưới tương ứng của chúng.</p>
+<p>Khi muốn tạo inflow tầng lớp (ít ngẫu nhiên) hoặc dòng chảy nhiễu loạn hơn (nhiều ngẫu nhiên hơn), giá trị này có thể hữu ích.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-particle-max">
+<dt>Particles Maximum</dt><dd><p>Số hạt chất lỏng tối đa trên mỗi ô lưới. Trong quá trình mô phỏng, số hạt chất lỏng trong một ô có thể dao động: các hạt có thể chảy sang ô khác hoặc bị xóa nếu chúng di chuyển ra ngoài dải hẹp (narrow band). Việc lấy mẫu lại sẽ thêm hạt mới có tính đến mức tối đa này.</p>
+<p>Giá trị này đặt ngưỡng trên của số hạt mỗi ô. Đây cũng là cách tốt để ước lượng mô phỏng của bạn có thể chứa bao nhiêu hạt (cần tính cả độ phân giải lưới). Điều này có thể hữu ích trước khi bake và khi lập kế hoạch mô phỏng.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-particle-min">
+<dt>Minimum</dt><dd><p>Số hạt chất lỏng tối thiểu trên mỗi ô lưới. Tương tự như ngưỡng hạt tối đa, giá trị này đảm bảo mỗi ô có ít nhất một lượng hạt nhất định.</p>
+</dd>
+</dl>
+<dl id="bpy-types-fluiddomainsettings-particle-band-width">
+<dt>Narrow Band Width</dt><dd><p>Điều khiển độ rộng (tính bằng đơn vị ô lưới) của dải hẹp mà các hạt chất lỏng được phép chảy trong đó. Giá trị cao sẽ cho dải dày hơn và có thể khiến vùng inflow hoàn toàn đầy hạt. Trừ khi mục đích mô phỏng là trực quan hóa các hạt chất lỏng, bạn không nên tăng đáng kể độ rộng dải vì nhiều hạt hơn sẽ làm chậm mô phỏng.</p>
+<p>Trong một số tình huống, tăng giá trị này có thể giúp tạo thể tích khi mô phỏng có vẻ bị rò rỉ. Trong mọi trường hợp khác, tốt nhất là giữ dải hẹp mỏng nhất có thể vì bề mặt chất lỏng chứa hầu hết chi tiết, còn việc mô phỏng hạt bên trong chất lỏng không phải cách dùng tài nguyên tính toán tối ưu.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Dải hẹp là một bản hiện thực của <a class="reference external" href="https://www.cs.cit.tum.de/cg/research/publications/2016/narrow-band-flip-for-liquid-simulations/">Narrow Band FLIP for Liquid Simulations</a>.</p>
+</div>
+<dl id="bpy-types-fluiddomainsettings-use-fractions">
+<dt>Fractional Obstacles</dt><dd><p>Bật độ phân giải mịn hơn trong các vùng chất lưu/vật cản (vật cản bậc hai). Tùy chọn này giảm &quot;hiệu ứng bậc thang&quot; xuất hiện khi một vật cản nằm nghiêng bên trong domain. Nó cũng khiến chất lỏng chảy qua vật cản mượt mà hơn.</p>
+<dl class="simple" id="bpy-types-fluiddomainsettings-fractions-distance">
+<dt>Obstacle Distance</dt><dd><p>Xác định chất lưu và vật cản cách nhau bao xa. Giá trị này có thể dùng để có chuyển động chất lỏng mượt hơn trên các vật cản nghiêng: tùy vào độ dốc của vật cản, tăng giá trị này có thể giúp các hạt chất lỏng chảy qua vật cản tốt hơn. Đặt trường này thành giá trị âm sẽ khiến chất lưu di chuyển vào phía bên trong vật cản.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fluiddomainsettings-fractions-threshold">
+<dt>Obstacle Threshold</dt><dd><p>Giá trị điều khiển độ mượt của tùy chọn vật cản phân đoạn (fractional obstacle). Giá trị nhỏ hơn giảm &quot;hiệu ứng bậc thang&quot; nhưng có thể khiến các hạt dính vào vật cản.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<span id="bpy-ops-fluid-bake-data"></span><dl id="bpy-ops-fluid-free-data">
+<dt>Bake Data, Free Data</dt><dd><p>Tùy chọn này chỉ khả dụng khi dùng kiểu cache <a class="reference internal" href="cache.html#bpy-types-fluiddomainsettings-cache-type"><span class="std std-ref">Modular</span></a>. <em>Bake Data</em> mô phỏng và lưu phần cơ sở của mô phỏng chất lưu lên ổ đĩa. Cả mô phỏng khí và chất lỏng đều có thể thêm các tinh chỉnh bên trên (ví dụ: mô phỏng khí có thể thêm noise, mô phỏng chất lỏng có thể thêm mesh hoặc hạt phụ hoặc cả hai).</p>
+<p>Tiến độ sẽ được hiển thị trong thanh trạng thái. Nhấn <kbd class="kbd docutils literal notranslate">Esc</kbd> sẽ tạm dừng mô phỏng.</p>
+<p>Sau khi mô phỏng đã được bake, cache có thể bị xóa bằng cách nhấn <em>Free Data</em>. Có thể tạm dừng hoặc tiếp tục một tiến trình <em>Bake All</em>.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="gas/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Cài đặt Gas</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Domain</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/physics/fluid/type/domain/settings.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Fphysics/fluid/type/domain/settings"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fphysics/fluid/type/domain/settings.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Fphysics/fluid/type/domain/settings.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Settings</a><ul>
+<li><a class="reference internal" href="#border-collisions">Border Collisions</a></li>
+<li><a class="reference internal" href="#gas">Gas</a><ul>
+<li><a class="reference internal" href="#dissolve">Dissolve</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#fire">Fire</a></li>
+<li><a class="reference internal" href="#liquid">Liquid</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

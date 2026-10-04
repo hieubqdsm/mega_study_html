@@ -1,0 +1,1516 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="copyright" title="Bản quyền" href="../copyright.html"><link rel="next" title="Manage UI Translations" href="ui_translations.html"><link rel="prev" title="Feature Sets" href="rigify/feature_sets.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/addons/scene_gltf2.html">
+        <link rel="prefetch" href="../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>glTF 2.0 - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../"></div>
+<script src="../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/addons/scene_gltf2.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="gltf-2-0">
+<h1>glTF 2.0<a class="headerlink" href="#gltf-2-0" title="Link to this heading">¶</a></h1>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Category<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Import-Export</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">File ‣ Import/Export ‣ glTF 2.0 (.glb, .gltf)</span></p>
+</dd>
+</dl>
+</div>
+<section id="enabling-add-on">
+<h2>Bật Add-on<a class="headerlink" href="#enabling-add-on" title="Link to this heading">¶</a></h2>
+<p>Add-on này được bật theo mặc định, trong trường hợp nó chưa được bật:</p>
+<ol class="arabic simple">
+<li><p>Mở Blender và đến phần <a class="reference internal" href="../editors/preferences/addons.html"><span class="doc">Add-ons</span></a> của <a class="reference internal" href="../editors/preferences/index.html"><span class="doc">Preferences</span></a>.</p></li>
+<li><p>Tìm kiếm &quot;glTF 2.0&quot; và đánh dấu chọn ô <em>Enable Add-on</em>.</p></li>
+</ol>
+</section>
+<section id="usage">
+<h2>Cách dùng<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
+<p>glTF™ (GL Transmission Format) được dùng để truyền tải và nạp các mô hình 3D trong các ứng dụng web và native. glTF giúp giảm kích thước mô hình 3D cũng như lượng xử lý lúc runtime cần thiết để giải nén và render các mô hình đó. Định dạng này được dùng phổ biến trên web và được nhiều engine 3D hỗ trợ như Unity3D, Unreal Engine 4 và Godot.</p>
+<p>Bộ import/export này hỗ trợ các tính năng glTF 2.0 sau đây:</p>
+<ul class="simple">
+<li><p>Meshes</p></li>
+<li><p>Material (Principled BSDF) và Shadeless (Unlit)</p></li>
+<li><p>Textures</p></li>
+<li><p>Cameras</p></li>
+<li><p>Punctual light (point, spot và directional)</p></li>
+<li><p>Extension (liệt kê bên dưới)</p></li>
+<li><p>Extras (custom property)</p></li>
+<li><p>Animation (keyframe, shape key và skinning)</p></li>
+</ul>
+</section>
+<section id="meshes">
+<h2>Meshes<a class="headerlink" href="#meshes" title="Link to this heading">¶</a></h2>
+<p>Cấu trúc nội bộ của glTF mô phỏng các bộ đệm bộ nhớ thường được chip đồ họa sử dụng khi render theo thời gian thực, nhờ đó tài sản có thể được gửi đến các client desktop, web hoặc di động và hiển thị tức thì với mức xử lý tối thiểu. Hậu quả là, quad và n-gon sẽ tự động được chuyển thành tam giác khi xuất sang glTF. UV không liên tục và cạnh flat-shading có thể làm số vertex trong glTF tăng khá nhiều so với Blender, do các vertex như vậy bị tách riêng khi xuất. Tương tự, curve và các dữ liệu không phải mesh sẽ không được giữ lại và phải được chuyển thành mesh trước khi xuất.</p>
+<section id="gpu-instances">
+<h3>GPU Instances<a class="headerlink" href="#gpu-instances" title="Link to this heading">¶</a></h3>
+<p>Khi tùy chọn này được bật trong Exporter, instance sẽ được xuất bằng extension <code class="docutils literal notranslate"><span class="pre">EXT_mesh_gpu_instancing</span></code>. Có một số hạn chế khi xuất:</p>
+<ul class="simple">
+<li><p>Các instance phải là mesh và không có bất kỳ object con nào</p></li>
+<li><p>Tất cả instance phải là con của cùng một object.</p></li>
+<li><p>Extension này không quản lý sự biến thể material. Điều đó có nghĩa là file được tạo ra có thể chứa tất cả instance với cùng một material.</p></li>
+<li><p>Các instance được phát hiện là những object dùng chung cùng mesh data.</p></li>
+</ul>
+<p>Khi import, instance được tạo bằng cách tạo các object dùng chung cùng mesh data.</p>
+</section>
+</section>
+<section id="materials">
+<h2>Materials<a class="headerlink" href="#materials" title="Link to this heading">¶</a></h2>
+<p>Hệ thống material cốt lõi trong glTF hỗ trợ quy trình <abbr title="Physically Based Rendering">PBR</abbr> metal/rough với các kênh thông tin sau:</p>
+<ul class="simple">
+<li><p>Base Color</p></li>
+<li><p>Metallic</p></li>
+<li><p>Roughness</p></li>
+<li><p>Baked Ambient Occlusion</p></li>
+<li><p>Normal Map (tangent space, +Y up)</p></li>
+<li><p>Emissive</p></li>
+</ul>
+<p>Một số thuộc tính material bổ sung hoặc các loại material khác có thể được biểu diễn bằng glTF extension. Danh sách đầy đủ có thể được tìm thấy trong phần <a class="reference internal" href="#extensions">Extensions</a> của tài liệu này.</p>
+<figure class="align-default" id="id5">
+<img alt="../_images/addons_import-export_scene-gltf2_material-channels.jpg" src="../_images/addons_import-export_scene-gltf2_material-channels.jpg" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về các image map đa dạng có sẵn trong định dạng cốt lõi glTF 2.0. Đây là <a class="reference external" href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/WaterBottle">mô hình mẫu chai nước</a> được hiển thị cùng các lát cắt của các image map khác nhau của nó.</span><a class="headerlink" href="#id5" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<section id="imported-materials">
+<h3>Material được import<a class="headerlink" href="#imported-materials" title="Link to this heading">¶</a></h3>
+<p>Hệ thống material của glTF khác với hệ thống material sẵn có của Blender. Khi một file glTF được import, add-on sẽ dựng một bộ node Blender để tái tạo từng material glTF càng chính xác càng tốt.</p>
+<p>Bộ import hỗ trợ Metal/Rough PBR (glTF cốt lõi), Spec/Gloss PBR (<code class="docutils literal notranslate"><span class="pre">KHR_materials_pbrSpecularGlossiness</span></code>) và một số material extension. Danh sách đầy đủ có thể được tìm thấy trong phần <a class="reference internal" href="#extensions">Extensions</a> của tài liệu này.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Việc khảo sát kết quả của quá trình import material là cách tốt để xem các ví dụ về những loại material node và cài đặt có thể được xuất sang glTF.</p>
+</div>
+</section>
+<section id="exported-materials">
+<h3>Material được xuất<a class="headerlink" href="#exported-materials" title="Link to this heading">¶</a></h3>
+<p>Bộ export hỗ trợ material Metal/Rough PBR (glTF cốt lõi) và Shadeless (<code class="docutils literal notranslate"><span class="pre">KHR_materials_unlit</span></code>). Nó sẽ dựng một material glTF dựa trên các node mà nó nhận diện được trong material Blender. Quá trình xuất material xử lý các cài đặt được mô tả bên dưới.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi material sử dụng image texture, glTF yêu cầu các ảnh phải ở định dạng PNG hoặc JPEG. Add-on sẽ tự động chuyển đổi ảnh từ các định dạng khác, làm tăng thời gian xuất.</p>
+</div>
+<section id="base-color">
+<h4>Base Color<a class="headerlink" href="#base-color" title="Link to this heading">¶</a></h4>
+<p>Base color của glTF được xác định bằng cách tìm input Base Color trên node Principled BSDF. Nếu input này không được kết nối, màu mặc định của input (ô màu bên cạnh socket chưa kết nối) sẽ được dùng làm Base Color cho material glTF.</p>
+<figure class="align-default" id="id6">
+<img alt="../_images/addons_import-export_scene-gltf2_material-base-color-solid-green.png" src="../_images/addons_import-export_scene-gltf2_material-base-color-solid-green.png" />
+<figcaption>
+<p><span class="caption-text">Một màu cơ bản đồng nhất có thể được chỉ định trực tiếp trên node.</span><a class="headerlink" href="#id6" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Nếu một node Image Texture được tìm thấy kết nối với input Base Color, ảnh đó sẽ được dùng làm base color của glTF.</p>
+<figure class="align-default" id="id7">
+<img alt="../_images/addons_import-export_scene-gltf2_material-base-color-image-hookup.png" src="../_images/addons_import-export_scene-gltf2_material-base-color-image-hookup.png" />
+<figcaption>
+<p><span class="caption-text">Một ảnh được dùng làm base color của glTF.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Nếu không có texture nào được kết nối, base color có thể được chỉ định:</p>
+<ul class="simple">
+<li><p>Từ input <em>Base Color</em> của node Principled BSDF, đây là mặc định.</p></li>
+<li><p>Từ một node RGB được kết nối với input <em>Base Color</em>.</p></li>
+<li><p>Từ một node Ambient Occlusion được kết nối với input <em>Base Color</em>. (Socket AO không được dùng trong glTF, nhưng output màu có thể được dùng làm base color.)</p></li>
+</ul>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-base-color.png" src="../_images/addons_import-export_scene-gltf2_material-base-color.png" />
+</figure>
+</section>
+<section id="metallic-and-roughness">
+<h4>Metallic và Roughness<a class="headerlink" href="#metallic-and-roughness" title="Link to this heading">¶</a></h4>
+<p>Các giá trị này được đọc từ node Principled BSDF. Nếu cả hai input này đều không được kết nối, node sẽ hiển thị các thanh trượt để điều khiển giá trị tương ứng trong khoảng từ 0.0 đến 1.0, và các giá trị này sẽ được sao chép vào glTF.</p>
+<p>Khi sử dụng ảnh, glTF yêu cầu giá trị metallic được mã hóa trong kênh xanh dương (<code class="docutils literal notranslate"><span class="pre">B</span></code>) và roughness được mã hóa trong kênh xanh lá (<code class="docutils literal notranslate"><span class="pre">G</span></code>) của cùng một ảnh. Nếu các ảnh được kết nối vào node Blender theo cách không tuân thủ quy ước này, add-on có thể cố điều chỉnh ảnh về đúng dạng trong quá trình xuất (làm tăng thời gian xuất).</p>
+<p>Trong node tree của Blender, bạn nên dùng node Separate RGB để tách các kênh từ một node Image Texture, rồi kết nối kênh xanh lá (<code class="docutils literal notranslate"><span class="pre">G</span></code>) với Roughness và kênh xanh dương (<code class="docutils literal notranslate"><span class="pre">B</span></code>) với Metallic. Bộ export glTF sẽ nhận ra cách sắp xếp này là phù hợp với chuẩn glTF, nhờ đó có thể đơn giản sao chép image texture vào file glTF khi xuất.</p>
+<p>Node Image Texture dùng cho việc này nên có <em>Color Space</em> được đặt thành Non-Color.</p>
+<figure class="align-default" id="id8">
+<img alt="../_images/addons_import-export_scene-gltf2_material-metal-rough.png" src="../_images/addons_import-export_scene-gltf2_material-metal-rough.png" />
+<figcaption>
+<p><span class="caption-text">Một ảnh metallic/roughness được kết nối theo cách phù hợp với chuẩn glTF, cho phép nó được dùng nguyên văn trong file glTF đã xuất.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="baked-ambient-occlusion">
+<h4>Baked Ambient Occlusion<a class="headerlink" href="#baked-ambient-occlusion" title="Link to this heading">¶</a></h4>
+<p>glTF có khả năng lưu trữ ambient occlusion map đã bake. Hiện tại không có cách sắp xếp node nào khiến Blender sử dụng map này đúng hệt như dự định trong glTF. Tuy nhiên, nếu bộ export tìm thấy một node group tùy chỉnh tên <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Material</span> <span class="pre">Output</span></code> và thấy một input tên <code class="docutils literal notranslate"><span class="pre">Occlusion</span></code> trên node group đó, nó sẽ tìm một Image Texture được gắn ở đó để dùng làm occlusion map trong glTF. Hiệu ứng này không cần hiển thị trong Blender, vì Blender có những cách khác để thể hiện ambient occlusion, nhưng phương pháp này cho phép bộ export ghi một ảnh occlusion vào glTF. Điều này hữu ích với các trình xem glTF thời gian thực, đặc biệt trên những nền tảng có thể không có thêm tài nguyên dự phòng để tính toán những thứ này lúc render.</p>
+<figure class="align-default" id="id9">
+<img alt="../_images/addons_import-export_scene-gltf2_material-occlusion-only.png" src="../_images/addons_import-export_scene-gltf2_material-occlusion-only.png" />
+<figcaption>
+<p><span class="caption-text">Một ambient occlusion map đã bake sẵn, được kết nối với một node không render nhưng sẽ được xuất sang glTF.</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Nếu bạn bật Shader Editor Add-ons trong tùy chỉnh, bạn sẽ có thể thêm node group tùy chỉnh này từ menu: Add &gt; Output &gt; glTF Material Output</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_addon-preferences-shader.png" src="../_images/addons_import-export_scene-gltf2_addon-preferences-shader.png" />
+</figure>
+</div>
+<p>glTF lưu occlusion trong kênh đỏ (<code class="docutils literal notranslate"><span class="pre">R</span></code>), cho phép nó tùy ý dùng chung một ảnh với các kênh roughness và metallic.</p>
+<figure class="align-default" id="id10">
+<img alt="../_images/addons_import-export_scene-gltf2_material-orm-hookup.png" src="../_images/addons_import-export_scene-gltf2_material-orm-hookup.png" />
+<figcaption>
+<p><span class="caption-text">Kết hợp node này mô phỏng cách glTF đóng gói các giá trị occlusion, roughness và metallic vào một ảnh duy nhất.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Render engine Cycles có panel Bake có thể dùng để bake ambient occlusion map. Ảnh thu được có thể được lưu và kết nối trực tiếp vào node <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Material</span> <span class="pre">Output</span></code>.</p>
+</div>
+</section>
+<section id="normal-map">
+<h4>Normal Map<a class="headerlink" href="#normal-map" title="Link to this heading">¶</a></h4>
+<p>Để dùng normal map trong glTF, hãy kết nối output màu của node Image Texture với input màu của node Normal Map, sau đó kết nối output normal của Normal Map với input normal của node Principled BSDF. Node Image Texture dùng cho việc này nên có thuộc tính <em>Color Space</em> đặt thành Non-Color.</p>
+<p>Node Normal Map phải giữ nguyên thuộc tính mặc định là Tangent Space vì đây là loại normal map duy nhất mà glTF hiện hỗ trợ. Cường độ của normal map có thể được điều chỉnh trên node này. Bộ export không xuất trực tiếp các node này, nhưng sẽ dùng chúng để định vị đúng ảnh và sao chép cài đặt cường độ vào glTF.</p>
+<figure class="align-default" id="id11">
+<img alt="../_images/addons_import-export_scene-gltf2_material-normal.png" src="../_images/addons_import-export_scene-gltf2_material-normal.png" />
+<figcaption>
+<p><span class="caption-text">Một ảnh normal map được kết nối sao cho bộ export sẽ tìm thấy nó và sao chép vào file glTF.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Render engine Cycles có panel Bake có thể dùng để bake normal map tangent-space từ hầu hết mọi cách sắp xếp node vector normal khác. Chuyển Bake type sang Normal. Giữ nguyên các cài đặt space mặc định (space: Tangent, R: +X, G: +Y, B: +Z) khi dùng panel bake này cho glTF. Ảnh đã bake thu được có thể được lưu và cắm vào một material mới bằng node Normal Map như mô tả ở trên, giúp nó được xuất đúng cách.</p>
+<p>Xem: <a class="reference internal" href="../render/cycles/baking.html"><span class="doc">Bake với render Cycles</span></a></p>
+</div>
+</section>
+<section id="emissive">
+<h4>Emissive<a class="headerlink" href="#emissive" title="Link to this heading">¶</a></h4>
+<p>Một node Image Texture có thể được kết nối với input Emission trên node Principled BSDF để kèm một emissive map vào material glTF. Ngoài ra, node Image Texture có thể được kết nối với một node shader Emission, và tùy ý kết hợp với các thuộc tính từ node Principled BSDF thông qua node Add Shader.</p>
+<p>Nếu emissive map đứng một mình trong material, tốt nhất là đặt Base Color mặc định thành màu đen và Roughness mặc định thành 1.0. Điều này giảm thiểu ảnh hưởng của các kênh khác nếu chúng không cần thiết.</p>
+<figure class="align-default" id="id12">
+<img alt="../_images/addons_import-export_scene-gltf2_material-emissive.png" src="../_images/addons_import-export_scene-gltf2_material-emissive.png" />
+<figcaption>
+<p><span class="caption-text">Cách sắp xếp này được hỗ trợ nhằm tương thích ngược. Sử dụng trực tiếp node Principled BSDF sẽ đơn giản hơn.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Nếu bất kỳ thành phần nào của emissiveFactor &gt; 1.0, extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_emissive_strength</span></code> sẽ được sử dụng.</p>
+</section>
+<section id="clearcoat">
+<h4>Clearcoat<a class="headerlink" href="#clearcoat" title="Link to this heading">¶</a></h4>
+<p>Khi input <em>Clearcoat</em> trên node Principled BSDF có giá trị mặc định khác 0 hoặc có node Image Texture được kết nối, glTF extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_clearcoat</span></code> sẽ được đưa vào bản xuất. Extension này cũng sẽ kèm theo một giá trị hoặc Image Texture từ input <em>Clearcoat Roughness</em> nếu có.</p>
+<p>Nếu Image Texture được sử dụng, glTF yêu cầu các giá trị clearcoat được ghi vào kênh đỏ (<code class="docutils literal notranslate"><span class="pre">R</span></code>) và <em>Clearcoat Roughness</em> vào kênh xanh lá (<code class="docutils literal notranslate"><span class="pre">G</span></code>). Nếu các ảnh đơn sắc được kết nối, bộ export sẽ ánh xạ lại chúng vào các kênh màu này.</p>
+<p>Input <em>Clearcoat Normal</em> chấp nhận cùng các loại input như input Normal cơ sở, cụ thể là một normal map tangent-space với +Y hướng lên và một cường độ do người dùng xác định. Input này có thể tái sử dụng cùng normal map mà material cơ sở đang dùng, hoặc được gán normal map riêng, hoặc để không kết nối để có lớp phủ mịn.</p>
+<p>Tất cả node Image Texture dùng cho clearcoat shading nên có <em>Color Space</em> đặt thành Non-Color.</p>
+<figure class="align-default" id="id13">
+<img alt="../_images/addons_import-export_scene-gltf2_material-clearcoat.png" src="../_images/addons_import-export_scene-gltf2_material-clearcoat.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về một cách áp dụng clearcoat phức tạp vẫn xuất đúng sang glTF. Một lớp phủ mịn đơn giản hơn nhiều có thể được tạo chỉ từ riêng node Principled BSDF.</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="sheen">
+<h4>Sheen<a class="headerlink" href="#sheen" title="Link to this heading">¶</a></h4>
+<p>Nếu Sheen Roughness Texture được sử dụng, glTF yêu cầu các giá trị được ghi vào kênh alpha (<code class="docutils literal notranslate"><span class="pre">A</span></code>).</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-sheen.png" src="../_images/addons_import-export_scene-gltf2_material-sheen.png" />
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Node Sheen BSDF chỉ có sẵn trên render engine Cycles. Bạn có thể phải tạm thời chuyển sang Cycles để thêm node này, rồi quay lại EEVEE.</p>
+</div>
+</section>
+<section id="specular">
+<h4>Specular<a class="headerlink" href="#specular" title="Link to this heading">¶</a></h4>
+<p>Khi input <em>Specular IOR Level</em> hoặc <em>Specular Tint</em> của node Principled BSDF có giá trị khác mặc định hoặc có node Image Texture được kết nối, glTF extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code> sẽ được đưa vào bản xuất.</p>
+</section>
+<section id="anisotropy">
+<h4>Anisotropy<a class="headerlink" href="#anisotropy" title="Link to this heading">¶</a></h4>
+<p>Texture và dữ liệu Anisotropic cần được chuyển đổi khi xuất và khi import.</p>
+<p>Khi import, một số node được tạo để xử lý việc chuyển đổi này</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material_anisotropy.png" src="../_images/addons_import-export_scene-gltf2_material_anisotropy.png" />
+</figure>
+<p>Khi xuất, chính các node này được nhận diện và dùng để xuất dữ liệu.</p>
+<p>Khi xuất, bạn cũng có thể cắm một số texture thang xám vào socket <em>Anisotropic</em> và <em>Anisotropic Rotation</em>. Khi đó, bộ export sẽ chuyển các texture này thành texture tương thích với glTF.</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material_anisotropy-grayscale-texture.png" src="../_images/addons_import-export_scene-gltf2_material_anisotropy-grayscale-texture.png" />
+</figure>
+<p>Lưu ý rằng socket <em>tangent</em> phải được liên kết với một node <em>tangent</em> kèm UVMap. UVMap được chọn phải là UVMap của Normal Map.</p>
+</section>
+<section id="transmission">
+<h4>Transmission<a class="headerlink" href="#transmission" title="Link to this heading">¶</a></h4>
+<p>Khi input Transmission trên node Principled BSDF có giá trị mặc định khác 0 hoặc có node Image Texture được kết nối, glTF extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code> sẽ được đưa vào bản xuất. Khi texture được sử dụng, glTF lưu các giá trị trong kênh đỏ (<code class="docutils literal notranslate"><span class="pre">R</span></code>). <em>Color Space</em> nên được đặt thành Non-Color.</p>
+<p>Transmission khác với alpha blending, vì transmission cho phép phản xạ specular với cường độ đầy đủ. Trong glTF, alpha blending dùng để biểu diễn các vật liệu vật lý bị thiếu một phần trong hình học được chỉ định, chẳng hạn như băng gạc y tế. Transmission dùng để biểu diễn các vật liệu vật lý đặc nhưng cho phép ánh sáng không phản xạ specular truyền qua vật liệu, như kính.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Roughness cơ bản của material có thể được dùng làm mờ transmission, giống như kính mờ.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Thông thường, chế độ alpha blend của material truyền sáng nên giữ nguyên &quot;Opaque&quot; — cài đặt mặc định — trừ khi material chỉ phủ một phần hình học được chỉ định.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Trong các engine thời gian thực có hỗ trợ transmission, nhiều hạn chế kỹ thuật của engine có thể quyết định những phần nào của scene nhìn thấy được qua bề mặt truyền sáng. Cụ thể, material truyền sáng có thể không hiển thị được sau các material truyền sáng khác. Các hạn chế này ảnh hưởng đến transmission dựa trên vật lý, nhưng không ảnh hưởng đến material không truyền sáng dùng alpha blend.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu bạn muốn bật khúc xạ (refraction) trên mô hình, <code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code> phải được dùng thêm cùng với <code class="docutils literal notranslate"><span class="pre">KHR_materials_volume</span></code>. Xem phần <em>Volume</em> chuyên biệt trong tài liệu.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Transmission phức tạp để các render engine thời gian thực triển khai, và việc hỗ trợ glTF extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code> vẫn chưa phổ biến.</p>
+</div>
+</section>
+<section id="ior">
+<h4>IOR<a class="headerlink" href="#ior" title="Link to this heading">¶</a></h4>
+<p>Khi import, có hai trường hợp khác nhau:</p>
+<ul class="simple">
+<li><p>nếu <code class="docutils literal notranslate"><span class="pre">KHR_materials_ior</span></code> không được đặt, giá trị IOR của node Principled BSDF được đặt thành 1.5, đây là giá trị IOR mặc định của glTF.</p></li>
+<li><p>Nếu được đặt, <code class="docutils literal notranslate"><span class="pre">KHR_materials_ior</span></code> được dùng để thiết lập giá trị IOR của Principled BSDF.</p></li>
+</ul>
+<p>Khi xuất, IOR chỉ được đưa vào bản xuất nếu một trong các extension sau cũng được sử dụng:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_volume</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code></p></li>
+</ul>
+<p>IOR bằng 1.5 không được đưa vào bản xuất, vì đây là giá trị IOR mặc định của glTF.</p>
+</section>
+<section id="volume">
+<h4>Volume<a class="headerlink" href="#volume" title="Link to this heading">¶</a></h4>
+<p>Volume có thể được xuất bằng node Volume Absorption, kết nối với socket Volume của node Output. Dữ liệu sẽ được xuất bằng extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_volume</span></code>.</p>
+<ul class="simple">
+<li><p>Để volume được xuất, phải thiết lập một chút <em>transmission</em> trên node Principled BSDF.</p></li>
+<li><p>Màu của node Volume Absorption được dùng làm màu suy giảm (attenuation color) của glTF. Không cho phép dùng texture cho thuộc tính này.</p></li>
+<li><p>Density của node Volume Absorption được dùng làm nghịch đảo của khoảng cách suy giảm (attenuation distance) trong glTF.</p></li>
+<li><p>Thickness có thể được cắm vào socket Thickness của node group tùy chỉnh <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Material</span> <span class="pre">Output</span></code>.</p></li>
+<li><p>Nếu texture được dùng cho thickness, nó phải được cắm vào kênh Xanh lá (<code class="docutils literal notranslate"><span class="pre">G</span></code>) của ảnh.</p></li>
+</ul>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-volume.png" src="../_images/addons_import-export_scene-gltf2_material-volume.png" />
+</figure>
+</section>
+<section id="dispersion">
+<h4>Dispersion<a class="headerlink" href="#dispersion" title="Link to this heading">¶</a></h4>
+<p>Dispersion chỉ có thể được xuất nếu material cũng sử dụng extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_volume</span></code>. Dữ liệu sẽ được xuất bằng extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_dispersion</span></code>. Socket dispersion của node group tùy chỉnh <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Material</span> <span class="pre">Output</span></code> được dùng cho extension này.</p>
+</section>
+<section id="iridescence">
+<h4>Iridescence<a class="headerlink" href="#iridescence" title="Link to this heading">¶</a></h4>
+<p>Iridescence có thể được xuất bằng extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_iridescence</span></code>. Dữ liệu sẽ được xuất bằng các node sau:</p>
+<ul class="simple">
+<li><p>Iridescence Thickness Maximum có thể được cắm vào socket Thickness của node group tùy chỉnh <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Material</span> <span class="pre">Output</span></code>. Nếu dùng texture, nó phải được cắm vào kênh Đỏ (<code class="docutils literal notranslate"><span class="pre">R</span></code>) của ảnh.</p></li>
+<li><p>Iridescence IOR có thể được cắm vào socket Thin Film IOR của node Principled BSDF.</p></li>
+<li><p>Iridescence Factor có thể được cắm vào socket thickness của node Principled BSDF.</p></li>
+<li><p>Iridescence Maximum Thickness có thể được cắm vào socket Iridescence Thickness Maximum của node group tùy chỉnh <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Material</span> <span class="pre">Output</span></code></p></li>
+<li><p>Texture cho Iridescence Factor có thể được cắm vào kênh Đỏ (<code class="docutils literal notranslate"><span class="pre">R</span></code>) của một ảnh cắm vào socket này. Bạn có thể dùng node Multiply để nhân texture này với giá trị Iridescence Factor.</p></li>
+<li><p>Texture cho Iridescence Thickness có thể được cắm vào kênh Xanh lá (<code class="docutils literal notranslate"><span class="pre">G</span></code>) của một ảnh, được dùng làm hệ số trộn cho thickness giữa giá trị Minimum và Maximum.</p></li>
+</ul>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-iridescence.png" src="../_images/addons_import-export_scene-gltf2_material-iridescence.png" />
+</figure>
+</section>
+<section id="gltf-variants">
+<h4>glTF Variants<a class="headerlink" href="#gltf-variants" title="Link to this heading">¶</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để có trải nghiệm Variants đầy đủ, bạn phải bật UI trong tùy chỉnh của Add-on</p>
+<blockquote>
+<div><figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_addon-preferences-variant.png" src="../_images/addons_import-export_scene-gltf2_addon-preferences-variant.png" />
+</figure>
+</div></blockquote>
+</div>
+<p>Có hai vị trí để quản lý glTF Variants trong Blender</p>
+<ul class="simple">
+<li><p>Trong 3D View, trên tab <code class="docutils literal notranslate"><span class="pre">glTF</span> <span class="pre">Variants</span></code></p></li>
+<li><p>Đối với cài đặt nâng cao, trong Mesh Material Properties (xem Kiểm tra glTF Variant nâng cao)</p></li>
+</ul>
+<p>Khái niệm chính cần hiểu khi sử dụng Variants là mỗi material slot sẽ được dùng như tương đương của một glTF primitive.</p>
+</section>
+<section id="gltf-variants-switching">
+<h4>Chuyển đổi glTF Variants<a class="headerlink" href="#gltf-variants-switching" title="Link to this heading">¶</a></h4>
+<p>Sau khi import một file glTF có extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_variants</span></code>, tất cả các variant đều có thể được hiển thị.</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material_variants-switch.png" src="../_images/addons_import-export_scene-gltf2_material_variants-switch.png" />
+</figure>
+<p>Bạn có thể chuyển Variant bằng cách <em>chọn</em> variant muốn hiển thị, sau đó nhấp vào <em>Display Variant</em>.</p>
+<p>Bạn có thể chuyển về material mặc định (khi không dùng Variant nào) bằng cách nhấp vào <em>Reset to default</em>.</p>
+</section>
+<section id="gltf-variants-creation">
+<h4>Tạo glTF Variants<a class="headerlink" href="#gltf-variants-creation" title="Link to this heading">¶</a></h4>
+<p>Bạn có thể thêm một Variant mới bằng cách nhấp <span class="bl-icons-add"></span> ở bên phải danh sách Variant. Sau đó bạn có thể đổi tên bằng cách nhấp đúp.</p>
+<p>Sau khi thay đổi Material trong Material Slots, bạn có thể gán material hiện tại cho Variant đang hoạt động bằng <em>Assign to Variant</em>.</p>
+<p>Bạn cũng có thể đặt material mặc định bằng <em>Assign as Original</em>. Các material này sẽ được xuất làm material mặc định trong glTF. Đây là những material sẽ được hiển thị bởi bất kỳ trình xem nào không hỗ trợ extension <code class="docutils literal notranslate"><span class="pre">KHR_materials_variants</span></code>.</p>
+</section>
+<section id="advanced-gltf-variant-checks">
+<h4>Kiểm tra glTF Variant nâng cao<a class="headerlink" href="#advanced-gltf-variant-checks" title="Link to this heading">¶</a></h4>
+<p>Nếu bạn muốn kiểm tra từng primitive một xem những Variant nào được dùng, bạn có thể vào Mesh Material Properties.</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material_variants-detail.png" src="../_images/addons_import-export_scene-gltf2_material_variants-detail.png" />
+</figure>
+<p>Tab <em>glTF Material Variants</em> liên quan đến material Slot đang hoạt động và Material mà slot này sử dụng. Bạn có thể thấy mọi Variants đang dùng material này cho Slot/Primitive đã cho.</p>
+<p>Bạn cũng có thể gán material cho Variants từ tab này, nhưng khuyến nghị là thực hiện từ tab trong 3D View.</p>
+</section>
+<section id="double-sided-backface-culling">
+<h4>Double-Sided / Backface Culling<a class="headerlink" href="#double-sided-backface-culling" title="Link to this heading">¶</a></h4>
+<p>Đối với material mà chỉ mặt trước mới hiển thị, hãy bật <em>Backface Culling</em> (Camera) trong panel <em>Settings</em> của material EEVEE. Khi dùng engine khác (Cycles, Workbench), bạn có thể tạm thời chuyển sang EEVEE để cấu hình cài đặt này, rồi chuyển lại.</p>
+<p>Để ô này không được chọn đối với material hai mặt.</p>
+<figure class="align-default" id="id14">
+<img alt="../_images/addons_import-export_scene-gltf2_material-backface-culling.png" src="../_images/addons_import-export_scene-gltf2_material-backface-culling.png" />
+<figcaption>
+<p><span class="caption-text">Trạng thái ngược của cài đặt này điều khiển cờ <code class="docutils literal notranslate"><span class="pre">DoubleSided</span></code> của glTF.</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="alpha-modes">
+<h4>Các chế độ Alpha<a class="headerlink" href="#alpha-modes" title="Link to this heading">¶</a></h4>
+<p>glTF có ba chế độ alpha, tùy thuộc vào việc giá trị alpha luôn bằng 1, luôn bằng 0 hoặc 1, hay có thể nằm giữa 0 và 1. Bộ export tự động xác định chế độ alpha từ các node được kết nối vào socket Alpha.</p>
+<dl>
+<dt>Opaque</dt><dd><blockquote>
+<div><p>Trong <em>chế độ opaque</em>, alpha của material luôn bằng 1.</p>
+</div></blockquote>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-opaque.png" src="../_images/addons_import-export_scene-gltf2_material-opaque.png" />
+</figure>
+</dd>
+<dt>Mask</dt><dd><p>Trong <em>chế độ mask</em>, alpha của material luôn bằng 0 hoặc 1. Điều này tạo ra độ trong suốt kiểu &quot;cắt bỏ&quot; (cutout), với ranh giới cứng giữa vùng đục và vùng trong suốt, và có thể dùng cho những thứ như lá cây hoặc vải có lỗ. Để bật chế độ này, hãy dùng node Math để làm tròn giá trị alpha về 0 hoặc 1.</p>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-round-alpha.png" src="../_images/addons_import-export_scene-gltf2_material-round-alpha.png" />
+</figure>
+<p>Làm tròn đưa các giá trị alpha từ 0.5 trở lên lên 1, và các giá trị dưới 0.5 xuống 0. Cũng có thể dùng một giá trị cắt (cutoff) khác 0.5 bằng cách dùng node Math để tính <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">(alpha</span> <span class="pre">&lt;</span> <span class="pre">cutoff)</span></code>.</p>
+<p>Chế độ mask về bản chất giống chế độ trộn &quot;Alpha Clip&quot; của EEVEE, nhưng được thực hiện bằng shader node nên hoạt động được trong các render engine khác.</p>
+</dd>
+<dt>Blend</dt><dd><p>Material không dùng hai chế độ trên sẽ dùng <em>chế độ blend</em>. Chế độ blend cho phép các bề mặt trong suốt một phần, làm nhuộm màu các object nhìn xuyên qua chúng, giống như các lớp phim màu. Tuy nhiên, độ trong suốt một phần rất phức tạp khi render, và các trình xem glTF có thể hiện lỗi hình ảnh trong những scene phức tạp dùng chế độ blend.</p>
+<p>Để tránh lỗi hình ảnh, một ý tưởng tốt là tách riêng những phần của mô hình có thể dùng chế độ opaque hoặc mask, và chỉ dùng chế độ blend ở những phần cần thiết, hoặc chỉ dùng <em>một</em> lớp polygon trong suốt duy nhất đặt trước các object đục.</p>
+</dd>
+</dl>
+</section>
+<section id="uv-mapping">
+<h4>Ánh xạ UV<a class="headerlink" href="#uv-mapping" title="Link to this heading">¶</a></h4>
+<p>Việc điều khiển việc chọn UV map và các biến đổi có được bằng cách kết nối node UV Map và node Mapping vào bất kỳ node Image Texture nào.</p>
+<p>Cài đặt từ node Mapping được xuất bằng glTF extension tên <code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code>. Ở phía trên có bộ chọn loại mapping. <em>Point</em> là loại được khuyến nghị khi xuất. <em>Texture</em> và <em>Vector</em> cũng được hỗ trợ. Các offset được hỗ trợ là:</p>
+<ul class="simple">
+<li><p><em>Location</em> - X và Y</p></li>
+<li><p><em>Rotation</em> - chỉ Z</p></li>
+<li><p><em>Scale</em> - X và Y</p></li>
+</ul>
+<p>Với loại <em>Texture</em>, <em>Scale</em> X và Y phải bằng nhau (co giãn đồng đều).</p>
+<figure class="align-default" id="id15">
+<img alt="../_images/addons_import-export_scene-gltf2_material-mapping.png" src="../_images/addons_import-export_scene-gltf2_material-mapping.png" />
+<figcaption>
+<p><span class="caption-text">Một lựa chọn ánh xạ UV có chủ đích.</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Các node này là tùy chọn. Không phải trình đọc glTF nào cũng hỗ trợ nhiều UV map hoặc biến đổi texture.</p>
+</div>
+</section>
+<section id="factors">
+<h4>Hệ số<a class="headerlink" href="#factors" title="Link to this heading">¶</a></h4>
+<p>Bất kỳ node Image Texture nào cũng có thể tùy chọn được nhân với một màu hoặc một giá trị vô hướng hằng số. Chúng sẽ được ghi thành các factor trong file glTF — đó là những số được nhân với các image texture tương ứng. Những thứ này không phổ biến.</p>
+<ul class="simple">
+<li><p>Dùng node Math (multiply) cho factor vô hướng. Dùng giá trị thứ hai làm factor</p></li>
+<li><p>Dùng node Mix (color / multiply) cho factor màu. Đặt Factor thành 1 và dùng Color2 (B) làm factor</p></li>
+</ul>
+<figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_material-factors.png" src="../_images/addons_import-export_scene-gltf2_material-factors.png" />
+</figure>
+</section>
+<section id="example">
+<h4>Ví dụ<a class="headerlink" href="#example" title="Link to this heading">¶</a></h4>
+<p>Một material duy nhất có thể dùng tất cả những thứ trên cùng lúc nếu muốn. Hình này minh họa cấu trúc node điển hình khi một số tùy chọn trên được áp dụng cùng lúc:</p>
+<figure class="align-default" id="id16">
+<img alt="../_images/addons_import-export_scene-gltf2_material-principled.png" src="../_images/addons_import-export_scene-gltf2_material-principled.png" />
+<figcaption>
+<p><span class="caption-text">Một material Principled BSDF với emissive texture.</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="udim">
+<h4>UDIM<a class="headerlink" href="#udim" title="Link to this heading">¶</a></h4>
+<p>UDIM là cách lưu nhiều texture trong một file ảnh duy nhất. Hệ thống UDIM được Blender hỗ trợ nhưng glTF không hỗ trợ. Khi xuất một mô hình dùng UDIM, add-on sẽ tự động tách ảnh thành nhiều ảnh, mỗi ảnh cho một tile, và cập nhật các material node để dùng các ảnh mới. Mọi UDIM texture phải dùng cùng một UV map thì mới được xuất.</p>
+</section>
+</section>
+<section id="exporting-a-shadeless-unlit-material">
+<h3>Xuất Material Shadeless (Unlit)<a class="headerlink" href="#exporting-a-shadeless-unlit-material" title="Link to this heading">¶</a></h3>
+<p>Để xuất một material unlit, hãy trộn thêm camera ray và tránh dùng node Principled BSDF.</p>
+<figure class="align-default" id="id17">
+<img alt="../_images/addons_import-export_scene-gltf2_material-unlit.png" src="../_images/addons_import-export_scene-gltf2_material-unlit.png" />
+<figcaption>
+<p><span class="caption-text">Một trong số vài cách sắp xếp node tương tự nhau sẽ xuất <code class="docutils literal notranslate"><span class="pre">KHR_materials_unlit</span></code> và render shadeless trong Blender.</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="lights">
+<h2>Lights<a class="headerlink" href="#lights" title="Link to this heading">¶</a></h2>
+<p>Định dạng glTF hỗ trợ ba loại punctual light: point, spot và directional (Sun trong Blender). Loại đèn Area và ánh sáng World của Blender không được glTF hỗ trợ và sẽ bị bỏ qua khi xuất.</p>
+<p>Để bật xuất đèn, hãy chắc chắn đánh dấu tùy chọn <em>Include Punctual Lights</em> trong bộ export. Việc này sẽ dùng glTF extension <code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code>.</p>
+<section id="light-color">
+<h3>Màu đèn<a class="headerlink" href="#light-color" title="Link to this heading">¶</a></h3>
+<p>Màu của đèn glTF được xác định bởi tích của: - Ô màu trên object đèn, và - Output màu của node shader Emission, nếu đèn đang dùng node và có shader Emission kết nối vào output của nó.</p>
+<p>Nếu bạn dùng render engine EEVEE, chỉ ô màu trên object đèn được sử dụng, còn node shader Emission bị bỏ qua. (Điều này phản ánh cách render trong Viewport)</p>
+</section>
+<section id="light-intensity">
+<h3>Cường độ đèn<a class="headerlink" href="#light-intensity" title="Link to this heading">¶</a></h3>
+<p>Với đèn Sun, cường độ được xác định bởi ô strength trên object đèn. Với đèn Point và Spot, cường độ còn có thể được xác định bởi socket Strength của node Light Falloff.</p>
+<p>Nếu bạn dùng render engine EEVEE, cách dựng node sẽ bị bỏ qua và chỉ ô strength trên object đèn được sử dụng.</p>
+</section>
+</section>
+<section id="extensions">
+<h2>Extensions<a class="headerlink" href="#extensions" title="Link to this heading">¶</a></h2>
+<p>Định dạng glTF 2.0 cốt lõi có thể được mở rộng với thông tin bổ sung bằng các glTF extension. Điều này cho phép định dạng file chứa những chi tiết chưa được xem là phổ quát tại thời điểm công bố lần đầu. Không phải trình đọc glTF nào cũng hỗ trợ mọi extension, nhưng một số extension khá phổ biến.</p>
+<p>Một số tính năng của Blender chỉ có thể xuất sang glTF qua các extension này. Các <a class="reference external" href="https://github.com/KhronosGroup/glTF/tree/main/extensions">glTF 2.0 extension</a> sau được add-on hỗ trợ trực tiếp:</p>
+<p class="rubric">Import</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_pbrSpecularGlossiness</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_clearcoat</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_unlit</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_emissive_strength</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_volume</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_sheen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_anisotropy</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_dispersion</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_ior</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_variants</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_mesh_quantization</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EXT_mesh_gpu_instancing</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EXT_meshopt_compression</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_meshopt_compression</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_animation_pointer</span></code></p></li>
+</ul>
+<p class="rubric">Export</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_draco_mesh_compression</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_clearcoat</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_transmission</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_unlit</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_emissive_strength</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_volume</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_sheen</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_specular</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_anisotropy</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_dispersion</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_ior</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_materials_variants</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_texture_transform</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EXT_mesh_gpu_instancing</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EXT_meshopt_compression</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_meshopt_compression</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KHR_animation_pointer</span></code></p></li>
+</ul>
+<section id="third-party-gltf-extensions">
+<h3>glTF Extension của bên thứ ba<a class="headerlink" href="#third-party-gltf-extensions" title="Link to this heading">¶</a></h3>
+<p>Các nhà phát triển Python có thể thêm hỗ trợ Blender cho các glTF extension bổ sung bằng cách viết add-on bên thứ ba riêng của mình, mà không cần sửa đổi add-on glTF này. Để biết thêm thông tin, <a class="reference external" href="https://github.com/KhronosGroup/glTF-Blender-IO/tree/main/example-addons/">xem ví dụ trên GitHub</a> và nếu cần, <a class="reference external" href="https://github.com/KhronosGroup/glTF/blob/main/extensions/Prefixes.md">đăng ký một tiền tố extension</a>.</p>
+</section>
+</section>
+<section id="custom-properties">
+<h2>Custom Properties<a class="headerlink" href="#custom-properties" title="Link to this heading">¶</a></h2>
+<p>Custom property luôn được import, và sẽ được xuất từ hầu hết các object nếu tùy chọn <span class="menuselection">Include ‣ Custom Properties</span> được chọn trước khi xuất. Chúng được lưu trong trường <code class="docutils literal notranslate"><span class="pre">extras</span></code> trên object tương ứng trong file glTF.</p>
+<p>Khác với glTF extension, custom property (extras) không có namespace được định nghĩa sẵn và có thể được dùng cho bất kỳ mục đích riêng của người dùng hay ứng dụng nào.</p>
+</section>
+<section id="animations">
+<h2>Animations<a class="headerlink" href="#animations" title="Link to this heading">¶</a></h2>
+<p>Một animation glTF thay đổi transform của object hoặc pose bone, hoặc giá trị của shape key. Một animation có thể ảnh hưởng đến nhiều object, và một file glTF có thể chứa nhiều animation.</p>
+<section id="import">
+<h3>Import<a class="headerlink" href="#import" title="Link to this heading">¶</a></h3>
+<p>Các mô hình sau khi import được thiết lập để animation đầu tiên trong file tự động phát. Kéo Timeline để xem nó chạy.</p>
+<p>Khi file chứa nhiều animation, phần còn lại sẽ được tổ chức bằng <a class="reference internal" href="../editors/nla/tracks.html"><span class="doc">trình biên tập Nonlinear Animation</span></a>. Mỗi animation trở thành một action được stash vào một NLA track. Tên track chính là tên của animation glTF. Để hiển thị animation trong track đó, hãy nhấp Solo (biểu tượng hình sao) bên cạnh track bạn muốn phát.</p>
+<figure class="align-default" id="id18">
+<span id="fig-gltf-solo-track"></span><img alt="../_images/addons_import-export_scene-gltf2_animation-solo-track.png" src="../_images/addons_import-export_scene-gltf2_animation-solo-track.png" />
+<figcaption>
+<p><span class="caption-text">Đây là <a class="reference external" href="https://github.com/KhronosGroup/glTF-Sample-Models/tree/main/2.0/Fox">mô hình mẫu con cáo</a> đang trình diễn animation &quot;Run&quot; của nó.</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Nếu một animation ảnh hưởng đến nhiều object, nó sẽ bị tách thành nhiều phần. Phần animation tác động đến một object sẽ trở thành một action được stash trên object đó. Dùng tên track để biết action nào thuộc cùng một animation. Để phát toàn bộ animation, bạn cần bật Solo (biểu tượng hình sao) cho tất cả track của nó.</p>
+<p>Mỗi animation sẽ được import thành một action duy nhất, với nhiều slot nếu animation ảnh hưởng đến nhiều object. Một slot sẽ được tạo cho TRS, một slot cho shape key, v.v...</p>
+<p>Bạn có thể tìm thêm thông tin về action slot trong <a class="reference internal" href="../animation/actions.html"><span class="doc">Animation</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hiện không có cách nào xem pose không có animation của một mô hình từng có animation.</p>
+</div>
+<p>Bạn cũng có thể dùng bộ chuyển animation có trong <a class="reference internal" href="../editors/dope_sheet/index.html"><span class="doc">trình biên tập Dope Sheet</span></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Bạn phải bật UI trong tùy chỉnh của Add-on để thấy bộ chuyển animation</p>
+<blockquote>
+<div><figure class="align-default">
+<img alt="../_images/addons_import-export_scene-gltf2_addon-preferences-animation.png" src="../_images/addons_import-export_scene-gltf2_addon-preferences-animation.png" />
+</figure>
+</div></blockquote>
+</div>
+<p>Bạn có thể chuyển sang bất kỳ animation nào đã import. Tính năng này tự động bật Solo (biểu tượng hình sao) cho mọi track cần thiết. Nó cũng đặt lại các object không có animation về transform Rest.</p>
+</section>
+<section id="export">
+<h3>Export<a class="headerlink" href="#export" title="Link to this heading">¶</a></h3>
+<p>Bạn có thể xuất animation theo nhiều cách khác nhau. Cách tạo animation glTF từ action / NLA được điều khiển bởi tùy chọn xuất <span class="menuselection">Animation ‣ Mode</span>.</p>
+<section id="actions-default">
+<h4>Actions (default)<a class="headerlink" href="#actions-default" title="Link to this heading">¶</a></h4>
+<p>Một action sẽ được xuất nếu nó là action đang hoạt động trên một object, hoặc nó được stash vào một NLA track (ví dụ bằng các nút <em>Stash</em> hoặc <em>Push Down</em> trong <a class="reference internal" href="../editors/dope_sheet/modes/action.html"><span class="doc">Action Editor</span></a>). Các action <strong>không</strong> được liên kết với một object theo một trong hai cách trên thì <strong>không được xuất</strong>. Nếu bạn có nhiều action muốn xuất, hãy chắc chắn rằng chúng đã được stash!</p>
+<p>Một animation glTF có thể có tên, mặc định là tên action. Bạn có thể ghi đè bằng cách đổi tên NLA track từ <code class="docutils literal notranslate"><span class="pre">NLATrack</span></code>/<code class="docutils literal notranslate"><span class="pre">[Action</span> <span class="pre">Stash]</span></code> thành tên bạn muốn dùng. Ví dụ, hình <a class="reference internal" href="#fig-gltf-solo-track"><span class="std std-ref">mô hình con cáo</span></a> sẽ được xuất với ba animation: &quot;Survey&quot;, &quot;Walk&quot; và &quot;Run&quot;. Nếu bạn đổi tên hai track trên hai object khác nhau thành cùng một tên, chúng sẽ thành một phần của cùng một animation glTF và sẽ phát cùng nhau.</p>
+<p>Bộ import tổ chức các action sao cho chúng được xuất đúng cách với chế độ này.</p>
+<p>Chế độ này hữu ích khi bạn xuất cho game engine cùng với thư viện animation của một nhân vật. Mỗi action phải nằm trên NLA track riêng của nó.</p>
+<p>Trước Blender 4.4, các track được gộp theo tên của chúng. Với Blender 4.4 và sự ra đời của slotted action, hành vi mặc định này đã thay đổi. Giờ đây, các track được gộp theo action mà chúng đang dùng, chứ không theo tên. Bạn có thể tìm thêm thông tin về action slot trong <a class="reference internal" href="../animation/actions.html"><span class="doc">Animation</span></a>.</p>
+</section>
+<section id="active-actions-merged">
+<h4>Active Actions merged<a class="headerlink" href="#active-actions-merged" title="Link to this heading">¶</a></h4>
+<p>Trong chế độ này, cách tổ chức NLA không được sử dụng, và chỉ một animation duy nhất được xuất bằng các action đang hoạt động trên tất cả object.</p>
+</section>
+<section id="nla-tracks">
+<h4>NLA Tracks<a class="headerlink" href="#nla-tracks" title="Link to this heading">¶</a></h4>
+<p>Trong chế độ này, mỗi NLA Track sẽ được xuất thành một animation glTF độc lập. Chế độ này hữu ích nếu bạn đang dùng Strip modifier, hoặc nếu bạn có nhiều action trên cùng một Track.</p>
+<p>Nếu bạn đổi tên hai track trên hai object khác nhau thành cùng một tên, chúng sẽ thành một phần của cùng một animation glTF và sẽ phát cùng nhau.</p>
+</section>
+<section id="scene">
+<h4>Scene<a class="headerlink" href="#scene" title="Link to this heading">¶</a></h4>
+<p>Dùng tùy chọn <a class="reference internal" href="#scene">Scene</a>, animation sẽ được xuất đúng như bạn thấy trong viewport. Bạn có thể chọn xuất một animation glTF duy nhất, hoặc từng object riêng biệt.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nhớ rằng chỉ một số loại animation nhất định được hỗ trợ:</p>
+<ul class="simple">
+<li><p>Transform của object (location, rotation, scale)</p></li>
+<li><p>Pose bone</p></li>
+<li><p>Giá trị shape key</p></li>
+</ul>
+<p>Animation của các thuộc tính khác, như physics, đèn hoặc material, sẽ bị bỏ qua.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để lấy mẫu (sample) animation shape key được điều khiển bởi driver dùng biến đổi bone, chúng phải nằm trên một mesh object là con trực tiếp của armature chứa các bone đó.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Chỉ chế độ <a class="reference internal" href="#actions-default">Actions (default)</a> và <a class="reference internal" href="#active-actions-merged">Active Actions merged</a> mới xử lý được animation không lấy mẫu.</p>
+</div>
+</section>
+</section>
+</section>
+<section id="animation-pointer">
+<h2>Animation Pointer<a class="headerlink" href="#animation-pointer" title="Link to this heading">¶</a></h2>
+<p>Animation Pointer là cách xuất một số thuộc tính của material, đèn hoặc camera thành animation. Đây là tính năng thử nghiệm.</p>
+<p>Custom Property (extras trong glTF) có thể được tạo animation, nhưng hiện chỉ cho một thành phần dữ liệu (float, int, bool).</p>
+</section>
+<section id="file-format-variations">
+<h2>File Format Variations<a class="headerlink" href="#file-format-variations" title="Link to this heading">¶</a></h2>
+<p>Đặc tả glTF xác định nhiều cách khác nhau để lưu dữ liệu. Bộ import xử lý được tất cả các cách này. Bộ export sẽ yêu cầu người dùng chọn một trong các dạng sau:</p>
+<section id="gltf-binary-glb">
+<h3>glTF Binary (<code class="docutils literal notranslate"><span class="pre">.glb</span></code>)<a class="headerlink" href="#gltf-binary-glb" title="Link to this heading">¶</a></h3>
+<p>Cách này tạo ra một file <code class="docutils literal notranslate"><span class="pre">.glb</span></code> duy nhất với toàn bộ mesh data, image texture và thông tin liên quan được đóng gói vào một file binary duy nhất.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Việc dùng một file duy nhất giúp dễ dàng chia sẻ hoặc sao chép mô hình sang các hệ thống và dịch vụ khác.</p>
+</div>
+</section>
+<section id="gltf-separate-gltf-bin-textures">
+<h3>glTF Separate (<code class="docutils literal notranslate"><span class="pre">.gltf</span></code> + <code class="docutils literal notranslate"><span class="pre">.bin</span></code> + textures)<a class="headerlink" href="#gltf-separate-gltf-bin-textures" title="Link to this heading">¶</a></h3>
+<p>Cách này tạo ra một file <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> dạng văn bản JSON mô tả cấu trúc tổng thể, cùng một file <code class="docutils literal notranslate"><span class="pre">.bin</span></code> chứa mesh và dữ liệu vector, và tùy chọn một số file <code class="docutils literal notranslate"><span class="pre">.png</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">.jpg</span></code> chứa image texture được tham chiếu bởi file <code class="docutils literal notranslate"><span class="pre">.gltf</span></code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Việc có một bộ các file riêng biệt giúp người dùng dễ dàng quay lại chỉnh sửa bất kỳ JSON hoặc ảnh nào sau khi xuất xong.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Lưu ý rằng việc chia sẻ định dạng này đòi hỏi phải chia sẻ tất cả các file riêng biệt này cùng nhau như một nhóm.</p>
+</div>
+</section>
+<section id="gltf-embedded-gltf">
+<h3>glTF Embedded (<code class="docutils literal notranslate"><span class="pre">.gltf</span></code>)<a class="headerlink" href="#gltf-embedded-gltf" title="Link to this heading">¶</a></h3>
+<p>Cách này tạo ra một file <code class="docutils literal notranslate"><span class="pre">.gltf</span></code> dạng văn bản JSON, với toàn bộ mesh data và image data được mã hóa (dùng Base64) bên trong file. Dạng này hữu ích khi tài sản phải được chia sẻ qua kết nối chỉ hỗ trợ văn bản thuần.</p>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Đây là dạng kém hiệu quả nhất trong các dạng có sẵn và chỉ nên dùng khi bắt buộc. Chỉ khả dụng khi bạn đã kích hoạt nó trong tùy chỉnh của add-on.</p>
+</div>
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
+<section id="id2">
+<h3>Import<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Merge Vertices</dt><dd><p>Định dạng glTF yêu cầu normals không liên tục, UV và các thuộc tính vertex khác phải được lưu thành các vertex riêng biệt, đúng như yêu cầu khi render trên phần cứng đồ họa thông thường. Tùy chọn này cố gắng gộp các vertex cùng vị trí khi có thể. Hiện tại không thể gộp các vertex có normals khác nhau.</p>
+</dd>
+<dt>Shading</dt><dd><p>Cách normals được tính khi import.</p>
+</dd>
+<dt>Lighting Mode</dt><dd><p>Tương thích ngược tùy chọn cho các render engine không chuẩn. Áp dụng cho đèn. Standard: đơn vị chiếu sáng glTF dựa trên vật lý (cd, lx, nt). Unitless: chiếu sáng phi vật lý, không đơn vị. Hữu ích khi không có điều khiển exposure. Raw (Đã lỗi thời): cường độ chiếu sáng của Blender không chuyển đổi</p>
+</dd>
+</dl>
+<section id="texture">
+<h4>Texture<a class="headerlink" href="#texture" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Pack Images</dt><dd><p>Đóng gói tất cả ảnh vào file .blend.</p>
+</dd>
+<dt>Import WebP textures</dt><dd><p>Nếu một texture tồn tại ở định dạng WebP, nạp texture WebP thay cho bản thay thế png/jpg.</p>
+</dd>
+<dt>Import unused Materials &amp; Textures</dt><dd><p>Import mọi material và texture, kể cả khi chúng không được dùng trong scene.</p>
+</dd>
+</dl>
+</section>
+<section id="bones-skin">
+<h4>Bones &amp; Skin<a class="headerlink" href="#bones-skin" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Bone Direction</dt><dd><p>Thay đổi thuật toán heuristic mà bộ import dùng để quyết định vị trí đặt đỉnh bone. Lưu ý rằng thiết lập Fortune có thể gây sai lệch trong các mô hình dùng co giãn không đồng đều. Ngoài ra, thiết lập này thuần túy về thẩm mỹ. Giá trị mặc định sẽ không đổi trục và tốt nhất khi xuất lại từ Blender. Tùy chọn mặc định này sẽ thay đổi chế độ hiển thị (thêm shape và đổi đường quan hệ) để có góc nhìn đẹp hơn, ngay cả khi trục bone gốc không chính xác nhất (về mặt thẩm mỹ)</p>
+</dd>
+<dt>Guess Original Bind Pose</dt><dd><p>Xác định pose cho bone (và do đó là skinned mesh) trong Edit Mode. Khi bật, sẽ cố đoán pose đã dùng để tính các ma trận bind ngược.</p>
+</dd>
+<dt>Disable Bone Shape</dt><dd><p>Không hiển thị shape của bone trong 3D View.</p>
+</dd>
+<dt>Bone Shape Scale</dt><dd><p>Tỉ lệ phóng của shape bone trong 3D View.</p>
+</dd>
+</dl>
+</section>
+<section id="pipeline">
+<h4>Pipeline<a class="headerlink" href="#pipeline" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Import Scenes as Collections</dt><dd><p>Import scene glTF thành collection. Đây là mặc định. Với việc import một scene duy nhất, mọi object được tạo trong collection đang hoạt động. Với việc import nhiều scene, mỗi scene được import thành một collection. Các scene không phải mặc định bị loại khỏi View Layer. Nếu có node mồ côi (không thuộc scene nào), một Orphan Collection sẽ được tạo (cũng bị loại khỏi View Layer). Khi tắt, scene glTF được import vào scene đang hoạt động của Blender. Các scene glTF khác được import thành Scene Blender mới.</p>
+</dd>
+<dt>Select Imported Objects</dt><dd><p>Chọn các object đã tạo sau khi import.</p>
+</dd>
+<dt>Import Scene Extras</dt><dd><p>Import extras glTF thành custom property, ở cấp scene.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="id3">
+<h3>Export<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Format</dt><dd><p>Xem: <a class="reference internal" href="#file-format-variations">File Format Variations</a>.</p>
+</dd>
+<dt>Keep Original</dt><dd><p>Chỉ dành cho định dạng file glTF Separate. Giữ nguyên file texture gốc nếu có thể. Cảnh báo: nếu bạn dùng nhiều hơn một texture ở nơi chuẩn PBR chỉ yêu cầu một, thì chỉ một texture được sử dụng. Điều này có thể dẫn đến kết quả ngoài ý muốn</p>
+</dd>
+<dt>Textures</dt><dd><p>Chỉ dành cho định dạng file glTF Separate. Thư mục để đặt các file texture vào. Tương đối so với file gltf.</p>
+</dd>
+<dt>Copyright</dt><dd><p>Quyền và điều kiện pháp lý cho mô hình.</p>
+</dd>
+<dt>Remember Export Settings</dt><dd><p>Lưu các cài đặt xuất vào file .blend để chúng được gọi lại vào lần sau khi file được mở.</p>
+</dd>
+</dl>
+<section id="include">
+<h4>Include<a class="headerlink" href="#include" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Selected Objects</dt><dd><p>Chỉ xuất các object được chọn.</p>
+</dd>
+<dt>Visible Objects</dt><dd><p>Chỉ xuất các object nhìn thấy được.</p>
+</dd>
+<dt>Renderable Objects</dt><dd><p>Chỉ xuất các object khả dụng khi render.</p>
+</dd>
+<dt>Active Collection</dt><dd><p>Chỉ xuất các object từ collection đang hoạt động.</p>
+</dd>
+<dt>Include Nested Collections</dt><dd><p>Chỉ khi Active Collection được bật. Khi bật, xuất đệ quy các object trong các collection lồng nhau của collection đang hoạt động.</p>
+</dd>
+<dt>Active Scene</dt><dd><p>Chỉ xuất scene đang hoạt động.</p>
+</dd>
+<dt>Custom Properties</dt><dd><p>Xuất custom property thành extras glTF.</p>
+</dd>
+<dt>Cameras</dt><dd><p>Xuất camera.</p>
+</dd>
+<dt>Punctual Lights</dt><dd><p>Xuất đèn directional, point và spot. Dùng glTF extension <code class="docutils literal notranslate"><span class="pre">KHR_lights_punctual</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="transform">
+<h4>Transform<a class="headerlink" href="#transform" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Y hướng lên</dt><dd><p>Xuất theo quy ước glTF, +Y hướng lên.</p>
+</dd>
+</dl>
+</section>
+<section id="data-scene-graph">
+<h4>Data - Scene Graph<a class="headerlink" href="#data-scene-graph" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Geometry Nodes Instances</dt><dd><p>Xuất các instance của Geometry Nodes. Tính năng này mang tính thử nghiệm.</p>
+</dd>
+<dt>GPU Instances</dt><dd><p>Xuất bằng extension <code class="docutils literal notranslate"><span class="pre">EXT_mesh_gpu_instancing</span></code>.</p>
+</dd>
+<dt>Flatten Object Hierarchy</dt><dd><p>Hữu ích trong trường hợp ma trận TRS không thể phân rã. Chỉ skinned mesh mới giữ là con của armature.</p>
+</dd>
+<dt>Full Collection Hierarchy</dt><dd><p>Xuất collection thành empty, giữ nguyên toàn bộ hệ thống cấp bậc. Nếu một object nằm trong nhiều collection, nó chỉ được xuất một lần, ở collection đầu tiên nó được tìm thấy.</p>
+</dd>
+</dl>
+</section>
+<section id="data-mesh">
+<h4>Data - Mesh<a class="headerlink" href="#data-mesh" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Apply Modifiers</dt><dd><p>Xuất object bằng mesh đã tính toán (evaluated), nghĩa là mesh kết quả sau khi tất cả <a class="reference internal" href="../modeling/modifiers/index.html"><span class="doc">Modifiers</span></a> đã được tính.</p>
+</dd>
+<dt>UVs</dt><dd><p>Xuất UV (tọa độ texture) cùng mesh.</p>
+</dd>
+<dt>Normals</dt><dd><p>Xuất vertex normals cùng mesh.</p>
+</dd>
+<dt>Tangents</dt><dd><p>Xuất vertex tangents cùng mesh.</p>
+</dd>
+<dt>Attributes</dt><dd><p>Xuất Attribute cùng mesh khi tên bắt đầu bằng dấu gạch dưới.</p>
+</dd>
+<dt>Loose Edges</dt><dd><p>Xuất các loose edge thành line, dùng material từ material slot đầu tiên.</p>
+</dd>
+<dt>Loose Points</dt><dd><p>Xuất các loose point thành point glTF, dùng material từ material slot đầu tiên.</p>
+</dd>
+<dt>Shared Accessor</dt><dd><p>Đối với tam giác, dùng accessor chung cho các chỉ số (index). Cách này hiệu quả hơn (file nhỏ hơn khi bạn có rất nhiều material).</p>
+</dd>
+</dl>
+</section>
+<section id="data-mesh-vertex-color">
+<h4>Data - Mesh - Vertex Color<a class="headerlink" href="#data-mesh-vertex-color" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Use Vertex Color</dt><dd><dl class="field-list simple">
+<dt class="field-odd">Material<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Xuất vertex color khi được dùng trong material node tree làm hệ số nhân Base Color. Đây là mặc định và chính xác nhất theo đặc tả glTF.</p>
+</dd>
+<dt class="field-even">Active<span class="colon">:</span></dt>
+<dd class="field-even"><p>Xuất vertex color đang hoạt động, kể cả khi không được dùng trong material node tree. Một trình xem glTF hoàn toàn tuân thủ đặc tả sẽ hiển thị VC này như hệ số nhân Base Color.</p>
+</dd>
+<dt class="field-odd">Name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Xuất vertex color với tên đã cho. Một trình xem glTF hoàn toàn tuân thủ đặc tả sẽ hiển thị VC này như hệ số nhân Base Color.</p>
+</dd>
+<dt class="field-even">None<span class="colon">:</span></dt>
+<dd class="field-even"><p>Không xuất vertex color.</p>
+</dd>
+</dl>
+</dd>
+<dt>Export all vertex colors</dt><dd><p>Xuất tất cả vertex color, các VC bổ sung sẽ là COLOR_1, COLOR_2, v.v.</p>
+</dd>
+<dt>Export active vertex color when no material</dt><dd><p>Xuất vertex color đang hoạt động khi không có material nào được gán cho object.</p>
+</dd>
+</dl>
+</section>
+<section id="data-material">
+<h4>Data - Material<a class="headerlink" href="#data-material" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Materials</dt><dd><dl class="field-list simple">
+<dt class="field-odd">Export<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Xuất material đầy đủ, bao gồm mọi texture và shader từ node tree.</p>
+</dd>
+<dt class="field-even">Placeholder<span class="colon">:</span></dt>
+<dd class="field-even"><p>Chỉ xuất material placeholder, không kèm texture hay shader. Các primitive không bị gộp, nên thông tin material slot được giữ lại.</p>
+</dd>
+<dt class="field-odd">Viewport<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chỉ xuất material của viewport (Base Color, Roughness và Metalness).</p>
+</dd>
+<dt class="field-even">No Export<span class="colon">:</span></dt>
+<dd class="field-even"><p>Không xuất material. Các primitive bị gộp, làm mất thông tin material slot.</p>
+</dd>
+</dl>
+</dd>
+<dt>Images</dt><dd><p>Định dạng đầu ra cho ảnh. PNG là không hao chất lượng (lossless) và thường được ưa chuộng, nhưng JPEG có thể thích hợp hơn cho các ứng dụng web nhờ kích thước file nhỏ hơn. Nếu chọn WebP, mọi texture sẽ được lưu thành WebP, không có bản thay thế png/jpg. Nếu chọn None, material được xuất không kèm texture.</p>
+</dd>
+<dt>Image Quality</dt><dd><p>Chất lượng của file xuất, khi xuất file jpeg hoặc WebP.</p>
+</dd>
+<dt>Create WebP</dt><dd><p>Tạo texture WebP cho mọi texture, bên cạnh texture hiện có. Với texture đã là WebP, không có gì xảy ra.</p>
+</dd>
+<dt>WebP fallback</dt><dd><p>Với mọi texture WebP, tạo một texture thay thế dạng png.</p>
+</dd>
+<dt>Unused images</dt><dd><p>Xuất những ảnh không được dùng trong bất kỳ material nào.</p>
+</dd>
+<dt>Unused textures</dt><dd><p>Xuất thông tin texture (sampler, image, texcoord) không được dùng trong bất kỳ material nào.</p>
+</dd>
+</dl>
+</section>
+<section id="data-shape-keys">
+<h4>Data - Shape Keys<a class="headerlink" href="#data-shape-keys" title="Link to this heading">¶</a></h4>
+<p>Xuất shape key (morph target).</p>
+<dl class="simple">
+<dt>Shape Key Normals</dt><dd><p>Xuất vertex normals cùng shape key (morph target).</p>
+</dd>
+<dt>Shape Key Tangents</dt><dd><p>Xuất vertex tangents cùng shape key (morph target).</p>
+</dd>
+</dl>
+</section>
+<section id="data-shape-keys-optimize">
+<h4>Data - Shape Keys - Optimize<a class="headerlink" href="#data-shape-keys-optimize" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Use Sparse Accessor if better</dt><dd><p>Sparse Accessor sẽ được dùng nếu nó tiết kiệm dung lượng (nếu file xuất nhỏ hơn)</p>
+</dd>
+<dt>Omitting Sparse Accessor if data is empty</dt><dd><p>Nếu dữ liệu trống, bỏ qua việc xuất Sparse Accessor. Không phải trình xem nào cũng xử lý đúng nó, nên tùy chọn này mặc định Tắt</p>
+</dd>
+</dl>
+</section>
+<section id="data-armature">
+<h4>Data - Armature<a class="headerlink" href="#data-armature" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Use Rest Position Armature</dt><dd><p>Xuất Armature dùng rest position làm rest pose cho joint. Khi Tắt, pose của frame hiện tại được dùng làm rest pose.</p>
+</dd>
+<dt>Export Deformation Bones only</dt><dd><p>Chỉ xuất bone Deformation, không xuất các bone khác. Animation cho bone deformation được bake.</p>
+</dd>
+<dt>Remove Armature Object</dt><dd><p>Xóa object Armature nếu có thể. Nếu một armature nào đó có nhiều root bone, ta không thể xóa chúng.</p>
+</dd>
+<dt>Flatten Bone Hierarchy</dt><dd><p>Hữu ích trong trường hợp ma trận TRS không thể phân rã.</p>
+</dd>
+</dl>
+</section>
+<section id="data-skinning">
+<h4>Data - Skinning<a class="headerlink" href="#data-skinning" title="Link to this heading">¶</a></h4>
+<p>Xuất dữ liệu skinning</p>
+<dl class="simple">
+<dt>Bone influences</dt><dd><p>Số ảnh hưởng joint-vertex sẽ được xuất. Mô hình có thể hiển thị sai trong nhiều trình xem nếu giá trị khác 4 hoặc 8.</p>
+</dd>
+<dt>Include All Bone Influences</dt><dd><p>Xuất tất cả ảnh hưởng joint-vertex. Mô hình có thể hiển thị sai trong nhiều trình xem.</p>
+</dd>
+</dl>
+</section>
+<section id="data-lighting">
+<h4>Data - Lighting<a class="headerlink" href="#data-lighting" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Lighting Mode</dt><dd><p>Tương thích ngược tùy chọn cho các render engine không chuẩn. Áp dụng cho đèn. Standard: đơn vị chiếu sáng glTF dựa trên vật lý (cd, lx, nt). Unitless: chiếu sáng phi vật lý, không đơn vị. Hữu ích khi không có điều khiển exposure. Raw (Đã lỗi thời): cường độ chiếu sáng của Blender không chuyển đổi</p>
+</dd>
+</dl>
+</section>
+<section id="data-draco-compression">
+<h4>Data - Draco Compression<a class="headerlink" href="#data-draco-compression" title="Link to this heading">¶</a></h4>
+<p>Nén mesh bằng Google Draco.</p>
+<dl class="simple">
+<dt>Compression Level</dt><dd><p>Mức nén cao hơn khiến mã hóa và giải mã chậm hơn.</p>
+</dd>
+<dt>Quantization Position</dt><dd><p>Giá trị cao hơn cho tỷ lệ nén tốt hơn.</p>
+</dd>
+<dt>Normal</dt><dd><p>Giá trị cao hơn cho tỷ lệ nén tốt hơn.</p>
+</dd>
+<dt>Texture Coordinates</dt><dd><p>Giá trị cao hơn cho tỷ lệ nén tốt hơn.</p>
+</dd>
+<dt>Color</dt><dd><p>Giá trị cao hơn cho tỷ lệ nén tốt hơn.</p>
+</dd>
+<dt>Generic</dt><dd><p>Giá trị cao hơn cho tỷ lệ nén tốt hơn.</p>
+</dd>
+</dl>
+</section>
+<section id="data-meshopt-compression">
+<h4>Data - Meshopt Compression<a class="headerlink" href="#data-meshopt-compression" title="Link to this heading">¶</a></h4>
+<p>Nén bằng Meshoptimizer.</p>
+<dl class="simple">
+<dt>Meshopt Extension</dt><dd><p>Chọn giữa extension <code class="docutils literal notranslate"><span class="pre">EXT_meshopt_compression</span></code> và <code class="docutils literal notranslate"><span class="pre">KHR_meshopt_compression</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="animation">
+<h4>Animation<a class="headerlink" href="#animation" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Animation mode</dt><dd><p>Chế độ animation dùng khi xuất (Xem <a class="reference internal" href="#animations">Animations</a>)</p>
+</dd>
+</dl>
+</section>
+<section id="animation-bake-merge">
+<h4>Animation - Bake &amp; Merge<a class="headerlink" href="#animation-bake-merge" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Bake All Objects Animations</dt><dd><p>Hữu ích khi một số object bị ràng buộc bởi constraint nhưng bản thân chúng không được tạo animation.</p>
+</dd>
+<dt>Merge Animation</dt><dd><p>Chế độ gộp animation. Có thể theo Action (dùng slot), theo tên NLA Track, hoặc không gộp. Khi gộp theo tên NLA Track, mọi animation có cùng tên NLA Track sẽ được gộp. Khi gộp theo Action, mọi animation dùng cùng một action sẽ được gộp. Khi không gộp, tất cả animation sẽ được xuất thành các animation riêng biệt.</p>
+</dd>
+</dl>
+</section>
+<section id="animation-rest-ranges">
+<h4>Animation - Rest &amp; Ranges<a class="headerlink" href="#animation-rest-ranges" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Use Current Frame as Object Rest Transformations</dt><dd><p>Xuất scene ở frame animation hiện tại. Khi tắt, frame 0 được dùng làm transform rest cho object.</p>
+</dd>
+<dt>Limit to Playback Range</dt><dd><p>Cắt animation theo phạm vi phát đã chọn.</p>
+</dd>
+<dt>Set all glTF Animation starting at 0</dt><dd><p>Đặt mọi animation glTF bắt đầu từ 0. Có thể hữu ích cho animation lặp vòng</p>
+</dd>
+<dt>Negative Frames</dt><dd><p>Khi một số frame nằm trong khoảng âm, trượt hoặc cắt bớt animation.</p>
+</dd>
+</dl>
+</section>
+<section id="animation-armature">
+<h4>Animation - Armature<a class="headerlink" href="#animation-armature" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Export all Armature Actions</dt><dd><p>Xuất tất cả action được gắn với một armature duy nhất. Cảnh báo: Tùy chọn không hỗ trợ xuất khi có nhiều armature.</p>
+</dd>
+<dt>Reset pose bones between actions</dt><dd><p>Đặt lại pose bone giữa mỗi action được xuất. Điều này cần thiết khi một số bone không được key trên một số animation.</p>
+</dd>
+</dl>
+</section>
+<section id="animation-shape-keys">
+<h4>Animation - Shape Keys<a class="headerlink" href="#animation-shape-keys" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Shape Keys Animations</dt><dd><p>Xuất animation Shape Key. Cần Shape Key được xuất (Xem <a class="reference internal" href="#data-shape-keys">Data - Shape Keys</a>)</p>
+</dd>
+<dt>Reset Shape Keys between actions</dt><dd><p>Đặt lại Shape Key giữa mỗi action được xuất. Điều này cần thiết khi một số shape key không được key trên một số animation.</p>
+</dd>
+</dl>
+</section>
+<section id="animation-sampling">
+<h4>Animation - Sampling<a class="headerlink" href="#animation-sampling" title="Link to this heading">¶</a></h4>
+<p>Áp dụng lấy mẫu (sampling) cho mọi animation. Không lấy mẫu animation có thể dẫn đến xuất animation sai.</p>
+<dl class="simple">
+<dt>Sampling Rate</dt><dd><p>Tần suất lấy giá trị có animation (tính bằng frame).</p>
+</dd>
+<dt>Sampling Interpolation Fallback</dt><dd><p>Nội suy (interpolation) được chọn cho các thuộc tính không được key (LINEAR hoặc STEP/CONSTANT)</p>
+</dd>
+</dl>
+</section>
+<section id="id4">
+<h4>Animation - Pointer<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
+<p>Tùy chọn này cho phép xuất một số animation thuộc tính của material, đèn và camera hợp lệ trong glTF.</p>
+<dl class="simple">
+<dt>Animation Pointer (Experimental)</dt><dd><p>Xuất một số animation thuộc tính của material, đèn và camera hợp lệ trong glTF. Đây là tính năng thử nghiệm và chưa phải mọi thuộc tính đều được hỗ trợ.</p>
+</dd>
+<dt>Convert TRS/Weights to Animation Pointer</dt><dd><p>Chuyển TRS và Shape Key thành animation pointer</p>
+</dd>
+</dl>
+</section>
+<section id="animation-optimize">
+<h4>Animation - Optimize<a class="headerlink" href="#animation-optimize" title="Link to this heading">¶</a></h4>
+<dl class="simple">
+<dt>Optimize Animation Size</dt><dd><p>Giảm kích thước file xuất bằng cách loại bỏ các keyframe trùng lặp khi tất cả đều giống hệt nhau.</p>
+</dd>
+<dt>Force keeping channel for armature / bones</dt><dd><p>nếu mọi keyframe trong một rig đều giống hệt nhau, vẫn bắt buộc giữ lại animation tối thiểu.</p>
+</dd>
+<dt>Force keeping channel for objects</dt><dd><p>nếu mọi keyframe của transform object đều giống hệt nhau, vẫn bắt buộc giữ lại animation tối thiểu.</p>
+</dd>
+<dt>Disable viewport for other objects</dt><dd><p>Khi xuất animation, tắt viewport cho các object khác vì lý do hiệu năng, khi có thể.</p>
+</dd>
+</dl>
+</section>
+<section id="animation-filter">
+<h4>Animation - Filter<a class="headerlink" href="#animation-filter" title="Link to this heading">¶</a></h4>
+<p>Giới hạn các action được xuất cho những action khớp với bộ lọc.</p>
+</section>
+</section>
+</section>
+<section id="collection-exporters">
+<h2>Collection Exporters<a class="headerlink" href="#collection-exporters" title="Link to this heading">¶</a></h2>
+<p>Bộ export này có thể được dùng như một collection exporter. Xem <a class="reference internal" href="../scene_layout/collections/collections.html"><span class="doc">Collections</span></a> để biết thêm thông tin về collection và các exporter của chúng.</p>
+<p>Dưới đây là các tùy chọn và điểm đặc thù khi xuất collection:</p>
+<ul class="simple">
+<li><p>Phần các tùy chọn Include không khả dụng cho collection exporter (giống như mọi exporter khác).</p></li>
+<li><p>Tùy chọn xuất tại tâm collection (tại trọng tâm của tất cả root object của collection).</p></li>
+<li><p>Custom Property của collection được xuất thành extras glTF cấp Scene.</p></li>
+</ul>
+</section>
+<section id="contributing">
+<h2>Đóng góp<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
+<p>Bộ import/export này được phát triển qua <a class="reference external" href="https://github.com/KhronosGroup/glTF-Blender-IO">kho lưu trữ glTF-Blender-IO</a>, nơi bạn có thể gửi báo cáo lỗi, đề xuất tính năng hoặc đóng góp mã nguồn.</p>
+<p>Thảo luận và phát triển chính định dạng glTF 2.0 diễn ra trên <a class="reference external" href="https://github.com/KhronosGroup/glTF">kho lưu trữ GitHub glTF</a> của Khronos Group, và phản hồi tại đó luôn được chào đón.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="ui_translations.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Manage UI Translations</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="rigify/feature_sets.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Feature Sets</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/addons/scene_gltf2.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Faddons/scene_gltf2"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Faddons/scene_gltf2.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Faddons/scene_gltf2.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">glTF 2.0</a><ul>
+<li><a class="reference internal" href="#enabling-add-on">Bật Add-on</a></li>
+<li><a class="reference internal" href="#usage">Cách dùng</a></li>
+<li><a class="reference internal" href="#meshes">Meshes</a><ul>
+<li><a class="reference internal" href="#gpu-instances">GPU Instances</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#materials">Materials</a><ul>
+<li><a class="reference internal" href="#imported-materials">Material được import</a></li>
+<li><a class="reference internal" href="#exported-materials">Material được xuất</a><ul>
+<li><a class="reference internal" href="#base-color">Base Color</a></li>
+<li><a class="reference internal" href="#metallic-and-roughness">Metallic và Roughness</a></li>
+<li><a class="reference internal" href="#baked-ambient-occlusion">Baked Ambient Occlusion</a></li>
+<li><a class="reference internal" href="#normal-map">Normal Map</a></li>
+<li><a class="reference internal" href="#emissive">Emissive</a></li>
+<li><a class="reference internal" href="#clearcoat">Clearcoat</a></li>
+<li><a class="reference internal" href="#sheen">Sheen</a></li>
+<li><a class="reference internal" href="#specular">Specular</a></li>
+<li><a class="reference internal" href="#anisotropy">Anisotropy</a></li>
+<li><a class="reference internal" href="#transmission">Transmission</a></li>
+<li><a class="reference internal" href="#ior">IOR</a></li>
+<li><a class="reference internal" href="#volume">Volume</a></li>
+<li><a class="reference internal" href="#dispersion">Dispersion</a></li>
+<li><a class="reference internal" href="#iridescence">Iridescence</a></li>
+<li><a class="reference internal" href="#gltf-variants">glTF Variants</a></li>
+<li><a class="reference internal" href="#gltf-variants-switching">Chuyển đổi glTF Variants</a></li>
+<li><a class="reference internal" href="#gltf-variants-creation">Tạo glTF Variants</a></li>
+<li><a class="reference internal" href="#advanced-gltf-variant-checks">Kiểm tra glTF Variant nâng cao</a></li>
+<li><a class="reference internal" href="#double-sided-backface-culling">Double-Sided / Backface Culling</a></li>
+<li><a class="reference internal" href="#alpha-modes">Các chế độ Alpha</a></li>
+<li><a class="reference internal" href="#uv-mapping">Ánh xạ UV</a></li>
+<li><a class="reference internal" href="#factors">Hệ số</a></li>
+<li><a class="reference internal" href="#example">Ví dụ</a></li>
+<li><a class="reference internal" href="#udim">UDIM</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exporting-a-shadeless-unlit-material">Xuất Material Shadeless (Unlit)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lights">Lights</a><ul>
+<li><a class="reference internal" href="#light-color">Màu đèn</a></li>
+<li><a class="reference internal" href="#light-intensity">Cường độ đèn</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extensions">Extensions</a><ul>
+<li><a class="reference internal" href="#third-party-gltf-extensions">glTF Extension của bên thứ ba</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-properties">Custom Properties</a></li>
+<li><a class="reference internal" href="#animations">Animations</a><ul>
+<li><a class="reference internal" href="#import">Import</a></li>
+<li><a class="reference internal" href="#export">Export</a><ul>
+<li><a class="reference internal" href="#actions-default">Actions (default)</a></li>
+<li><a class="reference internal" href="#active-actions-merged">Active Actions merged</a></li>
+<li><a class="reference internal" href="#nla-tracks">NLA Tracks</a></li>
+<li><a class="reference internal" href="#scene">Scene</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#animation-pointer">Animation Pointer</a></li>
+<li><a class="reference internal" href="#file-format-variations">File Format Variations</a><ul>
+<li><a class="reference internal" href="#gltf-binary-glb">glTF Binary (<code class="docutils literal notranslate"><span class="pre">.glb</span></code>)</a></li>
+<li><a class="reference internal" href="#gltf-separate-gltf-bin-textures">glTF Separate (<code class="docutils literal notranslate"><span class="pre">.gltf</span></code> + <code class="docutils literal notranslate"><span class="pre">.bin</span></code> + textures)</a></li>
+<li><a class="reference internal" href="#gltf-embedded-gltf">glTF Embedded (<code class="docutils literal notranslate"><span class="pre">.gltf</span></code>)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#properties">Properties</a><ul>
+<li><a class="reference internal" href="#id2">Import</a><ul>
+<li><a class="reference internal" href="#texture">Texture</a></li>
+<li><a class="reference internal" href="#bones-skin">Bones &amp; Skin</a></li>
+<li><a class="reference internal" href="#pipeline">Pipeline</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">Export</a><ul>
+<li><a class="reference internal" href="#include">Include</a></li>
+<li><a class="reference internal" href="#transform">Transform</a></li>
+<li><a class="reference internal" href="#data-scene-graph">Data - Scene Graph</a></li>
+<li><a class="reference internal" href="#data-mesh">Data - Mesh</a></li>
+<li><a class="reference internal" href="#data-mesh-vertex-color">Data - Mesh - Vertex Color</a></li>
+<li><a class="reference internal" href="#data-material">Data - Material</a></li>
+<li><a class="reference internal" href="#data-shape-keys">Data - Shape Keys</a></li>
+<li><a class="reference internal" href="#data-shape-keys-optimize">Data - Shape Keys - Optimize</a></li>
+<li><a class="reference internal" href="#data-armature">Data - Armature</a></li>
+<li><a class="reference internal" href="#data-skinning">Data - Skinning</a></li>
+<li><a class="reference internal" href="#data-lighting">Data - Lighting</a></li>
+<li><a class="reference internal" href="#data-draco-compression">Data - Draco Compression</a></li>
+<li><a class="reference internal" href="#data-meshopt-compression">Data - Meshopt Compression</a></li>
+<li><a class="reference internal" href="#animation">Animation</a></li>
+<li><a class="reference internal" href="#animation-bake-merge">Animation - Bake &amp; Merge</a></li>
+<li><a class="reference internal" href="#animation-rest-ranges">Animation - Rest &amp; Ranges</a></li>
+<li><a class="reference internal" href="#animation-armature">Animation - Armature</a></li>
+<li><a class="reference internal" href="#animation-shape-keys">Animation - Shape Keys</a></li>
+<li><a class="reference internal" href="#animation-sampling">Animation - Sampling</a></li>
+<li><a class="reference internal" href="#id4">Animation - Pointer</a></li>
+<li><a class="reference internal" href="#animation-optimize">Animation - Optimize</a></li>
+<li><a class="reference internal" href="#animation-filter">Animation - Filter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#collection-exporters">Collection Exporters</a></li>
+<li><a class="reference internal" href="#contributing">Đóng góp</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

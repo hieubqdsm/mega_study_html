@@ -1,0 +1,923 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="copyright" title="Bản quyền" href="../../copyright.html"><link rel="next" title="Curves Sculpting" href="../curves_sculpting/index.html"><link rel="prev" title="Sử dụng Vertex Group" href="usage.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/sculpt_paint/weight_paint/editing.html">
+        <link rel="prefetch" href="../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Chỉnh sửa Weight Paint - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../"></div>
+<script src="../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/sculpt_paint/weight_paint/editing.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="editing-weight-paint">
+<h1>Chỉnh sửa Weight Paint<a class="headerlink" href="#editing-weight-paint" title="Link to this heading">¶</a></h1>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Edit Mode và Weight Paint Mode</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weights</span></p>
+</dd>
+</dl>
+</div>
+<figure class="align-right" id="id8">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_panel.png" src="../../_images/sculpt-paint_weight-paint_editing_panel.png" />
+<figcaption>
+<p><span class="caption-text">Các công cụ Weight Paint.</span><a class="headerlink" href="#id8" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Blender cung cấp một bộ công cụ hỗ trợ cho Weight Painting.</p>
+<p class="rubric" id="sculpt-paint-weight-paint-editing-subset">Tùy chọn Subset</p>
+<p>Một số công cụ còn cung cấp bộ lọc Subset để giới hạn chức năng của chúng chỉ cho các vertex group cụ thể (trong panel <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a>, hiển thị sau khi công cụ được gọi) với các tùy chọn sau:</p>
+<ul class="simple">
+<li><p>Active Group</p></li>
+<li><p>Selected Pose Bones</p></li>
+<li><p>Deform Pose Bones</p></li>
+<li><p>All Groups</p></li>
+</ul>
+<p>Tất cả các công cụ cũng hoạt động với Vertex Selection Masking và Face Selection Masking. Trong các chế độ này, công cụ chỉ tác động lên các vertex hoặc face được chọn.</p>
+<section id="assign-from-bone-envelopes">
+<span id="bpy-ops-paint-weight-from-bones"></span><h2>Assign from Bone Envelopes<a class="headerlink" href="#assign-from-bone-envelopes" title="Link to this heading">¶</a></h2>
+<p>Áp dụng trọng số envelope của các bone được chọn vào vertex group đang được chọn.</p>
+</section>
+<section id="assign-automatic-from-bone">
+<h2>Assign Automatic from Bone<a class="headerlink" href="#assign-automatic-from-bone" title="Link to this heading">¶</a></h2>
+<p>Áp dụng từ các bone được chọn vào vertex group cùng các phương thức &quot;tự động gán trọng số&quot; giống như có sẵn trong menu Parent armature.</p>
+</section>
+<section id="normalize-all">
+<span id="bpy-ops-object-vertex-group-normalize-all"></span><h2>Normalize All<a class="headerlink" href="#normalize-all" title="Link to this heading">¶</a></h2>
+<p>Với mỗi vertex, công cụ này bảo đảm tổng các trọng số trên tất cả vertex group bằng 1. Công cụ này chuẩn hóa tất cả các vertex group, trừ các group bị khóa vốn giữ nguyên giá trị trọng số.</p>
+<dl class="simple">
+<dt>Lock Active</dt><dd><p>Giữ nguyên giá trị của group đang hoạt động trong khi chuẩn hóa tất cả các group khác.</p>
+</dd>
+</dl>
+</section>
+<section id="normalize">
+<span id="bpy-ops-object-vertex-group-normalize"></span><h2>Normalize<a class="headerlink" href="#normalize" title="Link to this heading">¶</a></h2>
+<p>Công cụ này chỉ tác động lên vertex group đang hoạt động. Tất cả vertex giữ nguyên trọng số tương đối của chúng, nhưng toàn bộ tập trọng số được co giãn sao cho giá trị trọng số cao nhất là 1.0.</p>
+<figure class="align-default" id="id9">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_normalize-example.png" src="../../_images/sculpt-paint_weight-paint_editing_normalize-example.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về Normalize.</span><a class="headerlink" href="#id9" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="mirror">
+<span id="bpy-ops-object-vertex-group-mirror"></span><h2>Mirror<a class="headerlink" href="#mirror" title="Link to this heading">¶</a></h2>
+<p>Công cụ <em>Mirror Vertex Group</em> đối xứng hóa các trọng số từ một bên của mesh đối xứng hoàn hảo sang bên kia. Những vertex không có vertex tương ứng ở bên kia sẽ không bị ảnh hưởng. Nhưng lưu ý, các trọng số không được chuyển sang group trọng số bone đối diện tương ứng.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Phép đối xứng hóa chỉ hoạt động khi tư thế nghỉ (rest pose) của object đối xứng hoàn hảo qua trục X.</p>
+</div>
+<figure class="align-default" id="id10">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_mirror-example.png" src="../../_images/sculpt-paint_weight-paint_editing_mirror-example.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về Mirror.</span><a class="headerlink" href="#id10" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Mirror Weights</dt><dd><p>Khi tùy chọn này được bật, mỗi vertex được chọn sẽ nhận thông tin trọng số từ đỉnh đối xứng của nó. Nếu cả hai vertex đều được chọn, đó sẽ là một sự trao đổi thông tin trọng số; nếu chỉ một được chọn, thông tin từ vertex không được chọn sẽ ghi đè lên vertex được chọn. Thông tin trọng số chỉ được truyền cho group đang hoạt động, trừ khi <em>All Groups</em> được bật, khi đó nó được truyền cho tất cả các group.</p>
+</dd>
+<dt>Flip Group Names</dt><dd><p>Hoạt động với các vertex được chọn thuộc các vertex group có &quot;tên đối xứng&quot; (với các thành phần như &quot;L&quot;, &quot;R&quot;, &quot;right&quot;, &quot;left&quot;). Tất cả vertex được chọn thuộc group đang hoạt động, hoặc thuộc group đối xứng của group đang hoạt động, sẽ có việc gán của chúng vào group đó được thay bằng việc gán vào group đối xứng; tuy nhiên trọng số của chúng được giữ nguyên. Nếu <em>All Groups</em> được bật, mọi việc gán vào các loại group này sẽ được thay bằng group đối xứng tương ứng, cũng giữ nguyên trọng số cũ.</p>
+</dd>
+<dt>All Groups</dt><dd><p>Thao tác trên tất cả vertex group, thay vì chỉ group đang hoạt động.</p>
+</dd>
+<dt>Topology Mirror</dt><dd><p>Đối xứng hóa cho các mesh không đối xứng hoàn toàn (đối xứng gần đúng). Xem <a class="reference internal" href="../../modeling/meshes/tools/tool_settings.html#bpy-types-mesh-use-mirror-topology"><span class="std std-ref">đây</span></a> để biết thêm thông tin.</p>
+</dd>
+</dl>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Mirror to Opposite Bone</p>
+<p>Nếu bạn muốn tạo một group trọng số đối xứng cho bone đối diện (của một nhân vật đối xứng), bạn có thể làm như sau:</p>
+<ol class="arabic simple">
+<li><p>Xóa vertex group đích (nơi các trọng số đối xứng sẽ được đặt vào).</p></li>
+<li><p>Tạo một bản sao của vertex group bone nguồn (group chứa các trọng số bạn muốn sao chép).</p></li>
+<li><p>Đổi tên vertex group mới thành tên của vertex group đích (group bạn đã xóa ở trên).</p></li>
+<li><p>Chọn vertex group đích và gọi công cụ Mirror (chỉ dùng <em>Mirror Weights</em> và tùy chọn <em>Topology Mirror</em> nếu mesh của bạn không đối xứng).</p></li>
+</ol>
+</div>
+</section>
+<section id="invert">
+<span id="bpy-ops-object-vertex-group-invert"></span><h2>Invert<a class="headerlink" href="#invert" title="Link to this heading">¶</a></h2>
+<p>Thay mỗi trọng số của weight group được chọn bằng trọng số × -1.0.</p>
+<p>Các ví dụ:</p>
+<ul class="simple">
+<li><p>Giá trị gốc 1.0 chuyển thành 0.0</p></li>
+<li><p>Giá trị gốc 0.5 giữ nguyên 0.5</p></li>
+<li><p>Giá trị gốc 0.0 chuyển thành 1.0</p></li>
+</ul>
+<figure class="align-default" id="id11">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_invert-example.png" src="../../_images/sculpt-paint_weight-paint_editing_invert-example.png" />
+<figcaption>
+<p><span class="caption-text">Invert.</span><a class="headerlink" href="#id11" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Subset</dt><dd><p>Giới hạn công cụ vào một tập con. Xem ở trên <a class="reference internal" href="#sculpt-paint-weight-paint-editing-subset"><span class="std std-ref">Tùy chọn Subset</span></a> về cách định nghĩa các tập con.</p>
+</dd>
+<dt>Add Weights</dt><dd><p>Thêm các vertex chưa có trọng số trước khi đảo ngược (các trọng số này sẽ đều được đặt thành 1.0).</p>
+</dd>
+<dt>Remove Weights</dt><dd><p>Xóa các vertex khỏi vertex group nếu chúng bằng 0.0 sau khi đảo ngược.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Các vertex group bị khóa không bị ảnh hưởng.</p>
+</div>
+</section>
+<section id="clean">
+<span id="bpy-ops-object-vertex-group-clean"></span><h2>Clean<a class="headerlink" href="#clean" title="Link to this heading">¶</a></h2>
+<p>Clean Vertex Group Weights bỏ gán các vertex khỏi <a class="reference internal" href="../../modeling/meshes/properties/vertex_groups/index.html"><span class="doc">Vertex Group</span></a> có trọng số thấp hơn <em>Limit</em>. Loại bỏ các trọng số dưới một ngưỡng cho trước. Công cụ này hữu ích để làm sạch các weight group khỏi những trọng số rất thấp (hoặc bằng 0).</p>
+<p>Trong ví dụ hiển thị, giá trị cắt 0.2 được dùng (xem các tùy chọn của operator bên dưới) nên toàn bộ phần màu xanh được làm sạch.</p>
+<p>Lưu ý, các ảnh dùng tùy chọn Active của <em>Show Zero weights</em> để những trọng số không được tham chiếu hiển thị bằng màu đen.</p>
+<figure class="align-default" id="id12">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_clean-example.png" src="../../_images/sculpt-paint_weight-paint_editing_clean-example.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về Clean.</span><a class="headerlink" href="#id12" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Subset</dt><dd><p>Giới hạn công cụ vào một tập con. Xem ở trên <a class="reference internal" href="#sculpt-paint-weight-paint-editing-subset"><span class="std std-ref">Tùy chọn Subset</span></a> để biết cách định nghĩa các tập con.</p>
+</dd>
+<dt>Limit</dt><dd><p>Đây là giá trị trọng số tối thiểu sẽ được giữ lại trong group. Các trọng số thấp hơn giá trị này sẽ bị xóa khỏi group.</p>
+</dd>
+<dt>Keep Single</dt><dd><p>Bảo đảm công cụ <em>Clean</em> sẽ không tạo ra các vertex hoàn toàn không được tham chiếu (vertex không được gán vào vertex group nào), nên mỗi vertex sẽ giữ lại ít nhất một trọng số, kể cả khi nó thấp hơn giá trị giới hạn!</p>
+</dd>
+</dl>
+</section>
+<section id="quantize">
+<span id="bpy-ops-object-vertex-group-quantize"></span><h2>Quantize<a class="headerlink" href="#quantize" title="Link to this heading">¶</a></h2>
+<p>Operator này dùng một quá trình được gọi là <a class="reference external" href="https://en.wikipedia.org/wiki/Quantization">lượng tử hóa</a> vốn lấy các trọng số đầu vào và kẹp mỗi trọng số vào một số bậc nhất định giữa (0 - 1), nhờ đó không còn dải chuyển sắc mượt giữa các giá trị.</p>
+<figure class="align-default" id="id13">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_quantize-example.png" src="../../_images/sculpt-paint_weight-paint_editing_quantize-example.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về Quantize (Steps = 2).</span><a class="headerlink" href="#id13" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Steps</dt><dd><p>Số bậc giữa 0 và 1 để lượng tử hóa các trọng số vào đó. Ví dụ 5 sẽ cho phép các trọng số sau <code class="docutils literal notranslate"><span class="pre">[0.0,</span> <span class="pre">0.2,</span> <span class="pre">0.4,</span> <span class="pre">0.6,</span> <span class="pre">0.8,</span> <span class="pre">1.0]</span></code>.</p>
+</dd>
+</dl>
+</section>
+<section id="levels">
+<span id="bpy-ops-object-vertex-group-levels"></span><h2>Levels<a class="headerlink" href="#levels" title="Link to this heading">¶</a></h2>
+<p>Thêm một độ dịch và một hệ số co giãn vào tất cả trọng số của các weight group được chọn. Với công cụ này bạn có thể tăng hoặc giảm toàn bộ mức &quot;nhiệt&quot; của weight group.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Không trọng số nào bao giờ bị đặt thành giá trị trên 1.0 hoặc dưới 0.0 bất kể cài đặt ra sao.</p>
+</div>
+<figure class="align-default" id="id14">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_levels-example.png" src="../../_images/sculpt-paint_weight-paint_editing_levels-example.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về Levels.</span><a class="headerlink" href="#id14" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Subset</dt><dd><p>Giới hạn công cụ vào một tập con. Xem ở trên <a class="reference internal" href="#sculpt-paint-weight-paint-editing-subset"><span class="std std-ref">Tùy chọn Subset</span></a> để biết cách định nghĩa các tập con.</p>
+</dd>
+<dt>Offset</dt><dd><p>Một giá trị trong khoảng (-1.0 - 1.0) được cộng vào tất cả trọng số trong vertex group.</p>
+</dd>
+<dt>Gain</dt><dd><p>Tất cả trọng số trong Subset được nhân với hệ số khuếch đại (gain).</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Dù bạn chọn <em>Gain</em> và <em>Offset</em> ra sao, trong mọi trường hợp giá trị cuối cùng của mỗi trọng số đều bị kẹp vào khoảng (0.0 - 1.0). Vì vậy bạn sẽ không bao giờ nhận được trọng số âm hay vùng quá &quot;nóng&quot; (trọng số &gt; 1.0) với công cụ này.</p>
+</div>
+</section>
+<section id="smooth">
+<span id="bpy-ops-object-vertex-group-smooth"></span><h2>Smooth<a class="headerlink" href="#smooth" title="Link to this heading">¶</a></h2>
+<p>Operator <em>Smooth</em> pha trộn trọng số của các vertex được chọn dựa trên giá trị trung bình của các vertex liền kề, tạo ra các chuyển tiếp mượt hơn trong weight painting. Operator này hữu ích để tinh chỉnh phân bố trọng số, cải thiện biến dạng khi rigging, và loại bỏ các chuyển tiếp đột ngột giữa các trọng số vertex.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Operator này yêu cầu việc chọn vertex phải được bật; nếu không, nó sẽ không khả dụng.</p>
+</div>
+<dl class="simple">
+<dt>Subset</dt><dd><p>Giới hạn công cụ vào một tập con. Xem ở trên <a class="reference internal" href="#sculpt-paint-weight-paint-editing-subset"><span class="std std-ref">Tùy chọn Subset</span></a> về cách định nghĩa các tập con.</p>
+</dd>
+<dt>Factor</dt><dd><p>Điều khiển mức pha trộn về phía trọng số trung bình của các vertex <strong>kết nối</strong> với nhau.</p>
+<ul class="simple">
+<li><p><em>Factor</em> bằng 0.0 giữ nguyên các trọng số gốc.</p></li>
+<li><p><em>Factor</em> bằng 1.0 chấp nhận hoàn toàn trọng số trung bình đã tính.</p></li>
+<li><p>Các giá trị giữa 0.0 và 1.0 pha trộn trọng số một cách tương ứng.</p></li>
+</ul>
+</dd>
+<dt>Iterations</dt><dd><p>Đặt số lần lặp lại thao tác làm mượt. Giá trị cao hơn cho kết quả mượt hơn nhưng có thể tạo ra các lỗi không mong muốn ở chi tiết nhỏ.</p>
+</dd>
+<dt>Expand/Contract</dt><dd><p>Điều chỉnh vùng ảnh hưởng của việc làm mượt bằng cách mở rộng hay thu hẹp vùng chọn:</p>
+<ul class="simple">
+<li><p>Giá trị dương mở rộng vùng chọn để bao gồm cả các vertex lân cận.</p></li>
+<li><p>Giá trị âm thu hẹp vùng chọn để tập trung vào một tập con vertex nhỏ hơn.</p></li>
+</ul>
+</dd>
+</dl>
+<section id="examples">
+<h3>Ví dụ<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h3>
+<p class="rubric">Ví dụ: Một vertex được chọn</p>
+<p>Hãy xét một vertex được chọn kết nối với bốn vertex không được chọn. Các vertex không được chọn có trọng số: 1, 0, 0 và 0. Trọng số trung bình của các vertex không được chọn là: <span class="math notranslate nohighlight">\((1 + 0 + 0 + 0) / 4 = 0.25\)</span></p>
+<p>Nếu <em>Factor</em> là:</p>
+<ul class="simple">
+<li><p>0.0: Vertex được chọn giữ nguyên trọng số gốc của nó.</p></li>
+<li><p>1.0: Vertex được chọn nhận trọng số trung bình đã tính (0.25).</p></li>
+<li><p>Giữa 0 và 1: Trọng số của vertex dịch dần về phía 0.25, pha trộn theo tỷ lệ.</p></li>
+</ul>
+<figure class="align-default" id="id15">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_smooth-example-1.webp" src="../../_images/sculpt-paint_weight-paint_editing_smooth-example-1.webp" />
+<figcaption>
+<p><span class="caption-text">Chọn một vertex duy nhất với <em>Factor</em> bằng 1.0.</span><a class="headerlink" href="#id15" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p class="rubric">Ví dụ: Nhiều vertex được chọn</p>
+<p>Khi nhiều vertex được chọn, operator <em>Smooth</em> áp dụng phép tính cho từng vertex dựa trên các vertex liền kề không được chọn của nó.</p>
+<p>Ví dụ:</p>
+<ul class="simple">
+<li><p>Một vertex kết nối với ba vertex không được chọn có trọng số <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> sẽ có trung bình <span class="math notranslate nohighlight">\(0.333\)</span>.</p></li>
+<li><p>Một vertex kết nối với một vertex không được chọn có trọng số 1 sẽ có trung bình <span class="math notranslate nohighlight">\(1.0\)</span>.</p></li>
+<li><p>Một vertex chỉ kết nối với các vertex không được chọn có trọng số <span class="math notranslate nohighlight">\((0, 0, 0)\)</span> sẽ giữ nguyên với trọng số trung bình <span class="math notranslate nohighlight">\(0.0\)</span>.</p></li>
+</ul>
+<p>Các kết quả pha trộn này phụ thuộc vào giá trị <em>Factor</em>.</p>
+<figure class="align-default" id="id16">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_smooth-example-2.webp" src="../../_images/sculpt-paint_weight-paint_editing_smooth-example-2.webp" />
+<figcaption>
+<p><span class="caption-text">Ba vertex được chọn với <em>Factor</em> bằng 1.0.</span><a class="headerlink" href="#id16" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p class="rubric">Ví dụ: Làm mượt edge loop</p>
+<p>Trong một tình huống thực tế, việc chọn một edge loop ở giữa cho phép operator pha trộn trọng số giữa các vùng liền kề. Ví dụ:</p>
+<ul class="simple">
+<li><p>Edge loop có hai vertex liền kề không được chọn ở mỗi bên, với trọng số <span class="math notranslate nohighlight">\(1\)</span> và <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
+<li><p>Trọng số trung bình là <span class="math notranslate nohighlight">\((1 + 0) / 2 = 0.5\)</span>.</p></li>
+<li><p>Áp dụng operator <em>Smooth</em> với <em>Factor</em> đặt thành 1.0 sẽ làm edge loop chuyển sang màu xanh lá, tạo sự pha trộn mượt giữa phía &quot;nóng&quot; (trái) và &quot;lạnh&quot; (phải).</p></li>
+</ul>
+<figure class="align-default" id="id17">
+<img alt="../../_images/sculpt-paint_weight-paint_editing_smooth-example-3.webp" src="../../_images/sculpt-paint_weight-paint_editing_smooth-example-3.webp" />
+<figcaption>
+<p><span class="caption-text">Edge loop vertex ở giữa được chọn với <em>Factor</em> bằng 1.0.</span><a class="headerlink" href="#id17" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+</section>
+<section id="transfer-weights">
+<h2>Transfer Weights<a class="headerlink" href="#transfer-weights" title="Link to this heading">¶</a></h2>
+<p>Sao chép trọng số từ các object khác sang vertex group của object đang hoạt động.</p>
+<p>Theo mặc định, công cụ này chỉ sao chép vertex group đang hoạt động (được chọn) của object nguồn sang vertex group đang hoạt động của object đích, hoặc tạo group mới nếu group đó không tồn tại. Tuy nhiên, bạn có thể thay đổi hành vi của công cụ trong panel <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a>.</p>
+<p>Ví dụ, để chuyển tất cả vertex group hiện có từ các object nguồn sang object đích, hãy đổi tùy chọn <em>Source Layers Selection</em> thành <em>By Name</em>.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Công cụ này dùng cơ chế &quot;truyền dữ liệu&quot; tổng quát, nhưng truyền từ tất cả object được chọn sang object đang hoạt động. Vui lòng tham khảo tài liệu <a class="reference internal" href="../../scene_layout/object/editing/link_transfer/transfer_mesh_data.html"><span class="doc">Data Transfer</span></a> để biết chi tiết và giải thích các tùy chọn.</p>
+</div>
+<section id="prepare-the-copy">
+<h3>Chuẩn bị sao chép<a class="headerlink" href="#prepare-the-copy" title="Link to this heading">¶</a></h3>
+<p>Trước tiên bạn chọn tất cả object nguồn, và cuối cùng là object đích (object đích phải là object đang hoạt động).</p>
+<p>Điều quan trọng là các object nguồn và object đích phải ở cùng một vị trí. Nếu chúng được đặt cạnh nhau, việc chuyển trọng số sẽ không hoạt động. (Xem tùy chọn <em>Vertex Mapping</em>.) Bạn có thể đặt các object trên các layer khác nhau, nhưng phải bảo đảm tất cả object đều hiển thị khi bạn gọi công cụ.</p>
+<p>Bây giờ hãy bảo đảm object đích đang ở Chế độ Weight Paint. Mở Toolbar và gọi công cụ <em>Transfer Weights</em> trong panel <em>Weight Tools</em>.</p>
+</section>
+<section id="adjust-last-operation-panel-confusion">
+<h3>Nhầm lẫn với panel Adjust Last Operation<a class="headerlink" href="#adjust-last-operation-panel-confusion" title="Link to this heading">¶</a></h3>
+<p>Bạn có thể nhận thấy panel <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a> vẫn còn ở đó sau khi việc chuyển trọng số hoàn tất. Panel này chỉ biến mất khi bạn gọi một Operator khác có panel <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a> riêng. Điều này có thể gây nhầm lẫn khi bạn dùng Transfer weights lặp lại sau khi đã thay đổi vertex group. Nếu khi đó bạn dùng panel <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a> vẫn đang hiển thị, Blender sẽ đặt lại công việc của bạn về trạng thái ngay trước khi bạn lần đầu gọi công cụ <em>Transfer Weights</em>.</p>
+<p>Vì vậy, khi bạn muốn gọi lại công cụ <em>Transfer Weights</em> sau khi đã thay đổi vertex group, thì <strong>luôn luôn</strong> dùng nút <em>Transfer Weights</em>, kể cả khi panel <a class="reference internal" href="../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">Adjust Last Operation</span></a> vẫn còn khả dụng. Trừ khi bạn thực sự muốn đặt lại các thay đổi về trạng thái lúc ban đầu gọi công cụ.</p>
+</section>
+</section>
+<section id="limit-total">
+<span id="bpy-ops-object-vertex-group-limit-total"></span><h2>Limit Total<a class="headerlink" href="#limit-total" title="Link to this heading">¶</a></h2>
+<p>Giảm số lượng weight group trên mỗi vertex xuống mức Limit đã chỉ định. Công cụ xóa các trọng số thấp nhất trước cho đến khi đạt đến giới hạn.</p>
+<div class="admonition hint">
+<p class="admonition-title">Gợi ý</p>
+<p>Công cụ chỉ có thể hoạt động hợp lý khi nhiều hơn một weight group được chọn.</p>
+</div>
+<dl class="simple">
+<dt>Subset</dt><dd><p>Giới hạn công cụ vào một tập con. Xem ở trên <a class="reference internal" href="#sculpt-paint-weight-paint-editing-subset"><span class="std std-ref">Tùy chọn Subset</span></a> để biết cách định nghĩa các tập con.</p>
+</dd>
+<dt>Limit</dt><dd><p>Số trọng số tối đa được phép trên mỗi vertex.</p>
+</dd>
+</dl>
+</section>
+<section id="set-weight">
+<span id="bpy-ops-paint-weight-set"></span><h2>Set Weight<a class="headerlink" href="#set-weight" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id2">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Weight Paint</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weight ‣ Set Weight</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">X</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Tô đầy vertex group đang hoạt động bằng trọng số vẽ hiện tại.</p>
+</section>
+<section id="sample-weight">
+<h2>Sample Weight<a class="headerlink" href="#sample-weight" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id3">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Weight Paint</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weight ‣ Sample Weight</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">X</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Điều chỉnh Trọng số của công cụ <a class="reference internal" href="tools.html"><span class="doc">Draw</span></a> theo trọng số của vertex nằm dưới con trỏ chuột.</p>
+</section>
+<section id="sample-group">
+<span id="bpy-ops-paint-weight-sample-group"></span><h2>Sample Group<a class="headerlink" href="#sample-group" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id4">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Weight Paint</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weight ‣ Sample Group</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Ctrl</kbd>-<kbd class="kbd docutils literal notranslate">X</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Chọn một trong các vertex group có tại vị trí chuột hiện tại.</p>
+</section>
+<section id="gradient-linear">
+<span id="bpy-ops-paint-weight-gradient"></span><h2>Gradient (Linear)<a class="headerlink" href="#gradient-linear" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id5">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Weight Paint</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weights ‣ Gradient (Linear)</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">A</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Áp một dải trọng số tuyến tính; điều này hữu ích trong những lúc việc vẽ các thay đổi trọng số dần dần trở nên khó khăn. Pha trộn trọng số của các vertex được chọn với các vertex không được chọn.</p>
+<figure class="align-default" id="id18">
+<img alt="../../_images/sculpt-paint_weight-paint_tools_gradient.png" src="../../_images/sculpt-paint_weight-paint_tools_gradient.png" />
+<figcaption>
+<p><span class="caption-text">Ví dụ về công cụ Gradient được dùng với các vertex được chọn.</span><a class="headerlink" href="#id18" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Weight</dt><dd><p>Dải gradient bắt đầu từ giá trị trọng số đang được chọn hiện tại, phai dần về không.</p>
+</dd>
+<dt>Strength</dt><dd><p>Có thể dùng các giá trị thấp hơn để gradient hòa trộn với các trọng số sẵn có (giống như với brush).</p>
+</dd>
+<dt>Type</dt><dd><p>Hình dạng của gradient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Linear<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tạo gradient dạng một đường thẳng.</p>
+</dd>
+<dt class="field-even">Radial<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tạo gradient dạng một hình tròn.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="gradient-radial">
+<h2>Gradient (Radial)<a class="headerlink" href="#gradient-radial" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id6">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Weight Paint</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weights ‣ Gradient (Radial)</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">Shift</kbd>-<kbd class="kbd docutils literal notranslate">Alt</kbd>-<kbd class="kbd docutils literal notranslate">A</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Áp một dải trọng số xuyên tâm; điều này hữu ích trong những lúc việc vẽ các thay đổi trọng số dần dần trở nên khó khăn. Pha trộn trọng số của các vertex được chọn với các vertex không được chọn.</p>
+<dl class="simple">
+<dt>Weight</dt><dd><p>Dải gradient bắt đầu từ giá trị trọng số đang được chọn hiện tại, phai dần về không.</p>
+</dd>
+<dt>Strength</dt><dd><p>Có thể dùng các giá trị thấp hơn để gradient hòa trộn với các trọng số sẵn có (giống như với brush).</p>
+</dd>
+<dt>Type</dt><dd><p>Hình dạng của gradient.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Linear<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tạo gradient dạng một đường thẳng.</p>
+</dd>
+<dt class="field-even">Radial<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tạo gradient dạng một hình tròn.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="locks">
+<span id="bpy-ops-object-vertex-group-lock"></span><h2>Locks<a class="headerlink" href="#locks" title="Link to this heading">¶</a></h2>
+<div class="refbox admonition" id="id7">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Mode<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chế độ Edit Mode và Weight Paint Mode</p>
+</dd>
+<dt class="field-even">Menu<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="menuselection">Weights ‣ Locks</span></p>
+</dd>
+<dt class="field-odd">Shortcut<span class="colon">:</span></dt>
+<dd class="field-odd"><p><kbd class="kbd docutils literal notranslate">K</kbd></p>
+</dd>
+</dl>
+</div>
+<p>Vertex group có thể bị khóa để ngăn các chỉnh sửa không mong muốn vào một vertex group cụ thể.</p>
+<div class="admonition tip">
+<p class="admonition-title">Mẹo</p>
+<p>Các bone thuộc về một vertex group bị khóa sẽ hiển thị màu đỏ trong 3D Viewport.</p>
+</div>
+<dl class="simple">
+<dt>Lock All</dt><dd><p>Khóa tất cả vertex group.</p>
+</dd>
+<dt>Lock Selected</dt><dd><p>Khóa các vertex group được chọn.</p>
+</dd>
+<dt>Lock Unselected</dt><dd><p>Khóa các vertex group không được chọn.</p>
+</dd>
+<dt>Lock Only Selected</dt><dd><p>Khóa các vertex group được chọn và mở khóa các vertex group được chọn.</p>
+</dd>
+<dt>Lock Only Unselected</dt><dd><p>Mở khóa các vertex group được chọn và khóa các vertex group không được chọn.</p>
+</dd>
+<dt>Unlock All</dt><dd><p>Mở khóa tất cả vertex group.</p>
+</dd>
+<dt>Unlock Selected</dt><dd><p>Mở khóa các vertex group được chọn.</p>
+</dd>
+<dt>Unlock Unselected</dt><dd><p>Mở khóa các vertex group không được chọn.</p>
+</dd>
+<dt>Invert Locks</dt><dd><p>Đảo ngược trạng thái khóa trên tất cả vertex group.</p>
+</dd>
+</dl>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../curves_sculpting/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Curves Sculpting</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="usage.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Sử dụng Vertex Group</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/sculpt_paint/weight_paint/editing.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Fsculpt_paint/weight_paint/editing"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Fsculpt_paint/weight_paint/editing.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Fsculpt_paint/weight_paint/editing.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Chỉnh sửa Weight Paint</a><ul>
+<li><a class="reference internal" href="#assign-from-bone-envelopes">Assign from Bone Envelopes</a></li>
+<li><a class="reference internal" href="#assign-automatic-from-bone">Assign Automatic from Bone</a></li>
+<li><a class="reference internal" href="#normalize-all">Normalize All</a></li>
+<li><a class="reference internal" href="#normalize">Normalize</a></li>
+<li><a class="reference internal" href="#mirror">Mirror</a></li>
+<li><a class="reference internal" href="#invert">Invert</a></li>
+<li><a class="reference internal" href="#clean">Clean</a></li>
+<li><a class="reference internal" href="#quantize">Quantize</a></li>
+<li><a class="reference internal" href="#levels">Levels</a></li>
+<li><a class="reference internal" href="#smooth">Smooth</a><ul>
+<li><a class="reference internal" href="#examples">Ví dụ</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#transfer-weights">Transfer Weights</a><ul>
+<li><a class="reference internal" href="#prepare-the-copy">Chuẩn bị sao chép</a></li>
+<li><a class="reference internal" href="#adjust-last-operation-panel-confusion">Nhầm lẫn với panel Adjust Last Operation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#limit-total">Limit Total</a></li>
+<li><a class="reference internal" href="#set-weight">Set Weight</a></li>
+<li><a class="reference internal" href="#sample-weight">Sample Weight</a></li>
+<li><a class="reference internal" href="#sample-group">Sample Group</a></li>
+<li><a class="reference internal" href="#gradient-linear">Gradient (Linear)</a></li>
+<li><a class="reference internal" href="#gradient-radial">Gradient (Radial)</a></li>
+<li><a class="reference internal" href="#locks">Locks</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../_static/translations.js?v=4c1d55b0"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

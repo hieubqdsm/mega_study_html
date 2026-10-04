@@ -1,0 +1,1074 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="copyright" title="Bản quyền" href="../../copyright.html"><link rel="next" title="Wavefront OBJ" href="obj.html"><link rel="prev" title="Motion Capture (BVH)" href="bvh.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/files/import_export/usd.html">
+        <link rel="prefetch" href="../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Universal Scene Description - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../"></div>
+<script src="../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/files/import_export/usd.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="universal-scene-description">
+<h1>Universal Scene Description<a class="headerlink" href="#universal-scene-description" title="Link to this heading">¶</a></h1>
+<section id="importing-usd-files">
+<h2>Import File USD<a class="headerlink" href="#importing-usd-files" title="Link to this heading">¶</a></h2>
+<p>File <a class="reference external" href="https://openusd.org/release/index.html">USD</a> thường biểu diễn scene dưới dạng một hệ thống phân cấp các primitive, hay <a class="reference external" href="https://graphics.pixar.com/usd/release/glossary.html#USDGlossary-Prim">prim</a>. Từng prim riêng lẻ chứa dữ liệu mô tả các thực thể của scene, chẳng hạn geometry, light, camera và hệ thống phân cấp transform. Bộ import USD của Blender chuyển các prim USD thành hệ thống phân cấp các object Blender. Giống như bộ export USD, bộ import chưa xử lý một số khái niệm composition của USD, chẳng hạn layer và reference.</p>
+<p>Các loại dữ liệu USD sau đây có thể được import thành object Blender:</p>
+<ul class="simple">
+<li><p>Cameras</p></li>
+<li><p>Curves</p></li>
+<li><p>Lights</p></li>
+<li><p>Materials</p></li>
+<li><p>Meshes</p></li>
+<li><p>Point Clouds</p></li>
+<li><p>Hình khối Nguyên thủy</p></li>
+<li><p>Volumes</p></li>
+</ul>
+<p>Để biết thêm thông tin về cách các loại dữ liệu được xử lý, xem các mô tả về <a class="reference internal" href="#import-options">Tùy chọn Import</a> bên dưới.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Khi import một <a class="reference external" href="https://openusd.org/release/spec_usdz.html">USDZ archive</a>, điều quan trọng là cân nhắc kỹ tùy chọn <a class="reference internal" href="#usd-import-textures"><span class="std std-ref">Import Textures</span></a> để quyết định có copy các file texture khỏi file nén zip hay không, và copy theo cách nào.</p>
+</div>
+<section id="xform-and-scope-primitives">
+<h3>Primitive Xform và Scope<a class="headerlink" href="#xform-and-scope-primitives" title="Link to this heading">¶</a></h3>
+<p>USD cung cấp kiểu prim <code class="docutils literal notranslate"><span class="pre">Xform</span></code>, chứa dữ liệu transform, có thể dùng để biểu diễn hệ thống phân cấp transform và tổ chức scene. Các prim <code class="docutils literal notranslate"><span class="pre">Xform</span></code> như vậy được import thành các empty object Blender.</p>
+<p>USD cũng hỗ trợ primitive <code class="docutils literal notranslate"><span class="pre">Scope</span></code>, là những thực thể không chứa dữ liệu transform, nhưng có vai trò nhóm các phần tử khác của scene. Blender không có khái niệm tương đương chính xác với scope, nên các primitive này được import thành các empty Blender đặt tại gốc tọa độ. Đây là một cách biểu diễn chưa hoàn hảo, vì empty object có transform còn <code class="docutils literal notranslate"><span class="pre">Scopes</span></code> thì không, nhưng cách tiếp cận này vẫn giúp giữ được cấu trúc phân cấp của scene.</p>
+</section>
+<section id="pointinstancer-primitives">
+<h3>Primitive PointInstancer<a class="headerlink" href="#pointinstancer-primitives" title="Link to this heading">¶</a></h3>
+<p>USD cung cấp kiểu prim <code class="docutils literal notranslate"><span class="pre">UsdGeomPointInstancer</span></code>, chứa các instance được rải trên các điểm của một primitive.</p>
+<p>Chúng được import vào Blender dưới dạng Point Cloud bằng một <a class="reference internal" href="../../modeling/modifiers/geometry_nodes.html"><span class="doc">Geometry Nodes Modifier</span></a> và <a class="reference internal" href="../../modeling/geometry_nodes/instances/instance_on_points.html"><span class="doc">Instance on Points Node</span></a>.</p>
+</section>
+<section id="animations">
+<h3>Animation<a class="headerlink" href="#animations" title="Link to this heading">¶</a></h3>
+<p>Bộ import hỗ trợ hai loại animation:</p>
+<ul class="simple">
+<li><p><strong>Transform động</strong>: Nếu một primitive USD có dữ liệu transform biến đổi theo thời gian, một constraint <a class="reference internal" href="../../animation/constraints/transform/transform_cache.html"><span class="doc">Transform Cache</span></a> sẽ được thêm vào object Blender đã import.</p></li>
+<li><p><strong>Geometry động</strong>: Geometry động của mesh, curve và point cloud được hỗ trợ bằng cách thêm modifier <a class="reference internal" href="../../modeling/modifiers/modify/mesh_sequence_cache.html"><span class="doc">Mesh Sequence Cache</span></a> vào dữ liệu đã import. Animation của thuộc tính geometry (<a class="reference external" href="https://graphics.pixar.com/usd/release/glossary.html#USDGlossary-Primvar">USD Primvar</a>) được hỗ trợ cho mọi loại dữ liệu có loại tương đương trong Blender. Điều này bao gồm màu sắc, UV, velocity và các dữ liệu thuộc tính chung khác. Lưu ý rằng các chuỗi file USD (tức là mỗi frame một file riêng) không được hỗ trợ.</p></li>
+</ul>
+</section>
+<section id="materials">
+<h3>Materials<a class="headerlink" href="#materials" title="Link to this heading">¶</a></h3>
+<p>Nếu một mesh hoặc geometry subset USD có material được liên kết, bộ import sẽ gán cho object Blender một material cùng tên với material USD. Nếu một material Blender cùng tên đã tồn tại trong scene, material sẵn có đó có thể được dùng, tùy vào tùy chọn <a class="reference internal" href="#usd-material-name-collision"><span class="std std-ref">Material Name Collision</span></a>. Nếu không, một material mới sẽ được tạo.</p>
+<p>Nếu material USD có nguồn shader <a class="reference external" href="https://graphics.pixar.com/usd/release/spec_usdpreviewsurface.html">USD Preview Surface</a>, màu, metallic và roughness của <a class="reference internal" href="../../render/materials/settings.html#render-materials-settings-viewport-display"><span class="std std-ref">Viewport Display</span></a> sẽ được đặt theo các giá trị đầu vào tương ứng của USD Preview Surface.</p>
+<p>Còn có tùy chọn <em>Import USD Preview</em> để chuyển các shader USD Preview Surface thành các node shader <a class="reference internal" href="../../render/shader_nodes/shader/principled.html"><span class="doc">Principled BSDF</span></a> của Blender. Tùy chọn này có thể gây mất thông tin, vì nó chưa xử lý được việc chuyển đổi mọi cài đặt và loại shader, nhưng có thể tạo ra sự hiển thị gần đúng của các material.</p>
+</section>
+<section id="coordinate-system-orientation">
+<h3>Định hướng Hệ tọa độ<a class="headerlink" href="#coordinate-system-orientation" title="Link to this heading">¶</a></h3>
+<p>Nếu USD được import theo trục Y hướng lên, một phép quay sẽ tự động được áp dụng cho các object gốc để chuyển sang định hướng trục Z hướng lên của Blender.</p>
+</section>
+</section>
+<section id="import-options">
+<h2>Tùy chọn Import<a class="headerlink" href="#import-options" title="Link to this heading">¶</a></h2>
+<p>Các tùy chọn sau đây khả dụng khi import từ USD:</p>
+<section id="general">
+<h3>General<a class="headerlink" href="#general" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Path Mask</dt><dd><p>Chỉ import phần con của scene USD có gốc tại primitive đã cho.</p>
+</dd>
+<dt>Include</dt><dd><dl class="simple">
+<dt>Visible Primitives Only</dt><dd><p>Không import các primitive USD vô hình. Chỉ áp dụng cho các primitive có thuộc tính <a class="reference external" href="https://graphics.pixar.com/usd/release/glossary.html#USDGlossary-Visibility">visibility</a> không được animate. Các primitive có visibility được animate sẽ luôn được import.</p>
+</dd>
+<dt>Defined Primitives Only</dt><dd><p>Khi tắt, điều này cho phép import các primitive USD chưa được định nghĩa, chẳng hạn những primitive có specifier override.</p>
+</dd>
+</dl>
+</dd>
+<dt>Set Frame Range</dt><dd><p>Cập nhật frame bắt đầu và frame kết thúc của scene cho khớp với của USD stage.</p>
+</dd>
+<dt>Create Collection</dt><dd><p>Thêm tất cả các object đã import vào một collection mới.</p>
+</dd>
+<dt>Relative Path</dt><dd><p>Chọn file tương đối so với blend-file.</p>
+</dd>
+<dt>Apply Unit Conversion Scale</dt><dd><p>Scale các object của scene theo giá trị <code class="docutils literal notranslate"><span class="pre">metersPerUnit</span></code> của USD Stage. Phép scale này được áp dụng cộng thêm vào giá trị chỉ định trong tùy chọn Scale.</p>
+</dd>
+<dt>Scale</dt><dd><p>Giá trị dùng để scale các object được nhập so với gốc của world.</p>
+</dd>
+<dt>Light Intensity Scale</dt><dd><p>Tỷ lệ cho cường độ của các light được import.</p>
+</dd>
+<dt>Custom Properties</dt><dd><p>Hành vi khi import các thuộc tính USD thành <a class="reference internal" href="../custom_properties.html#files-data-blocks-custom-properties"><span class="std std-ref">Custom Properties</span></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">None<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Không import các thuộc tính tùy chỉnh USD.</p>
+</dd>
+<dt class="field-even">User<span class="colon">:</span></dt>
+<dd class="field-even"><p>Import các thuộc tính USD trong namespace <code class="docutils literal notranslate"><span class="pre">userProperties</span></code> thành custom property. Namespace sẽ bị loại bỏ khỏi tên thuộc tính.</p>
+</dd>
+<dt class="field-odd">All Custom<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Import mọi thuộc tính tùy chỉnh USD thành custom property. Namespace sẽ được giữ lại trong tên thuộc tính.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="object-types">
+<h3>Object Types<a class="headerlink" href="#object-types" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>Cameras</dt><dd><p>Import primitive <code class="docutils literal notranslate"><span class="pre">UsdGeomCamera</span></code> thành <a class="reference internal" href="../../render/cameras.html"><span class="doc">Camera Object</span></a>.</p>
+<p>Các thuộc tính camera được hỗ trợ bao gồm:</p>
+<ul class="simple">
+<li><p>Kiểu chiếu (phối cảnh và trực giao)</p></li>
+<li><p>Tiêu cự (focal length).</p></li>
+<li><p>Khoảng cách depth of field.</p></li>
+<li><p>F-stop (aperture).</p></li>
+<li><p>Điểm bắt đầu và kết thúc clipping.</p></li>
+<li><p>Sensor shift (độ nghiêng) X và Y.</p></li>
+<li><p>Kích thước sensor (chiều rộng và chiều cao aperture).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Hầu hết các thuộc tính đều hỗ trợ animation. Tuy nhiên, việc import kích thước aperture bị giới hạn do khác biệt giữa USD và Blender trong cách diễn giải kích thước sensor. Khi kích thước aperture được animate, các giá trị shift tương ứng cũng được animate để giữ tính nhất quán.</p>
+</div>
+</dd>
+<dt>Curves</dt><dd><p>Import primitive <code class="docutils literal notranslate"><span class="pre">UsdGeomBasisCurves</span></code> thành <a class="reference internal" href="../../modeling/curves_new/index.html"><span class="doc">Curve</span></a> và <code class="docutils literal notranslate"><span class="pre">UsdGeomNurbsCurves</span></code> thành mesh Blender.</p>
+</dd>
+<dt>Lights</dt><dd><p>Import light thành <a class="reference internal" href="../../render/lights/index.html"><span class="doc">Light Object</span></a>. Hiện chưa bao gồm cylinder light hay geometry light.</p>
+</dd>
+<dt>World Dome Light</dt><dd><p>Chuyển dome light <code class="docutils literal notranslate"><span class="pre">UsdLuxDomeLight</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">UsdLuxDomeLight_1</span></code> đầu tiên được tìm thấy thành <a class="reference internal" href="../../render/lights/world.html"><span class="doc">shader background của world</span></a>.</p>
+</dd>
+<dt>Materials</dt><dd><p>Import material <a class="reference external" href="https://openusd.org/release/spec_usdpreviewsurface.html">UsdPreviewSurface</a>.</p>
+</dd>
+<dt>Meshes</dt><dd><p>Import primitive <code class="docutils literal notranslate"><span class="pre">UsdGeomMesh</span></code> thành <a class="reference internal" href="../../modeling/meshes/index.html"><span class="doc">Mesh Object</span></a>.</p>
+</dd>
+<dt>Volumes</dt><dd><p>Import tài sản OpenVDB <code class="docutils literal notranslate"><span class="pre">UsdVolVolume</span></code> thành <a class="reference internal" href="../../modeling/volumes/index.html"><span class="doc">Volume Object</span></a>.</p>
+</dd>
+<dt>Point Clouds</dt><dd><p>Import primitive <code class="docutils literal notranslate"><span class="pre">UsdGeomPoints</span></code> thành <a class="reference internal" href="../../modeling/point_cloud/index.html"><span class="doc">Point Cloud Object</span></a>.</p>
+</dd>
+<dt>USD Shapes</dt><dd><p>Import các hình khối primitive USD thành mesh Blender. Hỗ trợ <code class="docutils literal notranslate"><span class="pre">UsdGeomCapsule</span></code>, <code class="docutils literal notranslate"><span class="pre">UsdGeomCapsule_1</span></code>, <code class="docutils literal notranslate"><span class="pre">UsdGeomCone</span></code>, <code class="docutils literal notranslate"><span class="pre">UsdGeomCube</span></code>, <code class="docutils literal notranslate"><span class="pre">UsdGeomCylinder</span></code>, <code class="docutils literal notranslate"><span class="pre">UsdGeomCylinder_1</span></code>, <code class="docutils literal notranslate"><span class="pre">UsdGeomPlane</span></code> và <code class="docutils literal notranslate"><span class="pre">UsdGeomSphere</span></code>.</p>
+</dd>
+<dt><a class="reference external" href="https://graphics.pixar.com/usd/release/glossary.html#USDGlossary-Purpose">Display Purpose</a></dt><dd><dl class="simple">
+<dt>Render</dt><dd><p>Bao gồm các primitive có purpose <code class="docutils literal notranslate"><span class="pre">render</span></code>.</p>
+</dd>
+<dt>Proxy</dt><dd><p>Bao gồm các primitive có purpose <code class="docutils literal notranslate"><span class="pre">proxy</span></code>.</p>
+</dd>
+<dt>Guide</dt><dd><p>Bao gồm các primitive có purpose <code class="docutils literal notranslate"><span class="pre">guide</span></code>.</p>
+</dd>
+</dl>
+</dd>
+<dt>Material Purpose</dt><dd><p>Cố gắng import material với purpose đã cho. Nếu không có material nào với purpose này được liên kết với primitive, thì hành vi dự phòng (nếu có) được ghi chú bên dưới.</p>
+<dl class="field-list simple">
+<dt class="field-odd">All Purpose<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Cố gắng import material <code class="docutils literal notranslate"><span class="pre">allPurpose</span></code>.</p>
+</dd>
+<dt class="field-even">Preview<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cố gắng import material <code class="docutils literal notranslate"><span class="pre">preview</span></code>. Tải material <code class="docutils literal notranslate"><span class="pre">allPurpose</span></code> làm phương án dự phòng.</p>
+</dd>
+<dt class="field-odd">Full<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Cố gắng import material <code class="docutils literal notranslate"><span class="pre">full</span></code>. Tải material <code class="docutils literal notranslate"><span class="pre">allPurpose</span></code> hoặc <code class="docutils literal notranslate"><span class="pre">preview</span></code>, theo thứ tự đó, làm phương án &quot;dự phòng&quot;.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="geometry">
+<h3>Geometry<a class="headerlink" href="#geometry" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>UV Coordinates</dt><dd><p>Đọc tọa độ UV của mesh.</p>
+</dd>
+<dt>Color Attributes</dt><dd><p>Chuyển các giá trị <code class="docutils literal notranslate"><span class="pre">displayColor</span></code> của mesh USD thành Color Attribute của Blender.</p>
+</dd>
+<dt>Mesh Attributes</dt><dd><p>Đọc <code class="docutils literal notranslate"><span class="pre">Primvars</span></code> USD thành thuộc tính của mesh.</p>
+</dd>
+<dt>Subdivision</dt><dd><p>Tạo modifier Subdivision Surface dựa trên thuộc tính <code class="docutils literal notranslate"><span class="pre">SubdivisionScheme</span></code> của USD.</p>
+</dd>
+<dt>Validate Meshes</dt><dd><p>Kiểm tra mesh được nhập có dữ liệu hỏng và sửa nếu cần. Khi tắt, dữ liệu sai có thể gây crash khi hiển thị hoặc chỉnh sửa mesh. Tùy chọn này khiến việc nhập chậm hơn nhưng được khuyến nghị, vì lỗi dữ liệu không phải lúc nào cũng rõ ràng.</p>
+</dd>
+<dt>Merge parent Xform</dt><dd><p>Cho phép các primitive USD hợp nhất với cha Xform của chúng nếu chúng là con duy nhất trong phân cấp.</p>
+</dd>
+</dl>
+</section>
+<section id="rigging">
+<h3>Rigging<a class="headerlink" href="#rigging" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Shape Keys</dt><dd><p>Import blend shape USD thành <a class="reference internal" href="../../animation/shape_keys/index.html"><span class="doc">Shape Keys</span></a> của Blender.</p>
+</dd>
+<dt>Armatures</dt><dd><p>Import skeleton USD thành <a class="reference internal" href="../../animation/armatures/index.html"><span class="doc">Armatures</span></a> của Blender.</p>
+</dd>
+</dl>
+</section>
+<section id="id1">
+<h3>Materials<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Import All Materials</dt><dd><p>Đồng thời import cả những material không được geometry nào sử dụng. Lưu ý, khi tùy chọn này tắt, các material được geometry tham chiếu vẫn sẽ được import.</p>
+</dd>
+<dt>Import USD Preview</dt><dd><p>Chuyển shader USD Preview Surface thành mạng shader Principled BSDF.</p>
+</dd>
+<dt>Set Material Blend</dt><dd><p>Nếu tùy chọn <em>Import USD Preview</em> được bật, phương pháp blend của material sẽ tự động được đặt dựa trên các đầu vào shader <code class="docutils literal notranslate"><span class="pre">opacity</span></code> và <code class="docutils literal notranslate"><span class="pre">opacityThreshold</span></code>, cho phép hiển thị các object trong suốt.</p>
+</dd>
+</dl>
+<dl class="simple" id="usd-material-name-collision">
+<dt>Material Name Collision</dt><dd><p>Hành vi khi tên của material nhập vào xung đột với material đã tồn tại.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Make Unique<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Import từng material USD thành một material Blender riêng biệt.</p>
+</dd>
+<dt class="field-even">Reference Existing<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nếu material trùng tên đã tồn tại thì tham chiếu tới material đó thay vì nhập mới.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="textures">
+<h3>Textures<a class="headerlink" href="#textures" title="Link to this heading">¶</a></h3>
+<p>Khi import một gói USDZ, các tùy chọn sau đây quy định có hay không và theo cách nào các tài nguyên texture phụ thuộc của USD được copy khỏi file nén zip để có thể tải vào Blender.</p>
+<dl id="usd-import-textures">
+<dt>Import Textures</dt><dd><p>Hành vi khi import texture từ một USDZ archive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">None<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Không import texture. Lưu ý rằng với tùy chọn này, texture của material có thể không được phân giải trong Blender.</p>
+</dd>
+<dt class="field-even">Packed<span class="colon">:</span></dt>
+<dd class="field-even"><p>Import texture dưới dạng dữ liệu được pack trong file Blender.</p>
+</dd>
+<dt class="field-odd">Copy<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Copy các file sang thư mục chỉ định trong tùy chọn <strong>Textures Directory</strong>.</p>
+</dd>
+</dl>
+</dd>
+<dt>Textures Directory</dt><dd><p>Đường dẫn tới thư mục nơi các texture đã import sẽ được copy vào, khi chế độ <strong>Import Textures</strong> là <strong>Copy</strong>.</p>
+<p>Lưu ý rằng thư mục texture mặc định là đường dẫn tương đối <code class="docutils literal notranslate"><span class="pre">//textures</span></code>, vốn yêu cầu file Blender phải được lưu trước khi import, để đường dẫn tương đối có thể được phân giải.</p>
+</dd>
+<dt>File Name Collision</dt><dd><p>Hành vi khi tên của một file texture được import xung đột với file sẵn có.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Use Existing<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Nếu một file cùng tên đã tồn tại, hãy dùng file đó thay vì copy.</p>
+</dd>
+<dt class="field-even">Overwrite<span class="colon">:</span></dt>
+<dd class="field-even"><p>Ghi đè lên các file sẵn có.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="particles-and-instancing">
+<h3>Particle và Instancing<a class="headerlink" href="#particles-and-instancing" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Scene Instancing</dt><dd><p>Import các instance trong scene graph USD thành collection instance, nếu không chúng sẽ được import thành các bản copy.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="exporting-to-usd-files">
+<h2>Xuất sang File USD<a class="headerlink" href="#exporting-to-usd-files" title="Link to this heading">¶</a></h2>
+<p>File Universal Scene Description (USD) có thể chứa lớp (layer), ghi đè (override) phức tạp và tham chiếu tới các file khác. Bộ USD Exporter của Blender tiếp cận theo cách đơn giản hơn nhiều. Khi export, mọi object hiển thị và được hỗ trợ trong scene đều được export, tùy chọn giới hạn theo trạng thái chọn. Blender (chưa) hỗ trợ export object vô hình, USD layer, variant, v.v.</p>
+<p>Các object sau đây có thể được export sang USD:</p>
+<ul class="simple">
+<li><p>Mesh (các loại khác nhau, xem bên dưới).</p></li>
+<li><p>Camera (hiện chỉ có camera phối cảnh, chưa có camera trực giao).</p></li>
+<li><p>Curves</p></li>
+<li><p>Text (được export thành mesh).</p></li>
+<li><p>Lights</p></li>
+<li><p>Hair (được export thành curve, và giới hạn ở các sợi cha).</p></li>
+<li><p>Point Clouds</p></li>
+<li><p>Metaball (được export thành mesh động).</p></li>
+<li><p>Volumes</p></li>
+<li><p>Armatures</p></li>
+</ul>
+<p>Khi export một animation, mesh đã được đánh giá cuối cùng sẽ được ghi ra USD. Điều này có nghĩa là các loại mesh sau đây có thể được export:</p>
+<ul class="simple">
+<li><p>Mesh tĩnh.</p></li>
+<li><p>Mesh biến dạng; ở đây topology của mesh không đổi, nhưng vị trí các vertex thay đổi theo thời gian. Ví dụ là nhân vật được animate hoặc object nảy lên (nhưng không nứt vỡ).</p></li>
+<li><p>Mesh animate tùy ý; ở đây topology có thay đổi. Ví dụ là kết quả của một mô phỏng fluid, nơi các giọt chất lỏng bắn ra có thể tách khỏi khối chính.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để export scene Blender thành <a class="reference external" href="https://openusd.org/release/spec_usdz.html">USDZ archive</a>, hãy đặt phần mở rộng của file xuất ra thành <code class="docutils literal notranslate"><span class="pre">.usdz</span></code>.  Gói USDZ xuất ra sẽ là một file nén zip chứa USD cùng các file texture phụ thuộc của nó.</p>
+</div>
+<figure class="align-default" id="id7">
+<img alt="../../_images/files_import-export_usd_example.png" src="../../_images/files_import-export_usd_example.png" />
+<figcaption>
+<p><span class="caption-text">Cảnh quay từ <a class="reference external" href="https://studio.blender.org/projects/spring/">Spring</a> được export sang USD và mở trong USDView.</span><a class="headerlink" href="#id7" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="export-options">
+<span id="bpy-ops-wm-usd-export"></span><h2>Tùy chọn Xuất<a class="headerlink" href="#export-options" title="Link to this heading">¶</a></h2>
+<p>Các tùy chọn sau đây khả dụng khi export sang USD:</p>
+<section id="id2">
+<h3>General<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>Root Prim</dt><dd><p>Nếu được đặt, thêm một primitive transform với đường dẫn đã cho vào stage để làm cha của toàn bộ dữ liệu được export.</p>
+</dd>
+<dt>Include</dt><dd><dl class="simple">
+<dt>Selection Only</dt><dd><p>Khi đánh dấu, chỉ các object được chọn mới được export. Các object instanced, ví dụ các collection được instance trong scene, được coi là 'được chọn' khi instancer của chúng được chọn.</p>
+</dd>
+<dt>Animation</dt><dd><p>Khi đánh dấu, toàn bộ dải frame của scene được export. Khi bỏ đánh dấu, chỉ frame hiện tại của scene được export.</p>
+</dd>
+</dl>
+</dd>
+<dt>Incremental Save <span class="guilabel">Animation</span></dt><dd><p>Lưu tăng dần sau số frame chỉ định để giảm mức dùng bộ nhớ đỉnh. Lưu tăng dần có thể làm thời gian export lâu hơn và tiềm ẩn vấn đề với một số dịch vụ đồng bộ file. Giá trị 0 sẽ tắt lưu tăng dần.</p>
+</dd>
+<dt>Blender Data</dt><dd><dl>
+<dt>Custom Properties</dt><dd><p>Export <a class="reference internal" href="../custom_properties.html#files-data-blocks-custom-properties"><span class="std std-ref">Custom Properties</span></a> thành thuộc tính USD. Thuộc tính <em>Namespace</em> được dùng để xác định namespace mà các thuộc tính được ghi vào.</p>
+</dd>
+<dt>Namespace</dt><dd><p>Nếu được đặt, thêm namespace đã cho làm tiền tố cho tên các custom property được export. Điều này chỉ áp dụng cho tên thuộc tính chưa có tiền tố (ví dụ, nó áp dụng cho tên <code class="docutils literal notranslate"><span class="pre">bar</span></code> nhưng không áp dụng cho <code class="docutils literal notranslate"><span class="pre">foo:bar</span></code>), và không áp dụng cho tên object cùng tên dữ liệu Blender — vốn luôn được export trong namespace <code class="docutils literal notranslate"><span class="pre">userProperties:blender</span></code>.</p>
+<p>Theo mặc định, namespace <code class="docutils literal notranslate"><span class="pre">userProperties</span></code> được sử dụng.</p>
+</dd>
+<dt>Blender Names</dt><dd><p>Tạo các thuộc tính tùy chỉnh USD chứa tên object Blender và tên dữ liệu object gốc.</p>
+</dd>
+</dl>
+</dd>
+<dt>Allow Unicode</dt><dd><p>Giữ các ký tự mã hóa UTF-8 khi ghi tên prim và thuộc tính USD (yêu cầu phần mềm dùng USD 24.03 trở lên khi mở các file thu được).</p>
+</dd>
+<dt>File References</dt><dd><dl class="simple">
+<dt>Relative Paths</dt><dd><p>Dùng đường dẫn tương đối để tham chiếu các file bên ngoài (tức là texture, volume) trong file USD được export, nếu không thì dùng đường dẫn tuyệt đối.</p>
+</dd>
+</dl>
+</dd>
+<dt>Convert Orientation</dt><dd><p>Chuyển trục định hướng sang quy ước khác để khớp với các ứng dụng khác. Blender dùng Y Forward, Z Up (vì front view nhìn theo hướng +Y). Ví dụ, các ứng dụng thường dùng Y làm trục lên; trong trường hợp đó cần -Z Forward, Y Up.</p>
+<dl class="simple">
+<dt>Forward / Up Axis</dt><dd><p>Bằng cách ánh xạ chúng sang các trục khác nhau, bạn có thể chuyển đổi phép quay giữa các trục lên và trục phía trước mặc định của các ứng dụng.</p>
+</dd>
+</dl>
+</dd>
+<dt>Units</dt><dd><p>Đặt metadata <code class="docutils literal notranslate"><span class="pre">metersPerUnit</span></code> của USD Stage theo đơn vị đo được chọn.</p>
+<dl class="simple">
+<dt>Meters Per Unit</dt><dd><p>Giá trị dùng cho <code class="docutils literal notranslate"><span class="pre">metersPerUnit</span></code> nếu đơn vị <cite>Custom</cite> được chọn.</p>
+</dd>
+</dl>
+</dd>
+<dt>Xform Ops</dt><dd><p>Kiểu toán tử transform dùng để biến đổi prim.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Translate, Rotate, Scale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Export với các toán tử <code class="docutils literal notranslate"><span class="pre">Xform</span></code> translate, rotate và scale.</p>
+</dd>
+<dt class="field-even">Translate, Orient, Scale<span class="colon">:</span></dt>
+<dd class="field-even"><p>Export với các toán tử <code class="docutils literal notranslate"><span class="pre">Xform</span></code> translate, quaternion orient và scale.</p>
+</dd>
+<dt class="field-odd">Matrix<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Export toán tử matrix.</p>
+</dd>
+</dl>
+</dd>
+<dt>Use Settings for</dt><dd><p>Xác định dùng độ hiển thị <em>Viewport</em> hay <em>Render</em> của object, cài đặt modifier và các thuộc tính tương tự khác trong lúc export.</p>
+</dd>
+</dl>
+</section>
+<section id="id3">
+<h3>Object Types<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Meshes</dt><dd><p>Export <a class="reference internal" href="../../modeling/meshes/index.html"><span class="doc">Mesh Object</span></a></p>
+</dd>
+<dt>Lights</dt><dd><p>Export <a class="reference internal" href="../../render/lights/index.html"><span class="doc">Light Object</span></a>. <code class="docutils literal notranslate"><span class="pre">UsdLuxShapingAPI</span></code> được dùng để hỗ trợ spot light.</p>
+</dd>
+<dt>World Dome Light</dt><dd><p>Chuyển <a class="reference internal" href="../../render/lights/world.html"><span class="doc">material của world</span></a> thành <code class="docutils literal notranslate"><span class="pre">UsdLuxDomeLight</span></code>. Hiện chỉ hoạt động với các material đơn giản, gồm một environment texture nối vào background shader, kèm tùy chọn nhân vector với màu texture.</p>
+</dd>
+<dt>Cameras</dt><dd><p>Export <a class="reference internal" href="../../render/cameras.html"><span class="doc">Camera Object</span></a>. Chỉ camera phối cảnh mới được export.</p>
+</dd>
+<dt>Curves</dt><dd><p>Export <a class="reference internal" href="../../modeling/curves/index.html"><span class="doc">Curve Object</span></a></p>
+</dd>
+<dt>Point Clouds</dt><dd><p>Export <a class="reference internal" href="../../modeling/point_cloud/index.html"><span class="doc">Point Cloud Object</span></a></p>
+</dd>
+<dt>Volumes</dt><dd><p>Export <a class="reference internal" href="../../modeling/volumes/index.html"><span class="doc">Volume Object</span></a></p>
+</dd>
+<dt>Hair</dt><dd><p>Các sợi hair cha được export thành một hệ curve. Màu của sợi hair không được export.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kiểu schema USD tương ứng dùng khi Export cũng giống như kiểu được đọc khi Import. Xem phần Import để biết chi tiết.</p>
+</div>
+</section>
+<section id="id4">
+<h3>Geometry<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>UV Maps</dt><dd><p>Khi đánh dấu, bao gồm tọa độ UV cho các mesh được export. Tên UV map trong USD giống với tên trong Blender.</p>
+</dd>
+<dt>Rename UV Maps</dt><dd><p>Export UV map với tên mặc định của USD (<code class="docutils literal notranslate"><span class="pre">st</span></code>) thay cho tên mặc định của Blender (<code class="docutils literal notranslate"><span class="pre">UVMap</span></code>).</p>
+</dd>
+<dt>Normals</dt><dd><p>Khi đánh dấu, bao gồm normals cho các mesh được export. Điều này gồm cả custom loop normals.</p>
+</dd>
+<dt>Merge parent Xform</dt><dd><p>Hợp nhất các primitive USD với cha Xform của chúng nếu có thể. USD không cho phép <code class="docutils literal notranslate"><span class="pre">UsdGeomGprims</span></code> lồng nhau, nên các prim Xform trung gian sẽ được định nghĩa để giữ cho file USD hợp lệ khi gặp các phân cấp object.</p>
+</dd>
+<dt>Triangulate</dt><dd><p>Tam giác hóa mesh trước khi ghi. Để biết chi tiết hơn về từng tùy chọn cụ thể, xem <a class="reference internal" href="../../modeling/modifiers/generate/triangulate.html"><span class="doc">modifier Triangulate</span></a>.</p>
+</dd>
+</dl>
+</section>
+<section id="id5">
+<h3>Rigging<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<dl>
+<dt>Shape Keys</dt><dd><p>Export shape key thành USD blend shape.</p>
+<p>Absolute shape key không được hỗ trợ.</p>
+</dd>
+<dt>Armatures</dt><dd><p>Export <a class="reference internal" href="../../animation/armatures/index.html"><span class="doc">Armature</span></a> và mesh có <a class="reference internal" href="../../modeling/modifiers/deform/armature.html"><span class="doc">Modifier Armature</span></a> thành skeleton USD và mesh có skin.</p>
+<p>Hạn chế:</p>
+<ul class="simple">
+<li><p>Các modifier khác ngoài modifier Armature sẽ không được áp dụng.</p></li>
+<li><p>Bendy bone không được hỗ trợ.</p></li>
+</ul>
+</dd>
+<dt>Only Deform Bones</dt><dd><p>Chỉ export <a class="reference internal" href="../../animation/armatures/bones/properties/deform.html#bpy-types-bone-use-deform"><span class="std std-ref">deform bone</span></a> và cha của chúng.</p>
+</dd>
+</dl>
+</section>
+<section id="id6">
+<h3>Materials<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<p>Export thông tin material của object. Theo mặc định, bộ export xấp xỉ cây node <a class="reference internal" href="../../render/shader_nodes/shader/principled.html"><span class="doc">Principled BSDF</span></a> bằng cách chuyển đổi nó sang định dạng Preview Surface của USD.</p>
+<p>Khi một mesh được gán nhiều material, một geometry subset sẽ được tạo cho từng material. Material đầu tiên (nếu có) cũng luôn được áp cho chính mesh đó (bất kể có tồn tại geometry subset hay không), vì viewport Hydra không hỗ trợ material trên subset. Xem <a class="reference external" href="https://github.com/PixarAnimationStudios/USD/issues/542">USD issue #542</a> để biết thêm thông tin.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Nếu <em>USD Preview Surface Network</em> và <em>MaterialX Network</em> bị tắt, material được đặt thành material viewport của mesh.</p>
+</div>
+<div class="warning admonition">
+<p class="admonition-title">Hỗ trợ Displacement</p>
+<p><a class="reference internal" href="../../render/materials/components/displacement.html"><span class="doc">Displacement</span></a> được hỗ trợ với một số lưu ý:</p>
+<ul class="simple">
+<li><p>Chỉ hỗ trợ displacement theo không gian object (không hỗ trợ vector displacement).</p></li>
+<li><p>Các điều khiển <em>Midlevel</em> và <em>Scale</em> chỉ có thể là hằng số.</p></li>
+<li><p>MaterialX hiện không được hỗ trợ, xem <a class="reference external" href="https://projects.blender.org/blender/blender/commit/b4c2feea38">commit của tính năng</a> để biết chi tiết.</p></li>
+</ul>
+</div>
+<dl>
+<dt>USD Preview Surface Network</dt><dd><p>Xấp xỉ cây node <a class="reference internal" href="../../render/shader_nodes/shader/principled.html"><span class="doc">Principled BSDF</span></a> bằng cách chuyển đổi nó sang định dạng Preview Surface của USD.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Để hỗ trợ <code class="docutils literal notranslate"><span class="pre">opacityThreshold</span></code>, đôi khi được gọi là &quot;Alpha Clip&quot;, cây node phải hoặc là dùng một Math node đặt thành <code class="docutils literal notranslate"><span class="pre">Round</span></code> nếu ngưỡng mong muốn là 0.5, hoặc dùng một cặp Math node triển khai <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">-</span> <span class="pre">(value</span> <span class="pre">&lt;</span> <span class="pre">threshold)</span></code>. Kết quả nên được cắm vào socket Alpha trên node Principled BSDF.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Cảnh báo</p>
+<p>Không phải mọi node đều được hỗ trợ; hiện chỉ hỗ trợ các cây node đơn giản chứa Diffuse BSDF, Principled BSDF, Image Texture, UVMap và Separate RGB.</p>
+</div>
+</dd>
+<dt>MaterialX Network</dt><dd><p>Tạo đồ thị shading của material bằng chuẩn <a class="reference external" href="http://materialx.org/">MaterialX</a>. Chuẩn này được thiết kế để hỗ trợ khả năng tương tác cao giữa các <abbr>DCCs &lt;Digital Content Creation&gt;</abbr>. Trong Blender, MaterialX hỗ trợ phần lớn các shader node và chức năng của chúng, nhưng có một vài lưu ý (xem bên dưới).</p>
+<div class="important admonition">
+<p class="admonition-title">Các Lưu ý về Triển khai</p>
+<p>Khi dùng Principled BSDF, đồ thị thu được rất dễ sử dụng. Tuy nhiên, khi dùng một số BSDF khác, một số đồ thị shading được tạo ra khó được các DCC khác hiểu.</p>
+</div>
+</dd>
+<dt>Export Textures</dt><dd><p>Phương pháp export texture.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Keep<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dùng vị trí gốc của texture.</p>
+</dd>
+<dt class="field-even">Preserve<span class="colon">:</span></dt>
+<dd class="field-even"><p>Giữ nguyên đường dẫn file của các texture đến từ file USD đã import trước đó. Export phần texture còn lại sang thư mục 'textures' nằm cạnh file USD.</p>
+</dd>
+<dt class="field-odd">New Path<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Export texture sang thư mục 'textures' nằm cạnh file USD.</p>
+</dd>
+</dl>
+</dd>
+<dt>Overwrite Textures</dt><dd><p>Cho phép ghi đè các file texture sẵn có khi export texture.</p>
+</dd>
+<dt>USDZ Texture Downsampling</dt><dd><p>Chọn kích thước tối đa cho mọi texture được export.</p>
+<dl class="field-list">
+<dt class="field-odd">Keep<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Giữ nguyên kích thước hiện tại của mọi texture.</p>
+</dd>
+<dt class="field-even">256<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đổi kích thước tối đa 256 pixel.</p>
+</dd>
+<dt class="field-odd">512<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Đổi kích thước tối đa 512 pixel.</p>
+</dd>
+<dt class="field-even">1024<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đổi kích thước tối đa 1024 pixel.</p>
+</dd>
+<dt class="field-odd">2048<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Đổi kích thước tối đa 2048 pixel.</p>
+</dd>
+<dt class="field-even">4096<span class="colon">:</span></dt>
+<dd class="field-even"><p>Đổi kích thước tối đa 4096 pixel.</p>
+</dd>
+<dt class="field-odd">Custom<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Chỉ định kích thước tùy chỉnh.</p>
+<dl class="simple">
+<dt>USDZ Custom Downscale Size</dt><dd><p>Kích thước tính bằng pixel của việc giảm mẫu (downsampling) <em>Custom</em>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="accessibility">
+<h3>Accessibility<a class="headerlink" href="#accessibility" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Label</dt><dd><p>Nhãn accessibility dùng cho prim mặc định của stage được export.</p>
+</dd>
+<dt>Mô tả</dt><dd><p>Mô tả accessibility dùng cho prim mặc định của stage được export.</p>
+</dd>
+</dl>
+<p>Xem <a class="reference internal" href="#usd-accessibility"><span class="std std-ref">USD UI Accessibility</span></a> để biết thêm chi tiết.</p>
+</section>
+<section id="experimental">
+<h3>Experimental<a class="headerlink" href="#experimental" title="Link to this heading">¶</a></h3>
+<dl class="simple">
+<dt>Instancing</dt><dd><p>Đây là một tùy chọn thử nghiệm. Khi bỏ đánh dấu, các object nhân đôi được export thành object thực, nên một hệ particle với 100 particle hiển thị bằng 100 mesh sẽ có 100 mesh riêng biệt trong file export. Khi đánh dấu, các object nhân đôi được export thành một tham chiếu tới object gốc. Nếu object gốc không thuộc phần được export, bản nhân đôi đầu tiên sẽ được export thành object thực và dùng làm tham chiếu.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="exporter-limitations">
+<h2>Các Hạn chế của Exporter<a class="headerlink" href="#exporter-limitations" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>Mesh Một mặt và Hai mặt</dt><dd><p>USD có vẻ không hỗ trợ tính hai mặt theo từng material hay theo từng nhóm mặt, nên Blender dùng cờ từ material đầu tiên để đánh dấu toàn bộ mesh là một mặt/hai mặt. Nếu không có material thì mặc định là hai mặt.</p>
+</dd>
+<dt>Materials</dt><dd><p>Khi có nhiều material, các mặt của mesh được lưu thành geometry subset và từng material được gán cho subset tương ứng. Nếu chỉ có một material thì bỏ qua bước này. Lưu ý rằng geometry subset không được lấy mẫu theo thời gian, nên có thể bị lỗi khi một mesh động thay đổi topology.</p>
+</dd>
+<dt>Hair</dt><dd><p>Chỉ các sợi cha được export, và chỉ với màu không đổi. Không có tọa độ UV, và không có thông tin về normals.</p>
+</dd>
+<dt>Camera</dt><dd><p>Chỉ camera phối cảnh mới được export.</p>
+</dd>
+<dt>Particles</dt><dd><p>Particle chỉ được ghi khi chúng còn sống, nghĩa là chúng luôn hiển thị. Hiện chưa có mã nào xử lý việc đánh dấu chúng là vô hình ngoài vòng đời của chúng.</p>
+<p>Các object được instance bởi hệ particle được export bằng cách thêm hậu tố là ID cố định của particle vào tên object, cho transform của mỗi particle một tên riêng biệt.</p>
+</dd>
+<dt>Geometry Node Modifiers</dt><dd><p>Khi dùng Geometry Nodes, đồ thị node phải chỉ xuất ra các thành phần geometry khớp với kiểu object gốc. Ví dụ, để export đúng một Mesh dùng modifier geometry nodes, đầu ra của modifier phải chỉ chứa dữ liệu Mesh. Tương tự, một object Curves phải chỉ xuất dữ liệu Curves, v.v. Nếu đầu ra chứa bất kỳ kiểu thành phần nào không khớp thì kết quả export sẽ sai. Dùng <a class="reference internal" href="../../modeling/geometry_nodes/geometry/operations/separate_components.html"><span class="doc">Separate Components Node</span></a> là một cách để bảo đảm chỉ những thành phần bạn muốn mới được export.</p>
+</dd>
+<dt>Instancing/Referencing</dt><dd><p>Việc export các object và collection được instance được hỗ trợ qua một tùy chọn thử nghiệm có sẵn trong lúc export USD.</p>
+<p>Các point instance, được tạo bằng Geometry Nodes, được hỗ trợ một phần và sẽ được export bằng kiểu prim <code class="docutils literal notranslate"><span class="pre">UsdGeomPointInstancer</span></code>. Các kịch bản instancing đơn giản dùng <a class="reference internal" href="../../modeling/geometry_nodes/input/scene/object_info.html"><span class="doc">Node Object Info</span></a> hoặc <a class="reference internal" href="../../modeling/geometry_nodes/input/scene/collection_info.html"><span class="doc">Node Collection Info</span></a> sẽ hoạt động. Các kịch bản phức tạp hơn liên quan đến collection bị loại trừ, collection lồng nhau, hoặc collection nằm trong các Scene khác nhau có thể cho kết quả sai. Hãy cân nhắc dùng <a class="reference internal" href="../../modeling/geometry_nodes/instances/realize_instances.html"><span class="doc">Realize Instances Node</span></a> trong những tình huống export ra instance không đúng.</p>
+<p>Các scene instance, được tạo bằng cách trực tiếp instance collection hoặc object, sẽ được ghi ra USD dưới dạng tham chiếu tới bản gốc. Các kiểu object được hỗ trợ bao gồm Mesh, Curves và Point Cloud.</p>
+</dd>
+<dt>USDZ</dt><dd><p>Do một hạn chế hiện tại của thư viện USD, texture UDIM không thể được đưa vào USDZ archive. Hạn chế này nhiều khả năng sẽ được khắc phục trong một phiên bản USD tương lai. (Xem <a class="reference external" href="https://github.com/PixarAnimationStudios/OpenUSD/pull/2133">USD pull request #2133</a>.)</p>
+</dd>
+</dl>
+</section>
+<section id="usd-primvar-data-types">
+<h2>Các Kiểu Dữ liệu USD Primvar<a class="headerlink" href="#usd-primvar-data-types" title="Link to this heading">¶</a></h2>
+<p>Blender hỗ trợ một tập con của <a class="reference external" href="https://openusd.org/release/api/_usd__page__datatypes.html#Usd_Basic_Datatypes">các kiểu dữ liệu cơ bản của USD</a> cho import và export.</p>
+<p>Chỉ những kiểu được <a class="reference internal" href="../../modeling/geometry_nodes/attributes_reference.html"><span class="doc">hệ thống thuộc tính</span></a> của Blender hỗ trợ sẵn mới được xử lý.</p>
+<div class="table-wrapper colwidths-given docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 18.8%" />
+<col style="width: 18.8%" />
+<col style="width: 62.5%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Kiểu Blender</p></th>
+<th class="head"><p>Kiểu USD</p></th>
+<th class="head"><p>Ghi chú</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Boolean</p></td>
+<td><p>bool</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>8-Bit Integer</p></td>
+<td><p>uchar</p></td>
+<td><p>Giá trị 8-bit không dấu của USD sẽ được ép kiểu thành giá trị có dấu khi import. Giá trị có dấu sẽ được ép kiểu thành không dấu khi export.</p></td>
+</tr>
+<tr class="row-even"><td><p>Integer</p></td>
+<td><p>int</p></td>
+<td><p>Giá trị số nguyên có dấu 32-bit.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Float</p></td>
+<td><p>float</p></td>
+<td><p>Giá trị dấu phẩy động độ chính xác đơn 32-bit.</p></td>
+</tr>
+<tr class="row-even"><td><p>Vector</p></td>
+<td><p>float3</p></td>
+<td><p>Vector 3D với các giá trị dấu phẩy động 32-bit.</p></td>
+</tr>
+<tr class="row-odd"><td><p>2D Vector</p></td>
+<td><p>float2/texCoord2f</p></td>
+<td><p>Vector 2D với các giá trị dấu phẩy động 32-bit.</p></td>
+</tr>
+<tr class="row-even"><td><p>Color</p></td>
+<td><p>color4f</p></td>
+<td><p>Màu RGBA với các giá trị dấu phẩy động 32-bit. Như một trường hợp đặc biệt, khi gặp một Primvar hoặc thuộc tính <code class="docutils literal notranslate"><span class="pre">displayColor</span></code> của USD, nó sẽ được đọc hoặc ghi dưới dạng dữ liệu <code class="docutils literal notranslate"><span class="pre">color3f</span></code> với thành phần Alpha bằng 1.0.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Byte Color</p></td>
+<td><p>color4f</p></td>
+<td><p>USD không có loại màu byte tương đương. Các giá trị byte sẽ được chuyển thành float và export dưới dạng color4f.</p></td>
+</tr>
+<tr class="row-even"><td><p>Quaternion</p></td>
+<td><p>quatf</p></td>
+<td><p>Phép quay <a class="reference internal" href="../../glossary/index.html#term-Quaternion"><span class="xref std std-term">Quaternion</span></a> dấu phẩy động.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="important admonition">
+<p class="admonition-title">Các Lưu ý về Triển khai</p>
+<p>Blender không hỗ trợ Primvar USD dùng giá trị nguyên 64-bit (<code class="docutils literal notranslate"><span class="pre">int64</span></code>), dùng các kiểu không dấu (<code class="docutils literal notranslate"><span class="pre">uint</span></code>), hoặc dùng giá trị dấu phẩy động độ chính xác kép 64-bit hay độ chính xác nửa 16-bit. Ví dụ, điều này bao gồm các kiểu như <code class="docutils literal notranslate"><span class="pre">matrix4d</span></code> (ma trận double 4x4) và <code class="docutils literal notranslate"><span class="pre">quath</span></code> (quaternion độ chính xác nửa).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Kiểu dữ liệu <code class="docutils literal notranslate"><span class="pre">float4</span></code> của USD không có loại tương đương trực tiếp trong Blender và sẽ không được xử lý như <code class="docutils literal notranslate"><span class="pre">Color</span></code> hay <code class="docutils literal notranslate"><span class="pre">Quaternion</span></code> của Blender.</p>
+</div>
+</section>
+<section id="usd-ui-accessibility">
+<span id="usd-accessibility"></span><h2>USD UI Accessibility<a class="headerlink" href="#usd-ui-accessibility" title="Link to this heading">¶</a></h2>
+<p>Blender hỗ trợ tạo và tải <a class="reference external" href="https://openusd.org/release/api/class_usd_u_i_accessibility_a_p_i.html#details">schema UsdUIAccessibilityAPI</a> trên mọi loại data-block được hỗ trợ và cho phép <a class="reference internal" href="../custom_properties.html"><span class="doc">Custom Properties</span></a>. API này mô tả thông tin accessibility cho một primitive USD, vốn có thể được hiển thị lên khung accessibility của runtime tương ứng (nếu có).</p>
+<p>Ngoài tùy chọn export accessibility mô tả ở trên áp dụng cho prim gốc, thông tin accessibility cho từng object có thể được đặt theo các bước sau:</p>
+<ul class="simple">
+<li><p>Thêm các String Property mới sau đây vào data-block của object:</p>
+<ul>
+<li><p>Bắt buộc: <code class="docutils literal notranslate"><span class="pre">accessibility:&lt;namespace&gt;:label</span></code> và <code class="docutils literal notranslate"><span class="pre">accessibility:&lt;namespace&gt;:description</span></code></p></li>
+<li><p>Tùy chọn: <code class="docutils literal notranslate"><span class="pre">accessibility:&lt;namespace&gt;:priority</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;namespace&gt;</span></code> có thể là bất kỳ định danh primvar USD hợp lệ nào, bao gồm <code class="docutils literal notranslate"><span class="pre">default</span></code>, vốn là namespace được khuyến nghị dùng theo quy ước. Giá trị của <code class="docutils literal notranslate"><span class="pre">priority</span></code> có thể là một trong <code class="docutils literal notranslate"><span class="pre">low,</span> <span class="pre">standard,</span> <span class="pre">high</span></code>.</p>
+<p>Rất nên đặt các trường accessibility của prim gốc cho bất kỳ tài liệu USD lâu dài nào có thể được phân phối tới nhiều phần mềm và nhiều người dùng. Ví dụ, khi tải lên một marketplace asset, v.v.</p>
+<div class="important admonition">
+<p class="admonition-title">Các Lưu ý về Triển khai</p>
+<p>Blender không hỗ trợ schema accessibility biến đổi theo thời gian, vì các custom String property không thể animate.</p>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="obj.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Wavefront OBJ</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="bvh.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Motion Capture (BVH)</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/files/import_export/usd.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Ffiles/import_export/usd"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Ffiles/import_export/usd.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Ffiles/import_export/usd.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Universal Scene Description</a><ul>
+<li><a class="reference internal" href="#importing-usd-files">Import File USD</a><ul>
+<li><a class="reference internal" href="#xform-and-scope-primitives">Primitive Xform và Scope</a></li>
+<li><a class="reference internal" href="#pointinstancer-primitives">Primitive PointInstancer</a></li>
+<li><a class="reference internal" href="#animations">Animation</a></li>
+<li><a class="reference internal" href="#materials">Materials</a></li>
+<li><a class="reference internal" href="#coordinate-system-orientation">Định hướng Hệ tọa độ</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#import-options">Tùy chọn Import</a><ul>
+<li><a class="reference internal" href="#general">General</a></li>
+<li><a class="reference internal" href="#object-types">Object Types</a></li>
+<li><a class="reference internal" href="#geometry">Geometry</a></li>
+<li><a class="reference internal" href="#rigging">Rigging</a></li>
+<li><a class="reference internal" href="#id1">Materials</a></li>
+<li><a class="reference internal" href="#textures">Textures</a></li>
+<li><a class="reference internal" href="#particles-and-instancing">Particle và Instancing</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exporting-to-usd-files">Xuất sang File USD</a></li>
+<li><a class="reference internal" href="#export-options">Tùy chọn Xuất</a><ul>
+<li><a class="reference internal" href="#id2">General</a></li>
+<li><a class="reference internal" href="#id3">Object Types</a></li>
+<li><a class="reference internal" href="#id4">Geometry</a></li>
+<li><a class="reference internal" href="#id5">Rigging</a></li>
+<li><a class="reference internal" href="#id6">Materials</a></li>
+<li><a class="reference internal" href="#accessibility">Accessibility</a></li>
+<li><a class="reference internal" href="#experimental">Experimental</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exporter-limitations">Các Hạn chế của Exporter</a></li>
+<li><a class="reference internal" href="#usd-primvar-data-types">Các Kiểu Dữ liệu USD Primvar</a></li>
+<li><a class="reference internal" href="#usd-ui-accessibility">USD UI Accessibility</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../_static/translations.js?v=4c1d55b0"></script>
+    <script src="../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>

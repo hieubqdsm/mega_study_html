@@ -1,0 +1,723 @@
+<!doctype html>
+<html class="no-js" lang="vi" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html"><link rel="copyright" title="Bản quyền" href="../../../copyright.html"><link rel="next" title="Drivers Editor" href="../../drivers_editor.html"><link rel="prev" title="Thuộc tính F-Curve" href="properties.html">
+        <link rel="canonical" href="https://docs.blender.org/manual/en/latest/editors/graph_editor/fcurves/modifiers.html">
+        <link rel="prefetch" href="../../../_static/blender-logo.svg" as="image"><link rel="alternate" hreflang="en" href="https://docs.blender.org/manual/en/latest/">
+<link rel="alternate" hreflang="ar" href="https://docs.blender.org/manual/ar/latest/">
+<link rel="alternate" hreflang="de" href="https://docs.blender.org/manual/de/latest/">
+<link rel="alternate" hreflang="es" href="https://docs.blender.org/manual/es/latest/">
+<link rel="alternate" hreflang="fi" href="https://docs.blender.org/manual/fi/latest/">
+<link rel="alternate" hreflang="fr" href="https://docs.blender.org/manual/fr/latest/">
+<link rel="alternate" hreflang="id" href="https://docs.blender.org/manual/id/latest/">
+<link rel="alternate" hreflang="it" href="https://docs.blender.org/manual/it/latest/">
+<link rel="alternate" hreflang="ja" href="https://docs.blender.org/manual/ja/latest/">
+<link rel="alternate" hreflang="ko" href="https://docs.blender.org/manual/ko/latest/">
+<link rel="alternate" hreflang="nb" href="https://docs.blender.org/manual/nb/latest/">
+<link rel="alternate" hreflang="nl" href="https://docs.blender.org/manual/nl/latest/">
+<link rel="alternate" hreflang="pt" href="https://docs.blender.org/manual/pt/latest/">
+<link rel="alternate" hreflang="ru" href="https://docs.blender.org/manual/ru/latest/">
+<link rel="alternate" hreflang="sk" href="https://docs.blender.org/manual/sk/latest/">
+<link rel="alternate" hreflang="sl" href="https://docs.blender.org/manual/sl/latest/">
+<link rel="alternate" hreflang="sr" href="https://docs.blender.org/manual/sr/latest/">
+<link rel="alternate" hreflang="uk" href="https://docs.blender.org/manual/uk/latest/">
+<link rel="alternate" hreflang="vi" href="https://docs.blender.org/manual/vi/latest/">
+<link rel="alternate" hreflang="zh-Hans" href="https://docs.blender.org/manual/zh-hans/latest/">
+<link rel="alternate" hreflang="zh-Hant" href="https://docs.blender.org/manual/zh-hant/latest/">
+<link rel="alternate" hreflang="x-default" href="https://docs.blender.org/manual/en/latest/">
+
+    <link rel="shortcut icon" href="../../../_static/favicon.png"><!-- Generated with Sphinx 9.1.0 and Furo 2025.12.19 -->
+        <title>Modifier của F-Curve - Blender 5.3 Manual</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/theme_overrides.css?v=c08a9fd6" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/version_switch.css?v=97ca1958" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/fonts/bl-icons.css?v=9072c03c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  --color-brand-primary: #265787;
+  --color-brand-content: #265787;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Blender 5.3 Manual</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../../../_static/blender-logo.svg" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">Blender 5.3 Manual</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+<div id="sidebar-tree-mount" data-prefix="../../../../"></div>
+<script src="../../../../_static/sidebar_tree.js"></script>
+<script>
+(function() {
+  var m = document.getElementById('sidebar-tree-mount');
+  if (!m || !window.__SIDEBAR_TREE__) return;
+  m.innerHTML = window.__SIDEBAR_TREE__;
+  function norm(p) {
+    p = p.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '');
+    return p === '' ? '/' : p.replace(/\/$/, '');
+  }
+  var here = norm(location.pathname);
+  var prefix = m.getAttribute('data-prefix') || '';
+  var links = m.querySelectorAll('a.reference.internal');
+  var curLi = null;
+  for (var i = 0; i < links.length; i++) {
+    var a = links[i];
+    var h = a.getAttribute('href');
+    if (!h || /^(https?:|#|mailto:)/.test(h)) continue;
+    var abs = new URL(prefix + h, location.href);
+    if (norm(abs.pathname) === here) {
+      curLi = a.closest('li');
+      if (curLi) curLi.classList.add('current', 'current-page');
+      a.classList.add('current');
+      a.setAttribute('href', '#');
+    } else {
+      a.setAttribute('href', prefix + h);
+    }
+  }
+  if (curLi) {
+    for (var el = curLi.parentElement; el && el !== m; el = el.parentElement) {
+      if (el.tagName === 'LI' && /has-children/.test(el.className)) {
+        el.classList.add('current');
+        for (var k = 0; k < el.children.length; k++) {
+          var c = el.children[k];
+          if (c.tagName === 'INPUT' && /toctree-checkbox/.test(c.className)) {
+            c.checked = true; break;
+          }
+        }
+      }
+    }
+  }
+})();
+</script>
+</div></div><div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="Document versions">
+  <ul id="versionwrap" role="presentation">
+    <li role="presentation">
+      <button id="version-popover" class="version-btn" tabindex="0" type="button" aria-label="Versions selector"
+        aria-haspopup="true" aria-owns="version-vsnlist">
+        5.3
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Các phiên bản</div>
+        <ul id="version-vsnlist" class="version-list" role="menu" aria-labelledby="version-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+          <li role="presentation">
+            <a role="menuitem" tabindex="-1"
+               href="https://docs.blender.org/manual/vi/latest/versions.html">
+               Các phiên bản cũ hơn
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li role="presentation">
+      <button id="lang-popover" class="version-btn" tabindex="0" type="button" aria-label="Language selector"
+        aria-haspopup="true" aria-owns="version-langlist">
+        vi
+      </button>
+      <div class="version-dialog" aria-hidden="true">
+        <div class="version-title" aria-role="heading">Ngôn ngữ</div>
+        <ul id="version-langlist" class="version-list" role="menu" aria-labelledby="lang-popover" aria-hidden="true">
+          <li role="presentation">Đang tải...</li>
+        </ul>
+      </div>
+    </li>
+    <template id="version-entry">
+      <li tabindex="-1" role="presentation"><a tabindex="-1" role="menuitem"></a></li>
+      <li class="selected" tabindex="-1" role="presentation"><span tabindex="-1" aria-current="page"></span></li>
+    </template>
+  </ul>
+  <template id="version-warning">
+    <div class="admonition warning">
+      <p class="first admonition-title">Note</p>
+      <p class="last">
+        Bạn đang không sử dụng phiên bản mới nhất của tài liệu.
+        <a href="#"></a> là phiên bản mới nhất.
+      </p>
+    </div>
+  </template>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="edit-this-page">
+  <a class="muted-link" href="https://projects.blender.org/blender/blender-manual/_edit/main/manual/editors/graph_editor/fcurves/modifiers.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="f-curve-modifiers">
+<span id="bpy-types-fmodifier"></span><span id="bpy-types-fcurvemodifiers"></span><span id="index-1"></span><span id="index-0"></span><h1>Modifier của F-Curve<a class="headerlink" href="#f-curve-modifiers" title="Link to this heading">¶</a></h1>
+<div class="refbox admonition" id="id1">
+<p class="admonition-title">Tham khảo</p>
+<dl class="field-list simple">
+<dt class="field-odd">Panel<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="menuselection">Sidebar region ‣ Modifiers</span></p>
+</dd>
+</dl>
+</div>
+<p>Modifier của F-Curve tương tự như modifier của object, ở chỗ chúng thêm các hiệu ứng không phá hủy, có thể được điều chỉnh bất cứ lúc nào và xếp chồng lên nhau để tạo hiệu ứng phức tạp hơn.</p>
+<p>Các modifier được đánh giá từ trên xuống dưới. Bạn có thể thay đổi thứ tự của chúng bằng cách kéo các chấm ở góc trên bên phải.</p>
+<p>Một số modifier yêu cầu phải đứng đầu và không thể dùng chung với nhau. Hiện nay điều này áp dụng cho các modifier <a class="reference internal" href="#bpy-types-fmodifiercycles"><span class="std std-ref">Cycles</span></a> và <a class="reference internal" href="#bpy-types-fmodifiersmooth"><span class="std std-ref">Smooth (Gaussian)</span></a>.</p>
+<section id="interface">
+<h2>Interface<a class="headerlink" href="#interface" title="Link to this heading">¶</a></h2>
+<dl class="simple" id="bpy-types-fmodifier-name">
+<dt>Name</dt><dd><p>Theo mặc định, modifier được đặt tên theo chức năng của nó, nhưng có thể thay đổi được.</p>
+</dd>
+</dl>
+<dl class="simple" id="bpy-types-fmodifier-mute">
+<dt>Mute</dt><dd><p>Nhấp vào hộp kiểm trên thanh tiêu đề của modifier để tắt nó.</p>
+</dd>
+<dt>Delete</dt><dd><p>Nhấp vào dấu X trên thanh tiêu đề của modifier để xóa nó.</p>
+</dd>
+<dt>Influence</dt><dd><p>Cho phép bạn blend giữa curve gốc và curve đã được chỉnh sửa.</p>
+</dd>
+<dt>Restrict Frame Range</dt><dd><dl class="simple">
+<dt>Start/End</dt><dd><p>Frame mà hiệu ứng của modifier bắt đầu/kết thúc.</p>
+</dd>
+<dt>Blend In/Out</dt><dd><p>Số frame (so với giá trị bắt đầu/kết thúc ở trên) cần để modifier mờ dần vào/ra.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="adding-a-modifier">
+<h2>Thêm một Modifier<a class="headerlink" href="#adding-a-modifier" title="Link to this heading">¶</a></h2>
+<figure class="align-default" id="id2">
+<img alt="../../../_images/editors_graph-editor_fcurves_sidebar_modifiers_panel.png" src="../../../_images/editors_graph-editor_fcurves_sidebar_modifiers_panel.png" />
+<figcaption>
+<p><span class="caption-text">Panel Modifiers.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Modifier F-Curve có thể được thêm theo nhiều cách: qua Channel Menu trong Graph Editor, qua menu ngữ cảnh của vùng channel (nhấp chuột phải trong vùng channel), ngoài ra còn có thể thêm và quản lý trong tab <em>Modifiers</em> của Sidebar.</p>
+<p>Để thêm modifier, trước tiên hãy chọn một F-Curve (trong vùng channel hoặc bằng cách chọn một keyframe của nó), rồi chọn <em>Add F-Curve Modifer</em> từ một trong các menu hoặc nhấp vào danh sách thả xuống <em>Add Modifier</em> trong Sidebar. Sau đó bạn có thể chọn loại modifier sẽ thêm vào các F-Curve đang chọn.</p>
+</section>
+<section id="deleting-f-curve-modifiers">
+<h2>Xóa Modifier F-Curve<a class="headerlink" href="#deleting-f-curve-modifiers" title="Link to this heading">¶</a></h2>
+<p>Cũng như khi thêm, có nhiều cách để xóa modifier F-Curve. Từng modifier riêng lẻ có thể được xóa bằng cách nhấp vào biểu tượng <em>X</em> bên cạnh modifier trong Sidebar. Nhiều modifier có thể được xóa cùng lúc bằng toán tử <em>Delete F-Curve Modifiers</em>.</p>
+<p>Toán tử này nằm trong Channel Menu hoặc menu ngữ cảnh của vùng Channel (nhấp chuột phải trong vùng channel). Sau khi chọn mục menu này, bạn có thể mở <a class="reference internal" href="../../../interface/undo_redo.html#bpy-ops-screen-redo-last"><span class="std std-ref">panel redo</span></a> để điều chỉnh cài đặt nếu cần.</p>
+<figure class="align-default" id="id3">
+<img alt="../../../_images/editors_graph-editor_fcurves_delete-f-mods-redo-panel.png" src="../../../_images/editors_graph-editor_fcurves_delete-f-mods-redo-panel.png" />
+<figcaption>
+<p><span class="caption-text">Redo Panel</span><a class="headerlink" href="#id3" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Mode</dt><dd><p>Cách dùng để xóa modifier F-Curve khỏi các curve đang chọn.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Remove All<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Xóa toàn bộ modifier F-Curve khỏi các curve đang chọn (tùy chọn mặc định).</p>
+</dd>
+<dt class="field-even">Remove Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Chỉ xóa loại modifier cụ thể khỏi các curve đang chọn, để nguyên các modifier khác.</p>
+</dd>
+<dt class="field-odd">Remove First<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Xóa modifier nằm trên cùng của stack trong mỗi curve đang chọn.</p>
+</dd>
+</dl>
+</dd>
+<dt>Type</dt><dd><p>Chỉ định loại modifier cần xóa (tùy chọn này chỉ hiển thị khi Mode được đặt thành 'Remove Type').</p>
+</dd>
+</dl>
+</section>
+<section id="types-of-modifiers">
+<h2>Các loại Modifier<a class="headerlink" href="#types-of-modifiers" title="Link to this heading">¶</a></h2>
+<section id="generator-modifier">
+<span id="bpy-types-fmodifiergenerator"></span><span id="index-2"></span><h3>Generator Modifier<a class="headerlink" href="#generator-modifier" title="Link to this heading">¶</a></h3>
+<p>Tạo một hàm đa thức. Đây là những công thức toán học cơ bản biểu diễn đường thẳng, parabol và các curve phức tạp hơn, tùy vào giá trị được dùng.</p>
+<div class="admonition seealso">
+<p class="admonition-title">Xem thêm</p>
+<p>Trang <a class="reference external" href="https://en.wikipedia.org/wiki/Polynomial">Wikipedia</a> để biết thêm thông tin về đa thức.</p>
+</div>
+<dl class="simple">
+<dt>Mode</dt><dd><p>Cách dùng để biểu diễn phương trình.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Expanded Polynomial<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Phương trình dạng <span class="math notranslate nohighlight">\(y = A + Bx^1 + Cx^2 + ... + Dx^n\)</span>.</p>
+</dd>
+<dt class="field-even">Factorized Polynomial<span class="colon">:</span></dt>
+<dd class="field-even"><p>Phương trình dạng <span class="math notranslate nohighlight">\(y = (Ax + B)(Cx + D)\)</span>.</p>
+</dd>
+</dl>
+</dd>
+<dt>Additive</dt><dd><p>Cộng đa thức vào curve thay vì thay thế curve.</p>
+</dd>
+<dt>Order</dt><dd><p>Lũy thừa cao nhất của <code class="docutils literal notranslate"><span class="pre">x</span></code> trong đa thức này.</p>
+</dd>
+<dt>Constant</dt><dd><p>Các hằng số A, B, C... trong phương trình.</p>
+</dd>
+</dl>
+</section>
+<section id="built-in-function-modifier">
+<span id="bpy-types-fmodifierfunctiongenerator"></span><span id="index-3"></span><h3>Built-in Function Modifier<a class="headerlink" href="#built-in-function-modifier" title="Link to this heading">¶</a></h3>
+<p>Đây là các công thức bổ sung, mỗi công thức đều có cùng các tùy chọn để điều khiển hình dạng của nó. Hãy tham khảo tài liệu toán học để biết thông tin chi tiết hơn về từng hàm:</p>
+<dl class="simple">
+<dt>Type</dt><dd><p>Hàm tích hợp sẵn sẽ dùng:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Sine">Sine</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Trigonometric_functions">Cosine</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Trigonometric_functions">Tangent</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Square_root">Square Root</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Natural_logarithm">Natural Logarithm</a></p></li>
+<li><p>Normalized Sine: <span class="math notranslate nohighlight">\(sin(x)/x\)</span></p></li>
+</ul>
+</dd>
+<dt>Additive</dt><dd><p>Cộng hàm vào curve thay vì thay thế curve.</p>
+</dd>
+<dt>Amplitude</dt><dd><p>Điều chỉnh hệ số thu phóng theo trục Y.</p>
+</dd>
+<dt>Phase Multiplier</dt><dd><p>Điều chỉnh hệ số thu phóng theo trục X.</p>
+</dd>
+<dt>Phase Offset</dt><dd><p>Điều chỉnh độ dịch chuyển theo trục X.</p>
+</dd>
+<dt>Value Offset</dt><dd><p>Điều chỉnh độ dịch chuyển theo trục Y.</p>
+</dd>
+</dl>
+</section>
+<section id="envelope-modifier">
+<span id="bpy-types-fmodifierenvelopecontrolpoint"></span><span id="bpy-types-fmodifierenvelope"></span><span id="index-4"></span><h3>Envelope Modifier<a class="headerlink" href="#envelope-modifier" title="Link to this heading">¶</a></h3>
+<p>Cho phép bạn định hình lại curve. Đầu tiên, bạn xác định một bao (envelope), gồm hai đường ngang tương ứng hơn kém với cận dưới và cận trên của curve. Sau đó, bạn thêm các điểm điều khiển, trong đó mỗi điểm có thể đẩy, nén và kéo giãn bao (và cả curve theo nó) tại một frame nhất định.</p>
+<figure class="align-default" id="id4">
+<img alt="../../../_images/editors_graph-editor_fcurves_modifiers_envelope.png" src="../../../_images/editors_graph-editor_fcurves_modifiers_envelope.png" />
+<figcaption>
+<p><span class="caption-text">Modifier Envelope.</span><a class="headerlink" href="#id4" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
+<dl class="simple">
+<dt>Tham khảo</dt><dd><p>Giá trị mà bao được căn giữa quanh nó.</p>
+</dd>
+<dt>Min/Max</dt><dd><p>Độ dịch chuyển từ giá trị tham chiếu đến cận dưới/cận trên ban đầu của bao.</p>
+</dd>
+<dt>Add Control Point</dt><dd><p>Thêm một điểm điều khiển tại frame hiện tại.</p>
+</dd>
+<dt>Point</dt><dd><dl class="simple">
+<dt>Frame</dt><dd><p>Frame của điểm điều khiển.</p>
+</dd>
+<dt>Min/Max</dt><dd><p>Độ dịch chuyển từ giá trị tham chiếu đến cận dưới/cận trên đã điều chỉnh của bao tại frame này.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+<section id="cycles-modifier">
+<span id="bpy-types-fmodifiercycles"></span><span id="index-5"></span><h3>Cycles Modifier<a class="headerlink" href="#cycles-modifier" title="Link to this heading">¶</a></h3>
+<p>Khiến curve lặp lại chính nó.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Modifier Cycles phải là modifier đầu tiên trong danh sách.</p>
+<p>Modifier này cần biết chính xác các keyframe nằm ở đâu, điều không thể khi các modifier khác được xử lý trước. Vì vậy modifier này không tương thích với <a class="reference internal" href="#smooth-gaussian-modifier">Smooth (Gaussian) Modifier</a>.</p>
+</div>
+<dl class="simple">
+<dt>Before/After Mode</dt><dd><dl class="simple">
+<dt>No Cycles</dt><dd><p>Không lặp curve trước/sau phần gốc.</p>
+</dd>
+<dt>Repeat Motion</dt><dd><p>Lặp lại curve, giữ nguyên giá trị của mỗi bản sao.</p>
+</dd>
+<dt>Repeat with Offset</dt><dd><p>Lặp lại curve, dịch chuyển từng bản sao theo phương dọc sao cho keyframe đầu tiên của nó khớp với keyframe cuối cùng của bản trước.</p>
+</dd>
+<dt>Repeat Mirrored</dt><dd><p>Lặp lại curve, lật ngược từng bản sao xen kẽ theo phương ngang.</p>
+</dd>
+</dl>
+</dd>
+<dt>Count</dt><dd><p>Số bản sao sẽ tạo. Giá trị 0 nghĩa là vô hạn.</p>
+</dd>
+</dl>
+<section id="trivially-cyclic-curves">
+<h4>Các curve tuần hoàn đơn giản<a class="headerlink" href="#trivially-cyclic-curves" title="Link to this heading">¶</a></h4>
+<p>Khi <em>Cycle Mode</em> ở cả hai đầu được đặt thành <em>Repeat Motion</em> hoặc <em>Repeat with Offset</em>, và không tùy chọn nào khác của modifier bị thay đổi khỏi mặc định, modifier sẽ xác định một chu kỳ vô hạn đơn giản.</p>
+<p>Trường hợp đặc biệt này nhận được một số hỗ trợ thêm từ các bộ phận khác của Blender:</p>
+<ul class="simple">
+<li><p>Việc đặt handle Bézier tự động nhận biết chu kỳ và tự điều chỉnh để đạt được chuyển tiếp mượt mà.</p></li>
+<li><p>Tùy chọn <a class="reference internal" href="../../../animation/animation_editors.html#bpy-types-toolsettings-use-keyframe-cycle-aware"><span class="std std-ref">Cycle-Aware Keying</span></a> có thể được bật để tính đến chu kỳ khi chèn keyframe mới.</p></li>
+</ul>
+</section>
+</section>
+<section id="noise-modifier">
+<span id="bpy-types-fmodifiernoise"></span><span id="index-6"></span><h3>Noise Modifier<a class="headerlink" href="#noise-modifier" title="Link to this heading">¶</a></h3>
+<p>Chỉnh sửa curve bằng một công thức nhiễu (noise). Điều này hữu ích để thêm độ ngẫu nhiên nhẹ nhàng hay cực mạnh vào các chuyển động đã animation, chẳng hạn rung camera.</p>
+<dl class="simple">
+<dt>Blend Type</dt><dd><dl class="field-list simple">
+<dt class="field-odd">Replace<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Cộng thêm nhiễu trong khoảng [-0.5, 0.5].</p>
+</dd>
+<dt class="field-even">Add<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cộng thêm nhiễu trong khoảng [0, 1].</p>
+</dd>
+<dt class="field-odd">Subtract<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Trừ đi nhiễu trong khoảng [0, 1].</p>
+</dd>
+<dt class="field-even">Multiply<span class="colon">:</span></dt>
+<dd class="field-even"><p>Nhân với nhiễu trong khoảng [0, 1].</p>
+</dd>
+</dl>
+</dd>
+<dt>Scale</dt><dd><p>Thay đổi tỷ lệ ngang của nhiễu. Giá trị cao hơn tạo dao động thưa hơn.</p>
+</dd>
+<dt>Strength</dt><dd><p>Thay đổi tỷ lệ dọc của nhiễu.</p>
+</dd>
+<dt>Offset</dt><dd><p>Dịch chuyển nhiễu theo thời gian.</p>
+</dd>
+<dt>Phase</dt><dd><p>Điều chỉnh seed ngẫu nhiên của nhiễu.</p>
+</dd>
+<dt>Depth</dt><dd><p>Điều chỉnh mức chi tiết của hàm nhiễu.</p>
+</dd>
+<dt>Lacunarity</dt><dd><p>Khoảng cách giữa các tần số liên tiếp. Depth phải lớn hơn 0 thì tham số này mới có tác dụng.</p>
+</dd>
+<dt>Roughness</dt><dd><p>Lượng chi tiết tần số cao. Depth phải lớn hơn 0 thì tham số này mới có tác dụng.</p>
+</dd>
+</dl>
+</section>
+<section id="limits-modifier">
+<span id="bpy-types-fmodifierlimits"></span><span id="index-7"></span><h3>Limits Modifier<a class="headerlink" href="#limits-modifier" title="Link to this heading">¶</a></h3>
+<p>Giới hạn curve trong các khoảng thời gian và giá trị cụ thể.</p>
+<dl class="simple">
+<dt>Minimum, Maximum X</dt><dd><p>Xóa dữ liệu curve gốc ở bên trái frame nhỏ nhất và bên phải frame lớn nhất, thay thế bằng <a class="reference internal" href="../channels/editing.html#bpy-ops-graph-extrapolation-type"><span class="std std-ref">Constant extrapolation</span></a>.</p>
+</dd>
+<dt>Minimum, Maximum Y</dt><dd><p>Kẹp giá trị của curve, không bao giờ cho chúng xuống dưới mức tối thiểu hay vượt quá mức tối đa.</p>
+</dd>
+</dl>
+</section>
+<section id="stepped-interpolation-modifier">
+<span id="bpy-types-fmodifierstepped"></span><span id="index-8"></span><h3>Stepped Interpolation Modifier<a class="headerlink" href="#stepped-interpolation-modifier" title="Link to this heading">¶</a></h3>
+<p>Tạo cho curve hình dạng bậc thang bằng cách lấy mẫu mỗi N frame và giữ nguyên giá trị sau mỗi lần lấy mẫu. Theo một nghĩa nào đó, điều này giảm frame rate của curve bằng cách cho phép giá trị thay đổi ít thường xuyên hơn, từ đó tạo ra chuyển động gập ghềnh.</p>
+<dl class="simple">
+<dt>Step Size</dt><dd><p>Số frame giữ nguyên cho mỗi bậc.</p>
+</dd>
+<dt>Offset</dt><dd><p>Số frame dùng để dịch chuyển các điểm lấy mẫu.</p>
+</dd>
+<dt>Start Frame</dt><dd><p>Frame bắt đầu áp dụng hiệu ứng.</p>
+</dd>
+<dt>End Frame</dt><dd><p>Frame kết thúc áp dụng hiệu ứng.</p>
+</dd>
+</dl>
+</section>
+<section id="smooth-gaussian-modifier">
+<h3>Smooth (Gaussian) Modifier<a class="headerlink" href="#smooth-gaussian-modifier" title="Link to this heading">¶</a></h3>
+<p>Dùng làm mượt Gaussian để giảm chi tiết và nhiễu trong curve. Nó thực hiện cùng thao tác làm mượt như <a class="reference internal" href="editing.html#bpy-ops-graph-gaussian-smooth"><span class="std std-ref">toán tử Smoothing</span></a>.</p>
+<p>Modifier này dùng interpolation tuyến tính cho các subframe, điều có thể gây ra các vấn đề liên quan đến motion blur.</p>
+<p>Lưu ý rằng đây có thể là một modifier tiêu tốn nhiều tài nguyên, và ảnh hưởng của nó đến hiệu năng có thể trở nên đáng kể khi được dùng trên nhiều F-Curve.</p>
+<div class="admonition note">
+<p class="admonition-title">Ghi chú</p>
+<p>Modifier Smooth (Gaussian) phải là modifier đầu tiên trong danh sách.</p>
+<p>Modifier này cần biết chính xác các keyframe nằm ở đâu, điều không thể khi các modifier khác được xử lý trước. Vì vậy modifier này không tương thích với <a class="reference internal" href="#cycles-modifier">Cycles Modifier</a>.</p>
+</div>
+<dl class="simple">
+<dt>Sigma</dt><dd><p>Hình dạng của phân bố Gaussian tính bằng frame. Giá trị thấp hơn sẽ tăng độ sắc, làm giảm hiệu ứng làm mượt. Giá trị lớn hơn sẽ làm mượt nhiều hơn, nhưng bị giới hạn bởi Filter Width (xem bên dưới).</p>
+</dd>
+<dt>Filter Width</dt><dd><p>Số frame mà bộ lọc &quot;nhìn thấy&quot; quanh mỗi keyframe. Giá trị cao hơn cho phép làm mượt nhiều hơn (Sigma lớn khi đó có thể làm mượt trên nhiều frame hơn), nhưng sẽ làm giảm hiệu năng.</p>
+</dd>
+</dl>
+<span class="target" id="bpy-types-fmodifiersmooth"><span id="index-9"></span></span></section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../../drivers_editor.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Drivers Editor</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="properties.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Thuộc tính F-Curve</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                <a href="../../../copyright.html">Copyright</a> &#169; : This page is licensed under a CC-BY-SA 4.0 Int. License
+            </div>
+            Made with 
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            <div class="last-updated">
+              Last updated on 2026-10-04</div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+<div class="footer-contribute">
+  <ul>
+    <li>
+      <a href="https://projects.blender.org/blender/blender-manual/src/branch/main/manual/editors/graph_editor/fcurves/modifiers.rst?display=source"> Xem mã nguồn</a>
+    </li>
+    <li>
+      <a href="https://translate.blender.org/zen/blender-manual/manual/vi/?q=location%3Amanual%2Feditors/graph_editor/fcurves/modifiers"> Xem bản dịch</a>
+    </li>
+    <li>
+      <a href="https://projects.blender.org/blender/documentation/issues/new?template=.gitea/issue_template/bug.yaml&field:body=%2A%2APage+Information%2A%2A%0D%0AFile%3A+%60manual%2Feditors/graph_editor/fcurves/modifiers.rst%60%0D%0ABlender+Version%3A+%605.3%60%0D%0ADocumentation+Language%3A+%60vi%60%0D%0A%5BPermanent+Link%5D%28https%3A%2F%2Fdocs.blender.org%2Fmanual%2Fvi%2F5.3%2Feditors/graph_editor/fcurves/modifiers.html%29%0D%0A%0D%0A%2A%2AShort+description+of+error%2A%2A%0D%0A%5BPlease+fill+out+a+short+description+of+the+error+here%5D%0D%0A"> Báo cáo lỗi trên trang này</a>
+    </li>
+  </ul>
+</div>
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Modifier của F-Curve</a><ul>
+<li><a class="reference internal" href="#interface">Interface</a></li>
+<li><a class="reference internal" href="#adding-a-modifier">Thêm một Modifier</a></li>
+<li><a class="reference internal" href="#deleting-f-curve-modifiers">Xóa Modifier F-Curve</a></li>
+<li><a class="reference internal" href="#types-of-modifiers">Các loại Modifier</a><ul>
+<li><a class="reference internal" href="#generator-modifier">Generator Modifier</a></li>
+<li><a class="reference internal" href="#built-in-function-modifier">Built-in Function Modifier</a></li>
+<li><a class="reference internal" href="#envelope-modifier">Envelope Modifier</a></li>
+<li><a class="reference internal" href="#cycles-modifier">Cycles Modifier</a><ul>
+<li><a class="reference internal" href="#trivially-cyclic-curves">Các curve tuần hoàn đơn giản</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#noise-modifier">Noise Modifier</a></li>
+<li><a class="reference internal" href="#limits-modifier">Limits Modifier</a></li>
+<li><a class="reference internal" href="#stepped-interpolation-modifier">Stepped Interpolation Modifier</a></li>
+<li><a class="reference internal" href="#smooth-gaussian-modifier">Smooth (Gaussian) Modifier</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=86f2fb40"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=6dbb43f8"></script>
+    <script src="../../../_static/translations.js?v=4c1d55b0"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../../../_static/js/version_switch.js?v=a15ec705"></script>
+    <script src="../../../_static/js/sidebar_scroll.js?v=3fe589dd"></script>
+    
+<script defer data-domain="docs.blender.org" src="https://analytics.blender.org/js/script.js"></script></body>
+</html>
